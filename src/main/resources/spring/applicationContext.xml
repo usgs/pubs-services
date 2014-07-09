@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+                           http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+                           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+                          ">
+
+    <import resource="classpath:/spring/mybatisContext.xml"/>
+
+    <aop:aspectj-autoproxy/>
+
+    <tx:annotation-driven/> 
+
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="gov.usgs.cida.pubs.json.ViewAwareJsonMessageConverter" />
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <mvc:default-servlet-handler/>
+
+    <context:component-scan base-package="gov.usgs.cida.pubs.webservice"/>
+
+    <context:annotation-config />
+
+    <bean class="gov.usgs.cida.pubs.json.JsonViewSupportFactoryBean" />
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="mypubsDataSource"/>
+    </bean>
+    <bean id="setDbContextAspect" class="gov.usgs.cida.pubs.aop.SetDbContextAspect" autowire="byName"/>
+
+
+    <bean id="lookupMvcService" class="gov.usgs.cida.pubs.webservice.LookupMvcService" autowire="byName"/>
+
+
+    <bean id="publicationType" class="gov.usgs.cida.pubs.domain.PublicationType" autowire="byName"/>
+    <bean id="publicationSubtype" class="gov.usgs.cida.pubs.domain.PublicationSubtype" autowire="byName"/>
+    <bean id="publicationSeries" class="gov.usgs.cida.pubs.domain.PublicationSeries" autowire="byName"/>
+
+</beans>

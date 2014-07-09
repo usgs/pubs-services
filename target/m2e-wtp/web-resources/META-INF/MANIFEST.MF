@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+BuildTime: 
+IssueManagement-Url: 
+SCM-Url: scm:svn:https://cida-svn.er.usgs.gov/repos/dev/usgs/pubs/pubs
+ Core/trunk
+Project-GroupId: gov.usgs.cida
+Project-ArtifactId: pubs-services
+Build-Jdk: 1.7.0_60
+Built-By: drsteini
+Project-Version: 0.0.1-SNAPSHOT
+Created-By: Maven Integration for Eclipse
+Implementation-Build: 
+

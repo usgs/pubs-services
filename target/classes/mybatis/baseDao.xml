@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="base">
+
+    <resultMap type="BaseDomain" id="baseResult">
+        <result property="insertDate" column="insert_date"/>
+        <result property="insertUsername" column="insert_username"/>
+        <result property="updateDate" column="update_date"/>
+        <result property="updateUsername" column="update_username"/>
+    </resultMap>
+
+    <select id="getClientId" resultType="String" useCache="false" >
+        select sys_context( 'userenv', 'client_identifier' )
+          from dual
+    </select>
+
+    <sql id="auditInsertCols">
+        insert_date, insert_username
+    </sql>
+
+    <sql id="auditCols">
+        <include refid="base.auditInsertCols"/>, update_date, update_username
+    </sql>
+
+    <sql id="insertAuditHosts">
+        sysdate,
+        audit_trail_util.get_username
+    </sql>
+
+    <sql id="auditSets">
+        update_date = sysdate,
+        update_username = audit_trail_util.get_username
+    </sql>
+
+    <sql id="orderBy">
+        <if test="orderby != null">
+            order by ${orderby} <if test="orderbyDir != null">${orderbyDir}</if>
+        </if>
+      </sql>
+
+    <sql id="pagingTop">
+        <if test="pageSize != null">
+            select /*+ first_rows(${pageSize}) */ *
+              from (select a.*, rownum rn
+                      from (
+        </if>
+    </sql>
+
+    <sql id="pagingBottom">
+        <if test="pageSize != null">
+                  ) a where rownum &lt;= (#{pageRowStart} + #{pageSize}) )
+            where rn &gt; #{pageRowStart}
+        </if>
+    </sql>
+
+</mapper>

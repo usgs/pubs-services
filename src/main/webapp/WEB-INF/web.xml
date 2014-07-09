@@ -30,7 +30,7 @@
 
     <filter>
         <filter-name>CORSFilter</filter-name>
-        <filter-class>gov.usgs.cida.mypubs.filter.CORSFilter</filter-class>
+        <filter-class>gov.usgs.cida.pubs.filter.CORSFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>CORSFilter</filter-name>

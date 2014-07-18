@@ -3,7 +3,7 @@
 
 <mapper namespace="base">
 
-    <resultMap type="BaseDomain" id="baseResult">
+    <resultMap type="BaseDomain" id="result">
         <result property="insertDate" column="insert_date"/>
         <result property="insertUsername" column="insert_username"/>
         <result property="updateDate" column="update_date"/>
@@ -15,15 +15,13 @@
           from dual
     </select>
 
-    <sql id="auditInsertCols">
-        insert_date, insert_username
-    </sql>
-
     <sql id="auditCols">
-        <include refid="base.auditInsertCols"/>, update_date, update_username
+        insert_date, insert_username, update_date, update_username
     </sql>
 
-    <sql id="insertAuditHosts">
+    <sql id="auditHosts">
+        sysdate,
+        audit_trail_util.get_username,
         sysdate,
         audit_trail_util.get_username
     </sql>

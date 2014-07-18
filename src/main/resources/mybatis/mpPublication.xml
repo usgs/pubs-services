@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="mpPublication">
+
+    <resultMap id="result" type="MpPublication" extends="publication.result">
+        <result property="ipdsReviewProcessState" column="ipds_review_process_state"/>
+        <result property="ipdsInternalId" column="ipds_internal_id"/>
+    </resultMap>
+
+    <sql id="cols">
+        <include refid="publication.cols"/>,
+        ipds_review_process_state,
+        ipds_internal_id
+    </sql>
+
+    <sql id="hosts">
+        <include refid="publication.hosts"/>,
+        #{ipdsReviewProcessState,jdbcType=VARCHAR},
+        #{ipdsInternalId,jdbcType=NUMERIC}
+    </sql>
+
+    <sql id="sets">
+        <include refid="publication.sets"/>,
+        ipds_review_process_state = #{ipdsReviewProcessState,jdbcType=VARCHAR},
+        ipds_internal_id = #{ipdsInternalId,jdbcType=NUMERIC}
+    </sql>
+
+    <select id="getNewProdId" resultType="Integer">
+        select publication_seq.nextval id from dual
+    </select>
+
+    <insert id="add" parameterType="MpPublication">
+        insert into mp_publication (<include refid="cols"/>)
+             values (<include refid="hosts"/>)
+    </insert>
+
+    <insert id="copyMpFromPw" parameterType="Integer">
+<!--         insert into mp_publication (<include refid="publication.cols"/>) -->
+<!--             (select <include refid="publication.cols"/> -->
+<!--                from pw_publication -->
+<!--               where publication_id = #{value,jdbcType=NUMERIC}) -->
+    </insert>
+
+    <sql id="baseSelect">
+        select <include refid="cols"/>
+            from mp_publication
+    </sql>
+
+    <select id="getById" parameterType="Integer" resultMap="result">
+        <include refid="baseSelect"/>
+           where publication_id = #{value,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getByMap" parameterType="map" resultMap="result">
+        <include refid="baseSelect"/>
+        <include refid="publication.filters"/>
+    </select>
+
+    <update id="update" parameterType="MpPublication">
+        update mp_publication
+           set <include refid="sets"/>
+           where publication_id = #{id,jdbcType=NUMERIC}
+    </update>
+
+    <update id="publish" parameterType="Integer">
+<!--         merge into pw_publication pw -->
+<!--             using (select mp_newpubs.*, -->
+<!--                           case (select count(*) cnt -->
+<!--                                   from mp_publication_link -->
+<!--                                  where mp_publication_link.prod_id = mp_publication.prod_id and -->
+<!--                                        link_class != 'THUMBNAIL') -->
+<!--                             when 0 then null -->
+<!--                             else 'Y' -->
+<!--                           end web_doc_flag, -->
+<!--                           title || '; ' || publication_year || '; ' || -->
+<!--                             case -->
+<!--                               when publication_type is null then '' -->
+<!--                               when publication_type = 'USGS Numbered Series' then '' -->
+<!--                               else publication_type || '; ' -->
+<!--                             end || -->
+<!--                             case -->
+<!--                               when series_cd is null then '' -->
+<!--                               else series_cd || '; ' -->
+<!--                             end  || -->
+<!--                             case -->
+<!--                               when series_number is null then '' -->
+<!--                               else series_number || '; ' -->
+<!--                             end || -->
+<!--                             case -->
+<!--                               when larger_work_type is null then '' -->
+<!--                               when larger_work_type = 'USGS Numbered Series' then '' -->
+<!--                               else larger_work_type || '; ' -->
+<!--                              end || -->
+<!--                             case -->
+<!--                               when larger_work_title is null then '' -->
+<!--                               else larger_work_title || '; ' -->
+<!--                             end || -->
+<!--                             author_display usgs_citation_display, -->
+<!--                           trim(series_cd || ' ' || series_number || ' '|| title || ' ' || publication_year || ' ' || -->
+<!--                             series || ' ' || author_display || ' ' || contributing_office || ' ' || editor) basic_search, -->
+<!--                           decode(larger_work_type, 'Journal', trim(larger_work_title), decode(series, null, null, trim(series))) contents_breakdown, -->
+<!--                           title || '; ' || publication_year || '; ' || -->
+<!--                             decode(publication_type, null, '', 'USGS Numbered Series', '', publication_type || '; ') || -->
+<!--                             decode (series_cd, null, '', series_cd || '; ') || -->
+<!--                             decode (series_number, null, '', series_number || '; ') || -->
+<!--                             decode (larger_work_type, null, '', 'USGS Numbered Series', '', larger_work_type || '; ') || -->
+<!--                             decode (larger_work_title, null, '', larger_work_title || '; ') || -->
+<!--                             author_display pw_srch_results -->
+<!--                      from mp_publication -->
+<!--                     where prod_id = #{value,jdbcType=NUMERIC}) mp -->
+<!--                on (mp.prod_id = pw.prod_id) -->
+<!--              when matched then update -->
+<!--                   set pw.index_id = mp.index_id, -->
+<!--                       pw.display_to_public_date = mp.display_to_public_date, -->
+<!--                       pw.publication_type = mp.publication_type, -->
+<!--                       pw.publication_type_id = mp.publication_type_id, -->
+<!--                       pw.publication_type_detailed = mp.publication_type_detailed, -->
+<!--                       pw.title = mp.title, -->
+<!--                       pw.publication_year = mp.publication_year, -->
+<!--                       pw.publication_month = mp.publication_month, -->
+<!--                       pw.publication_day = mp.publication_day, -->
+<!--                       pw.larger_work_id = mp.larger_work_id, -->
+<!--                       pw.larger_work_type = mp.larger_work_type, -->
+<!--                       pw.larger_work_title = mp.larger_work_title, -->
+<!--                       pw.series = mp.series, -->
+<!--                       pw.series_cd = mp.series_cd, -->
+<!--                       pw.series_number = mp.series_number, -->
+<!--                       pw.sub_series = mp.sub_series, -->
+<!--                       pw.volume = mp.volume, -->
+<!--                       pw.issue = mp.issue, -->
+<!--                       pw.special_issue = mp.special_issue, -->
+<!--                       pw.edition = mp.edition, -->
+<!--                       pw.editor = mp.editor, -->
+<!--                       pw.language = mp.language, -->
+<!--                       pw.publisher = mp.publisher, -->
+<!--                       pw.publisher_location = mp.publisher_location, -->
+<!--                       pw.meeting_title = mp.meeting_title, -->
+<!--                       pw.meeting_date = mp.meeting_date, -->
+<!--                       pw.meeting_location = mp.meeting_location, -->
+<!--                       pw.usgs_library_call_number = mp.usgs_library_call_number, -->
+<!--                       pw.isbn = mp.isbn, -->
+<!--                       pw.issn = mp.issn, -->
+<!--                       pw.contributing_office = mp.contributing_office, -->
+<!--                       pw.contrib_off_org_id = mp.contrib_off_org_id, -->
+<!--                       pw.contributing_off_pub_id = mp.contributing_off_pub_id, -->
+<!--                       pw.source = mp.source, -->
+<!--                       pw.abstract = mp.abstract, -->
+<!--                       pw.notes = mp.notes, -->
+<!--                       pw.temporal_start = mp.temporal_start, -->
+<!--                       pw.temporal_end = mp.temporal_end, -->
+<!--                       pw.prod_description = mp.prod_description, -->
+<!--                       pw.start_page = mp.start_page, -->
+<!--                       pw.end_page = mp.end_page, -->
+<!--                       pw.number_of_pages = mp.number_of_pages, -->
+<!--                       pw.number_oversized_sheets = mp.number_oversized_sheets, -->
+<!--                       pw.number_of_figures = mp.number_of_figures, -->
+<!--                       pw.number_of_tables = mp.number_of_tables, -->
+<!--                       pw.online_only_flag = mp.online_only_flag, -->
+<!--                       pw.no_pagination_flag = mp.no_pagination_flag, -->
+<!--                       pw.addtl_online_files_flag = mp.addtl_online_files_flag, -->
+<!--                       pw.number_of_files = mp.number_of_files, -->
+<!--                       pw.scale = mp.scale, -->
+<!--                       pw.public_comments = mp.public_comments, -->
+<!--                       pw.author_display = mp.author_display, -->
+<!--                       pw.other_contrib_display = mp.other_contrib_display, -->
+<!--                       pw.combined_terminology_display = mp.combined_terminology_display, -->
+<!--                       pw.lat_n = mp.lat_n, -->
+<!--                       pw.lat_s = mp.lat_s, -->
+<!--                       pw.lon_w = mp.lon_w, -->
+<!--                       pw.lon_e = mp.lon_e, -->
+<!--                       pw.country = mp.country, -->
+<!--                       pw.state = mp.state, -->
+<!--                       pw.city = mp.city, -->
+<!--                       pw.county = mp.county, -->
+<!--                       pw.other_spatial = mp.other_spatial, -->
+<!--                       pw.projection = mp.projection, -->
+<!--                       pw.datum = mp.datum, -->
+<!--                       pw.ipds_id = mp.ipds_id, -->
+<!--                       pw.ipds_citation = mp.ipds_citation, -->
+<!--                       pw.doi_name = mp.doi_name, -->
+<!--                       pw.web_doc_flag = mp.web_doc_flag, -->
+<!--                       pw.usgs_citation_display = mp.usgs_citation_display, -->
+<!--                       pw.basic_search = mp.basic_search, -->
+<!--                       pw.contents_breakdown = mp.contents_breakdown, -->
+<!--                       pw.pw_srch_results = mp.pw_srch_results, -->
+<!--                       pw.insert_date = mp.insert_date, -->
+<!--                       pw.insert_username = mp.insert_username, -->
+<!--                       pw.update_date = sysdate, -->
+<!--                       pw.update_username = audit_trail_util.get_username -->
+<!--              when not matched then insert (<include refid="publicationCols"/>, <include refid="pwPublicationCols"/>, <include refid="base.auditCols"/>) -->
+<!--                   values (mp.prod_id, mp.index_id, mp.display_to_public_date, mp.publication_type, -->
+<!--                           mp.publication_type_id, mp.publication_type_detailed, mp.title, mp.publication_year, mp.publication_month, -->
+<!--                           mp.publication_day, mp.larger_work_id, mp.larger_work_type, mp.larger_work_title, -->
+<!--                           mp.series, mp.series_cd, mp.series_number, mp.sub_series, -->
+<!--                           mp.volume, mp.issue, mp.special_issue, mp.edition, mp.editor, mp.language, mp.publisher, mp.publisher_location, -->
+<!--                           mp.meeting_title, mp.meeting_date, mp.meeting_location, mp.usgs_library_call_number, -->
+<!--                           mp.isbn, mp.issn, mp.contributing_office, mp.contrib_off_org_id, mp.contributing_off_pub_id, -->
+<!--                           mp.source, mp.temporal_start, mp.temporal_end, mp.prod_description, -->
+<!--                           mp.start_page, mp.end_page, mp.number_of_pages, mp.number_oversized_sheets, -->
+<!--                           mp.number_of_figures, mp.number_of_tables, mp.online_only_flag, -->
+<!--                           mp.no_pagination_flag, mp.addtl_online_files_flag, mp.number_of_files, mp.scale, mp.public_comments, -->
+<!--                           mp.author_display, mp.other_contrib_display, -->
+<!--                           mp.combined_terminology_display, -->
+<!--                           mp.lat_n, mp.lat_s, mp.lon_w, mp.lon_e, mp.country, mp.state, mp.city, -->
+<!--                           mp.county, mp.other_spatial, mp.projection, mp.datum, mp.ipds_id, mp.ipds_citation, mp.doi_name, mp.abstract, mp.notes, -->
+<!--                           mp.web_doc_flag, mp.usgs_citation_display, mp.basic_search, mp.contents_breakdown, mp.pw_srch_results, -->
+<!--                           mp.insert_date, mp.insert_username, sysdate, audit_trail_util.get_username) -->
+    </update>
+
+    <delete id="delete" parameterType="Integer">
+        delete from mp_publication
+         where publication_id = #{value,jdbcType=NUMERIC}
+    </delete>
+
+</mapper>

@@ -6,15 +6,15 @@
 
 package gov.usgs.cida.pubs.json;
 
-import gov.usgs.cida.pubs.domain.intfc.BaseView;
-import gov.usgs.cida.pubs.domain.intfc.DataView;
+import gov.usgs.cida.pubs.domain.intfc.IBaseView;
+import gov.usgs.cida.pubs.domain.intfc.IDataView;
 
 //@Data
-public class PojoView implements DataView {
+public class PojoView implements IDataView {
 
     private final Object data;
-    private final Class<? extends BaseView> view;
-    public PojoView(Object result, Class<? extends BaseView> viewClass) {
+    private final Class<? extends IBaseView> view;
+    public PojoView(Object result, Class<? extends IBaseView> viewClass) {
         data = result;
         view = viewClass;
     }
@@ -25,7 +25,7 @@ public class PojoView implements DataView {
     }
 
     @Override
-    public Class<? extends BaseView> getView() {
+    public Class<? extends IBaseView> getView() {
         // TODO Auto-generated method stub
         return view;
     }

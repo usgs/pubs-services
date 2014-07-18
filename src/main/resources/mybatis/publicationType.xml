@@ -3,39 +3,39 @@
 
 <mapper namespace="publicationType">
 
-    <resultMap id="publicationTypeResult" type="PublicationType" extends="base.baseResult">
+    <resultMap id="result" type="PublicationType" extends="base.result">
         <id property="id" column="publication_type_id"/>
-        <result property="name" column="publication_type_name"/>
+        <result property="name" column="name"/>
     </resultMap>
 
-    <sql id="publicationTypeCols">
-        publication_type_id, publication_type_name
+    <sql id="cols">
+        publication_type_id, name
     </sql>
 
-    <sql id="findPublicationTypeFilters">
+    <sql id="filters">
         <where>
             <if test="id != null">
                 and publication_type_id = #{id}
             </if>
             <if test="name != null">
-                and upper(publication_type_name) like upper(#{name}) || '%'
+                and upper(name) like upper(#{name}) || '%'
             </if>
         </where>
     </sql>
 
-    <sql id="basePublicationTypeSelect">
-        select <include refid="publicationTypeCols"/>
+    <sql id="baseSelect">
+        select <include refid="cols"/>
           from publication_type
     </sql>
 
-    <select id="getById" parameterType="Integer" resultMap="publicationTypeResult">
-        <include refid="basePublicationTypeSelect"/> 
+    <select id="getById" parameterType="Integer" resultMap="result">
+        <include refid="baseSelect"/>
          where publication_type_id = #{value,jdbcType=NUMERIC}
     </select>
 
-    <select id="getAll" resultMap="publicationTypeResult">
-        <include refid="basePublicationTypeSelect"/> 
-        <include refid="findPublicationTypeFilters"/> 
+    <select id="getByMap" resultMap="result">
+        <include refid="baseSelect"/>
+        <include refid="filters"/>
     </select>
 
 </mapper>

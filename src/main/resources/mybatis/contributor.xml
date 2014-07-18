@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="contributor">
+
+    <resultMap id="result" type="Contributor" extends="base.result">
+        <id property="id" column="contributor_id"/>
+        <result property="first" column="first"/>
+        <result property="given" column="given"/>
+        <result property="suffix" column="suffix"/>
+        <result property="email" column="email"/>
+        <result property="affiliation" column="affiliation"/>
+    </resultMap>
+
+    <sql id="cols">
+        contributor_id, first, given, suffix, email, affiliation, literal
+    </sql>
+
+    <sql id="filters">
+        <where>
+            <if test="id != null">
+                and contributor_id = #{id}
+            </if>
+            <if test="person != null">
+                and (upper(first) like upper(#{person}) || '%'
+                  or upper(given) like upper(#{person}) || '%'
+                  or upper(suffix) like upper(#{person}) || '%'
+                  or upper(email) like upper(#{person}) || '%'
+                  or upper(affiliation) like upper(#{person}) || '%')
+            </if>
+            <if test="corporation != null">
+                and upper(literal) like upper(#{corporation}) || '%'
+            </if>
+        </where>
+    </sql>
+
+    <sql id="baseSelect">
+        select <include refid="cols"/>
+          from contributor
+    </sql>
+
+    <select id="getById" parameterType="Integer" resultMap="result">
+        <include refid="baseSelect"/> 
+         where contributor_id = #{value,jdbcType=NUMERIC}
+    </select>
+
+    <select id="getByMap" resultMap="result">
+        <include refid="baseSelect"/>
+        <include refid="filters"/>
+    </select>
+
+</mapper>

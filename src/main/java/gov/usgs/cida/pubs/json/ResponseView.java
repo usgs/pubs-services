@@ -6,12 +6,12 @@
 
 package gov.usgs.cida.pubs.json;
 
-import gov.usgs.cida.pubs.domain.intfc.BaseView;
+import gov.usgs.cida.pubs.domain.intfc.IBaseView;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ResponseView {
-    public Class<? extends BaseView> value();
+    public Class<? extends IBaseView> value();
 }

@@ -1,6 +1,7 @@
 package gov.usgs.cida.pubs.webservice;
 
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
@@ -17,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -127,13 +127,21 @@ public class LookupMvcService extends MvcService<PublicationType> {
         return rtn;
     }
 
-    private boolean validateParametersSetHeaders(HttpServletRequest request, HttpServletResponse response) {
-        boolean rtn = true;
-        response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
-        if (request.getParameterMap().isEmpty()) {
-            rtn = false;
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
+    @RequestMapping(value={"/costcenters"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
+    @ResponseView(LookupView.class)
+    public @ResponseBody Collection<CostCenter> getCostCenters(HttpServletRequest request, HttpServletResponse response,
+                @RequestParam(value="text", required=false) String[] text) {
+        LOG.debug("CostCenter");
+        Collection<CostCenter> rtn = new ArrayList<>();
+        if (validateParametersSetHeaders(request, response)) {
+            response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
+            Map<String, Object> filters = new HashMap<>();
+            if (null != text && 0 < text.length) {
+                filters.put("name", text[0]);
+            }
+            rtn = CostCenter.getDao().getByMap(filters);
         }
         return rtn;
     }
+
 }

@@ -41,8 +41,8 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONArray("[{\"value\":\"4\",\"text\":\"Book\"},{\"value\":\"5\",\"text\":\"Book chapter\"}]"),
-                sameJSONArrayAs(new JSONArray(rtn.getResponse().getContentAsString())));
+        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
+                sameJSONArrayAs(new JSONArray("[{\"value\":\"4\",\"text\":\"Book\"},{\"value\":\"5\",\"text\":\"Book chapter\"}]")));
     }
 
     @Test
@@ -53,8 +53,8 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONArray("[{\"value\":\"11\",\"text\":\"Bibliography\"}]"),
-                sameJSONArrayAs(new JSONArray(rtn.getResponse().getContentAsString())));
+        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
+                sameJSONArrayAs(new JSONArray("[{\"value\":\"11\",\"text\":\"Bibliography\"}]")));
     }
 
     @Test
@@ -65,8 +65,8 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONArray("[{\"value\":\"11\",\"text\":\"Bibliography\"}]"),
-                sameJSONArrayAs(new JSONArray(rtn.getResponse().getContentAsString())));
+        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
+                sameJSONArrayAs(new JSONArray("[{\"value\":\"11\",\"text\":\"Bibliography\"}]")));
     }
 
     @Test
@@ -77,8 +77,8 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONArray("[{\"value\":\"1\",\"text\":\"Administrative Report\"},{\"value\":\"2\",\"text\":\"Advisory Report\"},{\"value\":\"3\",\"text\":\"Annual Report\"}]"),
-                sameJSONArrayAs(new JSONArray(rtn.getResponse().getContentAsString())));
+        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
+                sameJSONArrayAs(new JSONArray("[{\"value\":\"1\",\"text\":\"Administrative Report\"},{\"value\":\"2\",\"text\":\"Advisory Report\"},{\"value\":\"3\",\"text\":\"Annual Report\"}]")));
     }
 
     @Test
@@ -89,8 +89,29 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONArray("[{\"value\":\"1\",\"text\":\"Administrative Report\"},{\"value\":\"2\",\"text\":\"Advisory Report\"},{\"value\":\"3\",\"text\":\"Annual Report\"}]"),
+        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
+                sameJSONArrayAs(new JSONArray("[{\"value\":\"1\",\"text\":\"Administrative Report\"},{\"value\":\"2\",\"text\":\"Advisory Report\"},{\"value\":\"3\",\"text\":\"Annual Report\"}]")));
+    }
+
+    @Test
+    public void getCostCenters() throws Exception {
+        MvcResult rtn = mockMvc.perform(get("/lookup/costcenters?mimetype=json").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+        .andReturn();
+
+        assertThat(new JSONArray("[{\"value\":\"74\",\"text\":\"Colorado Ice Science Center\"},{\"value\":\"115\",\"text\":\"Earth Resources Observations Center\"}]"),
                 sameJSONArrayAs(new JSONArray(rtn.getResponse().getContentAsString())));
+
+        rtn = mockMvc.perform(get("/lookup/costcenters?text=col").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+        .andReturn();
+
+        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
+                sameJSONArrayAs(new JSONArray("[{\"value\":\"74\",\"text\":\"Colorado Ice Science Center\"}]")));
     }
 
 }

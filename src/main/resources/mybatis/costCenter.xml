@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="costCenter">
+
+    <resultMap id="result" type="CostCenter" extends="base.result">
+        <id property="id" column="cost_center_id"/>
+        <result property="name" column="name"/>
+    </resultMap>
+
+    <sql id="cols">
+        cost_center_id, name
+    </sql>
+
+    <sql id="filters">
+        <where>
+            <if test="id != null">
+                and cost_center_id = #{id}
+            </if>
+            <if test="name != null">
+                and upper(name) like upper(#{name}) || '%'
+            </if>
+        </where>
+    </sql>
+
+    <sql id="baseSelect">
+        select <include refid="cols"/>
+          from cost_center
+    </sql>
+
+    <select id="getById" parameterType="Integer" resultMap="result">
+        <include refid="baseSelect"/>
+         where cost_center_id = #{value,jdbcType=NUMERIC}
+    </select>
+
+    <select id="getByMap" resultMap="result">
+        <include refid="baseSelect"/>
+        <include refid="filters"/>
+    </select>
+
+</mapper>

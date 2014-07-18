@@ -9,7 +9,7 @@
                            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
                            http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
-                           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+                           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
                           ">
 
     <import resource="classpath:/spring/mybatisContext.xml"/>
@@ -30,18 +30,33 @@
 
     <context:annotation-config />
 
+    <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+       <!-- Note that at this time (04Dec2013) Spring does not limit the media types to those listed when using parameterName to determine 
+            the requested media type and will use anything that matches */* (or in this case will give json for everything but csv).
+            The value in an accept header IS respected and will throw a 406 if not in the list below.  -->
+        <property name="favorPathExtension" value="false" />
+        <property name="favorParameter" value="true" />
+        <property name="parameterName" value="mimetype" />
+        <property name="useJaf" value="false"/>
+        <property name="defaultContentType" value="application/xml" />
+        <property name="mediaTypes" >
+            <map>
+                <entry key="xml" value="application/xml" />
+                <entry key="json" value="application/json" />
+                <entry key="csv" value="text/csv" />
+            </map>
+        </property>
+    </bean>
     <bean class="gov.usgs.cida.pubs.json.JsonViewSupportFactoryBean" />
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="mypubsDataSource"/>
     </bean>
     <bean id="setDbContextAspect" class="gov.usgs.cida.pubs.aop.SetDbContextAspect" autowire="byName"/>
 
+    <import resource="classpath:/spring/webServiceContext.xml"/>
 
-    <bean id="lookupMvcService" class="gov.usgs.cida.pubs.webservice.LookupMvcService" autowire="byName"/>
+    <import resource="classpath:/spring/busServiceContext.xml"/>
 
-
-    <bean id="publicationType" class="gov.usgs.cida.pubs.domain.PublicationType" autowire="byName"/>
-    <bean id="publicationSubtype" class="gov.usgs.cida.pubs.domain.PublicationSubtype" autowire="byName"/>
-    <bean id="publicationSeries" class="gov.usgs.cida.pubs.domain.PublicationSeries" autowire="byName"/>
+    <import resource="classpath:/spring/domainContext.xml"/>
 
 </beans>

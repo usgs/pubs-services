@@ -15,20 +15,22 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class PublicationTypeDao extends BaseDao<PublicationType> {
 
+    private static final String NS = "publicationType";
+
     /** 
      * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getById(java.lang.Integer)
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
      */
     @Transactional(readOnly = true)
     @ISetDbContext
     @Override
     public PublicationType getById(Integer domainID) {
-        return (PublicationType) getSqlSession().selectOne("publicationType.getById", domainID);
+        return (PublicationType) getSqlSession().selectOne(NS + ".getById", domainID);
     }
 
     /** 
      * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getById(java.lang.String)
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.String)
      */
     @Transactional(readOnly = true)
     @ISetDbContext
@@ -39,18 +41,17 @@ public class PublicationTypeDao extends BaseDao<PublicationType> {
 
     /** 
      * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.BaseDao#getByMap(Map)
+     * @see gov.usgs.cida.pubs.dao.BaseDao#getByMap(Map)
      */
     @Transactional(readOnly = true)
     @ISetDbContext
     @Override
     public List<PublicationType> getByMap(Map<String, Object> filters) {
-        List<PublicationType> types = getSqlSession().selectList("publicationType.getAll", filters);
-        return types;
+        return getSqlSession().selectList(NS + ".getByMap", filters);
     }
 
     /** {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getById(java.lang.Integer)
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
      */
     @Transactional(readOnly = true)
     @ISetDbContext

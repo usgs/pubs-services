@@ -15,9 +15,9 @@ public class PublicationSubtype extends BaseDomain<PublicationSubtype> implement
 
     private static IDao<PublicationSubtype> publicationSubtypeDao;
 
-    public static final String USGS_NUMBERED_SERIES = "5";
+    public static final Integer USGS_NUMBERED_SERIES = 5;
 
-    public static final String USGS_UNNUMBERED_SERIES = "6";
+    public static final Integer USGS_UNNUMBERED_SERIES = 6;
 
     private PublicationType publicationType;
 

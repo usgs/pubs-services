@@ -20,7 +20,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
     /**
      * {@inheritDoc}
      * 
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getClientId()
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getClientId()
      */
     @Override
     @Transactional(readOnly = true)
@@ -30,7 +30,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
     }
 
     /** {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#add(java.lang.Object)
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#add(java.lang.Object)
      */
     @Transactional(readOnly = true)
     @Override
@@ -39,7 +39,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
     }
 
     /** {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getById(java.lang.Integer)
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
      */
     @Transactional(readOnly = true)
     @Override
@@ -48,7 +48,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
     }
 
     /** {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getById(java.lang.Integer)
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
      */
     @Transactional(readOnly = true)
     @Override
@@ -57,7 +57,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
     }
 
     /** {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getById(java.lang.Integer)
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
      */
     @Transactional(readOnly = true)
     @Override
@@ -66,7 +66,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
     }
 
     /** {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getById(java.lang.Integer)
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
      */
     @Transactional(readOnly = true)
     @Override
@@ -76,7 +76,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
 
     /** 
      * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getByMap(Map)
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getByMap(Map)
      */
     @Transactional(readOnly = true)
     @Override
@@ -86,7 +86,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
 
     /** 
      * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getObjectCount(Map)
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getObjectCount(Map)
      */
     @Transactional(readOnly = true)
     @Override
@@ -95,7 +95,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
     }
 
     /** {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getById(java.lang.Integer)
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
      */
     @Transactional(readOnly = true)
     @Override
@@ -104,7 +104,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
     }
 
     /** {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#update(java.lang.Object)
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#update(java.lang.Object)
      */
     @Transactional(readOnly = true)
     @Override
@@ -113,7 +113,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
     }
 
     /** {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#delete(java.lang.Object)
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#delete(java.lang.Object)
      */
     @Transactional(readOnly = true)
     @Override
@@ -122,7 +122,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
     }
 
     /** {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#deleteById(java.lang.Integer)
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#deleteById(java.lang.Integer)
      */
     @Transactional(readOnly = true)
     @Override
@@ -132,7 +132,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
 
     /** 
      * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#deleteByParent(java.lang.Integer)
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#deleteByParent(java.lang.Integer)
      */
     @Transactional(readOnly = true)
     @Override

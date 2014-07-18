@@ -1,0 +1,57 @@
+package gov.usgs.cida.pubs.domain;
+
+import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.domain.intfc.ILookup;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+
+public class CostCenter extends BaseDomain<CostCenter> implements ILookup {
+
+    private static IDao<CostCenter> costCenterDao;
+
+    @JsonProperty("name")
+    private String name;
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param inName the name to set
+     */
+    public void setName(final String inName) {
+        name = inName;
+    }
+
+    /**
+     * @return the costCenterDao
+     */
+    public static IDao<CostCenter> getDao() {
+        return costCenterDao;
+    }
+
+    /**
+     * The setter for costCenterDao.
+     * @param inCostCenterDao the costCenterDao to set
+     */
+    public void setCostCenterDao(final IDao<CostCenter> inCostCenterDao) {
+        costCenterDao = inCostCenterDao;
+    }
+
+    @Override
+    @JsonView(LookupView.class)
+    public String getText() {
+        return name;
+    }
+
+    @Override
+    @JsonView(LookupView.class)
+    public String getValue() {
+        return String.valueOf(id);
+    }
+
+}

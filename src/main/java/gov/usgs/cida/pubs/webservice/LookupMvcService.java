@@ -5,8 +5,8 @@ import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
-import gov.usgs.cida.pubs.domain.intfc.ILookup.LookupView;
 import gov.usgs.cida.pubs.json.ResponseView;
+import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +31,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
     private static final Logger LOG = LoggerFactory.getLogger(LookupMvcService.class);
 
     @RequestMapping(value={"/publicationtypes"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
-    @ResponseView(LookupView.class)
+    @ResponseView(ILookupView.class)
     public @ResponseBody Collection<PublicationType> getPublicationTypes(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(value="text", required=false) String[] text) {
         LOG.debug("publicationType");
@@ -47,7 +47,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
     }
 
     @RequestMapping(value={"/publicationtype/{publicationTypeId}/publicationsubtypes"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
-    @ResponseView(LookupView.class)
+    @ResponseView(ILookupView.class)
     public @ResponseBody Collection<PublicationSubtype> getPublicationSubypesREST(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(value="text", required=false) String[] text,
                 @PathVariable("publicationTypeId") String publicationTypeId) {
@@ -66,7 +66,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
     }
 
     @RequestMapping(value={"/publicationsubtypes"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
-    @ResponseView(LookupView.class)
+    @ResponseView(ILookupView.class)
     public @ResponseBody Collection<PublicationSubtype> getPublicationSubypesQuery(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(value="text", required=false) String[] text,
                 @RequestParam(value="publicationtypeid", required=false) String[] publicationTypeId) {
@@ -87,7 +87,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
     }
 
     @RequestMapping(value={"/publicationtype/{publicationTypeId}/publicationsubtype/{publicationSubtypeId}/publicationseries"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
-    @ResponseView(LookupView.class)
+    @ResponseView(ILookupView.class)
     public @ResponseBody Collection<PublicationSeries> getPublicationSeriesREST(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(value="text", required=false) String[] text,
                 @PathVariable("publicationTypeId") String publicationTypeId,
@@ -107,7 +107,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
     }
 
     @RequestMapping(value={"/publicationseries"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
-    @ResponseView(LookupView.class)
+    @ResponseView(ILookupView.class)
     public @ResponseBody Collection<PublicationSeries> getPublicationSeriesQuery(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(value="text", required=false) String[] text,
                 @RequestParam(value="publicationsubtypeid", required=false) String[] publicationSubtypeId) {
@@ -128,7 +128,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
     }
 
     @RequestMapping(value={"/costcenters"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
-    @ResponseView(LookupView.class)
+    @ResponseView(ILookupView.class)
     public @ResponseBody Collection<CostCenter> getCostCenters(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(value="text", required=false) String[] text) {
         LOG.debug("CostCenter");

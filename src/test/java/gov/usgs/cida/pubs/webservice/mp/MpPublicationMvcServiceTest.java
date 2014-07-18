@@ -1,4 +1,4 @@
-package gov.usgs.cida.pubs.webservice;
+package gov.usgs.cida.pubs.webservice.mp;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

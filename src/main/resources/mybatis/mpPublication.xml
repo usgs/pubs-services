@@ -6,6 +6,7 @@
     <resultMap id="result" type="MpPublication" extends="publication.result">
         <result property="ipdsReviewProcessState" column="ipds_review_process_state"/>
         <result property="ipdsInternalId" column="ipds_internal_id"/>
+        <collection property="costCenters" column="publication_id" select="mpPublicationCostCenter.getByPublication"/>
     </resultMap>
 
     <sql id="cols">

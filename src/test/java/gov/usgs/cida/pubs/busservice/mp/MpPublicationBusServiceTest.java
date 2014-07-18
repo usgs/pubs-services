@@ -1,4 +1,4 @@
-package gov.usgs.cida.pubs.busservice;
+package gov.usgs.cida.pubs.busservice.mp;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -6,14 +6,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.busservice.mp.MpPublicationBusService;
 //import gov.usgs.cida.pubs.domain.MpLinkDim;
 //import gov.usgs.cida.pubs.domain.MpList;
 //import gov.usgs.cida.pubs.domain.MpListPubsRel;
-import gov.usgs.cida.pubs.domain.MpPublication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 //import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
 
 import java.util.Collection;
 import java.util.HashMap;

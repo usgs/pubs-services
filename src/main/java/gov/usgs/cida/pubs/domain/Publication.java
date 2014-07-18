@@ -5,6 +5,7 @@ import gov.usgs.cida.pubs.json.PubsJsonLocalDateDeSerializer;
 import gov.usgs.cida.pubs.json.PubsJsonLocalDateSerializer;
 import gov.usgs.cida.pubs.json.PubsJsonLocalDateTimeSerializer;
 import gov.usgs.cida.pubs.json.PubsStringDeserializer;
+import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -16,6 +17,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -32,165 +34,200 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     private static IDao<Publication<?>> publicationDao;
 
     @JsonProperty("indexID")
+    @JsonView(IMpView.class)
     // @JsonDeserialize(using=PubsStringDeserializer.class)
     // @Length(min=0, max=100)
     private String indexId;
 
     @JsonProperty("display-to-public-date")
+    @JsonView(IMpView.class)
     // @JsonDeserialize(using=PubsJsonLocalDateTimeDeSerializer.class)
     @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
     // @NotNull(groups = UpdateChecks.class)
     private LocalDateTime displayToPublicDate;
 
     @JsonProperty("type")
+    @JsonView(IMpView.class)
     // @JsonDeserialize(using=PubsStringDeserializer.class)
     // @NotBlank(groups = UpdateChecks.class)
     private PublicationType publicationType;
 
     @JsonProperty("genre")
+    @JsonView(IMpView.class)
     // @JsonDeserialize(using=PubsStringDeserializer.class)
     // @NotBlank(groups = UpdateChecks.class)
     private PublicationSubtype publicationSubtype;
 
     @JsonProperty("collection-title")
+    @JsonView(IMpView.class)
     // @JsonDeserialize(using=PubsStringDeserializer.class)
     // @NotBlank(groups = UpdateChecks.class)
     private PublicationSeries publicationSeries;
 
     @JsonProperty("number")
+    @JsonView(IMpView.class)
     // @JsonDeserialize(using=PubsStringDeserializer.class)
     // @Length(min=0, max=100)
     private String seriesNumber;
 
     @JsonProperty("subseries-title")
+    @JsonView(IMpView.class)
     // @JsonDeserialize(using=PubsStringDeserializer.class)
     // @Length(min=0, max=255)
     private String subseriesTitle;
 
     @JsonProperty("chapter-number")
+    @JsonView(IMpView.class)
     // @JsonDeserialize(using=PubsStringDeserializer.class)
     // @Length(min=0, max=255)
     private String chapter;
 
     @JsonProperty("sub-chapter-number")
+    @JsonView(IMpView.class)
     // @JsonDeserialize(using=PubsStringDeserializer.class)
     // @Length(min=0, max=255)
     private String subchapter;
 
     @JsonProperty("title")
+    @JsonView(IMpView.class)
     // @JsonDeserialize(using=PubsStringDeserializer.class)
     // @NotBlank(groups = UpdateChecks.class)
     // @Length(min=0, max=2000)
     private String title;
 
     @JsonProperty("abstract")
+    @JsonView(IMpView.class)
     // @JsonDeserialize(using=PubsStringDeserializer.class)
     private String docAbstract;
 
     @JsonProperty("language")
+    @JsonView(IMpView.class)
     // @JsonDeserialize(using=PubsStringDeserializer.class)
     // @Length(min=0, max=70)
     private String language;
 
     @JsonProperty("publisher")
+    @JsonView(IMpView.class)
     // @JsonDeserialize(using=PubsStringDeserializer.class)
     // @Length(min=0, max=255)
     private String publisher;
 
     @JsonProperty("publisher-place")
+    @JsonView(IMpView.class)
     // @JsonDeserialize(using=PubsStringDeserializer.class)
     // @Length(min=0, max=255)
     private String publisherLocation;
 
     @JsonProperty("DOI")
+    @JsonView(IMpView.class)
     // @JsonDeserialize(using=PubsStringDeserializer.class)
     // @Length(min=0, max=2000)
     private String doiName;
 
     @JsonProperty("ISSN")
+    @JsonView(IMpView.class)
     // @JsonDeserialize(using=PubsStringDeserializer.class)
     // @Length(min=0, max=20)
     private String issn;
 
     @JsonProperty("ISBN")
+    @JsonView(IMpView.class)
     // @JsonDeserialize(using=PubsStringDeserializer.class)
     // @Length(min=0, max=30)
     private String isbn;
 
     @JsonProperty("collaboration")
+    @JsonView(IMpView.class)
     // @JsonDeserialize(using=PubsStringDeserializer.class)
     // @Length(min=0, max=2000)
     private String collaboration;
 
     @JsonProperty("usgs-citation")
+    @JsonView(IMpView.class)
     // @JsonDeserialize(using=PubsStringDeserializer.class)
     // @Length(min=0, max=2000)
     private String usgsCitation;
 
     @JsonProperty("contact")
+    @JsonView(IMpView.class)
     // @JsonDeserialize(using=PubsStringDeserializer.class)
     // @Length(min=0, max=2000)
     private Contact contact;
 
     @Length(min = 0, max = 2000)
+    @JsonView(IMpView.class)
     @JsonProperty("product-description")
     @JsonDeserialize(using = PubsStringDeserializer.class)
     private String productDescription;
 
     @Length(min = 0, max = 20)
+    @JsonView(IMpView.class)
     @JsonProperty("page-first")
     @JsonDeserialize(using = PubsStringDeserializer.class)
     private String startPage;
 
     @Length(min = 0, max = 50)
+    @JsonView(IMpView.class)
     @JsonProperty("page-last")
     @JsonDeserialize(using = PubsStringDeserializer.class)
     private String endPage;
 
     @Digits(integer = 4, fraction = 0)
+    @JsonView(IMpView.class)
     @JsonProperty("number-of-pages")
     @JsonDeserialize(using = PubsStringDeserializer.class)
     private String numberOfPages;
 
     @Length(min = 0, max = 1)
+    @JsonView(IMpView.class)
     @JsonProperty("online-only")
     @JsonDeserialize(using = PubsStringDeserializer.class)
     private String onlineOnly;
 
     @Length(min = 0, max = 1)
+    @JsonView(IMpView.class)
     @JsonProperty("additional-online-files")
     @JsonDeserialize(using = PubsStringDeserializer.class)
     private String additionalOnlineFiles;
 
     @JsonProperty("temporal-start")
+    @JsonView(IMpView.class)
     @JsonSerialize(using = PubsJsonLocalDateSerializer.class)
     @JsonDeserialize(using = PubsJsonLocalDateDeSerializer.class)
     private LocalDate temporalStart;
 
     @JsonProperty("temporal-end")
+    @JsonView(IMpView.class)
     @JsonSerialize(using = PubsJsonLocalDateSerializer.class)
     @JsonDeserialize(using = PubsJsonLocalDateDeSerializer.class)
     private LocalDate temporalEnd;
 
     @JsonProperty("notes")
+    @JsonView(IMpView.class)
     @Length(min = 0, max = 400000)
     @JsonDeserialize(using = PubsStringDeserializer.class)
     private String notes;
 
     @Length(min = 0, max = 15)
+    @JsonView(IMpView.class)
     @JsonProperty("ipds-id")
     @JsonDeserialize(using = PubsStringDeserializer.class)
     private String ipdsId;
 
+    @JsonView(IMpView.class)
     @JsonProperty("author")
     private Collection<PublicationContributor> authors;
 
+    @JsonView(IMpView.class)
     @JsonProperty("editor")
     private Collection<PublicationContributor> editors;
 
+    @JsonView(IMpView.class)
     @JsonProperty("cost-center")
+//    private Collection<PublicationCostCenter<?>> costCenters;
     private Collection<CostCenter> costCenters;
 
+    @JsonView(IMpView.class)
     @JsonProperty("links")
     private Collection<Link<?>> links;
 
@@ -601,6 +638,21 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
      */
     public void setIpdsId(final String inIpdsId) {
         ipdsId = inIpdsId;
+    }
+
+//    public Collection<PublicationCostCenter<?>> getCostCenters() {
+//        return costCenters;
+//    }
+//
+//    public void setCostCenters(final Collection<PublicationCostCenter<?>> inCostCenters) {
+//        costCenters = inCostCenters;
+//    }
+    public Collection<CostCenter> getCostCenters() {
+        return costCenters;
+    }
+
+    public void setCostCenters(final Collection<CostCenter> inCostCenters) {
+        costCenters = inCostCenters;
     }
 
     /**

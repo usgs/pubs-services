@@ -4,7 +4,7 @@
  *
  */
 
-package gov.usgs.cida.pubs.domain.intfc;
+package gov.usgs.cida.pubs.json.view.intfc;
 
 public interface IBaseView {
 

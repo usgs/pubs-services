@@ -15,10 +15,11 @@
     <typeAliases>
         <typeAlias alias="baseDomain" type="gov.usgs.cida.pubs.domain.BaseDomain"/>
 
-        <typeAlias alias="mpPublication" type="gov.usgs.cida.pubs.domain.MpPublication"/>
-        <typeAlias alias="mpPublicationContributor" type="gov.usgs.cida.pubs.domain.MpPublicationContributor"/>
+        <typeAlias alias="mpPublication" type="gov.usgs.cida.pubs.domain.mp.MpPublication"/>
+        <typeAlias alias="mpPublicationContributor" type="gov.usgs.cida.pubs.domain.mp.MpPublicationContributor"/>
+        <typeAlias alias="mpPublicationCostCenter" type="gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter"/>
 
-        <typeAlias alias="pwPublication" type="gov.usgs.cida.pubs.domain.PwPublication"/>
+        <typeAlias alias="pwPublication" type="gov.usgs.cida.pubs.domain.pw.PwPublication"/>
 
         <typeAlias alias="contact" type="gov.usgs.cida.pubs.domain.Contact"/>
         <typeAlias alias="contributor" type="gov.usgs.cida.pubs.domain.Contributor"/>
@@ -26,6 +27,7 @@
         <typeAlias alias="costCenter" type="gov.usgs.cida.pubs.domain.CostCenter"/>
         <typeAlias alias="publication" type="gov.usgs.cida.pubs.domain.Publication"/>
         <typeAlias alias="publicationContributor" type="gov.usgs.cida.pubs.domain.PublicationContributor"/>
+        <typeAlias alias="publicationCostCenter" type="gov.usgs.cida.pubs.domain.PublicationCostCenter"/>
         <typeAlias alias="publicationSeries" type="gov.usgs.cida.pubs.domain.PublicationSeries"/>
         <typeAlias alias="publicationSubtype" type="gov.usgs.cida.pubs.domain.PublicationSubtype"/>
         <typeAlias alias="publicationType" type="gov.usgs.cida.pubs.domain.PublicationType"/>
@@ -42,6 +44,7 @@
 
          <mapper resource="mybatis/mpPublication.xml"/>
          <mapper resource="mybatis/mpPublicationContributor.xml"/>
+         <mapper resource="mybatis/mpPublicationCostCenter.xml"/>
 
          <mapper resource="mybatis/pwPublication.xml"/>
 
@@ -50,6 +53,7 @@
          <mapper resource="mybatis/contributorType.xml"/>
          <mapper resource="mybatis/publication.xml"/>
          <mapper resource="mybatis/publicationContributor.xml"/>
+         <mapper resource="mybatis/publicationCostCenter.xml"/>
          <mapper resource="mybatis/publicationSeries.xml"/>
          <mapper resource="mybatis/publicationSubtype.xml"/>
          <mapper resource="mybatis/publicationType.xml"/>

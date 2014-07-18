@@ -1,11 +1,12 @@
-package gov.usgs.cida.pubs.webservice;
+package gov.usgs.cida.pubs.webservice.mp;
 
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
-import gov.usgs.cida.pubs.domain.MpPublication;
-import gov.usgs.cida.pubs.domain.intfc.ILookup.LookupView;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.json.ResponseView;
+import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.webservice.MvcService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,7 +32,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 	private IMpPublicationBusService busService;
 
     @RequestMapping(value={"/mppublication/{publicationId}"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
-//    @ResponseView(LookupView.class)
+    @ResponseView(IMpView.class)
     public @ResponseBody MpPublication getMpPublication(HttpServletRequest request, HttpServletResponse response,
                 @PathVariable("publicationId") String publicationId) {
         LOG.debug("getMpPublication");

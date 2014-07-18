@@ -1,4 +1,4 @@
-package gov.usgs.cida.pubs.busservice;
+package gov.usgs.cida.pubs.busservice.mp;
 
 //import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
@@ -7,12 +7,12 @@ import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 //import gov.usgs.cida.pubs.domain.MpLinkDim;
 //import gov.usgs.cida.pubs.domain.MpList;
 //import gov.usgs.cida.pubs.domain.MpListPubsRel;
-import gov.usgs.cida.pubs.domain.MpPublication;
 //import gov.usgs.cida.pubs.domain.MpSupersedeRel;
 //import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
-import gov.usgs.cida.pubs.domain.PwPublication;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
 import gov.usgs.cida.pubs.validation.constraint.UpdateChecks;

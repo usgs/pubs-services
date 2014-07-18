@@ -1,8 +1,9 @@
-package gov.usgs.cida.pubs.domain;
+package gov.usgs.cida.pubs.domain.pw;
 
 import org.hibernate.validator.constraints.Length;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.domain.Publication;
 
 /**
  * @author drsteini

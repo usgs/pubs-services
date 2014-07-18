@@ -12,6 +12,7 @@ import java.beans.PropertyDescriptor;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -71,10 +72,13 @@ public abstract class BaseSpringTest {
                     if (null != prop.getReadMethod()) {
                         Object inProp = prop.getReadMethod().invoke(inObject);
                         Object resultProp = prop.getReadMethod().invoke(resultObject);
-                        if (!allowNull) { assertNotNull(prop.getName() + " is null.", resultProp); }; 
-                        if (resultProp instanceof List) {
+                        if (!allowNull) {
+                            assertNotNull(prop.getName() + " original is null.", inProp);
+                            assertNotNull(prop.getName() + " result is null.", resultProp);
+                        };
+                        if (resultProp instanceof Collection) {
                             //TODO - could try to match the lists...
-                            assertEquals(prop.getName(), ((List<?>) inProp).size(), ((List<?>) resultProp).size());
+                            assertEquals(prop.getName(), ((Collection<?>) inProp).size(), ((Collection<?>) resultProp).size());
                         } else {
                             assertProperty(inProp, resultProp, prop);
                         }

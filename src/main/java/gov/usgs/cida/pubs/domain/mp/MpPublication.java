@@ -1,6 +1,7 @@
-package gov.usgs.cida.pubs.domain;
+package gov.usgs.cida.pubs.domain.mp;
 
 import gov.usgs.cida.pubs.dao.intfc.IMpPublicationDao;
+import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.json.PubsStringDeserializer;
 
 import javax.validation.constraints.Digits;

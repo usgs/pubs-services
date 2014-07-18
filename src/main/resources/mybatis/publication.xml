@@ -37,6 +37,7 @@
         <result property="notes" column="notes"/>
         <result property="ipdsId" column="ipds_id"/>
 <!--         <collection property="authors" column="publication_id" select="mpPublicationContributor.getById"/> -->
+<!--         <collection property="costCenters" column="publication_id" select="mpPublicationCostCenter.getByMap"/> -->
     </resultMap>
 
     <sql id="cols">

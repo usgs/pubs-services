@@ -1,6 +1,7 @@
 package gov.usgs.cida.pubs.domain;
 
-import gov.usgs.cida.pubs.domain.intfc.IBaseView;
+import gov.usgs.cida.pubs.json.view.intfc.IBaseView;
+import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
@@ -16,6 +17,7 @@ import org.joda.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 
 /**
  * All Domain Objects extend this base class.
@@ -44,7 +46,6 @@ public abstract class BaseDomain<D> implements IBaseView {
     @JsonIgnore
     private String updateUsername;
 
-    @JsonIgnore
     private ValidationResults validationErrors;
 
     public BaseDomain() {
@@ -80,6 +81,7 @@ public abstract class BaseDomain<D> implements IBaseView {
      * @param inId the id to set
      */
     @JsonProperty("id")
+    @JsonView(IMpView.class)
     public void setId(final String inId) {
         id = PubsUtilities.parseInteger(inId);
     }

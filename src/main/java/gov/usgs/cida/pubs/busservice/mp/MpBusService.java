@@ -1,11 +1,15 @@
-package gov.usgs.cida.pubs.busservice;
+package gov.usgs.cida.pubs.busservice.mp;
 
 import org.joda.time.LocalDate;
 
 //import gov.usgs.cida.pubs.domain.MpLinkDim;
-import gov.usgs.cida.pubs.domain.MpPublication;
+
 //import gov.usgs.cida.pubs.domain.MpSupersedeRel;
-import gov.usgs.cida.pubs.domain.PwPublication;
+
+
+import gov.usgs.cida.pubs.busservice.BusService;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.domain.pw.PwPublication;
 
 /**
  * @author drsteini

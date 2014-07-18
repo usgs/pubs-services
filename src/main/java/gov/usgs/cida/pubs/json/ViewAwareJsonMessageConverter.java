@@ -6,7 +6,7 @@
 
 package gov.usgs.cida.pubs.json;
 
-import gov.usgs.cida.pubs.domain.intfc.IDataView;
+import gov.usgs.cida.pubs.json.view.intfc.IDataView;
 
 import java.io.IOException;
 

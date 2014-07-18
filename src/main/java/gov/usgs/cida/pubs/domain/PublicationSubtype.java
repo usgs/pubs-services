@@ -1,11 +1,12 @@
 package gov.usgs.cida.pubs.domain;
 
+import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.domain.intfc.ILookup;
+import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
+
 import java.util.Collection;
 
 import com.fasterxml.jackson.annotation.JsonView;
-
-import gov.usgs.cida.pubs.dao.intfc.IDao;
-import gov.usgs.cida.pubs.domain.intfc.ILookup;
 
 /**
  * @author drsteini
@@ -83,13 +84,13 @@ public class PublicationSubtype extends BaseDomain<PublicationSubtype> implement
     }
 
     @Override
-    @JsonView(LookupView.class)
+    @JsonView(ILookupView.class)
     public String getText() {
         return name;
     }
 
     @Override
-    @JsonView(LookupView.class)
+    @JsonView(ILookupView.class)
     public String getValue() {
         return String.valueOf(id);
     }

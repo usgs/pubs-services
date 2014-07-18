@@ -1,6 +1,7 @@
-package gov.usgs.cida.pubs.domain;
+package gov.usgs.cida.pubs.domain.mp;
 
 import gov.usgs.cida.pubs.dao.intfc.IMpDao;
+import gov.usgs.cida.pubs.domain.PublicationContributor;
 
 public class MpPublicationContributor extends PublicationContributor<MpPublicationContributor> {
 

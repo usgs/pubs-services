@@ -6,7 +6,7 @@
 
 package gov.usgs.cida.pubs.json;
 
-import gov.usgs.cida.pubs.domain.intfc.IBaseView;
+import gov.usgs.cida.pubs.json.view.intfc.IBaseView;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.web.context.request.NativeWebRequest;

@@ -1,4 +1,4 @@
-package gov.usgs.cida.pubs.dao;
+package gov.usgs.cida.pubs.dao.mp;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -6,13 +6,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.domain.Contact;
-import gov.usgs.cida.pubs.domain.MpPublication;
 //import gov.usgs.cida.pubs.domain.ProcessType;
 
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,7 +29,8 @@ import org.junit.Test;
  */
 public class MpPublicationDaoTest extends BaseSpringTest {
 
-    private static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors");
+    //TODO CostCenters in test.
+    private static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "costCenters");
 
     @Test
     public void addAndGetByIds() {

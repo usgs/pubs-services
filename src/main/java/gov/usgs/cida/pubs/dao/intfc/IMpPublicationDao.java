@@ -1,6 +1,6 @@
 package gov.usgs.cida.pubs.dao.intfc;
 
-import gov.usgs.cida.pubs.domain.MpPublication;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
 
 public interface IMpPublicationDao extends IMpDao<MpPublication>{
 

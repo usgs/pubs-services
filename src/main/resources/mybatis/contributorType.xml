@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="contributorType">
+
+    <resultMap id="result" type="ContributorType" extends="base.result">
+        <id property="id" column="contributor_type_id"/>
+        <result property="name" column="name"/>
+        <result property="tabName" column="tab_name"/>
+    </resultMap>
+
+    <sql id="cols">
+        contributor_type_id, name, tab_name
+    </sql>
+
+    <sql id="filters">
+        <where>
+            <if test="id != null">
+                and contributor_type_id = #{id}
+            </if>
+            <if test="name != null">
+                and upper(name) like upper(#{name}) || '%'
+            </if>
+            <if test="tabName != null">
+                and upper(tab_name) like upper(#{tabName}) || '%'
+            </if>
+        </where>
+    </sql>
+
+    <sql id="baseSelect">
+        select <include refid="cols"/>
+          from contributor_type
+    </sql>
+
+    <select id="getById" parameterType="Integer" resultMap="result">
+        <include refid="baseSelect"/>
+         where contributor_type_id = #{value,jdbcType=NUMERIC}
+    </select>
+
+    <select id="getByMap" resultMap="result">
+        <include refid="baseSelect"/>
+        <include refid="filters"/>
+    </select>
+
+</mapper>

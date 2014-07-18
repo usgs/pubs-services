@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="publication">
+
+    <resultMap id="result" type="Publication" extends="base.result">
+        <id property="id" column="publication_id"/>
+        <result property="indexId" column="index_id"/>
+        <result property="displayToPublicDate" column="display_to_public_date"/>
+        <result property="publicationType.id" column="publication_type_id"/>
+        <result property="publicationSubtype.id" column="publication_subtype_id"/>
+        <result property="publicationSeries.id" column="publication_series_id"/>
+        <result property="seriesNumber" column="series_number"/>
+        <result property="subseriesTitle" column="subseries_title"/>
+        <result property="chapter" column="chapter"/>
+        <result property="subchapter" column="subchapter"/>
+        <result property="title" column="title"/>
+        <result property="docAbstract" column="abstract"/>
+        <result property="language" column="language"/>
+        <result property="publisher" column="publisher"/>
+        <result property="publisherLocation" column="publisher_location"/>
+        <result property="doiName" column="doi_name"/>
+        <result property="issn" column="issn"/>
+        <result property="isbn" column="isbn"/>
+        <result property="collaboration" column="collaboration"/>
+        <result property="usgsCitation" column="usgs_citation"/>
+        
+        <result property="contact.id" column="contact_id"/>
+        <result property="productDescription" column="product_description"/>
+        <result property="startPage" column="start_page"/>
+        <result property="endPage" column="end_page"/>
+        <result property="numberOfPages" column="number_of_pages"/>
+        <result property="onlineOnly" column="online_only"/>
+        <result property="additionalOnlineFiles" column="additional_online_files"/>
+        <result property="temporalStart" column="temporal_start"/>
+        <result property="temporalEnd" column="temporal_end"/>
+        <result property="notes" column="notes"/>
+        <result property="ipdsId" column="ipds_id"/>
+<!--         <collection property="authors" column="publication_id" select="mpPublicationContributor.getById"/> -->
+    </resultMap>
+
+    <sql id="cols">
+        publication_id,
+        index_id,
+        display_to_public_date,
+        publication_type_id,
+        publication_subtype_id,
+        publication_series_id,
+        series_number,
+        subseries_title,
+        chapter,
+        subchapter,
+        title,
+        abstract,
+        language,
+        publisher,
+        publisher_location,
+        doi_name,
+        issn,
+        isbn,
+        collaboration,
+        usgs_citation,
+        
+        contact_id,
+        product_description,
+        start_page,
+        end_page,
+        number_of_pages,
+        online_only,
+        additional_online_files,
+        temporal_start,
+        temporal_end,
+        notes,
+        ipds_id,
+        <include refid="base.auditCols"/>
+    </sql>
+
+    <sql id="hosts">
+        #{id,jdbcType=NUMERIC},
+        nvl(#{indexId,jdbcType=VARCHAR},#{id,jdbcType=NUMERIC}),
+        #{displayToPublicDate,jdbcType=DATE},
+        #{publicationType.id,jdbcType=NUMERIC},
+        #{publicationSubtype.id,jdbcType=NUMERIC},
+        #{publicationSeries.id,jdbcType=NUMERIC},
+        #{seriesNumber,jdbcType=VARCHAR},
+        #{subseriesTitle,jdbcType=VARCHAR},
+        #{chapter,jdbcType=VARCHAR},
+        #{subchapter,jdbcType=VARCHAR},
+        #{title,jdbcType=VARCHAR},
+        #{docAbstract,jdbcType=CLOB},
+        #{language,jdbcType=VARCHAR},
+        #{publisher,jdbcType=VARCHAR},
+        #{publisherLocation,jdbcType=VARCHAR},
+        #{doiName,jdbcType=VARCHAR},
+        #{issn,jdbcType=VARCHAR},
+        #{isbn,jdbcType=VARCHAR},
+        #{collaboration,jdbcType=VARCHAR},
+        #{usgsCitation,jdbcType=VARCHAR},
+        
+        #{contact.id,jdbcType=NUMERIC},
+        #{productDescription,jdbcType=VARCHAR},
+        #{startPage,jdbcType=NUMERIC},
+        #{endPage,jdbcType=NUMERIC},
+        #{numberOfPages,jdbcType=NUMERIC},
+        #{onlineOnly,jdbcType=VARCHAR},
+        #{additionalOnlineFiles,jdbcType=VARCHAR},
+        #{temporalStart,jdbcType=DATE},
+        #{temporalEnd,jdbcType=DATE},
+        #{notes,jdbcType=VARCHAR},
+        #{ipdsId,jdbcType=VARCHAR},
+        <include refid="base.auditHosts"/>
+    </sql>
+
+    <sql id="sets">
+        publication_id = #{id,jdbcType=NUMERIC},
+        index_id = nvl(#{indexId,jdbcType=VARCHAR},#{id,jdbcType=NUMERIC}),
+        display_to_public_date = #{displayToPublicDate,jdbcType=DATE},
+        publication_type_id = #{publicationType.id,jdbcType=NUMERIC},
+        publication_subtype_id = #{publicationSubtype.id,jdbcType=NUMERIC},
+        publication_series_id = #{publicationSeries.id,jdbcType=NUMERIC},
+        series_number = #{seriesNumber,jdbcType=VARCHAR},
+        subseries_title = #{subseriesTitle,jdbcType=VARCHAR},
+        chapter = #{chapter,jdbcType=VARCHAR},
+        subchapter = #{subchapter,jdbcType=VARCHAR},
+        title = #{title,jdbcType=VARCHAR},
+        abstract = #{docAbstract,jdbcType=CLOB},
+        language = #{language,jdbcType=VARCHAR},
+        publisher = #{publisher,jdbcType=VARCHAR},
+        publisher_location = #{publisherLocation,jdbcType=VARCHAR},
+        doi_name = #{doiName,jdbcType=VARCHAR},
+        issn = #{issn,jdbcType=VARCHAR},
+        isbn = #{isbn,jdbcType=VARCHAR},
+        collaboration = #{collaboration,jdbcType=VARCHAR},
+        usgs_citation = #{usgsCitation,jdbcType=VARCHAR},
+        
+        contact_id = #{contact.id,jdbcType=NUMERIC},
+        product_description = #{productDescription,jdbcType=VARCHAR},
+        start_page = #{startPage,jdbcType=NUMERIC},
+        end_page = #{endPage,jdbcType=NUMERIC},
+        number_of_pages = #{numberOfPages,jdbcType=NUMERIC},
+        online_only = #{onlineOnly,jdbcType=VARCHAR},
+        additional_online_files = #{additionalOnlineFiles,jdbcType=VARCHAR},
+        temporal_start = #{temporalStart,jdbcType=DATE},
+        temporal_end = #{temporalEnd,jdbcType=DATE},
+        notes = #{notes,jdbcType=VARCHAR},
+        ipds_id = #{ipdsId,jdbcType=VARCHAR},
+        <include refid="base.auditSets"/>
+    </sql>
+
+    <sql id="filters">
+        <where>
+<!--             <if test="null != listId"> -->
+<!--                 <if test="listId.length > 0"> -->
+<!--                     <foreach item="list" collection="listId" open=" and prod_id in (select prod_id from mp_list_pubs_rel where list_id in(" separator="," close="))"> -->
+<!--                         #{list,jdbcType=NUMERIC} -->
+<!--                     </foreach> -->
+<!--                 </if> -->
+<!--             </if> -->
+<!--             <if test="authFirst != null"> -->
+<!--                 and upper(author_display) like '%' || upper(#{authFirst}) || '%' -->
+<!--             </if> -->
+<!--             <if test="authLast != null"> -->
+<!--                 and upper(author_display) like '%' || upper(#{authLast}) || '%' -->
+<!--             </if> -->
+            <if test="id != null">
+                and publication_id = #{id}
+            </if>
+<!--             <if test="indexId != null"> -->
+<!--                 and upper(index_id) = upper(#{indexId}) -->
+<!--             </if> -->
+<!--             <if test="pubType != null"> -->
+<!--                 and publication_type_id = #{pubType} -->
+<!--             </if> -->
+<!--             <if test="title != null"> -->
+<!--                 and upper(title) like '%' || upper(#{title}) || '%' -->
+<!--             </if> -->
+<!--             <if test="year != null"> -->
+<!--                 and publication_year = #{year} -->
+<!--             </if> -->
+<!--             <if test="yearStart != null"> -->
+<!--                 and publication_year &gt;= #{yearStart} -->
+<!--             </if> -->
+<!--             <if test="yearEnd != null"> -->
+<!--                 and publication_year &lt;= #{yearEnd} -->
+<!--             </if> -->
+<!--             <if test="journal != null"> -->
+<!--                 and larger_work_id = #{journal} -->
+<!--             </if> -->
+<!--             <if test="reportSeries != null"> -->
+<!--                 and series_cd = #{reportSeries} -->
+<!--             </if> -->
+<!--             <if test="reportNumber != null"> -->
+<!--                 and series_number like '%' || #{reportNumber} || '%' -->
+<!--             </if> -->
+<!--             <if test="ipdsId != null"> -->
+<!--                 and ipds_id = #{ipdsId} -->
+<!--             </if> -->
+        </where>
+    </sql>
+
+    <sql id="baseSelect">
+        select <include refid="cols"/>
+            from mp_publication <!-- vw_mppubs_publication -->
+    </sql>
+
+<!--     <select id="getPublicationById" parameterType="Integer" resultMap="mpPublicationResult"> -->
+<!--         <include refid="basePublicationSelect"/> -->
+<!--            where publication_id = #{value,jdbcType=VARCHAR} -->
+<!--     </select> -->
+
+    <select id="getByMap" parameterType="map" resultMap="result">
+        <include refid="base.pagingTop"/>
+        <include refid="baseSelect"/>
+        <include refid="filters"/>
+        <include refid="base.orderBy"/>
+        <include refid="base.pagingBottom"/>
+    </select>
+
+    <select id="getCount" parameterType="map" resultType="Integer">
+        select count(*)
+          from mp_publication <!-- vw_mppubs_publication -->
+        <include refid="filters"/>
+    </select>
+
+</mapper>

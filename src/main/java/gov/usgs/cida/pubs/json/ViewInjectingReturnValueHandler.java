@@ -6,7 +6,7 @@
 
 package gov.usgs.cida.pubs.json;
 
-import gov.usgs.cida.pubs.domain.intfc.BaseView;
+import gov.usgs.cida.pubs.domain.intfc.IBaseView;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -33,7 +33,7 @@ public class ViewInjectingReturnValueHandler implements
             MethodParameter returnType, ModelAndViewContainer mavContainer,
             NativeWebRequest webRequest) throws Exception {
 
-        Class<? extends BaseView> viewClass = getDeclaredViewClass(returnType);
+        Class<? extends IBaseView> viewClass = getDeclaredViewClass(returnType);
         if (viewClass != null) {
             returnValue = wrapResult(returnValue, viewClass);
         }
@@ -49,7 +49,7 @@ public class ViewInjectingReturnValueHandler implements
      * @param returnType
      * @return
      */
-    private Class<? extends BaseView> getDeclaredViewClass(
+    private Class<? extends IBaseView> getDeclaredViewClass(
             MethodParameter returnType) {
         ResponseView annotation = returnType
                 .getMethodAnnotation(ResponseView.class);
@@ -60,7 +60,7 @@ public class ViewInjectingReturnValueHandler implements
         }
     }
 
-    private Object wrapResult(Object result, Class<? extends BaseView> viewClass) {
+    private Object wrapResult(Object result, Class<? extends IBaseView> viewClass) {
         PojoView response = new PojoView(result, viewClass);
         return response;
     }

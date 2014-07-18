@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="publicationContributor">
+
+    <resultMap id="result" type="PublicationContributor" extends="base.result">
+        <id property="id" column="publication_contributor_id"/>
+        <result property="publicationId" column="publication_id"/>
+        <result property="rank" column="rank"/>
+        <association property="contributor" column="contributor_id" select="contributor.getById"/>
+        <association property="contributorType" column="contributor_type_id" select="contributorType.getById"/>
+    </resultMap>
+
+    <sql id="cols">
+        publication_contributor_id, publication_id, contributor_id, contributor_type_id, rank
+    </sql>
+
+    <sql id="filters">
+        <where>
+            <if test="id != null">
+                and publication_contributor_id = #{id}
+            </if>
+        </where>
+    </sql>
+
+</mapper>

@@ -4,7 +4,7 @@
 
 <configuration>
 
-    <!-- Global configuration settings for the mapper.-->
+    <!-- Global configuration settings for the mappper.-->
       <settings>
         <setting name="cacheEnabled" value="false"/>
         <setting name="lazyLoadingEnabled" value="false"/>
@@ -14,14 +14,42 @@
 
     <typeAliases>
         <typeAlias alias="baseDomain" type="gov.usgs.cida.pubs.domain.BaseDomain"/>
+
+        <typeAlias alias="mpPublication" type="gov.usgs.cida.pubs.domain.MpPublication"/>
+        <typeAlias alias="mpPublicationContributor" type="gov.usgs.cida.pubs.domain.MpPublicationContributor"/>
+
+        <typeAlias alias="pwPublication" type="gov.usgs.cida.pubs.domain.PwPublication"/>
+
+        <typeAlias alias="contact" type="gov.usgs.cida.pubs.domain.Contact"/>
+        <typeAlias alias="contributor" type="gov.usgs.cida.pubs.domain.Contributor"/>
+        <typeAlias alias="contributorType" type="gov.usgs.cida.pubs.domain.ContributorType"/>
+        <typeAlias alias="costCenter" type="gov.usgs.cida.pubs.domain.CostCenter"/>
+        <typeAlias alias="publication" type="gov.usgs.cida.pubs.domain.Publication"/>
+        <typeAlias alias="publicationContributor" type="gov.usgs.cida.pubs.domain.PublicationContributor"/>
         <typeAlias alias="publicationSeries" type="gov.usgs.cida.pubs.domain.PublicationSeries"/>
         <typeAlias alias="publicationSubtype" type="gov.usgs.cida.pubs.domain.PublicationSubtype"/>
         <typeAlias alias="publicationType" type="gov.usgs.cida.pubs.domain.PublicationType"/>
     </typeAliases>
 
+    <typeHandlers>
+        <typeHandler javaType="org.joda.time.LocalDate" handler="gov.usgs.cida.pubs.dao.typehandler.LocalDateTypeHandler"/>
+        <typeHandler javaType="org.joda.time.LocalDateTime" handler="gov.usgs.cida.pubs.dao.typehandler.LocalDateTimeTypeHandler"/>
+    </typeHandlers>
+
     <mappers>
         <!-- Individual sql map file resources. Each one has its own namespace and sql. -->
          <mapper resource="mybatis/baseDao.xml"/>
+
+         <mapper resource="mybatis/mpPublication.xml"/>
+         <mapper resource="mybatis/mpPublicationContributor.xml"/>
+
+         <mapper resource="mybatis/pwPublication.xml"/>
+
+         <mapper resource="mybatis/costCenter.xml"/>
+         <mapper resource="mybatis/contributor.xml"/>
+         <mapper resource="mybatis/contributorType.xml"/>
+         <mapper resource="mybatis/publication.xml"/>
+         <mapper resource="mybatis/publicationContributor.xml"/>
          <mapper resource="mybatis/publicationSeries.xml"/>
          <mapper resource="mybatis/publicationSubtype.xml"/>
          <mapper resource="mybatis/publicationType.xml"/>

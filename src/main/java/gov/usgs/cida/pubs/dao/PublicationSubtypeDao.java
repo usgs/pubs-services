@@ -15,20 +15,22 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class PublicationSubtypeDao extends BaseDao<PublicationSubtype> {
 
+    private static final String NS = "publicationSubtype";
+
     /** 
      * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getById(java.lang.Integer)
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
      */
     @Transactional(readOnly = true)
     @ISetDbContext
     @Override
     public PublicationSubtype getById(Integer domainID) {
-        return (PublicationSubtype) getSqlSession().selectOne("publicationSubtype.getById", domainID);
+        return (PublicationSubtype) getSqlSession().selectOne(NS + ".getById", domainID);
     }
 
     /** 
      * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getById(java.lang.String)
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.String)
      */
     @Transactional(readOnly = true)
     @ISetDbContext
@@ -39,18 +41,17 @@ public class PublicationSubtypeDao extends BaseDao<PublicationSubtype> {
 
     /** 
      * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.BaseDao#getByMap(Map)
+     * @see gov.usgs.cida.pubs.dao.BaseDao#getByMap(Map)
      */
     @Transactional(readOnly = true)
     @ISetDbContext
     @Override
     public List<PublicationSubtype> getByMap(Map<String, Object> filters) {
-        List<PublicationSubtype> types = getSqlSession().selectList("publicationSubtype.getByMap", filters);
-        return types;
+        return getSqlSession().selectList(NS + ".getByMap", filters);
     }
 
     /** {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getById(java.lang.Integer)
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
      */
     @Transactional(readOnly = true)
     @ISetDbContext

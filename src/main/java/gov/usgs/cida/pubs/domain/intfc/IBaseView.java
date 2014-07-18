@@ -6,6 +6,6 @@
 
 package gov.usgs.cida.pubs.domain.intfc;
 
-public interface BaseView {
+public interface IBaseView {
 
 }

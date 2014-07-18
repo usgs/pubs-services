@@ -14,31 +14,33 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class PublicationSeriesDao extends BaseDao<PublicationSeries> {
 
+    private static final String NS = "publicationSeries";
+
     /** 
      * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getByMap(java.lang.Integer)
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getByMap(java.lang.Integer)
      */
     @Transactional(readOnly = true)
     @ISetDbContext
     @Override
     public List<PublicationSeries> getByMap(Map<String, Object> filters) {
-        return getSqlSession().selectList("publicationSeries.getByMap", filters);
+        return getSqlSession().selectList(NS + ".getByMap", filters);
     }
 
     /** 
      * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getById(java.lang.Integer)
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
      */
     @Transactional(readOnly = true)
     @ISetDbContext
     @Override
     public PublicationSeries getById(Integer domainID) {
-        return (PublicationSeries) getSqlSession().selectOne("publicationSeries.getById", domainID);
+        return (PublicationSeries) getSqlSession().selectOne(NS + ".getById", domainID);
     }
 
     /** 
      * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getById(java.lang.String)
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.String)
      */
     @Transactional(readOnly = true)
     @ISetDbContext

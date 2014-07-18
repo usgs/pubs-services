@@ -1,8 +1,6 @@
 package gov.usgs.cida.pubs.domain;
 
-import gov.usgs.cida.pubs.domain.intfc.BaseView;
-import gov.usgs.cida.pubs.json.PubsJsonLocalDateTimeDeSerializer;
-import gov.usgs.cida.pubs.json.PubsJsonLocalDateTimeSerializer;
+import gov.usgs.cida.pubs.domain.intfc.IBaseView;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
@@ -16,30 +14,34 @@ import javax.validation.ConstraintViolation;
 import org.joda.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * All Domain Objects extend this base class.
  * @author drsteini
  * @param <D> the specific domain of the object 
  */
-public abstract class BaseDomain<D> implements BaseView {
+//@JsonInclude(JsonInclude.Include.NON_EMPTY or .NON_NULL?)
+public abstract class BaseDomain<D> implements IBaseView {
 
     /** The ID of this domain object. */
     protected Integer id;
 
-    @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
-    @JsonDeserialize(using=PubsJsonLocalDateTimeDeSerializer.class)
+    @JsonIgnore
+//    @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
+//    @JsonDeserialize(using=PubsJsonLocalDateTimeDeSerializer.class)
     private LocalDateTime insertDate;
 
+    @JsonIgnore
     private String insertUsername;
 
-    @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
-    @JsonDeserialize(using=PubsJsonLocalDateTimeDeSerializer.class)
+    @JsonIgnore
+//    @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
+//    @JsonDeserialize(using=PubsJsonLocalDateTimeDeSerializer.class)
     private LocalDateTime updateDate;
 
+    @JsonIgnore
     private String updateUsername;
 
     @JsonIgnore
@@ -125,7 +127,7 @@ public abstract class BaseDomain<D> implements BaseView {
     }
 
     /**
-     * @return the updatetUsername
+     * @return the updateUsername
      */
     public String getUpdateUsername() {
         return updateUsername;

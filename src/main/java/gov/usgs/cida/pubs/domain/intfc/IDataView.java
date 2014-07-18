@@ -6,11 +6,11 @@
 
 package gov.usgs.cida.pubs.domain.intfc;
 
-public interface DataView {
+public interface IDataView {
 
     boolean hasView();
 
-    Class<? extends BaseView> getView();
+    Class<? extends IBaseView> getView();
 
     Object getData();
 }

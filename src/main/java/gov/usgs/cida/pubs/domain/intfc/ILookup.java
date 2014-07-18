@@ -10,6 +10,6 @@ public interface ILookup {
     @JsonView(LookupView.class)
     String getValue();
 
-    public static interface LookupView extends BaseView {}
+    public static interface LookupView extends IBaseView {}
 
 }

@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 public class PubsJsonLocalDateTimeDeSerializer extends JsonDeserializer<LocalDateTime> {
 
     /** {@inheritDoc}
-     * @see com.fasterxml.jackson.databind.JsonDeserializer#deserialize(com.fasterxml.jackson.core.JsonParser, com.fasterxml.jackson.databind.DeserializationContext)
+     * @see com.fasterxml.jackson.databind.JsonDeserializer#deserialize(com.fasterxml.jackson.JsonParser, com.fasterxml.jackson.databind.DeserializationContext)
      */
     @Override
     public LocalDateTime deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {

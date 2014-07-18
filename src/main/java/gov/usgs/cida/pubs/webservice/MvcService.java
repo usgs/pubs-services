@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.webservice;
 
+import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
@@ -9,12 +10,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -94,14 +98,6 @@ public abstract class MvcService<D> {
         return newDomain;
     }
 
-    protected Integer parseId(String id) {
-        return  validId(id) ? PubsUtilities.parseInteger(id) : -1; 
-    }
-    // self documenting method delegation
-    protected boolean validId(String id) {
-        return PubsUtilities.isInteger(id);
-    }
-
     @ExceptionHandler(Exception.class)
     public @ResponseBody Map<String,? extends Object> handleUncaughtException(Exception ex, WebRequest request, HttpServletResponse response) throws IOException {
         int statusCode = HttpServletResponse.SC_OK;
@@ -125,6 +121,16 @@ public abstract class MvcService<D> {
     protected HttpSession getSession(){
         ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         return attr.getRequest().getSession();
+    }
+
+    protected boolean validateParametersSetHeaders(HttpServletRequest request, HttpServletResponse response) {
+        boolean rtn = true;
+        response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
+        if (request.getParameterMap().isEmpty()) {
+            rtn = false;
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+        }
+        return rtn;
     }
 
 }

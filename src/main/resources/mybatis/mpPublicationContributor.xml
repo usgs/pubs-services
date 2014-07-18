@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="mpPublicationContributor">
+
+    <resultMap id="result" type="MpPublicationContributor" extends="publicationContributor.result">
+    </resultMap>
+
+    <sql id="baseSelect">
+        select <include refid="publicationContributor.cols"/>
+          from mp_pub_contributor
+    </sql>
+
+    <select id="getById" parameterType="Integer" resultMap="result">
+        <include refid="baseSelect"/>
+         where publication_contributor_id = #{value,jdbcType=NUMERIC}
+    </select>
+
+    <select id="getByMap" resultMap="result">
+        <include refid="baseSelect"/>
+        <include refid="publicationContributor.filters"/>
+    </select>
+
+</mapper>

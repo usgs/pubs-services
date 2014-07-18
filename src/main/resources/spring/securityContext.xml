@@ -9,7 +9,7 @@
     <sec:global-method-security secured-annotations="enabled"/>
 
     <sec:http pattern="/login.html" security="none" />
-    <sec:http>
+    <sec:http create-session="stateless">
         <sec:intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY" requires-channel="https"/>
         <sec:form-login/>
         <sec:logout/>

@@ -6,7 +6,7 @@
 
 package gov.usgs.cida.pubs.json;
 
-import gov.usgs.cida.pubs.domain.intfc.DataView;
+import gov.usgs.cida.pubs.domain.intfc.IDataView;
 
 import java.io.IOException;
 
@@ -33,14 +33,14 @@ public class ViewAwareJsonMessageConverter extends
     @Override
     protected void writeInternal(Object object, HttpOutputMessage outputMessage)
             throws IOException, HttpMessageNotWritableException {
-        if (object instanceof DataView && ((DataView) object).hasView()) {
-            writeView((DataView) object, outputMessage);
+        if (object instanceof IDataView && ((IDataView) object).hasView()) {
+            writeView((IDataView) object, outputMessage);
         } else {
             super.writeInternal(object, outputMessage);
         }
     }
 
-    protected void writeView(DataView view, HttpOutputMessage outputMessage)
+    protected void writeView(IDataView view, HttpOutputMessage outputMessage)
             throws IOException, HttpMessageNotWritableException {
         JsonEncoding encoding = getJsonEncoding(outputMessage.getHeaders()
                 .getContentType());

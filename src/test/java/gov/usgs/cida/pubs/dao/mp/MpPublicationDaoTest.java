@@ -38,13 +38,13 @@ public class MpPublicationDaoTest extends BaseSpringTest {
         newpubA.setIndexId("indexid");
         newpubA.setDisplayToPublicDate(new LocalDateTime(2012, 8, 23, 0, 0, 0));
         PublicationType pubType = new PublicationType();
-        pubType.setId(18);
+        pubType.setId(PublicationType.REPORT);
         newpubA.setPublicationType(pubType);
         PublicationSubtype pubSubtype = new PublicationSubtype();
         pubSubtype.setId(5);
         newpubA.setPublicationSubtype(pubSubtype);
         PublicationSeries pubSeries = new PublicationSeries();
-        pubSeries.setId(334);
+        pubSeries.setId(PublicationSeries.SIR);
         newpubA.setPublicationSeries(pubSeries);
         newpubA.setSeriesNumber("Series Number");
         newpubA.setSubseriesTitle("subseries");

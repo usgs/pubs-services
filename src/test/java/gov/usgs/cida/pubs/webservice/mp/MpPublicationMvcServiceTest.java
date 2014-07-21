@@ -2,11 +2,14 @@ package gov.usgs.cida.pubs.webservice.mp;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.domain.PublicationType;
 
 import org.json.JSONObject;
 import org.junit.Before;
@@ -33,7 +36,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
     }
 
     @Test
-    public void getPublication() throws Exception {
+    public void getPublicationTest() throws Exception {
         MvcResult rtn = mockMvc.perform(get("/mppublication/1").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
@@ -45,4 +48,18 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 //                sameJSONObjectAs(new JSONObject("{\"value\":\"4\",\"text\":\"Book\"}")));
     }
 
+    @Test
+    public void updatePublicationTest() throws Exception {
+        MvcResult rtn = mockMvc.perform(put("/mppublication/2").content("{\"id\":2,\"type\":{\"id\":"
+                + PublicationType.REPORT + "},\"indexID\":\"abc\"}").contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+        .andReturn();
+
+        //TODO activate this test
+//        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+//                sameJSONObjectAs(new JSONObject("{\"value\":\"4\",\"text\":\"Book\"}")));
+    }
 }

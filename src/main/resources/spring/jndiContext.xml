@@ -7,14 +7,22 @@
 
     <jee:jndi-lookup id="mypubsDataSource" jndi-name="java:comp/env/jdbc/mypubsDS"/>
 
-<!--     <jee:jndi-lookup id="crossRefProtocol" jndi-name="java:comp/env/pubs/crossRef/protocol"/> -->
-<!--     <jee:jndi-lookup id="crossRefHost" jndi-name="java:comp/env/pubs/crossRef/host"/> -->
-<!--     <jee:jndi-lookup id="crossRefUrl" jndi-name="java:comp/env/pubs/crossRef/url"/> -->
-<!--     <jee:jndi-lookup id="crossRefPort" jndi-name="java:comp/env/pubs/crossRef/port"/> -->
-<!--     <jee:jndi-lookup id="crossRefUser" jndi-name="java:comp/env/pubs/crossRef/user"/> -->
-<!--     <jee:jndi-lookup id="crossRefPwd" jndi-name="java:comp/env/pubs/crossRef/pwd"/> -->
+    <jee:jndi-lookup id="crossRefProtocol" jndi-name="java:comp/env/pubs/crossRef/protocol"/>
+    <jee:jndi-lookup id="crossRefHost" jndi-name="java:comp/env/pubs/crossRef/host"/>
+    <jee:jndi-lookup id="crossRefUrl" jndi-name="java:comp/env/pubs/crossRef/url"/>
+    <jee:jndi-lookup id="crossRefPort" jndi-name="java:comp/env/pubs/crossRef/port"/>
+    <jee:jndi-lookup id="crossRefUser" jndi-name="java:comp/env/pubs/crossRef/user"/>
+    <jee:jndi-lookup id="crossRefPwd" jndi-name="java:comp/env/pubs/crossRef/pwd"/>
 
-<!--     <jee:jndi-lookup id="pubsEmailList" jndi-name="java:comp/env/pubs/emailList"/> -->
-<!--     <jee:jndi-lookup id="mailHost" jndi-name="java:comp/env/pubs/mailHost"/> -->
+    <jee:jndi-lookup id="pubsEmailList" jndi-name="java:comp/env/pubs/emailList"/>
+    <jee:jndi-lookup id="mailHost" jndi-name="java:comp/env/pubs/mailHost"/>
+
+    <jee:jndi-lookup id="brokerURL" jndi-name="java:comp/env/jms/ipdsBrokerURL"/>
+    <jee:jndi-lookup id="queueName" jndi-name="java:comp/env/jms/ipdsQueueName"/>
+
+    <jee:jndi-lookup id="ipdsEndpoint" jndi-name="java:comp/env/pubs/ipds/endpoint"/>
+    <jee:jndi-lookup id="ipdsProtocol" jndi-name="java:comp/env/pubs/ipds/protocol"/>
+    <jee:jndi-lookup id="ipdsPubsWsPwd" jndi-name="java:comp/env/pubs/ipds/pubsWsPwd"/>
+    <jee:jndi-lookup id="ipdsPubsWsUser" jndi-name="java:comp/env/pubs/ipds/pubsWsUser"/>
 
 </beans>

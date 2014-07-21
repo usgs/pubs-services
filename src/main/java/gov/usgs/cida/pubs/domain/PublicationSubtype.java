@@ -89,10 +89,4 @@ public class PublicationSubtype extends BaseDomain<PublicationSubtype> implement
         return name;
     }
 
-    @Override
-    @JsonView(ILookupView.class)
-    public String getValue() {
-        return String.valueOf(id);
-    }
-
 }

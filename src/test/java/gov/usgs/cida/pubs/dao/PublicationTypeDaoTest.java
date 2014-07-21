@@ -28,8 +28,8 @@ public class PublicationTypeDaoTest extends BaseSpringTest {
 
     @Test
     public void getByIdString() {
-        PublicationType pubType = PublicationType.getDao().getById("18");
-        assertEquals(18, pubType.getId().intValue());
+        PublicationType pubType = PublicationType.getDao().getById(PublicationType.REPORT);
+        assertEquals(PublicationType.REPORT, pubType.getId());
         assertEquals("Report", pubType.getName());
     }
 

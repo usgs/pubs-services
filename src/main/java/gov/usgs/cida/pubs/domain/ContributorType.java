@@ -51,10 +51,4 @@ public class ContributorType extends BaseDomain<ContributorType> implements ILoo
         return tabName;
     }
 
-    @Override
-    @JsonView(ILookupView.class)
-    public String getValue() {
-        return String.valueOf(id);
-    }
-
 }

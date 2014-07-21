@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="ipdsProcessLog">
+
+    <resultMap id="result" type="IpdsProcessLog">
+        <id     property="id"         column="ipds_process_log_id"/>
+        <result property="uri"        column="uri"/>
+        <result property="message"    column="message"/>
+        <result property="ipdsNumber" column="ipds_number"/>
+    </resultMap>
+
+    <sql id="baseSelect">
+        select ipds_process_log_id, uri, message, ipds_number
+          from ipds_process_log
+    </sql>
+
+    <insert id="add" parameterType="IpdsProcessLog">
+        <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
+            select ipds_process_log_seq.nextval id from dual
+        </selectKey>
+        {call xml_crutch.insert_ipds_process_log (#{id,jdbcType=NUMERIC,mode=IN},
+                                                  #{ipdsNumber,jdbcType=VARCHAR,mode=IN},
+                                                  #{uri,jdbcType=VARCHAR,mode=IN},
+                                                  #{message,jdbcType=CLOB,mode=IN})}
+    </insert>
+
+    <select id="getById" parameterType="Integer" resultMap="result">
+        <include refid="baseSelect"/>
+         where ipds_process_log_id = #{value}
+    </select>
+
+</mapper>

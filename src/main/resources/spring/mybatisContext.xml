@@ -9,6 +9,7 @@
     </bean>
 
     <bean id="mpPublicationDao" class="gov.usgs.cida.pubs.dao.mp.MpPublicationDao" autowire="byName"/>
+    <bean id="publicationDao" class="gov.usgs.cida.pubs.dao.mp.MpPublicationDao" autowire="byName"/>
     <bean id="mpPublicationContributorDao" class="gov.usgs.cida.pubs.dao.mp.MpPublicationContributorDao" autowire="byName"/>
 
     <bean id="contributorDao" class="gov.usgs.cida.pubs.dao.ContributorDao" autowire="byName"/>
@@ -17,5 +18,8 @@
     <bean id="publicationSeriesDao" class="gov.usgs.cida.pubs.dao.PublicationSeriesDao" autowire="byName"/>
     <bean id="publicationSubtypeDao" class="gov.usgs.cida.pubs.dao.PublicationSubtypeDao" autowire="byName"/>
     <bean id="publicationTypeDao" class="gov.usgs.cida.pubs.dao.PublicationTypeDao" autowire="byName"/>
+
+    <bean id="ipdsMessageLogDao" class="gov.usgs.cida.pubs.dao.ipds.IpdsMessageLogDao" autowire="byName"/>
+    <bean id="ipdsProcessLogDao" class="gov.usgs.cida.pubs.dao.ipds.IpdsProcessLogDao" autowire="byName"/>
 
 </beans>

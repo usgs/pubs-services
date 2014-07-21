@@ -49,10 +49,4 @@ public class CostCenter extends BaseDomain<CostCenter> implements ILookup {
         return name;
     }
 
-    @Override
-    @JsonView(ILookupView.class)
-    public String getValue() {
-        return String.valueOf(id);
-    }
-
 }

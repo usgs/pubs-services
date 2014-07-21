@@ -14,7 +14,9 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
 
     private static IDao<PublicationSeries> publicationSeriesDao;
 
-    public static final String GENERAL_INFORMATION_PRODUCT = "GIP";
+//    public static final String GENERAL_INFORMATION_PRODUCT = "GIP";
+
+    public static final Integer SIR = 334;
 
     private PublicationSubtype publicationSubtype;
 
@@ -113,12 +115,6 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
     @JsonView(ILookupView.class)
     public String getText() {
         return name;
-    }
-
-    @Override
-    @JsonView(ILookupView.class)
-    public String getValue() {
-        return String.valueOf(id);
     }
 
 }

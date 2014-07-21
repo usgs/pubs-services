@@ -79,13 +79,13 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
         //TODO - more than just the basic doiName testing
         MpPublication inPublication = new MpPublication();
         PublicationType pubType = new PublicationType();
-        pubType.setId(18);
+        pubType.setId(PublicationType.REPORT);
         inPublication.setPublicationType(pubType);
         PublicationSubtype pubSubtype = new PublicationSubtype();
         pubSubtype.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
         inPublication.setPublicationSubtype(pubSubtype);
         PublicationSeries pubSeries = new PublicationSeries();
-        pubSeries.setId(334);
+        pubSeries.setId(PublicationSeries.SIR);
         inPublication.setPublicationSeries(pubSeries);
         inPublication.setSeriesNumber("nu-m,be r");
         MpPublication outPublication = busService.publicationPreProcessing(inPublication);

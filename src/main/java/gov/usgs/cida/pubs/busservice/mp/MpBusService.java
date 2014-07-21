@@ -28,14 +28,15 @@ public abstract class MpBusService<D> extends BusService<D> {
             //Look in MP to see if this key exists
             MpPublication mpPub = MpPublication.getDao().getById(prodId);
             if (null == mpPub) {
+                //TODO reactivate and get all the publication data/subobjects...
                 //Didn't find it in MP, look in PW
-                PwPublication pwPub = PwPublication.getDao().getById(prodId);
-                if (null != pwPub) {
-                    //There it is, copy it!
-                    MpPublication.getDao().copyFromPw(prodId);
+//                PwPublication pwPub = PwPublication.getDao().getById(prodId);
+//                if (null != pwPub) {
+//                    //There it is, copy it!
+//                    MpPublication.getDao().copyFromPw(prodId);
 //                    MpLinkDim.getDao().copyFromPw(prodId);
 //                    MpSupersedeRel.getDao().copyFromPw(prodId);
-                }
+//                }
             }
         }
     }

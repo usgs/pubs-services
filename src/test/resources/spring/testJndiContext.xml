@@ -18,4 +18,24 @@
         <property name="password" value="${jdbc.mypubs.password}"/>
     </bean>
 
+    <bean id="ipdsPubsWsPwd" class="java.lang.String">
+        <constructor-arg value="PT73p8&lt;Wd@9QU"/>
+    </bean>
+    <bean id="ipdsPubsWsUser" class="java.lang.String">
+        <constructor-arg value="${pubs.ipdsPubsWsUser}"/>
+    </bean>
+
+    <bean id="brokerURL" class="java.lang.String">
+        <constructor-arg value="dummy"/>
+    </bean>
+    <bean id="queueName" class="java.lang.String">
+        <constructor-arg value="dummy"/>
+    </bean>
+    <bean id="ipdsEndpoint" class="java.lang.String">
+        <constructor-arg value="dummy"/>
+    </bean>
+    <bean id="ipdsProtocol" class="java.lang.String">
+        <constructor-arg value="http"/>
+    </bean>
+
 </beans>

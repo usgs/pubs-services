@@ -2,7 +2,6 @@ package gov.usgs.cida.pubs.domain.mp;
 
 import gov.usgs.cida.pubs.dao.intfc.IMpPublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
-import gov.usgs.cida.pubs.json.PubsStringDeserializer;
 
 import javax.validation.constraints.Digits;
 
@@ -10,7 +9,6 @@ import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * @author drsteini
@@ -21,7 +19,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
     "sub-chapter-number", "title", "abstract", "language", "publisher", "publisher-place", "DOI", "ISSN", "ISBN", "number-of-pages",
     "page-first", "page-last", "author", "editor", "display-to-public-date", "indexID", "collaboration", 
     "usgs-citation", "cost-center", "links", "product-description", "online-only", "additional-online-files",
-    "temporal-start", "temporal-end", "notes", "contact", "ipds-id", "ipds-review-process-state", "ipds-internal-id"})
+    "temporal-start", "temporal-end", "notes", "contact", "ipds-id", "ipds-review-process-state", "ipds-internal-id",
+    "validationErrors"})
 public class MpPublication extends Publication<MpPublication> {
 
     private static final long serialVersionUID = 8072814759958143994L;
@@ -30,12 +29,10 @@ public class MpPublication extends Publication<MpPublication> {
 
     @Length(min=0, max=400)
     @JsonProperty("ipds-review-process-state")
-    @JsonDeserialize(using=PubsStringDeserializer.class)
     private String ipdsReviewProcessState;
 
     @Digits(integer=28, fraction=0)
     @JsonProperty("ipds-internal-id")
-    @JsonDeserialize(using=PubsStringDeserializer.class)
     private String ipdsInternalId;
 
     public String getIpdsReviewProcessState() {

@@ -16,6 +16,7 @@ import javax.validation.ConstraintValidatorContext;
  * @author drsteini
  *
  */
+//TODO get the duplicates with a single sql like in biodata
 @SuppressWarnings("rawtypes")
 public class UniqueKeyValidatorForPublication implements ConstraintValidator<UniqueKey, Publication> {
 
@@ -49,22 +50,22 @@ public class UniqueKeyValidatorForPublication implements ConstraintValidator<Uni
                 }
             }
         }
-//        if (null == value.getIpdsId()) {
-//            rtn = true;
-//        } else {
-//            Map<String, Object> filters = new HashMap<String,Object>();
-//            filters.put("ipdsId", ((Publication<?>) value).getIpdsId());
-//            List<Publication<?>> pubs = Publication.getPublicationDao().getByMap(filters);
-//            for (Publication<?> pub : pubs) {
-//                if (null == value.getId() || 0 != pub.getId().compareTo(value.getId())) {
-//                    rtn = false;
-//                    Object[] messageArguments = Arrays.asList(new String[]{"IPDS ID " + value.getIpdsId(), pub.getId().toString()}).toArray();
-//                    String errorMsg = PubsUtilities.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
-//                    context.disableDefaultConstraintViolation();
-//                    context.buildConstraintViolationWithTemplate(errorMsg).addNode("ipdsId").addConstraintViolation();
-//                }
-//            }
-//        }
+        if (null == value.getIpdsId()) {
+            rtn = true;
+        } else {
+            Map<String, Object> filters = new HashMap<String,Object>();
+            filters.put("ipdsId", ((Publication<?>) value).getIpdsId());
+            List<Publication<?>> pubs = Publication.getPublicationDao().getByMap(filters);
+            for (Publication<?> pub : pubs) {
+                if (null == value.getId() || 0 != pub.getId().compareTo(value.getId())) {
+                    rtn = false;
+                    Object[] messageArguments = Arrays.asList(new String[]{"IPDS ID " + value.getIpdsId(), pub.getId().toString()}).toArray();
+                    String errorMsg = PubsUtilities.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
+                    context.disableDefaultConstraintViolation();
+                    context.buildConstraintViolationWithTemplate(errorMsg).addNode("ipdsId").addConstraintViolation();
+                }
+            }
+        }
 
         return rtn;
     }

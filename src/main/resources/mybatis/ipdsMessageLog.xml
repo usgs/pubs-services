@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="ipdsMessageLog">
+
+    <resultMap id="result" type="IpdsMessageLog">
+        <id property="id" column="ipds_message_log_id"/>
+        <result property="messageText" column="ipds_message"/>
+        <result property="processingDetails" column="processing_details"/>
+        <result property="prodId" column="prod_id"/>
+        <result property="insertDate" column="insertDate"/>
+        <result property="processType" column="process_type"/>
+    </resultMap>
+
+    <sql id="baseSelect">
+        select ipds_message_log_id,
+               xmlserialize(content ipds_message as clob no indent) ipds_message,
+               processing_details,
+               prod_id,
+               insert_date,
+               process_type
+          from ipds_message_log
+    </sql>
+
+    <insert id="add" parameterType="IpdsMessageLog">
+        <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
+            select ipds_message_log_seq.nextval id from dual
+        </selectKey>
+        {call xml_crutch.insert_ipds_message_log (#{id,jdbcType=NUMERIC,mode=IN}, #{messageText,jdbcType=CLOB,mode=IN},
+                                                  #{processType,jdbcType=VARCHAR,mode=IN})}
+    </insert>
+
+    <select id="getById" parameterType="Integer" resultMap="result">
+        <include refid="baseSelect"/>
+        <where>
+            <if test="null != value">
+              ipds_message_log_id = #{value}
+            </if>
+         </where>
+    </select>
+
+    <select id="getAll" resultMap="result">
+        <include refid="baseSelect"/>
+    </select>
+
+    <update id="update" parameterType="IpdsMessageLog">
+        update ipds_message_log
+           set processing_details = #{processingDetails,jdbcType=VARCHAR},
+               prod_id = #{prodId,jdbcType=NUMERIC}
+         where ipds_message_log_id = #{id,jdbcType=NUMERIC}
+    </update>
+
+
+    <select id="getMpPublicationFromIpds" parameterType="Integer" resultType="mpPublication">
+        select trim(abstract) doc_abstract,
+               trim(contributing_office) contributing_office,
+               trim(doi_name) doi_name,
+               trim(edition) edition,
+               trim(ipds_id) ipds_id,
+               trim(issue) issue,
+               trim(larger_work_title) larger_work_title,
+               case trim(ProductTypeValue)
+                 when 'Journal or periodical article' 
+                   then 'Journal'
+                 else 
+                   null
+               end larger_work_type,
+               trim(number_oversized_sheets) number_oversized_sheets,
+               trim(other_contrib_display) other_contrib_display,
+               trim(prod_description) prod_description,
+               trim(substr(disemination_date, 9, 2)) publication_day,
+               trim(substr(disemination_date, 6, 2)) publication_month,
+               trim(ProductTypeValue) publication_type,
+               trim(substr(disemination_date, 1, 4)) publication_year,
+               trim(publisher) publisher,
+               trim(nvl(publication_series_name, USGSSeriesValue)) series,
+               trim(publication_series_cd) series_cd,
+               case
+                 when trim(usgs_series_number) = '.' 
+                   then null
+                 else
+                   case
+                     when trim(usgs_series_letter) is null
+                       then trim(usgs_series_number)
+                     else
+                       trim(usgs_series_number) || '-' || trim(usgs_series_letter)
+                   end
+               end series_number,
+               'IPDS' source,
+               trim(nvl(final_title, working_title)) title,
+               trim(volume) volume,
+               basic_search,
+               notes,
+               ipds_review_process_state,
+               ipds_internal_id
+          from (select * from ipds_message_log iml,
+               xmltable(xmlnamespaces('http://schemas.microsoft.com/ado/2007/08/dataservices' as "d",
+                                      'http://schemas.microsoft.com/ado/2007/08/dataservices/metadata' as "m",
+                                      'http://www.w3.org/2005/Atom' as "q"),
+                        'for $i in /q:feed/q:entry return $i'
+                        passing iml.ipds_message
+                        columns ProductTypeValue varchar2(2000 char) path '/q:entry/q:content/m:properties/d:ProductTypeValue',
+                                USGSSeriesValue varchar2(2000 char) path '/q:entry/q:content/m:properties/d:USGSSeriesValue',
+                                abstract clob path '/q:entry/q:content/m:properties/d:Abstract',
+                                contributing_office varchar2(10 char) path '/q:entry/q:content/m:properties/d:CostCenterId',
+                                usgs_mission_area varchar2(2000 char) path '/q:entry/q:content/m:properties/d:USGSMissionAreaValue',
+                                usgs_region varchar2(2000 char) path '/q:entry/q:content/m:properties/d:USGSRegionValue',
+                                doi_name varchar2(2000 char) path '/q:entry/q:content/m:properties/d:DigitalObjectIdentifier',
+                                edition varchar2(255 char) path '/q:entry/q:content/m:properties/d:EditionNumber',
+                                ipds_id varchar2(15 char) path '/q:entry/q:content/m:properties/d:IPNumber',
+                                issue varchar2(20 char) path '/q:entry/q:content/m:properties/d:Issue',
+                                larger_work_title varchar2(2000 char) path '/q:entry/q:content/m:properties/d:JournalTitle',
+                                number_oversized_sheets number path '/q:entry/q:content/m:properties/d:NumberOfMapsOrPlates',
+                                other_contrib_display varchar2(4000 char) path '/q:entry/q:content/m:properties/d:Cooperators',
+                                prod_description varchar2(2000 char) path '/q:entry/q:content/m:properties/d:PhysicalDescription',
+                                disemination_date varchar2(20 char) path '/q:entry/q:content/m:properties/d:DiseminationDate',
+                                publisher varchar2(255 char) path '/q:entry/q:content/m:properties/d:NonUSGSPublisher',
+                                usgs_series_number varchar2(20 char) path '/q:entry/q:content/m:properties/d:USGSSeriesNumber',
+                                usgs_series_letter varchar2(20 char) path '/q:entry/q:content/m:properties/d:USGSSeriesLetter',
+                                final_title varchar2(2000 char) path '/q:entry/q:content/m:properties/d:FinalTitle',
+                                working_title varchar2(2000 char) path '/q:entry/q:content/m:properties/d:WorkingTitle',
+                                usgs_citation_display varchar2(4000 char) path '/q:entry/q:content/m:properties/d:Citation',
+                                volume varchar2(50 char) path '/q:entry/q:content/m:properties/d:Volume',
+                                basic_search varchar2(4000 char) path '/q:entry/q:content/m:properties/d:PublishedURL',
+                                notes clob path '/q:entry/q:content/m:properties/d:ProductSummary',
+                                ipds_review_process_state varchar2(4000 char) path '/q:entry/q:content/m:properties/d:IPDSReviewProcessStateValue',
+                                ipds_internal_id number path '/q:entry/q:content/m:properties/d:Id'
+                                )) x
+                          left join pw_series_ref
+                            on x.USGSSeriesValue = publication_series_name
+                        where ipds_message_log_id = #{value}
+    </select>
+
+</mapper>

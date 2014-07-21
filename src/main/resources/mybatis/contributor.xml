@@ -40,7 +40,7 @@
     </sql>
 
     <select id="getById" parameterType="Integer" resultMap="result">
-        <include refid="baseSelect"/> 
+        <include refid="baseSelect"/>
          where contributor_id = #{value,jdbcType=NUMERIC}
     </select>
 

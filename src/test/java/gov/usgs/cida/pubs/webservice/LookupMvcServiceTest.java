@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONArrayAs;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.domain.PublicationType;
 
 import org.json.JSONArray;
 import org.junit.Before;
@@ -42,7 +43,7 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andReturn();
 
         assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"value\":\"4\",\"text\":\"Book\"},{\"value\":\"5\",\"text\":\"Book chapter\"}]")));
+                sameJSONArrayAs(new JSONArray("[{\"id\":4,\"text\":\"Book\"},{\"id\":5,\"text\":\"Book chapter\"}]")));
     }
 
     @Test
@@ -54,7 +55,7 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andReturn();
 
         assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"value\":\"11\",\"text\":\"Bibliography\"}]")));
+                sameJSONArrayAs(new JSONArray("[{\"id\":11,\"text\":\"Bibliography\"}]")));
     }
 
     @Test
@@ -66,19 +67,20 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andReturn();
 
         assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"value\":\"11\",\"text\":\"Bibliography\"}]")));
+                sameJSONArrayAs(new JSONArray("[{\"id\":11,\"text\":\"Bibliography\"}]")));
     }
 
     @Test
     public void getPublicationSeriesREST() throws Exception {
-        MvcResult rtn = mockMvc.perform(get("/lookup/publicationtype/18/publicationsubtype/1/publicationseries?text=a").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        MvcResult rtn = mockMvc.perform(get("/lookup/publicationtype/"
+                + PublicationType.REPORT + "/publicationsubtype/1/publicationseries?text=a").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
         assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"value\":\"1\",\"text\":\"Administrative Report\"},{\"value\":\"2\",\"text\":\"Advisory Report\"},{\"value\":\"3\",\"text\":\"Annual Report\"}]")));
+                sameJSONArrayAs(new JSONArray("[{\"id\":1,\"text\":\"Administrative Report\"},{\"id\":2,\"text\":\"Advisory Report\"},{\"id\":3,\"text\":\"Annual Report\"}]")));
     }
 
     @Test
@@ -90,7 +92,7 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andReturn();
 
         assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"value\":\"1\",\"text\":\"Administrative Report\"},{\"value\":\"2\",\"text\":\"Advisory Report\"},{\"value\":\"3\",\"text\":\"Annual Report\"}]")));
+                sameJSONArrayAs(new JSONArray("[{\"id\":1,\"text\":\"Administrative Report\"},{\"id\":2,\"text\":\"Advisory Report\"},{\"id\":3,\"text\":\"Annual Report\"}]")));
     }
 
     @Test
@@ -101,7 +103,7 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONArray("[{\"value\":\"74\",\"text\":\"Colorado Ice Science Center\"},{\"value\":\"115\",\"text\":\"Earth Resources Observations Center\"}]"),
+        assertThat(new JSONArray("[{\"id\":74,\"text\":\"Colorado Ice Science Center\"},{\"id\":115,\"text\":\"Earth Resources Observations Center\"}]"),
                 sameJSONArrayAs(new JSONArray(rtn.getResponse().getContentAsString())));
 
         rtn = mockMvc.perform(get("/lookup/costcenters?text=col").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
@@ -111,7 +113,7 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andReturn();
 
         assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"value\":\"74\",\"text\":\"Colorado Ice Science Center\"}]")));
+                sameJSONArrayAs(new JSONArray("[{\"id\":74,\"text\":\"Colorado Ice Science Center\"}]")));
     }
 
 }

@@ -6,7 +6,7 @@ import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-
+//TODO add in all foreign key properties
 @SuppressWarnings("rawtypes")
 public class ParentExistsValidatorForPublication implements ConstraintValidator<ParentExists, Publication> {
 

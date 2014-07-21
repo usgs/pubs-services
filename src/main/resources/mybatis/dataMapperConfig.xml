@@ -9,6 +9,7 @@
         <setting name="cacheEnabled" value="false"/>
         <setting name="lazyLoadingEnabled" value="false"/>
         <setting name="aggressiveLazyLoading" value="false"/>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
 
 
@@ -31,6 +32,10 @@
         <typeAlias alias="publicationSeries" type="gov.usgs.cida.pubs.domain.PublicationSeries"/>
         <typeAlias alias="publicationSubtype" type="gov.usgs.cida.pubs.domain.PublicationSubtype"/>
         <typeAlias alias="publicationType" type="gov.usgs.cida.pubs.domain.PublicationType"/>
+
+        <typeAlias alias="ipdsMessageLog" type="gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog"/>
+        <typeAlias alias="ipdsProcessLog" type="gov.usgs.cida.pubs.domain.ipds.IpdsProcessLog"/>
+
     </typeAliases>
 
     <typeHandlers>
@@ -57,6 +62,9 @@
          <mapper resource="mybatis/publicationSeries.xml"/>
          <mapper resource="mybatis/publicationSubtype.xml"/>
          <mapper resource="mybatis/publicationType.xml"/>
+
+         <mapper resource="mybatis/ipdsMessageLog.xml"/>
+         <mapper resource="mybatis/ipdsProcessLog.xml"/>
     </mappers>
 
 </configuration>

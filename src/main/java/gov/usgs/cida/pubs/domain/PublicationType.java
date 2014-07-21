@@ -16,7 +16,9 @@ public class PublicationType extends BaseDomain<PublicationType> implements ILoo
 
     private static IDao<PublicationType> publicationTypeDao;
 
-    public static final String ARTICLE = "2";
+    public static final Integer ARTICLE = 2;
+
+    public static final Integer REPORT = 18;
 
     private String name;
 
@@ -69,12 +71,6 @@ public class PublicationType extends BaseDomain<PublicationType> implements ILoo
     @JsonView(ILookupView.class)
     public String getText() {
         return name;
-    }
-
-    @Override
-    @JsonView(ILookupView.class)
-    public String getValue() {
-        return String.valueOf(id);
     }
 
 }

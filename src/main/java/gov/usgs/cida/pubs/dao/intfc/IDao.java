@@ -44,14 +44,6 @@ public interface IDao<D> {
      */
     Integer getObjectCount(Map<String, Object> filters);
 
-    /**
-     * Get domain objects by given pairs of filter name and value.
-     *
-     * @param filters
-     * @return
-     */
-    List<D> getAll();
-
     /** 
      * Update domain object.
      * @param domainObject domain object to update.

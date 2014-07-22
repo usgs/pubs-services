@@ -14,7 +14,7 @@ public class IpdsProcessLogDao extends BaseDao<IpdsProcessLog> {
     @ISetDbContext
     @Override
     public Integer add(IpdsProcessLog domainObject) {
-        getSqlSession().insert(NS + ".add", domainObject);
+        getSqlSession().insert(NS + ADD, domainObject);
         return domainObject.getId();
     }
 
@@ -22,7 +22,7 @@ public class IpdsProcessLogDao extends BaseDao<IpdsProcessLog> {
     @ISetDbContext
     @Override
     public IpdsProcessLog getById(Integer domainId) {
-        return getSqlSession().selectOne(NS + ".getById", domainId);
+        return getSqlSession().selectOne(NS + GET_BY_ID, domainId);
     }
 
 }

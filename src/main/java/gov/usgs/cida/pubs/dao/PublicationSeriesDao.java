@@ -24,7 +24,7 @@ public class PublicationSeriesDao extends BaseDao<PublicationSeries> {
     @ISetDbContext
     @Override
     public List<PublicationSeries> getByMap(Map<String, Object> filters) {
-        return getSqlSession().selectList(NS + ".getByMap", filters);
+        return getSqlSession().selectList(NS + GET_BY_MAP, filters);
     }
 
     /** 
@@ -35,7 +35,7 @@ public class PublicationSeriesDao extends BaseDao<PublicationSeries> {
     @ISetDbContext
     @Override
     public PublicationSeries getById(Integer domainID) {
-        return (PublicationSeries) getSqlSession().selectOne(NS + ".getById", domainID);
+        return (PublicationSeries) getSqlSession().selectOne(NS + GET_BY_ID, domainID);
     }
 
     /** 

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doi_batch xmlns="http://www.crossref.org/schema/4.3.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.crossref.org/schema/4.3.0 http://www.crossref.org/schema/deposit/crossref4.3.0.xsd"
+    version="4.3.0">
+    <head>
+        <doi_batch_id>{doi_batch_id}</doi_batch_id>
+        <timestamp>{submission_timestamp}</timestamp>
+        <depositor>
+            <name>USGS</name>
+            <email_address>pubs_tech_group@usgs.gov</email_address>
+        </depositor>
+        <registrant>U.S. Geological Survey</registrant>
+    </head>
+    <body>
+        <report-paper>
+            <report-paper_series_metadata language="en">
+                <series_metadata>
+                    <titles>
+                        <title>{series_name}</title>
+                    </titles>
+                    <issn>{online_issn}</issn>
+                </series_metadata>
+                <titles>
+                    <title>{series_name}</title>
+                </titles>
+                <publication_date media_type="online">
+                    {dissemination_month}
+                    {dissemination_day}
+                    <year>{dissemination_year}</year>
+                </publication_date>
+            </report-paper_series_metadata>
+            <content_item component_type="other">
+                <contributors>
+{contributers}
+                </contributors>
+                <titles>
+                    <title>{title}</title>
+                </titles>
+                <component_number>{series_number}</component_number>
+                <publication_date media_type="online">
+                    {dissemination_month}
+                    {dissemination_day}
+                    <year>{dissemination_year}</year>
+                </publication_date>
+{pages}
+                <doi_data>
+                    <doi>{doi_name}</doi>
+                    <resource>{index_page}</resource>
+                </doi_data>
+            </content_item>
+        </report-paper>
+    </body>
+</doi_batch>

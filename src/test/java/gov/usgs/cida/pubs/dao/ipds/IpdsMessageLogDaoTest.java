@@ -61,7 +61,7 @@ public class IpdsMessageLogDaoTest extends BaseSpringTest {
         assertNull(updated.getValidationErrors());
 
         IpdsMessageLog.getDao().add(new IpdsMessageLog());
-        List<IpdsMessageLog> logs = IpdsMessageLog.getDao().getAll();
+        List<IpdsMessageLog> logs = IpdsMessageLog.getDao().getByMap(null);
         assertNotNull(logs);
         assertEquals(2, logs.size());
     }

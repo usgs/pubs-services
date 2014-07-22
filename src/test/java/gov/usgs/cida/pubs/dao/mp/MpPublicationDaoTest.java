@@ -5,10 +5,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
 import gov.usgs.cida.pubs.domain.Contact;
 //import gov.usgs.cida.pubs.domain.ProcessType;
-
 import gov.usgs.cida.pubs.domain.ProcessType;
+import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
@@ -29,8 +30,8 @@ import org.junit.Test;
  */
 public class MpPublicationDaoTest extends BaseSpringTest {
 
-    //TODO CostCenters in test.
-    private static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "costCenters");
+    //TODO editors, authors, links, & CostCenters in test.
+    private static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "costCenters", "authors", "editors", "links");
 
     @Test
     public void addAndGetByIds() {
@@ -142,9 +143,16 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 
         MpPublication.getDao().delete(persistedC);
         assertNull(MpPublication.getDao().getById(pubId));
-
-        //TODO the following tests...
-        //copyFromPw(Integer prodID)
-        //publishToPw(Integer prodID)
     }
+
+    @Test
+    public void copyFromPwTest() {
+        MpPublication.getDao().copyFromPw(4);
+        Publication<MpPublication> mpPub = MpPublication.getDao().getById(4);
+        PwPublicationDaoTest.assertPwPub4(mpPub);
+    }
+
+    //TODO the following tests...
+    //publishToPw(Integer prodID)
+
 }

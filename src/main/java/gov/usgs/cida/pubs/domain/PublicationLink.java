@@ -20,14 +20,17 @@ public class PublicationLink<D> extends BaseDomain<D> {
     @JsonProperty("text")
     private String text;
 
-    @JsonProperty("size")
-    private String size;
+    @JsonIgnore
+    private String objectSize;
+
+    @JsonIgnore
+    private String sizeUnits;
 
     @JsonProperty("mime-type")
     private String mimeType;
 
     public Integer getPublicationId() {
-        return rank;
+        return publicationId;
     }
 
     public void setPublicationId(final Integer inPublicationId) {
@@ -35,7 +38,7 @@ public class PublicationLink<D> extends BaseDomain<D> {
     }
 
     public Integer getRank() {
-        return publicationId;
+        return rank;
     }
 
     public void setRank(final Integer inRank) {
@@ -66,12 +69,35 @@ public class PublicationLink<D> extends BaseDomain<D> {
         text = inText;
     }
 
+    @JsonProperty("size")
     public String getSize() {
-        return size;
+        return objectSize + " " + sizeUnits;
     }
 
     public void setSize(final String inSize) {
-        size = inSize;
+        if (2 == inSize.split(" ").length) {
+            objectSize = inSize.split(" ")[0];
+            sizeUnits = inSize.split(" ")[0];
+        } else {
+            objectSize = inSize;
+            sizeUnits = null;
+        }
+    }
+
+    public String getObjectSize() {
+        return objectSize;
+    }
+
+    public void setObjectSize(final String inObjectSize) {
+        objectSize = inObjectSize;
+    }
+
+    public String getSizeUnits() {
+        return sizeUnits;
+    }
+
+    public void setSizeUnits(final String inSizeUnits) {
+        sizeUnits = inSizeUnits;
     }
 
     public String getMimeType() {

@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.runner.RunWith;
@@ -152,4 +154,8 @@ public abstract class BaseSpringTest {
     protected String stripCrLf(final String input) {
         return input.replace("\n", "").replace("\r", "");
     }
+
+    @Resource(name="expectedGetMpPub1")
+    public String expectedGetMpPub1;
+
 }

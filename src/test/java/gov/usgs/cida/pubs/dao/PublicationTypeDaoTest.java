@@ -52,12 +52,6 @@ public class PublicationTypeDaoTest extends BaseSpringTest {
     }
 
     @Test
-    public void getAll() {
-        List<PublicationType> pubTypes = PublicationType.getDao().getAll();
-        assertEquals(pubTypeCnt, pubTypes.size());
-    }
-
-    @Test
     public void notImplemented() {
         try {
             PublicationType.getDao().add(new PublicationType());

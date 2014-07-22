@@ -16,7 +16,6 @@ import javax.validation.ConstraintViolation;
 import org.joda.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -32,34 +31,19 @@ public abstract class BaseDomain<D> implements IBaseView {
     protected Integer id;
 
     @JsonIgnore
-//    @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
-//    @JsonDeserialize(using=PubsJsonLocalDateTimeDeSerializer.class)
     private LocalDateTime insertDate;
 
     @JsonIgnore
     private String insertUsername;
 
     @JsonIgnore
-//    @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
-//    @JsonDeserialize(using=PubsJsonLocalDateTimeDeSerializer.class)
     private LocalDateTime updateDate;
 
     @JsonIgnore
     private String updateUsername;
 
-    @JsonView(IMpView.class)
-    private ValidationResults validationErrors;
-
-    public BaseDomain() {
-    }
-    // better clone model than the clone method
-    public BaseDomain(BaseDomain<D> domain) {
-        id = domain.id;
-        insertDate     = domain.insertDate;
-        insertUsername = domain.insertUsername;
-        updateDate     = domain.updateDate;
-        updateUsername = domain.updateUsername;
-    }
+    @JsonIgnore
+    protected ValidationResults validationErrors;
 
     /**
      * The getter for id.
@@ -172,4 +156,5 @@ public abstract class BaseDomain<D> implements IBaseView {
         }
         validationErrors.addValidatorResult(inValidatorResult);
     }
+
 }

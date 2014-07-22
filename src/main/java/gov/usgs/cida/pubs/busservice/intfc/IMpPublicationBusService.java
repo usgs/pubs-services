@@ -9,10 +9,11 @@ import gov.usgs.cida.pubs.validation.ValidationResults;
  */
 public interface IMpPublicationBusService extends IBusService<MpPublication> {
 
-    /** 
+    /**
      * Publish the publication identified by the prodId.
      * @param prodId to publish.
      * @return any validation errors that may have prevented the publishing of this citation
      */
     ValidationResults publish(Integer prodId);
+
 }

@@ -1,6 +1,5 @@
 package gov.usgs.cida.pubs.aop;
 
-
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -23,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class SetDbContextAspect extends SqlSessionDaoSupport {
 
     /** The default username for anonymous access. */
-    public static final String ANONYMOUS_USER = "IPDStoMPutility";
+    public static final String ANONYMOUS_USER = "anonymous";
 
     /** The clientId/username. */
     private String clientId;
@@ -55,7 +54,7 @@ public class SetDbContextAspect extends SqlSessionDaoSupport {
             if (conn instanceof org.apache.commons.dbcp.PoolableConnection) {
                 conn = ((org.apache.commons.dbcp.PoolableConnection) conn).getInnermostDelegate();
             }
-            // note that in the unlikely event that the DB vendor changes then this will break
+
             OracleConnection oracleConn = (OracleConnection) conn;
             oracleConn.setEndToEndMetrics(metrics, (short) 0);
 

@@ -43,9 +43,8 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        //TODO activate this test
-//        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-//                sameJSONObjectAs(new JSONObject("{\"value\":\"4\",\"text\":\"Book\"}")));
+        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+                sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
     }
 
     @Test

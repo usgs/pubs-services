@@ -23,12 +23,11 @@ public class PojoView implements IDataView {
 
     @Override
     public Class<? extends IBaseView> getView() {
-        // TODO Auto-generated method stub
         return view;
     }
+
     @Override
     public Object getData() {
-        // TODO Auto-generated method stub
         return data;
     }
 

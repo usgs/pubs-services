@@ -17,20 +17,20 @@ public class ValidationResults {
     public void addValidatorResult(final ValidatorResult inValidatorResult) {
         vErrors.add(inValidatorResult);
     }
-    
+
     public void addValidationResults(final ValidationResults inValidationResults) {
         vErrors.addAll(inValidationResults.getValidatorResults());
     }
-    
+
     public List<ValidatorResult> getValidatorResults() {
         return vErrors;
     }
-    
+
     @JsonIgnore
     public boolean isEmpty() {
         return null == vErrors || 0 == vErrors.size();
     }
-    
+
     /** {@inheritDoc}
      * @see java.lang.Object#toString()
      */

@@ -9,15 +9,18 @@ import javax.jms.TextMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 public class MessageConsumer implements MessageListener {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private IIpdsService<String> ipdsStringMessageService;
+    @Autowired
+    protected IIpdsService<String> ipdsStringMessageService;
 
-    private IIpdsService<String> spnProductionMessageService;
+    @Autowired
+    protected IIpdsService<String> spnProductionMessageService;
 
     @Transactional
     public void onMessage(final Message message) {
@@ -43,12 +46,12 @@ public class MessageConsumer implements MessageListener {
         log.info("Done Processing the Message");
     }
 
-    public void setIpdsStringMessageService(final IIpdsService<String> inIpdsStringMessageService) {
-        ipdsStringMessageService = inIpdsStringMessageService;
-    }
-
-    public void setSpnProductionMessageService(final IIpdsService<String> inSpnProductionMessageService) {
-        spnProductionMessageService = inSpnProductionMessageService;
-    }
-
+//    public void setIpdsStringMessageService(final IIpdsService<String> inIpdsStringMessageService) {
+//        ipdsStringMessageService = inIpdsStringMessageService;
+//    }
+//
+//    public void setSpnProductionMessageService(final IIpdsService<String> inSpnProductionMessageService) {
+//        spnProductionMessageService = inSpnProductionMessageService;
+//    }
+//
 }

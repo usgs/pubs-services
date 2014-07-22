@@ -5,6 +5,7 @@
 
     <bean id="mpPublication" class="gov.usgs.cida.pubs.domain.mp.MpPublication" autowire="byName"/>
     <bean id="mpPublicationContributor" class="gov.usgs.cida.pubs.domain.mp.MpPublicationContributor" autowire="byName"/>
+    <bean id="mpPublicationLink" class="gov.usgs.cida.pubs.domain.mp.MpPublicationLink" autowire="byName"/>
 
 
     <bean id="contributor" class="gov.usgs.cida.pubs.domain.Contributor" autowire="byName"/>
@@ -13,5 +14,7 @@
     <bean id="publicationType" class="gov.usgs.cida.pubs.domain.PublicationType" autowire="byName"/>
     <bean id="publicationSubtype" class="gov.usgs.cida.pubs.domain.PublicationSubtype" autowire="byName"/>
     <bean id="publicationSeries" class="gov.usgs.cida.pubs.domain.PublicationSeries" autowire="byName"/>
+
+    <bean id="pwPublication" class="gov.usgs.cida.pubs.domain.pw.PwPublication" autowire="byName"/>
 
 </beans>

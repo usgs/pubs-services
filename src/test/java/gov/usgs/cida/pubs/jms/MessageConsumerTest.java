@@ -31,6 +31,7 @@ public class MessageConsumerTest extends BaseSpringTest {
             msgText = null == ipdsMessage ? "nullInput" : ipdsMessage;
         }
     }
+
     private class Spms implements IIpdsService<String> {
         public String msgText;
         @Override
@@ -39,10 +40,19 @@ public class MessageConsumerTest extends BaseSpringTest {
         }
     }
 
+    private class TMessageConsumer extends MessageConsumer {
+        public void setIpdsStringMessageService(IIpdsService<String> isms) {
+            ipdsStringMessageService = isms;
+        }
+        public void setSpnProductionMessageService(IIpdsService<String> spms) {
+            spnProductionMessageService = spms;
+        }
+    }
+
     @Test
     public void testOnMessage() {
         ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost?broker.persistent=false");
-        MessageConsumer mc = new MessageConsumer();
+        TMessageConsumer mc = new TMessageConsumer();
         Isms isms = new Isms();
         Spms spms = new Spms();
         mc.setIpdsStringMessageService(isms);

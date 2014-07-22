@@ -40,11 +40,11 @@ public class SpnProductionMessageServiceTest extends BaseSpringTest {
         SpnProductionMessageService ms = new SpnProductionMessageService();
         IIpdsProcess ipdsProcess = new TIpdsProcess();
         IpdsWsRequester requester = new TIpdsWsRequester();
-        ms.setIpdsProcess(ipdsProcess);
-        ms.setIpdsWsRequester(requester);
+//        ms.setIpdsProcess(ipdsProcess);
+//        ms.setIpdsWsRequester(requester);
         try {
             ms.processIpdsMessage(null);
-            List<IpdsMessageLog> logs = IpdsMessageLog.getDao().getAll();
+            List<IpdsMessageLog> logs = IpdsMessageLog.getDao().getByMap(null);
             assertNotNull(logs);
             assertEquals(1, logs.size());
             assertEquals("<root>SPN</root>", logs.get(0).getMessageText());

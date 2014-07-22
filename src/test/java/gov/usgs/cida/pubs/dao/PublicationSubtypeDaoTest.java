@@ -65,12 +65,6 @@ public class PublicationSubtypeDaoTest extends BaseSpringTest {
     }
 
     @Test
-    public void getAll() {
-        List<PublicationSubtype> pubSubtypes = PublicationSubtype.getDao().getAll();
-        assertEquals(pubSubTypeCnt, pubSubtypes.size());
-    }
-
-    @Test
     public void notImplemented() {
         try {
             PublicationSubtype.getDao().add(new PublicationSubtype());

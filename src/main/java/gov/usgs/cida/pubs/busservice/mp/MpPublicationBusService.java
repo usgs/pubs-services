@@ -1,29 +1,24 @@
 package gov.usgs.cida.pubs.busservice.mp;
 
-//import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
+import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
-//import gov.usgs.cida.pubs.domain.LinkClass;
-//import gov.usgs.cida.pubs.domain.LinkDim;
-//import gov.usgs.cida.pubs.domain.MpLinkDim;
-//import gov.usgs.cida.pubs.domain.MpList;
-//import gov.usgs.cida.pubs.domain.MpListPubsRel;
-//import gov.usgs.cida.pubs.domain.MpSupersedeRel;
-//import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
-import gov.usgs.cida.pubs.validation.constraint.UpdateChecks;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.groups.Default;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -32,10 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class MpPublicationBusService extends MpBusService<MpPublication> implements IMpPublicationBusService {
 
-    public final static String CROSS_REF = "10.3133";
+    public final static String DOI_PREFIX = "10.3133";
 
-//    @Autowired
-//    private ICrossRefBusService crossRefBusService;
+    @Autowired
+    private ICrossRefBusService crossRefBusService;
 
     /** {@inheritDoc}
      * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#getObject(java.lang.Integer)
@@ -80,7 +75,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     public MpPublication updateObject(MpPublication object) {
         beginPublicationEdit(object.getId());
         MpPublication rtnPub = publicationPreProcessing(object);
-        Set<ConstraintViolation<MpPublication>> validations = validator.validate(rtnPub, Default.class, UpdateChecks.class);
+        Set<ConstraintViolation<MpPublication>> validations = validator.validate(rtnPub);
         if (!validations.isEmpty()) {
             rtnPub.setValidationErrors(validations);
         } else {
@@ -105,8 +100,10 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
             if (!validations.isEmpty()) {
                 rtnPub.setValidationErrors(validations);
             } else {
+                MpPublicationLink.getDao().deleteByParent(object.getId());
+                MpPublicationContributor.getDao().deleteByParent(object.getId());
+                MpPublicationCostCenter.getDao().deleteByParent(object.getId());
 //                MpSupersedeRel.getDao().deleteByParent(object.getId());
-//                MpLinkDim.getDao().deleteByParent(object.getId());
                 MpPublication.getDao().delete(object);
             }
         }
@@ -125,8 +122,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
             outPublication.setTitle(outPublication.getTitle().replace("\n", "").replace("\r", ""));
         }
 
-        PwPublication published = null;
-        //TODO add back in when we have the published pub. PwPublication published = PwPublication.getDao().getById(outPublication.getId());
+        PwPublication published = PwPublication.getDao().getById(outPublication.getId());
         if (null == published) {
             //Only auto update index ID if publication in not in the warehouse.
             String indexId = outPublication.getId().toString();
@@ -186,7 +182,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     public static String getDoiName(final String inIndexId) {
         String rtn = null;
         if (null != inIndexId && 0 < inIndexId.length()) {
-            rtn = CROSS_REF + "/" + inIndexId;
+            rtn = DOI_PREFIX + "/" + inIndexId;
         }
         return rtn;
     }
@@ -345,5 +341,9 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 //            MpLinkDim.getDao().add(thumbnail);
 //        }
     }
+
+//    public void setCrossRefBusService(final ICrossRefBusService inCrossRefBusService) {
+//        crossRefBusService = inCrossRefBusService;
+//    }
 
 }

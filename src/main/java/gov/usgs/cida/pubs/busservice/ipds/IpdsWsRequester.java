@@ -22,6 +22,7 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class IpdsWsRequester {
 
@@ -34,11 +35,16 @@ public class IpdsWsRequester {
     public static final String DOI_XML_SUFFIX = "</DigitalObjectIdentifier>";
     public static final String NULL_DOI = " m:null=\"true\"/>";
 
+    @Autowired
     private String ipdsEndpoint;
+    @Autowired
     private String ipdsProtocol;
+    @Autowired
     private HttpClient httpClient;
+    @Autowired
     private NTCredentials credentials;
     private BasicHttpContext httpContext;
+    @Autowired
     private PubsEMailer pubsEMailer;
 
     public String getIpdsProductXml(final String asOf) {
@@ -102,7 +108,11 @@ public class IpdsWsRequester {
         log.debug(xml);
 
         if (null != ipdsId) {
-            IpdsProcessLog.getDao().add(new IpdsProcessLog(ipdsId, xml, url));
+            IpdsProcessLog log = new IpdsProcessLog();
+            log.setIpdsNumber(ipdsId);
+            log.setMessage(xml);
+            log.setUri(url);
+            IpdsProcessLog.getDao().add(log);
         }
         return xml;
     }
@@ -212,21 +222,21 @@ public class IpdsWsRequester {
         return rtn.toString();
     }
 
-    public void setIpdsEndpoint(final String inIpdsEndpoint) {
-        ipdsEndpoint = inIpdsEndpoint;
-    }
-    public void setIpdsProtocol(final String inIpdsProtocol) {
-        ipdsProtocol = inIpdsProtocol;
-    }
-    public void setHttpClient(final HttpClient inHttpClient) {
-        httpClient = inHttpClient;
-    }
-    public void setCredentials(final NTCredentials inCredentials) {
-        credentials = inCredentials;
-    }
-    public void setPubsEMailer(final PubsEMailer inPubsEMailer) {
-        pubsEMailer = inPubsEMailer;
-    }
+//    public void setIpdsEndpoint(final String inIpdsEndpoint) {
+//        ipdsEndpoint = inIpdsEndpoint;
+//    }
+//    public void setIpdsProtocol(final String inIpdsProtocol) {
+//        ipdsProtocol = inIpdsProtocol;
+//    }
+//    public void setHttpClient(final HttpClient inHttpClient) {
+//        httpClient = inHttpClient;
+//    }
+//    public void setCredentials(final NTCredentials inCredentials) {
+//        credentials = inCredentials;
+//    }
+//    public void setPubsEMailer(final PubsEMailer inPubsEMailer) {
+//        pubsEMailer = inPubsEMailer;
+//    }
     public void setHttpContext(final BasicHttpContext inHttpContext) {
         httpContext = inHttpContext;    
     }

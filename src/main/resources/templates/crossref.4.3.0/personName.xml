@@ -1,0 +1,5 @@
+                    <person_name sequence="{sequence}" contributor_role="author">
+                        {given_name}
+                        <surname>{surname}</surname>
+                        {suffix}
+                    </person_name>

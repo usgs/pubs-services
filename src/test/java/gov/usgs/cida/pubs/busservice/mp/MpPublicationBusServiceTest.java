@@ -6,35 +6,37 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.busservice.mp.MpPublicationBusService;
-//import gov.usgs.cida.pubs.domain.MpLinkDim;
-//import gov.usgs.cida.pubs.domain.MpList;
-//import gov.usgs.cida.pubs.domain.MpListPubsRel;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
-//import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.junit.Ignore;
+import javax.validation.Validator;
+
+import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class MpPublicationBusServiceTest extends BaseSpringTest {
 
+    @Autowired
+    public Validator validator;
+
     private class BusService extends MpPublicationBusService {
-        public MpPublication publicationPreProcessing(final MpPublication inPublication) {
-            return super.publicationPreProcessing(inPublication);
-        }
-        public MpPublication publicationPostProcessing(final MpPublication inPublication) {
-            return super.publicationPostProcessing(inPublication);
+        public BusService(Validator validator) {
+            this.validator = validator;
         }
     }
-    private BusService busService = new BusService();
+    private BusService busService;
+
+    @Before
+    public void initTest() {
+        busService = new BusService(validator);
+    }
 
     @Test
     public void getObjectTest() {
@@ -60,6 +62,8 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
     public void createObjectTest() {
         //TODO both a good create and a create w/validation errors.
         //public MpPublication createObject(MpPublication object)
+        MpPublication pub = busService.createObject(new MpPublication());
+        assertNotNull(pub.getId());
     }
 
     @Test
@@ -92,7 +96,7 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
         assertNotNull(outPublication);
         assertNotNull(outPublication.getId());
         assertEquals("sirnumber", outPublication.getIndexId());
-        assertEquals(MpPublicationBusService.CROSS_REF + "/" + outPublication.getIndexId(), outPublication.getDoiName());
+        assertEquals(MpPublicationBusService.DOI_PREFIX + "/" + outPublication.getIndexId(), outPublication.getDoiName());
 
         inPublication = new MpPublication();
         inPublication.setSeriesNumber("nu-m,be r");
@@ -121,7 +125,7 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
         assertNotNull(outPublication);
         assertNotNull(outPublication.getId());
         assertEquals(outPublication.getId().toString(), outPublication.getIndexId());
-        assertEquals(MpPublicationBusService.CROSS_REF + "/" + outPublication.getIndexId(), outPublication.getDoiName());
+        assertEquals(MpPublicationBusService.DOI_PREFIX + "/" + outPublication.getIndexId(), outPublication.getDoiName());
 
     }
 
@@ -169,7 +173,7 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
     public void doiNameTest() {
         assertNull(MpPublicationBusService.getDoiName(null));
         assertNull(MpPublicationBusService.getDoiName(""));
-        assertEquals(MpPublicationBusService.CROSS_REF + "/abc", MpPublicationBusService.getDoiName("abc"));
+        assertEquals(MpPublicationBusService.DOI_PREFIX + "/abc", MpPublicationBusService.getDoiName("abc"));
     }
 
     @Test

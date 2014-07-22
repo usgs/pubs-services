@@ -16,7 +16,7 @@
 
     <aop:aspectj-autoproxy/>
 
-    <tx:annotation-driven/> 
+    <tx:annotation-driven/>
 
     <mvc:annotation-driven>
         <mvc:message-converters>
@@ -70,6 +70,8 @@
         <property name="destinationName" ref="queueName"/>
         <property name="messageListener" ref="messageListener"/>
     </bean>
+
+    <bean id="pubsEMailer" class="gov.usgs.cida.pubs.utility.PubsEMailer" autowire="byName"/>
 
     <import resource="classpath:/spring/webServiceContext.xml"/>
 

@@ -16,11 +16,11 @@ import org.springframework.web.method.support.HandlerMethodReturnValueHandlerCom
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
 
-//TODO - this might be better somewhere else as it needs spring mvc...
 public class JsonViewSupportFactoryBean implements InitializingBean {
 
     @Autowired
     private RequestMappingHandlerAdapter adapter;
+
     @Override
     public void afterPropertiesSet() throws Exception {
         HandlerMethodReturnValueHandlerComposite returnValueHandlers = new HandlerMethodReturnValueHandlerComposite();
@@ -29,6 +29,7 @@ public class JsonViewSupportFactoryBean implements InitializingBean {
         decorateHandlers(handlers);
         adapter.setReturnValueHandlers(handlers);
     }
+
     private void decorateHandlers(List<HandlerMethodReturnValueHandler> handlers) {
         for (HandlerMethodReturnValueHandler handler : handlers) {
             if (handler instanceof RequestResponseBodyMethodProcessor)
@@ -36,7 +37,6 @@ public class JsonViewSupportFactoryBean implements InitializingBean {
                 ViewInjectingReturnValueHandler decorator = new ViewInjectingReturnValueHandler(handler);
                 int index = handlers.indexOf(handler);
                 handlers.set(index, decorator);
-//TODO                log.info("JsonView decorator support wired up");
                 break;
             }
         }

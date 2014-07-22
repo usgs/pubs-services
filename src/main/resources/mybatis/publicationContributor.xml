@@ -23,4 +23,14 @@
         </where>
     </sql>
 
+    <sql id="authorsWhere">
+         where publication_id = #{value,jdbcType=NUMERIC} and
+               contributor_type_id = 1
+    </sql>
+
+    <sql id="editorsWhere">
+         where publication_id = #{value,jdbcType=NUMERIC} and
+               contributor_type_id = 2
+    </sql>
+
 </mapper>

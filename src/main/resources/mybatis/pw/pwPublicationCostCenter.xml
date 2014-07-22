@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="pwPublicationCostCenter">
+
+<!--     <resultMap id="result" type="MpPublicationCostCenter" extends="publicationCostCenter.result"> -->
+    <resultMap id="result" type="CostCenter" extends="costCenter.result">
+    </resultMap>
+
+    <sql id="cols">
+        publication_cost_center_id, publication_id, cost_center_id, name
+    </sql>
+
+    <sql id="filters">
+        <where>
+            <if test="id != null">
+                and publication_cost_center_id = #{id}
+            </if>
+            <if test="publicationId != null">
+                and publication_id = #{publicationId}
+            </if>
+            <if test="costCenterId != null">
+                and cost_center_id = #{costCenterId}
+            </if>
+            <if test="name != null">
+                and upper(name) like upper(#{name}) || '%'
+            </if>
+        </where>
+    </sql>
+
+    <sql id="baseSelect">
+        select <include refid="cols"/>
+          from (select publication_cost_center_id,
+                       publication_id,
+                       publication_cost_center.cost_center_id,
+                       name
+                  from publication_cost_center
+                       join cost_center
+                         on publication_cost_center.cost_center_id = cost_center.cost_center_id)
+    </sql>
+
+    <select id="getById" parameterType="Integer" resultMap="result">
+        <include refid="baseSelect"/>
+         where publication_cost_center_id = #{value,jdbcType=NUMERIC}
+    </select>
+
+    <select id="getByPublication" parameterType="Integer" resultMap="result">
+        <include refid="baseSelect"/>
+         where publication_id = #{value,jdbcType=NUMERIC}
+    </select>
+
+    <select id="getByMap" resultMap="result">
+        <include refid="baseSelect"/>
+        <include refid="filters"/>
+    </select>
+
+</mapper>

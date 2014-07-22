@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="publicationLink">
+
+    <resultMap id="result" type="PublicationLink" extends="base.result">
+        <id property="id" column="publication_link_id"/>
+        <result property="publicationId" column="publication_id"/>
+        <result property="rank" column="rank"/>
+        <result property="url" column="url"/>
+        <result property="text" column="text"/>
+        <result property="objectSize" column="object_size"/>
+        <result property="sizeUnits" column="size_units"/>
+        <result property="mimeType" column="mime_type"/>
+        <association property="linkType" column="link_type_id" select="linkType.getById"/>
+    </resultMap>
+
+    <sql id="cols">
+        publication_link_id, publication_id, rank, url, text, object_size, size_units, mime_type, link_type_id
+    </sql>
+
+    <sql id="filters">
+        <where>
+            <if test="id != null">
+                and publication_link_id = #{id}
+            </if>
+        </where>
+    </sql>
+
+</mapper>

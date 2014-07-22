@@ -13,8 +13,8 @@ import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 
-@Target(TYPE)  
-@Retention(RUNTIME)  
+@Target(TYPE)
+@Retention(RUNTIME)
 @Constraint(validatedBy={
 //        ParentExistsValidatorForLinkDim.class,
 //        ParentExistsValidatorForMpListPubsRel.class,
@@ -24,10 +24,10 @@ import javax.validation.Constraint;
 @Documented
 public @interface ParentExists {
 
-  String message() default "{pubs.noparent.exists}";    
-  Class<?>[] groups() default {};  
+  String message() default "{pubs.noparent.exists}";
+  Class<?>[] groups() default {};
   public abstract Class<?>[] payload() default {};
 
-  String[] propertyName() default {}; 
+  String[] propertyName() default {};
 
 }

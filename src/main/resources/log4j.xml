@@ -28,11 +28,11 @@
     </category>
 
     <category name="org.mybatis">
-        <level value="info"/>
+        <level value="debug"/>
     </category>
 
     <category name="java.sql">
-        <level value="info"/> 
+        <level value="debug"/> 
     </category>
 
     <root>

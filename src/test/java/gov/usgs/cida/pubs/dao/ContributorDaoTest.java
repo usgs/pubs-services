@@ -65,12 +65,6 @@ public class ContributorDaoTest extends BaseSpringTest {
     }
 
     @Test
-    public void getAll() {
-        List<Contributor> contributors = Contributor.getDao().getAll();
-        assertEquals(contributorCnt, contributors.size());
-    }
-
-    @Test
     public void notImplemented() {
         try {
             Contributor.getDao().add(new Contributor());

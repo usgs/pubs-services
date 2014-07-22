@@ -8,17 +8,16 @@ import java.util.Map;
 
 import javax.validation.Validator;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 /**
  * @author drsteini
  *
  */
 public abstract class BusService<D> implements IBusService<D> {
 
+    @Autowired
     protected Validator validator;
-
-    public void setValidator(Validator validator) {
-        this.validator = validator;
-    }
 
     @Override
     public D getObject(Integer objectId) {

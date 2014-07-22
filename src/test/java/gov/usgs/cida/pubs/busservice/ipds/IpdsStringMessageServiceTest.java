@@ -41,11 +41,11 @@ public class IpdsStringMessageServiceTest extends BaseSpringTest {
         IpdsStringMessageService ms = new IpdsStringMessageService();
         IIpdsProcess ipdsProcess = new TIpdsProcess();
         IpdsWsRequester requester = new TIpdsWsRequester();
-        ms.setIpdsProcess(ipdsProcess);
-        ms.setIpdsWsRequester(requester);
+//        ms.setIpdsProcess(ipdsProcess);
+//        ms.setIpdsWsRequester(requester);
         try {
             ms.processIpdsMessage(null);
-            List<IpdsMessageLog> logs = IpdsMessageLog.getDao().getAll();
+            List<IpdsMessageLog> logs = IpdsMessageLog.getDao().getByMap(null);
             assertNotNull(logs);
             assertEquals(1, logs.size());
             assertEquals("<root>" + new LocalDate() + "</root>", logs.get(0).getMessageText());
@@ -60,11 +60,11 @@ public class IpdsStringMessageServiceTest extends BaseSpringTest {
         IpdsStringMessageService ms = new IpdsStringMessageService();
         IIpdsProcess ipdsProcess = new TIpdsProcess();
         IpdsWsRequester requester = new TIpdsWsRequester();
-        ms.setIpdsProcess(ipdsProcess);
-        ms.setIpdsWsRequester(requester);
+//        ms.setIpdsProcess(ipdsProcess);
+//        ms.setIpdsWsRequester(requester);
         try {
             ms.processIpdsMessage("");
-            List<IpdsMessageLog> logs = IpdsMessageLog.getDao().getAll();
+            List<IpdsMessageLog> logs = IpdsMessageLog.getDao().getByMap(null);
             assertNotNull(logs);
             assertEquals(1, logs.size());
             assertEquals("<root>" + new LocalDate() + "</root>", logs.get(0).getMessageText());
@@ -79,11 +79,11 @@ public class IpdsStringMessageServiceTest extends BaseSpringTest {
         IpdsStringMessageService ms = new IpdsStringMessageService();
         IIpdsProcess ipdsProcess = new TIpdsProcess();
         IpdsWsRequester requester = new TIpdsWsRequester();
-        ms.setIpdsProcess(ipdsProcess);
-        ms.setIpdsWsRequester(requester);
+//        ms.setIpdsProcess(ipdsProcess);
+//        ms.setIpdsWsRequester(requester);
         try {
             ms.processIpdsMessage("2013-10-31");
-            List<IpdsMessageLog> logs = IpdsMessageLog.getDao().getAll();
+            List<IpdsMessageLog> logs = IpdsMessageLog.getDao().getByMap(null);
             assertNotNull(logs);
             assertEquals(1, logs.size());
             assertEquals("<root>2013-10-31</root>", logs.get(0).getMessageText());

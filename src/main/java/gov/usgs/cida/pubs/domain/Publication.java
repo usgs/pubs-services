@@ -8,7 +8,6 @@ import gov.usgs.cida.pubs.json.PubsJsonLocalDateTimeSerializer;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
-import gov.usgs.cida.pubs.validation.constraint.UpdateChecks;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -17,7 +16,6 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
@@ -40,22 +38,24 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     @JsonProperty("indexID")
     @JsonView(IMpView.class)
-    @Length(min=0, max=100)
+    @Length(min=1, max=100)
     private String indexId;
 
     @JsonProperty("display-to-public-date")
     @JsonView(IMpView.class)
     @JsonDeserialize(using=PubsJsonLocalDateTimeDeSerializer.class)
     @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
-    @NotNull(groups = UpdateChecks.class)
+    @NotNull
     private LocalDateTime displayToPublicDate;
 
     @JsonProperty("type")
     @JsonView(IMpView.class)
+    @NotNull
     private PublicationType publicationType;
 
     @JsonProperty("genre")
     @JsonView(IMpView.class)
+    @NotNull
     private PublicationSubtype publicationSubtype;
 
     @JsonProperty("collection-title")
@@ -84,8 +84,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     @JsonProperty("title")
     @JsonView(IMpView.class)
-    @NotBlank(groups = UpdateChecks.class)
-    @Length(min=0, max=2000)
+    @Length(min=1, max=2000)
     private String title;
 
     @JsonProperty("abstract")
@@ -124,46 +123,46 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     @JsonProperty("collaboration")
     @JsonView(IMpView.class)
-    @Length(min=0, max=2000)
+    @Length(min=0, max=255)
     private String collaboration;
 
     @JsonProperty("usgs-citation")
     @JsonView(IMpView.class)
-    @Length(min=0, max=2000)
+    @Length(min=0, max=255)
     private String usgsCitation;
 
     @JsonProperty("contact")
     @JsonView(IMpView.class)
     private Contact contact;
 
-    @Length(min = 0, max = 2000)
-    @JsonView(IMpView.class)
     @JsonProperty("product-description")
+    @JsonView(IMpView.class)
+    @Length(min = 0, max = 2000)
     private String productDescription;
 
-    @Length(min = 0, max = 20)
-    @JsonView(IMpView.class)
     @JsonProperty("page-first")
+    @JsonView(IMpView.class)
+    @Length(min = 0, max = 20)
     private String startPage;
 
-    @Length(min = 0, max = 50)
-    @JsonView(IMpView.class)
     @JsonProperty("page-last")
+    @JsonView(IMpView.class)
+    @Length(min = 0, max = 20)
     private String endPage;
 
-    @Digits(integer = 4, fraction = 0)
-    @JsonView(IMpView.class)
     @JsonProperty("number-of-pages")
+    @JsonView(IMpView.class)
+    @Digits(integer = 4, fraction = 0)
     private String numberOfPages;
 
-    @Length(min = 0, max = 1)
-    @JsonView(IMpView.class)
     @JsonProperty("online-only")
+    @JsonView(IMpView.class)
+    @Length(min = 0, max = 1)
     private String onlineOnly;
 
-    @Length(min = 0, max = 1)
-    @JsonView(IMpView.class)
     @JsonProperty("additional-online-files")
+    @JsonView(IMpView.class)
+    @Length(min = 0, max = 1)
     private String additionalOnlineFiles;
 
     @JsonProperty("temporal-start")
@@ -183,26 +182,26 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @Length(min = 0, max = 400000)
     private String notes;
 
-    @Length(min = 0, max = 15)
-    @JsonView(IMpView.class)
     @JsonProperty("ipds-id")
+    @JsonView(IMpView.class)
+    @Length(min = 0, max = 15)
     private String ipdsId;
 
-    @JsonView(IMpView.class)
     @JsonProperty("author")
-    private Collection<PublicationContributor> authors;
-
     @JsonView(IMpView.class)
+    private Collection<PublicationContributor<?>> authors;
+
     @JsonProperty("editor")
-    private Collection<PublicationContributor> editors;
-
     @JsonView(IMpView.class)
+    private Collection<PublicationContributor<?>> editors;
+
     @JsonProperty("cost-center")
+    @JsonView(IMpView.class)
 //    private Collection<PublicationCostCenter<?>> costCenters;
     private Collection<CostCenter> costCenters;
 
-    @JsonView(IMpView.class)
     @JsonProperty("links")
+    @JsonView(IMpView.class)
     private Collection<PublicationLink<?>> links;
 
    /**
@@ -627,6 +626,30 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     public void setCostCenters(final Collection<CostCenter> inCostCenters) {
         costCenters = inCostCenters;
+    }
+
+    public Collection<PublicationContributor<?>> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(final Collection<PublicationContributor<?>> inAuthors) {
+        authors = inAuthors;
+    }
+
+    public Collection<PublicationContributor<?>> getEditors() {
+        return editors;
+    }
+
+    public void setEditors(final Collection<PublicationContributor<?>> inEditors) {
+        editors = inEditors;
+    }
+
+    public Collection<PublicationLink<?>> getLinks() {
+        return links;
+    }
+
+    public void setLinks(final Collection<PublicationLink<?>> inLinks) {
+        links = inLinks;
     }
 
     /**

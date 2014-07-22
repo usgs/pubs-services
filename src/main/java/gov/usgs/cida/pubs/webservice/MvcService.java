@@ -1,7 +1,6 @@
 package gov.usgs.cida.pubs.webservice;
 
 import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 
@@ -12,9 +11,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +19,9 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.request.WebRequest;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author drsteini
@@ -118,11 +114,11 @@ public abstract class MvcService<D> {
         return out;
     }
 
-    protected HttpSession getSession(){
-        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        return attr.getRequest().getSession();
-    }
-
+//    protected HttpSession getSession(){
+//        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+//        return attr.getRequest().getSession();
+//    }
+//
     protected boolean validateParametersSetHeaders(HttpServletRequest request, HttpServletResponse response) {
         boolean rtn = true;
         response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);

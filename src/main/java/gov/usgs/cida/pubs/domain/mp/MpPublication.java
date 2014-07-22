@@ -2,6 +2,8 @@ package gov.usgs.cida.pubs.domain.mp;
 
 import gov.usgs.cida.pubs.dao.intfc.IMpPublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.json.view.intfc.IMpView;
+import gov.usgs.cida.pubs.validation.ValidationResults;
 
 import javax.validation.constraints.Digits;
 
@@ -9,6 +11,7 @@ import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonView;
 
 /**
  * @author drsteini
@@ -27,12 +30,12 @@ public class MpPublication extends Publication<MpPublication> {
 
     private static IMpPublicationDao mpPublicationDao;
 
-    @Length(min=0, max=400)
     @JsonProperty("ipds-review-process-state")
+    @Length(min=0, max=400)
     private String ipdsReviewProcessState;
 
-    @Digits(integer=28, fraction=0)
     @JsonProperty("ipds-internal-id")
+    @Digits(integer=28, fraction=0)
     private String ipdsInternalId;
 
     public String getIpdsReviewProcessState() {
@@ -55,6 +58,12 @@ public class MpPublication extends Publication<MpPublication> {
      */
     public String getIpdsInternalId() {
         return ipdsInternalId;
+    }
+
+    @JsonView(IMpView.class)
+    @Override
+    public ValidationResults getValidationErrors() {
+        return validationErrors;
     }
 
     /**

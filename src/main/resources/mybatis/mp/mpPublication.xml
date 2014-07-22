@@ -7,6 +7,9 @@
         <result property="ipdsReviewProcessState" column="ipds_review_process_state"/>
         <result property="ipdsInternalId" column="ipds_internal_id"/>
         <collection property="costCenters" column="publication_id" select="mpPublicationCostCenter.getByPublication"/>
+        <collection property="authors" column="publication_id" select="mpPublicationContributor.getAuthorsByPublication"/>
+        <collection property="editors" column="publication_id" select="mpPublicationContributor.getEditorsByPublication"/>
+        <collection property="links" column="publication_id" select="mpPublicationLink.getByPublication"/>
     </resultMap>
 
     <sql id="cols">
@@ -37,10 +40,10 @@
     </insert>
 
     <insert id="copyMpFromPw" parameterType="Integer">
-<!--         insert into mp_publication (<include refid="publication.cols"/>) -->
-<!--             (select <include refid="publication.cols"/> -->
-<!--                from pw_publication -->
-<!--               where publication_id = #{value,jdbcType=NUMERIC}) -->
+        insert into mp_publication (<include refid="publication.cols"/>)
+            (select <include refid="publication.cols"/>
+               from publication
+              where publication_id = #{value,jdbcType=NUMERIC})
     </insert>
 
     <sql id="baseSelect">

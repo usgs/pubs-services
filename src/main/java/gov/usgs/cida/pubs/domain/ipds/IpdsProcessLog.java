@@ -11,28 +11,12 @@ import gov.usgs.cida.pubs.domain.BaseDomain;
 public class IpdsProcessLog extends BaseDomain<IpdsProcessLog> {
 
     private static IDao<IpdsProcessLog> ipdsProcessLogDao;
-    public static IDao<IpdsProcessLog> getDao() {
-        return ipdsProcessLogDao;
-    }
-    public void setIpdsProcessLogDao(final IDao<IpdsProcessLog> ipdsProcessLogDao) {
-        IpdsProcessLog.ipdsProcessLogDao = ipdsProcessLogDao;
-    }
 
     private String ipdsNumber;
 
     private String uri;
 
     private String message;
-
-    public IpdsProcessLog() {
-        // Spring requirement
-    }
-
-    public IpdsProcessLog(String ipdsNum, String msg, String inUri) {
-        this.ipdsNumber  = ipdsNum;
-        this.message = msg;
-        uri = inUri;
-    }
 
     public String getIpdsNumber() {
         return ipdsNumber;
@@ -57,4 +41,13 @@ public class IpdsProcessLog extends BaseDomain<IpdsProcessLog> {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    public static IDao<IpdsProcessLog> getDao() {
+        return ipdsProcessLogDao;
+    }
+
+    public void setIpdsProcessLogDao(final IDao<IpdsProcessLog> ipdsProcessLogDao) {
+        IpdsProcessLog.ipdsProcessLogDao = ipdsProcessLogDao;
+    }
+
 }

@@ -22,4 +22,6 @@
     <bean id="ipdsMessageLogDao" class="gov.usgs.cida.pubs.dao.ipds.IpdsMessageLogDao" autowire="byName"/>
     <bean id="ipdsProcessLogDao" class="gov.usgs.cida.pubs.dao.ipds.IpdsProcessLogDao" autowire="byName"/>
 
+    <bean id="pwPublicationDao" class="gov.usgs.cida.pubs.dao.pw.PwPublicationDao" autowire="byName"/>
+
 </beans>

@@ -17,8 +17,8 @@ import javax.validation.Constraint;
  * @author drsteini
  *
  */
-@Target(TYPE)  
-@Retention(RUNTIME)  
+@Target(TYPE)
+@Retention(RUNTIME)
 @Constraint(validatedBy={
 //        UniqueKeyValidatorForLinkDim.class,
 //        UniqueKeyValidatorForMpListPubsRel.class,
@@ -28,10 +28,10 @@ import javax.validation.Constraint;
 @Documented
 public @interface UniqueKey {
 
-  String message() default "Duplicates found";    
-  Class<?>[] groups() default {};  
+  String message() default "Duplicates found";
+  Class<?>[] groups() default {};
   public abstract Class<?>[] payload() default {};
 
-  String[] propertyName() default {}; 
+  String[] propertyName() default {};
 
 }

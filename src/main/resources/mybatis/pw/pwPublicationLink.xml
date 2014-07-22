@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="pwPublicationLink">
+
+    <resultMap id="result" type="PwPublicationLink" extends="publicationLink.result">
+    </resultMap>
+
+    <sql id="baseSelect">
+        select <include refid="publicationLink.cols"/>
+          from publication_link
+    </sql>
+
+    <select id="getById" parameterType="Integer" resultMap="result">
+        <include refid="baseSelect"/>
+         where publication_link_id = #{value,jdbcType=NUMERIC}
+    </select>
+
+    <select id="getByPublication" parameterType="Integer" resultMap="result">
+        <include refid="baseSelect"/>
+         where publication_id = #{value,jdbcType=NUMERIC}
+    </select>
+
+    <select id="getByMap" resultMap="result">
+        <include refid="baseSelect"/>
+        <include refid="publicationLink.filters"/>
+    </select>
+
+</mapper>

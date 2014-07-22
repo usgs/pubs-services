@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +32,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     private static final Logger LOG = LoggerFactory.getLogger(MpPublicationMvcService.class);
 
 //    private IBusService<Publication<?>> pubBusService;
+    @Autowired
     private IMpPublicationBusService busService;
 
     @RequestMapping(value={"/mppublication/{publicationId}"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
@@ -167,13 +169,13 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 //        return buildResponseMap(response, null, null, busService.publish(parseId(prodId)));
 //    }
 
-    /**
-     * Set the service.
-     * @param inMpPublicationBusService .
-     */
-    public void setMpPublicationBusService(final IMpPublicationBusService inMpPublicationBusService) {
-        busService = inMpPublicationBusService;
-    }
+//    /**
+//     * Set the service.
+//     * @param inMpPublicationBusService .
+//     */
+//    public void setMpPublicationBusService(final IMpPublicationBusService inMpPublicationBusService) {
+//        busService = inMpPublicationBusService;
+//    }
 
 //    /**
 //     * Set the service.

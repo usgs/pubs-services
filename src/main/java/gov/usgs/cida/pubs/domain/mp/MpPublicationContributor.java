@@ -16,7 +16,7 @@ public class MpPublicationContributor extends PublicationContributor<MpPublicati
 
     /**
      * The setter for mpPublicationContributorDao.
-     * @param inmpPublicationContributorDao the mpPublicationContributorDao to set
+     * @param inMpPublicationContributorDao the mpPublicationContributorDao to set
      */
     public void setMpPublicationContributorDao(final IMpDao<MpPublicationContributor> inMpPublicationContributorDao) {
         mpPublicationContributorDao = inMpPublicationContributorDao;

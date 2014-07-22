@@ -17,20 +17,20 @@ import org.junit.Test;
  */
 public class CostCenterDaoTest extends BaseSpringTest {
 
-    public static final int costCenterCnt = 2;
+    public static final int costCenterCnt = 170;
 
     @Test
     public void getByIdInteger() {
         CostCenter costCenter = CostCenter.getDao().getById(74);
         assertEquals(74, costCenter.getId().intValue());
-        assertEquals("Colorado Ice Science Center", costCenter.getName());
+        assertEquals("New Jersey Water Science Center", costCenter.getName());
     }
 
     @Test
     public void getByIdString() {
-        CostCenter costCenter = CostCenter.getDao().getById("115");
-        assertEquals(115, costCenter.getId().intValue());
-        assertEquals("Earth Resources Observations Center", costCenter.getName());
+        CostCenter costCenter = CostCenter.getDao().getById("114");
+        assertEquals(114, costCenter.getId().intValue());
+        assertEquals("Eastern Geographic Science Center", costCenter.getName());
     }
 
     @Test
@@ -43,18 +43,12 @@ public class CostCenterDaoTest extends BaseSpringTest {
         costCenters = CostCenter.getDao().getByMap(filters);
         assertEquals(1, costCenters.size());
         assertEquals(74, costCenters.get(0).getId().intValue());
-        assertEquals("Colorado Ice Science Center", costCenters.get(0).getName());
+        assertEquals("New Jersey Water Science Center", costCenters.get(0).getName());
 
         filters.clear();
         filters.put("name", "ea");
         costCenters = CostCenter.getDao().getByMap(filters);
-        assertEquals(1, costCenters.size());
-    }
-
-    @Test
-    public void getAll() {
-        List<CostCenter> costCenters = CostCenter.getDao().getAll();
-        assertEquals(costCenterCnt, costCenters.size());
+        assertEquals(9, costCenters.size());
     }
 
     @Test

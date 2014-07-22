@@ -18,18 +18,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 public class IpdsProcess implements IIpdsProcess {
 
+    @Autowired
     private ICrossRefBusService crossRefBusService;
 
+    @Autowired
     protected IpdsWsRequester requester;
 
     private int additions = 0;
 
     private int errors = 0;
 
+    @Autowired
     private IMpPublicationBusService pubBusService;
 
+    @Autowired
     private IBusService<MpPublicationLink> linkBusService;
 
     private Map<String, String> pubTypeMap;
@@ -255,32 +261,32 @@ public class IpdsProcess implements IIpdsProcess {
         return result;
     }
 
-    /**
-     * Set the requester.
-     * @param IpdsWsRequester .
-     */
-    public void setIpdsWsRequester(final IpdsWsRequester inIpdsWsRequester) {
-        requester = inIpdsWsRequester;
-    }
-
-    /**
-     * Set the service.
-     * @param inMpPublicationBusService .
-     */
-    public void setMpPublicationBusService(final IMpPublicationBusService inMpPublicationBusService) {
-        pubBusService = inMpPublicationBusService;
-    }
-
-    public void setCrossRefBusService(final ICrossRefBusService inCrossRefBusService) {
-        crossRefBusService = inCrossRefBusService;
-    }
-
+//    /**
+//     * Set the requester.
+//     * @param IpdsWsRequester .
+//     */
+//    public void setIpdsWsRequester(final IpdsWsRequester inIpdsWsRequester) {
+//        requester = inIpdsWsRequester;
+//    }
+//
+//    /**
+//     * Set the service.
+//     * @param inMpPublicationBusService .
+//     */
+//    public void setMpPublicationBusService(final IMpPublicationBusService inMpPublicationBusService) {
+//        pubBusService = inMpPublicationBusService;
+//    }
+//
+//    public void setCrossRefBusService(final ICrossRefBusService inCrossRefBusService) {
+//        crossRefBusService = inCrossRefBusService;
+//    }
+//
     public void setPubTypeMap(final Map<String, String> inPubTypeMap) {
         pubTypeMap = inPubTypeMap;
     }
-
-    public void setMpLinkDimBusService(final IBusService<MpPublicationLink> inLinkBusService) {
-        linkBusService = inLinkBusService;
-    }
+//
+//    public void setMpLinkDimBusService(final IBusService<MpPublicationLink> inLinkBusService) {
+//        linkBusService = inLinkBusService;
+//    }
 
 }

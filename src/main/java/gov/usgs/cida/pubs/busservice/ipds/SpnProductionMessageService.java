@@ -8,6 +8,7 @@ import gov.usgs.cida.pubs.utility.PubsEMailer;
 
 import org.apache.http.protocol.BasicHttpContext;
 import org.joda.time.LocalDate;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author drsteini
@@ -15,8 +16,11 @@ import org.joda.time.LocalDate;
  */
 public class SpnProductionMessageService implements IIpdsService<String> {
 
+    @Autowired
     private IIpdsProcess ipdsProcess;
+    @Autowired
     private IpdsWsRequester requester;
+    @Autowired
     private PubsEMailer pubsEMailer;
 
     /**
@@ -42,14 +46,14 @@ public class SpnProductionMessageService implements IIpdsService<String> {
         IpdsMessageLog.getDao().update(msg);
     }
 
-    public void setIpdsProcess(final IIpdsProcess inIpdsProcess) {
-        ipdsProcess = inIpdsProcess;
-    }
-    public void setIpdsWsRequester(final IpdsWsRequester inIpdsWsRequester) {
-        requester = inIpdsWsRequester;
-    }
-    public void setPubsEMailer(final PubsEMailer inPubsEMailer) {
-        pubsEMailer = inPubsEMailer;
-    }
+//    public void setIpdsProcess(final IIpdsProcess inIpdsProcess) {
+//        ipdsProcess = inIpdsProcess;
+//    }
+//    public void setIpdsWsRequester(final IpdsWsRequester inIpdsWsRequester) {
+//        requester = inIpdsWsRequester;
+//    }
+//    public void setPubsEMailer(final PubsEMailer inPubsEMailer) {
+//        pubsEMailer = inPubsEMailer;
+//    }
 
 }

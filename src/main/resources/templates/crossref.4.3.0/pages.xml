@@ -1,0 +1,4 @@
+                <pages>
+                    <first_page>{start_page}</first_page>
+                    <last_page>{end_page}</last_page>
+                </pages>

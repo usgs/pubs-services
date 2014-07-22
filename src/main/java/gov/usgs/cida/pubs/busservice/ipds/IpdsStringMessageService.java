@@ -7,6 +7,7 @@ import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
 
 import org.apache.http.protocol.BasicHttpContext;
 import org.joda.time.LocalDate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -15,8 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class IpdsStringMessageService implements IIpdsService<String> {
 
+    @Autowired
     private IIpdsProcess ipdsProcess;
 
+    @Autowired
     private IpdsWsRequester requester;
 
     /** {@inheritDoc}
@@ -40,20 +43,20 @@ public class IpdsStringMessageService implements IIpdsService<String> {
         IpdsMessageLog.getDao().update(msg);
     }
 
-    /**
-     * Set the service.
-     * @param inIpdsProcess .
-     */
-    public void setIpdsProcess(final IIpdsProcess inIpdsProcess) {
-        ipdsProcess = inIpdsProcess;
-    }
-
-    /**
-     * Set the requester.
-     * @param IpdsWsRequester .
-     */
-    public void setIpdsWsRequester(final IpdsWsRequester inIpdsWsRequester) {
-        requester = inIpdsWsRequester;
-    }
-
+//    /**
+//     * Set the service.
+//     * @param inIpdsProcess .
+//     */
+//    public void setIpdsProcess(final IIpdsProcess inIpdsProcess) {
+//        ipdsProcess = inIpdsProcess;
+//    }
+//
+//    /**
+//     * Set the requester.
+//     * @param IpdsWsRequester .
+//     */
+//    public void setIpdsWsRequester(final IpdsWsRequester inIpdsWsRequester) {
+//        requester = inIpdsWsRequester;
+//    }
+//
 }

@@ -1,14 +1,14 @@
 package gov.usgs.cida.pubs.busservice.mp;
 
 import org.joda.time.LocalDate;
-
 //import gov.usgs.cida.pubs.domain.MpLinkDim;
-
 //import gov.usgs.cida.pubs.domain.MpSupersedeRel;
-
-
 import gov.usgs.cida.pubs.busservice.BusService;
+
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 
 /**
@@ -28,15 +28,16 @@ public abstract class MpBusService<D> extends BusService<D> {
             //Look in MP to see if this key exists
             MpPublication mpPub = MpPublication.getDao().getById(prodId);
             if (null == mpPub) {
-                //TODO reactivate and get all the publication data/subobjects...
                 //Didn't find it in MP, look in PW
-//                PwPublication pwPub = PwPublication.getDao().getById(prodId);
-//                if (null != pwPub) {
-//                    //There it is, copy it!
-//                    MpPublication.getDao().copyFromPw(prodId);
-//                    MpLinkDim.getDao().copyFromPw(prodId);
-//                    MpSupersedeRel.getDao().copyFromPw(prodId);
-//                }
+                PwPublication pwPub = PwPublication.getDao().getById(prodId);
+                if (null != pwPub) {
+                    //There it is, copy it!
+                    MpPublication.getDao().copyFromPw(prodId);
+//                    MpPublicationLink.getDao().copyFromPw(prodId);
+//                    MpPublicationContributor.getDao().copyFromPw(prodId);
+//                  MpSupersedeRel.getDao().copyFromPw(prodId);
+//                    MpPublicationCostCenter.getDao().copyFromPw(prodId);
+                }
             }
         }
     }

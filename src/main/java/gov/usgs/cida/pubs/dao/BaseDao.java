@@ -17,6 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D> {
 
+    public static final String ADD = ".add";
+    public static final String DELETE = ".delete";
+    public static final String GET_BY_ID = ".getById";
+    public static final String GET_BY_MAP = ".getByMap";
+    public static final String UPDATE = ".update";
+
     /**
      * {@inheritDoc}
      * 
@@ -91,15 +97,6 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
     @Transactional(readOnly = true)
     @Override
     public Integer getObjectCount(Map<String, Object> filters) {
-        throw new RuntimeException("NOT IMPLEMENTED.");
-    }
-
-    /** {@inheritDoc}
-     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
-     */
-    @Transactional(readOnly = true)
-    @Override
-    public List<D> getAll() {
         throw new RuntimeException("NOT IMPLEMENTED.");
     }
 

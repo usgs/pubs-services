@@ -7,6 +7,7 @@ import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,7 @@ public class IpdsMessageLogDao extends BaseDao <IpdsMessageLog> implements IIpds
     @ISetDbContext
     @Override
     public Integer add(IpdsMessageLog domainObject) {
-        getSqlSession().insert(NS + ".add", domainObject);
+        getSqlSession().insert(NS + ADD, domainObject);
         return domainObject.getId();
     }
 
@@ -36,18 +37,18 @@ public class IpdsMessageLogDao extends BaseDao <IpdsMessageLog> implements IIpds
     @ISetDbContext
     @Override
     public IpdsMessageLog getById(Integer domainID) {
-        return (IpdsMessageLog) getSqlSession().selectOne(NS + ".getById", domainID);
+        return (IpdsMessageLog) getSqlSession().selectOne(NS + GET_BY_ID, domainID);
     }
 
     /** 
      * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.BaseDao#getAll()
+     * @see gov.usgs.cida.pubs.core.dao.BaseDao#getByMap(Map)
      */
     @Transactional(readOnly = true)
     @ISetDbContext
     @Override
-    public List<IpdsMessageLog> getAll() {
-        return getSqlSession().selectList(NS + ".getAll");
+    public List<IpdsMessageLog> getByMap(Map<String, Object> filters) {
+        return getSqlSession().selectList(NS + GET_BY_MAP);
     }
 
     /** {@inheritDoc}
@@ -57,7 +58,7 @@ public class IpdsMessageLogDao extends BaseDao <IpdsMessageLog> implements IIpds
     @ISetDbContext
     @Override
     public void update(IpdsMessageLog domainObject) {
-        getSqlSession().update(NS + ".update", domainObject);
+        getSqlSession().update(NS + UPDATE, domainObject);
     }
 
     /** {@inheritDoc}

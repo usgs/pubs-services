@@ -1,7 +1,7 @@
 package gov.usgs.cida.pubs.dao.mp;
 
 import gov.usgs.cida.pubs.aop.ISetDbContext;
-import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.dao.MpDao;
 import gov.usgs.cida.pubs.dao.intfc.IMpPublicationDao;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 
@@ -14,9 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
  * @author drsteini
  *
  */
-public class MpPublicationDao extends BaseDao <MpPublication> implements IMpPublicationDao {
+public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublicationDao {
 
     private static final String NS = "mpPublication";
+    public static final String GET_NEW_ID = ".getNewProdId";
 
    /** 
      * {@inheritDoc}
@@ -26,7 +27,7 @@ public class MpPublicationDao extends BaseDao <MpPublication> implements IMpPubl
     @ISetDbContext
     @Override
     public Integer add(MpPublication domainObject) {
-        getSqlSession().insert(NS + ".add", domainObject);
+        getSqlSession().insert(NS + ADD, domainObject);
         return domainObject.getId();
     }
 
@@ -38,7 +39,7 @@ public class MpPublicationDao extends BaseDao <MpPublication> implements IMpPubl
     @ISetDbContext
     @Override
     public MpPublication getById(Integer domainID) {
-        return (MpPublication) getSqlSession().selectOne(NS + ".getById", domainID);
+        return (MpPublication) getSqlSession().selectOne(NS + GET_BY_ID, domainID);
     }
 
     /** 
@@ -49,7 +50,7 @@ public class MpPublicationDao extends BaseDao <MpPublication> implements IMpPubl
     @ISetDbContext
     @Override
     public List<MpPublication> getByMap(Map<String, Object> filters) {
-        return getSqlSession().selectList(NS + ".getByMap", filters);
+        return getSqlSession().selectList(NS + GET_BY_MAP, filters);
     }
 
     /** {@inheritDoc}
@@ -59,7 +60,7 @@ public class MpPublicationDao extends BaseDao <MpPublication> implements IMpPubl
     @ISetDbContext
     @Override
     public void update(MpPublication domainObject) {
-        getSqlSession().update(NS + ".update", domainObject);
+        getSqlSession().update(NS + UPDATE, domainObject);
     }
 
     /** {@inheritDoc}
@@ -79,7 +80,7 @@ public class MpPublicationDao extends BaseDao <MpPublication> implements IMpPubl
     @ISetDbContext
     @Override
     public void deleteById(Integer domainID) {
-        getSqlSession().delete(NS + ".delete", domainID);
+        getSqlSession().delete(NS + DELETE, domainID);
     }
 
     /** {@inheritDoc}
@@ -89,7 +90,7 @@ public class MpPublicationDao extends BaseDao <MpPublication> implements IMpPubl
     @ISetDbContext
     @Override
     public void copyFromPw(Integer prodID) {
-        getSqlSession().insert(NS + ".copyMpFromPw", prodID);
+        getSqlSession().insert(NS + COPY_FROM_PW, prodID);
     }
 
     /** {@inheritDoc}
@@ -99,7 +100,7 @@ public class MpPublicationDao extends BaseDao <MpPublication> implements IMpPubl
     @ISetDbContext
     @Override
     public void publishToPw(Integer prodID) {
-        getSqlSession().update(NS + ".publish", prodID);
+        getSqlSession().update(NS + PUBLISH, prodID);
     }
 
     /** 
@@ -110,7 +111,7 @@ public class MpPublicationDao extends BaseDao <MpPublication> implements IMpPubl
     @ISetDbContext
     @Override
     public Integer getNewProdId() {
-        return getSqlSession().selectOne(NS + ".getNewProdId");
+        return getSqlSession().selectOne(NS + GET_NEW_ID);
     }
 
 }

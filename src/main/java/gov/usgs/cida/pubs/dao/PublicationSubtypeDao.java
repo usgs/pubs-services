@@ -3,7 +3,6 @@ package gov.usgs.cida.pubs.dao;
 import gov.usgs.cida.pubs.aop.ISetDbContext;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +24,7 @@ public class PublicationSubtypeDao extends BaseDao<PublicationSubtype> {
     @ISetDbContext
     @Override
     public PublicationSubtype getById(Integer domainID) {
-        return (PublicationSubtype) getSqlSession().selectOne(NS + ".getById", domainID);
+        return (PublicationSubtype) getSqlSession().selectOne(NS + GET_BY_ID, domainID);
     }
 
     /** 
@@ -47,17 +46,7 @@ public class PublicationSubtypeDao extends BaseDao<PublicationSubtype> {
     @ISetDbContext
     @Override
     public List<PublicationSubtype> getByMap(Map<String, Object> filters) {
-        return getSqlSession().selectList(NS + ".getByMap", filters);
-    }
-
-    /** {@inheritDoc}
-     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
-     */
-    @Transactional(readOnly = true)
-    @ISetDbContext
-    @Override
-    public List<PublicationSubtype> getAll() {
-        return getByMap(new HashMap<String, Object>());
+        return getSqlSession().selectList(NS + GET_BY_MAP, filters);
     }
 
 }

@@ -1,0 +1,23 @@
+    <Resource auth="Container" driverClassName="oracle.jdbc.OracleDriver" logAbandoned="true" maxActive="20" maxIdle="10" maxWait="10"
+              name="jdbc/mypubsDS" password="**********" removeAbandoned="true" removeAbandonedTimeout="60" type="javax.sql.DataSource"
+              url="jdbc:oracle:thin:@cida-eros-dbdev.er.usgs.gov:1521:devtrans" username="pubs" validationQuery="select * from dual"/>
+
+    <Environment name="jms/ipdsBrokerURL" type="java.lang.String" value="tcp://cida-eros-activemqdev.er.usgs.gov:61616"/>
+
+    <Environment name="jms/ipdsQueueName" type="java.lang.String" value="ipdsToPubsDev"/>
+
+    <Environment name="pubs/ipds/endpoint" type="java.lang.String" value="ipdsdev.usgs.gov"/>
+    <Environment name="pubs/ipds/protocol" type="java.lang.String" value="https"/>
+    <Environment name="pubs/ipds/port" type="java.lang.Integer" value="80"/>
+    <Environment name="pubs/ipds/pubsWsPwd" type="java.lang.String" value="**********"/>
+    <Environment name="pubs/ipds/pubsWsUser" type="java.lang.String" value="igscci-IPDSPubsWS"/>
+
+    <Environment name="pubs/crossRef/protocol" type="java.lang.String" value="http"/>
+    <Environment name="pubs/crossRef/host" type="java.lang.String" value="test.crossref.org"/>
+    <Environment name="pubs/crossRef/url" type="java.lang.String" value="/servlet/deposit"/>
+    <Environment name="pubs/crossRef/port" type="java.lang.Integer" value="80"/>
+    <Environment name="pubs/crossRef/user" type="java.lang.String" value="usgs"/>
+    <Environment name="pubs/crossRef/pwd" type="java.lang.String" value="**********"/>
+
+    <Environment name="pubs/emailList" type="java.lang.String" value="your_email@your_email"/>
+    <Environment name="pubs/mailHost" type="java.lang.String" value="gsvaresh01.er.usgs.gov"/>

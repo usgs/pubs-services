@@ -37,6 +37,10 @@ public class PublicationLink<D> extends BaseDomain<D> {
     @JsonView(IMpView.class)
     private LinkFileType linkFileType;
 
+    @JsonProperty("description")
+    @JsonView(IMpView.class)
+    private String description;
+
     public Integer getPublicationId() {
         return publicationId;
     }
@@ -115,6 +119,14 @@ public class PublicationLink<D> extends BaseDomain<D> {
 
     public void setLinkFileType(final LinkFileType inLinkFileType) {
         linkFileType = inLinkFileType;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(final String inDescription) {
+        description = inDescription;
     }
 
 }

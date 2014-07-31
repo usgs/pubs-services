@@ -40,6 +40,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     @Override
     public MpPublication getObject(Integer objectId) {
         MpPublication pub = MpPublication.getDao().getById(objectId);
+        pub.setValidationErrors(validator.validate(pub));
         return pub;
     }
 

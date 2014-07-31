@@ -1,5 +1,6 @@
-package gov.usgs.cida.pubs.dao;
+package gov.usgs.cida.pubs.dao.mp;
 
+import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.intfc.IMpDao;
 
 import org.springframework.transaction.annotation.Transactional;

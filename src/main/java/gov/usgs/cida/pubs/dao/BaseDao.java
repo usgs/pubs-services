@@ -22,6 +22,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
     public static final String GET_BY_ID = ".getById";
     public static final String GET_BY_MAP = ".getByMap";
     public static final String UPDATE = ".update";
+    public static final String GET_COUNT = ".getCount";
 
     /**
      * {@inheritDoc}

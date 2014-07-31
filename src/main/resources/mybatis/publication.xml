@@ -24,7 +24,6 @@
         <result property="isbn" column="isbn"/>
         <result property="collaboration" column="collaboration"/>
         <result property="usgsCitation" column="usgs_citation"/>
-        
         <result property="contact.id" column="contact_id"/>
         <result property="productDescription" column="product_description"/>
         <result property="startPage" column="start_page"/>
@@ -61,7 +60,6 @@
         isbn,
         collaboration,
         usgs_citation,
-        
         contact_id,
         product_description,
         start_page,
@@ -97,7 +95,6 @@
         #{isbn,jdbcType=VARCHAR},
         #{collaboration,jdbcType=VARCHAR},
         #{usgsCitation,jdbcType=VARCHAR},
-        
         #{contact.id,jdbcType=NUMERIC},
         #{productDescription,jdbcType=VARCHAR},
         #{startPage,jdbcType=NUMERIC},
@@ -113,7 +110,6 @@
     </sql>
 
     <sql id="sets">
-        publication_id = #{id,jdbcType=NUMERIC},
         index_id = nvl(#{indexId,jdbcType=VARCHAR},#{id,jdbcType=NUMERIC}),
         display_to_public_date = #{displayToPublicDate,jdbcType=DATE},
         publication_type_id = #{publicationType.id,jdbcType=NUMERIC},
@@ -133,7 +129,6 @@
         isbn = #{isbn,jdbcType=VARCHAR},
         collaboration = #{collaboration,jdbcType=VARCHAR},
         usgs_citation = #{usgsCitation,jdbcType=VARCHAR},
-        
         contact_id = #{contact.id,jdbcType=NUMERIC},
         product_description = #{productDescription,jdbcType=VARCHAR},
         start_page = #{startPage,jdbcType=NUMERIC},
@@ -166,9 +161,9 @@
             <if test="id != null">
                 and publication_id = #{id}
             </if>
-<!--             <if test="indexId != null"> -->
-<!--                 and upper(index_id) = upper(#{indexId}) -->
-<!--             </if> -->
+            <if test="indexId != null">
+                and upper(index_id) = upper(#{indexId})
+            </if>
 <!--             <if test="pubType != null"> -->
 <!--                 and publication_type_id = #{pubType} -->
 <!--             </if> -->
@@ -193,33 +188,33 @@
 <!--             <if test="reportNumber != null"> -->
 <!--                 and series_number like '%' || #{reportNumber} || '%' -->
 <!--             </if> -->
-<!--             <if test="ipdsId != null"> -->
-<!--                 and ipds_id = #{ipdsId} -->
-<!--             </if> -->
+            <if test="ipdsId != null">
+                and ipds_id = #{ipdsId}
+            </if>
         </where>
     </sql>
 
     <sql id="baseSelect">
         select <include refid="cols"/>
-            from mp_publication <!-- vw_mppubs_publication -->
+            from all_publication
     </sql>
 
-<!--     <select id="getPublicationById" parameterType="Integer" resultMap="mpPublicationResult"> -->
-<!--         <include refid="basePublicationSelect"/> -->
-<!--            where publication_id = #{value,jdbcType=VARCHAR} -->
-<!--     </select> -->
+    <select id="getById" parameterType="Integer" resultMap="result">
+        <include refid="baseSelect"/>
+           where publication_id = #{value,jdbcType=VARCHAR}
+    </select>
 
     <select id="getByMap" parameterType="map" resultMap="result">
-        <include refid="base.pagingTop"/>
+<!--         <include refid="base.pagingTop"/> -->
         <include refid="baseSelect"/>
         <include refid="filters"/>
-        <include refid="base.orderBy"/>
-        <include refid="base.pagingBottom"/>
+<!--         <include refid="base.orderBy"/> -->
+<!--         <include refid="base.pagingBottom"/> -->
     </select>
 
     <select id="getCount" parameterType="map" resultType="Integer">
         select count(*)
-          from mp_publication <!-- vw_mppubs_publication -->
+          from all_publication
         <include refid="filters"/>
     </select>
 

@@ -31,7 +31,7 @@ import org.junit.Test;
 public class MpPublicationDaoTest extends BaseSpringTest {
 
     //TODO editors, authors, links, & CostCenters in test.
-    private static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "costCenters", "authors", "editors", "links");
+    private static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "authors", "editors", "links");
 
     @Test
     public void addAndGetByIds() {
@@ -154,5 +154,46 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 
     //TODO the following tests...
     //publishToPw(Integer prodID)
+
+    public static void assertMpPub2(Publication<?> pub) {
+        assertEquals(2, pub.getId().intValue());
+        assertEquals("2", pub.getIndexId());
+        assertEquals("2014-07-22T20:06:10.000", pub.getDisplayToPublicDate().toString());
+        assertEquals(18, pub.getPublicationType().getId().intValue());
+        assertEquals(5, pub.getPublicationSubtype().getId().intValue());
+        assertEquals(331, pub.getPublicationSeries().getId().intValue());
+        assertEquals("series number", pub.getSeriesNumber());
+        assertEquals("subseries title", pub.getSubseriesTitle());
+        assertEquals("chapter", pub.getChapter());
+        assertEquals("subchapter title", pub.getSubchapter());
+        assertEquals("title", pub.getTitle());
+        assertEquals("abstract", pub.getDocAbstract());
+        assertEquals("language", pub.getLanguage());
+        assertEquals("publisher", pub.getPublisher());
+        assertEquals("publicsher location", pub.getPublisherLocation());
+        assertEquals("doi", pub.getDoiName());
+        assertEquals("issn", pub.getIssn());
+        assertEquals("isbn", pub.getIsbn());
+        assertEquals("collaboration", pub.getCollaboration());
+        assertEquals("usgs citation", pub.getUsgsCitation());
+        assertEquals(1, pub.getContact().getId().intValue());
+        assertEquals("product description", pub.getProductDescription());
+        assertEquals("start", pub.getStartPage());
+        assertEquals("end", pub.getEndPage());
+        assertEquals("1", pub.getNumberOfPages());
+        assertEquals("N", pub.getOnlineOnly());
+        assertEquals("Y", pub.getAdditionalOnlineFiles());
+        assertEquals("2014-07-14", pub.getTemporalStart().toString());
+        assertEquals("2014-07-20", pub.getTemporalEnd().toString());
+        assertEquals("notes", pub.getNotes());
+        assertEquals("ipdsid", pub.getIpdsId());
+    }
+
+    public static void assertMpPub2Children(Publication<?> pub) {
+        assertEquals(1, pub.getAuthors().size());
+        assertEquals(1, pub.getEditors().size());
+        assertEquals(1, pub.getCostCenters().size());
+        assertEquals(1, pub.getLinks().size());
+    }
 
 }

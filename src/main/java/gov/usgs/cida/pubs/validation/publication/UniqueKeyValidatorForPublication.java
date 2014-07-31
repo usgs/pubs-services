@@ -16,7 +16,6 @@ import javax.validation.ConstraintValidatorContext;
  * @author drsteini
  *
  */
-//TODO get the duplicates with a single sql like in biodata
 @SuppressWarnings("rawtypes")
 public class UniqueKeyValidatorForPublication implements ConstraintValidator<UniqueKey, Publication> {
 

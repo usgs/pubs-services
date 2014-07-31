@@ -11,12 +11,12 @@
         <result property="text" column="text"/>
         <result property="objectSize" column="object_size"/>
         <result property="sizeUnits" column="size_units"/>
-        <result property="mimeType" column="mime_type"/>
         <association property="linkType" column="link_type_id" select="linkType.getById"/>
+        <association property="linkFileType" column="link_file_type_id" select="linkFileType.getById"/>
     </resultMap>
 
     <sql id="cols">
-        publication_link_id, publication_id, rank, url, text, object_size, size_units, mime_type, link_type_id
+        publication_link_id, publication_id, rank, url, text, object_size, size_units, link_file_type_id, link_type_id
     </sql>
 
     <sql id="filters">

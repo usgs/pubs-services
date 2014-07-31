@@ -7,14 +7,14 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 public class MessageConsumer implements MessageListener {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    public static final Log LOG = LogFactory.getLog(JmsExceptionListener.class);
 
     @Autowired
     protected IIpdsService<String> ipdsStringMessageService;
@@ -24,7 +24,7 @@ public class MessageConsumer implements MessageListener {
 
     @Transactional
     public void onMessage(final Message message) {
-        log.info("Starting Processing the Message");
+        LOG.info("Starting Processing the Message");
 
         try {
             if (message instanceof TextMessage) {
@@ -39,11 +39,11 @@ public class MessageConsumer implements MessageListener {
                 throw new IllegalArgumentException("Invalid Message");
             }
         } catch (final Exception e) {
-            e.printStackTrace();
+            LOG.info(e);
             throw new RuntimeException("Bad JMS Karma", e);
         }
 
-        log.info("Done Processing the Message");
+        LOG.info("Done Processing the Message");
     }
 
 //    public void setIpdsStringMessageService(final IIpdsService<String> inIpdsStringMessageService) {

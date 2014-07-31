@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.aop.ISetDbContext;
 import gov.usgs.cida.pubs.dao.BaseDao;
-import gov.usgs.cida.pubs.dao.MpDao;
+import gov.usgs.cida.pubs.dao.mp.MpDao;
 
 import java.io.File;
 import java.io.IOException;

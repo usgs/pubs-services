@@ -1,13 +1,17 @@
 package gov.usgs.cida.pubs.validation;
 
+import gov.usgs.cida.pubs.json.view.intfc.IMpView;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 
 
 public class ValidationResults {
 
+    @JsonView(IMpView.class)
     private List<ValidatorResult> vErrors = new ArrayList<ValidatorResult>();
 
     public void setValidationErrors(final List<ValidatorResult> inValidationErrors) {

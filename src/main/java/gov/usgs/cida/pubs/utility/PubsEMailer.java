@@ -1,5 +1,7 @@
 package gov.usgs.cida.pubs.utility;
 
+import gov.usgs.cida.pubs.jms.JmsExceptionListener;
+
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -8,13 +10,13 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class PubsEMailer {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    public static final Log LOG = LogFactory.getLog(JmsExceptionListener.class);
     private static final String PUBSV2_NO_REPLY_NAME = "PUBSV2_NO_REPLY";
     private static final String PUBSV2_NO_REPLY_ADDRESS = "pubsv2_no_reply@usgs.gov";
 
@@ -40,8 +42,7 @@ public class PubsEMailer {
 
             Transport.send(message);
         } catch (Exception e) {
-            e.printStackTrace();
-            log.info(e.getMessage());
+            LOG.info(e.getMessage());
         }
     }
 

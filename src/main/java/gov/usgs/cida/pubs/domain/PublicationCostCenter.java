@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.domain;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.annotation.JsonView;
 
 public class PublicationCostCenter<D> extends BaseDomain<D> {
@@ -11,6 +12,7 @@ public class PublicationCostCenter<D> extends BaseDomain<D> {
     private Integer publicationId;
 
     @JsonView(IMpView.class)
+    @JsonUnwrapped
     private CostCenter costCenter;
 
     public Integer getPublicationId() {
@@ -29,4 +31,10 @@ public class PublicationCostCenter<D> extends BaseDomain<D> {
         costCenter = inCostCenter;
     }
 
+    //We don't want the publicationCostCenter.id in the json view
+    @JsonIgnore
+    @Override
+    public Integer getId() {
+        return id;
+    }
 }

@@ -71,7 +71,7 @@ public abstract class BaseSpringTest {
                 assertTrue(true);
             } else {
                 try {
-                    if (null != prop.getReadMethod()) {
+                    if (null != prop.getReadMethod() && !"getClass".contentEquals(prop.getReadMethod().getName())) {
                         Object inProp = prop.getReadMethod().invoke(inObject);
                         Object resultProp = prop.getReadMethod().invoke(resultObject);
                         if (!allowNull) {

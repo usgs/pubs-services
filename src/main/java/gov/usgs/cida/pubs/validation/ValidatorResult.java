@@ -1,14 +1,22 @@
 package gov.usgs.cida.pubs.validation;
 
+import gov.usgs.cida.pubs.json.view.intfc.IMpView;
+
+import com.fasterxml.jackson.annotation.JsonView;
+
 /**
  * @author drsteini
  *
  */
 public class ValidatorResult {
 
+    @JsonView(IMpView.class)
     private String field;
+    @JsonView(IMpView.class)
     private String message;
+    @JsonView(IMpView.class)
     private String level;
+    @JsonView(IMpView.class)
     private String value;
 
     public ValidatorResult (final String inField, final String inMessage, final String inLevel, final String inValue) {

@@ -1,8 +1,11 @@
 package gov.usgs.cida.pubs.webservice;
 
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CostCenter;
+import gov.usgs.cida.pubs.domain.LinkFileType;
+import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
@@ -158,6 +161,40 @@ public class LookupMvcService extends MvcService<PublicationType> {
                 filters.put("name", text[0]);
             }
             rtn = ContributorType.getDao().getByMap(filters);
+        }
+        return rtn;
+    }
+
+    @RequestMapping(value={"/linktypes"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
+    @ResponseView(ILookupView.class)
+    public @ResponseBody Collection<LinkType> getLinkTypes(HttpServletRequest request, HttpServletResponse response,
+                @RequestParam(value="text", required=false) String[] text) {
+        LOG.debug("LinkType");
+        Collection<LinkType> rtn = new ArrayList<>();
+        if (validateParametersSetHeaders(request, response)) {
+            response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
+            Map<String, Object> filters = new HashMap<>();
+            if (null != text && 0 < text.length) {
+                filters.put("name", text[0]);
+            }
+            rtn = LinkType.getDao().getByMap(filters);
+        }
+        return rtn;
+    }
+
+    @RequestMapping(value={"/linkfiletypes"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
+    @ResponseView(ILookupView.class)
+    public @ResponseBody Collection<LinkFileType> getLinkFileTypes(HttpServletRequest request, HttpServletResponse response,
+                @RequestParam(value="text", required=false) String[] text) {
+        LOG.debug("LinkFileType");
+        Collection<LinkFileType> rtn = new ArrayList<>();
+        if (validateParametersSetHeaders(request, response)) {
+            response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
+            Map<String, Object> filters = new HashMap<>();
+            if (null != text && 0 < text.length) {
+                filters.put("name", text[0]);
+            }
+            rtn = LinkFileType.getDao().getByMap(filters);
         }
         return rtn;
     }

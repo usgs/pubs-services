@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONArrayAs;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.dao.ContributorTypeDaoTest;
 import gov.usgs.cida.pubs.dao.CostCenterDaoTest;
 import gov.usgs.cida.pubs.domain.PublicationType;
 
@@ -116,6 +117,26 @@ public class LookupMvcServiceTest extends BaseSpringTest {
 
         assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
                 sameJSONArrayAs(new JSONArray("[{\"id\":1,\"text\":\"Colorado Water Science Center\"},{\"id\":42,\"text\":\"Columbia Environmental Research Center\"}]")));
+    }
+
+    @Test
+    public void getContributorTypes() throws Exception {
+        MvcResult rtn = mockMvc.perform(get("/lookup/contributortypes?mimetype=json").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+        .andReturn();
+
+        assertEquals(ContributorTypeDaoTest.contributorTypeCnt, new JSONArray(rtn.getResponse().getContentAsString()).length());
+
+        rtn = mockMvc.perform(get("/lookup/contributortypes?text=au").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+        .andReturn();
+
+        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
+                sameJSONArrayAs(new JSONArray("[{\"id\":1,\"text\":\"Authors\"}]")));
     }
 
 }

@@ -36,7 +36,7 @@ public abstract class MpBusService<D> extends BusService<D> {
 //                    MpPublicationLink.getDao().copyFromPw(prodId);
 //                    MpPublicationContributor.getDao().copyFromPw(prodId);
 //                  MpSupersedeRel.getDao().copyFromPw(prodId);
-//                    MpPublicationCostCenter.getDao().copyFromPw(prodId);
+                    MpPublicationCostCenter.getDao().copyFromPw(prodId);
                 }
             }
         }

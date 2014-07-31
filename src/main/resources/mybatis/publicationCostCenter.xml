@@ -6,13 +6,22 @@
     <resultMap id="result" type="PublicationCostCenter" extends="base.result">
         <id property="id" column="publication_cost_center_id"/>
         <result property="publicationId" column="publication_id"/>
-        <result property="costCenter.id" column="cost_center_id"/>
-        <result property="costCenter.name" column="name"/>
+        <association property="costCenter" column="cost_center_id" select="costCenter.getById"/>
     </resultMap>
 
-<!--     <sql id="cols"> -->
-<!--         publication_id, cost_center_id, name -->
-<!--     </sql> -->
+    <sql id="cols">
+        publication_cost_center_id, publication_id, cost_center_id
+    </sql>
+
+    <sql id="hosts">
+        #{id,jdbcType=NUMERIC},
+        #{publicationId,jdbcType=NUMERIC},
+        #{costCenter.id,jdbcType=NUMERIC}
+    </sql>
+
+    <sql id="sets">
+        cost_center_id = #{costCenter.id,jdbcType=NUMERIC}
+    </sql>
 
     <sql id="filters">
         <where>
@@ -24,9 +33,6 @@
             </if>
             <if test="costCenterId != null">
                 and cost_center_id = #{costCenterId}
-            </if>
-            <if test="name != null">
-                and upper(name) like upper(#{name}) || '%'
             </if>
         </where>
     </sql>
@@ -43,7 +49,7 @@
 
 <!--     <select id="getByMap" resultMap="result"> -->
 <!--         <include refid="baseSelect"/> -->
-<!--         <include refid="filters"/> -->
+<!--         <include refid="publicationCostCenter.filters"/> -->
 <!--     </select> -->
 
 </mapper>

@@ -26,8 +26,8 @@ public class PublicationLink<D> extends BaseDomain<D> {
     @JsonIgnore
     private String sizeUnits;
 
-    @JsonProperty("mime-type")
-    private String mimeType;
+    @JsonProperty("linkFileType")
+    private LinkFileType linkFileType;
 
     public Integer getPublicationId() {
         return publicationId;
@@ -100,12 +100,12 @@ public class PublicationLink<D> extends BaseDomain<D> {
         sizeUnits = inSizeUnits;
     }
 
-    public String getMimeType() {
-        return mimeType;
+    public LinkFileType getLinkFileType() {
+        return linkFileType;
     }
 
-    public void setMimeType(final String inMimeType) {
-        mimeType = inMimeType;
+    public void setLinkFileType(final LinkFileType inLinkFileType) {
+        linkFileType = inLinkFileType;
     }
 
 }

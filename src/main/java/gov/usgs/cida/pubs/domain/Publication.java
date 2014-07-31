@@ -197,8 +197,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     @JsonProperty("cost-center")
     @JsonView(IMpView.class)
-//    private Collection<PublicationCostCenter<?>> costCenters;
-    private Collection<CostCenter> costCenters;
+    private Collection<PublicationCostCenter<?>> costCenters;
 
     @JsonProperty("links")
     @JsonView(IMpView.class)
@@ -613,18 +612,11 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
         ipdsId = inIpdsId;
     }
 
-//    public Collection<PublicationCostCenter<?>> getCostCenters() {
-//        return costCenters;
-//    }
-//
-//    public void setCostCenters(final Collection<PublicationCostCenter<?>> inCostCenters) {
-//        costCenters = inCostCenters;
-//    }
-    public Collection<CostCenter> getCostCenters() {
+    public Collection<PublicationCostCenter<?>> getCostCenters() {
         return costCenters;
     }
 
-    public void setCostCenters(final Collection<CostCenter> inCostCenters) {
+    public void setCostCenters(final Collection<PublicationCostCenter<?>> inCostCenters) {
         costCenters = inCostCenters;
     }
 
@@ -664,7 +656,6 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
      * 
      * @param inPublicationDao the publicationDao to set
      */
-    //TODO remove or set correct dao
     public void setPublicationDao(final IDao<Publication<?>> inPublicationDao) {
         publicationDao = inPublicationDao;
     }

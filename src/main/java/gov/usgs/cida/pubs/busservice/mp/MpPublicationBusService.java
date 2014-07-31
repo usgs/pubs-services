@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.busservice.mp;
 
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.domain.PublicationCostCenter;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
@@ -12,6 +13,7 @@ import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class MpPublicationBusService extends MpBusService<MpPublication> implements IMpPublicationBusService {
 
-    public final static String DOI_PREFIX = "10.3133";
+    public static final String DOI_PREFIX = "10.3133";
 
     @Autowired
     private ICrossRefBusService crossRefBusService;
@@ -80,6 +82,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
             rtnPub.setValidationErrors(validations);
         } else {
             MpPublication.getDao().update(rtnPub);
+            updateCostCenters(rtnPub);
             rtnPub = publicationPostProcessing(MpPublication.getDao().getById(object.getId()));
         }
         return rtnPub;
@@ -262,6 +265,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 //        }
         //end bit
 
+        updateCostCenters(outPublication);
         return outPublication;
     }
 
@@ -340,6 +344,26 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 //            }
 //            MpLinkDim.getDao().add(thumbnail);
 //        }
+    }
+
+    protected void updateCostCenters(final MpPublication mpPublication) {
+        Map<String, Object> filters = new HashMap<>();
+        filters.put("publicationId", mpPublication.getId());
+        List<MpPublicationCostCenter> mpccs = MpPublicationCostCenter.getDao().getByMap(filters);
+        if (null != mpccs && 0 < mpccs.size()) {
+            //We should really try to merge rather than slash & burn and reconstruct...
+            for (MpPublicationCostCenter mpcc : mpccs) {
+                MpPublicationCostCenter.getDao().delete(mpcc);
+            }
+        }
+        if (null != mpPublication.getCostCenters() && 0 < mpPublication.getCostCenters().size()) {
+            for (PublicationCostCenter<?> pcc : mpPublication.getCostCenters()) {
+                MpPublicationCostCenter mpcc = new MpPublicationCostCenter();
+                mpcc.setPublicationId(mpPublication.getId());
+                mpcc.setCostCenter(pcc.getCostCenter());
+                MpPublicationCostCenter.getDao().add(mpcc);
+            }
+        }
     }
 
 //    public void setCrossRefBusService(final ICrossRefBusService inCrossRefBusService) {

@@ -1,25 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
 
-<mapper namespace="publicationSubtype">
+<mapper namespace="linkFileType">
 
-    <resultMap id="result" type="PublicationSubtype" extends="base.result">
-        <id property="id" column="publication_subtype_id"/>
-        <result property="publicationType.id" column="publication_type_id"/>
+    <resultMap id="result" type="LinkFileType" extends="base.result">
+        <id property="id" column="link_file_type_id"/>
         <result property="name" column="name"/>
     </resultMap>
 
     <sql id="cols">
-        publication_subtype_id, publication_type_id, name
+        link_file_type_id, name
     </sql>
 
     <sql id="filters">
         <where>
             <if test="id != null">
-                and publication_subtype_id = #{id}
-            </if>
-            <if test="publicationTypeId != null">
-                and publication_type_id = #{publicationTypeId}
+                and link_file_type_id = #{id}
             </if>
             <if test="name != null">
                 and upper(name) like upper(#{name}) || '%'
@@ -29,15 +25,15 @@
 
     <sql id="baseSelect">
         select <include refid="cols"/>
-          from publication_subtype
+          from link_file_type
     </sql>
 
     <select id="getById" parameterType="Integer" resultMap="result">
         <include refid="baseSelect"/>
-         where publication_subtype_id = #{value,jdbcType=NUMERIC}
+         where link_file_type_id = #{value,jdbcType=NUMERIC}
     </select>
 
-    <select id="getByMap" parameterType="map" resultMap="result">
+    <select id="getByMap" resultMap="result">
         <include refid="baseSelect"/>
         <include refid="filters"/>
     </select>

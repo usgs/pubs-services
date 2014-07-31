@@ -42,7 +42,7 @@ public class LocalDateTypeHandler implements TypeHandler<LocalDate> {
             try {
                 ldt = LocalDate.fromDateFields(date);
             } catch (IllegalArgumentException e) {
-                throw new SQLException("illegal value for a LocalDate : " + date);
+                throw new SQLException("illegal value for a LocalDate : " + date, e);
             }
         }
         return ldt; 
@@ -60,7 +60,7 @@ public class LocalDateTypeHandler implements TypeHandler<LocalDate> {
             try {
                 ldt = LocalDate.fromDateFields(date);
             } catch (IllegalArgumentException e) {
-                throw new SQLException("illegal value for a LocalDate : " + date);
+                throw new SQLException("illegal value for a LocalDate : " + date, e);
             }
         }
         return ldt; 

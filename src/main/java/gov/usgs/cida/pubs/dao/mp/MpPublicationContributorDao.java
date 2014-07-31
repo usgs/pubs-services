@@ -1,7 +1,6 @@
 package gov.usgs.cida.pubs.dao.mp;
 
 import gov.usgs.cida.pubs.aop.ISetDbContext;
-import gov.usgs.cida.pubs.dao.MpDao;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 
 import java.util.List;

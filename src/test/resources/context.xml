@@ -1,3 +1,4 @@
+<Context>
     <Resource auth="Container" driverClassName="oracle.jdbc.OracleDriver" logAbandoned="true" maxActive="20" maxIdle="10" maxWait="10"
               name="jdbc/mypubsDS" password="**********" removeAbandoned="true" removeAbandonedTimeout="60" type="javax.sql.DataSource"
               url="jdbc:oracle:thin:@cida-eros-dbdev.er.usgs.gov:1521:devtrans" username="pubs" validationQuery="select * from dual"/>
@@ -21,3 +22,4 @@
 
     <Environment name="pubs/emailList" type="java.lang.String" value="your_email@your_email"/>
     <Environment name="pubs/mailHost" type="java.lang.String" value="gsvaresh01.er.usgs.gov"/>
+</Context>

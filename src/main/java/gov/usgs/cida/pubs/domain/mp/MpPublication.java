@@ -1,9 +1,12 @@
 package gov.usgs.cida.pubs.domain.mp;
 
+import java.util.List;
+
 import gov.usgs.cida.pubs.dao.intfc.IMpPublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
 
 import javax.validation.constraints.Digits;
 
@@ -60,10 +63,15 @@ public class MpPublication extends Publication<MpPublication> {
         return ipdsInternalId;
     }
 
+    //TODO the following might be a hack - check on refactoring ValidationErrors so this is not needed.
+    @JsonProperty("validation-errors")
     @JsonView(IMpView.class)
-    @Override
-    public ValidationResults getValidationErrors() {
-        return validationErrors;
+    public List<ValidatorResult> getValErrors() {
+        if (null != validationErrors) {
+            return validationErrors.getValidatorResults();
+        } else {
+            return null;
+        }
     }
 
     /**

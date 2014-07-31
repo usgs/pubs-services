@@ -23,7 +23,8 @@ public class MpBusServiceTest extends BaseSpringTest {
         MpPublication mpPub2before = MpPublication.getDao().getById(2);
         busService.beginPublicationEdit(mpPub2before.getId());
         MpPublication mpPub2after = MpPublication.getDao().getById(mpPub2before.getId());
-        List<String> ignore = Arrays.asList("validationErrors");
+        //TODO validate on read!!
+        List<String> ignore = Arrays.asList("validationErrors", "valErrors");
         assertDaoTestResults(MpPublication.class, mpPub2before, mpPub2after, ignore, false, false);
 
         //This one is in PW, not MP and should be moved

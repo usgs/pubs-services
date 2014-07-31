@@ -1,31 +1,25 @@
 package gov.usgs.cida.pubs.dao.mp;
 
 import gov.usgs.cida.pubs.aop.ISetDbContext;
-import gov.usgs.cida.pubs.dao.intfc.IMpPublicationDao;
-import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
 
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * @author drsteini
- *
- */
-public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublicationDao {
+public class MpPublicationCostCenterDao extends MpDao<MpPublicationCostCenter> {
 
-    private static final String NS = "mpPublication";
-    public static final String GET_NEW_ID = ".getNewProdId";
+    private static final String NS = "mpPublicationCostCenter";
 
-   /**
+    /**
      * {@inheritDoc}
      * @see gov.usgs.cida.pubs.dao.BaseDao#add(java.lang.Object)
      */
     @Transactional
     @ISetDbContext
     @Override
-    public Integer add(MpPublication domainObject) {
+    public Integer add(MpPublicationCostCenter domainObject) {
         getSqlSession().insert(NS + ADD, domainObject);
         return domainObject.getId();
     }
@@ -37,8 +31,8 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
     @Transactional(readOnly = true)
     @ISetDbContext
     @Override
-    public MpPublication getById(Integer domainID) {
-        return (MpPublication) getSqlSession().selectOne(NS + GET_BY_ID, domainID);
+    public MpPublicationCostCenter getById(Integer domainID) {
+        return (MpPublicationCostCenter) getSqlSession().selectOne(NS + GET_BY_ID, domainID);
     }
 
     /**
@@ -48,7 +42,7 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
     @Transactional(readOnly = true)
     @ISetDbContext
     @Override
-    public List<MpPublication> getByMap(Map<String, Object> filters) {
+    public List<MpPublicationCostCenter> getByMap(Map<String, Object> filters) {
         return getSqlSession().selectList(NS + GET_BY_MAP, filters);
     }
 
@@ -58,7 +52,7 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
     @Transactional
     @ISetDbContext
     @Override
-    public void update(MpPublication domainObject) {
+    public void update(MpPublicationCostCenter domainObject) {
         getSqlSession().update(NS + UPDATE, domainObject);
     }
 
@@ -68,7 +62,7 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
     @Transactional
     @ISetDbContext
     @Override
-    public void delete(MpPublication domainObject) {
+    public void delete(MpPublicationCostCenter domainObject) {
         deleteById(domainObject.getId());
     }
 
@@ -100,17 +94,6 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
     @Override
     public void publishToPw(Integer prodID) {
         getSqlSession().update(NS + PUBLISH, prodID);
-    }
-
-    /**
-     * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.dao.intfc.IMpPublicationDao#getNewProdId()
-     */
-    @Transactional
-    @ISetDbContext
-    @Override
-    public Integer getNewProdId() {
-        return getSqlSession().selectOne(NS + GET_NEW_ID);
     }
 
 }

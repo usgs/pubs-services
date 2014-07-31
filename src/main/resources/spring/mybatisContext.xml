@@ -9,12 +9,13 @@
     </bean>
 
     <bean id="mpPublicationDao" class="gov.usgs.cida.pubs.dao.mp.MpPublicationDao" autowire="byName"/>
-    <bean id="publicationDao" class="gov.usgs.cida.pubs.dao.mp.MpPublicationDao" autowire="byName"/>
     <bean id="mpPublicationContributorDao" class="gov.usgs.cida.pubs.dao.mp.MpPublicationContributorDao" autowire="byName"/>
+    <bean id="mpPublicationCostCenterDao" class="gov.usgs.cida.pubs.dao.mp.MpPublicationCostCenterDao" autowire="byName"/>
 
     <bean id="contributorDao" class="gov.usgs.cida.pubs.dao.ContributorDao" autowire="byName"/>
     <bean id="contributorTypeDao" class="gov.usgs.cida.pubs.dao.ContributorTypeDao" autowire="byName"/>
     <bean id="costCenterDao" class="gov.usgs.cida.pubs.dao.CostCenterDao" autowire="byName"/>
+    <bean id="publicationDao" class="gov.usgs.cida.pubs.dao.PublicationDao" autowire="byName"/>
     <bean id="publicationSeriesDao" class="gov.usgs.cida.pubs.dao.PublicationSeriesDao" autowire="byName"/>
     <bean id="publicationSubtypeDao" class="gov.usgs.cida.pubs.dao.PublicationSubtypeDao" autowire="byName"/>
     <bean id="publicationTypeDao" class="gov.usgs.cida.pubs.dao.PublicationTypeDao" autowire="byName"/>

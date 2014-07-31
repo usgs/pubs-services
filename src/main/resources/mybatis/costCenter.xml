@@ -6,10 +6,11 @@
     <resultMap id="result" type="CostCenter" extends="base.result">
         <id property="id" column="cost_center_id"/>
         <result property="name" column="name"/>
+        <result property="ipdsId" column="cost_center_ipds_id"/>
     </resultMap>
 
     <sql id="cols">
-        cost_center_id, name
+        cost_center_id, name, cost_center_ipds_id
     </sql>
 
     <sql id="filters">
@@ -19,6 +20,9 @@
             </if>
             <if test="name != null">
                 and upper(name) like upper(#{name}) || '%'
+            </if>
+            <if test="ipdsId != null">
+                and cost_center_ipds_id = #{ipdsId}
             </if>
         </where>
     </sql>

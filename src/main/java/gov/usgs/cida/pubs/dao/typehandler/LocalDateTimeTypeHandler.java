@@ -43,7 +43,7 @@ public class LocalDateTimeTypeHandler  implements TypeHandler<LocalDateTime> {
             try {
                 ldt = LocalDateTime.fromDateFields(date);
             } catch (IllegalArgumentException e) {
-                throw new SQLException("illegal value for a LocalDateTime : " + date);
+                throw new SQLException("illegal value for a LocalDateTime : " + date, e);
             }
         }
         return ldt; 
@@ -61,7 +61,7 @@ public class LocalDateTimeTypeHandler  implements TypeHandler<LocalDateTime> {
             try {
                 ldt = LocalDateTime.fromDateFields(date);
             } catch (IllegalArgumentException e) {
-                throw new SQLException("illegal value for a LocalDateTime : " + date);
+                throw new SQLException("illegal value for a LocalDateTime : " + date, e);
             }
         }
         return ldt; 

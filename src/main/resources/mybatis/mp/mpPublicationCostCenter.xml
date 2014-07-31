@@ -3,40 +3,26 @@
 
 <mapper namespace="mpPublicationCostCenter">
 
-<!--     <resultMap id="result" type="MpPublicationCostCenter" extends="publicationCostCenter.result"> -->
-    <resultMap id="result" type="CostCenter" extends="costCenter.result">
-    </resultMap>
+    <resultMap id="result" type="MpPublicationCostCenter" extends="publicationCostCenter.result"/>
 
-    <sql id="cols">
-        publication_cost_center_id, publication_id, cost_center_id, name
-    </sql>
+    <insert id="add" parameterType="MpPublication">
+        <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
+            select publication_cost_center_seq.nextval id from dual
+        </selectKey>
+        insert into mp_pub_cost_center (<include refid="publicationCostCenter.cols"/>)
+             values (<include refid="publicationCostCenter.hosts"/>)
+    </insert>
 
-    <sql id="filters">
-        <where>
-            <if test="id != null">
-                and publication_cost_center_id = #{id}
-            </if>
-            <if test="publicationId != null">
-                and publication_id = #{publicationId}
-            </if>
-            <if test="costCenterId != null">
-                and cost_center_id = #{costCenterId}
-            </if>
-            <if test="name != null">
-                and upper(name) like upper(#{name}) || '%'
-            </if>
-        </where>
-    </sql>
+    <insert id="copyMpFromPw" parameterType="Integer">
+        insert into mp_pub_cost_center (<include refid="publicationCostCenter.cols"/>)
+            (select <include refid="publicationCostCenter.cols"/>
+               from publication_cost_center
+              where publication_id = #{value,jdbcType=NUMERIC})
+    </insert>
 
     <sql id="baseSelect">
-        select <include refid="cols"/>
-          from (select publication_cost_center_id,
-                       publication_id,
-                       mp_pub_cost_center.cost_center_id,
-                       name
-                  from mp_pub_cost_center
-                       join cost_center
-                         on mp_pub_cost_center.cost_center_id = cost_center.cost_center_id)
+        select <include refid="publicationCostCenter.cols"/>
+          from mp_pub_cost_center
     </sql>
 
     <select id="getById" parameterType="Integer" resultMap="result">
@@ -51,7 +37,18 @@
 
     <select id="getByMap" resultMap="result">
         <include refid="baseSelect"/>
-        <include refid="filters"/>
+        <include refid="publicationCostCenter.filters"/>
     </select>
+
+    <update id="update" parameterType="MpPublication">
+        update mp_pub_cost_center
+           set <include refid="publicationCostCenter.sets"/>
+           where publication_cost_center_id = #{id,jdbcType=NUMERIC}
+    </update>
+
+    <delete id="delete" parameterType="Integer">
+        delete from mp_pub_cost_center
+         where publication_cost_center_id = #{value,jdbcType=NUMERIC}
+    </delete>
 
 </mapper>

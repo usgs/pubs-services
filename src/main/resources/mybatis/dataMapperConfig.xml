@@ -7,7 +7,7 @@
     <!-- Global configuration settings for the mappper.-->
       <settings>
         <setting name="cacheEnabled" value="false"/>
-        <setting name="lazyLoadingEnabled" value="false"/>
+        <setting name="lazyLoadingEnabled" value="true"/>
         <setting name="aggressiveLazyLoading" value="false"/>
         <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
@@ -30,6 +30,7 @@
         <typeAlias alias="contributor" type="gov.usgs.cida.pubs.domain.Contributor"/>
         <typeAlias alias="contributorType" type="gov.usgs.cida.pubs.domain.ContributorType"/>
         <typeAlias alias="costCenter" type="gov.usgs.cida.pubs.domain.CostCenter"/>
+        <typeAlias alias="linkFileType" type="gov.usgs.cida.pubs.domain.LinkFileType"/>
         <typeAlias alias="linkType" type="gov.usgs.cida.pubs.domain.LinkType"/>
         <typeAlias alias="publication" type="gov.usgs.cida.pubs.domain.Publication"/>
         <typeAlias alias="publicationContributor" type="gov.usgs.cida.pubs.domain.PublicationContributor"/>
@@ -66,6 +67,7 @@
          <mapper resource="mybatis/costCenter.xml"/>
          <mapper resource="mybatis/contributor.xml"/>
          <mapper resource="mybatis/contributorType.xml"/>
+         <mapper resource="mybatis/linkFileType.xml"/>
          <mapper resource="mybatis/linkType.xml"/>
          <mapper resource="mybatis/publication.xml"/>
          <mapper resource="mybatis/publicationContributor.xml"/>

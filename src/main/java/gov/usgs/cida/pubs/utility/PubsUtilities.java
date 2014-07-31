@@ -66,7 +66,7 @@ public final class PubsUtilities {
             try {
                 props.load(PubsUtilities.class.getClassLoader().getResourceAsStream("ValidationMessages.properties"));
             } catch (Exception e) {
-                throw new RuntimeException("Unable to load ValidationMessages.properties");
+                throw new RuntimeException("Unable to load ValidationMessages.properties", e);
             }
             messageProp = props.getProperty(messageName.substring(1, messageName.length() - 1));
             if (null == messageProp) {

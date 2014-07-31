@@ -8,10 +8,12 @@
     <bean id="mpPublicationCostCenter" class="gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter" autowire="byName"/>
     <bean id="mpPublicationLink" class="gov.usgs.cida.pubs.domain.mp.MpPublicationLink" autowire="byName"/>
 
-
+    <bean id="applicationVersion" class="gov.usgs.cida.pubs.ApplicationVersion" autowire="byName" />
     <bean id="contributor" class="gov.usgs.cida.pubs.domain.Contributor" autowire="byName"/>
     <bean id="contributorType" class="gov.usgs.cida.pubs.domain.ContributorType" autowire="byName"/>
     <bean id="costCenter" class="gov.usgs.cida.pubs.domain.CostCenter" autowire="byName"/>
+    <bean id="linkFileType" class="gov.usgs.cida.pubs.domain.LinkFileType" autowire="byName"/>
+    <bean id="linkType" class="gov.usgs.cida.pubs.domain.LinkType" autowire="byName"/>
     <bean id="publication" class="gov.usgs.cida.pubs.domain.Publication" autowire="byName"/>
     <bean id="publicationType" class="gov.usgs.cida.pubs.domain.PublicationType" autowire="byName"/>
     <bean id="publicationSubtype" class="gov.usgs.cida.pubs.domain.PublicationSubtype" autowire="byName"/>

@@ -1,7 +1,10 @@
 package gov.usgs.cida.pubs.domain;
 
+import gov.usgs.cida.pubs.json.view.intfc.IMpView;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 
 public class PublicationLink<D> extends BaseDomain<D> {
 
@@ -9,15 +12,19 @@ public class PublicationLink<D> extends BaseDomain<D> {
     private Integer publicationId;
 
     @JsonProperty("rank")
+    @JsonView(IMpView.class)
     private Integer rank;
 
     @JsonProperty("type")
+    @JsonView(IMpView.class)
     private LinkType linkType;
 
     @JsonProperty("url")
+    @JsonView(IMpView.class)
     private String url;
 
     @JsonProperty("text")
+    @JsonView(IMpView.class)
     private String text;
 
     @JsonIgnore
@@ -27,6 +34,7 @@ public class PublicationLink<D> extends BaseDomain<D> {
     private String sizeUnits;
 
     @JsonProperty("linkFileType")
+    @JsonView(IMpView.class)
     private LinkFileType linkFileType;
 
     public Integer getPublicationId() {
@@ -70,6 +78,7 @@ public class PublicationLink<D> extends BaseDomain<D> {
     }
 
     @JsonProperty("size")
+    @JsonView(IMpView.class)
     public String getSize() {
         return objectSize + " " + sizeUnits;
     }

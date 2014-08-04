@@ -40,7 +40,9 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     @Override
     public MpPublication getObject(Integer objectId) {
         MpPublication pub = MpPublication.getDao().getById(objectId);
-        pub.setValidationErrors(validator.validate(pub));
+        if (null != pub) {
+            pub.setValidationErrors(validator.validate(pub));
+        }
         return pub;
     }
 
@@ -59,15 +61,9 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     @Override
     @Transactional
     public MpPublication createObject(MpPublication object) {
-        MpPublication rtnPub = publicationPreProcessing(object);
-        Set<ConstraintViolation<MpPublication>> validations = validator.validate(rtnPub);
-        if (!validations.isEmpty()) {
-            rtnPub.setValidationErrors(validations);
-        } else {
-            Integer id = MpPublication.getDao().add(rtnPub);
-            rtnPub = publicationPostProcessing(MpPublication.getDao().getById(id));
-        }
-        return rtnPub;
+        MpPublication pub = publicationPreProcessing(object);
+        Integer id = MpPublication.getDao().add(pub);
+        return publicationPostProcessing(MpPublication.getDao().getById(id));
     }
 
     /** {@inheritDoc}
@@ -77,16 +73,9 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     @Transactional
     public MpPublication updateObject(MpPublication object) {
         beginPublicationEdit(object.getId());
-        MpPublication rtnPub = publicationPreProcessing(object);
-        Set<ConstraintViolation<MpPublication>> validations = validator.validate(rtnPub);
-        if (!validations.isEmpty()) {
-            rtnPub.setValidationErrors(validations);
-        } else {
-            MpPublication.getDao().update(rtnPub);
-            updateCostCenters(rtnPub);
-            rtnPub = publicationPostProcessing(MpPublication.getDao().getById(object.getId()));
-        }
-        return rtnPub;
+        MpPublication pub = publicationPreProcessing(object);
+        MpPublication.getDao().update(pub);
+        return publicationPostProcessing(MpPublication.getDao().getById(object.getId()));
     }
 
     /** {@inheritDoc}
@@ -95,14 +84,14 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     @Override
     @Transactional
     public ValidationResults deleteObject(MpPublication object) {
-        MpPublication rtnPub = MpPublication.getDao().getById(object.getId());
-        if (null == rtnPub) {
-            rtnPub = new MpPublication();
+        MpPublication pub = MpPublication.getDao().getById(object.getId());
+        if (null == pub) {
+            pub = new MpPublication();
         } else {
             //only delete if we found it...
-            Set<ConstraintViolation<MpPublication>> validations = validator.validate(rtnPub, DeleteChecks.class);
+            Set<ConstraintViolation<MpPublication>> validations = validator.validate(pub, DeleteChecks.class);
             if (!validations.isEmpty()) {
-                rtnPub.setValidationErrors(validations);
+                pub.setValidationErrors(validations);
             } else {
                 MpPublicationLink.getDao().deleteByParent(object.getId());
                 MpPublicationContributor.getDao().deleteByParent(object.getId());
@@ -111,7 +100,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
                 MpPublication.getDao().delete(object);
             }
         }
-        return rtnPub.getValidationErrors();
+        return pub.getValidationErrors();
     }
 
     protected MpPublication publicationPreProcessing(final MpPublication inPublication) {

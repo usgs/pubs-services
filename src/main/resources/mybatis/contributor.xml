@@ -9,11 +9,11 @@
         <result property="given" column="given"/>
         <result property="suffix" column="suffix"/>
         <result property="email" column="email"/>
-        <result property="affiliation" column="affiliation"/>
+        <association property="affiliation" column="cost_center_id" select="costCenter.getById"/>
     </resultMap>
 
     <sql id="cols">
-        contributor_id, first, given, suffix, email, affiliation, literal
+        contributor_id, first, given, suffix, email, cost_center_id, literal
     </sql>
 
     <sql id="filters">
@@ -25,8 +25,7 @@
                 and (upper(first) like upper(#{person}) || '%'
                   or upper(given) like upper(#{person}) || '%'
                   or upper(suffix) like upper(#{person}) || '%'
-                  or upper(email) like upper(#{person}) || '%'
-                  or upper(affiliation) like upper(#{person}) || '%')
+                  or upper(email) like upper(#{person}) || '%')
             </if>
             <if test="corporation != null">
                 and upper(literal) like upper(#{corporation}) || '%'

@@ -16,8 +16,10 @@ import javax.validation.ConstraintViolation;
 import org.joda.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * All Domain Objects extend this base class.
@@ -25,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonView;
  * @param <D> the specific domain of the object 
  */
 //@JsonInclude(JsonInclude.Include.NON_EMPTY or .NON_NULL?)
+@JsonInclude(Include.NON_NULL)
 public abstract class BaseDomain<D> implements IBaseView {
 
     /** The ID of this domain object. */

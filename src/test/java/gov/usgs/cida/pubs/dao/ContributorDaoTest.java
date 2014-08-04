@@ -24,7 +24,7 @@ public class ContributorDaoTest extends BaseSpringTest {
         assertEquals("ConGiven", contributor.getGiven());
         assertEquals("ConSuffix", contributor.getSuffix());
         assertEquals("con@usgs.gov", contributor.getEmail());
-        assertEquals("Conaffiliation", contributor.getAffiliation());
+        assertEquals(22, contributor.getAffiliation().getId().intValue());
         assertNull(contributor.getLiteral());
     }
 

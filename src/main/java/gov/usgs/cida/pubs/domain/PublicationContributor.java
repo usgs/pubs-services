@@ -1,5 +1,11 @@
 package gov.usgs.cida.pubs.domain;
 
+import gov.usgs.cida.pubs.json.view.intfc.IMpView;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.annotation.JsonView;
+
 //import gov.usgs.cida.pubs.dao.intfc.IDao;
 
 public class PublicationContributor<D> extends BaseDomain<D> {
@@ -11,8 +17,12 @@ public class PublicationContributor<D> extends BaseDomain<D> {
 
     private ContributorType contributorType;
 
+    @JsonProperty("rank")
+    @JsonView(IMpView.class)
     private Integer rank;
 
+    @JsonView(IMpView.class)
+    @JsonUnwrapped
     private Contributor contributor;
 
     public Integer getPublicationId() {

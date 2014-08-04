@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.domain;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
 import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
+import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -62,7 +63,7 @@ public class CostCenter extends BaseDomain<CostCenter> implements ILookup {
     }
 
     @Override
-    @JsonView(ILookupView.class)
+    @JsonView({ILookupView.class, IMpView.class})
     public String getText() {
         return name;
     }

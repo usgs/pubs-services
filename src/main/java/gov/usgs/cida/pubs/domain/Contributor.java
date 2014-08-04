@@ -1,21 +1,39 @@
 package gov.usgs.cida.pubs.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+
 import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
+import gov.usgs.cida.pubs.json.view.intfc.IMpView;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 public class Contributor extends BaseDomain<Contributor> {
 
     private static IDao<Contributor> contributorDao;
 
+    @JsonProperty("family")
+    @JsonView(IMpView.class)
     private String first;
 
+    @JsonProperty("given")
+    @JsonView(IMpView.class)
     private String given;
 
+    @JsonProperty("suffix")
+    @JsonView(IMpView.class)
     private String suffix;
 
+    @JsonProperty("email")
+    @JsonView(IMpView.class)
     private String email;
 
-    private String affiliation;
+    @JsonProperty("affiliation")
+    @JsonView(IMpView.class)
+    private CostCenter affiliation;
 
+    @JsonProperty("organization")
+    @JsonView(IMpView.class)
     private String literal;
 
     public String getFirst() {
@@ -50,11 +68,11 @@ public class Contributor extends BaseDomain<Contributor> {
         email = inEmail;
     }
 
-    public String getAffiliation() {
+    public CostCenter getAffiliation() {
         return affiliation;
     }
 
-    public void setAffiliation(final String inAffiliation) {
+    public void setAffiliation(final CostCenter inAffiliation) {
         affiliation = inAffiliation;
     }
 
@@ -64,6 +82,20 @@ public class Contributor extends BaseDomain<Contributor> {
 
     public void setLiteral(final String inLiteral) {
         literal = inLiteral;
+    }
+
+    @Override
+    @JsonProperty("contributorId")
+    @JsonView(IMpView.class)
+    public Integer getId() {
+        return id;
+    }
+
+    @Override
+    @JsonProperty("contributorId")
+    @JsonView(IMpView.class)
+    public void setId(final String inId) {
+        id = PubsUtilities.parseInteger(inId);
     }
 
     /**

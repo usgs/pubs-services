@@ -12,22 +12,12 @@ public class ContributorType extends BaseDomain<ContributorType> implements ILoo
 
     private String name;
 
-    private String tabName;
-
     public String getName() {
         return name;
     }
 
     public void setName(final String inName) {
         name = inName;
-    }
-
-    public String getTabName() {
-        return tabName;
-    }
-
-    public void setTabName(final String inTabName) {
-        tabName = inTabName;
     }
 
     /**
@@ -48,7 +38,7 @@ public class ContributorType extends BaseDomain<ContributorType> implements ILoo
     @Override
     @JsonView(ILookupView.class)
     public String getText() {
-        return tabName;
+        return name;
     }
 
 }

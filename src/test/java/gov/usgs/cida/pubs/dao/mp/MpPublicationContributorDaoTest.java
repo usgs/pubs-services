@@ -81,8 +81,7 @@ public class MpPublicationContributorDaoTest extends BaseSpringTest {
         assertEquals(id, persistedA.getPublicationId());
         assertNotNull(persistedA.getContributorType());
         assertEquals(id, persistedA.getContributorType().getId());
-        assertEquals("author", persistedA.getContributorType().getName());
-        assertEquals("Authors", persistedA.getContributorType().getTabName());
+        assertEquals("Authors", persistedA.getContributorType().getName());
         assertNotNull(persistedA.getContributor());
         assertEquals(id, persistedA.getContributor().getId());
         assertEquals("ConFirst", persistedA.getContributor().getFirst());

@@ -6,11 +6,10 @@
     <resultMap id="result" type="ContributorType" extends="base.result">
         <id property="id" column="contributor_type_id"/>
         <result property="name" column="name"/>
-        <result property="tabName" column="tab_name"/>
     </resultMap>
 
     <sql id="cols">
-        contributor_type_id, name, tab_name
+        contributor_type_id, name
     </sql>
 
     <sql id="filters">
@@ -20,9 +19,6 @@
             </if>
             <if test="name != null">
                 and upper(name) like upper(#{name}) || '%'
-            </if>
-            <if test="tabName != null">
-                and upper(tab_name) like upper(#{tabName}) || '%'
             </if>
         </where>
     </sql>

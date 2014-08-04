@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.domain.intfc.ILookup;
 import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 
-public class Contributor extends BaseDomain<Contributor> {
+public class Contributor extends BaseDomain<Contributor> implements ILookup {
 
     private static IDao<Contributor> contributorDao;
 
@@ -96,6 +97,16 @@ public class Contributor extends BaseDomain<Contributor> {
     @JsonView(IMpView.class)
     public void setId(final String inId) {
         id = PubsUtilities.parseInteger(inId);
+    }
+
+    @Override
+    @JsonView(ILookupView.class)
+    public String getText() {
+        if (null == literal) {
+            return first + " " + given + " " + suffix + " " + email;
+        } else {
+            return literal;
+        }
     }
 
     /**

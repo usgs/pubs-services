@@ -189,11 +189,11 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @Length(min = 0, max = 15)
     private String ipdsId;
 
-    @JsonProperty("author")
+    @JsonProperty("authors")
     @JsonView(IMpView.class)
     private Collection<PublicationContributor<?>> authors;
 
-    @JsonProperty("editor")
+    @JsonProperty("editors")
     @JsonView(IMpView.class)
     private Collection<PublicationContributor<?>> editors;
 

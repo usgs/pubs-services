@@ -1,7 +1,7 @@
 package gov.usgs.cida.pubs.webservice;
 
 import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.domain.BaseDomain;
+import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.LinkFileType;
@@ -195,6 +195,42 @@ public class LookupMvcService extends MvcService<PublicationType> {
                 filters.put("name", text[0]);
             }
             rtn = LinkFileType.getDao().getByMap(filters);
+        }
+        return rtn;
+    }
+
+    @RequestMapping(value={"/people"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
+    @ResponseView(ILookupView.class)
+    public @ResponseBody Collection<Contributor> getContributorsPeople(HttpServletRequest request, HttpServletResponse response,
+                @RequestParam(value="text", required=false) String[] text) {
+        LOG.debug("Contributor - People");
+        Collection<Contributor> rtn = new ArrayList<>();
+        if (validateParametersSetHeaders(request, response)) {
+            response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
+            Map<String, Object> filters = new HashMap<>();
+            filters.put("category", "person");
+            if (null != text && 0 < text.length) {
+                filters.put("name", text[0]);
+            }
+            rtn = Contributor.getDao().getByMap(filters);
+        }
+        return rtn;
+    }
+
+    @RequestMapping(value={"/corporations"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
+    @ResponseView(ILookupView.class)
+    public @ResponseBody Collection<Contributor> getContributorsCorporations(HttpServletRequest request, HttpServletResponse response,
+                @RequestParam(value="text", required=false) String[] text) {
+        LOG.debug("Contributor - Corporations");
+        Collection<Contributor> rtn = new ArrayList<>();
+        if (validateParametersSetHeaders(request, response)) {
+            response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
+            Map<String, Object> filters = new HashMap<>();
+            filters.put("category", "corporation");
+            if (null != text && 0 < text.length) {
+                filters.put("name", text[0]);
+            }
+            rtn = Contributor.getDao().getByMap(filters);
         }
         return rtn;
     }

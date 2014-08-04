@@ -21,14 +21,22 @@
             <if test="id != null">
                 and contributor_id = #{id}
             </if>
-            <if test="person != null">
-                and (upper(first) like upper(#{person}) || '%'
-                  or upper(given) like upper(#{person}) || '%'
-                  or upper(suffix) like upper(#{person}) || '%'
-                  or upper(email) like upper(#{person}) || '%')
+            <if test="personName != null">
+                and (upper(first) like upper(#{personName}) || '%'
+                  or upper(given) like upper(#{personName}) || '%'
+                  or upper(suffix) like upper(#{personName}) || '%'
+                  or upper(email) like upper(#{personName}) || '%')
             </if>
-            <if test="corporation != null">
-                and upper(literal) like upper(#{corporation}) || '%'
+            <if test="corporationName != null">
+                and upper(literal) like upper(#{corporationName}) || '%'
+            </if>
+            <if test="category != null">
+                <if test="category=='person'">
+                    and literal is null
+                </if>
+                <if test="category=='corporation'">
+                    and literal is not null
+                </if>
             </if>
         </where>
     </sql>

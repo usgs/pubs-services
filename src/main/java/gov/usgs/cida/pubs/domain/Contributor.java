@@ -99,6 +99,12 @@ public class Contributor extends BaseDomain<Contributor> implements ILookup {
         id = PubsUtilities.parseInteger(inId);
     }
 
+    @JsonProperty("id")
+    @JsonView(ILookupView.class)
+    public Integer getLookupId() {
+        return id;
+    }
+
     @Override
     @JsonView(ILookupView.class)
     public String getText() {

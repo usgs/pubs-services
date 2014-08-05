@@ -6,7 +6,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.domain.CostCenter;
+import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
+import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
@@ -14,9 +15,10 @@ import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Validator;
@@ -27,29 +29,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class MpPublicationBusServiceTest extends BaseSpringTest {
 
+    public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "authors", "editors", "links",
+            "doiName", "indexId");
+
     @Autowired
     public Validator validator;
 
+    @Autowired
+    public IListBusService<PublicationCostCenter<MpPublicationCostCenter>> ccBusService;
+
     private class BusService extends MpPublicationBusService {
-        public BusService(Validator validator) {
+        public BusService(Validator validator, IListBusService<PublicationCostCenter<MpPublicationCostCenter>> ccBusService) {
             this.validator = validator;
+            this.costCenterBusService = ccBusService;
         }
     }
     private BusService busService;
 
     @Before
     public void initTest() {
-        busService = new BusService(validator);
+        busService = new BusService(validator, ccBusService);
     }
 
     @Test
     public void getObjectTest() {
+        busService.getObject(null);
         assertNull(busService.getObject(-1));
         assertNotNull(busService.getObject(1));
     }
 
     @Test
     public void getObjectsTest() {
+        busService.getObjects(null);
+        busService.getObjects(new HashMap<String, Object>());
+
         Map<String, Object> filters = new HashMap<>();
         filters.put("id", -1);
         Collection<MpPublication> pubs = busService.getObjects(filters);
@@ -66,6 +79,8 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
     public void createObjectTest() {
         //TODO both a good create and a create w/validation errors.
         //public MpPublication createObject(MpPublication object)
+        busService.createObject(null);
+
         MpPublication pub = busService.createObject(new MpPublication());
         assertNotNull(pub.getId());
     }
@@ -74,17 +89,30 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
     public void updateObjectTest() {
         //TODO both a good update and an update w/validation errors.
         //public MpPublication updateObject(MpPublication object)
+        busService.updateObject(null);
+        busService.updateObject(new MpPublication());
+
+        MpPublication pub = MpPublicationDaoTest.updatePubProperties(MpPublicationDaoTest.addAPub(MpPublication.getDao().getNewProdId()));
+        MpPublication after = busService.updateObject(MpPublicationDaoTest.updatePubProperties(MpPublication.getDao().getById(pub.getId())));
+        assertDaoTestResults(MpPublication.class, pub, after, IGNORE_PROPERTIES, true, true);
+        assertEquals(pub.getId().toString(), after.getIndexId());
+        assertNull("DoiName gets nulled out because the pub should no longer have one.", after.getDoiName());
     }
 
     @Test
     public void deleteObjectTest() {
         //TODO both a good delete and a delete w/validation errors.
         //public ValidationResults deleteObject(MpPublication object)
+        busService.deleteObject(null);
+        busService.deleteObject(new MpPublication());
     }
 
     @Test
     public void preProcessingTest() {
         //TODO - more than just the basic doiName testing
+        busService.publicationPreProcessing(null);
+        busService.publicationPreProcessing(new MpPublication());
+
         MpPublication inPublication = new MpPublication();
         PublicationType pubType = new PublicationType();
         pubType.setId(PublicationType.REPORT);
@@ -275,91 +303,9 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
 
     @Test
     public void publicationPostProcessingNPETest() {
-        MpPublication pub = new MpPublication();
-        pub.setId(MpPublication.getDao().getNewProdId());
-        MpPublication.getDao().add(pub);
-        busService.publicationPostProcessing(pub);
-
-//        pub.setIpdsId("IPDS-" + pub.getId());
-//        pub.setPublicationTypeId(PublicationType.USGS_NUMBERED_SERIES);
-        busService.publicationPostProcessing(pub);
-
-//        pub.setPublicationTypeId(PublicationType.USGS_UNNUMBERED_SERIES);
-        busService.publicationPostProcessing(pub);
-    }
-
-    @Test
-    public void updateCostCentersTest() {
-        MpPublication mpPub = MpPublication.getDao().getById(2);
-        Integer id = MpPublication.getDao().getNewProdId();
-        mpPub.setId(id);
-        mpPub.setIndexId(String.valueOf(id));
-        mpPub.setIpdsId("ipds_" + id);
-        MpPublication.getDao().add(mpPub);
-
-        //update with no cost centers either side
-        busService.updateCostCenters(mpPub);
-        Map<String, Object> filters = new HashMap<>();
-        filters.put("publicationId", id);
-        assertEquals(0, MpPublicationCostCenter.getDao().getByMap(filters).size());
-
-        //Add some cost centers
-        Collection<PublicationCostCenter<?>> mpccs = new ArrayList<>();
-        CostCenter cc1 = CostCenter.getDao().getById(1);
-        MpPublicationCostCenter mpcc1 = new MpPublicationCostCenter();
-        mpcc1.setPublicationId(id);
-        mpcc1.setCostCenter(cc1);
-        mpccs.add(mpcc1);
-        CostCenter cc2 = CostCenter.getDao().getById(2);
-        MpPublicationCostCenter mpcc2 = new MpPublicationCostCenter();
-        mpcc2.setPublicationId(id);
-        mpcc2.setCostCenter(cc2);
-        mpccs.add(mpcc2);
-        mpPub.setCostCenters(mpccs);
-        busService.updateCostCenters(mpPub);
-        Collection<MpPublicationCostCenter> addedccs = MpPublicationCostCenter.getDao().getByMap(filters);
-        assertEquals(2, addedccs.size());
-        boolean gotOne = false;
-        boolean gotTwo = false;
-        for (MpPublicationCostCenter ccs : addedccs) {
-            assertEquals(id, ccs.getPublicationId());
-            if (1 == ccs.getCostCenter().getId()) {
-                gotOne = true;
-            } else if (2 == ccs.getCostCenter().getId()) {
-                gotTwo = true;
-            }
-        }
-        assertTrue(gotOne);
-        assertTrue(gotTwo);
-
-        //Now add one, take one away (and leave one alone).
-        mpccs = new ArrayList<>();
-        mpccs.add(mpcc2);
-        CostCenter cc3= CostCenter.getDao().getById(3);
-        MpPublicationCostCenter mpcc3 = new MpPublicationCostCenter();
-        mpcc3.setPublicationId(id);
-        mpcc3.setCostCenter(cc3);
-        mpccs.add(mpcc3);
-        mpPub.setCostCenters(mpccs);
-        busService.updateCostCenters(mpPub);
-        Collection<MpPublicationCostCenter> updccs = MpPublicationCostCenter.getDao().getByMap(filters);
-        assertEquals(2, updccs.size());
-        gotOne = false;
-        gotTwo = false;
-        boolean gotThree = false;
-        for (MpPublicationCostCenter ccs : updccs) {
-            assertEquals(id, ccs.getPublicationId());
-            if (1 == ccs.getCostCenter().getId()) {
-                gotOne = true;
-            } else if (2 == ccs.getCostCenter().getId()) {
-                gotTwo = true;
-            } else if (3 == ccs.getCostCenter().getId()) {
-                gotThree = true;
-            }
-        }
-        assertFalse(gotOne);
-        assertTrue(gotTwo);
-        assertTrue(gotThree);
+        //No real asserts - just don't NPE.
+        busService.publicationPostProcessing(null);
+        busService.publicationPostProcessing(new MpPublication());
     }
 
     //public ValidationResults publish(final Integer prodId)

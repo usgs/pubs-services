@@ -58,7 +58,6 @@ public class LookupMvcService extends MvcService<PublicationType> {
         LOG.debug("publicationSubtype");
         Collection<PublicationSubtype> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
-            response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
             Map<String, Object> filters = new HashMap<>();
             filters.put("publicationTypeId", publicationTypeId);
             if (null != text && 0 < text.length) {
@@ -77,7 +76,6 @@ public class LookupMvcService extends MvcService<PublicationType> {
         LOG.debug("publicationSubtype");
         Collection<PublicationSubtype> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
-            response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
             Map<String, Object> filters = new HashMap<>();
             if (null != publicationTypeId && 0 < publicationTypeId.length) {
                 filters.put("publicationTypeId", publicationTypeId[0]);
@@ -99,7 +97,6 @@ public class LookupMvcService extends MvcService<PublicationType> {
         LOG.debug("publicationSeries");
         Collection<PublicationSeries> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
-            response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
             Map<String, Object> filters = new HashMap<>();
             filters.put("publicationSubtypeId", publicationSubtypeId);
             if (null != text && 0 < text.length) {
@@ -118,7 +115,6 @@ public class LookupMvcService extends MvcService<PublicationType> {
         LOG.debug("publicationSeries");
         Collection<PublicationSeries> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
-            response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
             Map<String, Object> filters = new HashMap<>();
             if (null != publicationSubtypeId && 0 < publicationSubtypeId.length) {
                 filters.put("publicationSubtypeId", publicationSubtypeId[0]);
@@ -138,7 +134,6 @@ public class LookupMvcService extends MvcService<PublicationType> {
         LOG.debug("CostCenter");
         Collection<CostCenter> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
-            response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
                 filters.put("name", text[0]);
@@ -155,7 +150,6 @@ public class LookupMvcService extends MvcService<PublicationType> {
         LOG.debug("ContributorType");
         Collection<ContributorType> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
-            response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
                 filters.put("name", text[0]);
@@ -172,7 +166,6 @@ public class LookupMvcService extends MvcService<PublicationType> {
         LOG.debug("LinkType");
         Collection<LinkType> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
-            response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
                 filters.put("name", text[0]);
@@ -189,7 +182,6 @@ public class LookupMvcService extends MvcService<PublicationType> {
         LOG.debug("LinkFileType");
         Collection<LinkFileType> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
-            response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
                 filters.put("name", text[0]);
@@ -206,7 +198,6 @@ public class LookupMvcService extends MvcService<PublicationType> {
         LOG.debug("Contributor - People");
         Collection<Contributor> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
-            response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
             Map<String, Object> filters = new HashMap<>();
             filters.put("category", "person");
             if (null != text && 0 < text.length) {
@@ -224,7 +215,6 @@ public class LookupMvcService extends MvcService<PublicationType> {
         LOG.debug("Contributor - Corporations");
         Collection<Contributor> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
-            response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
             Map<String, Object> filters = new HashMap<>();
             filters.put("category", "corporation");
             if (null != text && 0 < text.length) {

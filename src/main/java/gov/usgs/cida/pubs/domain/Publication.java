@@ -19,8 +19,6 @@ import org.hibernate.validator.constraints.Length;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -142,38 +140,38 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @Length(min = 0, max = 2000)
     private String productDescription;
 
-    @JsonProperty("page-first")
+    @JsonProperty("pageFirst")
     @JsonView(IMpView.class)
     @Length(min = 0, max = 20)
     private String startPage;
 
-    @JsonProperty("page-last")
+    @JsonProperty("pageLast")
     @JsonView(IMpView.class)
     @Length(min = 0, max = 20)
     private String endPage;
 
-    @JsonProperty("number-of-pages")
+    @JsonProperty("numberOfPages")
     @JsonView(IMpView.class)
     @Digits(integer = 4, fraction = 0)
     private String numberOfPages;
 
-    @JsonProperty("online-only")
+    @JsonProperty("onlineOnly")
     @JsonView(IMpView.class)
     @Length(min = 0, max = 1)
     private String onlineOnly;
 
-    @JsonProperty("additional-online-files")
+    @JsonProperty("additionalOnlineFiles")
     @JsonView(IMpView.class)
     @Length(min = 0, max = 1)
     private String additionalOnlineFiles;
 
-    @JsonProperty("temporal-start")
+    @JsonProperty("temporalStart")
     @JsonView(IMpView.class)
     @JsonSerialize(using = PubsJsonLocalDateSerializer.class)
     @JsonDeserialize(using = PubsJsonLocalDateDeSerializer.class)
     private LocalDate temporalStart;
 
-    @JsonProperty("temporal-end")
+    @JsonProperty("temporalEnd")
     @JsonView(IMpView.class)
     @JsonSerialize(using = PubsJsonLocalDateSerializer.class)
     @JsonDeserialize(using = PubsJsonLocalDateDeSerializer.class)

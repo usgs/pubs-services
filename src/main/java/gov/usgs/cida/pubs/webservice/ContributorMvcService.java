@@ -29,7 +29,6 @@ public class ContributorMvcService extends MvcService<PublicationType> {
         LOG.debug("getContributor");
         Contributor rtn = new Contributor();
         if (validateParametersSetHeaders(request, response)) {
-            response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
             rtn = Contributor.getDao().getById(PubsUtilities.parseInteger(contributorId));
         }
         return rtn;

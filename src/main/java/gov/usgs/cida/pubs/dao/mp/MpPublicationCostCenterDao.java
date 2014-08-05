@@ -76,6 +76,17 @@ public class MpPublicationCostCenterDao extends MpDao<MpPublicationCostCenter> {
         getSqlSession().delete(NS + DELETE, domainID);
     }
 
+    /** 
+     * {@inheritDoc}
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#deleteByParent(java.lang.Integer)
+     */
+    @Transactional
+    @ISetDbContext
+    @Override
+    public void deleteByParent(Integer domainID) {
+        getSqlSession().delete(NS + DELETE_BY_PARENT, domainID);
+    }
+
     /** {@inheritDoc}
      * @see gov.usgs.cida.pubs.dao.intfc.IMpDao#copyFromPw(java.lang.Integer)
      */

@@ -1,6 +1,7 @@
 package gov.usgs.cida.pubs.domain;
 
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
@@ -23,6 +24,10 @@ public class PublicationCostCenter<D> extends BaseDomain<D> {
         publicationId = inPublicationId;
     }
 
+    public void setPublicationId(final String inPublicationId) {
+        publicationId = PubsUtilities.parseInteger(inPublicationId);
+    }
+
     public CostCenter getCostCenter() {
         return costCenter;
     }
@@ -36,5 +41,12 @@ public class PublicationCostCenter<D> extends BaseDomain<D> {
     @Override
     public Integer getId() {
         return id;
+    }
+
+    //We also don't want to deserialize the costCenter.id to the publicationCostCenter.id
+    @JsonIgnore
+    @Override
+    public void setId(final String inId) {
+        id = PubsUtilities.parseInteger(inId);
     }
 }

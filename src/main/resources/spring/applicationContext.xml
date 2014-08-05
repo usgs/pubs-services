@@ -32,18 +32,17 @@
 
     <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
        <!-- Note that at this time (04Dec2013) Spring does not limit the media types to those listed when using parameterName to determine 
-            the requested media type and will use anything that matches */* (or in this case will give json for everything but csv).
+            the requested media type and will use anything that matches */*.
             The value in an accept header IS respected and will throw a 406 if not in the list below.  -->
         <property name="favorPathExtension" value="false" />
-        <property name="favorParameter" value="true" />
-        <property name="parameterName" value="mimetype" />
-        <property name="useJaf" value="false"/>
-        <property name="defaultContentType" value="application/xml" />
+<!--         <property name="favorParameter" value="true" /> -->
+<!--         <property name="parameterName" value="mimetype" /> -->
+        <property name="defaultContentType" value="application/json" />
         <property name="mediaTypes" >
             <map>
-                <entry key="xml" value="application/xml" />
+<!--                 <entry key="xml" value="application/xml" /> -->
                 <entry key="json" value="application/json" />
-                <entry key="csv" value="text/csv" />
+<!--                 <entry key="csv" value="text/csv" /> -->
             </map>
         </property>
     </bean>

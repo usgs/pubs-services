@@ -19,6 +19,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
 
     public static final String ADD = ".add";
     public static final String DELETE = ".delete";
+    public static final String DELETE_BY_PARENT = ".deleteByParent";
     public static final String GET_BY_ID = ".getById";
     public static final String GET_BY_MAP = ".getByMap";
     public static final String UPDATE = ".update";

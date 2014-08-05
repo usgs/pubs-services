@@ -31,61 +31,19 @@ import org.junit.Test;
 public class MpPublicationDaoTest extends BaseSpringTest {
 
     //TODO editors, authors, links, & CostCenters in test.
-    private static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "authors", "editors", "links");
+    public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "authors", "editors", "links");
 
     @Test
     public void addAndGetByIds() {
-        MpPublication newpubA = new MpPublication();
-        newpubA.setIndexId("indexid");
-        newpubA.setDisplayToPublicDate(new LocalDateTime(2012, 8, 23, 0, 0, 0));
-        PublicationType pubType = new PublicationType();
-        pubType.setId(PublicationType.REPORT);
-        newpubA.setPublicationType(pubType);
-        PublicationSubtype pubSubtype = new PublicationSubtype();
-        pubSubtype.setId(5);
-        newpubA.setPublicationSubtype(pubSubtype);
-        PublicationSeries pubSeries = new PublicationSeries();
-        pubSeries.setId(PublicationSeries.SIR);
-        newpubA.setPublicationSeries(pubSeries);
-        newpubA.setSeriesNumber("Series Number");
-        newpubA.setSubseriesTitle("subseries");
-        newpubA.setChapter("chapter");
-        newpubA.setSubchapter("subchapter");
-        newpubA.setTitle("Title");
-        newpubA.setDocAbstract("Abstract Text");
-        newpubA.setLanguage("Language");
-        newpubA.setPublisher("Publisher");
-        newpubA.setPublisherLocation("Publisher Location");
-        newpubA.setDoiName("doiname");
-        newpubA.setIssn("inIssn");
-        newpubA.setIsbn("inIsbn");
-        newpubA.setCollaboration("collaboration");
-        newpubA.setUsgsCitation("usgscitation");
-        Contact contact = new Contact();
-        contact.setId(1);
-        newpubA.setContact(contact);
-        newpubA.setProductDescription("Prod Description");
-        newpubA.setStartPage("inStartPage");
-        newpubA.setEndPage("inEndPage");
-        newpubA.setNumberOfPages("5");
-        newpubA.setOnlineOnly("O");
-        newpubA.setAdditionalOnlineFiles("A");
-        newpubA.setTemporalStart(new LocalDate(2010,10,10));
-        newpubA.setTemporalEnd(new LocalDate(2012,12,12));
-        newpubA.setNotes("notes");
-        newpubA.setIpdsId("ipds_id");
-        newpubA.setIpdsReviewProcessState(ProcessType.SPN_PRODUCTION.getIpdsValue());
-        newpubA.setIpdsInternalId("12");
         Integer pubId = MpPublication.getDao().getNewProdId();
-        newpubA.setId(pubId);
-        assertEquals(pubId, MpPublication.getDao().add(newpubA));
+        MpPublication newpubA = addAPub(pubId);
         MpPublication persistedA = MpPublication.getDao().getById(pubId);
         assertNotNull(persistedA);
         assertNotNull(persistedA.getId());
         assertDaoTestResults(MpPublication.class, newpubA, persistedA, IGNORE_PROPERTIES, true, true);
 
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("id", newpubA.getId());
+        params.put("id", pubId);
         List<MpPublication> pubs = MpPublication.getDao().getByMap(params);
         assertTrue(pubs.size() > 0);
         MpPublication persistedB = pubs.get(0);
@@ -93,47 +51,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
         assertNotNull(persistedB.getId());
         assertDaoTestResults(MpPublication.class, persistedA, persistedB, IGNORE_PROPERTIES, false, true);
 
-
-        persistedA.setIndexId("indexid2");
-        persistedA.setDisplayToPublicDate(new LocalDateTime(2012, 8, 23, 0, 0, 0));
-        PublicationType pubType2 = new PublicationType();
-        pubType2.setId(23);
-        persistedA.setPublicationType(pubType2);
-        PublicationSubtype pubSubtype2 = new PublicationSubtype();
-        pubSubtype2.setId(22);
-        persistedA.setPublicationSubtype(pubSubtype2);
-        PublicationSeries pubSeries2 = new PublicationSeries();
-        pubSeries2.setId(501);
-        persistedA.setPublicationSeries(pubSeries2);
-        persistedA.setSeriesNumber("Series Number2");
-        persistedA.setSubseriesTitle("subseries2");
-        persistedA.setChapter("chapter2");
-        persistedA.setSubchapter("subchapter2");
-        persistedA.setTitle("Title2");
-        persistedA.setDocAbstract("Abstract Text2");
-        persistedA.setLanguage("Language2");
-        persistedA.setPublisher("Publisher2");
-        persistedA.setPublisherLocation("Publisher Location2");
-        persistedA.setDoiName("doiname2");
-        persistedA.setIssn("inIssn2");
-        persistedA.setIsbn("inIsbn2");
-        persistedA.setCollaboration("collaboration2");
-        persistedA.setUsgsCitation("usgscitation2");
-        Contact contact2 = new Contact();
-        contact2.setId(2);
-        persistedA.setContact(contact2);
-        persistedA.setProductDescription("Prod Description2");
-        persistedA.setStartPage("inStartPage2");
-        persistedA.setEndPage("inEndPage2");
-        persistedA.setNumberOfPages("6");
-        persistedA.setOnlineOnly("2");
-        persistedA.setAdditionalOnlineFiles("2");
-        persistedA.setTemporalStart(new LocalDate(2010,10,10));
-        persistedA.setTemporalEnd(new LocalDate(2012,12,12));
-        persistedA.setNotes("notes2");
-        persistedA.setIpdsId("ipds_id2");
-        persistedA.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
-        persistedA.setIpdsInternalId("122");
+        persistedA = updatePubProperties(persistedA);
         MpPublication.getDao().update(persistedA);
 
         MpPublication persistedC = MpPublication.getDao().getById(pubId);
@@ -167,7 +85,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
         assertEquals("chapter", pub.getChapter());
         assertEquals("subchapter title", pub.getSubchapter());
         assertEquals("title", pub.getTitle());
-        assertEquals("abstract", pub.getDocAbstract());
+        assertEquals("the abstract", pub.getDocAbstract());
         assertEquals("language", pub.getLanguage());
         assertEquals("publisher", pub.getPublisher());
         assertEquals("publicsher location", pub.getPublisherLocation());
@@ -185,7 +103,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
         assertEquals("Y", pub.getAdditionalOnlineFiles());
         assertEquals("2014-07-14", pub.getTemporalStart().toString());
         assertEquals("2014-07-20", pub.getTemporalEnd().toString());
-        assertEquals("notes", pub.getNotes());
+        assertEquals("some notes", pub.getNotes());
         assertEquals("ipdsid", pub.getIpdsId());
     }
 
@@ -196,4 +114,95 @@ public class MpPublicationDaoTest extends BaseSpringTest {
         assertEquals(1, pub.getLinks().size());
     }
 
+    public static MpPublication addAPub(final Integer pubId) {
+        MpPublication newPub = new MpPublication();
+        newPub.setIndexId("indexid" + pubId);
+        newPub.setDisplayToPublicDate(new LocalDateTime(2012, 8, 23, 0, 0, 0));
+        PublicationType pubType = new PublicationType();
+        pubType.setId(PublicationType.REPORT);
+        newPub.setPublicationType(pubType);
+        PublicationSubtype pubSubtype = new PublicationSubtype();
+        pubSubtype.setId(5);
+        newPub.setPublicationSubtype(pubSubtype);
+        PublicationSeries pubSeries = new PublicationSeries();
+        pubSeries.setId(PublicationSeries.SIR);
+        newPub.setPublicationSeries(pubSeries);
+        newPub.setSeriesNumber("Series Number");
+        newPub.setSubseriesTitle("subseries");
+        newPub.setChapter("chapter");
+        newPub.setSubchapter("subchapter");
+        newPub.setTitle("Title");
+        newPub.setDocAbstract("Abstract Text");
+        newPub.setLanguage("Language");
+        newPub.setPublisher("Publisher");
+        newPub.setPublisherLocation("Publisher Location");
+        newPub.setDoiName("doiname");
+        newPub.setIssn("inIssn");
+        newPub.setIsbn("inIsbn");
+        newPub.setCollaboration("collaboration");
+        newPub.setUsgsCitation("usgscitation");
+        Contact contact = new Contact();
+        contact.setId(1);
+        newPub.setContact(contact);
+        newPub.setProductDescription("Prod Description");
+        newPub.setStartPage("inStartPage");
+        newPub.setEndPage("inEndPage");
+        newPub.setNumberOfPages("5");
+        newPub.setOnlineOnly("O");
+        newPub.setAdditionalOnlineFiles("A");
+        newPub.setTemporalStart(new LocalDate(2010,10,10));
+        newPub.setTemporalEnd(new LocalDate(2012,12,12));
+        newPub.setNotes("notes");
+        newPub.setIpdsId("ipds_id" + pubId);
+        newPub.setIpdsReviewProcessState(ProcessType.SPN_PRODUCTION.getIpdsValue());
+        newPub.setIpdsInternalId("12");
+        newPub.setId(pubId);
+        MpPublication.getDao().add(newPub);
+        return newPub;
+    }
+
+    public static MpPublication updatePubProperties(final MpPublication pubToUpdate) {
+        MpPublication updatedPub = pubToUpdate;
+        updatedPub.setIndexId("indexid2" + updatedPub.getId());
+        updatedPub.setDisplayToPublicDate(new LocalDateTime(2012, 8, 23, 0, 0, 0));
+        PublicationType pubType = new PublicationType();
+        pubType.setId(23);
+        updatedPub.setPublicationType(pubType);
+        PublicationSubtype pubSubtype = new PublicationSubtype();
+        pubSubtype.setId(22);
+        updatedPub.setPublicationSubtype(pubSubtype);
+        PublicationSeries pubSeries = new PublicationSeries();
+        pubSeries.setId(501);
+        updatedPub.setPublicationSeries(pubSeries);
+        updatedPub.setSeriesNumber("Series Number2");
+        updatedPub.setSubseriesTitle("subseries2");
+        updatedPub.setChapter("chapter2");
+        updatedPub.setSubchapter("subchapter2");
+        updatedPub.setTitle("Title2");
+        updatedPub.setDocAbstract("Abstract Text2");
+        updatedPub.setLanguage("Language2");
+        updatedPub.setPublisher("Publisher2");
+        updatedPub.setPublisherLocation("Publisher Location2");
+        updatedPub.setDoiName("doiname2");
+        updatedPub.setIssn("inIssn2");
+        updatedPub.setIsbn("inIsbn2");
+        updatedPub.setCollaboration("collaboration2");
+        updatedPub.setUsgsCitation("usgscitation2");
+        Contact contact = new Contact();
+        contact.setId(2);
+        updatedPub.setContact(contact);
+        updatedPub.setProductDescription("Prod Description2");
+        updatedPub.setStartPage("inStartPage2");
+        updatedPub.setEndPage("inEndPage2");
+        updatedPub.setNumberOfPages("6");
+        updatedPub.setOnlineOnly("2");
+        updatedPub.setAdditionalOnlineFiles("2");
+        updatedPub.setTemporalStart(new LocalDate(2010,10,10));
+        updatedPub.setTemporalEnd(new LocalDate(2012,12,12));
+        updatedPub.setNotes("notes2");
+        updatedPub.setIpdsId("ipds_i2" + updatedPub.getId());
+        updatedPub.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
+        updatedPub.setIpdsInternalId("122");
+        return updatedPub;
+    }
 }

@@ -6,6 +6,7 @@ import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.json.ResponseView;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.webservice.MvcService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,10 +42,9 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
                 @PathVariable("publicationId") String publicationId) {
         LOG.debug("getMpPublication");
         MpPublication rtn = new MpPublication();
-//        if (validateParametersSetHeaders(request, response)) {
-            response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
+        if (validateParametersSetHeaders(request, response)) {
             rtn = busService.getObject(PubsUtilities.parseInteger(publicationId));
-//        }
+        }
         return rtn;
     }
 
@@ -132,57 +132,40 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 //        Integer totalPubsCount = pubBusService.getObjectCount(filters);
 //        return buildResponseMap(response, pubs, totalPubsCount);
 //    }
-//
-//    @RequestMapping(value = "publications", method = RequestMethod.POST, produces="application/json")
-//    @ResponseBody
-//    @Transactional
-//    public Map<String,? extends Object> createPub(@RequestBody MultiValueMap<String, String> body, HttpServletResponse response) {
-//        MpPublication pub = getDomainFromExtRequest(body, new MpPublication());
-//        MpPublication newPub = busService.createObject(pub);
-//        return buildResponseMap(response, newPub, null, newPub.getValidationErrors());
-//    }
+
+    @RequestMapping(value = "mppublications", method = RequestMethod.POST, produces="application/json")
+    @ResponseView(IMpView.class)
+    @Transactional
+    public @ResponseBody MpPublication createPub(@RequestBody MpPublication pub, HttpServletResponse response) {
+        setHeaders(response);
+        MpPublication newPub = busService.createObject(pub);
+        return newPub;
+    }
 
     @RequestMapping(value = "mppublication/{id}", method = RequestMethod.PUT, produces="application/json")
-    @Transactional
     @ResponseView(IMpView.class)
+    @Transactional
     public @ResponseBody MpPublication updateMpPublication(@RequestBody MpPublication pub, @PathVariable String id, HttpServletResponse response) {
-        response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
+        setHeaders(response);
         MpPublication updPub = busService.updateObject(pub);
-        //return buildResponseMap(response, updPub, null, updPub.getValidationErrors());
         return updPub;
     }
 
-//    @RequestMapping(value = "publications/{id}", method = RequestMethod.DELETE, produces="application/json")
-//    @ResponseBody
-//    @Transactional
-//    public Map<String,? extends Object> deletePub(@PathVariable String id, HttpServletResponse response) {
-//        MpPublication pub = new MpPublication();
-//        pub.setId(id);
-//        return buildResponseMap(response, null, null, busService.deleteObject(pub));
-//    }
-//
+    @RequestMapping(value = "mppublications/{id}", method = RequestMethod.DELETE, produces="application/json")
+    @ResponseView(IMpView.class)
+    @Transactional
+    public @ResponseBody ValidationResults deletePub(@PathVariable String id, HttpServletResponse response) {
+        MpPublication pub = new MpPublication();
+        pub.setId(id);
+        return busService.deleteObject(pub);
+    }
+
 //
 //    @RequestMapping(value = "publications/publish", method = RequestMethod.POST, produces="application/json")
 //    @ResponseBody
 //    @Transactional
 //    public Map<String,? extends Object> publishPubs(@RequestParam("prod_id") String prodId, HttpServletResponse response) {
 //        return buildResponseMap(response, null, null, busService.publish(parseId(prodId)));
-//    }
-
-//    /**
-//     * Set the service.
-//     * @param inMpPublicationBusService .
-//     */
-//    public void setMpPublicationBusService(final IMpPublicationBusService inMpPublicationBusService) {
-//        busService = inMpPublicationBusService;
-//    }
-
-//    /**
-//     * Set the service.
-//     * @param inPublicationBusService .
-//     */
-//    public void setPublicationBusService(final IBusService<Publication<?>> inPublicationBusService) {
-//        pubBusService = inPublicationBusService;
 //    }
 
 }

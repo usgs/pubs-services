@@ -51,4 +51,9 @@
          where publication_cost_center_id = #{value,jdbcType=NUMERIC}
     </delete>
 
+    <delete id="deleteByParent" parameterType="Integer">
+        delete from mp_pub_cost_center
+         where publication_id = #{value,jdbcType=NUMERIC}
+    </delete>
+
 </mapper>

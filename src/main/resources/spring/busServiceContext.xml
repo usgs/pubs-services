@@ -4,6 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
 
     <bean id="mpPublicationBusService" class="gov.usgs.cida.pubs.busservice.mp.MpPublicationBusService" autowire="byName"/>
+    <bean id="mpPublicationCostCenterBusService" class="gov.usgs.cida.pubs.busservice.mp.MpPublicationCostCenterBusService" autowire="byName"/>
 
     <bean id="numberedSeriesXml" class="java.lang.String" autowire="byName">
         <constructor-arg>

@@ -121,7 +121,7 @@ public abstract class MvcService<D> {
 //
     protected boolean validateParametersSetHeaders(HttpServletRequest request, HttpServletResponse response) {
         boolean rtn = true;
-        response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
+        setHeaders(response);
         if (request.getParameterMap().isEmpty()) {
             rtn = false;
             response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -129,4 +129,7 @@ public abstract class MvcService<D> {
         return rtn;
     }
 
+    protected void setHeaders(HttpServletResponse response) {
+        response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
+    }
 }

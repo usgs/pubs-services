@@ -1,6 +1,7 @@
 package gov.usgs.cida.pubs.busservice.mp;
 
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
+import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
@@ -13,7 +14,6 @@ import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,6 +34,9 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     @Autowired
     private ICrossRefBusService crossRefBusService;
 
+    @Autowired
+    protected IListBusService<PublicationCostCenter<MpPublicationCostCenter>> costCenterBusService;
+
     /** {@inheritDoc}
      * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#getObject(java.lang.Integer)
      */
@@ -52,6 +55,9 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     @Override
     public List<MpPublication> getObjects(Map<String, Object> filters) {
         List<MpPublication> pubs = MpPublication.getDao().getByMap(filters);
+        for (MpPublication pub : pubs) {
+            pub.setValidationErrors(validator.validate(pub));
+        }
         return pubs;
     }
 
@@ -61,9 +67,13 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     @Override
     @Transactional
     public MpPublication createObject(MpPublication object) {
-        MpPublication pub = publicationPreProcessing(object);
-        Integer id = MpPublication.getDao().add(pub);
-        return publicationPostProcessing(MpPublication.getDao().getById(id));
+        if (null != object) {
+            MpPublication pub = publicationPreProcessing(object);
+            Integer id = MpPublication.getDao().add(pub);
+            return publicationPostProcessing(MpPublication.getDao().getById(id));
+        } else {
+            return null;
+        }
     }
 
     /** {@inheritDoc}
@@ -72,10 +82,14 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     @Override
     @Transactional
     public MpPublication updateObject(MpPublication object) {
-        beginPublicationEdit(object.getId());
-        MpPublication pub = publicationPreProcessing(object);
-        MpPublication.getDao().update(pub);
-        return publicationPostProcessing(MpPublication.getDao().getById(object.getId()));
+        if (null != object) {
+            beginPublicationEdit(object.getId());
+            MpPublication pub = publicationPreProcessing(object);
+            MpPublication.getDao().update(pub);
+            return publicationPostProcessing(pub);
+        } else {
+            return null;
+        }
     }
 
     /** {@inheritDoc}
@@ -84,60 +98,65 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     @Override
     @Transactional
     public ValidationResults deleteObject(MpPublication object) {
-        MpPublication pub = MpPublication.getDao().getById(object.getId());
-        if (null == pub) {
-            pub = new MpPublication();
-        } else {
-            //only delete if we found it...
-            Set<ConstraintViolation<MpPublication>> validations = validator.validate(pub, DeleteChecks.class);
-            if (!validations.isEmpty()) {
-                pub.setValidationErrors(validations);
+        if (null != object) {
+            MpPublication pub = MpPublication.getDao().getById(object.getId());
+            if (null == pub) {
+                pub = new MpPublication();
             } else {
-                MpPublicationLink.getDao().deleteByParent(object.getId());
-                MpPublicationContributor.getDao().deleteByParent(object.getId());
-                MpPublicationCostCenter.getDao().deleteByParent(object.getId());
-//                MpSupersedeRel.getDao().deleteByParent(object.getId());
-                MpPublication.getDao().delete(object);
+                //only delete if we found it...
+                Set<ConstraintViolation<MpPublication>> validations = validator.validate(pub, DeleteChecks.class);
+                if (!validations.isEmpty()) {
+                    pub.setValidationErrors(validations);
+                } else {
+//                    MpPublicationLink.getDao().deleteByParent(object.getId());
+//                    MpPublicationContributor.getDao().deleteByParent(object.getId());
+                    MpPublicationCostCenter.getDao().deleteByParent(object.getId());
+    //                MpSupersedeRel.getDao().deleteByParent(object.getId());
+                    MpPublication.getDao().delete(object);
+                }
             }
+            return pub.getValidationErrors();
+        } else {
+            return null;
         }
-        return pub.getValidationErrors();
     }
 
     protected MpPublication publicationPreProcessing(final MpPublication inPublication) {
         MpPublication outPublication = inPublication;
 
-        if (null == outPublication.getId()) {
-            outPublication.setId(MpPublication.getDao().getNewProdId());
-        }
-
-        //TODO is this still necessary? or should we have a better cleansing mechanism for (all) fields?
-        if (null != outPublication.getTitle()) {
-            outPublication.setTitle(outPublication.getTitle().replace("\n", "").replace("\r", ""));
-        }
-
-        PwPublication published = PwPublication.getDao().getById(outPublication.getId());
-        if (null == published) {
-            //Only auto update index ID if publication in not in the warehouse.
-            String indexId = outPublication.getId().toString();
-            String doi = null;
-            if (isUsgsNumberedSeries(outPublication.getPublicationSubtype())) {
-                //Only USGS Numbered Series get a "special" index ID
-                indexId = getUsgsNumberedSeriesIndexId(outPublication.getPublicationSeries(), outPublication.getSeriesNumber());
-                doi = getDoiName(indexId);
-            } else if (isUsgsUnnumberedSeries(outPublication.getPublicationSubtype())) {
-                doi = getDoiName(indexId);
+        if (null != outPublication) {
+            if (null == outPublication.getId()) {
+                outPublication.setId(MpPublication.getDao().getNewProdId());
             }
 
-            outPublication.setIndexId(indexId);
-            outPublication.setDoiName(doi);
-        } else {
-            //Otherwise overlay with the values from the published pub.
-            outPublication.setIndexId(published.getIndexId());
-            if (null != published.getDoiName() && 0 < published.getDoiName().length()) {
-                outPublication.setDoiName(published.getDoiName());
+            //TODO is this still necessary? or should we have a better cleansing mechanism for (all) fields?
+            if (null != outPublication.getTitle()) {
+                outPublication.setTitle(outPublication.getTitle().replace("\n", "").replace("\r", ""));
+            }
+
+            PwPublication published = PwPublication.getDao().getById(outPublication.getId());
+            if (null == published) {
+                //Only auto update index ID if publication in not in the warehouse.
+                String indexId = outPublication.getId().toString();
+                String doi = null;
+                if (isUsgsNumberedSeries(outPublication.getPublicationSubtype())) {
+                    //Only USGS Numbered Series get a "special" index ID
+                    indexId = getUsgsNumberedSeriesIndexId(outPublication.getPublicationSeries(), outPublication.getSeriesNumber());
+                    doi = getDoiName(indexId);
+                } else if (isUsgsUnnumberedSeries(outPublication.getPublicationSubtype())) {
+                    doi = getDoiName(indexId);
+                }
+
+                outPublication.setIndexId(indexId);
+                outPublication.setDoiName(doi);
+            } else {
+                //Otherwise overlay with the values from the published pub.
+                outPublication.setIndexId(published.getIndexId());
+                if (null != published.getDoiName() && 0 < published.getDoiName().length()) {
+                    outPublication.setDoiName(published.getDoiName());
+                }
             }
         }
-
         return outPublication;
     }
 
@@ -255,7 +274,14 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 //        }
         //end bit
 
-        updateCostCenters(outPublication);
+        if (null != outPublication) {
+            costCenterBusService.merge(outPublication.getId(), outPublication.getCostCenters());
+
+            outPublication = MpPublication.getDao().getById(outPublication.getId());
+        }
+        if (null != outPublication) {
+            outPublication.setValidationErrors(validator.validate(outPublication));
+        }
         return outPublication;
     }
 
@@ -335,29 +361,5 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 //            MpLinkDim.getDao().add(thumbnail);
 //        }
     }
-
-    protected void updateCostCenters(final MpPublication mpPublication) {
-        Map<String, Object> filters = new HashMap<>();
-        filters.put("publicationId", mpPublication.getId());
-        List<MpPublicationCostCenter> mpccs = MpPublicationCostCenter.getDao().getByMap(filters);
-        if (null != mpccs && 0 < mpccs.size()) {
-            //We should really try to merge rather than slash & burn and reconstruct...
-            for (MpPublicationCostCenter mpcc : mpccs) {
-                MpPublicationCostCenter.getDao().delete(mpcc);
-            }
-        }
-        if (null != mpPublication.getCostCenters() && 0 < mpPublication.getCostCenters().size()) {
-            for (PublicationCostCenter<?> pcc : mpPublication.getCostCenters()) {
-                MpPublicationCostCenter mpcc = new MpPublicationCostCenter();
-                mpcc.setPublicationId(mpPublication.getId());
-                mpcc.setCostCenter(pcc.getCostCenter());
-                MpPublicationCostCenter.getDao().add(mpcc);
-            }
-        }
-    }
-
-//    public void setCrossRefBusService(final ICrossRefBusService inCrossRefBusService) {
-//        crossRefBusService = inCrossRefBusService;
-//    }
 
 }

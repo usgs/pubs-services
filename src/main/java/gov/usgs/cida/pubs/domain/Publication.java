@@ -135,7 +135,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @JsonView(IMpView.class)
     private Contact contact;
 
-    @JsonProperty("product-description")
+    @JsonProperty("productDescription")
     @JsonView(IMpView.class)
     @Length(min = 0, max = 2000)
     private String productDescription;

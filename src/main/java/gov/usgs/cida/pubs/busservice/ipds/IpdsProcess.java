@@ -155,7 +155,7 @@ public class IpdsProcess implements IIpdsProcess {
             rtn.append("\n\t" + "IPDS record not processed (" + inProcessType + ")- Publication Type: ")
             //TODO new type/subtype/series logic
 //            .append(pub.getPublicationType() + " Series: " + pub.getSeries())
-            .append(" Process State: " + pub.getIpdsReviewProcessState() + " DOI: " + pub.getDoiName());
+            .append(" Process State: " + pub.getIpdsReviewProcessState() + " DOI: " + pub.getDoi());
         }
 
         return rtn.append("\n\n").toString();

@@ -38,51 +38,51 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     private static IDao<Publication<?>> publicationDao;
 
-    @JsonProperty("indexID")
+    @JsonProperty("indexId")
     @JsonView(IMpView.class)
     @Length(min=1, max=100)
     private String indexId;
 
-    @JsonProperty("display-to-public-date")
+    @JsonProperty("displayToPublicDate")
     @JsonView(IMpView.class)
     @JsonDeserialize(using=PubsJsonLocalDateTimeDeSerializer.class)
     @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
     @NotNull
     private LocalDateTime displayToPublicDate;
 
-    @JsonProperty("type")
+    @JsonProperty("publicationType")
     @JsonView(IMpView.class)
     @NotNull
     private PublicationType publicationType;
 
-    @JsonProperty("genre")
+    @JsonProperty("publicationSubtype")
     @JsonView(IMpView.class)
     @NotNull
     private PublicationSubtype publicationSubtype;
 
-    @JsonProperty("collection-title")
+    @JsonProperty("seriesTitle")
     @JsonView(IMpView.class)
-    private PublicationSeries publicationSeries;
+    private PublicationSeries seriesTitle;
 
-    @JsonProperty("number")
+    @JsonProperty("seriesNumber")
     @JsonView(IMpView.class)
     @Length(min=0, max=100)
     private String seriesNumber;
 
-    @JsonProperty("subseries-title")
+    @JsonProperty("subseriesTitle")
     @JsonView(IMpView.class)
     @Length(min=0, max=255)
     private String subseriesTitle;
 
-    @JsonProperty("chapter-number")
+    @JsonProperty("chapter")
     @JsonView(IMpView.class)
     @Length(min=0, max=255)
     private String chapter;
 
-    @JsonProperty("sub-chapter-number")
+    @JsonProperty("subchapterNumber")
     @JsonView(IMpView.class)
     @Length(min=0, max=255)
-    private String subchapter;
+    private String subchapterNumber;
 
     @JsonProperty("title")
     @JsonView(IMpView.class)
@@ -103,22 +103,22 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @Length(min=0, max=255)
     private String publisher;
 
-    @JsonProperty("publisher-place")
+    @JsonProperty("publisherLocation")
     @JsonView(IMpView.class)
     @Length(min=0, max=255)
     private String publisherLocation;
 
-    @JsonProperty("DOI")
+    @JsonProperty("doi")
     @JsonView(IMpView.class)
     @Length(min=0, max=2000)
-    private String doiName;
+    private String doi;
 
-    @JsonProperty("ISSN")
+    @JsonProperty("issn")
     @JsonView(IMpView.class)
     @Length(min=0, max=20)
     private String issn;
 
-    @JsonProperty("ISBN")
+    @JsonProperty("isbn")
     @JsonView(IMpView.class)
     @Length(min=0, max=30)
     private String isbn;
@@ -128,7 +128,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @Length(min=0, max=255)
     private String collaboration;
 
-    @JsonProperty("usgs-citation")
+    @JsonProperty("usgsCitation")
     @JsonView(IMpView.class)
     @Length(min=0, max=255)
     private String usgsCitation;
@@ -142,12 +142,12 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @Length(min=0, max=4000)
     private String productDescription;
 
-    @JsonProperty("pageFirst")
+    @JsonProperty("startPage")
     @JsonView(IMpView.class)
     @Length(min=0, max=20)
     private String startPage;
 
-    @JsonProperty("pageLast")
+    @JsonProperty("endPage")
     @JsonView(IMpView.class)
     @Length(min=0, max=20)
     private String endPage;
@@ -184,7 +184,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @Length(min=0, max=400000)
     private String notes;
 
-    @JsonProperty("ipds-id")
+    @JsonProperty("ipdsId")
     @JsonView(IMpView.class)
     @Length(min=0, max=15)
     private String ipdsId;
@@ -197,7 +197,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @JsonView(IMpView.class)
     private Collection<PublicationContributor<?>> editors;
 
-    @JsonProperty("cost-center")
+    @JsonProperty("costCenters")
     @JsonView(IMpView.class)
     @Valid
     private Collection<PublicationCostCenter<?>> costCenters;
@@ -263,18 +263,12 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
         publicationSubtype = inPublicationSubtype;
     }
 
-    /**
-     * @return the publicationSeries
-     */
-    public PublicationSeries getPublicationSeries() {
-        return publicationSeries;
+    public PublicationSeries getSeriesTitle() {
+        return seriesTitle;
     }
 
-    /**
-     * @param inPublicationSeries the publicationSeries to set
-     */
-    public void setPublicationSeries(final PublicationSeries inPublicationSeries) {
-        publicationSeries = inPublicationSeries;
+    public void setSeriesTitle(final PublicationSeries inSeriesTitle) {
+        seriesTitle = inSeriesTitle;
     }
 
     /**
@@ -319,18 +313,12 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
         chapter = inChapter;
     }
 
-    /**
-     * @return the subchapter
-     */
-    public String getSubchapter() {
-        return subchapter;
+    public String getSubchapterNumber() {
+        return subchapterNumber;
     }
 
-    /**
-     * @param inSubchapter the subchapter to set
-     */
-    public void setSubchapter(final String inSubchapter) {
-        subchapter = inSubchapter;
+    public void setSubchapterNumber(final String inSubchapterNumber) {
+        subchapterNumber = inSubchapterNumber;
     }
 
     /**
@@ -403,12 +391,12 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
         publisherLocation = inPublisherLocation;
     }
 
-    public String getDoiName() {
-        return doiName;
+    public String getDoi() {
+        return doi;
     }
 
-    public void setDoiName(final String inDoiName) {
-        doiName = inDoiName;
+    public void setDoi(final String inDoi) {
+        doi = inDoi;
     }
 
     /**

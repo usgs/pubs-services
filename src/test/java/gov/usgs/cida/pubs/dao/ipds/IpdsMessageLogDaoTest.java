@@ -124,7 +124,7 @@ public class IpdsMessageLogDaoTest extends BaseSpringTest {
         newpub.setPublicationSubtype(pubSubtype);
         PublicationSeries pubSeries = new PublicationSeries();
         pubSeries.setId(PublicationSeries.SIR);
-        newpub.setPublicationSeries(pubSeries);
+        newpub.setSeriesTitle(pubSeries);
         newpub.setTitle("Pesticides in Wyoming Groundwater, 2008–10");
         newpub.setSeriesNumber("2013-5064");
         newpub.setLanguage("English");
@@ -140,7 +140,7 @@ public class IpdsMessageLogDaoTest extends BaseSpringTest {
         newpub.setUsgsCitation("A citation");
         newpub.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
         newpub.setNotes("A synthesis of pesticides in groundwater data collected from 1995 through 2010 in Wyoming, examining changes in use and trends in concentrations");
-        newpub.setDoiName("XXX");
+        newpub.setDoi("XXX");
         newpub.setIpdsInternalId("81817");
         return newpub;
     }
@@ -172,7 +172,7 @@ public class IpdsMessageLogDaoTest extends BaseSpringTest {
 //        newpub.setNumberOfPages();
 //        newpub.setNumberOversizedSheets();
 //        newpub.setAuthorDisplay("First M Last;First M X Last;Another Name Format");
-        newpub.setDoiName("2012/1158/");
+        newpub.setDoi("2012/1158/");
 //        newpub.setPublicationHandle("2012-1158");
 //        newpub.setCombinedTerminologyDisplay("topic 1;topic 2;topic 3");
 //        newpub.setLatN("95");
@@ -215,7 +215,7 @@ public class IpdsMessageLogDaoTest extends BaseSpringTest {
 //        newpub.setNumberOfPages();
 //        newpub.setNumberOversizedSheets("8");
 //        newpub.setAuthorDisplay("First M Last;First M X Last;Another Name Format");
-        newpub.setDoiName("2012/1158/");
+        newpub.setDoi("2012/1158/");
 //        newpub.setPublicationHandle("2012-1158");
 //        newpub.setCombinedTerminologyDisplay("topic 1;topic 2;topic 3");
 //        newpub.setLatN("95");

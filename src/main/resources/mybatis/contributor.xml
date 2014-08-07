@@ -9,17 +9,21 @@
         <result property="given" column="given"/>
         <result property="suffix" column="suffix"/>
         <result property="email" column="email"/>
+        <result property="ipdsContributorId" column="ipds_contributor_id"/>
         <association property="affiliation" column="cost_center_id" select="costCenter.getById"/>
     </resultMap>
 
     <sql id="cols">
-        contributor_id, first, given, suffix, email, cost_center_id, literal
+        contributor_id, first, given, suffix, email, cost_center_id, literal, ipds_contributor_id
     </sql>
 
     <sql id="filters">
         <where>
             <if test="id != null">
                 and contributor_id = #{id}
+            </if>
+            <if test="ipdsContributorId != null">
+                and ipds_contributor_id = #{ipdsContributorId}
             </if>
             <if test="personName != null">
                 and (upper(first) like upper(#{personName}) || '%'

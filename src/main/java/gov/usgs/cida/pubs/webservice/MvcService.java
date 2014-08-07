@@ -106,7 +106,7 @@ public abstract class MvcService<D> {
             int hashValue = response.hashCode();
             //Note: we are giving the user a generic message.  
             //Server logs can be used to troubleshoot problems.
-            String msgText = "Internal Server Error. Reference Number: " + hashValue;
+            String msgText = "Something bad happened. Contact us with Reference Number: " + hashValue;
             log.error(msgText, ex);
             out = buildErrorResponseMap(msgText);
         }

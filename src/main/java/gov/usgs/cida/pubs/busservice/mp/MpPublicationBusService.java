@@ -7,9 +7,7 @@ import gov.usgs.cida.pubs.domain.PublicationCostCenter;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
-import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
-import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
@@ -42,11 +40,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
      */
     @Override
     public MpPublication getObject(Integer objectId) {
-        MpPublication pub = MpPublication.getDao().getById(objectId);
-        if (null != pub) {
-            pub.setValidationErrors(validator.validate(pub));
-        }
-        return pub;
+        return MpPublication.getDao().getById(objectId);
     }
 
     /** {@inheritDoc}
@@ -54,11 +48,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
      */
     @Override
     public List<MpPublication> getObjects(Map<String, Object> filters) {
-        List<MpPublication> pubs = MpPublication.getDao().getByMap(filters);
-        for (MpPublication pub : pubs) {
-            pub.setValidationErrors(validator.validate(pub));
-        }
-        return pubs;
+        return MpPublication.getDao().getByMap(filters);
     }
 
     /** {@inheritDoc}
@@ -69,8 +59,12 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     public MpPublication createObject(MpPublication object) {
         if (null != object) {
             MpPublication pub = publicationPreProcessing(object);
-            Integer id = MpPublication.getDao().add(pub);
-            return publicationPostProcessing(MpPublication.getDao().getById(id));
+            pub.setValidationErrors(validator.validate(pub));
+            if (pub.getValErrors().isEmpty()) {
+                Integer id = MpPublication.getDao().add(pub);
+                pub = publicationPostProcessing(MpPublication.getDao().getById(id));
+            }
+            return pub;
         } else {
             return null;
         }
@@ -85,8 +79,12 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
         if (null != object) {
             beginPublicationEdit(object.getId());
             MpPublication pub = publicationPreProcessing(object);
-            MpPublication.getDao().update(pub);
-            return publicationPostProcessing(pub);
+            pub.setValidationErrors(validator.validate(pub));
+            if (pub.getValErrors().isEmpty()) {
+                MpPublication.getDao().update(pub);
+                pub = publicationPostProcessing(MpPublication.getDao().getById(object.getId()));
+            }
+            return pub;
         } else {
             return null;
         }

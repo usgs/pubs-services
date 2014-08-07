@@ -1,4 +1,4 @@
-package gov.usgs.cida.pubs.validation.publication;
+package gov.usgs.cida.pubs.validation.mp;
 
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
@@ -16,22 +16,21 @@ import javax.validation.ConstraintValidatorContext;
  * @author drsteini
  *
  */
-@SuppressWarnings("rawtypes")
-public class UniqueKeyValidatorForPublication implements ConstraintValidator<UniqueKey, Publication> {
+public class UniqueKeyValidatorForMpPublication implements ConstraintValidator<UniqueKey, Publication<?>> {
 
     /** {@inheritDoc}
      * @see javax.validation.ConstraintValidator#initialize(java.lang.annotation.Annotation)
      */
     @Override
     public void initialize(UniqueKey constraintAnnotation) {
-        // TODO Auto-generated method stub
+     // Nothing for us to do here at this time.
     }
 
     /** {@inheritDoc}
      * @see javax.validation.ConstraintValidator#isValid(java.lang.Object, javax.validation.ConstraintValidatorContext)
      */
     @Override
-    public boolean isValid(Publication value, ConstraintValidatorContext context) {
+    public boolean isValid(Publication<?> value, ConstraintValidatorContext context) {
         boolean rtn = true;
         if (null == value.getIndexId()) {
             rtn = true;
@@ -42,10 +41,10 @@ public class UniqueKeyValidatorForPublication implements ConstraintValidator<Uni
             for (Publication<?> pub : pubs) {
                 if (null == value.getId() || 0 != pub.getId().compareTo(value.getId())) {
                     rtn = false;
-                    Object[] messageArguments = Arrays.asList(new String[]{"Index Id " + value.getIndexId(), pub.getId().toString()}).toArray();
+                    Object[] messageArguments = Arrays.asList(new String[]{"indexId " + value.getIndexId(), pub.getId().toString()}).toArray();
                     String errorMsg = PubsUtilities.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
                     context.disableDefaultConstraintViolation();
-                    context.buildConstraintViolationWithTemplate(errorMsg).addNode("indexId").addConstraintViolation();
+                    context.buildConstraintViolationWithTemplate(errorMsg).addPropertyNode("indexId").addConstraintViolation();
                 }
             }
         }
@@ -58,10 +57,10 @@ public class UniqueKeyValidatorForPublication implements ConstraintValidator<Uni
             for (Publication<?> pub : pubs) {
                 if (null == value.getId() || 0 != pub.getId().compareTo(value.getId())) {
                     rtn = false;
-                    Object[] messageArguments = Arrays.asList(new String[]{"IPDS ID " + value.getIpdsId(), pub.getId().toString()}).toArray();
+                    Object[] messageArguments = Arrays.asList(new String[]{"ipdsId " + value.getIpdsId(), pub.getId().toString()}).toArray();
                     String errorMsg = PubsUtilities.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
                     context.disableDefaultConstraintViolation();
-                    context.buildConstraintViolationWithTemplate(errorMsg).addNode("ipdsId").addConstraintViolation();
+                    context.buildConstraintViolationWithTemplate(errorMsg).addPropertyNode("ipdsId").addConstraintViolation();
                 }
             }
         }

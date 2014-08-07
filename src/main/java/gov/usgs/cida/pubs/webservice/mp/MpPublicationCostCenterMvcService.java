@@ -41,7 +41,13 @@ public class MpPublicationCostCenterMvcService extends MvcService<MpPublicationC
         CostCenter costCenter = new CostCenter();
         costCenter.setId(id);
         pubCostCenter.setCostCenter(costCenter);
-        return busService.deleteObject(pubCostCenter);
+        ValidationResults rtn = busService.deleteObject(pubCostCenter);
+        if (null != rtn && rtn.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+        return rtn;
     }
 
 }

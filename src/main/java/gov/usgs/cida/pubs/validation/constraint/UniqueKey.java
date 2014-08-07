@@ -4,8 +4,9 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 //import gov.usgs.cida.pubs.validation.link.UniqueKeyValidatorForLinkDim;
 //import gov.usgs.cida.pubs.validation.mpListPubsRel.UniqueKeyValidatorForMpListPubsRel;
-import gov.usgs.cida.pubs.validation.publication.UniqueKeyValidatorForPublication;
+import gov.usgs.cida.pubs.validation.mp.UniqueKeyValidatorForMpPublication;
 //import gov.usgs.cida.pubs.validation.supersedeRel.UniqueKeyValidatorForSupersedeRel;
+
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -22,7 +23,7 @@ import javax.validation.Constraint;
 @Constraint(validatedBy={
 //        UniqueKeyValidatorForLinkDim.class,
 //        UniqueKeyValidatorForMpListPubsRel.class,
-        UniqueKeyValidatorForPublication.class,
+        UniqueKeyValidatorForMpPublication.class,
 //        UniqueKeyValidatorForSupersedeRel.class
 })
 @Documented

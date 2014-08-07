@@ -12,8 +12,10 @@ import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
 import java.io.Serializable;
 import java.util.Collection;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Length;
 import org.joda.time.LocalDate;
@@ -137,54 +139,54 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     @JsonProperty("productDescription")
     @JsonView(IMpView.class)
-    @Length(min = 0, max = 2000)
+    @Length(min=0, max=4000)
     private String productDescription;
 
     @JsonProperty("pageFirst")
     @JsonView(IMpView.class)
-    @Length(min = 0, max = 20)
+    @Length(min=0, max=20)
     private String startPage;
 
     @JsonProperty("pageLast")
     @JsonView(IMpView.class)
-    @Length(min = 0, max = 20)
+    @Length(min=0, max=20)
     private String endPage;
 
     @JsonProperty("numberOfPages")
     @JsonView(IMpView.class)
-    @Digits(integer = 4, fraction = 0)
+    @Digits(integer=4, fraction=0)
     private String numberOfPages;
 
     @JsonProperty("onlineOnly")
     @JsonView(IMpView.class)
-    @Length(min = 0, max = 1)
+    @Pattern(regexp="[YN]")
     private String onlineOnly;
 
     @JsonProperty("additionalOnlineFiles")
     @JsonView(IMpView.class)
-    @Length(min = 0, max = 1)
+    @Pattern(regexp="[YN]")
     private String additionalOnlineFiles;
 
     @JsonProperty("temporalStart")
     @JsonView(IMpView.class)
-    @JsonSerialize(using = PubsJsonLocalDateSerializer.class)
-    @JsonDeserialize(using = PubsJsonLocalDateDeSerializer.class)
+    @JsonSerialize(using=PubsJsonLocalDateSerializer.class)
+    @JsonDeserialize(using=PubsJsonLocalDateDeSerializer.class)
     private LocalDate temporalStart;
 
     @JsonProperty("temporalEnd")
     @JsonView(IMpView.class)
-    @JsonSerialize(using = PubsJsonLocalDateSerializer.class)
-    @JsonDeserialize(using = PubsJsonLocalDateDeSerializer.class)
+    @JsonSerialize(using=PubsJsonLocalDateSerializer.class)
+    @JsonDeserialize(using=PubsJsonLocalDateDeSerializer.class)
     private LocalDate temporalEnd;
 
     @JsonProperty("notes")
     @JsonView(IMpView.class)
-    @Length(min = 0, max = 400000)
+    @Length(min=0, max=400000)
     private String notes;
 
     @JsonProperty("ipds-id")
     @JsonView(IMpView.class)
-    @Length(min = 0, max = 15)
+    @Length(min=0, max=15)
     private String ipdsId;
 
     @JsonProperty("authors")
@@ -197,6 +199,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     @JsonProperty("cost-center")
     @JsonView(IMpView.class)
+    @Valid
     private Collection<PublicationCostCenter<?>> costCenters;
 
     @JsonProperty("links")

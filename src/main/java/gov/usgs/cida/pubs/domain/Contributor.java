@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -36,6 +37,9 @@ public class Contributor extends BaseDomain<Contributor> implements ILookup {
     @JsonProperty("organization")
     @JsonView(IMpView.class)
     private String literal;
+
+    @JsonIgnore
+    private Integer ipdsContributorId;
 
     public String getFirst() {
         return first;
@@ -83,6 +87,14 @@ public class Contributor extends BaseDomain<Contributor> implements ILookup {
 
     public void setLiteral(final String inLiteral) {
         literal = inLiteral;
+    }
+
+    public Integer getIpdsContributorId() {
+        return ipdsContributorId;
+    }
+
+    public void setIpdsContributorId(final Integer inIpdsContributorId) {
+        ipdsContributorId = inIpdsContributorId;
     }
 
     @Override

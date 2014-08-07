@@ -2,10 +2,13 @@ package gov.usgs.cida.pubs.validation.constraint;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import gov.usgs.cida.pubs.validation.mp.ParentExistsValidatorForMpPublication;
+import gov.usgs.cida.pubs.validation.mp.ParentExistsValidatorForMpPublicationCostCenter;
 //import gov.usgs.cida.pubs.validation.link.ParentExistsValidatorForLinkDim;
 //import gov.usgs.cida.pubs.validation.mpListPubsRel.ParentExistsValidatorForMpListPubsRel;
-import gov.usgs.cida.pubs.validation.publication.ParentExistsValidatorForPublication;
 //import gov.usgs.cida.pubs.validation.supersedeRel.ParentExistsValidatorForSupersedeRel;
+
+
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -18,7 +21,8 @@ import javax.validation.Constraint;
 @Constraint(validatedBy={
 //        ParentExistsValidatorForLinkDim.class,
 //        ParentExistsValidatorForMpListPubsRel.class,
-        ParentExistsValidatorForPublication.class,
+        ParentExistsValidatorForMpPublication.class,
+        ParentExistsValidatorForMpPublicationCostCenter.class,
 //        ParentExistsValidatorForSupersedeRel.class
 })
 @Documented

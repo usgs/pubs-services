@@ -45,10 +45,11 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         if (validateParametersSetHeaders(request, response)) {
             rtn = busService.getObject(PubsUtilities.parseInteger(publicationId));
         }
+        //TODO set http status to 404 on a not found?
         return rtn;
     }
 
-//    @RequestMapping(value = "publications", method = RequestMethod.GET,  produces="application/json")
+//    @RequestMapping(value = "mppublications", method = RequestMethod.GET,  produces="application/json")
 //    @ResponseBody
 //    public Map<String,? extends Object> getPubs(@RequestParam(value="list_id", required=false) String[] listId,
 //            @RequestParam(value="auth_first", required=false) String authFirst,
@@ -139,6 +140,11 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     public @ResponseBody MpPublication createPub(@RequestBody MpPublication pub, HttpServletResponse response) {
         setHeaders(response);
         MpPublication newPub = busService.createObject(pub);
+        if (null != newPub && newPub.getValErrors().isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_CREATED);
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
         return newPub;
     }
 
@@ -148,6 +154,11 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     public @ResponseBody MpPublication updateMpPublication(@RequestBody MpPublication pub, @PathVariable String id, HttpServletResponse response) {
         setHeaders(response);
         MpPublication updPub = busService.updateObject(pub);
+        if (null != updPub && updPub.getValErrors().isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
         return updPub;
     }
 
@@ -157,15 +168,21 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     public @ResponseBody ValidationResults deletePub(@PathVariable String id, HttpServletResponse response) {
         MpPublication pub = new MpPublication();
         pub.setId(id);
-        return busService.deleteObject(pub);
+        ValidationResults rtn = busService.deleteObject(pub);
+        if (null != rtn && rtn.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+        return rtn;
     }
 
-//
-//    @RequestMapping(value = "publications/publish", method = RequestMethod.POST, produces="application/json")
+
+//    @RequestMapping(value = "mppublications/{id}/publish", method = RequestMethod.POST, produces="application/json")
 //    @ResponseBody
 //    @Transactional
-//    public Map<String,? extends Object> publishPubs(@RequestParam("prod_id") String prodId, HttpServletResponse response) {
-//        return buildResponseMap(response, null, null, busService.publish(parseId(prodId)));
+//    public Map<String,? extends Object> publishPubs(@PathVariable String id, HttpServletResponse response) {
+//        return buildResponseMap(response, null, null, busService.publish(parseId(id)));
 //    }
 
 }

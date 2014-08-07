@@ -52,22 +52,10 @@
     </bean>
     <bean id="setDbContextAspect" class="gov.usgs.cida.pubs.aop.SetDbContextAspect" autowire="byName"/>
 
-    <bean id="valueFormatterMessageInterpolator" class="org.hibernate.validator.messageinterpolation.ValueFormatterMessageInterpolator"/>
+    <bean id="resourceBundleMessageInterpolator" class="org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator"/>
 
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" autowire="byName">
-        <property name="messageInterpolator" ref="valueFormatterMessageInterpolator"/>
-    </bean>
-
-    <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-         <property name="brokerURL" ref="brokerURL"/> 
-    </bean>
-
-    <!-- and this is the message listener container -->
-    <bean id="mlc" class="org.springframework.jms.listener.DefaultMessageListenerContainer" autowire="byName">
-        <property name="concurrentConsumers" value="1"/>
-        <property name="connectionFactory" ref="connectionFactory"/>
-        <property name="destinationName" ref="queueName"/>
-        <property name="messageListener" ref="messageListener"/>
+        <property name="messageInterpolator" ref="resourceBundleMessageInterpolator"/>
     </bean>
 
     <bean id="pubsEMailer" class="gov.usgs.cida.pubs.utility.PubsEMailer" autowire="byName"/>
@@ -78,6 +66,6 @@
 
     <import resource="classpath:/spring/domainContext.xml"/>
 
-    <import resource="classpath:/spring/ipdsJmsContext.xml"/>
+<!--     <import resource="classpath:/spring/ipdsJmsContext.xml"/> -->
 
 </beans>

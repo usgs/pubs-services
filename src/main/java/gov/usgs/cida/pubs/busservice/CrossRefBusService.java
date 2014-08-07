@@ -140,10 +140,10 @@ public class CrossRefBusService implements ICrossRefBusService {
         rtn = rtn.replace("{contributers}", getAuthors(pub));
         rtn = rtn.replace("{title}", pub.getTitle());
         rtn = rtn.replace("{pages}", getPages(pub));
-        rtn = rtn.replace("{doi_name}", pub.getDoiName());
+        rtn = rtn.replace("{doi_name}", pub.getDoi());
         rtn = rtn.replace("{index_page}", indexPage);
         //TODO Verify this works as expected. (At least no NPE)
-        PublicationSeries series = PublicationSeries.getDao().getById(pub.getPublicationSeries().getId());
+        PublicationSeries series = PublicationSeries.getDao().getById(pub.getSeriesTitle().getId());
         rtn = rtn.replace("{series_name}", series.getName());
         if (-1 != rtn.indexOf("{online_issn}")) {
             rtn = rtn.replace("{online_issn}", series.getOnlineIssn());

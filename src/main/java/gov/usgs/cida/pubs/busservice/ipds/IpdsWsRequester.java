@@ -160,10 +160,10 @@ public class IpdsWsRequester {
 
                 if (getResponse.containsHeader("Etag")) {
                     StringBuilder content = new StringBuilder(DOI_XML_PREFIX);
-                    if (null == inPub.getDoiName()) {
+                    if (null == inPub.getDoi()) {
                         content.append(NULL_DOI);
                     } else {
-                        content.append(">").append(inPub.getDoiName()).append(DOI_XML_SUFFIX);
+                        content.append(">").append(inPub.getDoi()).append(DOI_XML_SUFFIX);
                     }
 
                     String etag = getResponse.getFirstHeader("Etag").getValue();
@@ -185,7 +185,7 @@ public class IpdsWsRequester {
                         HttpResponse response = httpclient.execute(putTarget(), httpPut, new BasicHttpContext());
 
                         if (null != response && null != response.getStatusLine() && response.getStatusLine().getStatusCode() == HttpStatus.SC_NO_CONTENT) {
-                            rtn.append("\n\tDOI updated in IPDS: ").append(inPub.getDoiName());
+                            rtn.append("\n\tDOI updated in IPDS: ").append(inPub.getDoi());
                         } else {
                             rtn.append("\n\tERROR: Bad Response from httpPut: ").append(url.toString()).append(": ") 
                                     .append((null == response ? "No Response" : ("Status Code : " + response.getStatusLine().getStatusCode())));

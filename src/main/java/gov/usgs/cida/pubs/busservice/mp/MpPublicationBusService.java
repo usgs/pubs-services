@@ -139,19 +139,19 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
                 String doi = null;
                 if (isUsgsNumberedSeries(outPublication.getPublicationSubtype())) {
                     //Only USGS Numbered Series get a "special" index ID
-                    indexId = getUsgsNumberedSeriesIndexId(outPublication.getPublicationSeries(), outPublication.getSeriesNumber());
+                    indexId = getUsgsNumberedSeriesIndexId(outPublication.getSeriesTitle(), outPublication.getSeriesNumber());
                     doi = getDoiName(indexId);
                 } else if (isUsgsUnnumberedSeries(outPublication.getPublicationSubtype())) {
                     doi = getDoiName(indexId);
                 }
 
                 outPublication.setIndexId(indexId);
-                outPublication.setDoiName(doi);
+                outPublication.setDoi(doi);
             } else {
                 //Otherwise overlay with the values from the published pub.
                 outPublication.setIndexId(published.getIndexId());
-                if (null != published.getDoiName() && 0 < published.getDoiName().length()) {
-                    outPublication.setDoiName(published.getDoiName());
+                if (null != published.getDoi() && 0 < published.getDoi().length()) {
+                    outPublication.setDoi(published.getDoi());
                 }
             }
         }
@@ -235,42 +235,6 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 //                MpListPubsRel.getDao().update(newListEntry);
 //            }
 //        }
-//
-        //TODO reactivate or remove when doi/link is finalized.
-//        //This is a "temporary" bit of code to keep the doi link in sync with the doiName.
-//        //It can be removed once the warehouse is updated to use doiName.
-//        MpLinkDim doiLink = new MpLinkDim();
-//        Map<String, Object> filters = new HashMap<String, Object>();
-//        filters.put("prodId", outPublication.getId());
-//        filters.put("doiLink", MpLinkDim.DOI_LINK_SITE);
-//        List<MpLinkDim> doiLinks = MpLinkDim.getDao().getByMap(filters);
-//        if (null != doiLinks && 1 <= doiLinks.size()) {
-//            doiLink = doiLinks.get(0);
-//        } else {
-//            doiLink.setProdId(outPublication.getId().toString());
-//        }
-//        doiLink.setLinkClass(LinkClass.DIGITAL_OBJECT_IDENTIFIER.getValue());
-//        if (null == outPublication.getDoiName() 
-//                || (null != outPublication.getPublicationTypeId() 
-//                    && (outPublication.getPublicationTypeId().contentEquals(PublicationType.USGS_NUMBERED_SERIES)
-//                            || outPublication.getPublicationTypeId().contentEquals(PublicationType.USGS_UNNUMBERED_SERIES)))) {
-//            //We no longer (or never) had a doiName OR it is a USGS Series
-//            if (null != doiLink.getId()) {
-//                //We had better "delete" the existing doiLink
-//                MpLinkDim.getDao().delete(doiLink);
-//            }
-//        } else {
-//            doiLink.setLink(MpLinkDim.DOI_LINK_SITE + outPublication.getDoiName());
-//            //We have a doiName so...
-//            if (null == doiLink.getId()) {
-//                //Add a new doiLink
-//                MpLinkDim.getDao().add(doiLink);
-//            } else {
-//                //Update an existing doiLink
-//                MpLinkDim.getDao().update(doiLink);
-//            }
-//        }
-        //end bit
 
         if (null != outPublication) {
             costCenterBusService.merge(outPublication.getId(), outPublication.getCostCenters());

@@ -9,17 +9,17 @@
         <result property="displayToPublicDate" column="display_to_public_date"/>
         <result property="publicationType.id" column="publication_type_id"/>
         <result property="publicationSubtype.id" column="publication_subtype_id"/>
-        <result property="publicationSeries.id" column="publication_series_id"/>
+        <result property="seriesTitle.id" column="publication_series_id"/>
         <result property="seriesNumber" column="series_number"/>
         <result property="subseriesTitle" column="subseries_title"/>
         <result property="chapter" column="chapter"/>
-        <result property="subchapter" column="subchapter"/>
+        <result property="subchapterNumber" column="subchapter"/>
         <result property="title" column="title"/>
         <result property="docAbstract" column="abstract"/>
         <result property="language" column="language"/>
         <result property="publisher" column="publisher"/>
         <result property="publisherLocation" column="publisher_location"/>
-        <result property="doiName" column="doi_name"/>
+        <result property="doi" column="doi_name"/>
         <result property="issn" column="issn"/>
         <result property="isbn" column="isbn"/>
         <result property="collaboration" column="collaboration"/>
@@ -80,17 +80,17 @@
         #{displayToPublicDate,jdbcType=DATE},
         #{publicationType.id,jdbcType=NUMERIC},
         #{publicationSubtype.id,jdbcType=NUMERIC},
-        #{publicationSeries.id,jdbcType=NUMERIC},
+        #{seriesTitle.id,jdbcType=NUMERIC},
         #{seriesNumber,jdbcType=VARCHAR},
         #{subseriesTitle,jdbcType=VARCHAR},
         #{chapter,jdbcType=VARCHAR},
-        #{subchapter,jdbcType=VARCHAR},
+        #{subchapterNumber,jdbcType=VARCHAR},
         #{title,jdbcType=VARCHAR},
         #{docAbstract,jdbcType=CLOB},
         #{language,jdbcType=VARCHAR},
         #{publisher,jdbcType=VARCHAR},
         #{publisherLocation,jdbcType=VARCHAR},
-        #{doiName,jdbcType=VARCHAR},
+        #{doi,jdbcType=VARCHAR},
         #{issn,jdbcType=VARCHAR},
         #{isbn,jdbcType=VARCHAR},
         #{collaboration,jdbcType=VARCHAR},
@@ -114,17 +114,17 @@
         display_to_public_date = #{displayToPublicDate,jdbcType=DATE},
         publication_type_id = #{publicationType.id,jdbcType=NUMERIC},
         publication_subtype_id = #{publicationSubtype.id,jdbcType=NUMERIC},
-        publication_series_id = #{publicationSeries.id,jdbcType=NUMERIC},
+        publication_series_id = #{seriesTitle.id,jdbcType=NUMERIC},
         series_number = #{seriesNumber,jdbcType=VARCHAR},
         subseries_title = #{subseriesTitle,jdbcType=VARCHAR},
         chapter = #{chapter,jdbcType=VARCHAR},
-        subchapter = #{subchapter,jdbcType=VARCHAR},
+        subchapter = #{subchapterNumber,jdbcType=VARCHAR},
         title = #{title,jdbcType=VARCHAR},
         abstract = #{docAbstract,jdbcType=CLOB},
         language = #{language,jdbcType=VARCHAR},
         publisher = #{publisher,jdbcType=VARCHAR},
         publisher_location = #{publisherLocation,jdbcType=VARCHAR},
-        doi_name = #{doiName,jdbcType=VARCHAR},
+        doi_name = #{doi,jdbcType=VARCHAR},
         issn = #{issn,jdbcType=VARCHAR},
         isbn = #{isbn,jdbcType=VARCHAR},
         collaboration = #{collaboration,jdbcType=VARCHAR},

@@ -8,7 +8,7 @@
         <result property="publicationSubtype.id" column="publication_subtype_id"/>
         <result property="name" column="name"/>
         <result property="code" column="code"/>
-        <result property="doiName" column="doi_name"/>
+        <result property="doi" column="doi_name"/>
         <result property="printIssn" column="print_issn"/>
         <result property="onlineIssn" column="online_issn"/>
     </resultMap>

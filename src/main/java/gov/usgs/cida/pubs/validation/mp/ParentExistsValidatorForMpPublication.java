@@ -42,8 +42,8 @@ public class ParentExistsValidatorForMpPublication implements ConstraintValidato
                     .addPropertyNode("genre").addConstraintViolation();
             }
         }
-        if (null != value.getPublicationSeries()) {
-            if (null == PublicationSeries.getDao().getById(value.getPublicationSeries().getId())) {
+        if (null != value.getSeriesTitle()) {
+            if (null == PublicationSeries.getDao().getById(value.getSeriesTitle().getId())) {
                 rtn = false;
                 context.disableDefaultConstraintViolation();
                 context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())

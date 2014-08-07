@@ -30,7 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class MpPublicationBusServiceTest extends BaseSpringTest {
 
     public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "authors", "editors", "links",
-            "doiName", "indexId");
+            "doi", "indexId");
 
     @Autowired
     public Validator validator;
@@ -96,7 +96,7 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
         MpPublication after = busService.updateObject(MpPublicationDaoTest.updatePubProperties(MpPublication.getDao().getById(pub.getId())));
         assertDaoTestResults(MpPublication.class, pub, after, IGNORE_PROPERTIES, true, true);
         assertEquals(pub.getId().toString(), after.getIndexId());
-        assertNull("DoiName gets nulled out because the pub should no longer have one.", after.getDoiName());
+        assertNull("Doi gets nulled out because the pub should no longer have one.", after.getDoi());
     }
 
     @Test
@@ -109,7 +109,7 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
 
     @Test
     public void preProcessingTest() {
-        //TODO - more than just the basic doiName testing
+        //TODO - more than just the basic doi testing
         busService.publicationPreProcessing(null);
         busService.publicationPreProcessing(new MpPublication());
 
@@ -122,13 +122,13 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
         inPublication.setPublicationSubtype(pubSubtype);
         PublicationSeries pubSeries = new PublicationSeries();
         pubSeries.setId(PublicationSeries.SIR);
-        inPublication.setPublicationSeries(pubSeries);
+        inPublication.setSeriesTitle(pubSeries);
         inPublication.setSeriesNumber("nu-m,be r");
         MpPublication outPublication = busService.publicationPreProcessing(inPublication);
         assertNotNull(outPublication);
         assertNotNull(outPublication.getId());
         assertEquals("sirnumber", outPublication.getIndexId());
-        assertEquals(MpPublicationBusService.DOI_PREFIX + "/" + outPublication.getIndexId(), outPublication.getDoiName());
+        assertEquals(MpPublicationBusService.DOI_PREFIX + "/" + outPublication.getIndexId(), outPublication.getDoi());
 
         inPublication = new MpPublication();
         inPublication.setSeriesNumber("nu-m,be r");
@@ -137,27 +137,27 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
         assertNotNull(outPublication);
         assertNotNull(outPublication.getId());
         assertEquals("123", outPublication.getIndexId());
-        assertNull(outPublication.getDoiName());
+        assertNull(outPublication.getDoi());
 
         inPublication = new MpPublication();
         pubSeries.setId(508);
-        inPublication.setPublicationSeries(pubSeries);
+        inPublication.setSeriesTitle(pubSeries);
         outPublication = busService.publicationPreProcessing(inPublication);
         assertNotNull(outPublication);
         assertNotNull(outPublication.getId());
         assertEquals(outPublication.getId().toString(), outPublication.getIndexId());
-        assertNull(outPublication.getDoiName());
+        assertNull(outPublication.getDoi());
 
         inPublication = new MpPublication();
         pubSubtype.setId(PublicationSubtype.USGS_UNNUMBERED_SERIES);
         inPublication.setPublicationType(pubType);
         inPublication.setPublicationSubtype(pubSubtype);
-        inPublication.setPublicationSeries(pubSeries);
+        inPublication.setSeriesTitle(pubSeries);
         outPublication = busService.publicationPreProcessing(inPublication);
         assertNotNull(outPublication);
         assertNotNull(outPublication.getId());
         assertEquals(outPublication.getId().toString(), outPublication.getIndexId());
-        assertEquals(MpPublicationBusService.DOI_PREFIX + "/" + outPublication.getIndexId(), outPublication.getDoiName());
+        assertEquals(MpPublicationBusService.DOI_PREFIX + "/" + outPublication.getIndexId(), outPublication.getDoi());
 
     }
 
@@ -215,7 +215,7 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
 //        pub.setPublicationTypeId(PublicationType.USGS_NUMBERED_SERIES);
 //        pub.setIpdsReviewProcessState(ProcessType.SPN_PRODUCTION.getIpdsValue());
 //        pub.setIpdsId("IPDSX-" + pub.getId());
-        pub.setDoiName("test");
+        pub.setDoi("test");
         MpPublication.getDao().add(pub);
         busService.publicationPostProcessing(pub);
 
@@ -237,7 +237,7 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
 //        pub.setPublicationTypeId(PublicationType.USGS_NUMBERED_SERIES);
 //        pub.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
 //        pub.setIpdsId("IPDSX-" + pub.getId());
-        pub.setDoiName("test");
+        pub.setDoi("test");
         MpPublication.getDao().add(pub);
         busService.publicationPostProcessing(pub);
 
@@ -261,7 +261,7 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
 //        pub.setPublicationTypeId(PublicationType.USGS_UNNUMBERED_SERIES);
 //        pub.setIpdsReviewProcessState(ProcessType.SPN_PRODUCTION.getIpdsValue());
 //        pub.setIpdsId("IPDSX-" + pub.getId());
-        pub.setDoiName("test");
+        pub.setDoi("test");
         MpPublication.getDao().add(pub);
         busService.publicationPostProcessing(pub);
 
@@ -283,7 +283,7 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
 //        pub.setPublicationTypeId(PublicationType.USGS_UNNUMBERED_SERIES);
 //        pub.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
 //        pub.setIpdsId("IPDSX-" + pub.getId());
-        pub.setDoiName("test");
+        pub.setDoi("test");
         MpPublication.getDao().add(pub);
         busService.publicationPostProcessing(pub);
 

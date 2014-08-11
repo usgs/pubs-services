@@ -51,6 +51,16 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
     public List<MpPublication> getByMap(Map<String, Object> filters) {
         return getSqlSession().selectList(NS + GET_BY_MAP, filters);
     }
+    
+	/** {@inheritDoc}
+	 * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getObjectCount(java.util.Map)
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	@ISetDbContext
+	public Integer getObjectCount(Map<String, Object> filters) {
+		return getSqlSession().selectOne(NS + GET_COUNT, filters);
+	}
 
     /** {@inheritDoc}
      * @see gov.usgs.cida.pubs.dao.intfc.IDao#update(java.lang.Object)

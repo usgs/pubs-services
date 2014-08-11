@@ -145,51 +145,148 @@
 
     <sql id="filters">
         <where>
-<!--             <if test="null != listId"> -->
-<!--                 <if test="listId.length > 0"> -->
-<!--                     <foreach item="list" collection="listId" open=" and prod_id in (select prod_id from mp_list_pubs_rel where list_id in(" separator="," close="))"> -->
-<!--                         #{list,jdbcType=NUMERIC} -->
-<!--                     </foreach> -->
-<!--                 </if> -->
-<!--             </if> -->
-<!--             <if test="authFirst != null"> -->
-<!--                 and upper(author_display) like '%' || upper(#{authFirst}) || '%' -->
-<!--             </if> -->
-<!--             <if test="authLast != null"> -->
-<!--                 and upper(author_display) like '%' || upper(#{authLast}) || '%' -->
-<!--             </if> -->
+        	<if test="searchTerms != null and searchTerms.length > 0">
+        		and (
+				<foreach item="term" collection="searchTerms" open=""
+						 separator="or" close=""> 
+					(
+					upper(title)
+					|| ' ' || upper(abstract)
+					|| ' ' || upper(subseries_title)
+					|| ' ' || upper(series_number)
+					LIKE '%' || upper(#{term}) || '%')
+				</foreach>
+				
+				<!-- Author -->
+				
+				<!-- series name -->
+				or publication_id in (
+	                select publication_id 
+	                	from all_publication 
+	                	where publication_series_id in 
+	                		(select publication_series_id 
+	                		from publication_series
+	                		where upper(name) like '%' || upper(#{term}) || '%')
+             		)
+             		
+				<!--  contributing office -->
+				or publication_id in (
+                	select publication_id 
+                	from mp_pub_cost_center 
+                	where cost_center_id in 
+                		(select cost_center_id 
+                		from cost_center 
+                		where upper(name) like '%' || upper(#{term}) || '%')
+					union
+					select publication_id 
+					from publication_cost_center 
+					where cost_center_id in 
+						(select cost_center_id 
+						from cost_center 
+						where upper(name) like '%' || upper(#{term}) || '%')
+                )
+                
+                <!-- author -->
+                or publication_id in (
+                select publication_id 
+                	from mp_pub_contributor 
+                	where contributor_id in 
+                		(select contributor_id 
+                		from contributor
+                		where upper(first) || ' ' || upper(given) like '%' || upper(#{term}) || '%')
+					union
+					select publication_id 
+					from publication_contributor 
+					where contributor_id in 
+						(select contributor_id 
+                		from contributor
+                		where upper(first) || ' ' || upper(given) like '%' || upper(#{term}) || '%')
+                ) 
+				)
+        	</if>
+        	
+            <if test="title != null">
+                and upper(title) like '%' || upper(#{title}) || '%'
+            </if>          
+            
+            <if test="abstract != null">
+                and upper(abstract) like '%' || upper(#{abstract}) || '%' 
+            </if>
+            
+            <if test="author != null">
+                and publication_id in (
+                select publication_id 
+                	from mp_pub_contributor 
+                	where contributor_id in 
+                		(select contributor_id 
+                		from contributor
+                		where upper(first) || ' ' || upper(given) like '%' || upper(#{author}) || '%')
+					union
+					select publication_id 
+					from publication_contributor 
+					where contributor_id in 
+						(select contributor_id 
+                		from contributor
+                		where upper(first) || ' ' || upper(given) like '%' || upper(#{author}) || '%')
+                ) 
+            </if>
+            
             <if test="id != null">
                 and publication_id = #{id}
             </if>
+            
             <if test="indexId != null">
                 and upper(index_id) = upper(#{indexId})
             </if>
-<!--             <if test="pubType != null"> -->
-<!--                 and publication_type_id = #{pubType} -->
-<!--             </if> -->
-<!--             <if test="title != null"> -->
-<!--                 and upper(title) like '%' || upper(#{title}) || '%' -->
-<!--             </if> -->
-<!--             <if test="year != null"> -->
-<!--                 and publication_year = #{year} -->
-<!--             </if> -->
-<!--             <if test="yearStart != null"> -->
-<!--                 and publication_year &gt;= #{yearStart} -->
-<!--             </if> -->
-<!--             <if test="yearEnd != null"> -->
-<!--                 and publication_year &lt;= #{yearEnd} -->
-<!--             </if> -->
-<!--             <if test="journal != null"> -->
-<!--                 and larger_work_id = #{journal} -->
-<!--             </if> -->
-<!--             <if test="reportSeries != null"> -->
-<!--                 and series_cd = #{reportSeries} -->
-<!--             </if> -->
-<!--             <if test="reportNumber != null"> -->
-<!--                 and series_number like '%' || #{reportNumber} || '%' -->
-<!--             </if> -->
+            
             <if test="ipdsId != null">
                 and ipds_id = #{ipdsId}
+            </if>
+            
+            <if test="year != null">
+                and to_char(DISPLAY_TO_PUBLIC_DATE, 'RRRR') = #{year}
+            </if>
+            
+            <if test="yearStart != null">
+                and to_char(DISPLAY_TO_PUBLIC_DATE, 'RRRR') &gt;= #{yearStart}
+            </if>
+            
+            <if test="yearEnd != null">
+                and to_char(DISPLAY_TO_PUBLIC_DATE, 'RRRR') &lt;= #{yearEnd}
+            </if>
+            
+            <!-- This only works if publication_id is unique across both mp_pub and publication tables -->
+            <if test="contributingOffice != null">
+                and publication_id in (
+                	select publication_id 
+                	from mp_pub_cost_center 
+                	where cost_center_id in 
+                		(select cost_center_id 
+                		from cost_center 
+                		where upper(name) like '%' || upper(#{contributingOffice}) || '%')
+					union
+					select publication_id 
+					from publication_cost_center 
+					where cost_center_id in 
+						(select cost_center_id 
+						from cost_center 
+						where upper(name) like '%' || upper(#{contributingOffice}) || '%')
+                )
+            </if>
+
+            <if test="reportSeries != null">
+                and publication_id in (
+	                select publication_id 
+	                	from all_publication 
+	                	where publication_series_id in 
+	                		(select publication_series_id 
+	                		from publication_series
+	                		where upper(name) like '%' || upper(#{reportSeries}) || '%')
+             		)
+            </if>
+            
+            <if test="reportNumber != null">
+                and series_number like '%' || #{reportNumber} || '%'
             </if>
         </where>
     </sql>
@@ -205,11 +302,11 @@
     </select>
 
     <select id="getByMap" parameterType="map" resultMap="result">
-<!--         <include refid="base.pagingTop"/> -->
+        <include refid="base.pagingTop"/>
         <include refid="baseSelect"/>
         <include refid="filters"/>
-<!--         <include refid="base.orderBy"/> -->
-<!--         <include refid="base.pagingBottom"/> -->
+        <include refid="base.orderBy"/>
+        <include refid="base.pagingBottom"/>
     </select>
 
     <select id="getCount" parameterType="map" resultType="Integer">

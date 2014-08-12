@@ -37,8 +37,8 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     private static final Logger LOG = LoggerFactory.getLogger(MpPublicationMvcService.class);
 
     //SQL config for single search 
-    private static final String SEARCH_TERM_ORDERBY = "mppublication";
-    private static final String SEARCH_TERM_ORDERBY_DIR = "mppublication";
+    private static final String SEARCH_TERM_ORDERBY = "display_to_public_date"; //TODO this is temporary until we get PUB DATE
+    private static final String SEARCH_TERM_ORDERBY_DIR = "DESC";
     
     @Autowired
     private IMpPublicationBusService mpPublicationBusService;
@@ -63,22 +63,20 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     @ResponseBody
     public Map<String,? extends Object> getPubs(
     		@RequestParam(value="q", required=false) String searchTerms, //single string search
-            @RequestParam(value="title", required=false) String title,
-            @RequestParam(value="abstract", required=false) String pubAbstract,
-            @RequestParam(value="author", required=false) String author,
-            @RequestParam(value="prodId", required=false) String prodId,
-            @RequestParam(value="indexId", required=false) String indexId,
-            @RequestParam(value="ipdsId", required=false) String ipdsId,
-            @RequestParam(value="year", required=false) String year,
-            @RequestParam(value="startYear", required=false) String yearStart,
-            @RequestParam(value="endYear", required=false) String yearEnd,
-    		@RequestParam(value="contributingOffice", required=false) String contributingOffice,
-            @RequestParam(value="seriesName", required=false) String reportSeries,
-            @RequestParam(value="reportNumber", required=false) String reportNumber,
+            @RequestParam(value="title", required=false) String[] title,
+            @RequestParam(value="abstract", required=false) String[] pubAbstract,
+            @RequestParam(value="author", required=false) String[] author,
+            @RequestParam(value="prodId", required=false) String[] prodId,
+            @RequestParam(value="indexId", required=false) String[] indexId,
+            @RequestParam(value="ipdsId", required=false) String[] ipdsId,
+            @RequestParam(value="year", required=false) String[] year,
+            @RequestParam(value="startYear", required=false) String[] yearStart,
+            @RequestParam(value="endYear", required=false) String[] yearEnd,
+    		@RequestParam(value="contributingOffice", required=false) String[] contributingOffice,
+            @RequestParam(value="seriesName", required=false) String[] reportSeries,
+            @RequestParam(value="reportNumber", required=false) String[] reportNumber,
             @RequestParam(value="page_row_start", required=false, defaultValue = "0") String pageRowStart,
             @RequestParam(value="page_size", required=false) String pageSize,
-            @RequestParam(value="orderby", required=false) String orderby,
-            @RequestParam(value="orderby_dir", required=false) String orderbyDir,
             HttpServletResponse response) {
 
         Map<String, Object> filters = new HashMap<String, Object>();
@@ -100,21 +98,9 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     	addToFiltersIfNotNull(filters, "pageRowStart", pageRowStart);
     	addToFiltersIfNotNull(filters, "pageSize", pageSize);
         
-        updateOrderBy(filters, orderby, orderbyDir);
-
         List<MpPublication> pubs = mpPublicationBusService.getObjects(filters);
         Integer totalPubsCount = mpPublicationBusService.getObjectCount(filters);
         return buildResponseMap(response, pubs, totalPubsCount);
-    }
-    
-    /**
-     * Helper to check if null and add to filters
-     */
-    Map<String, Object> addToFiltersIfNotNull(Map<String, Object> filters, String key, String value) {
-        if (!PubsUtilities.isNullOrEmpty(value)) {
-            filters.put(key, value);
-        }
-    	return filters;
     }
     
     /**
@@ -125,32 +111,8 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     private Map<String, Object> configureSingleSearchFilters(Map<String, Object> filters, String searchTerms) {
         if ( ! PubsUtilities.isNullOrEmpty(searchTerms)) {
 	    	filters.put("searchTerms", searchTerms.split("[\\s+,+]"));
-	    	filters.put("orderby", SEARCH_TERM_ORDERBY + " " + SEARCH_TERM_ORDERBY_DIR);
+	    	updateOrderBy(filters, SEARCH_TERM_ORDERBY, SEARCH_TERM_ORDERBY_DIR);
         }
-    	return filters;
-    }
-    
-    /**
-     * Extends current order by clause with more options if necessary
-     */
-    private Map<String, Object> updateOrderBy(Map<String, Object> filters, String orderBy, String orderByDir) {
-    	if ( ! PubsUtilities.isNullOrEmpty(orderBy)) {
-    		String newOrderBy = orderBy;
-    		if (newOrderBy.equalsIgnoreCase("reportnumber")) {
-    			newOrderBy = "series_number";
-            }
-    		
-		    String exitingOrderBy = (String) filters.get("orderby");
-	    	String fullOrderBy = newOrderBy + (orderByDir == null ? "" : orderByDir);
-		    
-		    if(exitingOrderBy != null) {
-		    	filters.put("orderby", exitingOrderBy + ", " + fullOrderBy);
-		    } else {
-		    	filters.put("orderby", fullOrderBy);
-		    	
-		    }
-    	}
-
     	return filters;
     }
 

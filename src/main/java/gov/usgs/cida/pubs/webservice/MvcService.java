@@ -1,10 +1,12 @@
 package gov.usgs.cida.pubs.webservice;
 
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +33,56 @@ public abstract class MvcService<D> {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
+    /**
+     * Helper to check if null and add to filters map
+     */
+    protected Map<String, Object> addToFiltersIfNotNull(Map<String, Object> filters, String key, String value) {
+        if (!PubsUtilities.isNullOrEmpty(value)) {
+            filters.put(key, value);
+        }
+    	return filters;
+    }
+    
+    /**
+     * Helper creates an array of non-empty values and places it in the filters map.
+     */
+    protected Map<String, Object> addToFiltersIfNotNull(Map<String, Object> filters, String key, String[] values) {
+    	ArrayList<String> filterValues = new ArrayList<>();
+        if (!PubsUtilities.isNullOrEmpty(values)) {
+	    	for(String value : values) {
+		        if (!PubsUtilities.isNullOrEmpty(value)) {
+		        	filterValues.add(value);
+		        }
+	    	}
+	    	filters.put(key, filterValues.toArray());
+        }
+    	return filters;
+    }
+    
+    /**
+     * Extends current order by clause with more options if necessary
+     */
+    protected Map<String, Object> updateOrderBy(Map<String, Object> filters, String orderBy, String orderByDir) {
+    	if ( ! PubsUtilities.isNullOrEmpty(orderBy)) {
+    		String newOrderBy = orderBy;
+    		if (newOrderBy.equalsIgnoreCase("reportnumber")) {
+    			newOrderBy = "series_number";
+            }
+    		
+		    String exitingOrderBy = (String) filters.get("orderby");
+	    	String fullOrderBy = newOrderBy + " " + (orderByDir == null ? "" : orderByDir);
+		    
+		    if(exitingOrderBy != null) {
+		    	filters.put("orderby", exitingOrderBy + ", " + fullOrderBy);
+		    } else {
+		    	filters.put("orderby", fullOrderBy);
+		    	
+		    }
+    	}
+
+    	return filters;
+    }
+    
     protected Map<String, Object> buildResponseMap(final HttpServletResponse response, final Object objects) {
         return buildResponseMap(response, objects, null, null);
     }

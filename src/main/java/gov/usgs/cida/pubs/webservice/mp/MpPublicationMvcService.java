@@ -75,7 +75,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     		@RequestParam(value="contributingOffice", required=false) String contributingOffice,
             @RequestParam(value="seriesName", required=false) String reportSeries,
             @RequestParam(value="reportNumber", required=false) String reportNumber,
-            @RequestParam(value="page_row_start", required=false) String pageRowStart,
+            @RequestParam(value="page_row_start", required=false, defaultValue = "0") String pageRowStart,
             @RequestParam(value="page_size", required=false) String pageSize,
             @RequestParam(value="orderby", required=false) String orderby,
             @RequestParam(value="orderby_dir", required=false) String orderbyDir,

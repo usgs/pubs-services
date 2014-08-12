@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.webservice.mp;
 
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.json.ResponseView;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
@@ -60,8 +61,8 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     }
 
     @RequestMapping(value = "mppublications", method = RequestMethod.GET,  produces="application/json")
-    @ResponseBody
-    public Map<String,? extends Object> getPubs(
+    @ResponseView(IMpView.class)
+    public @ResponseBody SearchResults getPubs(
     		@RequestParam(value="q", required=false) String searchTerms, //single string search
             @RequestParam(value="title", required=false) String[] title,
             @RequestParam(value="abstract", required=false) String[] pubAbstract,
@@ -76,7 +77,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
             @RequestParam(value="seriesName", required=false) String[] reportSeries,
             @RequestParam(value="reportNumber", required=false) String[] reportNumber,
             @RequestParam(value="page_row_start", required=false, defaultValue = "0") String pageRowStart,
-            @RequestParam(value="page_size", required=false) String pageSize,
+            @RequestParam(value="page_size", required=false, defaultValue = "25") String pageSize,
             HttpServletResponse response) {
 
         Map<String, Object> filters = new HashMap<String, Object>();
@@ -100,7 +101,13 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         
         List<MpPublication> pubs = mpPublicationBusService.getObjects(filters);
         Integer totalPubsCount = mpPublicationBusService.getObjectCount(filters);
-        return buildResponseMap(response, pubs, totalPubsCount);
+        SearchResults results = new SearchResults();
+        results.setPageSize(pageSize);
+        results.setPageRowStart(pageRowStart);
+        results.setRecords(pubs);
+        results.setRecordCount(totalPubsCount);
+        
+        return results;
     }
     
     /**

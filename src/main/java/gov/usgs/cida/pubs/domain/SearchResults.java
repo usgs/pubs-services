@@ -2,14 +2,20 @@ package gov.usgs.cida.pubs.domain;
 
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 
-public class SearchResults {
+public class SearchResults implements Serializable {
 	
-    @JsonProperty("pageSize")
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@JsonProperty("pageSize")
     @JsonView(IMpView.class)
 	private String pageSize;
     

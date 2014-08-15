@@ -81,7 +81,4 @@ public final class PubsUtilities {
         return messageFormat.format(messageArguments);
     }
 
-    public static String getNodeText(final Element element, final String tagName) {
-        return element.getElementsByTagName(tagName).item(0).getTextContent();
-    }
 }

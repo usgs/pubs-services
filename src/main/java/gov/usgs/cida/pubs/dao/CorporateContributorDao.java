@@ -24,7 +24,7 @@ public class CorporateContributorDao extends ContributorDao {
         return domainObject.getId();
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
      */
@@ -35,18 +35,7 @@ public class CorporateContributorDao extends ContributorDao {
         return (Contributor<?>) getSqlSession().selectOne(NS + GET_BY_ID + CORPORATE, domainID);
     }
 
-//    /** 
-//     * {@inheritDoc}
-//     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.String)
-//     */
-//    @Transactional(readOnly = true)
-//    @ISetDbContext
-//    @Override
-//    public Contributor<?> getById(String domainID) {
-//        return getById(Integer.parseInt(domainID));
-//    }
-//
-    /** 
+    /**
      * {@inheritDoc}
      * @see gov.usgs.cida.pubs.dao.BaseDao#getByMap(Map)
      */

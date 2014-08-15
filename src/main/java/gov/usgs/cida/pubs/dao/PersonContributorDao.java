@@ -35,17 +35,6 @@ public class PersonContributorDao extends ContributorDao {
         return (Contributor<?>) getSqlSession().selectOne(NS + GET_BY_ID + PERSON, domainID);
     }
 
-//    /** 
-//     * {@inheritDoc}
-//     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.String)
-//     */
-//    @Transactional(readOnly = true)
-//    @ISetDbContext
-//    @Override
-//    public Contributor<?> getById(String domainID) {
-//        return getById(Integer.parseInt(domainID));
-//    }
-
     /** 
      * {@inheritDoc}
      * @see gov.usgs.cida.pubs.dao.BaseDao#getByMap(Map)

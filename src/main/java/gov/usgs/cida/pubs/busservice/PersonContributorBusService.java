@@ -27,10 +27,8 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
                 Integer id = PersonContributor.getDao().add(object);
                 object = (PersonContributor<?>) PersonContributor.getDao().getById(id);
             }
-            return object;
-        } else {
-            return null;
         }
+        return object;
     }
 
 }

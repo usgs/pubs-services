@@ -56,7 +56,7 @@ public class IpdsWsRequester {
         return getIpdsXml(url.toString(), null);
     }
 
-    protected String getAuthors(final String ipds) {
+    protected String getContributors(final String ipds) {
         StringBuilder url = new StringBuilder(URL_PREFIX)
         .append("IPDSAuthors()?$filter=startswith(IPNumber,'")
         .append(ipds).append("')&$select=AuthorNameText,Rank,ContentType");

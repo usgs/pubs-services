@@ -10,6 +10,7 @@ import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 
@@ -40,7 +41,7 @@ public class MpPublicationContributorDaoTest extends BaseSpringTest {
         assertEquals("Authors", persistedA.getContributorType().getName());
         assertNotNull(persistedA.getContributor());
         assertEquals(id, persistedA.getContributor().getId());
-        assertEquals("ConFirst", persistedA.getContributor().getFirst());
+        assertEquals("ConFirst", ((UsgsContributor) persistedA.getContributor()).getFamily());
         //TODO more property checking
 
 

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="affiliation">
+
+    <resultMap id="result" type="Affiliation" extends="base.result">
+        <id property="id" column="affiliation_id"/>
+        <result property="name" column="name"/>
+        <result property="active" column="is_active"/>
+        <result property="usgs" column="is_cost_center"/>
+    </resultMap>
+
+    <sql id="cols">
+        affiliation_id, name, is_active, is_cost_center
+    </sql>
+
+    <sql id="filters">
+        <!-- This does not include the where tag so we can include it in other filters. -->
+        <if test="id != null">
+            and affiliation_id = #{id}
+        </if>
+        <if test="name != null">
+            and upper(name) like upper(#{name}) || '%'
+        </if>
+        <if test="active != null">
+            and is_active = #{active}
+        </if>
+        <if test="usgs != null">
+            and is_cost_center = #{usgs}
+        </if>
+    </sql>
+
+    <sql id="baseSelect">
+        select <include refid="cols"/>
+          from affiliation
+    </sql>
+
+    <select id="getById" parameterType="Integer" resultMap="result">
+        <include refid="baseSelect"/>
+         where affiliation_id = #{value,jdbcType=NUMERIC}
+    </select>
+
+    <select id="getByMap" resultMap="result">
+        <include refid="baseSelect"/>
+        <where>
+            <include refid="filters"/>
+        </where>
+    </select>
+
+</mapper>

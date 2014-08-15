@@ -7,9 +7,6 @@
         <id property="id" column="publication_id"/>
         <result property="indexId" column="index_id"/>
         <result property="displayToPublicDate" column="display_to_public_date"/>
-        <result property="publicationType.id" column="publication_type_id"/>
-        <result property="publicationSubtype.id" column="publication_subtype_id"/>
-        <result property="seriesTitle.id" column="publication_series_id"/>
         <result property="seriesNumber" column="series_number"/>
         <result property="subseriesTitle" column="subseries_title"/>
         <result property="chapter" column="chapter"/>
@@ -35,8 +32,10 @@
         <result property="temporalEnd" column="temporal_end"/>
         <result property="notes" column="notes"/>
         <result property="ipdsId" column="ipds_id"/>
-<!--         <collection property="authors" column="publication_id" select="mpPublicationContributor.getById"/> -->
-<!--         <collection property="costCenters" column="publication_id" select="mpPublicationCostCenter.getByMap"/> -->
+        <association property="publicationType" column="publication_type_id" select="publicationType.getById"/>
+        <association property="publicationSubtype" column="publication_subtype_id" select="publicationSubtype.getById"/>
+        <association property="seriesTitle" column="publication_series_id" select="publicationSeries.getById"/>
+<!--         <association property="contact" column="contact_id" select="contact.getById"/> -->
     </resultMap>
 
     <sql id="cols">

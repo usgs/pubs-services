@@ -8,9 +8,9 @@ import java.util.Map;
 
 import org.springframework.transaction.annotation.Transactional;
 
-public class ContributorDao extends BaseDao<Contributor> {
+public class ContributorDao extends BaseDao<Contributor<?>> {
 
-    private static final String NS = "contributor";
+    protected static final String NS = "contributor";
 
     /** 
      * {@inheritDoc}
@@ -19,8 +19,8 @@ public class ContributorDao extends BaseDao<Contributor> {
     @Transactional(readOnly = true)
     @ISetDbContext
     @Override
-    public Contributor getById(Integer domainID) {
-        return (Contributor) getSqlSession().selectOne(NS + GET_BY_ID, domainID);
+    public Contributor<?> getById(Integer domainID) {
+        return (Contributor<?>) getSqlSession().selectOne(NS + GET_BY_ID, domainID);
     }
 
     /** 
@@ -30,7 +30,7 @@ public class ContributorDao extends BaseDao<Contributor> {
     @Transactional(readOnly = true)
     @ISetDbContext
     @Override
-    public Contributor getById(String domainID) {
+    public Contributor<?> getById(String domainID) {
         return getById(Integer.parseInt(domainID));
     }
 
@@ -41,8 +41,28 @@ public class ContributorDao extends BaseDao<Contributor> {
     @Transactional(readOnly = true)
     @ISetDbContext
     @Override
-    public List<Contributor> getByMap(Map<String, Object> filters) {
+    public List<Contributor<?>> getByMap(Map<String, Object> filters) {
         return getSqlSession().selectList(NS + GET_BY_MAP, filters);
+    }
+
+    /** {@inheritDoc}
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#delete(java.lang.Object)
+     */
+    @Transactional
+    @ISetDbContext
+    @Override
+    public void delete(Contributor<?> domainObject) {
+        deleteById(domainObject.getId());
+    }
+
+    /** {@inheritDoc}
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#deleteById(java.lang.Integer)
+     */
+    @Transactional
+    @ISetDbContext
+    @Override
+    public void deleteById(Integer domainID) {
+        getSqlSession().delete(NS + DELETE, domainID);
     }
 
 }

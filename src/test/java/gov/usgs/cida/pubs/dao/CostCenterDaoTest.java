@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.dao;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.CostCenter;
 
 import java.util.HashMap;
@@ -21,21 +22,21 @@ public class CostCenterDaoTest extends BaseSpringTest {
 
     @Test
     public void getByIdInteger() {
-        CostCenter costCenter = CostCenter.getDao().getById(74);
+        Affiliation<?> costCenter = CostCenter.getDao().getById(74);
         assertEquals(74, costCenter.getId().intValue());
         assertEquals("New Jersey Water Science Center", costCenter.getName());
     }
 
     @Test
     public void getByIdString() {
-        CostCenter costCenter = CostCenter.getDao().getById("114");
+        Affiliation<?> costCenter = CostCenter.getDao().getById("114");
         assertEquals(114, costCenter.getId().intValue());
         assertEquals("Eastern Geographic Science Center", costCenter.getName());
     }
 
     @Test
     public void getByMap() {
-        List<CostCenter> costCenters = CostCenter.getDao().getByMap(null);
+        List<Affiliation<?>> costCenters = CostCenter.getDao().getByMap(null);
         assertEquals(costCenterCnt, costCenters.size());
 
         Map<String, Object> filters = new HashMap<>();
@@ -49,6 +50,29 @@ public class CostCenterDaoTest extends BaseSpringTest {
         filters.put("name", "ea");
         costCenters = CostCenter.getDao().getByMap(filters);
         assertEquals(9, costCenters.size());
+
+        filters.put("active", false);
+        costCenters = CostCenter.getDao().getByMap(filters);
+        assertEquals(0, costCenters.size());
+
+        filters.put("active", true);
+        costCenters = CostCenter.getDao().getByMap(filters);
+        assertEquals(9, costCenters.size());
+
+        filters.put("usgs", false);
+        costCenters = CostCenter.getDao().getByMap(filters);
+        assertEquals(0, costCenters.size());
+
+        filters.put("usgs", true);
+        costCenters = CostCenter.getDao().getByMap(filters);
+        assertEquals(9, costCenters.size());
+
+        filters.clear();
+        filters.put("ipdsId", "74");
+        costCenters = CostCenter.getDao().getByMap(filters);
+        assertEquals(1, costCenters.size());
+        assertEquals(74, costCenters.get(0).getId().intValue());
+        assertEquals("New Jersey Water Science Center", costCenters.get(0).getName());
     }
 
     @Test

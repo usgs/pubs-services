@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<feed xml:base="https://ipds.usgs.gov/_vti_bin/listdata.svc/" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns="http://www.w3.org/2005/Atom">
+  <title type="text">IPDSAuthors</title>
+  <id>https://ipds.usgs.gov/_vti_bin/Listdata.svc/IPDSAuthors</id>
+  <updated>2014-08-11T19:38:42Z</updated>
+  <link rel="self" title="IPDSAuthors" href="IPDSAuthors" />
+  <entry m:etag="W/&quot;2&quot;">
+    <id>https://ipds.usgs.gov/_vti_bin/listdata.svc/IPDSAuthors(331405)</id>
+    <title type="text">ODoe, Jane </title>
+    <updated>2013-08-21T11:37:08-06:00</updated>
+    <author>
+      <name />
+    </author>
+    <link rel="edit" title="IPDSAuthorsItem" href="IPDSAuthors(331405)" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/AuthorName" type="application/atom+xml;type=entry" title="AuthorName" href="IPDSAuthors(331405)/AuthorName" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/CostCenter" type="application/atom+xml;type=entry" title="CostCenter" href="IPDSAuthors(331405)/CostCenter" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/CreatedBy" type="application/atom+xml;type=entry" title="CreatedBy" href="IPDSAuthors(331405)/CreatedBy" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ModifiedBy" type="application/atom+xml;type=entry" title="ModifiedBy" href="IPDSAuthors(331405)/ModifiedBy" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ContributorRole" type="application/atom+xml;type=entry" title="ContributorRole" href="IPDSAuthors(331405)/ContributorRole" />
+    <category term="Microsoft.SharePoint.DataService.IPDSAuthorsItem" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+    <content type="application/xml">
+      <m:properties>
+        <d:ContentTypeID>0x0100A1B2D36CE37F734EACC7D84A7815DA59009483ED2B3D9E8240B7A270CCF8751D40</d:ContentTypeID>
+        <d:AuthorNameText xml:space="preserve">ODoe, Jane </d:AuthorNameText>
+        <d:IPNumber>IP-050927</d:IPNumber>
+        <d:NonUSGSContributor xml:space="preserve">ODoe, Jane </d:NonUSGSContributor>
+        <d:NonUSGSAffiliation>The Outer Limits</d:NonUSGSAffiliation>
+        <d:Rank m:type="Edm.Double">1</d:Rank>
+        <d:AuthorNameId m:type="Edm.Int32" m:null="true" />
+        <d:CostCenterId m:type="Edm.Int32" m:null="true" />
+        <d:CreatedById m:type="Edm.Int32">288</d:CreatedById>
+        <d:ModifiedById m:type="Edm.Int32">288</d:ModifiedById>
+        <d:Modified m:type="Edm.DateTime">2013-08-21T11:37:08</d:Modified>
+        <d:Created m:type="Edm.DateTime">2013-08-21T11:36:28</d:Created>
+        <d:ContributorRoleValue>Author</d:ContributorRoleValue>
+        <d:Del_Flag m:type="Edm.Boolean">false</d:Del_Flag>
+        <d:AutoDeleteIPDSAuthors m:type="Edm.Int32" m:null="true" />
+        <d:AutoDeleteIPDSAuthors0 m:type="Edm.Int32" m:null="true" />
+        <d:Id m:type="Edm.Int32">331405</d:Id>
+        <d:ContentType>Author</d:ContentType>
+        <d:Owshiddenversion m:type="Edm.Int32">2</d:Owshiddenversion>
+        <d:Version>1.0</d:Version>
+        <d:Path>/Lists/IPDS Authors</d:Path>
+      </m:properties>
+    </content>
+  </entry>
+</feed>

@@ -14,10 +14,34 @@
         </constructor-arg>
     </bean>
 
-    <bean id="authorsXml" class="java.lang.String">
+    <bean id="contributorsXml" class="java.lang.String">
         <constructor-arg>
             <bean class="org.springframework.util.FileCopyUtils" factory-method="copyToByteArray">
-                <constructor-arg value="classpath:testData/authors.xml" type="java.io.InputStream" />
+                <constructor-arg value="classpath:testData/contributors.xml" type="java.io.InputStream" />
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean id="usgsContributorXml" class="java.lang.String">
+        <constructor-arg>
+            <bean class="org.springframework.util.FileCopyUtils" factory-method="copyToByteArray">
+                <constructor-arg value="classpath:testData/usgsContributor.xml" type="java.io.InputStream" />
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean id="newOutsideContributorXml" class="java.lang.String">
+        <constructor-arg>
+            <bean class="org.springframework.util.FileCopyUtils" factory-method="copyToByteArray">
+                <constructor-arg value="classpath:testData/newOutsideContributor.xml" type="java.io.InputStream" />
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean id="existingOutsideContributorXml" class="java.lang.String">
+        <constructor-arg>
+            <bean class="org.springframework.util.FileCopyUtils" factory-method="copyToByteArray">
+                <constructor-arg value="classpath:testData/existingOutsideContributor.xml" type="java.io.InputStream" />
             </bean>
         </constructor-arg>
     </bean>

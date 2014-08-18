@@ -34,7 +34,7 @@ public class Affiliation<D> extends BaseDomain<Affiliation<D>> implements ILooku
         return active;
     }
 
-    public boolean getUsgs() {
+    public boolean isUsgs() {
         return usgs;
     }
 

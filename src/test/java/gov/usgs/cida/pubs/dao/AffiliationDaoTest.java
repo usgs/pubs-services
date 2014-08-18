@@ -1,17 +1,34 @@
 package gov.usgs.cida.pubs.dao;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
 
+import java.io.File;
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+import javax.sql.DataSource;
+
+import org.dbunit.database.DatabaseConfig;
+import org.dbunit.database.DatabaseConnection;
+import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
+import org.dbunit.ext.oracle.OracleDataTypeFactory;
+import org.dbunit.operation.DatabaseOperation;
+import org.junit.Before;
 import org.junit.Test;
+import org.springframework.jdbc.datasource.DataSourceUtils;
+
 
 /**
  * @author drsteini
@@ -19,17 +36,40 @@ import org.junit.Test;
  */
 public class AffiliationDaoTest extends BaseSpringTest {
 
-    public static final int affiliationCnt = 172;
+    public static final int affiliationCnt = 7;
+
+    @Resource
+    private DataSource dataSource;
+
+    @Before public void setUp() throws Exception {
+        IDataSet dataSet = new FlatXmlDataSetBuilder().build(new File(
+                "src/test/resources/testData/dataset.xml"
+                ));
+
+        Connection conn = DataSourceUtils.getConnection(dataSource);
+
+        IDatabaseConnection connection;
+        try {
+            connection = new DatabaseConnection(conn);
+
+            DatabaseConfig config = connection.getConfig();
+            config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new OracleDataTypeFactory());
+            config.setFeature(DatabaseConfig.FEATURE_QUALIFIED_TABLE_NAMES, true);
+
+            DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
+        } catch (Exception err) {
+            throw new RuntimeException(err);
+        }
+
+    }
 
     @Test
     public void getByIdInteger() {
-        Affiliation<?> affiliation = Affiliation.getDao().getById(182);
-        assertEquals(182, affiliation.getId().intValue());
-        assertEquals("The Outer Limits", affiliation.getName());
+        Affiliation<?> costCenter = Affiliation.getDao().getById(1);
+        assertAffiliation1(costCenter);
 
-        Affiliation<?> costCenter = CostCenter.getDao().getById(74);
-        assertEquals(74, costCenter.getId().intValue());
-        assertEquals("New Jersey Water Science Center", costCenter.getName());
+        Affiliation<?> outsideAffiliation = CostCenter.getDao().getById(5);
+        assertAffiliation5(outsideAffiliation);
     }
 
     @Test
@@ -115,6 +155,23 @@ public class AffiliationDaoTest extends BaseSpringTest {
         } catch (Exception e) {
             assertEquals("NOT IMPLEMENTED.", e.getMessage());
         }
+    }
+
+    public static void assertAffiliation1(Affiliation<?> affiliation) {
+        assertEquals(1, affiliation.getId().intValue());
+        assertEquals("Affiliation Cost Center 1", affiliation.getName());
+        assertTrue(affiliation.isActive());
+        assertTrue(affiliation.isUsgs());
+        assertTrue(affiliation instanceof CostCenter);
+        assertEquals(4, ((CostCenter) affiliation).getIpdsId().intValue());
+    }
+
+    public static void assertAffiliation5(Affiliation<?> affiliation) {
+        assertEquals(5, affiliation.getId().intValue());
+        assertEquals("Affiliation Outside 1", affiliation.getName());
+        assertTrue(affiliation.isActive());
+        assertFalse(affiliation.isUsgs());
+        assertTrue(affiliation instanceof OutsideAffiliation);
     }
 
 }

@@ -15,11 +15,11 @@ public class CostCenter extends Affiliation<CostCenter> {
     @JsonIgnore
     private Integer ipdsId;
 
-    public Integer getinIpdsId() {
+    public Integer getIpdsId() {
         return ipdsId;
     }
 
-    public void setinIpdsId(final Integer inIpdsId) {
+    public void setIpdsId(final Integer inIpdsId) {
         ipdsId = inIpdsId;
     }
 

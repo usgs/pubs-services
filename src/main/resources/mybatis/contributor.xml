@@ -104,13 +104,19 @@
               or upper(email) like upper(#{name}) || '%'
               or upper(literal) like upper(#{name}) || '%')
         </if>
+        <if test="given != null">
+            and upper(given) like upper(#{given}) || '%'
+        </if>
+        <if test="family != null">
+            and upper(first) like upper(#{family}) || '%'
+        </if>
         <if test="corporation != null">
-	        <if test="corporation">
-	            and is_corporation = 'Y'
-	        </if>
-	        <if test="!corporation">
-	            and is_corporation = 'N'
-	        </if>
+            <if test="corporation">
+                and is_corporation = 'Y'
+            </if>
+            <if test="!corporation">
+                and is_corporation = 'N'
+            </if>
         </if>
     </sql>
 

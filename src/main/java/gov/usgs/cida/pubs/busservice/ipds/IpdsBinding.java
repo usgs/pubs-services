@@ -158,7 +158,7 @@ public class IpdsBinding {
             } else {
                 rtn.setContributorType(ContributorType.getDao().getById(ContributorType.EDITORS));
             }
-            rtn.setRank(PubsUtilities.parseInteger(getFirstNodeText(element, "d:Rank")));
+            rtn.setRank(PubsUtilities.parseInteger(element.getElementsByTagName("d:Rank").item(0).getTextContent()));
         }
         return rtn;
     }

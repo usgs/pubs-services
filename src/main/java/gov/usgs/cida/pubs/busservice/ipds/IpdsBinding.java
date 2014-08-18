@@ -145,12 +145,12 @@ public class IpdsBinding {
                 person = getOrCreateUsgsContributor(element, ipdsContributorId);
             }
             rtn.setContributor(person);
-            if ("Author".equalsIgnoreCase(PubsUtilities.getNodeText(element, "d:ContentType"))) {
+            if ("Author".equalsIgnoreCase(element.getElementsByTagName("d:ContentType").item(0).getTextContent())) {
                 rtn.setContributorType(ContributorType.getDao().getById(ContributorType.AUTHORS));
             } else {
                 rtn.setContributorType(ContributorType.getDao().getById(ContributorType.EDITORS));
             }
-            rtn.setRank(PubsUtilities.parseInteger(PubsUtilities.getNodeText(element, "d:Rank")));
+            rtn.setRank(PubsUtilities.parseInteger(element.getElementsByTagName("d:Rank").item(0).getTextContent()));
         }
         return rtn;
     }

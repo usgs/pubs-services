@@ -1,11 +1,14 @@
 package gov.usgs.cida.pubs.webservice;
 
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.ContributorType;
+import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.LinkFileType;
 import gov.usgs.cida.pubs.domain.LinkType;
+import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
@@ -33,6 +36,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/lookup")
 public class LookupMvcService extends MvcService<PublicationType> {
     private static final Logger LOG = LoggerFactory.getLogger(LookupMvcService.class);
+
+//    @Autowired
+//    protected PersonContributorBusService personContributorBusService;
+//
+//    @Autowired
+//    protected CorporateContributorBusService corporateContributorBusService;
 
     @RequestMapping(value={"/publicationtypes"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
     @ResponseView(ILookupView.class)
@@ -129,10 +138,10 @@ public class LookupMvcService extends MvcService<PublicationType> {
 
     @RequestMapping(value={"/costcenters"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
     @ResponseView(ILookupView.class)
-    public @ResponseBody Collection<CostCenter> getCostCenters(HttpServletRequest request, HttpServletResponse response,
+    public @ResponseBody Collection<Affiliation<?>> getCostCenters(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(value="text", required=false) String[] text) {
         LOG.debug("CostCenter");
-        Collection<CostCenter> rtn = new ArrayList<>();
+        Collection<Affiliation<?>> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
@@ -193,34 +202,34 @@ public class LookupMvcService extends MvcService<PublicationType> {
 
     @RequestMapping(value={"/people"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
     @ResponseView(ILookupView.class)
-    public @ResponseBody Collection<Contributor> getContributorsPeople(HttpServletRequest request, HttpServletResponse response,
+    public @ResponseBody Collection<Contributor<?>> getContributorsPeople(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(value="text", required=false) String[] text) {
         LOG.debug("Contributor - People");
-        Collection<Contributor> rtn = new ArrayList<>();
+        Collection<Contributor<?>> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
-            filters.put("category", "person");
             if (null != text && 0 < text.length) {
                 filters.put("name", text[0]);
             }
-            rtn = Contributor.getDao().getByMap(filters);
+//            rtn = personContributorBusService.getObjects(filters);
+            rtn = PersonContributor.getDao().getByMap(filters);
         }
         return rtn;
     }
 
     @RequestMapping(value={"/corporations"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
     @ResponseView(ILookupView.class)
-    public @ResponseBody Collection<Contributor> getContributorsCorporations(HttpServletRequest request, HttpServletResponse response,
+    public @ResponseBody Collection<Contributor<?>> getContributorsCorporations(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(value="text", required=false) String[] text) {
         LOG.debug("Contributor - Corporations");
-        Collection<Contributor> rtn = new ArrayList<>();
+        Collection<Contributor<?>> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
-            filters.put("category", "corporation");
             if (null != text && 0 < text.length) {
                 filters.put("name", text[0]);
             }
-            rtn = Contributor.getDao().getByMap(filters);
+//            rtn = corporateContributorBusService.getObjects(filters);
+            rtn = CorporateContributor.getDao().getByMap(filters);
         }
         return rtn;
     }

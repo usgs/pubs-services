@@ -3,7 +3,7 @@ package gov.usgs.cida.pubs.dao.ipds;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.dao.BaseDaoTest;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
@@ -24,7 +24,7 @@ import org.junit.Test;
  */
 //TODO Why am I not rolling back tests?
 @Ignore
-public class IpdsMessageLogDaoTest extends BaseSpringTest {
+public class IpdsMessageLogDaoTest extends BaseDaoTest {
 
     private static final List<String> IGNORE_PROPERTIES_SERIES = Arrays.asList("validationErrors", "psblDupFlag", "spatialMap", "notPublishedFlag");
 

@@ -2,7 +2,6 @@ package gov.usgs.cida.pubs.dao;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.domain.PublicationType;
 
 import java.util.HashMap;
@@ -15,7 +14,7 @@ import org.junit.Test;
  * @author drsteini
  *
  */
-public class PublicationTypeDaoTest extends BaseSpringTest {
+public class PublicationTypeDaoTest extends BaseDaoTest {
 
     public static final int pubTypeCnt = 11;
 

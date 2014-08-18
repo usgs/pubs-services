@@ -1,7 +1,6 @@
 package gov.usgs.cida.pubs.dao;
 
 import static org.junit.Assert.assertEquals;
-import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
 import gov.usgs.cida.pubs.domain.Publication;
@@ -17,7 +16,7 @@ import org.junit.Test;
  * @author drsteini
  *
  */
-public class PublicationDaoTest extends BaseSpringTest {
+public class PublicationDaoTest extends BaseDaoTest {
 
     @Test
     public void getByIdTest() {

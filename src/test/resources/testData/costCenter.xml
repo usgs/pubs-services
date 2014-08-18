@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<entry xml:base="https://ipds.usgs.gov/_vti_bin/listdata.svc/" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" m:etag="W/&quot;11&quot;" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://ipds.usgs.gov/_vti_bin/listdata.svc/CostCenters(58)</id>
+  <title type="text">Alabama Water Science Center</title>
+  <updated>2013-07-25T08:31:41-06:00</updated>
+  <author>
+    <name />
+  </author>
+  <link rel="edit" title="CostCentersItem" href="CostCenters(58)" />
+  <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Manager" type="application/atom+xml;type=entry" title="Manager" href="CostCenters(58)/Manager" />
+  <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/DefaultBAO" type="application/atom+xml;type=entry" title="DefaultBAO" href="CostCenters(58)/DefaultBAO" />
+  <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/PublishingServiceCenter" type="application/atom+xml;type=entry" title="PublishingServiceCenter" href="CostCenters(58)/PublishingServiceCenter" />
+  <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/CreatedBy" type="application/atom+xml;type=entry" title="CreatedBy" href="CostCenters(58)/CreatedBy" />
+  <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ModifiedBy" type="application/atom+xml;type=entry" title="ModifiedBy" href="CostCenters(58)/ModifiedBy" />
+  <category term="Microsoft.SharePoint.DataService.CostCentersItem" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+  <content type="application/xml">
+    <m:properties>
+      <d:ContentTypeID>0x01000BA4CCCD9C896E489C61929E805F691B</d:ContentTypeID>
+      <d:Name>CostCenter Test</d:Name>
+      <d:Code>GGESME0000</d:Code>
+      <d:ManagerId m:type="Edm.Int32">1316</d:ManagerId>
+      <d:DefaultBAOId m:type="Edm.Int32">97</d:DefaultBAOId>
+      <d:PublishingServiceCenterId m:type="Edm.Int32">8</d:PublishingServiceCenterId>
+      <d:CreatedById m:type="Edm.Int32">11</d:CreatedById>
+      <d:ModifiedById m:type="Edm.Int32">12</d:ModifiedById>
+      <d:Modified m:type="Edm.DateTime">2013-07-25T08:31:41</d:Modified>
+      <d:Created m:type="Edm.DateTime">2012-06-26T12:43:51</d:Created>
+      <d:Id m:type="Edm.Int32">58</d:Id>
+      <d:ContentType>Item</d:ContentType>
+      <d:Owshiddenversion m:type="Edm.Int32">11</d:Owshiddenversion>
+      <d:Version>1.0</d:Version>
+      <d:Path>/Lists/CostCenters</d:Path>
+    </m:properties>
+  </content>
+</entry>

@@ -8,6 +8,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 public class ContributorType extends BaseDomain<ContributorType> implements ILookup {
 
+    public static final Integer AUTHORS = 1;
+    public static final Integer EDITORS = 2;
+
     private static IDao<ContributorType> contributorTypeDao;
 
     private String name;

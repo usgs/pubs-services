@@ -1,56 +1,38 @@
 package gov.usgs.cida.pubs.domain;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
-import gov.usgs.cida.pubs.domain.intfc.ILookup;
-import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
-import gov.usgs.cida.pubs.json.view.intfc.IMpView;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
 
-public class CostCenter extends BaseDomain<CostCenter> implements ILookup {
+public class CostCenter extends Affiliation<CostCenter> {
 
-    private static IDao<CostCenter> costCenterDao;
+    public CostCenter() {
+        usgs = true;
+        active = true;
+    }
 
-    @JsonProperty("name")
-    private String name;
+    private static IDao<Affiliation<?>> costCenterDao;
 
     @JsonIgnore
     private Integer ipdsId;
 
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param inName the name to set
-     */
-    public void setName(final String inName) {
-        name = inName;
-    }
-
-    /**
-     * @return the ipdsId
-     */
-    public Integer getinIpdsId() {
+    public Integer getIpdsId() {
         return ipdsId;
     }
 
-    /**
-     * @param ininIpdsId the ipdsId to set
-     */
-    public void setinIpdsId(final Integer inIpdsId) {
+    public void setIpdsId(final Integer inIpdsId) {
         ipdsId = inIpdsId;
+    }
+
+    public void setIpdsId(final String inIpdsId) {
+        ipdsId = PubsUtilities.parseInteger(inIpdsId);
     }
 
     /**
      * @return the costCenterDao
      */
-    public static IDao<CostCenter> getDao() {
+    public static IDao<Affiliation<?>> getDao() {
         return costCenterDao;
     }
 
@@ -58,14 +40,8 @@ public class CostCenter extends BaseDomain<CostCenter> implements ILookup {
      * The setter for costCenterDao.
      * @param inCostCenterDao the costCenterDao to set
      */
-    public void setCostCenterDao(final IDao<CostCenter> inCostCenterDao) {
+    public void setCostCenterDao(final IDao<Affiliation<?>> inCostCenterDao) {
         costCenterDao = inCostCenterDao;
-    }
-
-    @Override
-    @JsonView({ILookupView.class, IMpView.class})
-    public String getText() {
-        return name;
     }
 
 }

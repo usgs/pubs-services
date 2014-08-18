@@ -4,16 +4,21 @@ import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IIpdsProcess;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
-import gov.usgs.cida.pubs.domain.LinkType;
+import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.ProcessType;
+import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
 import gov.usgs.cida.pubs.domain.ipds.PublicationMap;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +32,9 @@ public class IpdsProcess implements IIpdsProcess {
 
     @Autowired
     protected IpdsWsRequester requester;
+
+    @Autowired
+    protected IpdsBinding binder;
 
     private int additions = 0;
 
@@ -80,18 +88,28 @@ public class IpdsProcess implements IIpdsProcess {
                 pub.setId(existingPub.getId());
                 pubBusService.deleteObject(existingPub);
             };
+
             //TODO new type/subtype/series logic
 //            pub.setPublicationTypeId(String.valueOf(pubType.getId()));
 //            pub.setPublicationType(pubType.getName());
 
-            // get authors from web service
-            final String authXml = requester.getAuthors(pub.getIpdsId());
-            IpdsBinding binder = new IpdsBinding(new HashSet<String>());
+            // get contributors from web service
+            final String contributorXml = requester.getContributors(pub.getIpdsId());
             try {
-                PublicationMap authors = binder.bindAuthors(authXml);
-                //TODO new author logic
-//                pub.setAuthorDisplay(authors.get("AuthorNameText"));
-//                pub.setEditor(authors.get("EditorNameText"));
+                Collection<MpPublicationContributor> contributors = binder.bindContributors(contributorXml);
+                //TODO refactor contributors on the publication so we can just add them all
+                Collection<PublicationContributor<?>> authors = new ArrayList<>();
+                Collection<PublicationContributor<?>> editors = new ArrayList<>();
+                for (Iterator<MpPublicationContributor> contributorsIter = contributors.iterator(); contributorsIter.hasNext();) {
+                    MpPublicationContributor contributor = contributorsIter.next();
+                    if (ContributorType.AUTHORS == contributor.getContributorType().getId()) {
+                        authors.add(contributor);
+                    } else {
+                        editors.add(contributor);
+                    }
+                }
+                pub.setAuthors(authors);
+                pub.setEditors(editors);
             } catch (Exception e) {
                 rtn.append("\n\tTrouble getting authors/editors: " + e.getMessage());
                 errors++;
@@ -115,9 +133,8 @@ public class IpdsProcess implements IIpdsProcess {
             String notesXml = requester.getNotes(pub.getIpdsId());
             Set<String> notesTags = new HashSet<String>();
             notesTags.add("NoteComment");
-            IpdsBinding noteBinder = new IpdsBinding(notesTags);
             try {
-                PublicationMap notes = noteBinder.bindNotes(notesXml);
+                PublicationMap notes = binder.bindNotes(notesXml, notesTags);
                 if (null != notes.get("NoteComment")
                         && 0 < notes.get("NoteComment").length()) {
                     if (null != pub.getNotes() && 0 < pub.getNotes().length()) {
@@ -261,32 +278,8 @@ public class IpdsProcess implements IIpdsProcess {
         return result;
     }
 
-//    /**
-//     * Set the requester.
-//     * @param IpdsWsRequester .
-//     */
-//    public void setIpdsWsRequester(final IpdsWsRequester inIpdsWsRequester) {
-//        requester = inIpdsWsRequester;
-//    }
-//
-//    /**
-//     * Set the service.
-//     * @param inMpPublicationBusService .
-//     */
-//    public void setMpPublicationBusService(final IMpPublicationBusService inMpPublicationBusService) {
-//        pubBusService = inMpPublicationBusService;
-//    }
-//
-//    public void setCrossRefBusService(final ICrossRefBusService inCrossRefBusService) {
-//        crossRefBusService = inCrossRefBusService;
-//    }
-//
     public void setPubTypeMap(final Map<String, String> inPubTypeMap) {
         pubTypeMap = inPubTypeMap;
     }
-//
-//    public void setMpLinkDimBusService(final IBusService<MpPublicationLink> inLinkBusService) {
-//        linkBusService = inLinkBusService;
-//    }
 
 }

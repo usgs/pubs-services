@@ -23,7 +23,7 @@ public class PublicationContributor<D> extends BaseDomain<D> {
 
     @JsonView(IMpView.class)
     @JsonUnwrapped
-    private Contributor contributor;
+    private Contributor<?> contributor;
 
     public Integer getPublicationId() {
         return publicationId;
@@ -49,11 +49,11 @@ public class PublicationContributor<D> extends BaseDomain<D> {
         rank = inRank;
     }
 
-    public Contributor getContributor() {
+    public Contributor<?> getContributor() {
         return contributor;
     }
 
-    public void setContributor(final Contributor inContributor) {
+    public void setContributor(final Contributor<?> inContributor) {
         contributor = inContributor;
     }
 

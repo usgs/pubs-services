@@ -1,100 +1,33 @@
 package gov.usgs.cida.pubs.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
-
 import gov.usgs.cida.pubs.dao.intfc.IDao;
-import gov.usgs.cida.pubs.domain.intfc.ILookup;
 import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 
-public class Contributor extends BaseDomain<Contributor> implements ILookup {
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 
-    private static IDao<Contributor> contributorDao;
+public class Contributor<D> extends BaseDomain<Contributor<D>> {
 
-    @JsonProperty("family")
+    private static IDao<Contributor<?>> contributorDao;
+
+    @JsonProperty("corporation")
     @JsonView(IMpView.class)
-    private String first;
+    //TODO cross-field validations
+    protected boolean corporation;
 
-    @JsonProperty("given")
+    @JsonProperty("usgs")
     @JsonView(IMpView.class)
-    private String given;
+    //TODO cross-field validations
+    protected boolean usgs;
 
-    @JsonProperty("suffix")
-    @JsonView(IMpView.class)
-    private String suffix;
-
-    @JsonProperty("email")
-    @JsonView(IMpView.class)
-    private String email;
-
-    @JsonProperty("affiliation")
-    @JsonView(IMpView.class)
-    private CostCenter affiliation;
-
-    @JsonProperty("organization")
-    @JsonView(IMpView.class)
-    private String literal;
-
-    @JsonIgnore
-    private Integer ipdsContributorId;
-
-    public String getFirst() {
-        return first;
+    public boolean isCorporation() {
+        return corporation;
     }
 
-    public void setFirst(final String inFirst) {
-        first = inFirst;
-    }
-
-    public String getGiven() {
-        return given;
-    }
-
-    public void setGiven(final String inGiven) {
-        given = inGiven;
-    }
-
-    public String getSuffix() {
-        return suffix;
-    }
-
-    public void setSuffix(final String inSuffix) {
-        suffix = inSuffix;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(final String inEmail) {
-        email = inEmail;
-    }
-
-    public CostCenter getAffiliation() {
-        return affiliation;
-    }
-
-    public void setAffiliation(final CostCenter inAffiliation) {
-        affiliation = inAffiliation;
-    }
-
-    public String getLiteral() {
-        return literal;
-    }
-
-    public void setLiteral(final String inLiteral) {
-        literal = inLiteral;
-    }
-
-    public Integer getIpdsContributorId() {
-        return ipdsContributorId;
-    }
-
-    public void setIpdsContributorId(final Integer inIpdsContributorId) {
-        ipdsContributorId = inIpdsContributorId;
+    public boolean isUsgs() {
+        return usgs;
     }
 
     @Override
@@ -117,20 +50,10 @@ public class Contributor extends BaseDomain<Contributor> implements ILookup {
         return id;
     }
 
-    @Override
-    @JsonView(ILookupView.class)
-    public String getText() {
-        if (null == literal) {
-            return first + " " + given + " " + suffix + " " + email;
-        } else {
-            return literal;
-        }
-    }
-
     /**
      * @return the contributorDao
      */
-    public static IDao<Contributor> getDao() {
+    public static IDao<Contributor<?>> getDao() {
         return contributorDao;
     }
 
@@ -138,7 +61,7 @@ public class Contributor extends BaseDomain<Contributor> implements ILookup {
      * The setter for contributorDao.
      * @param inContributorDao the contributorDao to set
      */
-    public void setContributorDao(final IDao<Contributor> inContributorDao) {
+    public void setContributorDao(final IDao<Contributor<?>> inContributorDao) {
         contributorDao = inContributorDao;
     }
 

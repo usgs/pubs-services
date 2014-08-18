@@ -6,7 +6,7 @@
     <resultMap id="result" type="PublicationCostCenter" extends="base.result">
         <id property="id" column="publication_cost_center_id"/>
         <result property="publicationId" column="publication_id"/>
-        <association property="costCenter" column="cost_center_id" select="costCenter.getById"/>
+        <association property="costCenter" column="cost_center_id" select="affiliation.getByIdCostCenter"/>
     </resultMap>
 
     <sql id="cols">
@@ -36,20 +36,5 @@
             </if>
         </where>
     </sql>
-
-<!--     <sql id="baseSelect"> -->
-<!--         select <include refid="cols"/> -->
-<!--           from cost_center -->
-<!--     </sql> -->
-
-<!--     <select id="getById" parameterType="Integer" resultMap="result"> -->
-<!--         <include refid="baseSelect"/> -->
-<!--          where cost_center_id = #{value,jdbcType=NUMERIC} -->
-<!--     </select> -->
-
-<!--     <select id="getByMap" resultMap="result"> -->
-<!--         <include refid="baseSelect"/> -->
-<!--         <include refid="publicationCostCenter.filters"/> -->
-<!--     </select> -->
 
 </mapper>

@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
-import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 
 import java.util.HashMap;
@@ -17,7 +16,7 @@ import org.junit.Test;
  * @author drsteini
  *
  */
-public class PublicationSeriesDaoTest extends BaseSpringTest {
+public class PublicationSeriesDaoTest extends BaseDaoTest {
 
     public static final int pubSeriesCnt = 508;
 

@@ -14,7 +14,7 @@ import org.joda.time.LocalDateTime;
  * @author drsteini
  *
  */
-public class LocalDateTimeTypeHandler  implements TypeHandler<LocalDateTime> {
+public class LocalDateTimeTypeHandler implements TypeHandler<LocalDateTime> {
 
     /** {@inheritDoc}
      * @see org.apache.ibatis.type.TypeHandler
@@ -23,11 +23,11 @@ public class LocalDateTimeTypeHandler  implements TypeHandler<LocalDateTime> {
     @Override
     public void setParameter(final PreparedStatement ps, final int i,
             final LocalDateTime parameter, final JdbcType jdbcType) throws SQLException {
-        Timestamp date = null; 
-        if (parameter != null) { 
+        Timestamp date = null;
+        if (parameter != null) {
             LocalDateTime ldt = (LocalDateTime) parameter;
             date = new Timestamp(ldt.toDateTime().getMillis());
-        } 
+        }
         ps.setTimestamp(i, date);
     }
 
@@ -39,7 +39,7 @@ public class LocalDateTimeTypeHandler  implements TypeHandler<LocalDateTime> {
             throws SQLException {
         Timestamp date = rs.getTimestamp(columnName);
         LocalDateTime ldt = null;
-        if (date != null) { 
+        if (date != null) {
             try {
                 ldt = LocalDateTime.fromDateFields(date);
             } catch (IllegalArgumentException e) {
@@ -57,7 +57,7 @@ public class LocalDateTimeTypeHandler  implements TypeHandler<LocalDateTime> {
             throws SQLException {
         Timestamp date = cs.getTimestamp(columnIndex);
         LocalDateTime ldt = null;
-        if (date != null) { 
+        if (date != null) {
             try {
                 ldt = LocalDateTime.fromDateFields(date);
             } catch (IllegalArgumentException e) {

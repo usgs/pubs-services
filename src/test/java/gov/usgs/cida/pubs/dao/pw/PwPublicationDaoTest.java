@@ -2,13 +2,13 @@ package gov.usgs.cida.pubs.dao.pw;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.dao.BaseDaoTest;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 
 import org.junit.Test;
 
-public class PwPublicationDaoTest extends BaseSpringTest {
+public class PwPublicationDaoTest extends BaseDaoTest {
 
     @Test
     public void getByIdTest() {

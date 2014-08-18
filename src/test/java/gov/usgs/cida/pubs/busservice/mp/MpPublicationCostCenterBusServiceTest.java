@@ -56,12 +56,12 @@ public class MpPublicationCostCenterBusServiceTest extends BaseSpringTest {
 
         //Add some cost centers
         Collection<PublicationCostCenter<?>> mpccs = new ArrayList<>();
-        CostCenter cc1 = CostCenter.getDao().getById(1);
+        CostCenter cc1 = (CostCenter) CostCenter.getDao().getById(1);
         MpPublicationCostCenter mpcc1 = new MpPublicationCostCenter();
         mpcc1.setPublicationId(id);
         mpcc1.setCostCenter(cc1);
         mpccs.add(mpcc1);
-        CostCenter cc2 = CostCenter.getDao().getById(2);
+        CostCenter cc2 = (CostCenter) CostCenter.getDao().getById(2);
         MpPublicationCostCenter mpcc2 = new MpPublicationCostCenter();
         mpcc2.setPublicationId(id);
         mpcc2.setCostCenter(cc2);
@@ -85,7 +85,7 @@ public class MpPublicationCostCenterBusServiceTest extends BaseSpringTest {
         //Now add one, take one away (and leave one alone).
         mpccs = new ArrayList<>();
         mpccs.add(mpcc2);
-        CostCenter cc3= CostCenter.getDao().getById(3);
+        CostCenter cc3= (CostCenter) CostCenter.getDao().getById(3);
         MpPublicationCostCenter mpcc3 = new MpPublicationCostCenter();
         mpcc3.setPublicationId(id);
         mpcc3.setCostCenter(cc3);

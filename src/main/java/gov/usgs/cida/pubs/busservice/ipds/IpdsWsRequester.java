@@ -35,16 +35,16 @@ public class IpdsWsRequester {
     public static final String DOI_XML_SUFFIX = "</DigitalObjectIdentifier>";
     public static final String NULL_DOI = " m:null=\"true\"/>";
 
-    @Autowired
+//    @Autowired
     private String ipdsEndpoint;
-    @Autowired
+//    @Autowired
     private String ipdsProtocol;
-    @Autowired
+//    @Autowired
     private HttpClient httpClient;
-    @Autowired
+//    @Autowired
     private NTCredentials credentials;
     private BasicHttpContext httpContext;
-    @Autowired
+//    @Autowired
     private PubsEMailer pubsEMailer;
 
     public String getIpdsProductXml(final String asOf) {
@@ -56,10 +56,18 @@ public class IpdsWsRequester {
         return getIpdsXml(url.toString(), null);
     }
 
-    protected String getAuthors(final String ipds) {
+    protected String getContributors(final String ipds) {
         StringBuilder url = new StringBuilder(URL_PREFIX)
         .append("IPDSAuthors()?$filter=startswith(IPNumber,'")
         .append(ipds).append("')&$select=AuthorNameText,Rank,ContentType");
+
+        return getIpdsXml(url.toString(), ipds);
+    }
+
+    protected String getContributor(final String ipds) {
+        StringBuilder url = new StringBuilder(URL_PREFIX)
+        .append("UserInformationList(")
+        .append(ipds).append(")");
 
         return getIpdsXml(url.toString(), ipds);
     }
@@ -222,21 +230,21 @@ public class IpdsWsRequester {
         return rtn.toString();
     }
 
-//    public void setIpdsEndpoint(final String inIpdsEndpoint) {
-//        ipdsEndpoint = inIpdsEndpoint;
-//    }
-//    public void setIpdsProtocol(final String inIpdsProtocol) {
-//        ipdsProtocol = inIpdsProtocol;
-//    }
-//    public void setHttpClient(final HttpClient inHttpClient) {
-//        httpClient = inHttpClient;
-//    }
-//    public void setCredentials(final NTCredentials inCredentials) {
-//        credentials = inCredentials;
-//    }
-//    public void setPubsEMailer(final PubsEMailer inPubsEMailer) {
-//        pubsEMailer = inPubsEMailer;
-//    }
+    public void setIpdsEndpoint(final String inIpdsEndpoint) {
+        ipdsEndpoint = inIpdsEndpoint;
+    }
+    public void setIpdsProtocol(final String inIpdsProtocol) {
+        ipdsProtocol = inIpdsProtocol;
+    }
+    public void setHttpClient(final HttpClient inHttpClient) {
+        httpClient = inHttpClient;
+    }
+    public void setCredentials(final NTCredentials inCredentials) {
+        credentials = inCredentials;
+    }
+    public void setPubsEMailer(final PubsEMailer inPubsEMailer) {
+        pubsEMailer = inPubsEMailer;
+    }
     public void setHttpContext(final BasicHttpContext inHttpContext) {
         httpContext = inHttpContext;    
     }

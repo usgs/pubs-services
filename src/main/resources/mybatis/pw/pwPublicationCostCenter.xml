@@ -3,8 +3,8 @@
 
 <mapper namespace="pwPublicationCostCenter">
 
-<!--     <resultMap id="result" type="MpPublicationCostCenter" extends="publicationCostCenter.result"> -->
-    <resultMap id="result" type="CostCenter" extends="costCenter.result">
+    <resultMap id="result" type="MpPublicationCostCenter" extends="publicationCostCenter.result">
+<!--     <resultMap id="result" type="CostCenter" extends="costCenter.result"> -->
     </resultMap>
 
     <sql id="cols">
@@ -35,8 +35,8 @@
                        publication_cost_center.cost_center_id,
                        name
                   from publication_cost_center
-                       join cost_center
-                         on publication_cost_center.cost_center_id = cost_center.cost_center_id)
+                       join affiliation
+                         on publication_cost_center.cost_center_id = affiliation.affiliation_id)
     </sql>
 
     <select id="getById" parameterType="Integer" resultMap="result">

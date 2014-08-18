@@ -3,38 +3,32 @@
 
 <mapper namespace="costCenter">
 
-    <resultMap id="result" type="CostCenter" extends="base.result">
-        <id property="id" column="cost_center_id"/>
-        <result property="name" column="name"/>
-        <result property="ipdsId" column="cost_center_ipds_id"/>
+    <resultMap id="result" type="CostCenter" extends="affiliation.result">
+        <result property="ipdsId" column="affiliation_ipds_id"/>
     </resultMap>
 
     <sql id="cols">
-        cost_center_id, name, cost_center_ipds_id
+        <include refid="affiliation.cols"/>,
+        affiliation_ipds_id
     </sql>
 
     <sql id="filters">
-        <where>
-            <if test="id != null">
-                and cost_center_id = #{id}
-            </if>
-            <if test="name != null">
-                and upper(name) like upper(#{name}) || '%'
-            </if>
-            <if test="ipdsId != null">
-                and cost_center_ipds_id = #{ipdsId}
-            </if>
-        </where>
+        <!-- The base select has a hard coded where clause, so no where tag here. -->
+        <include refid="affiliation.filters"/>
+        <if test="ipdsId != null">
+            and affiliation_ipds_id = #{ipdsId}
+        </if>
     </sql>
 
     <sql id="baseSelect">
         select <include refid="cols"/>
-          from cost_center
+          from affiliation
+         where is_cost_center = 'Y'
     </sql>
 
     <select id="getById" parameterType="Integer" resultMap="result">
         <include refid="baseSelect"/>
-         where cost_center_id = #{value,jdbcType=NUMERIC}
+         and affiliation_id = #{value,jdbcType=NUMERIC}
     </select>
 
     <select id="getByMap" resultMap="result">

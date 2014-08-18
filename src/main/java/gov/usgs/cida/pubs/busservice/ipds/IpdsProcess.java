@@ -4,14 +4,15 @@ import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IIpdsProcess;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
-import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
 import gov.usgs.cida.pubs.domain.ipds.PublicationMap;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +28,9 @@ public class IpdsProcess implements IIpdsProcess {
 
     @Autowired
     protected IpdsWsRequester requester;
+
+    @Autowired
+    protected IpdsBinding binder;
 
     private int additions = 0;
 
@@ -84,11 +88,11 @@ public class IpdsProcess implements IIpdsProcess {
 //            pub.setPublicationTypeId(String.valueOf(pubType.getId()));
 //            pub.setPublicationType(pubType.getName());
 
-            // get authors from web service
-            final String authXml = requester.getAuthors(pub.getIpdsId());
-            IpdsBinding binder = new IpdsBinding(new HashSet<String>());
+            // get contributors from web service
+            final String contributorXml = requester.getContributors(pub.getIpdsId());
             try {
-                PublicationMap authors = binder.bindAuthors(authXml);
+//                IpdsBinding binder = new IpdsBinding(new HashSet<String>());
+                Collection<MpPublicationContributor> contributors = binder.bindContributors(contributorXml);
                 //TODO new author logic
 //                pub.setAuthorDisplay(authors.get("AuthorNameText"));
 //                pub.setEditor(authors.get("EditorNameText"));
@@ -115,9 +119,9 @@ public class IpdsProcess implements IIpdsProcess {
             String notesXml = requester.getNotes(pub.getIpdsId());
             Set<String> notesTags = new HashSet<String>();
             notesTags.add("NoteComment");
-            IpdsBinding noteBinder = new IpdsBinding(notesTags);
             try {
-                PublicationMap notes = noteBinder.bindNotes(notesXml);
+//                IpdsBinding noteBinder = new IpdsBinding(notesTags, notesTags);
+                PublicationMap notes = binder.bindNotes(notesXml, notesTags);
                 if (null != notes.get("NoteComment")
                         && 0 < notes.get("NoteComment").length()) {
                     if (null != pub.getNotes() && 0 < pub.getNotes().length()) {

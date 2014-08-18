@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.domain;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
 import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
+import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 
 import java.util.Collection;
 
@@ -84,7 +85,7 @@ public class PublicationSubtype extends BaseDomain<PublicationSubtype> implement
     }
 
     @Override
-    @JsonView(ILookupView.class)
+    @JsonView({ILookupView.class, IMpView.class})
     public String getText() {
         return name;
     }

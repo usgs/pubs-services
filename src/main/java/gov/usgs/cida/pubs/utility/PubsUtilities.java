@@ -3,6 +3,8 @@ package gov.usgs.cida.pubs.utility;
 import java.text.MessageFormat;
 import java.util.Properties;
 
+import org.w3c.dom.Element;
+
 /**
  * @author drsteini
  *

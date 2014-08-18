@@ -12,11 +12,15 @@
     <bean id="mpPublicationContributorDao" class="gov.usgs.cida.pubs.dao.mp.MpPublicationContributorDao" autowire="byName"/>
     <bean id="mpPublicationCostCenterDao" class="gov.usgs.cida.pubs.dao.mp.MpPublicationCostCenterDao" autowire="byName"/>
 
+    <bean id="affiliationDao" class="gov.usgs.cida.pubs.dao.AffiliationDao" autowire="byName"/>
     <bean id="contributorDao" class="gov.usgs.cida.pubs.dao.ContributorDao" autowire="byName"/>
     <bean id="contributorTypeDao" class="gov.usgs.cida.pubs.dao.ContributorTypeDao" autowire="byName"/>
+    <bean id="corporateContributorDao" class="gov.usgs.cida.pubs.dao.CorporateContributorDao" autowire="byName"/>
     <bean id="costCenterDao" class="gov.usgs.cida.pubs.dao.CostCenterDao" autowire="byName"/>
     <bean id="linkFileTypeDao" class="gov.usgs.cida.pubs.dao.LinkFileTypeDao" autowire="byName"/>
     <bean id="linkTypeDao" class="gov.usgs.cida.pubs.dao.LinkTypeDao" autowire="byName"/>
+    <bean id="outsideAffiliationDao" class="gov.usgs.cida.pubs.dao.OutsideAffiliationDao" autowire="byName"/>
+    <bean id="personContributorDao" class="gov.usgs.cida.pubs.dao.PersonContributorDao" autowire="byName"/>
     <bean id="publicationDao" class="gov.usgs.cida.pubs.dao.PublicationDao" autowire="byName"/>
     <bean id="publicationSeriesDao" class="gov.usgs.cida.pubs.dao.PublicationSeriesDao" autowire="byName"/>
     <bean id="publicationSubtypeDao" class="gov.usgs.cida.pubs.dao.PublicationSubtypeDao" autowire="byName"/>

@@ -36,7 +36,7 @@
     </category>
 
     <root>
-        <level  value="info"/>
+        <level value="debug"/>
         <appender-ref ref="myconsole" />
         <appender-ref ref="appLog" />
     </root>

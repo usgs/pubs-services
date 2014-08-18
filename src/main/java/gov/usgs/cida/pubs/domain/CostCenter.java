@@ -1,6 +1,7 @@
 package gov.usgs.cida.pubs.domain;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -8,6 +9,7 @@ public class CostCenter extends Affiliation<CostCenter> {
 
     public CostCenter() {
         usgs = true;
+        active = true;
     }
 
     private static IDao<Affiliation<?>> costCenterDao;
@@ -15,12 +17,16 @@ public class CostCenter extends Affiliation<CostCenter> {
     @JsonIgnore
     private Integer ipdsId;
 
-    public Integer getinIpdsId() {
+    public Integer getIpdsId() {
         return ipdsId;
     }
 
-    public void setinIpdsId(final Integer inIpdsId) {
+    public void setIpdsId(final Integer inIpdsId) {
         ipdsId = inIpdsId;
+    }
+
+    public void setIpdsId(final String inIpdsId) {
+        ipdsId = PubsUtilities.parseInteger(inIpdsId);
     }
 
     /**

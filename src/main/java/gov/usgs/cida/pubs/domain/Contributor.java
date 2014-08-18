@@ -5,7 +5,6 @@ import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -13,11 +12,13 @@ public class Contributor<D> extends BaseDomain<Contributor<D>> {
 
     private static IDao<Contributor<?>> contributorDao;
 
-    @JsonIgnore
+    @JsonProperty("corporation")
+    @JsonView(IMpView.class)
     //TODO cross-field validations
     protected boolean corporation;
 
-    @JsonIgnore
+    @JsonProperty("usgs")
+    @JsonView(IMpView.class)
     //TODO cross-field validations
     protected boolean usgs;
 

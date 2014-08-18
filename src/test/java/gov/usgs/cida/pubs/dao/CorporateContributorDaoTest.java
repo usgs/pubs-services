@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
 
@@ -14,7 +13,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-public class CorporateContributorDaoTest extends BaseSpringTest {
+public class CorporateContributorDaoTest extends BaseDaoTest {
 
     private static final int corporateContributorCnt = 1;
 
@@ -56,8 +55,17 @@ public class CorporateContributorDaoTest extends BaseSpringTest {
         filters.clear();
         filters.put("ipdsContributorId", 2);
         contributors = CorporateContributor.getDao().getByMap(filters);
+        assertEquals(0, contributors.size());
+
+        filters.clear();
+        filters.put("id", "2");
+        filters.put("name", "us");
+        contributors = CorporateContributor.getDao().getByMap(filters);
         assertEquals(1, contributors.size());
         assertEquals(2, contributors.get(0).getId().intValue());
+        filters.put("ipdsContributorId", 2);
+        contributors = CorporateContributor.getDao().getByMap(filters);
+        assertEquals(0, contributors.size());
     }
 
     @Test

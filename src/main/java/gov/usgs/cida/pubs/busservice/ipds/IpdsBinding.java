@@ -18,6 +18,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.util.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -49,23 +52,20 @@ public class IpdsBinding {
 
     private static final Logger LOG = LoggerFactory.getLogger(IpdsBinding.class);
 
+    @Autowired
+    protected IpdsWsRequester requester;
+
     @Autowired()
     @Qualifier("personContributorBusService")
     public IBusService<PersonContributor<?>> contributorBusService;
 
+    //TODO implement this
 //   @Autowired
-    //TODO this should be an affiliation
-    public IBusService<Affiliation<?>> affiliationBusService;
+//    public IBusService<Affiliation<?>> affiliationBusService;
 
     public static final String NAMESPACE  = "http://schemas.microsoft.com/ado/2007/08/dataservices";
 
     private DocumentBuilder builder;
-
-//    /**
-//     * maps IPDS tags to PUBS fields
-//     * Map<tag,field>
-//     */
-//    private final Set<String> tagsOfInterest; // TODO log if not one-to-one before given here
 
     public IpdsBinding() throws ParserConfigurationException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -117,20 +117,28 @@ public class IpdsBinding {
         }
     }
 
-    public Collection<MpPublicationContributor> bindContributors(String authorsXml) throws SAXException, IOException {
-        Collection<MpPublicationContributor> ipds = new ArrayList<>();
-        Document doc = makeDocument(authorsXml);
+    public Collection<MpPublicationContributor> bindContributors(String contributorsXml) throws SAXException, IOException {
+        List<MpPublicationContributor> authors = new ArrayList<>();
+        List<MpPublicationContributor> editors = new ArrayList<>();
+        Document doc = makeDocument(contributorsXml);
 
         NodeList entries = doc.getElementsByTagName("m:properties");
         for (int n=0; n<entries.getLength(); n++) {
-            ipds.add(buildPublicationContributor(entries.item(n)));
+            MpPublicationContributor pubContributor = buildPublicationContributor(entries.item(n));
+            if (ContributorType.AUTHORS == pubContributor.getContributorType().getId()) {
+                authors.add(pubContributor);
+            } else {
+                editors.add(pubContributor);
+            }
         }
 
-        //TODO - check rank for dups and clear from the contributorType if we find any within a contributorType.
-        return ipds;
+        Collection<MpPublicationContributor> pubContributors = new ArrayList<>();
+        pubContributors.addAll(fixRanks(authors));
+        pubContributors.addAll(fixRanks(editors));
+        return pubContributors;
     }
 
-    protected MpPublicationContributor buildPublicationContributor(final Node entry) {
+    protected MpPublicationContributor buildPublicationContributor(final Node entry) throws SAXException, IOException {
         MpPublicationContributor rtn = new MpPublicationContributor();
         LOG.debug("\nCurrent Element :" + entry.getNodeName());
 
@@ -138,14 +146,14 @@ public class IpdsBinding {
             //This is really all we should ever get..
             Element element = (Element) entry;
             Contributor<?> person;
-            String ipdsContributorId = element.getElementsByTagName("d:AuthorNameId").item(0).getTextContent();
-            if (null == ipdsContributorId) {
+            String ipdsContributorId = getFirstNodeText(element, "d:AuthorNameId");
+            if (StringUtils.isEmpty(ipdsContributorId)) {
                 person = getOrCreateNonUsgsContributor(element);
             } else {
                 person = getOrCreateUsgsContributor(element, ipdsContributorId);
             }
             rtn.setContributor(person);
-            if ("Author".equalsIgnoreCase(element.getElementsByTagName("d:ContentType").item(0).getTextContent())) {
+            if ("Author".equalsIgnoreCase(getFirstNodeText(element, "d:ContentType"))) {
                 rtn.setContributorType(ContributorType.getDao().getById(ContributorType.AUTHORS));
             } else {
                 rtn.setContributorType(ContributorType.getDao().getById(ContributorType.EDITORS));
@@ -158,7 +166,7 @@ public class IpdsBinding {
     protected Contributor<?> getOrCreateNonUsgsContributor(final Element element) {
         Contributor<?> person;
         Map<String, Object> filters = new HashMap<>();
-        String contributorName = element.getElementsByTagName("d:AuthorNameText").item(0).getTextContent();
+        String contributorName = getFirstNodeText(element, "d:AuthorNameText");
         String[] nameParts = contributorName.split(",");
         if (0 < nameParts.length) {
             filters.put("given", nameParts[0].trim());
@@ -166,9 +174,9 @@ public class IpdsBinding {
         if (1 < nameParts.length) {
             filters.put("family", nameParts[1].trim());
         }
-        List<Contributor<?>> people = Contributor.getDao().getByMap(filters);
+        List<Contributor<?>> people = OutsideContributor.getDao().getByMap(filters);
         //TODO what if we get more than one?
-        if (0 < people.size()) {
+        if (1 == people.size()) {
             person = people.get(0);
             //TODO - should we update the information on file?
         } else {
@@ -181,7 +189,7 @@ public class IpdsBinding {
         OutsideContributor person = new OutsideContributor();
         person.setFamily(family);
         person.setGiven(given);
-        person.setAffiliation(getOrCreateNonUsgsAffiliation(element.getElementsByTagName("d:NonUSGSAffiliation").item(0).getTextContent()));
+        person.setAffiliation(getOrCreateNonUsgsAffiliation(getFirstNodeText(element, "d:NonUSGSAffiliation")));
         return contributorBusService.createObject(person);
     }
 
@@ -202,10 +210,13 @@ public class IpdsBinding {
     protected Affiliation<?> createNonUsgsAffiliation(final String name) {
         Affiliation<?> affiliation = new OutsideAffiliation();
         affiliation.setName(name);
-        return affiliationBusService.createObject(affiliation);
+        //TODO this should be the business service.
+//        return affiliationBusService.createObject(affiliation);
+        OutsideAffiliation.getDao().add(affiliation);
+        return affiliation;
     }
 
-    protected Contributor<?> getOrCreateUsgsContributor(final Element element, final String ipdsContributorId) {
+    protected Contributor<?> getOrCreateUsgsContributor(final Element element, final String ipdsContributorId) throws SAXException, IOException {
         Contributor<?> person;
         Map<String, Object> filters = new HashMap<>();
 
@@ -221,19 +232,28 @@ public class IpdsBinding {
         return person;
     }
 
-    protected Contributor<?> createUsgsContributor(final Element element, final String ipdsContributorId) {
-        //TODO call ipds for the information
-        UsgsContributor person = new UsgsContributor();
-//        person.setFamily(filters.get("family").toString());
-//        person.setGiven(filters.get("given").toString());
+    protected Contributor<?> createUsgsContributor(final Element element, final String ipdsContributorId) throws SAXException, IOException {
+        String contributorXml = requester.getContributor(ipdsContributorId);
+        UsgsContributor person = bindContributor(contributorXml);
         person.setAffiliation(getOrCreateUsgsAffiliation(element));
         return contributorBusService.createObject(person);
     }
 
-    protected Affiliation<?> getOrCreateUsgsAffiliation(final Element element) {
+    protected UsgsContributor bindContributor(String contributorXml) throws SAXException, IOException {
+        UsgsContributor contributor = new UsgsContributor();
+        Document doc = makeDocument(contributorXml);
+
+        contributor.setFamily(getFirstNodeText(doc.getDocumentElement(), "d:FirstName"));
+        contributor.setGiven(getFirstNodeText(doc.getDocumentElement(), "d:LastName"));
+        contributor.setEmail(getFirstNodeText(doc.getDocumentElement(), "d:WorkEMail"));
+
+        return contributor;
+    }
+
+    protected Affiliation<?> getOrCreateUsgsAffiliation(final Element element) throws SAXException, IOException {
         Affiliation<?> affiliation;
         Map<String, Object> filters = new HashMap<>();
-        filters.put("ipdsId", element.getElementsByTagName("d:CostCenterId").item(0).getTextContent());
+        filters.put("ipdsId", getFirstNodeText(element, "d:CostCenterId"));
         List<Affiliation<?>> affiliations = CostCenter.getDao().getByMap(filters);
         //TODO what if we get more than one?
         if (0 < affiliations.size()) {
@@ -244,16 +264,49 @@ public class IpdsBinding {
         return affiliation;
     }
 
-    protected Affiliation<?> createUsgsAffiliation(final String ipdsId) {
-        //TODO call ipds for the information
-        Affiliation<?> affiliation = new CostCenter();
-        affiliation.setId(ipdsId);
-        return affiliationBusService.createObject(affiliation);
+    protected Affiliation<?> createUsgsAffiliation(final String ipdsId) throws SAXException, IOException {
+        String costCenterXml = requester.getCostCenter(ipdsId, ipdsId);
+        Document doc = makeDocument(costCenterXml);
+
+        CostCenter affiliation = new CostCenter();
+        affiliation.setName(getFirstNodeText(doc.getDocumentElement(), "d:Name"));
+        affiliation.setIpdsId(ipdsId);
+        //TODO this should be the business service.
+//      return affiliationBusService.createObject(affiliation);
+        CostCenter.getDao().add(affiliation);
+        return affiliation;
     }
 
     protected Document makeDocument(final String xmlStr) throws SAXException, IOException {
-        Document doc = builder.parse( new InputSource( new StringReader( xmlStr ) ) );
+        Document doc = builder.parse(new InputSource(new StringReader(xmlStr)));
         return doc;
     }
 
+    protected String getFirstNodeText(final Element element, final String tagName) {
+        String rtn = null;
+        if (null != element) {
+            NodeList nodes = element.getElementsByTagName(tagName);
+            if (0 < nodes.getLength()) {
+                rtn = element.getElementsByTagName(tagName).item(0).getTextContent().trim();
+            }
+        }
+        return rtn;
+    }
+
+    protected Collection<MpPublicationContributor> fixRanks(final List<MpPublicationContributor> contributors) {
+        Set<Integer> ranks = new HashSet<>();
+        for (Iterator<MpPublicationContributor> contributorsIter = contributors.iterator(); contributorsIter.hasNext();) {
+            MpPublicationContributor contributor = contributorsIter.next();
+            ranks.add(contributor.getRank());
+        }
+
+        if (contributors.size() != ranks.size()) {
+            for (Iterator<MpPublicationContributor> fixIterator = contributors.iterator(); fixIterator.hasNext();) {
+                MpPublicationContributor fixMe = fixIterator.next();
+                fixMe.setRank(null);
+            }
+        }
+
+        return contributors;
+    }
 }

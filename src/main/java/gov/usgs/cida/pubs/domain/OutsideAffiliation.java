@@ -7,6 +7,7 @@ public class OutsideAffiliation extends Affiliation<OutsideAffiliation> {
 
     public OutsideAffiliation() {
         usgs = false;
+        active = true;
     }
 
     private static IDao<Affiliation<?>> outsideAffiliationDao;

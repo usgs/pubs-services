@@ -1,12 +1,11 @@
 package gov.usgs.cida.pubs.domain.mp;
 
-import java.util.List;
-
 import gov.usgs.cida.pubs.dao.intfc.IMpPublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
-import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
+
+import java.util.List;
 
 import javax.validation.constraints.Digits;
 

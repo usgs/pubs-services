@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class AffiliationDao extends BaseDao<Affiliation<?>> {
 
-    private static final String NS = "affiliation";
+    protected static final String NS = "affiliation";
 
     /** 
      * {@inheritDoc}

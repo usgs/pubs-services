@@ -30,11 +30,11 @@
     </resultMap>
 
     <resultMap id="usgsResult" type="UsgsContributor" extends="contributor.personResult">
-        <association property="affiliation" column="affiliation_id" select="costCenter.getById"/>
+        <association property="affiliation" column="affiliation_id" select="affiliation.getByIdCostCenter"/>
     </resultMap>
 
     <resultMap id="outsideResult" type="OutsideContributor" extends="contributor.personResult">
-        <association property="affiliation" column="affiliation_id" select="outsideAffiliation.getById"/>
+        <association property="affiliation" column="affiliation_id" select="affiliation.getByIdOutsideAffiliation"/>
     </resultMap>
 
     <sql id="baseCols">
@@ -104,13 +104,14 @@
               or upper(email) like upper(#{name}) || '%'
               or upper(literal) like upper(#{name}) || '%')
         </if>
+        <if test="given != null">
+            and upper(given) like upper(#{given}) || '%'
+        </if>
+        <if test="family != null">
+            and upper(first) like upper(#{family}) || '%'
+        </if>
         <if test="corporation != null">
-	        <if test="corporation">
-	            and is_corporation = 'Y'
-	        </if>
-	        <if test="!corporation">
-	            and is_corporation = 'N'
-	        </if>
+            and is_corporation = #{corporation}
         </if>
     </sql>
 

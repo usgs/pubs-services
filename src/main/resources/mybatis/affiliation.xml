@@ -8,10 +8,47 @@
         <result property="name" column="name"/>
         <result property="active" column="is_active"/>
         <result property="usgs" column="is_cost_center"/>
+        <discriminator javaType="String" column="is_cost_center">
+            <case value="Y" resultMap="costCenterResult"/>
+            <case value="N" resultMap="outsideAffiliationResult"/>
+        </discriminator>
     </resultMap>
 
-    <sql id="cols">
-        affiliation_id, name, is_active, is_cost_center
+    <resultMap id="costCenterResult" type="CostCenter" extends="affiliation.result">
+        <result property="ipdsId" column="affiliation_ipds_id"/>
+    </resultMap>
+
+    <resultMap id="outsideAffiliationResult" type="OutsideAffiliation" extends="affiliation.result"/>
+
+    <sql id="baseCols">
+        affiliation_id, name, is_cost_center, is_active
+    </sql>
+
+    <sql id="costCenterCols">
+        affiliation_ipds_id
+    </sql>
+
+    <sql id="baseHosts">
+        #{id,jdbcType=NUMERIC},
+        #{name,jdbcType=VARCHAR},
+        #{usgs,jdbcType=VARCHAR},
+        #{active,jdbcType=VARCHAR}
+    </sql>
+
+     <sql id="costCenterHosts">
+        <include refid="baseHosts"/>,
+        #{ipdsId,jdbcType=VARCHAR}
+    </sql>
+
+    <sql id="baseSets">
+        name = #{name,jdbcType=VARCHAR},
+        is_cost_center = #{usgs,jdbcType=VARCHAR},
+        is_active = #{active,jdbcType=VARCHAR}
+    </sql>
+
+    <sql id="costCenterSets">
+        <include refid="baseSets"/>,
+        affiliation_ipds_id = #{ipdsId,jdbcType=NUMERIC}
     </sql>
 
     <sql id="filters">
@@ -28,10 +65,14 @@
         <if test="usgs != null">
             and is_cost_center = #{usgs}
         </if>
+        <if test="ipdsId != null">
+            and affiliation_ipds_id = #{ipdsId}
+        </if>
     </sql>
 
     <sql id="baseSelect">
-        select <include refid="cols"/>
+        select <include refid="baseCols"/>,
+               <include refid="costCenterCols"/>
           from affiliation
     </sql>
 
@@ -40,11 +81,64 @@
          where affiliation_id = #{value,jdbcType=NUMERIC}
     </select>
 
+    <select id="getByIdCostCenter" parameterType="Integer" resultMap="costCenterResult">
+        <include refid="baseSelect"/>
+         where affiliation_id = #{value,jdbcType=NUMERIC} and
+               is_cost_center = 'Y'
+    </select>
+
+    <select id="getByIdOutsideAffiliation" parameterType="Integer" resultMap="outsideAffiliationResult">
+        <include refid="baseSelect"/>
+         where affiliation_id = #{value,jdbcType=NUMERIC} and
+               is_cost_center = 'N'
+    </select>
+
     <select id="getByMap" resultMap="result">
         <include refid="baseSelect"/>
         <where>
             <include refid="filters"/>
         </where>
     </select>
+
+    <select id="getByMapCostCenter" resultMap="costCenterResult">
+        <include refid="baseSelect"/>
+        where is_cost_center = 'Y'
+        <include refid="filters"/>
+    </select>
+
+    <select id="getByMapOutsideAffiliation" resultMap="outsideAffiliationResult">
+        <include refid="baseSelect"/>
+        where is_cost_center = 'N'
+        <include refid="filters"/>
+    </select>
+
+    <insert id="addOutsideAffiliation" parameterType="OutsideAffiliation">
+        <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
+            select affiliation_seq.nextval id from dual
+        </selectKey>
+        insert into affiliation (<include refid="baseCols"/>)
+             values (<include refid="baseHosts"/>)
+    </insert>
+
+    <insert id="addCostCenter" parameterType="CostCenter">
+        <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
+            select affiliation_seq.nextval id from dual
+        </selectKey>
+        insert into affiliation (<include refid="baseCols"/>,
+                                 <include refid="costCenterCols"/>)
+             values (<include refid="costCenterHosts"/>)
+    </insert>
+
+    <update id="updateOutsideAffiliation" parameterType="OutsideAffiliation">
+        update affiliation
+           set <include refid="baseSets"/>
+           where affiliation_id = #{id,jdbcType=NUMERIC}
+    </update>
+
+    <update id="updateCostCenter" parameterType="CostCenter">
+        update affiliation
+           set <include refid="costCenterSets"/>
+           where affiliation_id = #{id,jdbcType=NUMERIC}
+    </update>
 
 </mapper>

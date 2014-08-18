@@ -3,19 +3,18 @@ package gov.usgs.cida.pubs.dao.mp;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import gov.usgs.cida.pubs.dao.BaseDaoTest;
+import gov.usgs.cida.pubs.domain.CostCenter;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.domain.CostCenter;
-import gov.usgs.cida.pubs.domain.mp.MpPublication;
-import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
-
 import org.junit.Test;
 
-public class MpPublicationCostCenterDaoTest extends BaseSpringTest {
+public class MpPublicationCostCenterDaoTest extends BaseDaoTest {
 
 
     @Test
@@ -66,16 +65,16 @@ public class MpPublicationCostCenterDaoTest extends BaseSpringTest {
     public void updateTest() {
         MpPublicationCostCenter mpcc = MpPublicationCostCenter.getDao().getById(addMpPublicationCostCenter());
         CostCenter cc = new CostCenter();
-        cc.setId(8);
+        cc.setId(4);
         mpcc.setCostCenter(cc);
         //We don't update the publicationID...
-        mpcc.setPublicationId(12);
+        mpcc.setPublicationId(4);
         MpPublicationCostCenter.getDao().update(mpcc);
         MpPublicationCostCenter mpcc2 = MpPublicationCostCenter.getDao().getById(mpcc.getId());
         assertNotNull(mpcc);
         assertEquals(mpcc.getId(), mpcc2.getId());
         assertEquals(1, mpcc2.getPublicationId().intValue());
-        assertEquals(8, mpcc2.getCostCenter().getId().intValue());
+        assertEquals(4, mpcc2.getCostCenter().getId().intValue());
     }
 
     @Test
@@ -86,7 +85,7 @@ public class MpPublicationCostCenterDaoTest extends BaseSpringTest {
         assertNotNull(mpcc);
         assertEquals(10, mpcc.getId().intValue());
         assertEquals(4, mpcc.getPublicationId().intValue());
-        assertEquals(174, mpcc.getCostCenter().getId().intValue());
+        assertEquals(2, mpcc.getCostCenter().getId().intValue());
     }
 
     public Integer addMpPublicationCostCenter() {

@@ -18,6 +18,8 @@
         <property name="password" value="${jdbc.mypubs.password}"/>
     </bean>
 
+    <alias name="mypubsDataSource" alias="dataSource"/>
+
     <bean id="ipdsPubsWsPwd" class="java.lang.String">
         <constructor-arg value="PT73p8&lt;Wd@9QU"/>
     </bean>

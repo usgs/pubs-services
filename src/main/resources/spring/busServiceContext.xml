@@ -8,8 +8,8 @@
 
     <bean id="personContributorBusService" class="gov.usgs.cida.pubs.busservice.PersonContributorBusService" autowire="byName"/>
 
-
     <bean id="ipdsBinding" class="gov.usgs.cida.pubs.busservice.ipds.IpdsBinding" autowire="byName"/>
+    <bean id="ipdsWsRequester" class="gov.usgs.cida.pubs.busservice.ipds.IpdsWsRequester" autowire="byName"/>
 
     <bean id="numberedSeriesXml" class="java.lang.String" autowire="byName">
         <constructor-arg>

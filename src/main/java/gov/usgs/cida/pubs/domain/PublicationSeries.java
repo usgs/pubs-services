@@ -116,5 +116,7 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
     public String getText() {
         return name;
     }
-
+	public void setText(String text) {
+		this.name = text;
+	}
 }

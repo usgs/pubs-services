@@ -1,14 +1,19 @@
 package gov.usgs.cida.pubs.busservice.ipds;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
-import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.dao.AffiliationDaoTest;
+import gov.usgs.cida.pubs.dao.BaseDaoTest;
 import gov.usgs.cida.pubs.dao.ContributorDaoTest;
+import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.ContributorType;
+import gov.usgs.cida.pubs.domain.CostCenter;
+import gov.usgs.cida.pubs.domain.OutsideAffiliation;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
@@ -31,7 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-public class IpdsBindingTest extends BaseSpringTest {
+public class IpdsBindingTest extends BaseDaoTest {
 
     @Autowired
     public String contributorsXml;
@@ -45,6 +50,9 @@ public class IpdsBindingTest extends BaseSpringTest {
     @Autowired
     public String existingOutsideContributorXml;
 
+    @Autowired
+    public String costCenterXml;
+
     @Mock
     private IpdsWsRequester ipdsWsRequester;
 
@@ -53,7 +61,8 @@ public class IpdsBindingTest extends BaseSpringTest {
     public IpdsBinding binding;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
+        super.setUp();
         MockitoAnnotations.initMocks(this);
     }
 
@@ -85,7 +94,7 @@ public class IpdsBindingTest extends BaseSpringTest {
         assertNotNull(contributor.getId());
         assertTrue(contributor instanceof UsgsContributor);
         assertUsgsContributorXml((UsgsContributor) contributor);
-        assertEquals("1", ((UsgsContributor) contributor).getAffiliation().getId().toString());
+        assertEquals("4", ((UsgsContributor) contributor).getAffiliation().getId().toString());
     }
 
     @Test
@@ -110,7 +119,7 @@ public class IpdsBindingTest extends BaseSpringTest {
         assertTrue(contributor instanceof UsgsContributor);
         assertNotNull(contributor.getId());
         assertUsgsContributorXml((UsgsContributor) contributor);
-        assertEquals("1", ((UsgsContributor) contributor).getAffiliation().getId().toString());
+        assertEquals("4", ((UsgsContributor) contributor).getAffiliation().getId().toString());
     }
 
     @Test
@@ -125,6 +134,61 @@ public class IpdsBindingTest extends BaseSpringTest {
         assertTrue(contributor instanceof OutsideContributor);
         assertNotNull(contributor.getId());
         assertNewOutsideContributorXml((OutsideContributor) contributor);
+    }
+
+    @Test
+    public void getOrCreateNonUsgsAffiliationTest() {
+        //Get
+        Affiliation<?> affiliation = binding.getOrCreateNonUsgsAffiliation("Outside Affiliation 1");
+        AffiliationDaoTest.assertAffiliation5(affiliation);
+
+        //New
+        affiliation = binding.getOrCreateNonUsgsAffiliation("Outside Test");
+        assertNewOutside(affiliation);
+    }
+
+    @Test
+    public void createNonUsgsAffiliationTest() {
+        Affiliation<?> affiliation = binding.getOrCreateNonUsgsAffiliation("Outside Test");
+        assertNewOutside(affiliation);
+    }
+
+    protected void assertNewOutside(Affiliation<?> affiliation) {
+        assertTrue(affiliation instanceof OutsideAffiliation);
+        assertNotNull(affiliation.getId());
+        assertEquals("Outside Test", affiliation.getName());
+        assertTrue(affiliation.isActive());
+        assertFalse(affiliation.isUsgs());
+    }
+
+    @Test
+    public void getOrCreateUsgsAffiliationTest() throws SAXException, IOException {
+        when(ipdsWsRequester.getCostCenter(Matchers.anyString(), Matchers.anyString())).thenReturn(costCenterXml);
+        Document d = binding.makeDocument("<root><d:CostCenterId>4</d:CostCenterId></root>");
+        Affiliation<?> affiliation = binding.getOrCreateUsgsAffiliation(d.getDocumentElement());
+        AffiliationDaoTest.assertAffiliation1(affiliation);
+
+        String ipdsId = String.valueOf(randomPositiveInt());
+        d = binding.makeDocument("<root><d:CostCenterId>" + ipdsId + "</d:CostCenterId></root>");
+        affiliation = binding.getOrCreateUsgsAffiliation(d.getDocumentElement());
+        assertNewUsgs(affiliation, ipdsId);
+    }
+
+    @Test
+    public void createUsgsAffiliationTest() throws SAXException, IOException {
+        when(ipdsWsRequester.getCostCenter(Matchers.anyString(), Matchers.anyString())).thenReturn(costCenterXml);
+        String ipdsId = String.valueOf(randomPositiveInt());
+        Affiliation<?> affiliation = binding.createUsgsAffiliation(ipdsId);
+        assertNewUsgs(affiliation, ipdsId);
+    }
+
+    protected void assertNewUsgs(Affiliation<?> affiliation, String ipdsId) {
+        assertTrue(affiliation instanceof CostCenter);
+        assertNotNull(affiliation.getId());
+        assertEquals("CostCenter Test", affiliation.getName());
+        assertTrue(affiliation.isActive());
+        assertTrue(affiliation.isUsgs());
+        assertEquals(ipdsId, ((CostCenter) affiliation).getIpdsId().toString());
     }
 
     @Test
@@ -193,7 +257,7 @@ public class IpdsBindingTest extends BaseSpringTest {
         assertEquals("Jane", contributor.getFamily());
         assertEquals("ODoe", contributor.getGiven());
         assertNull(contributor.getEmail());
-        assertEquals("182", contributor.getAffiliation().getId().toString());
+        assertEquals("7", contributor.getAffiliation().getId().toString());
     }
 
 }

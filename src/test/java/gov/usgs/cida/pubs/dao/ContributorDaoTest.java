@@ -3,7 +3,6 @@ package gov.usgs.cida.pubs.dao;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
@@ -16,7 +15,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-public class ContributorDaoTest extends BaseSpringTest {
+public class ContributorDaoTest extends BaseDaoTest {
 
     public static final int contributorCnt = 3;
 
@@ -96,10 +95,10 @@ public class ContributorDaoTest extends BaseSpringTest {
         assertEquals(1, contributors.get(0).getId().intValue());
 
         filters.clear();
-        filters.put("ipdsContributorId", 1);
+        filters.put("ipdsContributorId", 3);
         contributors = Contributor.getDao().getByMap(filters);
         assertEquals(1, contributors.size());
-        assertEquals(3, contributors.get(0).getId().intValue());
+        assertEquals(1, contributors.get(0).getId().intValue());
 
         filters.clear();
         filters.put("corporation", false);
@@ -107,10 +106,6 @@ public class ContributorDaoTest extends BaseSpringTest {
         assertEquals(2, contributors.size());
         assertEquals(1, contributors.get(0).getId().intValue());
         filters.put("name", "out");
-        contributors = Contributor.getDao().getByMap(filters);
-        assertEquals(1, contributors.size());
-        assertEquals(3, contributors.get(0).getId().intValue());
-        filters.put("ipdsContributorId", 1);
         contributors = Contributor.getDao().getByMap(filters);
         assertEquals(1, contributors.size());
         assertEquals(3, contributors.get(0).getId().intValue());
@@ -134,10 +129,6 @@ public class ContributorDaoTest extends BaseSpringTest {
         assertEquals(1, contributors.size());
         assertEquals(2, contributors.get(0).getId().intValue());
         filters.put("name", "us");
-        contributors = Contributor.getDao().getByMap(filters);
-        assertEquals(1, contributors.size());
-        assertEquals(2, contributors.get(0).getId().intValue());
-        filters.put("ipdsContributorId", 2);
         contributors = Contributor.getDao().getByMap(filters);
         assertEquals(1, contributors.size());
         assertEquals(2, contributors.get(0).getId().intValue());
@@ -178,7 +169,7 @@ public class ContributorDaoTest extends BaseSpringTest {
         assertEquals("ConGiven", usgsContributor.getGiven());
         assertEquals("ConSuffix", usgsContributor.getSuffix());
         assertEquals("con@usgs.gov", usgsContributor.getEmail());
-        assertEquals(22, usgsContributor.getAffiliation().getId().intValue());
+        assertEquals(1, usgsContributor.getAffiliation().getId().intValue());
     }
 
     public static void assertContributor3(Contributor<?> contributor) {
@@ -189,7 +180,7 @@ public class ContributorDaoTest extends BaseSpringTest {
         assertEquals("outerGiven", outsideContributor.getGiven());
         assertEquals("outerSuffix", outsideContributor.getSuffix());
         assertEquals("outer@gmail.com", outsideContributor.getEmail());
-        assertEquals(182, outsideContributor.getAffiliation().getId().intValue());
+        assertEquals(5, outsideContributor.getAffiliation().getId().intValue());
     }
 
 }

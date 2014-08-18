@@ -24,7 +24,7 @@
         <d:AuthorNameText xml:space="preserve">outerGiven, outerFamily </d:AuthorNameText>
         <d:IPNumber>IP-050927</d:IPNumber>
         <d:NonUSGSContributor xml:space="preserve">outerGiven, outerFamily </d:NonUSGSContributor>
-        <d:NonUSGSAffiliation>The Outer Limits</d:NonUSGSAffiliation>
+        <d:NonUSGSAffiliation>Outer Affiliation 1</d:NonUSGSAffiliation>
         <d:Rank m:type="Edm.Double">1</d:Rank>
         <d:AuthorNameId m:type="Edm.Int32" m:null="true" />
         <d:CostCenterId m:type="Edm.Int32" m:null="true" />

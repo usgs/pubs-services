@@ -250,7 +250,7 @@ public class IpdsBinding {
         return contributor;
     }
 
-    protected Affiliation<?> getOrCreateUsgsAffiliation(final Element element) {
+    protected Affiliation<?> getOrCreateUsgsAffiliation(final Element element) throws SAXException, IOException {
         Affiliation<?> affiliation;
         Map<String, Object> filters = new HashMap<>();
         filters.put("ipdsId", getFirstNodeText(element, "d:CostCenterId"));
@@ -264,10 +264,13 @@ public class IpdsBinding {
         return affiliation;
     }
 
-    protected Affiliation<?> createUsgsAffiliation(final String ipdsId) {
-        //TODO call ipds for the information
-        Affiliation<?> affiliation = new CostCenter();
-        affiliation.setId(ipdsId);
+    protected Affiliation<?> createUsgsAffiliation(final String ipdsId) throws SAXException, IOException {
+        String costCenterXml = requester.getCostCenter(ipdsId, ipdsId);
+        Document doc = makeDocument(costCenterXml);
+
+        CostCenter affiliation = new CostCenter();
+        affiliation.setName(getFirstNodeText(doc.getDocumentElement(), "d:Name"));
+        affiliation.setIpdsId(ipdsId);
         //TODO this should be the business service.
 //      return affiliationBusService.createObject(affiliation);
         CostCenter.getDao().add(affiliation);

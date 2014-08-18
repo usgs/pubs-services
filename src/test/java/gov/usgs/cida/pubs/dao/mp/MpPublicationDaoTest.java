@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.dao.BaseDaoTest;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
 import gov.usgs.cida.pubs.domain.Contact;
 //import gov.usgs.cida.pubs.domain.ProcessType;
@@ -28,7 +28,7 @@ import org.junit.Test;
  * @author drsteini
  *
  */
-public class MpPublicationDaoTest extends BaseSpringTest {
+public class MpPublicationDaoTest extends BaseDaoTest {
 
     //TODO editors, authors, links, & CostCenters in test.
     public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "authors", "editors", "links");

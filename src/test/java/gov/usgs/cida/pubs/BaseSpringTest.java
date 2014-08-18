@@ -18,12 +18,10 @@ import java.util.List;
 import java.util.Random;
 
 import javax.annotation.Resource;
-import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -47,9 +45,6 @@ import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 @Transactional
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class, TransactionDbUnitTestExecutionListener.class })
 public abstract class BaseSpringTest {
-
-    @Autowired
-    DataSource dataSource;
 
     /** random for the class. */
     protected static final Random RANDOM = new Random();

@@ -2,10 +2,10 @@ package gov.usgs.cida.pubs.dao;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.CostCenter;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,22 +16,22 @@ import org.junit.Test;
  * @author drsteini
  *
  */
-public class CostCenterDaoTest extends BaseSpringTest {
+public class CostCenterDaoTest extends BaseDaoTest {
 
-    public static final int costCenterCnt = 170;
+    public static final int costCenterCnt = 4;
+
+    public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors");
 
     @Test
     public void getByIdInteger() {
-        Affiliation<?> costCenter = CostCenter.getDao().getById(74);
-        assertEquals(74, costCenter.getId().intValue());
-        assertEquals("New Jersey Water Science Center", costCenter.getName());
+        Affiliation<?> costCenter = CostCenter.getDao().getById(1);
+        AffiliationDaoTest.assertAffiliation1(costCenter);
     }
 
     @Test
     public void getByIdString() {
-        Affiliation<?> costCenter = CostCenter.getDao().getById("114");
-        assertEquals(114, costCenter.getId().intValue());
-        assertEquals("Eastern Geographic Science Center", costCenter.getName());
+        Affiliation<?> costCenter = CostCenter.getDao().getById("1");
+        AffiliationDaoTest.assertAffiliation1(costCenter);
     }
 
     @Test
@@ -40,62 +40,67 @@ public class CostCenterDaoTest extends BaseSpringTest {
         assertEquals(costCenterCnt, costCenters.size());
 
         Map<String, Object> filters = new HashMap<>();
-        filters.put("id", "74");
+        filters.put("id", "1");
         costCenters = CostCenter.getDao().getByMap(filters);
         assertEquals(1, costCenters.size());
-        assertEquals(74, costCenters.get(0).getId().intValue());
-        assertEquals("New Jersey Water Science Center", costCenters.get(0).getName());
+        AffiliationDaoTest.assertAffiliation1(costCenters.get(0));
 
         filters.clear();
-        filters.put("name", "ea");
+        filters.put("name", "affil");
         costCenters = CostCenter.getDao().getByMap(filters);
-        assertEquals(9, costCenters.size());
+        assertEquals(4, costCenters.size());
 
+        filters.clear();
         filters.put("active", false);
         costCenters = CostCenter.getDao().getByMap(filters);
-        assertEquals(0, costCenters.size());
+        assertEquals(1, costCenters.size());
 
+        filters.clear();
         filters.put("active", true);
         costCenters = CostCenter.getDao().getByMap(filters);
-        assertEquals(9, costCenters.size());
+        assertEquals(3, costCenters.size());
 
+        filters.clear();
         filters.put("usgs", false);
         costCenters = CostCenter.getDao().getByMap(filters);
         assertEquals(0, costCenters.size());
 
+        filters.clear();
         filters.put("usgs", true);
         costCenters = CostCenter.getDao().getByMap(filters);
-        assertEquals(9, costCenters.size());
+        assertEquals(4, costCenters.size());
 
-        filters.clear();
-        filters.put("ipdsId", "74");
+        filters.put("id", "1");
+        filters.put("name", "affil");
+        filters.put("active", true);
+        filters.put("ipdsId", "4");
         costCenters = CostCenter.getDao().getByMap(filters);
         assertEquals(1, costCenters.size());
-        assertEquals(74, costCenters.get(0).getId().intValue());
-        assertEquals("New Jersey Water Science Center", costCenters.get(0).getName());
+    }
+
+    @Test
+    public void addUpdateTest() {
+        CostCenter affiliation = new CostCenter();
+        affiliation.setName("cost center 1");
+        affiliation.setIpdsId(randomPositiveInt());
+        CostCenter.getDao().add(affiliation);
+        CostCenter persistedAffiliation = (CostCenter) CostCenter.getDao().getById(affiliation.getId());
+        assertDaoTestResults(CostCenter.class, affiliation, persistedAffiliation, IGNORE_PROPERTIES, true, true);
+
+        affiliation.setName("cost center 2");
+        affiliation.setIpdsId(randomPositiveInt()+4);
+        CostCenter.getDao().update(affiliation);
+        persistedAffiliation = (CostCenter) CostCenter.getDao().getById(affiliation.getId());
+        assertDaoTestResults(CostCenter.class, affiliation, persistedAffiliation, IGNORE_PROPERTIES, true, true);
     }
 
     @Test
     public void notImplemented() {
         try {
-            CostCenter.getDao().add(new CostCenter());
-            fail("Was able to add.");
-        } catch (Exception e) {
-            assertEquals("NOT IMPLEMENTED.", e.getMessage());
-        }
-
-        try {
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("prodId", 1);
             CostCenter.getDao().getObjectCount(params);
             fail("Was able to get count.");
-        } catch (Exception e) {
-            assertEquals("NOT IMPLEMENTED.", e.getMessage());
-        }
-
-        try {
-            CostCenter.getDao().update(new CostCenter());
-            fail("Was able to update.");
         } catch (Exception e) {
             assertEquals("NOT IMPLEMENTED.", e.getMessage());
         }

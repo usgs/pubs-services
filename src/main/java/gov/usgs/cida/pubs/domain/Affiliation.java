@@ -17,7 +17,7 @@ public class Affiliation<D> extends BaseDomain<Affiliation<D>> implements ILooku
     private String name;
 
     @JsonIgnore
-    private boolean active;
+    protected boolean active;
 
     @JsonIgnore
     protected boolean usgs;

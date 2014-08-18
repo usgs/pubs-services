@@ -30,11 +30,11 @@
     </resultMap>
 
     <resultMap id="usgsResult" type="UsgsContributor" extends="contributor.personResult">
-        <association property="affiliation" column="affiliation_id" select="costCenter.getById"/>
+        <association property="affiliation" column="affiliation_id" select="affiliation.getByIdCostCenter"/>
     </resultMap>
 
     <resultMap id="outsideResult" type="OutsideContributor" extends="contributor.personResult">
-        <association property="affiliation" column="affiliation_id" select="outsideAffiliation.getById"/>
+        <association property="affiliation" column="affiliation_id" select="affiliation.getByIdOutsideAffiliation"/>
     </resultMap>
 
     <sql id="baseCols">
@@ -111,12 +111,7 @@
             and upper(first) like upper(#{family}) || '%'
         </if>
         <if test="corporation != null">
-            <if test="corporation">
-                and is_corporation = 'Y'
-            </if>
-            <if test="!corporation">
-                and is_corporation = 'N'
-            </if>
+            and is_corporation = #{corporation}
         </if>
     </sql>
 

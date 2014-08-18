@@ -2,29 +2,16 @@ package gov.usgs.cida.pubs.dao.mp;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.domain.Contact;
-import gov.usgs.cida.pubs.domain.ProcessType;
-import gov.usgs.cida.pubs.domain.PublicationSeries;
-import gov.usgs.cida.pubs.domain.PublicationSubtype;
-import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.dao.BaseDaoTest;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
-import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.junit.Ignore;
 import org.junit.Test;
 
-public class MpPublicationContributorDaoTest extends BaseSpringTest {
+public class MpPublicationContributorDaoTest extends BaseDaoTest {
 
     private static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors");
 

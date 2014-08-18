@@ -72,12 +72,10 @@
          <mapper resource="mybatis/pw/pwPublicationLink.xml"/>
 
          <mapper resource="mybatis/affiliation.xml"/>
-         <mapper resource="mybatis/costCenter.xml"/>
          <mapper resource="mybatis/contributor.xml"/>
          <mapper resource="mybatis/contributorType.xml"/>
          <mapper resource="mybatis/linkFileType.xml"/>
          <mapper resource="mybatis/linkType.xml"/>
-         <mapper resource="mybatis/outsideAffiliation.xml"/>
          <mapper resource="mybatis/publication.xml"/>
          <mapper resource="mybatis/publicationContributor.xml"/>
          <mapper resource="mybatis/publicationCostCenter.xml"/>

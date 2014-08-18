@@ -50,7 +50,7 @@ public class PublicationDaoTest extends BaseDaoTest {
         assertEquals(70116614, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
 
         filters.clear();
-        filters.put("id", 4);
+        filters.put("id", new int[] { 4 });
         filters.put("indexId", new int[] { 4 });
         filters.put("ipdsId", new String[] {"ipds_id"});
         pubs = Publication.getPublicationDao().getByMap(filters);

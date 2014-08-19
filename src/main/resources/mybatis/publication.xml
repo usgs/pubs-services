@@ -141,54 +141,223 @@
         ipds_id = #{ipdsId,jdbcType=VARCHAR},
         <include refid="base.auditSets"/>
     </sql>
+    
+    <sql id="singleSearchTermFilter">
+    <!-- single search term needs to or/and correctly -->
+       	<if test="searchTerms != null and searchTerms.length > 0">
+       		and 
+			<foreach item="term" collection="searchTerms" open=""
+					 separator="and" close=""> 
+			(	
+			<!-- various fields -->	
+			upper(title) LIKE '%' || upper(#{term}) || '%'
+			or upper(abstract) LIKE '%' || upper(#{term}) || '%'
+			or upper(subseries_title) LIKE '%' || upper(#{term}) || '%'
+			or upper(series_number) LIKE '%' || upper(#{term}) || '%'
+			or upper(index_id) LIKE '%' || upper(#{term}) || '%'
+			or upper(publication_id) LIKE '%' || upper(#{term}) || '%'
+			or upper(ipds_id) LIKE '%' || upper(#{term}) || '%'
+			or upper(series_number) LIKE '%' || upper(#{term}) || '%'
+			
+			<!-- series name -->
+			or publication_id in 
+              		(select publication_series_id 
+              		from publication_series
+              		where upper(name) like '%' || upper(#{term}) || '%')
+            		
+			<!--  contributing office -->
+			<!-- TODO: refactor and split to mypubs and regular pubs versions -->
+			or publication_id in (
+               	select publication_id 
+               	from mp_pub_cost_center 
+               	where cost_center_id in 
+               		(select cost_center_id 
+               		from cost_center 
+               		where upper(name) like '%' || upper(#{term}) || '%')
+				union
+				select publication_id 
+				from publication_cost_center 
+				where cost_center_id in 
+					(select cost_center_id 
+					from cost_center 
+					where upper(name) like '%' || upper(#{term}) || '%')
+               )
+               
+               <!-- author -->
+               <!-- TODO: refactor and split to mypubs and regular pubs versions -->
+               or publication_id in (
+               select publication_id 
+               	from mp_pub_contributor 
+               	where contributor_id in 
+               		(select contributor_id 
+               		from contributor
+               		where upper(first) || ' ' || upper(given) like '%' || upper(#{term}) || '%')
+				union
+				select publication_id 
+				from publication_contributor 
+				where contributor_id in 
+					(select contributor_id 
+               		from contributor
+               		where upper(first) || ' ' || upper(given) like '%' || upper(#{term}) || '%')
+               ) 
+              )
+			</foreach>
+       	</if><!-- END single search terms section -->
+    </sql>
 
     <sql id="filters">
         <where>
-<!--             <if test="null != listId"> -->
-<!--                 <if test="listId.length > 0"> -->
-<!--                     <foreach item="list" collection="listId" open=" and prod_id in (select prod_id from mp_list_pubs_rel where list_id in(" separator="," close="))"> -->
-<!--                         #{list,jdbcType=NUMERIC} -->
-<!--                     </foreach> -->
-<!--                 </if> -->
-<!--             </if> -->
-<!--             <if test="authFirst != null"> -->
-<!--                 and upper(author_display) like '%' || upper(#{authFirst}) || '%' -->
-<!--             </if> -->
-<!--             <if test="authLast != null"> -->
-<!--                 and upper(author_display) like '%' || upper(#{authLast}) || '%' -->
-<!--             </if> -->
-            <if test="id != null">
-                and publication_id = #{id}
+        	<include refid="publication.singleSearchTermFilter"/>
+        	
+       		<if test="title != null and title.length > 0">
+       			and (
+				<foreach item="t" collection="title" open=""
+						 separator="or" close=""> 
+                	upper(title) like '%' || upper(#{t}) || '%'
+                </foreach>
+                )
             </if>
-            <if test="indexId != null">
-                and upper(index_id) = upper(#{indexId})
+            
+            <if test="abstract != null and abstract.length > 0">
+       			and (
+				<foreach item="a" collection="abstract" open=""
+						 separator="or" close=""> 
+                	upper(abstract) like '%' || upper(#{a}) || '%'
+                </foreach>
+                )
             </if>
-<!--             <if test="pubType != null"> -->
-<!--                 and publication_type_id = #{pubType} -->
-<!--             </if> -->
-<!--             <if test="title != null"> -->
-<!--                 and upper(title) like '%' || upper(#{title}) || '%' -->
-<!--             </if> -->
-<!--             <if test="year != null"> -->
-<!--                 and publication_year = #{year} -->
-<!--             </if> -->
-<!--             <if test="yearStart != null"> -->
-<!--                 and publication_year &gt;= #{yearStart} -->
-<!--             </if> -->
-<!--             <if test="yearEnd != null"> -->
-<!--                 and publication_year &lt;= #{yearEnd} -->
-<!--             </if> -->
-<!--             <if test="journal != null"> -->
-<!--                 and larger_work_id = #{journal} -->
-<!--             </if> -->
-<!--             <if test="reportSeries != null"> -->
-<!--                 and series_cd = #{reportSeries} -->
-<!--             </if> -->
-<!--             <if test="reportNumber != null"> -->
-<!--                 and series_number like '%' || #{reportNumber} || '%' -->
-<!--             </if> -->
-            <if test="ipdsId != null">
-                and ipds_id = #{ipdsId}
+            
+            <!-- TODO: refactor and split to mypubs and regular pubs versions -->
+            <if test="author != null and author.length > 0">
+                and publication_id in (
+                select publication_id 
+                	from mp_pub_contributor 
+                	where contributor_id in 
+                		(select contributor_id 
+                		from contributor
+                		where 
+                		<foreach item="a" collection="author" open=""
+								 separator="or" close=""> 
+		                	upper(first) || ' ' || upper(given) like '%' || upper(#{a}) || '%'
+		                </foreach>
+                		)
+					union
+					select publication_id 
+					from publication_contributor 
+					where contributor_id in 
+						(select contributor_id 
+                		from contributor
+                		where 
+                		<foreach item="a" collection="author" open=""
+								 separator="or" close=""> 
+		                	upper(first) || ' ' || upper(given) like '%' || upper(#{a}) || '%'
+		                </foreach>
+		                )
+                ) 
+            </if>
+            
+            <if test="id != null and id.length > 0">
+                and (
+                <foreach item="i" collection="id" open=""
+								 separator="or" close=""> 
+                	publication_id = #{i}
+				</foreach>
+                )
+            </if>
+            
+            <if test="indexId != null and indexId.length > 0">
+                and (
+                <foreach item="i" collection="indexId" open=""
+								 separator="or" close=""> 
+                	upper(index_id) = upper(#{i})
+                </foreach>
+                )
+            </if>
+            
+            <if test="ipdsId != null and ipdsId.length > 0">
+                and (
+                <foreach item="i" collection="ipdsId" open=""
+								 separator="or" close=""> 
+                	ipds_id = #{i}
+                </foreach>
+                )
+            </if>
+            
+            <!-- TODO: following three fields should be publication_year, waiting for fields to be added to DB -->
+            <if test="year != null and year.length > 0">
+            	and (
+                <foreach item="y" collection="year" open=""
+								 separator="or" close=""> 
+                	to_char(DISPLAY_TO_PUBLIC_DATE, 'RRRR') = #{y}
+               	</foreach>
+                )
+            </if>
+            
+            <if test="yearStart != null and yearStart.length > 0">
+            	and (
+                <foreach item="y" collection="yearStart" open=""
+								 separator="or" close=""> 
+                	to_char(DISPLAY_TO_PUBLIC_DATE, 'RRRR') &gt;= #{y}
+               	</foreach>
+                )
+            </if>
+            
+            <if test="yearEnd != null and yearEnd.length > 0">
+            	and (
+                <foreach item="y" collection="yearEnd" open=""
+								 separator="or" close=""> 
+                	to_char(DISPLAY_TO_PUBLIC_DATE, 'RRRR') &lt;= #{y}
+               	</foreach>
+                )
+            </if>
+            
+            <!-- TODO: refactor and split to mypubs and regular pubs versions -->
+            <if test="contributingOffice != null and contributingOffice.length > 0">
+                and publication_id in (
+                	select publication_id 
+                	from mp_pub_cost_center 
+                	where cost_center_id in 
+                		(select cost_center_id 
+                		from cost_center 
+                		where
+                		<foreach item="co" collection="contributingOffice" open=""
+								 separator="or" close=""> 
+	                	 upper(name) like '%' || upper(#{co}) || '%'
+	                	 )
+                	 	</foreach>
+					union
+					select publication_id 
+					from publication_cost_center 
+					where cost_center_id in 
+						(select cost_center_id 
+						from cost_center 
+						where
+						<foreach item="co" collection="contributingOffice" open=""
+								 separator="or" close=""> 
+                	 	upper(name) like '%' || upper(#{co}) || '%'
+                	 	)
+                	 	</foreach>
+                )
+            </if>
+
+            <if test="reportSeries != null and reportSeries.length > 0">
+                and publication_series_id in (select publication_series_id 
+               		from publication_series
+               		where
+               		<foreach item="r" collection="reportSeries" open=""
+						 separator="or" close=""> 
+                	 upper(name) like '%' || upper(#{r}) || '%'
+                	 </foreach>
+                	 )
+            </if>
+            
+            <if test="reportNumber != null and reportNumber.length > 0">
+            	and (
+                <foreach item="r" collection="reportNumber" open=""
+								 separator="or" close=""> 
+                	upper(series_number) like '%' || upper(#{r}) || '%'
+               	</foreach>
+                )
             </if>
         </where>
     </sql>
@@ -204,11 +373,11 @@
     </select>
 
     <select id="getByMap" parameterType="map" resultMap="result">
-<!--         <include refid="base.pagingTop"/> -->
+        <include refid="base.pagingTop"/>
         <include refid="baseSelect"/>
         <include refid="filters"/>
-<!--         <include refid="base.orderBy"/> -->
-<!--         <include refid="base.pagingBottom"/> -->
+        <include refid="base.orderBy"/>
+        <include refid="base.pagingBottom"/>
     </select>
 
     <select id="getCount" parameterType="map" resultType="Integer">

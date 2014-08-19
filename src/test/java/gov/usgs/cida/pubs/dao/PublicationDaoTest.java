@@ -32,27 +32,27 @@ public class PublicationDaoTest extends BaseDaoTest {
     @Test
     public void getByMapTest() {
         Map<String, Object> filters = new HashMap<>();
-        filters.put("id", 2);
+        filters.put("id", new int[] { 2 });
         Collection<Publication<?>> pubs = Publication.getPublicationDao().getByMap(filters);
         assertEquals(1, pubs.size());
         assertEquals(2, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
 
         filters.clear();
-        filters.put("indexId", 4);
+        filters.put("indexId", new int[] { 4 });
         pubs = Publication.getPublicationDao().getByMap(filters);
         assertEquals(1, pubs.size());
         assertEquals(4, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
 
         filters.clear();
-        filters.put("ipdsId", "IP-056327");
+        filters.put("ipdsId", new String[] {"IP-056327"});
         pubs = Publication.getPublicationDao().getByMap(filters);
         assertEquals(1, pubs.size());
         assertEquals(70116614, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
 
         filters.clear();
-        filters.put("id", 4);
-        filters.put("indexId", 4);
-        filters.put("ipdsId", "ipds_id");
+        filters.put("id", new int[] { 4 });
+        filters.put("indexId", new int[] { 4 });
+        filters.put("ipdsId", new String[] {"ipds_id"});
         pubs = Publication.getPublicationDao().getByMap(filters);
         assertEquals(1, pubs.size());
         assertEquals(4, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
@@ -64,7 +64,7 @@ public class PublicationDaoTest extends BaseDaoTest {
         Integer cnt = Publication.getPublicationDao().getObjectCount(null);
         assertEquals(4, cnt.intValue());
 
-        filters.put("ipdsId", "ipds_id");
+        filters.put("ipdsId", new String[] { "ipds_id" });
         cnt = Publication.getPublicationDao().getObjectCount(filters);
         assertEquals(1, cnt.intValue());
     }

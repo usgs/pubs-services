@@ -57,7 +57,16 @@
     </select>
 
     <select id="getByMap" parameterType="map" resultMap="result">
+        <include refid="base.pagingTop"/>
         <include refid="baseSelect"/>
+        <include refid="publication.filters"/>
+        <include refid="base.orderBy"/>
+        <include refid="base.pagingBottom"/>
+        
+    </select>
+        <select id="getCount" parameterType="map" resultType="Integer">
+        select count(*)
+          from mp_publication
         <include refid="publication.filters"/>
     </select>
 

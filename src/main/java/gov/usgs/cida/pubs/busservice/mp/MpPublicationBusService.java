@@ -42,6 +42,11 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     public MpPublication getObject(Integer objectId) {
         return MpPublication.getDao().getById(objectId);
     }
+    
+    @Override
+    public Integer getObjectCount(Map<String, Object> filters) {
+        return MpPublication.getDao().getObjectCount(filters);
+    }
 
     /** {@inheritDoc}
      * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#getObjects(java.util.Map)

@@ -33,7 +33,7 @@
 
     <sql id="orderBy">
         <if test="orderby != null">
-            order by ${orderby} <if test="orderbyDir != null">${orderbyDir}</if>
+            order by ${orderby} <!-- Java code must construct the "orderby orderdir" strings -->
         </if>
       </sql>
 

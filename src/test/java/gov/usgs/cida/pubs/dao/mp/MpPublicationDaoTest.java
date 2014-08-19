@@ -43,7 +43,7 @@ public class MpPublicationDaoTest extends BaseDaoTest {
         assertDaoTestResults(MpPublication.class, newpubA, persistedA, IGNORE_PROPERTIES, true, true);
 
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("id", pubId);
+        params.put("id", new int[] { pubId });
         List<MpPublication> pubs = MpPublication.getDao().getByMap(params);
         assertTrue(pubs.size() > 0);
         MpPublication persistedB = pubs.get(0);

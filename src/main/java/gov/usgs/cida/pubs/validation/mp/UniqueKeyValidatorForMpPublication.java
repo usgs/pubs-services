@@ -36,7 +36,7 @@ public class UniqueKeyValidatorForMpPublication implements ConstraintValidator<U
             rtn = true;
         } else {
             Map<String, Object> filters = new HashMap<String,Object>();
-            filters.put("indexId", ((Publication<?>) value).getIndexId());
+            filters.put("indexId", new String[] { ((Publication<?>) value).getIndexId() });
             List<Publication<?>> pubs = Publication.getPublicationDao().getByMap(filters);
             for (Publication<?> pub : pubs) {
                 if (null == value.getId() || 0 != pub.getId().compareTo(value.getId())) {
@@ -52,7 +52,7 @@ public class UniqueKeyValidatorForMpPublication implements ConstraintValidator<U
             rtn = true;
         } else {
             Map<String, Object> filters = new HashMap<String,Object>();
-            filters.put("ipdsId", ((Publication<?>) value).getIpdsId());
+            filters.put("ipdsId", new String[] { ((Publication<?>) value).getIpdsId() });
             List<Publication<?>> pubs = Publication.getPublicationDao().getByMap(filters);
             for (Publication<?> pub : pubs) {
                 if (null == value.getId() || 0 != pub.getId().compareTo(value.getId())) {

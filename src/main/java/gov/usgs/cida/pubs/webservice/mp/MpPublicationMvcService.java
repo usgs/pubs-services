@@ -2,12 +2,17 @@ package gov.usgs.cida.pubs.webservice.mp;
 
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.json.ResponseView;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.webservice.MvcService;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -29,10 +35,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 public class MpPublicationMvcService extends MvcService<MpPublication> {
-
     private static final Logger LOG = LoggerFactory.getLogger(MpPublicationMvcService.class);
 
-//    private IBusService<Publication<?>> pubBusService;
+    //SQL config for single search 
+    private static final String SEARCH_TERM_ORDERBY = "display_to_public_date"; //TODO this is temporary until we get PUB DATE
+    private static final String SEARCH_TERM_ORDERBY_DIR = "DESC";
+    
+    @Autowired
+    private IMpPublicationBusService mpPublicationBusService;
+    
     @Autowired
     private IMpPublicationBusService busService;
 
@@ -49,90 +60,68 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         return rtn;
     }
 
-//    @RequestMapping(value = "mppublications", method = RequestMethod.GET,  produces="application/json")
-//    @ResponseBody
-//    public Map<String,? extends Object> getPubs(@RequestParam(value="list_id", required=false) String[] listId,
-//            @RequestParam(value="auth_first", required=false) String authFirst,
-//            @RequestParam(value="auth_last", required=false) String authLast,
-//            @RequestParam(value="prod_id", required=false) String prodId,
-//            @RequestParam(value="index_id", required=false) String indexId,
-//            @RequestParam(value="pub_type", required=false) String pubType,
-//            @RequestParam(value="title", required=false) String title,
-//            @RequestParam(value="year", required=false) String year,
-//            @RequestParam(value="year_start", required=false) String yearStart,
-//            @RequestParam(value="year_end", required=false) String yearEnd,
-//            @RequestParam(value="journal", required=false) String journal,
-//            @RequestParam(value="report_series", required=false) String reportSeries,
-//            @RequestParam(value="report_number", required=false) String reportNumber,
-//            @RequestParam(value="page_row_start", required=false) String pageRowStart,
-//            @RequestParam(value="page_size", required=false) String pageSize,
-//            @RequestParam(value="orderby", required=false) String orderby,
-//            @RequestParam(value="orderby_dir", required=false) String orderbyDir,
-//            HttpServletResponse response) {
-//
-//        Map<String, Object> filters = new HashMap<String, Object>();
-//
-//        if ( ! PubsUtilities.isNullOrEmpty(listId)) {
-//            filters.put("listId", PubsUtilities.cleanStringArray(listId));
-//        }
-//        if ( ! PubsUtilities.isNullOrEmpty(authFirst)) {
-//            filters.put("authFirst", authFirst);
-//        }
-//        if ( ! PubsUtilities.isNullOrEmpty(authLast)) {
-//            filters.put("authLast", authLast);
-//        }
-//        if ( ! PubsUtilities.isNullOrEmpty(indexId)) {
-//            filters.put("indexId", indexId);
-//        }
-//        if ( ! PubsUtilities.isNullOrEmpty(pubType)) {
-//            filters.put("pubType", pubType);
-//        }
-//        if ( ! PubsUtilities.isNullOrEmpty(title)) {
-//            filters.put("title", title);
-//        }
-//        if ( ! PubsUtilities.isNullOrEmpty(year)) {
-//            filters.put("year", year);
-//        }
-//        if ( ! PubsUtilities.isNullOrEmpty(yearStart)) {
-//            filters.put("yearStart", yearStart);
-//        }
-//        if ( ! PubsUtilities.isNullOrEmpty(yearEnd)) {
-//            filters.put("yearEnd", yearEnd);
-//        }
-//        if ( ! PubsUtilities.isNullOrEmpty(journal)) {
-//            filters.put("journal", journal);
-//        }
-//        if ( ! PubsUtilities.isNullOrEmpty(reportSeries)) {
-//            filters.put("reportSeries", reportSeries);
-//        }
-//        if ( ! PubsUtilities.isNullOrEmpty(reportNumber)) {
-//            filters.put("reportNumber", reportNumber);
-//        }
-//        if ( ! PubsUtilities.isNullOrEmpty(orderby)) {
-//            if (orderby.equalsIgnoreCase("reportnumber")) {
-//                filters.put("orderby", "series_number");
-//            } else {
-//                filters.put("orderby", orderby);
-//            }
-//        }
-//        if ( ! PubsUtilities.isNullOrEmpty(orderbyDir)) {
-//            filters.put("orderbyDir", orderbyDir);
-//        }
-//
-//        if (!PubsUtilities.isNullOrEmpty(prodId)) {
-//            filters.put("prodId", parseId(prodId));
-//        }
-//        if (!PubsUtilities.isNullOrEmpty(pageRowStart)) {
-//            filters.put("pageRowStart", parseId(pageRowStart));
-//        }
-//        if (!PubsUtilities.isNullOrEmpty(pageSize)) {
-//            filters.put("pageSize", parseId(pageSize));
-//        }
-//
-//        List<Publication<?>> pubs = pubBusService.getObjects(filters);
-//        Integer totalPubsCount = pubBusService.getObjectCount(filters);
-//        return buildResponseMap(response, pubs, totalPubsCount);
-//    }
+    @RequestMapping(value = "mppublications", method = RequestMethod.GET,  produces="application/json")
+    @ResponseView(IMpView.class)
+    public @ResponseBody SearchResults getPubs(
+    		@RequestParam(value="q", required=false) String searchTerms, //single string search
+            @RequestParam(value="title", required=false) String[] title,
+            @RequestParam(value="abstract", required=false) String[] pubAbstract,
+            @RequestParam(value="author", required=false) String[] author,
+            @RequestParam(value="prodId", required=false) String[] prodId,
+            @RequestParam(value="indexId", required=false) String[] indexId,
+            @RequestParam(value="ipdsId", required=false) String[] ipdsId,
+            @RequestParam(value="year", required=false) String[] year,
+            @RequestParam(value="startYear", required=false) String[] yearStart,
+            @RequestParam(value="endYear", required=false) String[] yearEnd,
+    		@RequestParam(value="contributingOffice", required=false) String[] contributingOffice,
+            @RequestParam(value="seriesName", required=false) String[] reportSeries,
+            @RequestParam(value="reportNumber", required=false) String[] reportNumber,
+            @RequestParam(value="page_row_start", required=false, defaultValue = "0") String pageRowStart,
+            @RequestParam(value="page_size", required=false, defaultValue = "25") String pageSize,
+            HttpServletResponse response) {
+
+        Map<String, Object> filters = new HashMap<String, Object>();
+
+    	configureSingleSearchFilters(filters, searchTerms);
+    	
+    	addToFiltersIfNotNull(filters, "title", title);
+    	addToFiltersIfNotNull(filters, "abstract", pubAbstract);
+    	addToFiltersIfNotNull(filters, "author", author);
+    	addToFiltersIfNotNull(filters, "id", prodId);
+    	addToFiltersIfNotNull(filters, "indexId", indexId);
+    	addToFiltersIfNotNull(filters, "ipdsId", ipdsId);
+    	addToFiltersIfNotNull(filters, "year", year);
+    	addToFiltersIfNotNull(filters, "yearStart", yearStart);
+    	addToFiltersIfNotNull(filters, "yearEnd", yearEnd);
+    	addToFiltersIfNotNull(filters, "contributingOffice", contributingOffice);
+    	addToFiltersIfNotNull(filters, "reportSeries", reportSeries);
+    	addToFiltersIfNotNull(filters, "reportNumber", reportNumber);
+    	addToFiltersIfNotNull(filters, "pageRowStart", pageRowStart);
+    	addToFiltersIfNotNull(filters, "pageSize", pageSize);
+        
+        List<MpPublication> pubs = mpPublicationBusService.getObjects(filters);
+        Integer totalPubsCount = mpPublicationBusService.getObjectCount(filters);
+        SearchResults results = new SearchResults();
+        results.setPageSize(pageSize);
+        results.setPageRowStart(pageRowStart);
+        results.setRecords(pubs);
+        results.setRecordCount(totalPubsCount);
+        
+        return results;
+    }
+    
+    /**
+     * Configures the filters/orderby settings to support single search
+     * @param filters
+     * @return
+     */
+    private Map<String, Object> configureSingleSearchFilters(Map<String, Object> filters, String searchTerms) {
+        if ( ! PubsUtilities.isNullOrEmpty(searchTerms)) {
+	    	filters.put("searchTerms", searchTerms.split("[\\s+,+]"));
+	    	updateOrderBy(filters, SEARCH_TERM_ORDERBY, SEARCH_TERM_ORDERBY_DIR);
+        }
+    	return filters;
+    }
 
     @RequestMapping(value = "mppublications", method = RequestMethod.POST, produces="application/json")
     @ResponseView(IMpView.class)

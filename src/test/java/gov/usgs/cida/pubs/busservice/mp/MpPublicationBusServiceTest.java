@@ -64,12 +64,12 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
         busService.getObjects(new HashMap<String, Object>());
 
         Map<String, Object> filters = new HashMap<>();
-        filters.put("id", -1);
+        filters.put("id", new int[] {-1});
         Collection<MpPublication> pubs = busService.getObjects(filters);
         assertNotNull(pubs);
         assertEquals(0, pubs.size());
 
-        filters.put("id", 1);
+        filters.put("id", new int[] {1});
         pubs = busService.getObjects(filters);
         assertNotNull(pubs);
         assertEquals(1, pubs.size());

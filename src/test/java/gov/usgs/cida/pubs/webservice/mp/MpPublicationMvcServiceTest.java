@@ -47,6 +47,27 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
         assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
                 sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
     }
+    
+    @Test
+    public void getPublicationTest_singleSearchTerm() throws Exception {
+        MvcResult rtn = mockMvc.perform(get("/mppublication/1?q=1").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+        .andReturn();
+
+        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+                sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
+        
+        MvcResult rtn2 = mockMvc.perform(get("/mppublication/1?q=NoPublicationIsGoingToHaveThisSearchTermZZzzzzZZZZZwhatNO").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+                .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+                .andReturn();
+
+        assertThat(new JSONObject(rtn2.getResponse().getContentAsString()),
+                sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
+    }
 
     @Test
     public void updatePublicationTest() throws Exception {
@@ -58,8 +79,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        //TODO activate this test
-//        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-//                sameJSONObjectAs(new JSONObject("{\"value\":\"4\",\"text\":\"Book\"}")));
+        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+                sameJSONObjectAs(new JSONObject("{\"value\":\"4\",\"text\":\"Book\"}")));
     }
 }

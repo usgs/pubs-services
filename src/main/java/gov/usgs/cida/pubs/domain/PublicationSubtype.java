@@ -89,5 +89,7 @@ public class PublicationSubtype extends BaseDomain<PublicationSubtype> implement
     public String getText() {
         return name;
     }
-
+	public void setText(String text) {
+		this.name = text;
+	}
 }

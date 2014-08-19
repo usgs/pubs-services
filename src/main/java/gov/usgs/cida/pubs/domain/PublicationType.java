@@ -73,5 +73,8 @@ public class PublicationType extends BaseDomain<PublicationType> implements ILoo
     public String getText() {
         return name;
     }
+	public void setText(String text) {
+		this.name = text;
+	}
 
 }

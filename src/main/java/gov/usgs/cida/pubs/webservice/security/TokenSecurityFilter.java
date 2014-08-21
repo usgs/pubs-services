@@ -39,7 +39,12 @@ public class TokenSecurityFilter implements Filter  {
 	 */
 	public void doFilter(ServletRequest req, ServletResponse resp,
 			FilterChain filterChain) throws IOException, ServletException {
-		String token = getTokenFromHeader((HttpServletRequest) req); //not sure if this cast is safe
+            HttpServletRequest httpReq = (HttpServletRequest) req; //not sure if this cast is safe
+            
+            if("OPTIONS".equals(httpReq.getMethod())){
+                filterChain.doFilter(req, resp); //continue down the chain
+            } else{
+                String token = getTokenFromHeader(httpReq);
 		
 		if(isValidToken(token)) {
 			//TODO set security context with user roles?
@@ -49,7 +54,8 @@ public class TokenSecurityFilter implements Filter  {
 			LOG.debug("Invalid token");
 			((HttpServletResponse) resp).setStatus(401);
 		}
-	}
+            }
+        }
 
 	@Override
 	public void init(FilterConfig arg0) throws ServletException {

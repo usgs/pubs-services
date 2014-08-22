@@ -39,15 +39,21 @@ public class TokenSecurityFilter implements Filter  {
 	 */
 	public void doFilter(ServletRequest req, ServletResponse resp,
 			FilterChain filterChain) throws IOException, ServletException {
-		String token = getTokenFromHeader((HttpServletRequest) req); //not sure if this cast is safe
-		
-		if(isValidToken(token)) {
-			//TODO set security context with user roles?
-			
+		HttpServletRequest httpReq = (HttpServletRequest) req; //not sure if this cast is safe
+
+		if ("OPTIONS".equals(httpReq.getMethod())) {
 			filterChain.doFilter(req, resp); //continue down the chain
 		} else {
-			LOG.debug("Invalid token");
-			((HttpServletResponse) resp).setStatus(401);
+			String token = getTokenFromHeader(httpReq);
+		
+			if(isValidToken(token)) {
+				//TODO set security context with user roles?
+
+				filterChain.doFilter(req, resp); //continue down the chain
+			} else {
+				LOG.debug("Invalid token");
+				((HttpServletResponse) resp).setStatus(401);
+			}
 		}
 	}
 

@@ -1,10 +1,10 @@
 package gov.usgs.cida.pubs.dao.ipds;
 
+import gov.usgs.cida.pubs.PubMap;
 import gov.usgs.cida.pubs.aop.ISetDbContext;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.intfc.IIpdsMessageLogDao;
 import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
-import gov.usgs.cida.pubs.domain.mp.MpPublication;
 
 import java.util.List;
 import java.util.Map;
@@ -67,7 +67,7 @@ public class IpdsMessageLogDao extends BaseDao <IpdsMessageLog> implements IIpds
     @Transactional(readOnly = true)
     @ISetDbContext
     @Override
-    public List<MpPublication> getFromIpds(Integer ipdsMessageLogId) {
+    public List<PubMap> getFromIpds(Integer ipdsMessageLogId) {
         return getSqlSession().selectList(NS + ".getMpPublicationFromIpds", ipdsMessageLogId);
     }
 

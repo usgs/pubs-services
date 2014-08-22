@@ -25,4 +25,8 @@
 
     <bean id="pwPublication" class="gov.usgs.cida.pubs.domain.pw.PwPublication" autowire="byName"/>
 
+    <bean id="ipdsMessageLog" class="gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog" autowire="byName"/>
+    <bean id="ipdsProcessLog" class="gov.usgs.cida.pubs.domain.ipds.IpdsProcessLog" autowire="byName"/>
+    <bean id="ipdsPubTypeConv" class="gov.usgs.cida.pubs.domain.ipds.IpdsPubTypeConv" autowire="byName"/>
+
 </beans>

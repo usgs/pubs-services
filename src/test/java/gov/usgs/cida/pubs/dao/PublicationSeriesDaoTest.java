@@ -16,7 +16,7 @@ import org.junit.Test;
  * @author drsteini
  *
  */
-public class PublicationSeriesDaoTest extends BaseDaoTest {
+public class PublicationSeriesDaoTest extends BaseSpringDaoTest {
 
     public static final int pubSeriesCnt = 508;
 

@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.busservice.ipds;
 
+import gov.usgs.cida.pubs.PubMap;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.Contributor;
@@ -8,8 +9,14 @@ import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
+import gov.usgs.cida.pubs.domain.PublicationSeries;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
+import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
+import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
+import gov.usgs.cida.pubs.domain.ipds.IpdsPubTypeConv;
 import gov.usgs.cida.pubs.domain.ipds.PublicationMap;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 
@@ -52,12 +59,9 @@ public class IpdsBinding {
 
     private static final Logger LOG = LoggerFactory.getLogger(IpdsBinding.class);
 
-    @Autowired
-    protected IpdsWsRequester requester;
+    protected final IpdsWsRequester requester;
 
-    @Autowired()
-    @Qualifier("personContributorBusService")
-    public IBusService<PersonContributor<?>> contributorBusService;
+    protected final IBusService<PersonContributor<?>> contributorBusService;
 
     //TODO implement this
 //   @Autowired
@@ -67,7 +71,12 @@ public class IpdsBinding {
 
     private DocumentBuilder builder;
 
-    public IpdsBinding() throws ParserConfigurationException {
+    @Autowired
+    public IpdsBinding(final IpdsWsRequester requester,
+            @Qualifier("personContributorBusService")
+            final IBusService<PersonContributor<?>> contributorBusService) throws ParserConfigurationException {
+        this.requester = requester;
+        this.contributorBusService = contributorBusService;
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(false);
         builder = factory.newDocumentBuilder();
@@ -308,5 +317,114 @@ public class IpdsBinding {
         }
 
         return contributors;
+    }
+
+    public MpPublication bindPublication(PubMap inPub) {
+        if (null != inPub && !inPub.isEmpty()) {
+            MpPublication pub = new MpPublication();
+            //Not from IPDS - pub.setId()
+            //Not from IPDS - pub.setIndexId()
+            //Not from IPDS - pub.setDisplayToPublicDate()
+
+            IpdsPubTypeConv conv = IpdsPubTypeConv.getDao().getByIpdsValue(getStringValue(inPub, IpdsMessageLog.PRODUCTTYPEVALUE));
+            if (null != conv) {
+                pub.setPublicationType(conv.getPublicationType());
+                pub.setPublicationSubtype(conv.getPublicationSubtype());
+            }
+
+            if (null != pub.getPublicationSubtype()) {
+                pub.setSeriesTitle(getPublicationSeries(pub.getPublicationSubtype(), inPub));
+            }
+
+            String tempSeriesNumber = getStringValue(inPub, IpdsMessageLog.USGSSERIESNUMBER);
+            if (null != tempSeriesNumber) {
+                if (".".contentEquals(tempSeriesNumber)) {
+                    tempSeriesNumber = null;
+                }
+                pub.setSeriesNumber(tempSeriesNumber);
+            }
+
+            //Not from IPDS - pub.setSubseriesTitle();
+            pub.setChapter(getStringValue(inPub, IpdsMessageLog.USGSSERIESLETTER));
+            //Not from IPDS - pub.setSubchapterNumber();
+
+            String tempTitle = getStringValue(inPub, IpdsMessageLog.FINALTITLE);
+            if (null == tempTitle) {
+                tempTitle = getStringValue(inPub, IpdsMessageLog.WORKINGTITLE);
+            }
+            pub.setTitle(tempTitle);
+
+            pub.setDocAbstract(getStringValue(inPub, IpdsMessageLog.ABSTRACT));
+            pub.setLanguage("English");
+
+            if ((null != conv && IpdsPubTypeConv.USGS_PERIODICAL == conv.getId())
+                    || (null != pub.getPublicationSubtype() && PublicationSubtype.USGS_NUMBERED_SERIES == pub.getPublicationSubtype().getId())) {
+                pub.setPublisher("U.S. Geological Survey");
+                pub.setPublisherLocation("Reston VA");
+            } else {
+                pub.setPublisher(getStringValue(inPub, IpdsMessageLog.NONUSGSPUBLISHER));
+            }
+
+            pub.setDoi(getStringValue(inPub, IpdsMessageLog.DIGITALOBJECTIDENTIFIER));
+            //Not from IPDS - pub.setIssn();
+            pub.setIsbn(getStringValue(inPub, IpdsMessageLog.ISBN));
+            pub.setCollaboration(getStringValue(inPub, IpdsMessageLog.COOPERATORS));
+            pub.setUsgsCitation(getStringValue(inPub, IpdsMessageLog.CITATION));
+            //Not from IPDS - pub.setContact();
+            pub.setProductDescription(getStringValue(inPub, IpdsMessageLog.PHYSICALDESCRIPTION));
+
+            pub.setStartPage(getStringValue(inPub, IpdsMessageLog.PAGERANGE));
+            //Not from IPDS - pub.setEndPage();
+            //Not from IPDS - pub.setNumberOfPages();
+            //Not from IPDS - pub.setOnlineOnly();
+            //Not from IPDS - pub.setAdditionalOnlineFiles();
+            //Not from IPDS - pub.setTemporalStart();
+            //Not from IPDS - pub.setTemporalEnd();
+
+            //We put ProductSummary into notes and then add to notes later with what is in the real notes...
+            pub.setNotes(getStringValue(inPub, IpdsMessageLog.PRODUCTSUMMARY));
+
+            pub.setIpdsId(getStringValue(inPub, IpdsMessageLog.IPNUMBER));
+            pub.setIpdsReviewProcessState(getStringValue(inPub, IpdsMessageLog.IPDSREVIEWPROCESSSTATEVALUE));
+            pub.setIpdsInternalId(getStringValue(inPub, IpdsMessageLog.IPDS_INTERNAL_ID));
+
+            //Not from IPDS - pub.setLargerWorkType()
+            //TODO The journal title will be used to get publication series on articles, otherwise store it here.
+            //TODO pub.setLargerWorkTitle(getStringValue(inPub, IpdsMessageLog.JOURNALTITLE));
+            //TODO pub.setPublicationYear(getStringValue(inPub, IpdsMessageLog.DISEMINATIONDATE).substring(1, 4));
+            //Not from IPDS - pub.setConferenceTitle();
+            //Not from IPDS - pub.setConferenceDate();
+            //Not from IPDS - pub.setConferenceLocation();
+            //In other section pub.setAuthors();
+            //In other section pub.setEditors();
+            //In other section pub.setCostCenters();
+            //In other section pub.setLinks();
+            return pub;
+        }
+        return null;
+    }
+
+    protected PublicationSeries getPublicationSeries(PublicationSubtype pubSubtype, PubMap inPub) {
+        String usgsSeriesValue = getStringValue(inPub, IpdsMessageLog.USGSSERIESVALUE);
+        if (null != pubSubtype && null != pubSubtype.getId() && !StringUtils.isEmpty(usgsSeriesValue)) {
+            //Only hit the DB if both fields have values - otherwise the db call will return incorrect results.
+            Map<String, Object> filters = new HashMap<>();
+            filters.put("publicationSubtypeId", pubSubtype.getId());
+            filters.put("name", usgsSeriesValue);
+            List<PublicationSeries> pubSeries = PublicationSeries.getDao().getByMap(filters);
+            if (0 < pubSeries.size()) {
+                //We should really only get one, so just take the first...
+                return pubSeries.get(0);
+            }
+        }
+        return null;
+    }
+
+    protected String getStringValue(PubMap inPub, String key) {
+        if (null != inPub && null != inPub.get(key)) {
+            return inPub.get(key).toString().trim();
+        } else {
+            return null;
+        }
     }
 }

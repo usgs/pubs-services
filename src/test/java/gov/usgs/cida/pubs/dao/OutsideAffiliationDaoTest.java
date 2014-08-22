@@ -16,7 +16,7 @@ import org.junit.Test;
  * @author drsteini
  *
  */
-public class OutsideAffiliationDaoTest extends BaseDaoTest {
+public class OutsideAffiliationDaoTest extends BaseSpringDaoTest {
 
     public static final int outsideAffiliationCnt = 3;
 

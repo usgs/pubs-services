@@ -10,17 +10,23 @@ import javax.jms.TextMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 
 public class MessageConsumer implements MessageListener {
 
     public static final Log LOG = LogFactory.getLog(JmsExceptionListener.class);
 
-    @Autowired
-    protected IIpdsService<String> ipdsStringMessageService;
+    protected final IIpdsService ipdsStringMessageService;
+
+    protected final IIpdsService spnProductionMessageService;
 
     @Autowired
-    protected IIpdsService<String> spnProductionMessageService;
+    MessageConsumer(@Qualifier("ipdsStringMessageService") final IIpdsService ipdsStringMessageService,
+            @Qualifier("spnProductionMessageService") final IIpdsService spnProductionMessageService) {
+        this.ipdsStringMessageService = ipdsStringMessageService;
+        this.spnProductionMessageService = spnProductionMessageService;
+    }
 
     @Transactional
     public void onMessage(final Message message) {
@@ -46,12 +52,4 @@ public class MessageConsumer implements MessageListener {
         LOG.info("Done Processing the Message");
     }
 
-//    public void setIpdsStringMessageService(final IIpdsService<String> inIpdsStringMessageService) {
-//        ipdsStringMessageService = inIpdsStringMessageService;
-//    }
-//
-//    public void setSpnProductionMessageService(final IIpdsService<String> inSpnProductionMessageService) {
-//        spnProductionMessageService = inSpnProductionMessageService;
-//    }
-//
 }

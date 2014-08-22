@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.busservice.ipds;
 
+import gov.usgs.cida.pubs.PubMap;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IIpdsProcess;
@@ -24,29 +25,29 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 public class IpdsProcess implements IIpdsProcess {
 
-    @Autowired
-    private ICrossRefBusService crossRefBusService;
-
-    @Autowired
-    protected IpdsWsRequester requester;
-
-    @Autowired
-    protected IpdsBinding binder;
+    private final ICrossRefBusService crossRefBusService;
+    private final IpdsBinding binder;
+    private final IpdsWsRequester requester;
+    private final IMpPublicationBusService pubBusService;
 
     private int additions = 0;
 
     private int errors = 0;
 
     @Autowired
-    private IMpPublicationBusService pubBusService;
-
-    @Autowired
-    private IBusService<MpPublicationLink> linkBusService;
-
-    private Map<String, String> pubTypeMap;
+    public IpdsProcess(final ICrossRefBusService crossRefBusService,
+            final IpdsBinding binder,
+            final IpdsWsRequester requester,
+            final IMpPublicationBusService pubBusService) {
+        this.crossRefBusService = crossRefBusService;
+        this.binder = binder;
+        this.requester = requester;
+        this.pubBusService = pubBusService;
+    }
 
     public String processLog(final ProcessType inProcessType, final int logId) throws Exception {
         StringBuilder rtn = new StringBuilder();
@@ -54,11 +55,11 @@ public class IpdsProcess implements IIpdsProcess {
         additions = 0;
         errors = 0;
 
-        List<MpPublication> pubs = IpdsMessageLog.getDao().getFromIpds(logId);
+        List<PubMap> pubs = IpdsMessageLog.getDao().getFromIpds(logId);
 
-        for (MpPublication pub : pubs) {
+        for (PubMap pub : pubs) {
             totalEntries++;
-            rtn.append(pub.getIpdsId() + ":" + processPublication(inProcessType, pub));
+            rtn.append(pub.get(IpdsMessageLog.IPNUMBER) + ":" + processPublication(inProcessType, pub));
         }
 
         String counts = "Summary:\n\tTotal Entries: " + totalEntries + "\n\tPublications Added: " + additions + "\n\tErrors Encountered: " + errors + "\n";
@@ -68,13 +69,13 @@ public class IpdsProcess implements IIpdsProcess {
         return rtn.toString();
     }
 
-    protected String processPublication(final ProcessType inProcessType, final MpPublication inPub) {
-        MpPublication pub = inPub;
+    protected String processPublication(final ProcessType inProcessType, final PubMap inPub) {
+        MpPublication pub = binder.bindPublication(inPub);
         pub.setIpdsReviewProcessState(inProcessType.getIpdsValue());
 
         //Check for existing data in MyPubs land - use the first hit if any found.
         Map<String, Object> filters = new HashMap<String, Object>();
-        filters.put("ipdsId", inPub.getIpdsId());
+        filters.put("ipdsId", inPub.get(IpdsMessageLog.IPNUMBER));
         List<MpPublication> existingPubs = MpPublication.getDao().getByMap(filters);
         MpPublication existingPub = null == existingPubs ? null : 0 == existingPubs.size() ? null : existingPubs.get(0);
 
@@ -259,14 +260,15 @@ public class IpdsProcess implements IIpdsProcess {
 
     protected PublicationType getMyPublicationType(final MpPublication pub) {
         PublicationType pt = null;
-        if (null != pub
-                && null != pub.getPublicationType()
-                && null != pubTypeMap
-                && pubTypeMap.containsKey(pub.getPublicationType())
-                && null != pubTypeMap.get(pub.getPublicationType())) {
-            String ptId = pubTypeMap.get(pub.getPublicationType());
-            pt = PublicationType.getDao().getById(ptId);
-        }
+//        if (null != pub
+//                && null != pub.getPublicationType()
+//                && null != pubTypeMap
+//                && pubTypeMap.containsKey(pub.getPublicationType())
+//                && null != pubTypeMap.get(pub.getPublicationType())) {
+//            String[] ptId = pubTypeMap.get(pub.getPublicationType());
+//            //TODO pubsubtype
+//            pt = PublicationType.getDao().getById(ptId[0]);
+//        }
         return pt;
     }
 
@@ -276,10 +278,6 @@ public class IpdsProcess implements IIpdsProcess {
             errors++;
         }
         return result;
-    }
-
-    public void setPubTypeMap(final Map<String, String> inPubTypeMap) {
-        pubTypeMap = inPubTypeMap;
     }
 
 }

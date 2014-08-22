@@ -13,11 +13,13 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.NTCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
@@ -26,26 +28,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class IpdsWsRequester {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
 
-    private static final String URL_PREFIX = "/_vti_bin/ListData.svc/";
+    public static final String URL_PREFIX = "/_vti_bin/listdata.svc/";
     public static final String DOI_XML_PREFIX = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" +
                     "<DigitalObjectIdentifier xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" " +
                     "xmlns=\"http://schemas.microsoft.com/ado/2007/08/dataservices\"";
     public static final String DOI_XML_SUFFIX = "</DigitalObjectIdentifier>";
     public static final String NULL_DOI = " m:null=\"true\"/>";
+    private static final String ipdsProtocol = "https";
+    private static final int ipdsPort = 443;
 
-//    @Autowired
-    private String ipdsEndpoint;
-//    @Autowired
-    private String ipdsProtocol;
-//    @Autowired
-    private HttpClient httpClient;
-//    @Autowired
-    private NTCredentials credentials;
+    private final String ipdsEndpoint;
+    private final NTCredentials credentials;
+    private final PubsEMailer pubsEMailer;
+
     private BasicHttpContext httpContext;
-//    @Autowired
-    private PubsEMailer pubsEMailer;
+
+    @Autowired
+    public IpdsWsRequester(final String ipdsEndpoint,
+            final NTCredentials credentials,
+            final PubsEMailer pubsEMailer) {
+        this.ipdsEndpoint = ipdsEndpoint;
+        this.credentials = credentials;
+        this.pubsEMailer = pubsEMailer;
+    }
 
     public String getIpdsProductXml(final String asOf) {
         StringBuilder url = new StringBuilder(URL_PREFIX)
@@ -109,11 +116,14 @@ public class IpdsWsRequester {
             xml = EntityUtils.toString(entity);
             EntityUtils.consume(response.getEntity());
         } catch (Exception e) {
+            LOG.info(e.getMessage());
             e.printStackTrace();
             pubsEMailer.sendMail("Unexpected error in mypubsJMS.getIpdsXml", e.getMessage());
         }
 
-        log.debug(xml);
+        //TODO cleanse xml of bad stuff
+
+        LOG.debug(xml);
 
         if (null != ipdsId) {
             IpdsProcessLog log = new IpdsProcessLog();
@@ -131,8 +141,9 @@ public class IpdsWsRequester {
         HttpGet httpGet = new HttpGet(url);
 
         try {
-            rtn = httpClient.execute(getTarget(), httpGet, httpContext);
+            rtn = httpClient.execute(getHttpHost(), httpGet, httpContext);
         } catch (Exception e) {
+            LOG.info(e.getMessage());
             e.printStackTrace();
             pubsEMailer.sendMail("Unexpected error in mypubsJMS.doGet", e.getMessage());
         }
@@ -141,18 +152,15 @@ public class IpdsWsRequester {
     }
 
     protected HttpClient getHttpClient() {
-        if (httpClient instanceof DefaultHttpClient) {
-            ((DefaultHttpClient) httpClient).getCredentialsProvider().setCredentials(AuthScope.ANY, credentials);
-        }
-        return httpClient;
+        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        credentialsProvider.setCredentials(AuthScope.ANY, credentials);
+        ((HttpClientBuilder) httpClientBuilder).setDefaultCredentialsProvider(credentialsProvider);
+        return (HttpClient) httpClientBuilder.build();
     }
 
-    protected HttpHost getTarget() {
-        return new HttpHost(ipdsEndpoint, ("https".contentEquals(ipdsProtocol) ? 443 : 80), ipdsProtocol);
-    }
-
-    protected HttpHost putTarget() {
-        return new HttpHost(ipdsEndpoint, ("https".contentEquals(ipdsProtocol) ? 443 : 80), ipdsProtocol);
+    protected HttpHost getHttpHost() {
+        return new HttpHost(ipdsEndpoint, ipdsPort, ipdsProtocol);
     }
 
     protected String updateIpdsDoi(MpPublication inPub) {
@@ -178,6 +186,7 @@ public class IpdsWsRequester {
                     try {
                         EntityUtils.consume(getResponse.getEntity());
                     } catch (IOException e) {
+                        LOG.info(e.getMessage());
                         e.printStackTrace();
                         rtn.append("\n\tERROR: ").append(e.getMessage());
                     }
@@ -190,7 +199,7 @@ public class IpdsWsRequester {
                         httpPut.setEntity(httpEntity);
                         HttpClient httpclient = getHttpClient();
 
-                        HttpResponse response = httpclient.execute(putTarget(), httpPut, new BasicHttpContext());
+                        HttpResponse response = httpclient.execute(getHttpHost(), httpPut, new BasicHttpContext());
 
                         if (null != response && null != response.getStatusLine() && response.getStatusLine().getStatusCode() == HttpStatus.SC_NO_CONTENT) {
                             rtn.append("\n\tDOI updated in IPDS: ").append(inPub.getDoi());
@@ -203,10 +212,12 @@ public class IpdsWsRequester {
                                 EntityUtils.consume(response.getEntity());
                             }
                         } catch (IOException e) {
+                            LOG.info(e.getMessage());
                             e.printStackTrace();
                             rtn.append("\n\tERROR: ").append(e.getMessage());
                         }
                     } catch (Exception e) {
+                        LOG.info(e.getMessage());
                         e.printStackTrace();
                         rtn.append("\n\tERROR: ").append(e.getMessage());
                     }
@@ -224,30 +235,11 @@ public class IpdsWsRequester {
                 EntityUtils.consume(getResponse.getEntity());
             }
         } catch (IOException e) {
+            LOG.info(e.getMessage());
             e.printStackTrace();
             rtn.append("\n\tERROR: ").append(e.getMessage());
         }
         return rtn.toString();
     }
-
-    public void setIpdsEndpoint(final String inIpdsEndpoint) {
-        ipdsEndpoint = inIpdsEndpoint;
-    }
-    public void setIpdsProtocol(final String inIpdsProtocol) {
-        ipdsProtocol = inIpdsProtocol;
-    }
-    public void setHttpClient(final HttpClient inHttpClient) {
-        httpClient = inHttpClient;
-    }
-    public void setCredentials(final NTCredentials inCredentials) {
-        credentials = inCredentials;
-    }
-    public void setPubsEMailer(final PubsEMailer inPubsEMailer) {
-        pubsEMailer = inPubsEMailer;
-    }
-    public void setHttpContext(final BasicHttpContext inHttpContext) {
-        httpContext = inHttpContext;    
-    }
-
 
 }

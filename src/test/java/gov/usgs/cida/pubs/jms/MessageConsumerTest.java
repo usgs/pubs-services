@@ -24,7 +24,7 @@ import org.junit.Test;
  */
 public class MessageConsumerTest extends BaseSpringTest {
 
-    private class Isms implements IIpdsService<String> {
+    private class Isms implements IIpdsService {
         public String msgText;
         @Override
         public void processIpdsMessage(String ipdsMessage) throws Exception {
@@ -32,7 +32,9 @@ public class MessageConsumerTest extends BaseSpringTest {
         }
     }
 
-    private class Spms implements IIpdsService<String> {
+    private Isms isms = new Isms();
+
+    private class Spms implements IIpdsService {
         public String msgText;
         @Override
         public void processIpdsMessage(String ipdsMessage) throws Exception {
@@ -40,23 +42,12 @@ public class MessageConsumerTest extends BaseSpringTest {
         }
     }
 
-    private class TMessageConsumer extends MessageConsumer {
-        public void setIpdsStringMessageService(IIpdsService<String> isms) {
-            ipdsStringMessageService = isms;
-        }
-        public void setSpnProductionMessageService(IIpdsService<String> spms) {
-            spnProductionMessageService = spms;
-        }
-    }
+    private Spms spms = new Spms();
 
     @Test
     public void testOnMessage() {
         ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost?broker.persistent=false");
-        TMessageConsumer mc = new TMessageConsumer();
-        Isms isms = new Isms();
-        Spms spms = new Spms();
-        mc.setIpdsStringMessageService(isms);
-        mc.setSpnProductionMessageService(spms);
+        MessageConsumer mc = new MessageConsumer(isms, spms);
         try {
             Connection conn = connectionFactory.createConnection();
             Session sess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);

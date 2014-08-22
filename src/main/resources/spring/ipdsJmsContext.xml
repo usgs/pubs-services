@@ -20,13 +20,6 @@
         <property name="messageListener" ref="messageListener"/>
     </bean>
 
-    <bean id="ipdsStringMessageService" class="gov.usgs.cida.pubs.busservice.ipds.IpdsStringMessageService" autowire="byName"/>
-    <bean id="spnProductionMessageService" class="gov.usgs.cida.pubs.busservice.ipds.SpnProductionMessageService" autowire="byName"/>
-
-    <bean id="ipdsMessageLog" class="gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog" autowire="byName"/>
-
-    <bean id="ipdsProcessLog" class="gov.usgs.cida.pubs.domain.ipds.IpdsProcessLog" autowire="byName"/>
-
     <bean id="credentials" class="org.apache.http.auth.NTCredentials" autowire="byName">
         <constructor-arg ref="ipdsPubsWsUser"/>
         <constructor-arg ref="ipdsPubsWsPwd"/>
@@ -35,27 +28,5 @@
     </bean>
 
     <bean id="httpClient" class="org.apache.http.impl.client.DefaultHttpClient" autowire="byName"/>
-
-    <bean id="ipdsWsRequester" class="gov.usgs.cida.pubs.busservice.ipds.IpdsWsRequester" autowire="byName"/>
-
-    <bean id="ipdsProcess" class="gov.usgs.cida.pubs.busservice.ipds.IpdsProcess" autowire="byName">
-        <property name="pubTypeMap">
-            <map>
-                <entry key="Atlas" value="4"/>
-                <entry key="Book chapter, encyclopedia entry, or parts" value="61"/>
-                <entry key="Book, textbook, handbook, or guidebook" value="60"/>
-                <entry key="Book, textbook, handbook, guidebook, encyclopedia entry, or parts" value="60"/>
-                <entry key="Book review, technical comments and replies" value="36"/>
-                <entry key="Cooperator publication" value="120"/>
-                <entry key="Extended Abstract" value="3"/>
-                <entry key="Journal or periodical article" value="62"/>
-                <entry key="Map" value="24"/>
-                <entry key="Symposium, proceedings, conference publication" value="10"/>
-                <entry key="USGS series" value="1"/>
-                <entry key="USGS periodical" value="2"/>
-                <entry key="USGS Web page, system, or service" value="47"/>
-            </map>
-        </property>
-    </bean>
 
 </beans>

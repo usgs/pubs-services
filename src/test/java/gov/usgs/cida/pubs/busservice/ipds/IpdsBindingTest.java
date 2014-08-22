@@ -1,21 +1,30 @@
 package gov.usgs.cida.pubs.busservice.ipds;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
+import gov.usgs.cida.pubs.PubMap;
+import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.dao.AffiliationDaoTest;
-import gov.usgs.cida.pubs.dao.BaseDaoTest;
+import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.dao.ContributorDaoTest;
+import gov.usgs.cida.pubs.dao.ipds.IpdsMessageLogDaoTest;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
+import gov.usgs.cida.pubs.domain.PersonContributor;
+import gov.usgs.cida.pubs.domain.ProcessType;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
+import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
+import gov.usgs.cida.pubs.domain.ipds.IpdsPubTypeConv;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 
 import java.io.IOException;
@@ -28,15 +37,14 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-public class IpdsBindingTest extends BaseDaoTest {
+public class IpdsBindingTest extends BaseSpringDaoTest {
 
     @Autowired
     public String contributorsXml;
@@ -53,17 +61,32 @@ public class IpdsBindingTest extends BaseDaoTest {
     @Autowired
     public String costCenterXml;
 
+    @Autowired
+    @Qualifier("personContributorBusService")
+    public IBusService<PersonContributor<?>> contributorBusService;
+
     @Mock
     private IpdsWsRequester ipdsWsRequester;
 
-    @InjectMocks
-    @Autowired
     public IpdsBinding binding;
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
         MockitoAnnotations.initMocks(this);
+        binding = new IpdsBinding(ipdsWsRequester, contributorBusService);
+    }
+
+    bindGeneralTest() {
+        
+    }
+
+    bindCostCenterTest() {
+        
+    }
+
+    bindNotesTest() {
+        
     }
 
     @Test
@@ -87,7 +110,7 @@ public class IpdsBindingTest extends BaseDaoTest {
 
     @Test
     public void createUsgsContributorTest() throws SAXException, IOException {
-        when(ipdsWsRequester.getContributor(Matchers.anyString())).thenReturn(usgsContributorXml);
+        when(ipdsWsRequester.getContributor(anyString())).thenReturn(usgsContributorXml);
         Document d = binding.makeDocument("<root><d:CostCenterId>1</d:CostCenterId></root>");
         Contributor<?> contributor = binding.createUsgsContributor(d.getDocumentElement(), "123");
         assertNotNull(contributor);
@@ -109,7 +132,7 @@ public class IpdsBindingTest extends BaseDaoTest {
 
     @Test
     public void getOrCreateUsgsContributorTest() throws SAXException, IOException {
-        when(ipdsWsRequester.getContributor(Matchers.anyString())).thenReturn(usgsContributorXml);
+        when(ipdsWsRequester.getContributor(anyString())).thenReturn(usgsContributorXml);
         Document d = binding.makeDocument("<root><d:CostCenterId>1</d:CostCenterId></root>");
         Contributor<?> contributor = binding.getOrCreateUsgsContributor(d.getDocumentElement(), "3");
         ContributorDaoTest.assertContributor1(contributor);
@@ -163,7 +186,7 @@ public class IpdsBindingTest extends BaseDaoTest {
 
     @Test
     public void getOrCreateUsgsAffiliationTest() throws SAXException, IOException {
-        when(ipdsWsRequester.getCostCenter(Matchers.anyString(), Matchers.anyString())).thenReturn(costCenterXml);
+        when(ipdsWsRequester.getCostCenter(anyString(), anyString())).thenReturn(costCenterXml);
         Document d = binding.makeDocument("<root><d:CostCenterId>4</d:CostCenterId></root>");
         Affiliation<?> affiliation = binding.getOrCreateUsgsAffiliation(d.getDocumentElement());
         AffiliationDaoTest.assertAffiliation1(affiliation);
@@ -176,7 +199,7 @@ public class IpdsBindingTest extends BaseDaoTest {
 
     @Test
     public void createUsgsAffiliationTest() throws SAXException, IOException {
-        when(ipdsWsRequester.getCostCenter(Matchers.anyString(), Matchers.anyString())).thenReturn(costCenterXml);
+        when(ipdsWsRequester.getCostCenter(anyString(), anyString())).thenReturn(costCenterXml);
         String ipdsId = String.valueOf(randomPositiveInt());
         Affiliation<?> affiliation = binding.createUsgsAffiliation(ipdsId);
         assertNewUsgs(affiliation, ipdsId);
@@ -247,6 +270,60 @@ public class IpdsBindingTest extends BaseDaoTest {
         assertNull(editorB.getRank());
     }
 
+    @Test
+    public void getStringValueTest() {
+        PubMap pubMap = new PubMap();
+        assertNull(binding.getStringValue(null, null));
+        assertNull(binding.getStringValue(pubMap, null));
+        assertNull(binding.getStringValue(pubMap, "xx"));
+        assertNull(binding.getStringValue(null, "xx"));
+
+        pubMap.put("xxx", "  owiytuiwruto   ");
+        assertEquals("owiytuiwruto", binding.getStringValue(pubMap, "xxx"));
+    }
+
+    @Test
+    public void getPublicationSeriesTest() {
+        PubMap pubMap = new PubMap();
+        PublicationSubtype subtype = new PublicationSubtype();
+        assertNull(binding.getPublicationSeries(null, null));
+        assertNull(binding.getPublicationSeries(subtype, null));
+        assertNull(binding.getPublicationSeries(subtype, pubMap));
+        assertNull(binding.getPublicationSeries(null, pubMap));
+
+        subtype.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
+        assertNull(binding.getPublicationSeries(subtype, pubMap));
+
+        pubMap.put(IpdsMessageLog.USGSSERIESVALUE, "");
+        assertNull(binding.getPublicationSeries(subtype, pubMap));
+
+        pubMap.put(IpdsMessageLog.USGSSERIESVALUE, "Coal Map");
+        assertEquals(309, binding.getPublicationSeries(subtype, pubMap).getId().intValue());
+    }
+
+    @Test
+    public void bindPublicationTest() {
+        PubMap pubMap = new PubMap();
+        assertNull(binding.bindPublication(null));
+        assertNull(binding.bindPublication(pubMap));
+
+        pubMap = IpdsMessageLogDaoTest.createPubMap1();
+        MpPublication pub1 = binding.bindPublication(pubMap);
+        assertPub1(pub1);
+
+        pubMap = IpdsMessageLogDaoTest.createPubMap2();
+        MpPublication pub2 = binding.bindPublication(pubMap);
+        assertPub2(pub2);
+
+        pubMap = IpdsMessageLogDaoTest.createPubMap3();
+        MpPublication pub3 = binding.bindPublication(pubMap);
+        assertPub3(pub3);
+
+        pubMap = IpdsMessageLogDaoTest.createPubMap4();
+        MpPublication pub4 = binding.bindPublication(pubMap);
+        assertPub4(pub4);
+    }
+
     protected void assertUsgsContributorXml(UsgsContributor person) {
         assertEquals("Jane", person.getFamily());
         assertEquals("Doe", person.getGiven());
@@ -258,6 +335,168 @@ public class IpdsBindingTest extends BaseDaoTest {
         assertEquals("ODoe", contributor.getGiven());
         assertNull(contributor.getEmail());
         assertEquals("7", contributor.getAffiliation().getId().toString());
+    }
+
+    protected void assertPub1(MpPublication pub) {
+        assertPubCommon(pub);
+
+        assertEquals(18, pub.getPublicationType().getId().intValue());
+        assertEquals(5, pub.getPublicationSubtype().getId().intValue());
+        assertEquals(330, pub.getSeriesTitle().getId().intValue());
+
+        assertEquals("12.1", pub.getSeriesNumber());
+        assertEquals("a", pub.getChapter());
+        assertEquals("My Final Title", pub.getTitle());
+
+        assertEquals("My Abstract", pub.getDocAbstract());
+        assertEquals("U.S. Geological Survey", pub.getPublisher());
+        assertEquals("Reston VA", pub.getPublisherLocation());
+
+        assertEquals("doi", pub.getDoi());
+        assertEquals("isbn234", pub.getIsbn());
+        assertEquals("I really want to cooperate", pub.getCollaboration());
+
+        assertEquals("A short citation", pub.getUsgsCitation());
+        assertEquals("physical desc", pub.getProductDescription());
+        assertEquals("pages 1-5", pub.getStartPage());
+
+        assertEquals("what a summary", pub.getNotes());
+        assertEquals("IP1234", pub.getIpdsId());
+        assertEquals(ProcessType.SPN_PRODUCTION.getIpdsValue(), pub.getIpdsReviewProcessState());
+
+        assertEquals("453228", pub.getIpdsInternalId());
+        //TODO pub.setLargerWorkTitle(getStringValue(inPub, IpdsMessageLog.JOURNALTITLE));
+        //TODO pub.setPublicationYear(getStringValue(inPub, IpdsMessageLog.DISEMINATIONDATE).substring(1, 4));
+    }
+
+    protected void assertPub2(MpPublication pub) {
+        assertPubCommon(pub);
+
+        assertNull(pub.getPublicationType());
+        assertNull(pub.getPublicationSubtype());
+        assertNull(pub.getSeriesTitle());
+
+        assertNull(pub.getSeriesNumber());
+        assertEquals("a", pub.getChapter());
+        assertEquals("My Working Title", pub.getTitle());
+
+        assertEquals("My Abstract", pub.getDocAbstract());
+        assertEquals("Not one of those USGS Publishers", pub.getPublisher());
+        assertNull(pub.getPublisherLocation());
+
+        assertEquals("doi", pub.getDoi());
+        assertEquals("isbn234", pub.getIsbn());
+        assertEquals("I really want to cooperate", pub.getCollaboration());
+
+        assertEquals("A short citation", pub.getUsgsCitation());
+        assertEquals("physical desc", pub.getProductDescription());
+        assertEquals("pages 1-5", pub.getStartPage());
+
+        assertEquals("what a summary", pub.getNotes());
+        assertEquals("IP1234", pub.getIpdsId());
+        assertEquals(ProcessType.SPN_PRODUCTION.getIpdsValue(), pub.getIpdsReviewProcessState());
+
+        assertEquals("453228", pub.getIpdsInternalId());
+        //TODO pub.setLargerWorkTitle(getStringValue(inPub, IpdsMessageLog.JOURNALTITLE));
+        //TODO pub.setPublicationYear(getStringValue(inPub, IpdsMessageLog.DISEMINATIONDATE).substring(1, 4));
+    }
+
+    protected void assertPub3(MpPublication pub) {
+        assertPubCommon(pub);
+
+        assertEquals(2, pub.getPublicationType().getId().intValue());
+        assertNull(pub.getPublicationSubtype());
+        assertNull(pub.getSeriesTitle());
+
+        assertNull(pub.getSeriesNumber());
+        assertEquals("a", pub.getChapter());
+        assertEquals("My Final Title", pub.getTitle());
+
+        assertEquals("My Abstract", pub.getDocAbstract());
+        assertEquals("U.S. Geological Survey", pub.getPublisher());
+        assertEquals("Reston VA", pub.getPublisherLocation());
+
+        assertEquals("doi", pub.getDoi());
+        assertEquals("isbn234", pub.getIsbn());
+        assertEquals("I really want to cooperate", pub.getCollaboration());
+
+        assertEquals("A short citation", pub.getUsgsCitation());
+        assertEquals("physical desc", pub.getProductDescription());
+        assertEquals("pages 1-5", pub.getStartPage());
+
+        assertEquals("what a summary", pub.getNotes());
+        assertEquals("IP1234", pub.getIpdsId());
+        assertEquals(ProcessType.SPN_PRODUCTION.getIpdsValue(), pub.getIpdsReviewProcessState());
+
+        assertEquals("453228", pub.getIpdsInternalId());
+        //TODO pub.setLargerWorkTitle(getStringValue(inPub, IpdsMessageLog.JOURNALTITLE));
+        //TODO pub.setPublicationYear(getStringValue(inPub, IpdsMessageLog.DISEMINATIONDATE).substring(1, 4));
+    }
+
+    protected void assertPub4(MpPublication pub) {
+        assertPubCommon(pub);
+
+        assertEquals(21, pub.getPublicationType().getId().intValue());
+        assertEquals(28, pub.getPublicationSubtype().getId().intValue());
+        assertNull(pub.getSeriesTitle());
+
+        assertNull(pub.getSeriesNumber());
+        assertEquals("a", pub.getChapter());
+        assertEquals("My Final Title", pub.getTitle());
+
+        assertEquals("My Abstract", pub.getDocAbstract());
+        assertEquals("Not one of those USGS Publishers", pub.getPublisher());
+        assertNull(pub.getPublisherLocation());
+
+        assertEquals("doi", pub.getDoi());
+        assertEquals("isbn234", pub.getIsbn());
+        assertEquals("I really want to cooperate", pub.getCollaboration());
+
+        assertEquals("A short citation", pub.getUsgsCitation());
+        assertEquals("physical desc", pub.getProductDescription());
+        assertEquals("pages 1-5", pub.getStartPage());
+
+        assertEquals("what a summary", pub.getNotes());
+        assertEquals("IP1234", pub.getIpdsId());
+        assertEquals(ProcessType.SPN_PRODUCTION.getIpdsValue(), pub.getIpdsReviewProcessState());
+
+        assertEquals("453228", pub.getIpdsInternalId());
+        //TODO pub.setLargerWorkTitle(getStringValue(inPub, IpdsMessageLog.JOURNALTITLE));
+        //TODO pub.setPublicationYear(getStringValue(inPub, IpdsMessageLog.DISEMINATIONDATE).substring(1, 4));
+    }
+
+    protected void assertPubCommon(MpPublication pub) {
+        assertNotNull(pub);
+
+        assertNull(pub.getId());
+        assertNull(pub.getIndexId());
+        assertNull(pub.getDisplayToPublicDate());
+
+        assertNull(pub.getSubseriesTitle());
+        assertNull(pub.getSubchapterNumber());
+        assertEquals("English", pub.getLanguage());
+
+        assertNull(pub.getIssn());
+        assertNull(pub.getContact());
+        assertNull(pub.getEndPage());
+
+        assertNull(pub.getNumberOfPages());
+        assertNull(pub.getOnlineOnly());
+        assertNull(pub.getAdditionalOnlineFiles());
+
+        assertNull(pub.getTemporalStart());
+        assertNull(pub.getTemporalEnd());
+        //TODO assertNull(pub.getLargerWorkType());
+
+        //TODO assertNull(pub.getConferenceTitle());
+        //TODO assertNull(pub.setConferenceDate();
+        //TODO assertNull(pub.setConferenceLocation();
+
+        assertNull(pub.getAuthors());
+        assertNull(pub.getEditors());
+        assertNull(pub.getCostCenters());
+
+        assertNull(pub.getLinks());
     }
 
 }

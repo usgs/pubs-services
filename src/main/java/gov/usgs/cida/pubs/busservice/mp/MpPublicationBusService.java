@@ -181,17 +181,17 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
         return rtn;
     }
 
-    public String getUsgsNumberedSeriesIndexId(final PublicationSeries pubSeries, final String seriesNumber) {
+    public String getUsgsNumberedSeriesIndexId(final PublicationSeries pubSeries, final String seriesNumber, final String chapter, final String subChapter) {
         String indexId = null;
         if (null != pubSeries
                 && null != seriesNumber) {
             PublicationSeries series = PublicationSeries.getDao().getById(pubSeries.getId());
             if (null != series 
                     && null != series.getCode()) {
-                indexId = series.getCode().toLowerCase() + seriesNumber.replace("-", "").replace(",", "").replace(" ", "");
+                indexId = series.getCode().toLowerCase() + seriesNumber + chapter.toUpperCase() + subChapter;
             }
         }
-        return indexId;
+        return indexId.replace("-", "").replace(",", "").replace(" ", "");
     }
 
     public static String getDoiName(final String inIndexId) {

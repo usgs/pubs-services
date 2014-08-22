@@ -27,8 +27,10 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
 
     private String seriesDoiName;
 
+    @JsonView(IMpView.class)
     private String onlineIssn;
 
+    @JsonView(IMpView.class)
     private String printIssn;
 
     /**

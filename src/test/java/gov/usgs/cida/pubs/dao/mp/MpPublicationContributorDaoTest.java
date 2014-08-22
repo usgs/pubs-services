@@ -2,7 +2,7 @@ package gov.usgs.cida.pubs.dao.mp;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import gov.usgs.cida.pubs.dao.BaseDaoTest;
+import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 
@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class MpPublicationContributorDaoTest extends BaseDaoTest {
+public class MpPublicationContributorDaoTest extends BaseSpringDaoTest {
 
     private static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors");
 

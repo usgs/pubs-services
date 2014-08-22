@@ -178,13 +178,15 @@
 
     <update id="updatePersonContributor" parameterType="PersonContributor">
         update contributor
-           set <include refid="personSets"/>
+           set <include refid="personSets"/>,
+               <include refid="base.auditSets"/>
            where contributor_id = #{id,jdbcType=NUMERIC}
     </update>
 
     <update id="updateCorporateContributor" parameterType="CorporateContributor">
         update contributor
-           set <include refid="corpSets"/>
+           set <include refid="corpSets"/>,
+               <include refid="base.auditSets"/>
            where contributor_id = #{id,jdbcType=NUMERIC}
     </update>
 

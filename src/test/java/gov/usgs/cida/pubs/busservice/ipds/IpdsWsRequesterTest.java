@@ -101,9 +101,9 @@ public class IpdsWsRequesterTest extends BaseSpringTest {
 
         HttpHost host = requester.getHttpHost();
         assertNotNull(host);
-        assertEquals("inIpdsEndpoint", host.getHostName());
-        assertEquals(80, host.getPort());
-        assertEquals("http", host.getSchemeName());
+        assertEquals(ipdsEndpoint, host.getHostName());
+        assertEquals(443, host.getPort());
+        assertEquals("https", host.getSchemeName());
     }
 
     //TODO Activate this Test?

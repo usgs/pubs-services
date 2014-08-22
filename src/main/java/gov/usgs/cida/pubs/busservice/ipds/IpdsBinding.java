@@ -6,18 +6,20 @@ import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CostCenter;
+import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
+import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
-import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
 import gov.usgs.cida.pubs.domain.ipds.IpdsPubTypeConv;
 import gov.usgs.cida.pubs.domain.ipds.PublicationMap;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import java.io.IOException;
@@ -67,8 +69,6 @@ public class IpdsBinding {
 //   @Autowired
 //    public IBusService<Affiliation<?>> affiliationBusService;
 
-    public static final String NAMESPACE  = "http://schemas.microsoft.com/ado/2007/08/dataservices";
-
     private DocumentBuilder builder;
 
     @Autowired
@@ -82,48 +82,28 @@ public class IpdsBinding {
         builder = factory.newDocumentBuilder();
     }
 
-    public PublicationMap bindCostCenter(String costCenterXml, Set<String> tagsOfInterest) throws SAXException, IOException {
-        PublicationMap costCenter = new PublicationMap();
-        bindGeneral(costCenter, costCenterXml, tagsOfInterest);
-        return costCenter;
-    }
-
     public PublicationMap bindNotes(String notesXml, Set<String> tagsOfInterest) throws SAXException, IOException {
         PublicationMap notes = new PublicationMap();
-        Document doc= makeDocument(notesXml);
+        if (null != tagsOfInterest) {
+            Document doc= makeDocument(notesXml);
 
-        for (String tagName : tagsOfInterest) {
-            StringBuilder valueText = new StringBuilder();
-            NodeList nodes = doc.getElementsByTagNameNS(NAMESPACE, tagName);
-            if (nodes.getLength() < 1) {
-                // TODO do we want to soft with no log or hard fail with pLog
-                continue;
-            }
-            for (int i = 0; i < nodes.getLength(); i++) {
-                valueText.append(nodes.item(i).getTextContent().trim()).append("|");
-            }
-            if (0 < valueText.length()) {
-                notes.put(tagName, valueText.toString());
+            for (String tagName : tagsOfInterest) {
+                StringBuilder valueText = new StringBuilder();
+                NodeList nodes = doc.getElementsByTagName(tagName);
+                if (nodes.getLength() < 1) {
+                    // TODO do we want to soft with no log or hard fail with pLog
+                    continue;
+                }
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    valueText.append(nodes.item(i).getTextContent().trim()).append("|");
+                }
+                if (1 < valueText.length()) {
+                    //Went to 1 because we always tag the end with pipe...
+                    notes.put(tagName, valueText.toString());
+                }
             }
         }
         return notes;
-    }
-
-    protected void bindGeneral(PublicationMap map, String ipdsXml, Set<String> tagsOfInterest) throws SAXException, IOException {
-        Document doc= makeDocument(ipdsXml);
-
-        for (String tagName : tagsOfInterest) {
-            NodeList nodes = doc.getElementsByTagNameNS(NAMESPACE, tagName);
-            if (nodes.getLength() < 1) {
-                // TODO do we want to soft with no log or hard fail with pLog
-                continue;
-            }
-            if (nodes.getLength() > 1) {
-                // TODO log too many values but take the first
-            }
-            String value = nodes.item(0).getTextContent().trim();
-            map.put(tagName, value);
-        }
     }
 
     public Collection<MpPublicationContributor> bindContributors(String contributorsXml) throws SAXException, IOException {
@@ -259,18 +239,8 @@ public class IpdsBinding {
         return contributor;
     }
 
-    protected Affiliation<?> getOrCreateUsgsAffiliation(final Element element) throws SAXException, IOException {
-        Affiliation<?> affiliation;
-        Map<String, Object> filters = new HashMap<>();
-        filters.put("ipdsId", getFirstNodeText(element, "d:CostCenterId"));
-        List<Affiliation<?>> affiliations = CostCenter.getDao().getByMap(filters);
-        //TODO what if we get more than one?
-        if (0 < affiliations.size()) {
-            affiliation = (CostCenter) affiliations.get(0);
-        } else {
-            affiliation = createUsgsAffiliation(filters.get("ipdsId").toString());
-        }
-        return affiliation;
+    public Affiliation<?> getOrCreateUsgsAffiliation(final Element element) throws SAXException, IOException {
+        return getOrCreateCostCenter(getFirstNodeText(element, "d:CostCenterId"));
     }
 
     protected Affiliation<?> createUsgsAffiliation(final String ipdsId) throws SAXException, IOException {
@@ -287,8 +257,10 @@ public class IpdsBinding {
     }
 
     protected Document makeDocument(final String xmlStr) throws SAXException, IOException {
-        Document doc = builder.parse(new InputSource(new StringReader(xmlStr)));
-        return doc;
+        if (!StringUtils.isEmpty(xmlStr)) {
+            return builder.parse(new InputSource(new StringReader(xmlStr)));
+        }
+        return null;
     }
 
     protected String getFirstNodeText(final Element element, final String tagName) {
@@ -404,6 +376,25 @@ public class IpdsBinding {
         return null;
     }
 
+    public Collection<PublicationLink<?>> bindPublishedURL(final PubMap inPub) {
+        Collection<PublicationLink<?>> rtn = null;
+        //We pull the URL from the structure "URL, DisplayText"
+        if (null != inPub
+                && null != getStringValue(inPub, IpdsMessageLog.PUBLISHEDURL)) {
+            String[] publishedUrls = getStringValue(inPub, IpdsMessageLog.PUBLISHEDURL).split(",");
+            if (0 < publishedUrls.length
+                    && 0 < publishedUrls[0].length()) {
+                PublicationLink<?> link = new MpPublicationLink();
+                link.setUrl(publishedUrls[0]);
+                link.setLinkType(LinkType.getDao().getById(LinkType.INDEX_PAGE));
+                rtn = new ArrayList<>();
+                rtn.add(link);
+            }
+        }
+        return rtn;
+    }
+
+
     protected PublicationSeries getPublicationSeries(PublicationSubtype pubSubtype, PubMap inPub) {
         String usgsSeriesValue = getStringValue(inPub, IpdsMessageLog.USGSSERIESVALUE);
         if (null != pubSubtype && null != pubSubtype.getId() && !StringUtils.isEmpty(usgsSeriesValue)) {
@@ -418,6 +409,24 @@ public class IpdsBinding {
             }
         }
         return null;
+    }
+
+    public Affiliation<?> getOrCreateCostCenter(final PubMap inPub) throws SAXException, IOException {
+        return getOrCreateCostCenter(getStringValue(inPub, IpdsMessageLog.COSTCENTERID));
+    }
+
+    protected Affiliation<?> getOrCreateCostCenter(final String costCenterId) throws SAXException, IOException {
+        Affiliation<?> affiliation;
+        Map<String, Object> filters = new HashMap<>();
+        filters.put("ipdsId", costCenterId);
+        List<Affiliation<?>> affiliations = CostCenter.getDao().getByMap(filters);
+        //TODO what if we get more than one?
+        if (0 < affiliations.size()) {
+            affiliation = (CostCenter) affiliations.get(0);
+        } else {
+            affiliation = createUsgsAffiliation(costCenterId);
+        }
+        return affiliation;
     }
 
     protected String getStringValue(PubMap inPub, String key) {

@@ -16,22 +16,26 @@ import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CostCenter;
+import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.ProcessType;
+import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
-import gov.usgs.cida.pubs.domain.ipds.IpdsPubTypeConv;
+import gov.usgs.cida.pubs.domain.ipds.PublicationMap;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -43,6 +47,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 public class IpdsBindingTest extends BaseSpringDaoTest {
 
@@ -62,6 +67,9 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
     public String costCenterXml;
 
     @Autowired
+    public String notesXml;
+
+    @Autowired
     @Qualifier("personContributorBusService")
     public IBusService<PersonContributor<?>> contributorBusService;
 
@@ -77,16 +85,77 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
         binding = new IpdsBinding(ipdsWsRequester, contributorBusService);
     }
 
-    bindGeneralTest() {
-        
+    @Test
+    public void makeDocumentTest() throws SAXException, IOException {
+        assertNull(binding.makeDocument(null));
+        assertNull(binding.makeDocument(""));
+        try {
+            binding.makeDocument("<root>");
+        } catch (Exception e) {
+            assertTrue(e instanceof SAXParseException);
+        }
+        Document doc = binding.makeDocument("<root/>");
+        assertNotNull(doc);
+        assertEquals(1, doc.getElementsByTagName("root").getLength());
     }
 
-    bindCostCenterTest() {
-        
+    @Test
+    public void bindNotesTest() throws SAXException, IOException {
+        PublicationMap map = binding.bindNotes(null, null);
+        assertEquals(0, map.getFields().size());
+
+        map = binding.bindNotes("", null);
+        assertEquals(0, map.getFields().size());
+
+        map = binding.bindNotes(notesXml, null);
+        assertEquals(0, map.getFields().size());
+
+        Set<String> tags = new HashSet<>();
+        map = binding.bindNotes(notesXml, tags);
+        assertEquals(0, map.getFields().size());
+
+        tags.add("d:NoteComment");
+        map = binding.bindNotes(notesXml, tags);
+        assertEquals(1, map.getFields().size());
+        assertEquals("d:NoteComment", map.getFields().get(0));
+        assertEquals("M10-0272|", map.get("d:NoteComment"));
+
+        tags.clear();
+        tags.add("com");
+        map = binding.bindNotes("<root><com>hi</com><com>dave</com><com/></root>", tags);
+        assertEquals(1, map.getFields().size());
+        assertEquals("com", map.getFields().get(0));
+        assertEquals("hi|dave||", map.get("com"));
+
+        tags.clear();
+        tags.add("com");
+        map = binding.bindNotes("<root><com/></root>", tags);
+        assertEquals(0, map.getFields().size());
+
+        tags.clear();
+        tags.add("dog");
+        map = binding.bindNotes("<root><com/></root>", tags);
+        assertEquals(0, map.getFields().size());
     }
 
-    bindNotesTest() {
-        
+    @Test
+    public void bindPublishedURLTest() {
+        PubMap pubMap = new PubMap();
+        assertNull(binding.bindPublishedURL(null));
+        assertNull(binding.bindPublishedURL(pubMap));
+        pubMap.put(IpdsMessageLog.PUBLISHEDURL, null);
+        assertNull(binding.bindPublishedURL(pubMap));
+        pubMap.put(IpdsMessageLog.PUBLISHEDURL, "");
+        assertNull(binding.bindPublishedURL(pubMap));
+        pubMap.put(IpdsMessageLog.PUBLISHEDURL, ",yada ,yada, yada");
+        assertNull(binding.bindPublishedURL(pubMap));
+        pubMap.put(IpdsMessageLog.PUBLISHEDURL, "http://dave.com/this/url, Howdy!");
+        Collection<PublicationLink<?>> links = binding.bindPublishedURL(pubMap);
+        assertNotNull(links);
+        assertEquals(1, links.size());
+        PublicationLink<?> link = (PublicationLink<?>) links.toArray()[0];
+        assertEquals("http://dave.com/this/url", link.getUrl());
+        assertEquals(LinkType.INDEX_PAGE, link.getLinkType().getId().toString());
     }
 
     @Test
@@ -182,6 +251,31 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
         assertEquals("Outside Test", affiliation.getName());
         assertTrue(affiliation.isActive());
         assertFalse(affiliation.isUsgs());
+    }
+
+    @Test
+    public void getOrCreateCostCenterTest() throws SAXException, IOException {
+        when(ipdsWsRequester.getCostCenter(anyString(), anyString())).thenReturn(costCenterXml);
+        Affiliation<?> affiliation = binding.getOrCreateCostCenter("4");
+        AffiliationDaoTest.assertAffiliation1(affiliation);
+
+        String ipdsId = String.valueOf(randomPositiveInt());
+        affiliation = binding.getOrCreateCostCenter(ipdsId);
+        assertNewUsgs(affiliation, ipdsId);
+    }
+
+    @Test
+    public void getOrCreateCostCenterCCTest() throws SAXException, IOException {
+        when(ipdsWsRequester.getCostCenter(anyString(), anyString())).thenReturn(costCenterXml);
+        PubMap pubMap = new PubMap();
+        pubMap.put(IpdsMessageLog.COSTCENTERID, "4");
+        Affiliation<?> affiliation = binding.getOrCreateCostCenter(pubMap);
+        AffiliationDaoTest.assertAffiliation1(affiliation);
+
+        String ipdsId = String.valueOf(randomPositiveInt());
+        pubMap.put(IpdsMessageLog.COSTCENTERID, ipdsId);
+        affiliation = binding.getOrCreateCostCenter(pubMap);
+        assertNewUsgs(affiliation, ipdsId);
     }
 
     @Test

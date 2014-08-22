@@ -1,19 +1,21 @@
 package gov.usgs.cida.pubs.busservice.ipds;
 
 import gov.usgs.cida.pubs.PubMap;
-import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IIpdsProcess;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.ContributorType;
+import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
-import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.domain.PublicationCostCenter;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
 import gov.usgs.cida.pubs.domain.ipds.PublicationMap;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
-import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 public class IpdsProcess implements IIpdsProcess {
 
@@ -75,27 +76,21 @@ public class IpdsProcess implements IIpdsProcess {
 
         //Check for existing data in MyPubs land - use the first hit if any found.
         Map<String, Object> filters = new HashMap<String, Object>();
-        filters.put("ipdsId", inPub.get(IpdsMessageLog.IPNUMBER));
+        filters.put("ipdsId", pub.getIpdsId());
         List<MpPublication> existingPubs = MpPublication.getDao().getByMap(filters);
         MpPublication existingPub = null == existingPubs ? null : 0 == existingPubs.size() ? null : existingPubs.get(0);
 
         StringBuilder rtn = new StringBuilder("");
 
-        PublicationType pubType = getMyPublicationType(pub);
-
-        if (okToProcess(inProcessType, pubType, pub, existingPub)) {
-            //We only keep the prodID from the original MP record.
+        if (okToProcess(inProcessType, pub, existingPub)) {
+            //We only keep the prodID from the original MP record. The delete is to make sure we kill all child objects.
             if (null != existingPub) {
                 pub.setId(existingPub.getId());
                 pubBusService.deleteObject(existingPub);
             };
 
-            //TODO new type/subtype/series logic
-//            pub.setPublicationTypeId(String.valueOf(pubType.getId()));
-//            pub.setPublicationType(pubType.getName());
-
             // get contributors from web service
-            final String contributorXml = requester.getContributors(pub.getIpdsId());
+            String contributorXml = requester.getContributors(pub.getIpdsId());
             try {
                 Collection<MpPublicationContributor> contributors = binder.bindContributors(contributorXml);
                 //TODO refactor contributors on the publication so we can just add them all
@@ -117,18 +112,19 @@ public class IpdsProcess implements IIpdsProcess {
             }
 
             //get contributingOffice from web service
-            //TODO new costcenter logic
-//            String costCenterXml = requester.getCostCenter(pub.getContributingOffice(), pub.getIpdsId());
-//            Set<String> costCenterTags = new HashSet<String>();
-//            costCenterTags.add("Name");
-//            IpdsBinding ccBinder = new IpdsBinding(costCenterTags);
-//            try {
-//                PublicationMap costCenter = ccBinder.bindCostCenter(costCenterXml);
-//                pub.setContributingOffice(costCenter.get("Name"));
-//            } catch (Exception e) {
-//                rtn.append("\n\tTrouble getting contributing office: " + e.getMessage());
-//                errors++;
-//            }
+            try {
+                Affiliation<?> costCenter = binder.getOrCreateCostCenter(inPub);
+                if (null != costCenter) {
+                    PublicationCostCenter<?> pubCostCenter = new MpPublicationCostCenter();
+                    pubCostCenter.setCostCenter((CostCenter) costCenter);
+                    List<PublicationCostCenter<?>> pccs = new ArrayList<PublicationCostCenter<?>>();
+                    pccs.add(pubCostCenter);
+                    pub.setCostCenters(pccs);
+                }
+            } catch (Exception e) {
+                rtn.append("\n\tTrouble getting cost center: " + e.getMessage());
+                errors++;
+            }
 
             //get notes from web service
             String notesXml = requester.getNotes(pub.getIpdsId());
@@ -149,20 +145,25 @@ public class IpdsProcess implements IIpdsProcess {
                 errors++;
             }
 
+            pub.setLinks(binder.bindPublishedURL(inPub));
+
             MpPublication rtnPub = pubBusService.createObject(pub);
+
             if (null == rtnPub.getValidationErrors() || rtnPub.getValidationErrors().isEmpty()) {
                 additions++;
                 rtn.append("\n\tAdded to MyPubs as ProdId: " + rtnPub.getId());
-                rtn.append(handlePublishedURL(rtnPub.getId(), pub));
                 if (null != inProcessType && ProcessType.SPN_PRODUCTION == inProcessType) {
                     rtn.append(updateIpdsWithDoi(rtnPub));
                 } else if (null != inProcessType && ProcessType.DISSEMINATION == inProcessType) {
                     //TODO new type/subtype/series logic
-//                    if ((PublicationType.USGS_NUMBERED_SERIES.contentEquals(rtnPub.getPublicationTypeId())
-//                            || PublicationType.USGS_UNNUMBERED_SERIES.contentEquals(rtnPub.getPublicationTypeId()))
-//                            && (null != rtnPub.getDoiName() && 0 < rtnPub.getDoiName().length())) {
-//                        crossRefBusService.submitCrossRef(rtnPub);
-//                    }
+                    if (
+                            (null != rtnPub.getPublicationSubtype() 
+                                && (PublicationSubtype.USGS_NUMBERED_SERIES == rtnPub.getPublicationSubtype().getId()
+                                    || PublicationSubtype.USGS_UNNUMBERED_SERIES == rtnPub.getPublicationSubtype().getId())
+                            )
+                            && (null != rtnPub.getDoi() && 0 < rtnPub.getDoi().length())) {
+                        crossRefBusService.submitCrossRef(rtnPub);
+                    }
 
                 }
             } else {
@@ -171,105 +172,65 @@ public class IpdsProcess implements IIpdsProcess {
 
         } else {
             rtn.append("\n\t" + "IPDS record not processed (" + inProcessType + ")- Publication Type: ")
-            //TODO new type/subtype/series logic
-//            .append(pub.getPublicationType() + " Series: " + pub.getSeries())
-            .append(" Process State: " + pub.getIpdsReviewProcessState() + " DOI: " + pub.getDoi());
+                .append(pub.getPublicationType().getText())
+                .append(" PublicationSubtype: " + pub.getPublicationSubtype().getText())
+                .append(" Series: " + pub.getSeriesTitle().getText())
+                .append(" Process State: " + pub.getIpdsReviewProcessState() + " DOI: " + pub.getDoi());
         }
 
         return rtn.append("\n\n").toString();
     }
 
-    protected boolean okToProcess(final ProcessType inProcessType, final PublicationType pubType, final MpPublication pub,
+    protected boolean okToProcess(final ProcessType inProcessType, final MpPublication pub,
             final MpPublication existingPub) {
         boolean rtn = false;
-        if (null != inProcessType && null != pubType && null != pub) {
-            //TODO new type/subtype/series logic
-//            switch (inProcessType) {
-//            case DISSEMINATION:
-//                if (PublicationType.USGS_NUMBERED_SERIES.contentEquals(String.valueOf(pubType.getId()))
-//                        && null != pub.getSeries()
-//                        && pub.getSeries().contentEquals("Administrative Report")) {
-//                    //Do not process administrative reports or USGS numbered series without an actual series.
-//                    rtn = false;
-//                } else {
-//                    if (null == existingPub || null == existingPub.getIpdsReviewProcessState() 
-//                            || ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(existingPub.getIpdsReviewProcessState())) {
-//                        //It is ok to process a publication already in our system if has no review state or
-//                        //was in the SPN Production state. (Or if it is not already in our system).
-//                        rtn = true;
-//                    } else {
-//                        //Do not process if already in our system (with a Dissemination state).
-//                        rtn = false;
-//                    }
-//                }
-//                break;
-//            case SPN_PRODUCTION:
-//                if (null != pub.getDoiName()) {
-//                    //Skip if we have already assigned a DOI (shouldn't happen as we are querying for null DOI publications)
-//                    rtn = false;
-//                } else
-//                    if (null == pub.getIpdsReviewProcessState() || !ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(pub.getIpdsReviewProcessState())) {
-//                    //Skip if not in SPN Production (shouldn't happen as we are querying SPN Production only)
-//                    rtn = false;
+        if (null != inProcessType && null != pub && null != pub.getPublicationType()) {
+            switch (inProcessType) {
+            case DISSEMINATION:
+                if (null != pub.getPublicationSubtype()
+                        && PublicationSubtype.USGS_NUMBERED_SERIES == pub.getPublicationSubtype().getId()
+                        && null == pub.getSeriesTitle()) {
+                    //Do not process USGS numbered series without an actual series.
+                    rtn = false;
+                } else {
+                    if (null == existingPub || null == existingPub.getIpdsReviewProcessState()
+                            || ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(existingPub.getIpdsReviewProcessState())) {
+                        //It is ok to process a publication already in our system if has no review state or
+                        //was in the SPN Production state. (Or if it is not already in our system).
+                        rtn = true;
+                    } else {
+                        //Do not process if already in our system (with a Dissemination state).
+                        rtn = false;
+                    }
+                }
+                break;
+            case SPN_PRODUCTION:
+                if (null != pub.getDoi()) {
+                    //Skip if we have already assigned a DOI (shouldn't happen as we are querying for null DOI publications)
+                    rtn = false;
+                } else if (null == pub.getIpdsReviewProcessState() || !ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(pub.getIpdsReviewProcessState())) {
+                    //Skip if not in SPN Production (shouldn't happen as we are querying SPN Production only)
+                    rtn = false;
+//TODO remove if we really don't have these
 //                } else if (PublicationType.USGS_UNNUMBERED_SERIES.contentEquals(String.valueOf(pubType.getId()))) {
 //                    //Process all USGS unnumbered series
 //                    rtn = true;
-//                } else if (PublicationType.USGS_NUMBERED_SERIES.contentEquals(String.valueOf(pubType.getId()))) {
+                } else if (null != pub.getPublicationSubtype() && PublicationSubtype.USGS_NUMBERED_SERIES == pub.getPublicationSubtype().getId()) {
 //                    if (null != pub.getSeries()
 //                            && pub.getSeries().contentEquals("Administrative Report")) {
 //                        //Skip the administrative series
 //                        rtn = false;
 //                    } else {
-//                        //Process all other USGS numbered series
-//                        rtn = true;
+                    //Process all other USGS numbered series
+                        rtn = true;
 //                    }
-//                }
-//                break;
-//            default:
-//                break;
-//            }
+                }
+                break;
+            default:
+                break;
+            }
         }
         return rtn;
-    }
-
-    protected String handlePublishedURL(final Integer pubId, final MpPublication pub) {
-        StringBuilder rtn = new StringBuilder("");
-        //transform the PublishedURL - note that this is an abuse of the BASIC_SEARCH column!!! 
-        //BASIC_SEARCH will be overwritten with the correct values when the pub is published...
-        //We pull the URL from the structure "URL, DisplayText"
-        //TODO handle this correctly
-//        if (null != pub
-//                && null != pub.getBasicSearch()) {
-//            String[] publishedUrls = pub.getBasicSearch().split(",");
-//            if (0 < publishedUrls.length
-//                    && 0 < publishedUrls[0].length()) {
-//                MpPublicationLink link = new MpPublicationLink();
-//                link.setPublicationId(pubId);
-//                link.setUrl(publishedUrls[0]);
-//                link.setLinkType(LinkType.getDao().getById(LinkType.INDEX_PAGE));
-//                MpPublicationLink rtnLink = linkBusService.createObject(link);
-//                if (null == rtnLink.getValidationErrors() || rtnLink.getValidationErrors().isEmpty()) {
-//                    rtn.append("\n\tAdded linkId: " + rtnLink.getId());
-//                } else {
-//                    rtn.append("\n\t" + rtnLink.getValidationErrors().toString());
-//                }
-//            }
-//        }
-        return rtn.toString();
-    }
-
-    protected PublicationType getMyPublicationType(final MpPublication pub) {
-        PublicationType pt = null;
-//        if (null != pub
-//                && null != pub.getPublicationType()
-//                && null != pubTypeMap
-//                && pubTypeMap.containsKey(pub.getPublicationType())
-//                && null != pubTypeMap.get(pub.getPublicationType())) {
-//            String[] ptId = pubTypeMap.get(pub.getPublicationType());
-//            //TODO pubsubtype
-//            pt = PublicationType.getDao().getById(ptId[0]);
-//        }
-        return pt;
     }
 
     protected String updateIpdsWithDoi(final MpPublication inPub) {

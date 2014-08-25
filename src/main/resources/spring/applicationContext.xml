@@ -66,6 +66,6 @@
 
     <import resource="classpath:/spring/domainContext.xml"/>
 
-<!--     <import resource="classpath:/spring/ipdsJmsContext.xml"/> -->
+    <import resource="classpath:/spring/ipdsJmsContext.xml"/>
 
 </beans>

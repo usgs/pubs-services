@@ -15,6 +15,7 @@
 
     <typeAliases>
         <typeAlias alias="baseDomain" type="gov.usgs.cida.pubs.domain.BaseDomain"/>
+        <typeAlias alias="pubMap" type="gov.usgs.cida.pubs.PubMap"/>
 
         <typeAlias alias="mpPublication" type="gov.usgs.cida.pubs.domain.mp.MpPublication"/>
         <typeAlias alias="mpPublicationContributor" type="gov.usgs.cida.pubs.domain.mp.MpPublicationContributor"/>
@@ -48,6 +49,7 @@
 
         <typeAlias alias="ipdsMessageLog" type="gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog"/>
         <typeAlias alias="ipdsProcessLog" type="gov.usgs.cida.pubs.domain.ipds.IpdsProcessLog"/>
+        <typeAlias alias="ipdsPubTypeConv" type="gov.usgs.cida.pubs.domain.ipds.IpdsPubTypeConv"/>
 
     </typeAliases>
 
@@ -55,6 +57,7 @@
         <typeHandler javaType="org.joda.time.LocalDate" handler="gov.usgs.cida.pubs.dao.typehandler.LocalDateTypeHandler"/>
         <typeHandler javaType="org.joda.time.LocalDateTime" handler="gov.usgs.cida.pubs.dao.typehandler.LocalDateTimeTypeHandler"/>
         <typeHandler javaType="java.lang.Boolean" handler="gov.usgs.cida.pubs.dao.typehandler.StringBooleanTypeHandler"/>
+        <typeHandler javaType="PubMap" handler="gov.usgs.cida.pubs.dao.typehandler.PubMapTypeHandler"/>
     </typeHandlers>
 
     <mappers>
@@ -86,6 +89,7 @@
 
          <mapper resource="mybatis/ipds/ipdsMessageLog.xml"/>
          <mapper resource="mybatis/ipds/ipdsProcessLog.xml"/>
+         <mapper resource="mybatis/ipds/ipdsPubTypeConv.xml"/>
     </mappers>
 
 </configuration>

@@ -1,16 +1,25 @@
 package gov.usgs.cida.pubs.busservice.ipds;
 
+import gov.usgs.cida.pubs.PubMap;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CostCenter;
+import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
+import gov.usgs.cida.pubs.domain.PublicationLink;
+import gov.usgs.cida.pubs.domain.PublicationSeries;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
+import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
+import gov.usgs.cida.pubs.domain.ipds.IpdsPubTypeConv;
 import gov.usgs.cida.pubs.domain.ipds.PublicationMap;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import java.io.IOException;
@@ -52,69 +61,49 @@ public class IpdsBinding {
 
     private static final Logger LOG = LoggerFactory.getLogger(IpdsBinding.class);
 
-    @Autowired
-    protected IpdsWsRequester requester;
+    protected final IpdsWsRequester requester;
 
-    @Autowired()
-    @Qualifier("personContributorBusService")
-    public IBusService<PersonContributor<?>> contributorBusService;
+    protected final IBusService<PersonContributor<?>> contributorBusService;
 
     //TODO implement this
 //   @Autowired
 //    public IBusService<Affiliation<?>> affiliationBusService;
 
-    public static final String NAMESPACE  = "http://schemas.microsoft.com/ado/2007/08/dataservices";
-
     private DocumentBuilder builder;
 
-    public IpdsBinding() throws ParserConfigurationException {
+    @Autowired
+    public IpdsBinding(final IpdsWsRequester requester,
+            @Qualifier("personContributorBusService")
+            final IBusService<PersonContributor<?>> contributorBusService) throws ParserConfigurationException {
+        this.requester = requester;
+        this.contributorBusService = contributorBusService;
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(false);
         builder = factory.newDocumentBuilder();
     }
 
-    public PublicationMap bindCostCenter(String costCenterXml, Set<String> tagsOfInterest) throws SAXException, IOException {
-        PublicationMap costCenter = new PublicationMap();
-        bindGeneral(costCenter, costCenterXml, tagsOfInterest);
-        return costCenter;
-    }
-
     public PublicationMap bindNotes(String notesXml, Set<String> tagsOfInterest) throws SAXException, IOException {
         PublicationMap notes = new PublicationMap();
-        Document doc= makeDocument(notesXml);
+        if (null != tagsOfInterest) {
+            Document doc= makeDocument(notesXml);
 
-        for (String tagName : tagsOfInterest) {
-            StringBuilder valueText = new StringBuilder();
-            NodeList nodes = doc.getElementsByTagNameNS(NAMESPACE, tagName);
-            if (nodes.getLength() < 1) {
-                // TODO do we want to soft with no log or hard fail with pLog
-                continue;
-            }
-            for (int i = 0; i < nodes.getLength(); i++) {
-                valueText.append(nodes.item(i).getTextContent().trim()).append("|");
-            }
-            if (0 < valueText.length()) {
-                notes.put(tagName, valueText.toString());
+            for (String tagName : tagsOfInterest) {
+                StringBuilder valueText = new StringBuilder();
+                NodeList nodes = doc.getElementsByTagName(tagName);
+                if (nodes.getLength() < 1) {
+                    // TODO do we want to soft with no log or hard fail with pLog
+                    continue;
+                }
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    valueText.append(nodes.item(i).getTextContent().trim()).append("|");
+                }
+                if (1 < valueText.length()) {
+                    //Went to 1 because we always tag the end with pipe...
+                    notes.put(tagName, valueText.toString());
+                }
             }
         }
         return notes;
-    }
-
-    protected void bindGeneral(PublicationMap map, String ipdsXml, Set<String> tagsOfInterest) throws SAXException, IOException {
-        Document doc= makeDocument(ipdsXml);
-
-        for (String tagName : tagsOfInterest) {
-            NodeList nodes = doc.getElementsByTagNameNS(NAMESPACE, tagName);
-            if (nodes.getLength() < 1) {
-                // TODO do we want to soft with no log or hard fail with pLog
-                continue;
-            }
-            if (nodes.getLength() > 1) {
-                // TODO log too many values but take the first
-            }
-            String value = nodes.item(0).getTextContent().trim();
-            map.put(tagName, value);
-        }
     }
 
     public Collection<MpPublicationContributor> bindContributors(String contributorsXml) throws SAXException, IOException {
@@ -250,18 +239,8 @@ public class IpdsBinding {
         return contributor;
     }
 
-    protected Affiliation<?> getOrCreateUsgsAffiliation(final Element element) throws SAXException, IOException {
-        Affiliation<?> affiliation;
-        Map<String, Object> filters = new HashMap<>();
-        filters.put("ipdsId", getFirstNodeText(element, "d:CostCenterId"));
-        List<Affiliation<?>> affiliations = CostCenter.getDao().getByMap(filters);
-        //TODO what if we get more than one?
-        if (0 < affiliations.size()) {
-            affiliation = (CostCenter) affiliations.get(0);
-        } else {
-            affiliation = createUsgsAffiliation(filters.get("ipdsId").toString());
-        }
-        return affiliation;
+    public Affiliation<?> getOrCreateUsgsAffiliation(final Element element) throws SAXException, IOException {
+        return getOrCreateCostCenter(getFirstNodeText(element, "d:CostCenterId"));
     }
 
     protected Affiliation<?> createUsgsAffiliation(final String ipdsId) throws SAXException, IOException {
@@ -278,8 +257,10 @@ public class IpdsBinding {
     }
 
     protected Document makeDocument(final String xmlStr) throws SAXException, IOException {
-        Document doc = builder.parse(new InputSource(new StringReader(xmlStr)));
-        return doc;
+        if (!StringUtils.isEmpty(xmlStr)) {
+            return builder.parse(new InputSource(new StringReader(xmlStr)));
+        }
+        return null;
     }
 
     protected String getFirstNodeText(final Element element, final String tagName) {
@@ -308,5 +289,151 @@ public class IpdsBinding {
         }
 
         return contributors;
+    }
+
+    public MpPublication bindPublication(PubMap inPub) {
+        if (null != inPub && !inPub.isEmpty()) {
+            MpPublication pub = new MpPublication();
+            //Not from IPDS - pub.setId()
+            //Not from IPDS - pub.setIndexId()
+            //Not from IPDS - pub.setDisplayToPublicDate()
+
+            IpdsPubTypeConv conv = IpdsPubTypeConv.getDao().getByIpdsValue(getStringValue(inPub, IpdsMessageLog.PRODUCTTYPEVALUE));
+            if (null != conv) {
+                pub.setPublicationType(conv.getPublicationType());
+                pub.setPublicationSubtype(conv.getPublicationSubtype());
+            }
+
+            if (null != pub.getPublicationSubtype()) {
+                pub.setSeriesTitle(getPublicationSeries(pub.getPublicationSubtype(), inPub));
+            }
+
+            String tempSeriesNumber = getStringValue(inPub, IpdsMessageLog.USGSSERIESNUMBER);
+            if (null != tempSeriesNumber) {
+                if (".".contentEquals(tempSeriesNumber)) {
+                    tempSeriesNumber = null;
+                }
+                pub.setSeriesNumber(tempSeriesNumber);
+            }
+
+            //Not from IPDS - pub.setSubseriesTitle();
+            pub.setChapter(getStringValue(inPub, IpdsMessageLog.USGSSERIESLETTER));
+            //Not from IPDS - pub.setSubchapterNumber();
+
+            String tempTitle = getStringValue(inPub, IpdsMessageLog.FINALTITLE);
+            if (null == tempTitle) {
+                tempTitle = getStringValue(inPub, IpdsMessageLog.WORKINGTITLE);
+            }
+            pub.setTitle(tempTitle);
+
+            pub.setDocAbstract(getStringValue(inPub, IpdsMessageLog.ABSTRACT));
+            pub.setLanguage("English");
+
+            if ((null != conv && IpdsPubTypeConv.USGS_PERIODICAL == conv.getId())
+                    || (null != pub.getPublicationSubtype() && PublicationSubtype.USGS_NUMBERED_SERIES == pub.getPublicationSubtype().getId())) {
+                pub.setPublisher("U.S. Geological Survey");
+                pub.setPublisherLocation("Reston VA");
+            } else {
+                pub.setPublisher(getStringValue(inPub, IpdsMessageLog.NONUSGSPUBLISHER));
+            }
+
+            pub.setDoi(getStringValue(inPub, IpdsMessageLog.DIGITALOBJECTIDENTIFIER));
+            //Not from IPDS - pub.setIssn();
+            pub.setIsbn(getStringValue(inPub, IpdsMessageLog.ISBN));
+            pub.setCollaboration(getStringValue(inPub, IpdsMessageLog.COOPERATORS));
+            pub.setUsgsCitation(getStringValue(inPub, IpdsMessageLog.CITATION));
+            //Not from IPDS - pub.setContact();
+            pub.setProductDescription(getStringValue(inPub, IpdsMessageLog.PHYSICALDESCRIPTION));
+
+            pub.setStartPage(getStringValue(inPub, IpdsMessageLog.PAGERANGE));
+            //Not from IPDS - pub.setEndPage();
+            //Not from IPDS - pub.setNumberOfPages();
+            //Not from IPDS - pub.setOnlineOnly();
+            //Not from IPDS - pub.setAdditionalOnlineFiles();
+            //Not from IPDS - pub.setTemporalStart();
+            //Not from IPDS - pub.setTemporalEnd();
+
+            //We put ProductSummary into notes and then add to notes later with what is in the real notes...
+            pub.setNotes(getStringValue(inPub, IpdsMessageLog.PRODUCTSUMMARY));
+
+            pub.setIpdsId(getStringValue(inPub, IpdsMessageLog.IPNUMBER));
+            pub.setIpdsReviewProcessState(getStringValue(inPub, IpdsMessageLog.IPDSREVIEWPROCESSSTATEVALUE));
+            pub.setIpdsInternalId(getStringValue(inPub, IpdsMessageLog.IPDS_INTERNAL_ID));
+
+            //Not from IPDS - pub.setLargerWorkType()
+            //TODO The journal title will be used to get publication series on articles, otherwise store it here.
+            //TODO pub.setLargerWorkTitle(getStringValue(inPub, IpdsMessageLog.JOURNALTITLE));
+            //TODO pub.setPublicationYear(getStringValue(inPub, IpdsMessageLog.DISEMINATIONDATE).substring(1, 4));
+            //Not from IPDS - pub.setConferenceTitle();
+            //Not from IPDS - pub.setConferenceDate();
+            //Not from IPDS - pub.setConferenceLocation();
+            //In other section pub.setAuthors();
+            //In other section pub.setEditors();
+            //In other section pub.setCostCenters();
+            //In other section pub.setLinks();
+            return pub;
+        }
+        return null;
+    }
+
+    public Collection<PublicationLink<?>> bindPublishedURL(final PubMap inPub) {
+        Collection<PublicationLink<?>> rtn = null;
+        //We pull the URL from the structure "URL, DisplayText"
+        if (null != inPub
+                && null != getStringValue(inPub, IpdsMessageLog.PUBLISHEDURL)) {
+            String[] publishedUrls = getStringValue(inPub, IpdsMessageLog.PUBLISHEDURL).split(",");
+            if (0 < publishedUrls.length
+                    && 0 < publishedUrls[0].length()) {
+                PublicationLink<?> link = new MpPublicationLink();
+                link.setUrl(publishedUrls[0]);
+                link.setLinkType(LinkType.getDao().getById(LinkType.INDEX_PAGE));
+                rtn = new ArrayList<>();
+                rtn.add(link);
+            }
+        }
+        return rtn;
+    }
+
+
+    protected PublicationSeries getPublicationSeries(PublicationSubtype pubSubtype, PubMap inPub) {
+        String usgsSeriesValue = getStringValue(inPub, IpdsMessageLog.USGSSERIESVALUE);
+        if (null != pubSubtype && null != pubSubtype.getId() && !StringUtils.isEmpty(usgsSeriesValue)) {
+            //Only hit the DB if both fields have values - otherwise the db call will return incorrect results.
+            Map<String, Object> filters = new HashMap<>();
+            filters.put("publicationSubtypeId", pubSubtype.getId());
+            filters.put("name", usgsSeriesValue);
+            List<PublicationSeries> pubSeries = PublicationSeries.getDao().getByMap(filters);
+            if (0 < pubSeries.size()) {
+                //We should really only get one, so just take the first...
+                return pubSeries.get(0);
+            }
+        }
+        return null;
+    }
+
+    public Affiliation<?> getOrCreateCostCenter(final PubMap inPub) throws SAXException, IOException {
+        return getOrCreateCostCenter(getStringValue(inPub, IpdsMessageLog.COSTCENTERID));
+    }
+
+    protected Affiliation<?> getOrCreateCostCenter(final String costCenterId) throws SAXException, IOException {
+        Affiliation<?> affiliation;
+        Map<String, Object> filters = new HashMap<>();
+        filters.put("ipdsId", costCenterId);
+        List<Affiliation<?>> affiliations = CostCenter.getDao().getByMap(filters);
+        //TODO what if we get more than one?
+        if (0 < affiliations.size()) {
+            affiliation = (CostCenter) affiliations.get(0);
+        } else {
+            affiliation = createUsgsAffiliation(costCenterId);
+        }
+        return affiliation;
+    }
+
+    protected String getStringValue(PubMap inPub, String key) {
+        if (null != inPub && null != inPub.get(key)) {
+            return inPub.get(key).toString().trim();
+        } else {
+            return null;
+        }
     }
 }

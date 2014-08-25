@@ -16,7 +16,7 @@ import org.junit.Test;
  * @author drsteini
  *
  */
-public class CostCenterDaoTest extends BaseDaoTest {
+public class CostCenterDaoTest extends BaseSpringDaoTest {
 
     public static final int costCenterCnt = 4;
 

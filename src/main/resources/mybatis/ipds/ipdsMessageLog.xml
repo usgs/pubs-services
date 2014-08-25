@@ -3,12 +3,11 @@
 
 <mapper namespace="ipdsMessageLog">
 
-    <resultMap id="result" type="IpdsMessageLog">
+    <resultMap id="result" type="IpdsMessageLog" extends="base.result">
         <id property="id" column="ipds_message_log_id"/>
         <result property="messageText" column="ipds_message"/>
         <result property="processingDetails" column="processing_details"/>
         <result property="prodId" column="prod_id"/>
-        <result property="insertDate" column="insertDate"/>
         <result property="processType" column="process_type"/>
     </resultMap>
 
@@ -17,7 +16,6 @@
                xmlserialize(content ipds_message as clob no indent) ipds_message,
                processing_details,
                prod_id,
-               insert_date,
                process_type
           from ipds_message_log
     </sql>
@@ -39,95 +37,124 @@
          </where>
     </select>
 
-    <select id="getAll" resultMap="result">
+    <select id="getByMap" resultMap="result">
         <include refid="baseSelect"/>
     </select>
 
     <update id="update" parameterType="IpdsMessageLog">
         update ipds_message_log
            set processing_details = #{processingDetails,jdbcType=VARCHAR},
-               prod_id = #{prodId,jdbcType=NUMERIC}
+               prod_id = #{prodId,jdbcType=NUMERIC},
+               <include refid="base.auditSets"/>
          where ipds_message_log_id = #{id,jdbcType=NUMERIC}
     </update>
 
-
-    <select id="getMpPublicationFromIpds" parameterType="Integer" resultType="mpPublication">
-        select trim(abstract) doc_abstract,
-               trim(contributing_office) contributing_office,
-               trim(doi_name) doi_name,
-               trim(edition) edition,
-               trim(ipds_id) ipds_id,
-               trim(issue) issue,
-               trim(larger_work_title) larger_work_title,
-               case trim(ProductTypeValue)
-                 when 'Journal or periodical article' 
-                   then 'Journal'
-                 else 
-                   null
-               end larger_work_type,
-               trim(number_oversized_sheets) number_oversized_sheets,
-               trim(other_contrib_display) other_contrib_display,
-               trim(prod_description) prod_description,
-               trim(substr(disemination_date, 9, 2)) publication_day,
-               trim(substr(disemination_date, 6, 2)) publication_month,
-               trim(ProductTypeValue) publication_type,
-               trim(substr(disemination_date, 1, 4)) publication_year,
-               trim(publisher) publisher,
-               trim(nvl(publication_series_name, USGSSeriesValue)) series,
-               trim(publication_series_cd) series_cd,
-               case
-                 when trim(usgs_series_number) = '.' 
-                   then null
-                 else
-                   case
-                     when trim(usgs_series_letter) is null
-                       then trim(usgs_series_number)
-                     else
-                       trim(usgs_series_number) || '-' || trim(usgs_series_letter)
-                   end
-               end series_number,
-               'IPDS' source,
-               trim(nvl(final_title, working_title)) title,
-               trim(volume) volume,
-               basic_search,
-               notes,
-               ipds_review_process_state,
-               ipds_internal_id
+    <select id="getMpPublicationFromIpds" parameterType="Integer" resultType="PubMap">
+        select ContentTypeID,           WorkingTitle,               IPNumber,                       SeniorUSGSAuthorId,
+               AuthorSupervisorId,      ProductTypeValue,           BasisNumber,                    IPPANumber,
+               ProductSummary,          PlannedDisseminationDate,   TeamProjectName,                Cooperators,
+               OMBInfluentialFlagValue, PolicySensitiveFlagValue,   HighlyVisibleFlagValue,         FinalTitle,
+               Abstract,                Citation,                   NonUSGSPublisher,               SupersedesIPNumber,
+               NumberOfMapsOrPlates,    PageRange,                  PhysicalDescription,            NumberOfUSGSCopies,
+               USGSSeriesNumber,        USGSSeriesLetter,           DigitalObjectIdentifier,        GPOJacketNumber,
+               GPOReqNumber,            PrintOrderNumber,           NBROfPSPages,                   NBROfOSPages,
+               NBROfCPSPages,           NBROfCOSPages,              EditionNumber,                  Volume,
+               LegacyData,              ProductDisseminated,        DiseminationDate,               Issue,
+               RelatedIPNumber,         ISBN,                       IPDSReviewProcessStateValue,    IPDSTaskStatusValue,
+               IPDSWorkflowStartDate,   IPDSWorkflowStopDate,       BureauApprovingOfficialId,      CenterChiefId,
+               PSCChiefId,              VISpecialistId,             PublishedURL,                   ProductNumber,
+               CostCenterId,            PublishingServiceCenterId,  TempWorkflow,                   CreatedById,
+               ModifiedById,            Modified,                   Created,                        ProductPrintingCost,
+               NBROfInfoDelCopies,      ReviewTypeValue,            USGSMissionAreaValue,           USGSRegionValue,
+               USGSSeriesValue,         BindingTypeValue,           SPNEditorId,                    Influential_OMB_FlagValue,
+               HVisible_FlagValue,      Sensitive_Policy_FlagValue, JournalTitle,                   PUBS_Response,
+               PUBS_Status,             ipds_internal_id,           ContentType,                    Owshiddenversion,
+               Version,                 Path
           from (select * from ipds_message_log iml,
                xmltable(xmlnamespaces('http://schemas.microsoft.com/ado/2007/08/dataservices' as "d",
                                       'http://schemas.microsoft.com/ado/2007/08/dataservices/metadata' as "m",
                                       'http://www.w3.org/2005/Atom' as "q"),
                         'for $i in /q:feed/q:entry return $i'
                         passing iml.ipds_message
-                        columns ProductTypeValue varchar2(2000 char) path '/q:entry/q:content/m:properties/d:ProductTypeValue',
+                        columns ContentTypeID varchar2(2000 char) path '/q:entry/q:content/m:properties/d:ContentTypeID',
+                                WorkingTitle varchar2(2000 char) path '/q:entry/q:content/m:properties/d:WorkingTitle',
+                                IPNumber varchar2(15 char) path '/q:entry/q:content/m:properties/d:IPNumber',
+                                SeniorUSGSAuthorId number path '/q:entry/q:content/m:properties/d:SeniorUSGSAuthorId',
+                                AuthorSupervisorId number path '/q:entry/q:content/m:properties/d:AuthorSupervisorId',
+                                ProductTypeValue varchar2(2000 char) path '/q:entry/q:content/m:properties/d:ProductTypeValue',
+                                BasisNumber varchar2(2000 char) path '/q:entry/q:content/m:properties/d:BasisNumber',
+                                IPPANumber varchar2(2000 char) path '/q:entry/q:content/m:properties/d:IPPANumber',
+                                ProductSummary clob path '/q:entry/q:content/m:properties/d:ProductSummary',
+                                PlannedDisseminationDate varchar2(2000 char) path '/q:entry/q:content/m:properties/d:PlannedDisseminationDate',
+                                TeamProjectName varchar2(2000 char) path '/q:entry/q:content/m:properties/d:TeamProjectName',
+                                Cooperators varchar2(4000 char) path '/q:entry/q:content/m:properties/d:Cooperators',
+                                OMBInfluentialFlagValue varchar2(2000 char) path '/q:entry/q:content/m:properties/d:OMBInfluentialFlagValue',
+                                PolicySensitiveFlagValue varchar2(2000 char) path '/q:entry/q:content/m:properties/d:PolicySensitiveFlagValue',
+                                HighlyVisibleFlagValue varchar2(2000 char) path '/q:entry/q:content/m:properties/d:HighlyVisibleFlagValue',
+                                FinalTitle varchar2(2000 char) path '/q:entry/q:content/m:properties/d:FinalTitle',
+                                Abstract clob path '/q:entry/q:content/m:properties/d:Abstract',
+                                Citation varchar2(4000 char) path '/q:entry/q:content/m:properties/d:Citation',
+                                NonUSGSPublisher varchar2(255 char) path '/q:entry/q:content/m:properties/d:NonUSGSPublisher',
+                                SupersedesIPNumber varchar2(2000 char) path '/q:entry/q:content/m:properties/d:SupersedesIPNumber',
+                                NumberOfMapsOrPlates number path '/q:entry/q:content/m:properties/d:NumberOfMapsOrPlates',
+                                PageRange varchar2(2000 char) path '/q:entry/q:content/m:properties/d:PageRange',
+                                PhysicalDescription varchar2(2000 char) path '/q:entry/q:content/m:properties/d:PhysicalDescription',
+                                NumberOfUSGSCopies number path '/q:entry/q:content/m:properties/d:NumberOfUSGSCopies',
+                                USGSSeriesNumber varchar2(20 char) path '/q:entry/q:content/m:properties/d:USGSSeriesNumber',
+                                USGSSeriesLetter varchar2(20 char) path '/q:entry/q:content/m:properties/d:USGSSeriesLetter',
+                                DigitalObjectIdentifier varchar2(2000 char) path '/q:entry/q:content/m:properties/d:DigitalObjectIdentifier',
+                                GPOJacketNumber varchar2(2000 char) path '/q:entry/q:content/m:properties/d:GPOJacketNumber',
+                                GPOReqNumber varchar2(2000 char) path '/q:entry/q:content/m:properties/d:GPOReqNumber',
+                                PrintOrderNumber varchar2(2000 char) path '/q:entry/q:content/m:properties/d:PrintOrderNumber',
+                                NBROfPSPages number path '/q:entry/q:content/m:properties/d:NBROfPSPages',
+                                NBROfOSPages number path '/q:entry/q:content/m:properties/d:NBROfOSPages',
+                                NBROfCPSPages number path '/q:entry/q:content/m:properties/d:NBROfCPSPages',
+                                NBROfCOSPages number path '/q:entry/q:content/m:properties/d:NBROfCOSPages',
+                                EditionNumber varchar2(255 char) path '/q:entry/q:content/m:properties/d:EditionNumber',
+                                Volume varchar2(50 char) path '/q:entry/q:content/m:properties/d:Volume',
+                                LegacyData varchar2(2000 char) path '/q:entry/q:content/m:properties/d:LegacyData',
+                                ProductDisseminated varchar2(2000 char) path '/q:entry/q:content/m:properties/d:ProductDisseminated',
+                                DiseminationDate varchar2(20 char) path '/q:entry/q:content/m:properties/d:DiseminationDate',
+                                Issue varchar2(20 char) path '/q:entry/q:content/m:properties/d:Issue',
+                                RelatedIPNumber varchar2(2000 char) path '/q:entry/q:content/m:properties/d:RelatedIPNumber',
+                                ISBN varchar2(2000 char) path '/q:entry/q:content/m:properties/d:ISBN',
+                                IPDSReviewProcessStateValue varchar2(4000 char) path '/q:entry/q:content/m:properties/d:IPDSReviewProcessStateValue',
+                                IPDSTaskStatusValue varchar2(2000 char) path '/q:entry/q:content/m:properties/d:IPDSTaskStatusValue',
+                                IPDSWorkflowStartDate varchar2(2000 char) path '/q:entry/q:content/m:properties/d:IPDSWorkflowStartDate',
+                                IPDSWorkflowStopDate varchar2(2000 char) path '/q:entry/q:content/m:properties/d:IPDSWorkflowStopDate',
+                                BureauApprovingOfficialId number path '/q:entry/q:content/m:properties/d:BureauApprovingOfficialId',
+                                CenterChiefId number path '/q:entry/q:content/m:properties/d:CenterChiefId',
+                                PSCChiefId number path '/q:entry/q:content/m:properties/d:PSCChiefId',
+                                VISpecialistId number path '/q:entry/q:content/m:properties/d:VISpecialistId',
+                                PublishedURL varchar2(4000 char) path '/q:entry/q:content/m:properties/d:PublishedURL',
+                                ProductNumber varchar2(2000 char) path '/q:entry/q:content/m:properties/d:ProductNumber',
+                                CostCenterId number path '/q:entry/q:content/m:properties/d:CostCenterId',
+                                PublishingServiceCenterId number path '/q:entry/q:content/m:properties/d:PublishingServiceCenterId',
+                                TempWorkflow number path '/q:entry/q:content/m:properties/d:TempWorkflow',
+                                CreatedById number path '/q:entry/q:content/m:properties/d:CreatedById',
+                                ModifiedById number path '/q:entry/q:content/m:properties/d:ModifiedById',
+                                Modified varchar2(2000 char) path '/q:entry/q:content/m:properties/d:Modified',
+                                Created varchar2(2000 char) path '/q:entry/q:content/m:properties/d:Created',
+                                ProductPrintingCost number path '/q:entry/q:content/m:properties/d:ProductPrintingCost',
+                                NBROfInfoDelCopies number path '/q:entry/q:content/m:properties/d:NBROfInfoDelCopies',
+                                ReviewTypeValue varchar2(2000 char) path '/q:entry/q:content/m:properties/d:ReviewTypeValue',
+                                USGSMissionAreaValue varchar2(2000 char) path '/q:entry/q:content/m:properties/d:USGSMissionAreaValue',
+                                USGSRegionValue varchar2(2000 char) path '/q:entry/q:content/m:properties/d:USGSRegionValue',
                                 USGSSeriesValue varchar2(2000 char) path '/q:entry/q:content/m:properties/d:USGSSeriesValue',
-                                abstract clob path '/q:entry/q:content/m:properties/d:Abstract',
-                                contributing_office varchar2(10 char) path '/q:entry/q:content/m:properties/d:CostCenterId',
-                                usgs_mission_area varchar2(2000 char) path '/q:entry/q:content/m:properties/d:USGSMissionAreaValue',
-                                usgs_region varchar2(2000 char) path '/q:entry/q:content/m:properties/d:USGSRegionValue',
-                                doi_name varchar2(2000 char) path '/q:entry/q:content/m:properties/d:DigitalObjectIdentifier',
-                                edition varchar2(255 char) path '/q:entry/q:content/m:properties/d:EditionNumber',
-                                ipds_id varchar2(15 char) path '/q:entry/q:content/m:properties/d:IPNumber',
-                                issue varchar2(20 char) path '/q:entry/q:content/m:properties/d:Issue',
-                                larger_work_title varchar2(2000 char) path '/q:entry/q:content/m:properties/d:JournalTitle',
-                                number_oversized_sheets number path '/q:entry/q:content/m:properties/d:NumberOfMapsOrPlates',
-                                other_contrib_display varchar2(4000 char) path '/q:entry/q:content/m:properties/d:Cooperators',
-                                prod_description varchar2(2000 char) path '/q:entry/q:content/m:properties/d:PhysicalDescription',
-                                disemination_date varchar2(20 char) path '/q:entry/q:content/m:properties/d:DiseminationDate',
-                                publisher varchar2(255 char) path '/q:entry/q:content/m:properties/d:NonUSGSPublisher',
-                                usgs_series_number varchar2(20 char) path '/q:entry/q:content/m:properties/d:USGSSeriesNumber',
-                                usgs_series_letter varchar2(20 char) path '/q:entry/q:content/m:properties/d:USGSSeriesLetter',
-                                final_title varchar2(2000 char) path '/q:entry/q:content/m:properties/d:FinalTitle',
-                                working_title varchar2(2000 char) path '/q:entry/q:content/m:properties/d:WorkingTitle',
-                                usgs_citation_display varchar2(4000 char) path '/q:entry/q:content/m:properties/d:Citation',
-                                volume varchar2(50 char) path '/q:entry/q:content/m:properties/d:Volume',
-                                basic_search varchar2(4000 char) path '/q:entry/q:content/m:properties/d:PublishedURL',
-                                notes clob path '/q:entry/q:content/m:properties/d:ProductSummary',
-                                ipds_review_process_state varchar2(4000 char) path '/q:entry/q:content/m:properties/d:IPDSReviewProcessStateValue',
-                                ipds_internal_id number path '/q:entry/q:content/m:properties/d:Id'
+                                BindingTypeValue varchar2(2000 char) path '/q:entry/q:content/m:properties/d:BindingTypeValue',
+                                SPNEditorId number path '/q:entry/q:content/m:properties/d:SPNEditorId',
+                                Influential_OMB_FlagValue varchar2(2000 char) path '/q:entry/q:content/m:properties/d:Influential_OMB_FlagValue',
+                                HVisible_FlagValue varchar2(2000 char) path '/q:entry/q:content/m:properties/d:HVisible_FlagValue',
+                                Sensitive_Policy_FlagValue varchar2(2000 char) path '/q:entry/q:content/m:properties/d:Sensitive_Policy_FlagValue',
+                                JournalTitle varchar2(2000 char) path '/q:entry/q:content/m:properties/d:JournalTitle',
+                                PUBS_Response varchar2(2000 char) path '/q:entry/q:content/m:properties/d:PUBS_Response',
+                                PUBS_Status varchar2(2000 char) path '/q:entry/q:content/m:properties/d:PUBS_Status',
+                                ipds_internal_id number path '/q:entry/q:content/m:properties/d:Id',
+                                ContentType varchar2(2000 char) path '/q:entry/q:content/m:properties/d:ContentType',
+                                Owshiddenversion varchar2(2000 char) path '/q:entry/q:content/m:properties/d:Owshiddenversion',
+                                Version varchar2(2000 char) path '/q:entry/q:content/m:properties/d:Version',
+                                Path varchar2(2000 char) path '/q:entry/q:content/m:properties/d:Path'
                                 )) x
-                          left join pw_series_ref
-                            on x.USGSSeriesValue = publication_series_name
                         where ipds_message_log_id = #{value}
     </select>
 

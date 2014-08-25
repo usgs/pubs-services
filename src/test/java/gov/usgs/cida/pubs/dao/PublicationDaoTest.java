@@ -16,7 +16,7 @@ import org.junit.Test;
  * @author drsteini
  *
  */
-public class PublicationDaoTest extends BaseDaoTest {
+public class PublicationDaoTest extends BaseSpringDaoTest {
 
     @Test
     public void getByIdTest() {

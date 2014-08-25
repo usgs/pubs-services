@@ -19,7 +19,7 @@ import org.junit.Test;
  * @author drsteini
  *
  */
-public class AffiliationDaoTest extends BaseDaoTest {
+public class AffiliationDaoTest extends BaseSpringDaoTest {
 
     public static final int affiliationCnt = 7;
 

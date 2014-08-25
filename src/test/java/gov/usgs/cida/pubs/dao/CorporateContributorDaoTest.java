@@ -13,7 +13,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-public class CorporateContributorDaoTest extends BaseDaoTest {
+public class CorporateContributorDaoTest extends BaseSpringDaoTest {
 
     private static final int corporateContributorCnt = 1;
 

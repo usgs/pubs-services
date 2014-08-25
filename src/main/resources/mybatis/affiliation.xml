@@ -131,13 +131,15 @@
 
     <update id="updateOutsideAffiliation" parameterType="OutsideAffiliation">
         update affiliation
-           set <include refid="baseSets"/>
+           set <include refid="baseSets"/>,
+               <include refid="base.auditSets"/>
            where affiliation_id = #{id,jdbcType=NUMERIC}
     </update>
 
     <update id="updateCostCenter" parameterType="CostCenter">
         update affiliation
-           set <include refid="costCenterSets"/>
+           set <include refid="costCenterSets"/>,
+               <include refid="base.auditSets"/>
            where affiliation_id = #{id,jdbcType=NUMERIC}
     </update>
 

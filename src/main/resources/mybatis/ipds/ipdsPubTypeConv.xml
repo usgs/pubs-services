@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="ipdsPubTypeConv">
+
+    <resultMap id="result" type="IpdsPubTypeConv" extends="base.result">
+        <id property="id" column="ipds_pubs_type_conv_id"/>
+        <result property="ipdsValue" column="ipds_product_type"/>
+        <association property="publicationType" column="publication_type_id" select="publicationType.getById"/>
+        <association property="publicationSubtype" column="publication_subtype_id" select="publicationSubtype.getById"/>
+    </resultMap>
+
+    <sql id="baseSelect">
+        select ipds_pubs_type_conv_id, ipds_product_type, publication_type_id, publication_subtype_id
+          from ipds_pubs_type_conv
+    </sql>
+
+    <select id="getByIpdsValue" parameterType="String" resultMap="result">
+        <include refid="baseSelect"/>
+         where ipds_product_type = #{value,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

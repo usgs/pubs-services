@@ -14,14 +14,22 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author drsteini
  *
  */
-public class SpnProductionMessageService implements IIpdsService<String> {
+public class SpnProductionMessageService implements IIpdsService {
+
+
+    private final IIpdsProcess ipdsProcess;
+
+    private final IpdsWsRequester requester;
+
+    private final PubsEMailer pubsEMailer;
 
     @Autowired
-    private IIpdsProcess ipdsProcess;
-    @Autowired
-    private IpdsWsRequester requester;
-    @Autowired
-    private PubsEMailer pubsEMailer;
+    SpnProductionMessageService(final IIpdsProcess ipdsProcess, final IpdsWsRequester requester,
+            final PubsEMailer pubsEMailer) {
+        this.ipdsProcess = ipdsProcess;
+        this.requester = requester;
+        this.pubsEMailer = pubsEMailer;
+    }
 
     /**
      * {@inheritDoc}
@@ -30,7 +38,7 @@ public class SpnProductionMessageService implements IIpdsService<String> {
     @Override
     public void processIpdsMessage(final String targetDate) throws Exception {
         LocalDate asOf = (null == targetDate || 0 == targetDate.length()) ? new LocalDate() : new LocalDate(targetDate);
-        requester.setHttpContext(new BasicHttpContext());
+//        requester.setHttpContext(new BasicHttpContext());
         String atomFeed = requester.getSpnProduction(asOf.toString());
         IpdsMessageLog newMessage = new IpdsMessageLog();
         newMessage.setMessageText(atomFeed);
@@ -45,15 +53,5 @@ public class SpnProductionMessageService implements IIpdsService<String> {
         msg.setProcessingDetails(processingDetails);
         IpdsMessageLog.getDao().update(msg);
     }
-
-//    public void setIpdsProcess(final IIpdsProcess inIpdsProcess) {
-//        ipdsProcess = inIpdsProcess;
-//    }
-//    public void setIpdsWsRequester(final IpdsWsRequester inIpdsWsRequester) {
-//        requester = inIpdsWsRequester;
-//    }
-//    public void setPubsEMailer(final PubsEMailer inPubsEMailer) {
-//        pubsEMailer = inPubsEMailer;
-//    }
 
 }

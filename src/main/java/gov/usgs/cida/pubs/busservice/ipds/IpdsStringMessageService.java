@@ -14,13 +14,17 @@ import org.springframework.transaction.annotation.Transactional;
  * @author drsteini
  *
  */
-public class IpdsStringMessageService implements IIpdsService<String> {
+public class IpdsStringMessageService implements IIpdsService {
+
+    private final IIpdsProcess ipdsProcess;
+
+    private final IpdsWsRequester requester;
 
     @Autowired
-    private IIpdsProcess ipdsProcess;
-
-    @Autowired
-    private IpdsWsRequester requester;
+    IpdsStringMessageService(final IIpdsProcess ipdsProcess, final IpdsWsRequester requester) {
+        this.ipdsProcess = ipdsProcess;
+        this.requester = requester;
+    }
 
     /** {@inheritDoc}
      * @throws Exception 
@@ -30,7 +34,7 @@ public class IpdsStringMessageService implements IIpdsService<String> {
     @Transactional
     public void processIpdsMessage(final String targetDate) throws Exception {
         LocalDate asOf = (null == targetDate || 0 == targetDate.length()) ? new LocalDate() : new LocalDate(targetDate);
-        requester.setHttpContext(new BasicHttpContext());
+//        requester.setHttpContext(new BasicHttpContext());
         String inMessageText = requester.getIpdsProductXml(asOf.toString());
         IpdsMessageLog newMessage = new IpdsMessageLog();
         newMessage.setMessageText(inMessageText);
@@ -43,20 +47,4 @@ public class IpdsStringMessageService implements IIpdsService<String> {
         IpdsMessageLog.getDao().update(msg);
     }
 
-//    /**
-//     * Set the service.
-//     * @param inIpdsProcess .
-//     */
-//    public void setIpdsProcess(final IIpdsProcess inIpdsProcess) {
-//        ipdsProcess = inIpdsProcess;
-//    }
-//
-//    /**
-//     * Set the requester.
-//     * @param IpdsWsRequester .
-//     */
-//    public void setIpdsWsRequester(final IpdsWsRequester inIpdsWsRequester) {
-//        requester = inIpdsWsRequester;
-//    }
-//
 }

@@ -14,7 +14,7 @@ import org.junit.Test;
  * @author drsteini
  *
  */
-public class PublicationSubtypeDaoTest extends BaseDaoTest {
+public class PublicationSubtypeDaoTest extends BaseSpringDaoTest {
 
     public static final int pubSubTypeCnt = 30;
 

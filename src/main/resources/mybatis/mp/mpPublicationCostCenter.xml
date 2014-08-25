@@ -42,7 +42,8 @@
 
     <update id="update" parameterType="MpPublication">
         update mp_pub_cost_center
-           set <include refid="publicationCostCenter.sets"/>
+           set <include refid="publicationCostCenter.sets"/>,
+               <include refid="base.auditSets"/>
            where publication_cost_center_id = #{id,jdbcType=NUMERIC}
     </update>
 

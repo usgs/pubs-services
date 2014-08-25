@@ -15,7 +15,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-public class ContributorDaoTest extends BaseDaoTest {
+public class ContributorDaoTest extends BaseSpringDaoTest {
 
     public static final int contributorCnt = 3;
 

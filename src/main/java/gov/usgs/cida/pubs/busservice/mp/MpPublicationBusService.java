@@ -144,7 +144,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
                 String doi = null;
                 if (isUsgsNumberedSeries(outPublication.getPublicationSubtype())) {
                     //Only USGS Numbered Series get a "special" index ID
-                    indexId = getUsgsNumberedSeriesIndexId(outPublication.getSeriesTitle(), outPublication.getSeriesNumber());
+                    indexId = getUsgsNumberedSeriesIndexId(outPublication);
                     doi = getDoiName(indexId);
                 } else if (isUsgsUnnumberedSeries(outPublication.getPublicationSubtype())) {
                     doi = getDoiName(indexId);
@@ -181,17 +181,30 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
         return rtn;
     }
 
-    public String getUsgsNumberedSeriesIndexId(final PublicationSeries pubSeries, final String seriesNumber) {
-        String indexId = null;
-        if (null != pubSeries
-                && null != seriesNumber) {
-            PublicationSeries series = PublicationSeries.getDao().getById(pubSeries.getId());
-            if (null != series 
-                    && null != series.getCode()) {
-                indexId = series.getCode().toLowerCase() + seriesNumber.replace("-", "").replace(",", "").replace(" ", "");
+    public String getUsgsNumberedSeriesIndexId(final MpPublication pub) {
+        StringBuilder indexId = new StringBuilder();
+        if (null != pub && null != pub.getSeriesTitle()
+                && null != pub.getSeriesNumber()) {
+            PublicationSeries series = PublicationSeries.getDao().getById(pub.getSeriesTitle().getId());
+            if (null != series && null != series.getCode()) {
+                indexId.append(cleanseIndexField(series.getCode().toLowerCase()));
+                indexId.append(cleanseIndexField(pub.getSeriesNumber()));
+                if (null != pub.getChapter()) {
+                    indexId.append(cleanseIndexField(pub.getChapter().toUpperCase()));
+                }
+                if (null != pub.getSubchapterNumber()) {
+                    indexId.append(cleanseIndexField(pub.getSubchapterNumber()));
+                }
             }
         }
-        return indexId;
+        return 0 == indexId.length() ? null : indexId.toString();
+    }
+
+    protected String cleanseIndexField(final String value) {
+        if (null != value) {
+            return value.replace("-", "").replace(",", "").replace(" ", "");
+        }
+        return null;
     }
 
     public static String getDoiName(final String inIndexId) {

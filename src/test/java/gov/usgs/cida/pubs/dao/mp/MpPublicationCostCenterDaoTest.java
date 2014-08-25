@@ -3,7 +3,7 @@ package gov.usgs.cida.pubs.dao.mp;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import gov.usgs.cida.pubs.dao.BaseDaoTest;
+import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
@@ -14,7 +14,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-public class MpPublicationCostCenterDaoTest extends BaseDaoTest {
+public class MpPublicationCostCenterDaoTest extends BaseSpringDaoTest {
 
 
     @Test

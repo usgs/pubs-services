@@ -43,7 +43,12 @@
 
 	<repositories>
 		<repository>
-			<id>nexus</id>
+			<id>cida-public-nexus</id>
+			<name>CIDA Public Nexus</name>
+			<url>${cida.maven.url}/cida-public/</url>
+		</repository>
+		<repository>
+			<id>cida-nexus</id>
 			<name>CIDA Nexus</name>
 			<url>${cida.maven.url}/content/groups/public/</url>
 		</repository>
@@ -51,13 +56,23 @@
 
 	<pluginRepositories>
 		<pluginRepository>
-			<id>plugin-nexus</id>
+			<id>cida-public-plugin-nexus</id>
+			<name>CIDA Public Plugin repo</name>
+			<url>${cida.maven.url}/cida-public/</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>cida-plugin-nexus</id>
 			<name>CIDA Plugin repo</name>
 			<url>${cida.maven.url}/content/groups/public/</url>
 		</pluginRepository>
 	</pluginRepositories>
 
 	<dependencies>
+		<dependency>
+			<groupId>gov.usgs.cida.auth</groupId>
+			<artifactId>auth-client</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>

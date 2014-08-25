@@ -44,12 +44,22 @@
 	<repositories>
 		<repository>
 			<id>nexus</id>
+			<name>CIDA Public Nexus</name>
+			<url>${cida.maven.url}/cida-public/</url>
+		</repository>
+		<repository>
+			<id>nexus</id>
 			<name>CIDA Nexus</name>
 			<url>${cida.maven.url}/content/groups/public/</url>
 		</repository>
 	</repositories>
 
 	<pluginRepositories>
+		<pluginRepository>
+			<id>plugin-nexus</id>
+			<name>CIDA Public Plugin repo</name>
+			<url>${cida.maven.url}/cida-public/</url>
+		</pluginRepository>
 		<pluginRepository>
 			<id>plugin-nexus</id>
 			<name>CIDA Plugin repo</name>

@@ -1,5 +1,7 @@
 package gov.usgs.cida.pubs.webservice.security;
 
+import gov.usgs.cida.auth.client.AuthClient;
+
 import java.io.IOException;
 
 import javax.servlet.FilterChain;
@@ -12,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.Filter;
 
@@ -20,6 +23,9 @@ public class TokenSecurityFilter implements Filter  {
 
 	public static final String AUTHORIZATION_HEADER = "Authorization";
 	public static final String AUTH_BEARER_STRING = "Bearer";
+	
+	@Autowired
+	private AuthClient authClient;
 
 	@Override
 	public void destroy() {
@@ -39,16 +45,16 @@ public class TokenSecurityFilter implements Filter  {
 	 */
 	public void doFilter(ServletRequest req, ServletResponse resp,
 			FilterChain filterChain) throws IOException, ServletException {
+		
 		HttpServletRequest httpReq = (HttpServletRequest) req; //not sure if this cast is safe
-
+		
 		if ("OPTIONS".equals(httpReq.getMethod())) {
 			filterChain.doFilter(req, resp); //continue down the chain
 		} else {
 			String token = getTokenFromHeader(httpReq);
-		
-			if(isValidToken(token)) {
-				//TODO set security context with user roles?
-
+			
+			if(authClient.isValidToken(token)) {
+				setAuthorizationRoles(token);
 				filterChain.doFilter(req, resp); //continue down the chain
 			} else {
 				LOG.debug("Invalid token");
@@ -69,7 +75,7 @@ public class TokenSecurityFilter implements Filter  {
 	 * @param httpRequest
 	 * @return
 	 */
-	private String getTokenFromHeader(HttpServletRequest httpRequest) {
+	public static String getTokenFromHeader(HttpServletRequest httpRequest) {
 		String token = null;
 		
 		String authHeader = httpRequest.getHeader(AUTHORIZATION_HEADER);
@@ -84,13 +90,7 @@ public class TokenSecurityFilter implements Filter  {
 		return token;
 	}
 	
-	
-	private boolean isValidToken(String token) {
-		if(token == null) {
-			return false;
-		}
-		
-		//TODO verify this token against a cache which has tokens from a CIDA Auth Service
-		return token.equals("a-random-token");
+	private void setAuthorizationRoles(String token) {
+		//TODO retrieve authorization roles associated with this token, and update security context with information
 	}
 }

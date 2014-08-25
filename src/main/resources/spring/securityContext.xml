@@ -2,10 +2,13 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:sec="http://www.springframework.org/schema/security"
-	xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jee="http://www.springframework.org/schema/jee"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
                            http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
-                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+						   http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd">
 
 	<sec:global-method-security
 		secured-annotations="enabled" />
@@ -16,6 +19,13 @@
 		<sec:form-login />
 		<sec:logout />
 	</sec:http>
+	
+	<jee:jndi-lookup jndi-name="cida/authService" id="authService"
+				 resource-ref="true" />
+	<bean id="authClient"
+		  class="gov.usgs.cida.auth.client.CachingAuthClient">
+		<constructor-arg value="#{authService}" />
+	</bean>
 
 	<bean id="tokenSecurityFilter"
 		class="gov.usgs.cida.pubs.webservice.security.TokenSecurityFilter">

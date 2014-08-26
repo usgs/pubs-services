@@ -8,7 +8,7 @@
       <settings>
         <setting name="cacheEnabled" value="false"/>
         <setting name="lazyLoadingEnabled" value="true"/>
-        <setting name="aggressiveLazyLoading" value="false"/>
+        <setting name="aggressiveLazyLoading" value="true"/>
         <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
 

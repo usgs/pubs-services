@@ -28,15 +28,23 @@
     </category>
 
     <category name="org.mybatis">
-        <level value="info"/>
+        <level value="debug"/>
     </category>
 
     <category name="java.sql">
-        <level value="info"/> 
+        <level value="debug"/>
+    </category>
+
+    <category name="org.dbunit">
+        <level value="info"/>
+    </category>
+
+    <category name="org.apache">
+        <level value="info"/>
     </category>
 
     <root>
-        <level value="info"/>
+        <level value="debug"/>
         <appender-ref ref="myconsole" />
         <appender-ref ref="appLog" />
     </root>

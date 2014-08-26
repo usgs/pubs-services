@@ -25,6 +25,9 @@
             <if test="id != null">
                 and publication_link_id = #{id}
             </if>
+            <if test="publicationId != null">
+                and publication_id = #{publicationId}
+            </if>
         </where>
     </sql>
 

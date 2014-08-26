@@ -11,6 +11,7 @@
     <bean id="mpPublicationDao" class="gov.usgs.cida.pubs.dao.mp.MpPublicationDao" autowire="byName"/>
     <bean id="mpPublicationContributorDao" class="gov.usgs.cida.pubs.dao.mp.MpPublicationContributorDao" autowire="byName"/>
     <bean id="mpPublicationCostCenterDao" class="gov.usgs.cida.pubs.dao.mp.MpPublicationCostCenterDao" autowire="byName"/>
+    <bean id="mpPublicationLinkDao" class="gov.usgs.cida.pubs.dao.mp.MpPublicationLinkDao" autowire="byName"/>
 
     <bean id="affiliationDao" class="gov.usgs.cida.pubs.dao.AffiliationDao" autowire="byName"/>
     <bean id="contributorDao" class="gov.usgs.cida.pubs.dao.ContributorDao" autowire="byName"/>

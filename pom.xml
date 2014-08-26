@@ -74,10 +74,6 @@
 			<version>1.0.0-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
-					<artifactId>javax.inject</artifactId>
-					<groupId>org.glassfish.hk2.external</groupId>
-				</exclusion>
-				<exclusion>
 					<artifactId>log4j-over-slf4j</artifactId>
 					<groupId>org.slf4j</groupId>
 				</exclusion>

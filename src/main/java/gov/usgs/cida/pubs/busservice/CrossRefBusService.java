@@ -1,12 +1,10 @@
 package gov.usgs.cida.pubs.busservice;
 
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
-import gov.usgs.cida.pubs.domain.CrossRefLog;
 import gov.usgs.cida.pubs.domain.LinkType;
-import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
-import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
-import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
 
 import java.io.BufferedWriter;

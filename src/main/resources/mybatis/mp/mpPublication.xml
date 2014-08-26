@@ -12,31 +12,13 @@
         <collection property="links" column="publication_id" select="mpPublicationLink.getByPublication"/>
     </resultMap>
 
-    <sql id="cols">
-        <include refid="publication.cols"/>,
-        ipds_review_process_state,
-        ipds_internal_id
-    </sql>
-
-    <sql id="hosts">
-        <include refid="publication.hosts"/>,
-        #{ipdsReviewProcessState,jdbcType=VARCHAR},
-        #{ipdsInternalId,jdbcType=NUMERIC}
-    </sql>
-
-    <sql id="sets">
-        <include refid="publication.sets"/>,
-        ipds_review_process_state = #{ipdsReviewProcessState,jdbcType=VARCHAR},
-        ipds_internal_id = #{ipdsInternalId,jdbcType=NUMERIC}
-    </sql>
-
     <select id="getNewProdId" resultType="Integer">
         select publication_seq.nextval id from dual
     </select>
 
     <insert id="add" parameterType="MpPublication">
-        insert into mp_publication (<include refid="cols"/>)
-             values (<include refid="hosts"/>)
+        insert into mp_publication (<include refid="publication.cols"/>)
+             values (<include refid="publication.hosts"/>)
     </insert>
 
     <insert id="copyMpFromPw" parameterType="Integer">
@@ -47,7 +29,7 @@
     </insert>
 
     <sql id="baseSelect">
-        select <include refid="cols"/>
+        select <include refid="publication.cols"/>
             from mp_publication
     </sql>
 
@@ -62,9 +44,9 @@
         <include refid="publication.filters"/>
         <include refid="base.orderBy"/>
         <include refid="base.pagingBottom"/>
-        
     </select>
-        <select id="getCount" parameterType="map" resultType="Integer">
+
+    <select id="getCount" parameterType="map" resultType="Integer">
         select count(*)
           from mp_publication
         <include refid="publication.filters"/>
@@ -72,7 +54,7 @@
 
     <update id="update" parameterType="MpPublication">
         update mp_publication
-           set <include refid="sets"/>
+           set <include refid="publication.sets"/>
            where publication_id = #{id,jdbcType=NUMERIC}
     </update>
 

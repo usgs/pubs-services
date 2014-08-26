@@ -19,8 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class MpPublicationCostCenterBusService implements IListBusService<PublicationCostCenter<MpPublicationCostCenter>> {
 
-    @Autowired
     protected Validator validator;
+
+    @Autowired
+    MpPublicationCostCenterBusService(final Validator validator) {
+        this.validator = validator;
+    }
 
     /** 
      * Cost center merge needs to deal with the association id not being preserved.

@@ -17,8 +17,10 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -29,11 +31,19 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 
     public static final String DOI_PREFIX = "10.3133";
 
-    @Autowired
-    private ICrossRefBusService crossRefBusService;
+    private final ICrossRefBusService crossRefBusService;
+
+    protected final IListBusService<PublicationCostCenter<MpPublicationCostCenter>> costCenterBusService;
 
     @Autowired
-    protected IListBusService<PublicationCostCenter<MpPublicationCostCenter>> costCenterBusService;
+    MpPublicationBusService(final Validator validator,
+            final ICrossRefBusService crossRefBusService,
+            @Qualifier("mpPublicationCostCenterBusService")
+            IListBusService<PublicationCostCenter<MpPublicationCostCenter>> costCenterBusService) {
+        this.validator = validator;
+        this.crossRefBusService = crossRefBusService;
+        this.costCenterBusService = costCenterBusService;
+    }
 
     /** {@inheritDoc}
      * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#getObject(java.lang.Integer)
@@ -42,7 +52,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     public MpPublication getObject(Integer objectId) {
         return MpPublication.getDao().getById(objectId);
     }
-    
+
     @Override
     public Integer getObjectCount(Map<String, Object> filters) {
         return MpPublication.getDao().getObjectCount(filters);
@@ -66,13 +76,12 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
             MpPublication pub = publicationPreProcessing(object);
             pub.setValidationErrors(validator.validate(pub));
             if (pub.getValErrors().isEmpty()) {
-                Integer id = MpPublication.getDao().add(pub);
-                pub = publicationPostProcessing(MpPublication.getDao().getById(id));
+                MpPublication.getDao().add(pub);
+                pub = publicationPostProcessing(pub);
             }
             return pub;
-        } else {
-            return null;
         }
+        return null;
     }
 
     /** {@inheritDoc}
@@ -87,12 +96,11 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
             pub.setValidationErrors(validator.validate(pub));
             if (pub.getValErrors().isEmpty()) {
                 MpPublication.getDao().update(pub);
-                pub = publicationPostProcessing(MpPublication.getDao().getById(object.getId()));
+                pub = publicationPostProcessing(pub);
             }
             return pub;
-        } else {
-            return null;
         }
+        return null;
     }
 
     /** {@inheritDoc}
@@ -119,9 +127,8 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
                 }
             }
             return pub.getValidationErrors();
-        } else {
-            return null;
         }
+        return null;
     }
 
     protected MpPublication publicationPreProcessing(final MpPublication inPublication) {
@@ -216,7 +223,9 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     }
 
     protected MpPublication publicationPostProcessing(final MpPublication inPublication) {
-        MpPublication outPublication = inPublication;
+    	MpPublication outPublication = null;
+        if (null != inPublication) {
+
         //TODO Reactive when lists are implemented.
 //        if (null != outPublication.getIpdsId() 
 //                && null == PwPublication.getDao().getById(outPublication.getId()) ) {
@@ -254,13 +263,10 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 //            }
 //        }
 
-        if (null != outPublication) {
-            costCenterBusService.merge(outPublication.getId(), outPublication.getCostCenters());
+            costCenterBusService.merge(inPublication.getId(), inPublication.getCostCenters());
+            //TODO Add other child object merges here.
 
-            outPublication = MpPublication.getDao().getById(outPublication.getId());
-        }
-        if (null != outPublication) {
-            outPublication.setValidationErrors(validator.validate(outPublication));
+            outPublication = MpPublication.getDao().getById(inPublication.getId());
         }
         return outPublication;
     }

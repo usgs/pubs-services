@@ -3,7 +3,7 @@ package gov.usgs.cida.pubs.busservice.mp;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
@@ -18,23 +18,21 @@ import javax.validation.Validator;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class MpPublicationCostCenterBusServiceTest extends BaseSpringTest {
+public class MpPublicationCostCenterBusServiceTest extends BaseSpringDaoTest {
 
     @Autowired
     public Validator validator;
 
-    private class BusService extends MpPublicationCostCenterBusService {
-        public BusService(Validator validator) {
-            this.validator = validator;
-        }
-    }
-    private BusService busService;
+    private MpPublicationCostCenterBusService busService;
 
     @Before
-    public void initTest() {
-        busService = new BusService(validator);
+    public void initTest() throws Exception {
+        super.setUp();
+        MockitoAnnotations.initMocks(this);
+        busService = new MpPublicationCostCenterBusService(validator);
     }
 
     @Test

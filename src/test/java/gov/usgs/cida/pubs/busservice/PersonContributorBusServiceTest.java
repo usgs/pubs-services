@@ -12,6 +12,7 @@ import javax.validation.Validator;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class PersonContributorBusServiceTest extends BaseSpringTest {
@@ -19,16 +20,12 @@ public class PersonContributorBusServiceTest extends BaseSpringTest {
     @Autowired
     public Validator validator;
 
-    private class BusService extends PersonContributorBusService {
-        public BusService(Validator validator) {
-            this.validator = validator;
-        }
-    }
-    private BusService busService;
+    private PersonContributorBusService busService;
 
     @Before
-    public void initTest() {
-        busService = new BusService(validator);
+    public void initTest() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        busService = new PersonContributorBusService(validator);
     }
 
     @Test

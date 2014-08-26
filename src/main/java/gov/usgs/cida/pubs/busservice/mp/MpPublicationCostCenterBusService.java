@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class MpPublicationCostCenterBusService implements IListBusService<PublicationCostCenter<MpPublicationCostCenter>> {
 
-    protected Validator validator;
+    protected final Validator validator;
 
     @Autowired
     MpPublicationCostCenterBusService(final Validator validator) {

@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-//import gov.usgs.cida.pubs.domain.ProcessType;
 
 /**
  * @author drsteini
@@ -47,7 +46,7 @@ public class PublicationDaoTest extends BaseSpringDaoTest {
         filters.put("ipdsId", new String[] {"IP-056327"});
         pubs = Publication.getPublicationDao().getByMap(filters);
         assertEquals(1, pubs.size());
-        assertEquals(70116614, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
+        assertEquals(3, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
 
         filters.clear();
         filters.put("id", new int[] { 4 });

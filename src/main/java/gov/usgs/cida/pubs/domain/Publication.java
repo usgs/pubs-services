@@ -189,6 +189,14 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @Length(min=0, max=15)
     private String ipdsId;
 
+	@JsonProperty("ipds-review-process-state")
+	@Length(min = 0, max = 400)
+	protected String ipdsReviewProcessState;
+
+	@JsonProperty("ipds-internal-id")
+	@Digits(integer = 28, fraction = 0)
+	protected String ipdsInternalId;
+
     @JsonProperty("authors")
     @JsonView(IMpView.class)
     private Collection<PublicationContributor<?>> authors;
@@ -601,6 +609,28 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
      */
     public void setIpdsId(final String inIpdsId) {
         ipdsId = inIpdsId;
+    }
+
+    public String getIpdsReviewProcessState() {
+        return ipdsReviewProcessState;
+    }
+
+    public void setIpdsReviewProcessState(final String inIpdsReviewProcessState) {
+        this.ipdsReviewProcessState = inIpdsReviewProcessState;
+    }
+
+    /**
+     * @param inIpdsInternalId the ipdsInternalId to set
+     */
+    public void setIpdsInternalId(final String inIpdsInternalId) {
+        ipdsInternalId = inIpdsInternalId;
+    }
+
+    /**
+     * @return the ipdsInternalId
+     */
+    public String getIpdsInternalId() {
+        return ipdsInternalId;
     }
 
     public Collection<PublicationCostCenter<?>> getCostCenters() {

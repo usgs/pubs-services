@@ -73,6 +73,49 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
     //TODO the following tests...
     //publishToPw(Integer prodID)
 
+    public static void assertMpPub1(Publication<?> pub) {
+        assertEquals(1, pub.getId().intValue());
+        assertEquals("sir20145083", pub.getIndexId());
+        assertEquals("2014-07-14T17:27:36.000", pub.getDisplayToPublicDate().toString());
+        assertEquals(18, pub.getPublicationType().getId().intValue());
+        assertEquals(5, pub.getPublicationSubtype().getId().intValue());
+        assertEquals(334, pub.getSeriesTitle().getId().intValue());
+        assertEquals("2014-5083", pub.getSeriesNumber());
+        assertEquals("Climate Change Adaption Series", pub.getSubseriesTitle());
+        assertNull(pub.getChapter());
+        assertNull(pub.getSubchapterNumber());
+        assertEquals("Monitoring recharge in areas of seasonally frozen ground in the Columbia Plateau and Snake River Plain, Idaho, Oregon, and Washington", pub.getTitle());
+        assertNull(pub.getDocAbstract());
+        assertEquals("English", pub.getLanguage());
+        assertEquals("U.S. Geological Survey", pub.getPublisher());
+        assertEquals("Reston, VA", pub.getPublisherLocation());
+        assertEquals("10.3133/sir20145083", pub.getDoi());
+        assertNull(pub.getIssn());
+        assertNull(pub.getIsbn());
+        assertEquals("Written in collaboration with the National Snow and Ice Data Center", pub.getCollaboration());
+        assertNull(pub.getUsgsCitation());
+        assertNull(pub.getContact());
+        assertNull(pub.getProductDescription());
+        assertNull(pub.getStartPage());
+        assertNull(pub.getEndPage());
+        assertNull(pub.getNumberOfPages());
+        assertNull(pub.getOnlineOnly());
+        assertNull(pub.getAdditionalOnlineFiles());
+        assertEquals("2014-07-14", pub.getTemporalStart().toString());
+        assertEquals("2014-07-20", pub.getTemporalEnd().toString());
+        assertNull(pub.getNotes());
+        assertNull(pub.getIpdsId());
+        assertNull(pub.getIpdsReviewProcessState());
+        assertNull(pub.getIpdsInternalId());
+    }
+
+    public static void assertMpPub1Children(Publication<?> pub) {
+        assertEquals(2, pub.getAuthors().size());
+        assertEquals(2, pub.getEditors().size());
+        assertEquals(2, pub.getCostCenters().size());
+        assertEquals(1, pub.getLinks().size());
+    }
+
     public static void assertMpPub2(Publication<?> pub) {
         assertEquals(2, pub.getId().intValue());
         assertEquals("2", pub.getIndexId());
@@ -105,6 +148,8 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals("2014-07-20", pub.getTemporalEnd().toString());
         assertEquals("some notes", pub.getNotes());
         assertEquals("ipdsid", pub.getIpdsId());
+        assertEquals("reviewprocessstate", pub.getIpdsReviewProcessState());
+        assertEquals("123", pub.getIpdsInternalId());
     }
 
     public static void assertMpPub2Children(Publication<?> pub) {

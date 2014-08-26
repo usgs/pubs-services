@@ -5,8 +5,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
+import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
@@ -25,9 +26,11 @@ import javax.validation.Validator;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class MpPublicationBusServiceTest extends BaseSpringTest {
+public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
 
     public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "authors", "editors", "links",
             "doi", "indexId");
@@ -35,20 +38,19 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
     @Autowired
     public Validator validator;
 
+    @Mock
+    private ICrossRefBusService crossRefBusService;
+
     @Autowired
     public IListBusService<PublicationCostCenter<MpPublicationCostCenter>> ccBusService;
 
-    private class BusService extends MpPublicationBusService {
-        public BusService(Validator validator, IListBusService<PublicationCostCenter<MpPublicationCostCenter>> ccBusService) {
-            this.validator = validator;
-            this.costCenterBusService = ccBusService;
-        }
-    }
-    private BusService busService;
+    private MpPublicationBusService busService;
 
     @Before
-    public void initTest() {
-        busService = new BusService(validator, ccBusService);
+    public void initTest() throws Exception {
+        super.setUp();
+        MockitoAnnotations.initMocks(this);
+        busService = new MpPublicationBusService(validator, crossRefBusService, ccBusService);
     }
 
     @Test
@@ -56,6 +58,9 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
         busService.getObject(null);
         assertNull(busService.getObject(-1));
         assertNotNull(busService.getObject(1));
+        MpPublication mpPub = busService.getObject(1);
+        MpPublicationDaoTest.assertMpPub1(mpPub);
+        MpPublicationDaoTest.assertMpPub1Children(mpPub);
     }
 
     @Test
@@ -87,16 +92,21 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
 
     @Test
     public void updateObjectTest() {
-        //TODO both a good update and an update w/validation errors.
-        //public MpPublication updateObject(MpPublication object)
         busService.updateObject(null);
         busService.updateObject(new MpPublication());
 
         MpPublication pub = MpPublicationDaoTest.updatePubProperties(MpPublicationDaoTest.addAPub(MpPublication.getDao().getNewProdId()));
-        MpPublication after = busService.updateObject(MpPublicationDaoTest.updatePubProperties(MpPublication.getDao().getById(pub.getId())));
+        MpPublication after = busService.updateObject(MpPublicationDaoTest.updatePubProperties(pub));
         assertDaoTestResults(MpPublication.class, pub, after, IGNORE_PROPERTIES, true, true);
         assertEquals(pub.getId().toString(), after.getIndexId());
         assertNull("Doi gets nulled out because the pub should no longer have one.", after.getDoi());
+
+        pub = MpPublicationDaoTest.updatePubProperties(MpPublicationDaoTest.addAPub(MpPublication.getDao().getNewProdId()));
+        MpPublication mid = MpPublicationDaoTest.updatePubProperties(pub);
+        mid.setIpdsId("12345678901234567890");
+        after = busService.updateObject(mid);
+        assertDaoTestResults(MpPublication.class, pub, after, IGNORE_PROPERTIES, true, true);
+        assertEquals(3, after.getValErrors().size());
     }
 
     @Test
@@ -214,106 +224,106 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
     }
 
     @Test
-    public void publicationPostProcessingNumberedTest() {
-        MpPublication pub = new MpPublication();
-        pub.setId(MpPublication.getDao().getNewProdId());
-//        pub.setPublicationTypeId(PublicationType.USGS_NUMBERED_SERIES);
-//        pub.setIpdsReviewProcessState(ProcessType.SPN_PRODUCTION.getIpdsValue());
-//        pub.setIpdsId("IPDSX-" + pub.getId());
-        pub.setDoi("test");
-        MpPublication.getDao().add(pub);
-        busService.publicationPostProcessing(pub);
+    public void publicationPostProcessingTest() {
+        assertNull(busService.publicationPostProcessing(null));
+        MpPublication pub = busService.publicationPostProcessing(new MpPublication());
+        assertNull(pub);
 
-//        Map<String, Object> params = new HashMap<String, Object>();
-//        params.put("prodId", pub.getId());
-//        params.put("listId", MpList.PENDING_USGS_SERIES);
-//        List<MpListPubsRel> listEntries = MpListPubsRel.getDao().getByMap(params);
-//        assertEquals(1, listEntries.size());
+//        //TODO
+//        //Check CostCenters merged
+//        pub = busService.getObject(1);
+//        Collection<PublicationCostCenter<?>> costCenters = pub.getCostCenters();
+//        costCenters.remove(costCenters.toArray()[0]);
+//        MpPublicationCostCenter cc = new MpPublicationCostCenter();
+//        cc.setCostCenter((CostCenter) CostCenter.getDao().getById(4));
+//        costCenters.add(cc);
+//        pub = busService.publicationPostProcessing(pub);
+//        assertEquals(2, pub.getCostCenters().size());
+//        boolean gotCc2 = false;
+//        boolean gotCc4 = false;
+//        for (Object i : pub.getCostCenters().toArray()) {
+//        	if (i instanceof MpPublicationCostCenter) {
+//        		if (2 == ((MpPublicationCostCenter) i).getCostCenter().getId()) {
+//        			gotCc2 = true;
+//        		} else if (4 == ((MpPublicationCostCenter) i).getCostCenter().getId()) {
+//            		gotCc4 = true;
+//            	}
+//        	}
+//        }
+//        assertTrue(gotCc2);
+//        assertTrue(gotCc4);
 //
-//        Map<String, Object> filters = new HashMap<String, Object>();
-//        filters.put("prodId", pub.getId());
-//        filters.put("doiLink", MpLinkDim.DOI_LINK_SITE);
-//        List<MpLinkDim> doiLinks = MpLinkDim.getDao().getByMap(filters);
-//        assertEquals(0, doiLinks.size());
-
-
-        pub = new MpPublication();
-        pub.setId(MpPublication.getDao().getNewProdId());
-//        pub.setPublicationTypeId(PublicationType.USGS_NUMBERED_SERIES);
-//        pub.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
-//        pub.setIpdsId("IPDSX-" + pub.getId());
-        pub.setDoi("test");
-        MpPublication.getDao().add(pub);
-        busService.publicationPostProcessing(pub);
-
-//        params = new HashMap<String, Object>();
-//        params.put("prodId", pub.getId());
-//        params.put("listId", MpList.PENDING_USGS_SERIES);
-//        listEntries = MpListPubsRel.getDao().getByMap(params);
-//        assertEquals(0, listEntries.size());
+//        //TODO
+//        //Check Authors merged
+//        pub = busService.getObject(1);
+//        Collection<PublicationCostCenter<?>> costCenters = pub.getCostCenters();
+//        costCenters.remove(costCenters.toArray()[0]);
+//        MpPublicationCostCenter cc = new MpPublicationCostCenter();
+//        cc.setCostCenter((CostCenter) CostCenter.getDao().getById(4));
+//        costCenters.add(cc);
+//        pub = busService.publicationPostProcessing(pub);
+//        assertEquals(2, pub.getCostCenters().size());
+//        boolean gotCc2 = false;
+//        boolean gotCc4 = false;
+//        for (Object i : pub.getCostCenters().toArray()) {
+//        	if (i instanceof MpPublicationCostCenter) {
+//        		if (2 == ((MpPublicationCostCenter) i).getCostCenter().getId()) {
+//        			gotCc2 = true;
+//        		} else if (4 == ((MpPublicationCostCenter) i).getCostCenter().getId()) {
+//            		gotCc4 = true;
+//            	}
+//        	}
+//        }
+//        assertTrue(gotCc2);
+//        assertTrue(gotCc4);
 //
-//        filters = new HashMap<String, Object>();
-//        filters.put("prodId", pub.getId());
-//        filters.put("doiLink", MpLinkDim.DOI_LINK_SITE);
-//        doiLinks = MpLinkDim.getDao().getByMap(filters);
-//        assertEquals(0, doiLinks.size());
+//        //TODO
+//        //Check Editors merged
+//        pub = busService.getObject(1);
+//        Collection<PublicationCostCenter<?>> costCenters = pub.getCostCenters();
+//        costCenters.remove(costCenters.toArray()[0]);
+//        MpPublicationCostCenter cc = new MpPublicationCostCenter();
+//        cc.setCostCenter((CostCenter) CostCenter.getDao().getById(4));
+//        costCenters.add(cc);
+//        pub = busService.publicationPostProcessing(pub);
+//        assertEquals(2, pub.getCostCenters().size());
+//        boolean gotCc2 = false;
+//        boolean gotCc4 = false;
+//        for (Object i : pub.getCostCenters().toArray()) {
+//        	if (i instanceof MpPublicationCostCenter) {
+//        		if (2 == ((MpPublicationCostCenter) i).getCostCenter().getId()) {
+//        			gotCc2 = true;
+//        		} else if (4 == ((MpPublicationCostCenter) i).getCostCenter().getId()) {
+//            		gotCc4 = true;
+//            	}
+//        	}
+//        }
+//        assertTrue(gotCc2);
+//        assertTrue(gotCc4);
+//
+//        //TODO
+//        //Check Links merged
+//        pub = busService.getObject(1);
+//        Collection<PublicationCostCenter<?>> costCenters = pub.getCostCenters();
+//        costCenters.remove(costCenters.toArray()[0]);
+//        MpPublicationCostCenter cc = new MpPublicationCostCenter();
+//        cc.setCostCenter((CostCenter) CostCenter.getDao().getById(4));
+//        costCenters.add(cc);
+//        pub = busService.publicationPostProcessing(pub);
+//        assertEquals(2, pub.getCostCenters().size());
+//        boolean gotCc2 = false;
+//        boolean gotCc4 = false;
+//        for (Object i : pub.getCostCenters().toArray()) {
+//        	if (i instanceof MpPublicationCostCenter) {
+//        		if (2 == ((MpPublicationCostCenter) i).getCostCenter().getId()) {
+//        			gotCc2 = true;
+//        		} else if (4 == ((MpPublicationCostCenter) i).getCostCenter().getId()) {
+//            		gotCc4 = true;
+//            	}
+//        	}
+//        }
+//        assertTrue(gotCc2);
+//        assertTrue(gotCc4);
     }
-
-    @Test
-    public void publicationPostProcessingUnNumberedTest() {
-        MpPublication pub = new MpPublication();
-        pub.setId(MpPublication.getDao().getNewProdId());
-//        pub.setPublicationTypeId(PublicationType.USGS_UNNUMBERED_SERIES);
-//        pub.setIpdsReviewProcessState(ProcessType.SPN_PRODUCTION.getIpdsValue());
-//        pub.setIpdsId("IPDSX-" + pub.getId());
-        pub.setDoi("test");
-        MpPublication.getDao().add(pub);
-        busService.publicationPostProcessing(pub);
-
-//        Map<String, Object> params = new HashMap<String, Object>();
-//        params.put("prodId", pub.getId());
-//        params.put("listId", MpList.PENDING_USGS_SERIES);
-//        List<MpListPubsRel> listEntries = MpListPubsRel.getDao().getByMap(params);
-//        assertEquals(1, listEntries.size());
-//
-//        Map<String, Object> filters = new HashMap<String, Object>();
-//        filters.put("prodId", pub.getId());
-//        filters.put("doiLink", MpLinkDim.DOI_LINK_SITE);
-//        List<MpLinkDim> doiLinks = MpLinkDim.getDao().getByMap(filters);
-//        assertEquals(0, doiLinks.size());
-
-
-        pub = new MpPublication();
-        pub.setId(MpPublication.getDao().getNewProdId());
-//        pub.setPublicationTypeId(PublicationType.USGS_UNNUMBERED_SERIES);
-//        pub.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
-//        pub.setIpdsId("IPDSX-" + pub.getId());
-        pub.setDoi("test");
-        MpPublication.getDao().add(pub);
-        busService.publicationPostProcessing(pub);
-
-//        params = new HashMap<String, Object>();
-//        params.put("prodId", pub.getId());
-//        params.put("listId", MpList.PENDING_USGS_SERIES);
-//        listEntries = MpListPubsRel.getDao().getByMap(params);
-//        assertEquals(0, listEntries.size());
-//
-//        filters = new HashMap<String, Object>();
-//        filters.put("prodId", pub.getId());
-//        filters.put("doiLink", MpLinkDim.DOI_LINK_SITE);
-//        doiLinks = MpLinkDim.getDao().getByMap(filters);
-//        assertEquals(0, doiLinks.size());
-
-    }
-
-    @Test
-    public void publicationPostProcessingNPETest() {
-        //No real asserts - just don't NPE.
-        busService.publicationPostProcessing(null);
-        busService.publicationPostProcessing(new MpPublication());
-    }
-
-    //public ValidationResults publish(final Integer prodId)
-    //private void defaultThumbnail(final MpPublication mpPub)
 
 }

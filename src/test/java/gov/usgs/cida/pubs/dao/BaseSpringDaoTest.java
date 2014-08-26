@@ -8,6 +8,9 @@ import java.sql.Connection;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
+import oracle.jdbc.OracleConnection;
+
+import org.apache.tomcat.dbcp.dbcp.PoolableConnection;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
@@ -38,11 +41,20 @@ public class BaseSpringDaoTest extends BaseSpringTest {
                 )));
         dataSet.addReplacementObject("[NULL]", null);
 
-        Connection conn = DataSourceUtils.getConnection(dataSource);
+        Connection conn = DataSourceUtils.getConnection(dataSource).getMetaData().getConnection();
+        if (conn instanceof PoolableConnection) {
+            conn = ((PoolableConnection) conn).getInnermostDelegate();
+        }
+        if (conn instanceof org.apache.commons.dbcp.PoolableConnection) {
+            conn = ((org.apache.commons.dbcp.PoolableConnection) conn).getInnermostDelegate();
+        }
+
+        OracleConnection oracleConn = (OracleConnection) conn;
+
 
         IDatabaseConnection connection;
         try {
-            connection = new DatabaseConnection(conn);
+            connection = new DatabaseConnection(oracleConn);
 
             DatabaseConfig config = connection.getConfig();
             config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new OracleDataTypeFactory());

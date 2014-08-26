@@ -70,4 +70,5 @@
         </constructor-arg>
     </bean>
 
+	<import resource="classpath:/spring/testSecurityContext.xml"/>
 </beans>

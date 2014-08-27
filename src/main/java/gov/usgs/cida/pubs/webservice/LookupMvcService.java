@@ -8,6 +8,7 @@ import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.LinkFileType;
 import gov.usgs.cida.pubs.domain.LinkType;
+import gov.usgs.cida.pubs.domain.OutsideAffiliation;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
@@ -148,6 +149,22 @@ public class LookupMvcService extends MvcService<PublicationType> {
                 filters.put("name", text[0]);
             }
             rtn = CostCenter.getDao().getByMap(filters);
+        }
+        return rtn;
+    }
+	
+	@RequestMapping(value={"/outsideaffiliates"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
+    @ResponseView(ILookupView.class)
+    public @ResponseBody Collection<Affiliation<?>> getOutsideAffiliates(HttpServletRequest request, HttpServletResponse response,
+                @RequestParam(value="text", required=false) String[] text) {
+        LOG.debug("OutsideAffiliate");
+        Collection<Affiliation<?>> rtn = new ArrayList<>();
+        if (validateParametersSetHeaders(request, response)) {
+            Map<String, Object> filters = new HashMap<>();
+            if (null != text && 0 < text.length) {
+                filters.put("name", text[0]);
+            }
+            rtn = OutsideAffiliation.getDao().getByMap(filters);
         }
         return rtn;
     }

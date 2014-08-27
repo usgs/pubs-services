@@ -13,13 +13,11 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-public class ViewInjectingReturnValueHandler implements
-        HandlerMethodReturnValueHandler {
+public class ViewInjectingReturnValueHandler implements HandlerMethodReturnValueHandler {
 
     private final HandlerMethodReturnValueHandler delegate;
 
-    public ViewInjectingReturnValueHandler(
-            HandlerMethodReturnValueHandler delegate) {
+    public ViewInjectingReturnValueHandler(HandlerMethodReturnValueHandler delegate) {
         this.delegate = delegate;
     }
 
@@ -38,8 +36,7 @@ public class ViewInjectingReturnValueHandler implements
             returnValue = wrapResult(returnValue, viewClass);
         }
 
-        delegate.handleReturnValue(returnValue, returnType, mavContainer,
-                webRequest);
+        delegate.handleReturnValue(returnValue, returnType, mavContainer, webRequest);
     }
 
     /**
@@ -49,10 +46,8 @@ public class ViewInjectingReturnValueHandler implements
      * @param returnType
      * @return
      */
-    private Class<? extends IBaseView> getDeclaredViewClass(
-            MethodParameter returnType) {
-        ResponseView annotation = returnType
-                .getMethodAnnotation(ResponseView.class);
+    private Class<? extends IBaseView> getDeclaredViewClass(MethodParameter returnType) {
+        ResponseView annotation = returnType.getMethodAnnotation(ResponseView.class);
         if (annotation != null) {
             return annotation.value();
         } else {
@@ -61,7 +56,6 @@ public class ViewInjectingReturnValueHandler implements
     }
 
     private Object wrapResult(Object result, Class<? extends IBaseView> viewClass) {
-        PojoView response = new PojoView(result, viewClass);
-        return response;
+        return new PojoView(result, viewClass);
     }
 }

@@ -93,4 +93,67 @@ public class IpdsProcessTest extends BaseSpringTest {
         pub.setPublicationSubtype(new PublicationSubtype());
         assertFalse(ipdsProcess.okToProcess(ProcessType.SPN_PRODUCTION, pub, new MpPublication()));
     }
+
+    @Test
+    public void okToProcessDisseminationTest() {
+        assertTrue(ipdsProcess.okToProcessDissemination(new MpPublication(), null));
+        assertFalse(ipdsProcess.okToProcessDissemination(null, new MpPublication()));
+        assertTrue(ipdsProcess.okToProcessDissemination(new MpPublication(), new MpPublication()));
+
+        //Do not process USGS numbered series without an actual series.
+        MpPublication pub = new MpPublication();
+        PublicationType pubType = new PublicationType();
+        pub.setPublicationType(pubType);
+        assertTrue(ipdsProcess.okToProcessDissemination(pub, new MpPublication()));
+        PublicationSubtype pubSubtype = new PublicationSubtype();
+        pubSubtype.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
+        pub.setPublicationSubtype(pubSubtype);
+        assertFalse(ipdsProcess.okToProcessDissemination(pub, new MpPublication()));
+        pub.setSeriesTitle(new PublicationSeries());
+        assertTrue(ipdsProcess.okToProcessDissemination(pub, new MpPublication()));
+        pub.setPublicationSubtype(new PublicationSubtype());
+        assertTrue(ipdsProcess.okToProcessDissemination(pub, new MpPublication()));
+
+        //It is ok to process a publication already in our system if has no review state or
+        //was in the SPN Production state. (Or if it is not already in our system).
+        MpPublication existingPub = new MpPublication();
+        assertTrue(ipdsProcess.okToProcessDissemination(pub, existingPub));
+        existingPub.setIpdsReviewProcessState(ProcessType.SPN_PRODUCTION.getIpdsValue());
+        assertTrue(ipdsProcess.okToProcessDissemination(pub, existingPub));
+
+        //Do not process if already in our system (with a Dissemination state).
+        existingPub.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
+        assertFalse(ipdsProcess.okToProcessDissemination(pub, existingPub));
+    }
+
+    @Test
+    public void okToProcessSpnProductionTest() {
+        assertFalse(ipdsProcess.okToProcessSpnProduction(null));
+        assertFalse(ipdsProcess.okToProcessSpnProduction(new MpPublication()));
+
+        //Skip if we have already assigned a DOI (shouldn't happen as we are querying for null DOI publications)
+        PublicationType pubType = new PublicationType();
+        PublicationSubtype pubSubtype = new PublicationSubtype();
+        pubSubtype.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
+        MpPublication pub = new MpPublication();
+        pub.setPublicationType(pubType);
+        pub.setPublicationSubtype(pubSubtype);
+        pub.setDoi("something");
+        assertFalse(ipdsProcess.okToProcessSpnProduction(pub));
+
+        //Skip if not in SPN Production (shouldn't happen as we are querying SPN Production only)
+        pub.setDoi(null);
+        assertFalse(ipdsProcess.okToProcessSpnProduction(pub));
+        pub.setIpdsReviewProcessState("garbage");
+        assertFalse(ipdsProcess.okToProcessSpnProduction(pub));
+
+        //Process USGS numbered series
+        pub.setIpdsReviewProcessState(ProcessType.SPN_PRODUCTION.getIpdsValue());
+        assertTrue(ipdsProcess.okToProcessSpnProduction(pub));
+        pub.setPublicationSubtype(null);
+        assertFalse(ipdsProcess.okToProcessSpnProduction(pub));
+        pub.setPublicationSubtype(new PublicationSubtype());
+        assertFalse(ipdsProcess.okToProcessSpnProduction(pub));
+
+    }
 }

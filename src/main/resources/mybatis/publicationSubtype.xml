@@ -10,7 +10,8 @@
     </resultMap>
 
     <sql id="cols">
-        publication_subtype_id, publication_type_id, name
+        publication_subtype_id, publication_type_id, name,
+        <include refid="base.auditCols"/>
     </sql>
 
     <sql id="filters">

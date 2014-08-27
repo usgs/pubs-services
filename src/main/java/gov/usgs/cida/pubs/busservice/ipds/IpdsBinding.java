@@ -114,7 +114,7 @@ public class IpdsBinding {
         NodeList entries = doc.getElementsByTagName("m:properties");
         for (int n=0; n<entries.getLength(); n++) {
             MpPublicationContributor pubContributor = buildPublicationContributor(entries.item(n));
-            if (ContributorType.AUTHORS == pubContributor.getContributorType().getId()) {
+            if (ContributorType.AUTHORS.equals(pubContributor.getContributorType().getId())) {
                 authors.add(pubContributor);
             } else {
                 editors.add(pubContributor);
@@ -188,10 +188,10 @@ public class IpdsBinding {
         filters.put("name", name);
         List<Affiliation<?>> affiliations = OutsideAffiliation.getDao().getByMap(filters);
         //TODO what if we get more than one?
-        if (0 < affiliations.size()) {
-            affiliation = (OutsideAffiliation) affiliations.get(0);
-        } else {
+        if (affiliations.isEmpty()) {
             affiliation = createNonUsgsAffiliation(name);
+        } else {
+            affiliation = (OutsideAffiliation) affiliations.get(0);
         }
         return affiliation;
     }
@@ -212,11 +212,11 @@ public class IpdsBinding {
         filters.put("ipdsContributorId", ipdsContributorId);
         List<Contributor<?>> people = Contributor.getDao().getByMap(filters);
         //We get at most one hit on the ipdsContributorId, if we don't get any we need to create the contributor.
-        if (0 < people.size()) {
+        if (people.isEmpty()) {
+            person = createUsgsContributor(element, ipdsContributorId);
+        } else {
             person = people.get(0);
             //TODO - should we update the information on file?
-        } else {
-            person = createUsgsContributor(element, ipdsContributorId);
         }
         return person;
     }
@@ -330,7 +330,7 @@ public class IpdsBinding {
             pub.setLanguage("English");
 
             if ((null != conv && IpdsPubTypeConv.USGS_PERIODICAL == conv.getId())
-                    || (null != pub.getPublicationSubtype() && PublicationSubtype.USGS_NUMBERED_SERIES == pub.getPublicationSubtype().getId())) {
+                    || (null != pub.getPublicationSubtype() && PublicationSubtype.USGS_NUMBERED_SERIES.equals(pub.getPublicationSubtype().getId()))) {
                 pub.setPublisher("U.S. Geological Survey");
                 pub.setPublisherLocation("Reston VA");
             } else {
@@ -403,7 +403,7 @@ public class IpdsBinding {
             filters.put("publicationSubtypeId", pubSubtype.getId());
             filters.put("name", usgsSeriesValue);
             List<PublicationSeries> pubSeries = PublicationSeries.getDao().getByMap(filters);
-            if (0 < pubSeries.size()) {
+            if (!pubSeries.isEmpty()) {
                 //We should really only get one, so just take the first...
                 return pubSeries.get(0);
             }
@@ -421,10 +421,10 @@ public class IpdsBinding {
         filters.put("ipdsId", costCenterId);
         List<Affiliation<?>> affiliations = CostCenter.getDao().getByMap(filters);
         //TODO what if we get more than one?
-        if (0 < affiliations.size()) {
-            affiliation = (CostCenter) affiliations.get(0);
-        } else {
+        if (affiliations.isEmpty()) {
             affiliation = createUsgsAffiliation(costCenterId);
+        } else {
+            affiliation = (CostCenter) affiliations.get(0);
         }
         return affiliation;
     }

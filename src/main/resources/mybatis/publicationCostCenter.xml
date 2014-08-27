@@ -10,17 +10,20 @@
     </resultMap>
 
     <sql id="cols">
-        publication_cost_center_id, publication_id, cost_center_id
+        publication_cost_center_id, publication_id, cost_center_id,
+        <include refid="base.auditCols"/>
     </sql>
 
     <sql id="hosts">
         #{id,jdbcType=NUMERIC},
         #{publicationId,jdbcType=NUMERIC},
-        #{costCenter.id,jdbcType=NUMERIC}
+        #{costCenter.id,jdbcType=NUMERIC},
+        <include refid="base.auditHosts"/>
     </sql>
 
     <sql id="sets">
-        cost_center_id = #{costCenter.id,jdbcType=NUMERIC}
+        cost_center_id = #{costCenter.id,jdbcType=NUMERIC},
+        <include refid="base.auditSets"/>
     </sql>
 
     <sql id="filters">

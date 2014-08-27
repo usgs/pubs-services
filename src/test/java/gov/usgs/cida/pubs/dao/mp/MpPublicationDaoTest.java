@@ -113,7 +113,7 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals(2, pub.getAuthors().size());
         assertEquals(2, pub.getEditors().size());
         assertEquals(2, pub.getCostCenters().size());
-        assertEquals(1, pub.getLinks().size());
+        assertEquals(2, pub.getLinks().size());
     }
 
     public static void assertMpPub2(Publication<?> pub) {

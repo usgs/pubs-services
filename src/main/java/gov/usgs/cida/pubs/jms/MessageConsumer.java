@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class MessageConsumer implements MessageListener {
 
-    public static final Log LOG = LogFactory.getLog(JmsExceptionListener.class);
+    private static final Log LOG = LogFactory.getLog(MessageConsumer.class);
 
     protected final IIpdsService ipdsStringMessageService;
 

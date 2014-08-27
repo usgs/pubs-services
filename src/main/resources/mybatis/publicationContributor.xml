@@ -12,7 +12,8 @@
     </resultMap>
 
     <sql id="cols">
-        publication_contributor_id, publication_id, contributor_id, contributor_type_id, rank
+        publication_contributor_id, publication_id, contributor_id, contributor_type_id, rank,
+        <include refid="base.auditCols"/>
     </sql>
 
     <sql id="filters">

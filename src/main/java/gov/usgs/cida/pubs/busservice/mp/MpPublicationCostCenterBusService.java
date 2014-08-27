@@ -31,42 +31,44 @@ public class MpPublicationCostCenterBusService implements IListBusService<Public
      */
     @Override
     public void merge(Integer parentId, Collection<? super PublicationCostCenter<MpPublicationCostCenter>> collection) {
-        //First grab the current collection from the database.
-        Map<String, Object> filters = new HashMap<>();
-        filters.put("publicationId", parentId);
-        List<MpPublicationCostCenter> mpccs = MpPublicationCostCenter.getDao().getByMap(filters);
-
-        //Now put into a map keyed by costCenterId.
-        Map<Integer, MpPublicationCostCenter> map = new HashMap<>();
-        for (MpPublicationCostCenter pubCostCenter : mpccs) {
-            map.put(pubCostCenter.getCostCenter().getId(), pubCostCenter);
-        }
-
-        //And do the merge.
-        if (null != collection && 0 < collection.size()) {
-            for (Object pubObject : collection) {
-                PublicationCostCenter<?> pubCostCenter = (PublicationCostCenter<?>) pubObject;
-                if (map.containsKey(pubCostCenter.getCostCenter().getId())) {
-                    //Just remove from the map - there isn't really anything to update.
-                    map.remove(pubCostCenter.getCostCenter().getId());
-                } else {
-                    //Add in the new cost center.
-                    //pubCostCenter.setPublicationId(parentId);
-                    MpPublicationCostCenter pcc = new MpPublicationCostCenter();
-                    pcc.setPublicationId(parentId);
-                    pcc.setCostCenter(pubCostCenter.getCostCenter());
-                    //MpPublicationCostCenter.getDao().add(pubCostCenter);
-                    MpPublicationCostCenter.getDao().add(pcc);
-                }
-            }
-        }
-
-        //Delete any left overs (would only apply to applications which are not sending the delete like they should.
-        if (!map.isEmpty()) {
-           for (MpPublicationCostCenter pubCostCenter : map.values()) {
-               deleteObject(pubCostCenter);
-            }
-        }
+    	if (null != parentId) {
+	        //First grab the current collection from the database.
+	        Map<String, Object> filters = new HashMap<>();
+	        filters.put("publicationId", parentId);
+	        List<MpPublicationCostCenter> mpccs = MpPublicationCostCenter.getDao().getByMap(filters);
+	
+	        //Now put into a map keyed by costCenterId.
+	        Map<Integer, MpPublicationCostCenter> map = new HashMap<>();
+	        for (MpPublicationCostCenter pubCostCenter : mpccs) {
+	            map.put(pubCostCenter.getCostCenter().getId(), pubCostCenter);
+	        }
+	
+	        //And do the merge.
+	        if (null != collection && !collection.isEmpty()) {
+	            for (Object pubObject : collection) {
+	                PublicationCostCenter<?> pubCostCenter = (PublicationCostCenter<?>) pubObject;
+	                if (map.containsKey(pubCostCenter.getCostCenter().getId())) {
+	                    //Just remove from the map - there isn't really anything to update.
+	                    map.remove(pubCostCenter.getCostCenter().getId());
+	                } else {
+	                    //Add in the new cost center.
+	                    //pubCostCenter.setPublicationId(parentId);
+	                    MpPublicationCostCenter pcc = new MpPublicationCostCenter();
+	                    pcc.setPublicationId(parentId);
+	                    pcc.setCostCenter(pubCostCenter.getCostCenter());
+	                    //MpPublicationCostCenter.getDao().add(pubCostCenter);
+	                    MpPublicationCostCenter.getDao().add(pcc);
+	                }
+	            }
+	        }
+	
+	        //Delete any left overs (would only apply to applications which are not sending the delete like they should.
+	        if (!map.isEmpty()) {
+	           for (MpPublicationCostCenter pubCostCenter : map.values()) {
+	               deleteObject(pubCostCenter);
+	            }
+	        }
+    	}
     }
 
     /** 
@@ -82,7 +84,7 @@ public class MpPublicationCostCenterBusService implements IListBusService<Public
             filters.put("publicationId", object.getPublicationId());
             filters.put("costCenterId", object.getCostCenter().getId());
             List<MpPublicationCostCenter> pubCostCenters = MpPublicationCostCenter.getDao().getByMap(filters);
-            if (null != pubCostCenters && 0 < pubCostCenters.size()) {
+            if (null != pubCostCenters && !pubCostCenters.isEmpty()) {
                 //we should really only have one.
                 pubCostCenter = pubCostCenters.get(0);
             }

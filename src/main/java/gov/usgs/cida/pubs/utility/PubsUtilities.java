@@ -9,12 +9,19 @@ import java.util.Properties;
  */
 public final class PubsUtilities {
 
+	private PubsUtilities() {
+		
+	}
+
     /** Utility method for determining if a string represents an integer.  
      * @param number .
      * @return Boolean .
      * */
     public static Boolean isInteger(final String number) {
-        if (isNullOrEmpty(number)) return false;
+        if (isNullOrEmpty(number)) {
+        	return false;
+        }
+
         try {
             Integer.parseInt(number);
         } catch (NumberFormatException e) {
@@ -60,7 +67,7 @@ public final class PubsUtilities {
     }
 
     public static String buildErrorMsg(final String messageName, final Object[] messageArguments) {
-        String messageProp = new String();
+        String messageProp;
         if (messageName.startsWith("{") && messageName.endsWith("}")) {
             Properties props = new Properties();
             try {

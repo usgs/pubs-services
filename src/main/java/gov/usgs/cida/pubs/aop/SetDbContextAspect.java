@@ -28,7 +28,8 @@ public class SetDbContextAspect extends SqlSessionDaoSupport {
     private String clientId;
 
     @Pointcut("@annotation(gov.usgs.cida.pubs.aop.ISetDbContext)")
-    private void dbAccess() { }
+    private void dbAccess() {
+    }
 
     /** Set the client ID in the database. */
     @Before(value="dbAccess()")

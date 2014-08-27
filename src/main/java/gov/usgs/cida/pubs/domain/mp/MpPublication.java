@@ -36,7 +36,7 @@ public class MpPublication extends Publication<MpPublication> {
         if (null != validationErrors) {
             return validationErrors.getValidatorResults();
         } else {
-            return new ArrayList<ValidatorResult>(); //empty array
+            return new ArrayList<>();
         }
     }
 

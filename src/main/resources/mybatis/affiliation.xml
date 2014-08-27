@@ -21,7 +21,8 @@
     <resultMap id="outsideAffiliationResult" type="OutsideAffiliation" extends="affiliation.result"/>
 
     <sql id="baseCols">
-        affiliation_id, name, is_cost_center, is_active
+        affiliation_id, name, is_cost_center, is_active,
+        <include refid="base.auditCols"/>
     </sql>
 
     <sql id="costCenterCols">
@@ -32,7 +33,8 @@
         #{id,jdbcType=NUMERIC},
         #{name,jdbcType=VARCHAR},
         #{usgs,jdbcType=VARCHAR},
-        #{active,jdbcType=VARCHAR}
+        #{active,jdbcType=VARCHAR},
+        <include refid="base.auditHosts"/>
     </sql>
 
      <sql id="costCenterHosts">
@@ -43,7 +45,8 @@
     <sql id="baseSets">
         name = #{name,jdbcType=VARCHAR},
         is_cost_center = #{usgs,jdbcType=VARCHAR},
-        is_active = #{active,jdbcType=VARCHAR}
+        is_active = #{active,jdbcType=VARCHAR},
+        <include refid="base.auditSets"/>
     </sql>
 
     <sql id="costCenterSets">
@@ -131,15 +134,13 @@
 
     <update id="updateOutsideAffiliation" parameterType="OutsideAffiliation">
         update affiliation
-           set <include refid="baseSets"/>,
-               <include refid="base.auditSets"/>
+           set <include refid="baseSets"/>
            where affiliation_id = #{id,jdbcType=NUMERIC}
     </update>
 
     <update id="updateCostCenter" parameterType="CostCenter">
         update affiliation
-           set <include refid="costCenterSets"/>,
-               <include refid="base.auditSets"/>
+           set <include refid="costCenterSets"/>
            where affiliation_id = #{id,jdbcType=NUMERIC}
     </update>
 

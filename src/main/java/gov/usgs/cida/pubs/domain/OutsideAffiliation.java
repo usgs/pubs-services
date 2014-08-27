@@ -5,12 +5,12 @@ import gov.usgs.cida.pubs.dao.intfc.IDao;
 
 public class OutsideAffiliation extends Affiliation<OutsideAffiliation> {
 
+    private static IDao<Affiliation<?>> outsideAffiliationDao;
+
     public OutsideAffiliation() {
         usgs = false;
         active = true;
     }
-
-    private static IDao<Affiliation<?>> outsideAffiliationDao;
 
     public static IDao<Affiliation<?>> getDao() {
         return outsideAffiliationDao;

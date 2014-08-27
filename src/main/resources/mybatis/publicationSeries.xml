@@ -14,7 +14,8 @@
     </resultMap>
 
     <sql id="cols">
-        publication_series_id, publication_subtype_id, name, code, doi_name, print_issn, online_issn
+        publication_series_id, publication_subtype_id, name, code, doi_name, print_issn, online_issn,
+        <include refid="base.auditCols"/>
     </sql>
 
     <sql id="filters">

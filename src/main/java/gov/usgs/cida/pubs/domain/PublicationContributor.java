@@ -1,5 +1,7 @@
 package gov.usgs.cida.pubs.domain;
 
+import java.io.Serializable;
+
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,12 +10,14 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 //import gov.usgs.cida.pubs.dao.intfc.IDao;
 
-public class PublicationContributor<D> extends BaseDomain<D> {
+public class PublicationContributor<D> extends BaseDomain<D> implements Serializable {
 
     //TODO Remove dao if it isn't needed.
 //    private static IDao<PublicationContributor<?>> publicationContributorDao;
 
-    private Integer publicationId;
+	private static final long serialVersionUID = 5911778679824879199L;
+
+	private Integer publicationId;
 
     private ContributorType contributorType;
 

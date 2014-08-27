@@ -32,8 +32,7 @@ public class JsonViewSupportFactoryBean implements InitializingBean {
 
     private void decorateHandlers(List<HandlerMethodReturnValueHandler> handlers) {
         for (HandlerMethodReturnValueHandler handler : handlers) {
-            if (handler instanceof RequestResponseBodyMethodProcessor)
-            {
+            if (handler instanceof RequestResponseBodyMethodProcessor) {
                 ViewInjectingReturnValueHandler decorator = new ViewInjectingReturnValueHandler(handler);
                 int index = handlers.indexOf(handler);
                 handlers.set(index, decorator);

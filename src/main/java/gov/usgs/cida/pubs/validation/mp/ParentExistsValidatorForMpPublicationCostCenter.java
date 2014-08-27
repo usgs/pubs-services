@@ -25,21 +25,17 @@ public class ParentExistsValidatorForMpPublicationCostCenter implements Constrai
     public boolean isValid(PublicationCostCenter<?> value, ConstraintValidatorContext context) {
         boolean rtn = true;
 
-        if (null != value.getPublicationId()) {
-            if (null == MpPublication.getDao().getById(value.getPublicationId())) {
-                rtn = false;
-                context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
-                    .addPropertyNode("publicationId").addConstraintViolation();
-            }
+        if (null != value.getPublicationId() && null == MpPublication.getDao().getById(value.getPublicationId())) {
+            rtn = false;
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
+                .addPropertyNode("publicationId").addConstraintViolation();
         }
-        if (null != value.getCostCenter()) {
-            if (null == CostCenter.getDao().getById(value.getCostCenter().getId())) {
-                rtn = false;
-                context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
-                    .addPropertyNode("costCenter").addConstraintViolation();
-            }
+        if (null != value.getCostCenter() && null == CostCenter.getDao().getById(value.getCostCenter().getId())) {
+            rtn = false;
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
+                .addPropertyNode("costCenter").addConstraintViolation();
         }
 
         return rtn;

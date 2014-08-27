@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <appender name="myconsole" class="org.apache.log4j.ConsoleAppender">
+        <param name="Target" value="System.out" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} - %t %p (%C.java:%L) %M - %m%n" />
+        </layout>
+    </appender>
+
+    <appender name="appLog" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${catalina.base}/logs/pubs-services.log" />
+        <param name="Append" value="true" />
+        <param name="DatePattern" value="'.'yyyy-MM-dd'.log'"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} - %t %p (%C.java:%L) %M - %m%n" />
+        </layout>
+    </appender>
+
+    <category name="org.springframework">
+        <level value="info"/>
+    </category>
+
+    <category name="gov.usgs">
+        <level value="info"/>
+    </category>
+
+    <category name="org.mybatis">
+        <level value="info"/>
+    </category>
+
+    <category name="java.sql">
+        <level value="info"/> 
+    </category>
+
+    <root>
+        <level value="info"/>
+        <appender-ref ref="myconsole" />
+        <appender-ref ref="appLog" />
+    </root>
+
+</log4j:configuration>

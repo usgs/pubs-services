@@ -26,29 +26,23 @@ public class ParentExistsValidatorForMpPublication implements ConstraintValidato
     public boolean isValid(Publication<?> value, ConstraintValidatorContext context) {
         boolean rtn = true;
 
-        if (null != value.getPublicationType()) {
-            if (null == PublicationType.getDao().getById(value.getPublicationType().getId())) {
-                rtn = false;
-                context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
-                    .addPropertyNode("type").addConstraintViolation();
-            }
+        if (null != value.getPublicationType() && null == PublicationType.getDao().getById(value.getPublicationType().getId())) {
+            rtn = false;
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
+                .addPropertyNode("type").addConstraintViolation();
         }
-        if (null != value.getPublicationSubtype()) {
-            if (null == PublicationSubtype.getDao().getById(value.getPublicationSubtype().getId())) {
-                rtn = false;
-                context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
-                    .addPropertyNode("genre").addConstraintViolation();
-            }
+        if (null != value.getPublicationSubtype() && null == PublicationSubtype.getDao().getById(value.getPublicationSubtype().getId())) {
+            rtn = false;
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
+                .addPropertyNode("genre").addConstraintViolation();
         }
-        if (null != value.getSeriesTitle()) {
-            if (null == PublicationSeries.getDao().getById(value.getSeriesTitle().getId())) {
-                rtn = false;
-                context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
-                    .addPropertyNode("collectionTitle").addConstraintViolation();
-            }
+        if (null != value.getSeriesTitle() && null == PublicationSeries.getDao().getById(value.getSeriesTitle().getId())) {
+            rtn = false;
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
+                .addPropertyNode("collectionTitle").addConstraintViolation();
         }
         //TODO implement Contact
 //        if (null != value.getContact()) {

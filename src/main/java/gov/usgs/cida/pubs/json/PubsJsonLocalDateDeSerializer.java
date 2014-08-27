@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.joda.time.LocalDate;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 
@@ -16,10 +15,11 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 public class PubsJsonLocalDateDeSerializer extends JsonDeserializer<LocalDate> {
 
     /** {@inheritDoc}
+     * @throws IOException 
      * @see com.fasterxml.jackson.databind.JsonDeserializer#deserialize(com.fasterxml.jackson.JsonParser, com.fasterxml.jackson.databind.DeserializationContext)
      */
     @Override
-    public LocalDate deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public LocalDate deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException  {
         String date = jp.getValueAsString();
         LocalDate ldt = null;
         if (date != null && date.length() > 0) { 

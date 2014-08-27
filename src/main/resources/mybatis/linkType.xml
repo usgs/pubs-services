@@ -9,7 +9,8 @@
     </resultMap>
 
     <sql id="cols">
-        link_type_id, name
+        link_type_id, name,
+        <include refid="base.auditCols"/>
     </sql>
 
     <sql id="filters">

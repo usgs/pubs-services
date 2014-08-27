@@ -5,6 +5,7 @@ import gov.usgs.cida.pubs.domain.intfc.ILookup;
 import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import com.fasterxml.jackson.annotation.JsonView;
@@ -13,9 +14,11 @@ import com.fasterxml.jackson.annotation.JsonView;
  * @author drsteini
  *
  */
-public class PublicationSubtype extends BaseDomain<PublicationSubtype> implements ILookup {
+public class PublicationSubtype extends BaseDomain<PublicationSubtype> implements ILookup, Serializable {
 
-    private static IDao<PublicationSubtype> publicationSubtypeDao;
+	private static final long serialVersionUID = 122305624975493957L;
+
+	private static IDao<PublicationSubtype> publicationSubtypeDao;
 
     public static final Integer USGS_NUMBERED_SERIES = 5;
 

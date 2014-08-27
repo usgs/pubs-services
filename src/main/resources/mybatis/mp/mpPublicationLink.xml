@@ -6,6 +6,21 @@
     <resultMap id="result" type="MpPublicationLink" extends="publicationLink.result">
     </resultMap>
 
+    <insert id="add" parameterType="MpPublicationLink">
+        <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
+            select publication_link_seq.nextval id from dual
+        </selectKey>
+        insert into mp_publication_link (<include refid="publicationLink.cols"/>)
+             values (<include refid="publicationLink.hosts"/>)
+    </insert>
+
+    <insert id="copyMpFromPw" parameterType="Integer">
+        insert into mp_publication_link (<include refid="publicationLink.cols"/>)
+            (select <include refid="publicationLink.cols"/>
+               from publication_link
+              where publication_id = #{value,jdbcType=NUMERIC})
+    </insert>
+
     <sql id="baseSelect">
         select <include refid="publicationLink.cols"/>
           from mp_publication_link
@@ -25,5 +40,21 @@
         <include refid="baseSelect"/>
         <include refid="publicationLink.filters"/>
     </select>
+
+    <update id="update" parameterType="MpPublicationLink">
+        update mp_publication_link
+           set <include refid="publicationLink.sets"/>
+           where publication_link_id = #{id,jdbcType=NUMERIC}
+    </update>
+
+    <delete id="delete" parameterType="Integer">
+        delete from mp_publication_link
+         where publication_link_id = #{value,jdbcType=NUMERIC}
+    </delete>
+
+    <delete id="deleteByParent" parameterType="Integer">
+        delete from mp_publication_link
+         where publication_id = #{value,jdbcType=NUMERIC}
+    </delete>
 
 </mapper>

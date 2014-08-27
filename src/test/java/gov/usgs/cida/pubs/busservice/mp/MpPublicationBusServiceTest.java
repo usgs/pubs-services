@@ -9,12 +9,15 @@ import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
 import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
+import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
+import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -44,13 +47,16 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     @Autowired
     public IListBusService<PublicationCostCenter<MpPublicationCostCenter>> ccBusService;
 
+    @Autowired
+    public IListBusService<PublicationLink<MpPublicationLink>> linkBusService;
+
     private MpPublicationBusService busService;
 
     @Before
     public void initTest() throws Exception {
         super.setUp();
         MockitoAnnotations.initMocks(this);
-        busService = new MpPublicationBusService(validator, crossRefBusService, ccBusService);
+        busService = new MpPublicationBusService(validator, crossRefBusService, ccBusService, linkBusService);
     }
 
     @Test
@@ -229,31 +235,58 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
         MpPublication pub = busService.publicationPostProcessing(new MpPublication());
         assertNull(pub);
 
-//        //TODO
-//        //Check CostCenters merged
-//        pub = busService.getObject(1);
-//        Collection<PublicationCostCenter<?>> costCenters = pub.getCostCenters();
-//        costCenters.remove(costCenters.toArray()[0]);
-//        MpPublicationCostCenter cc = new MpPublicationCostCenter();
-//        cc.setCostCenter((CostCenter) CostCenter.getDao().getById(4));
-//        costCenters.add(cc);
-//        pub = busService.publicationPostProcessing(pub);
-//        assertEquals(2, pub.getCostCenters().size());
-//        boolean gotCc2 = false;
-//        boolean gotCc4 = false;
-//        for (Object i : pub.getCostCenters().toArray()) {
-//        	if (i instanceof MpPublicationCostCenter) {
-//        		if (2 == ((MpPublicationCostCenter) i).getCostCenter().getId()) {
-//        			gotCc2 = true;
-//        		} else if (4 == ((MpPublicationCostCenter) i).getCostCenter().getId()) {
-//            		gotCc4 = true;
-//            	}
-//        	}
-//        }
-//        assertTrue(gotCc2);
-//        assertTrue(gotCc4);
-//
-//        //TODO
+        //Check CostCenters merged
+        pub = busService.getObject(1);
+        Collection<PublicationCostCenter<?>> costCenters = pub.getCostCenters();
+        costCenters.remove(costCenters.toArray()[0]);
+        MpPublicationCostCenter cc = new MpPublicationCostCenter();
+        cc.setCostCenter((CostCenter) CostCenter.getDao().getById(4));
+        costCenters.add(cc);
+        pub = busService.publicationPostProcessing(pub);
+        assertEquals(2, pub.getCostCenters().size());
+        boolean gotCc2 = false;
+        boolean gotCc4 = false;
+        for (Object i : pub.getCostCenters().toArray()) {
+        	if (i instanceof MpPublicationCostCenter) {
+        		if (2 == ((MpPublicationCostCenter) i).getCostCenter().getId()) {
+        			gotCc2 = true;
+        		} else if (4 == ((MpPublicationCostCenter) i).getCostCenter().getId()) {
+            		gotCc4 = true;
+            	}
+        	}
+        }
+        assertTrue(gotCc2);
+        assertTrue(gotCc4);
+
+        //Check Links merged
+        pub = busService.getObject(1);
+        Collection<PublicationLink<?>> links = pub.getLinks();
+        links.remove(links.toArray()[0]);
+        MpPublicationLink link = new MpPublicationLink();
+        link.setPublicationId(1);
+        link.setRank(3);
+        link.setDescription("new merge");
+        links.add(link);
+        pub = busService.publicationPostProcessing(pub);
+        assertEquals(2, pub.getLinks().size());
+        boolean gotLink1 = false;
+        boolean gotLink2 = false;
+        boolean gotLink3 = false;
+        for (PublicationLink<?> added : pub.getLinks()) {
+            assertEquals(1, added.getPublicationId().intValue());
+            if (1 == link.getRank()) {
+            	gotLink1 = true;
+            } else if (2 == added.getRank()) {
+            	gotLink2 = true;
+            } else if (3 == added.getRank()) {
+            	gotLink3 = true;
+            }
+        }
+        assertFalse(gotLink1);
+        assertTrue(gotLink2);
+        assertTrue(gotLink3);
+
+        //        //TODO
 //        //Check Authors merged
 //        pub = busService.getObject(1);
 //        Collection<PublicationCostCenter<?>> costCenters = pub.getCostCenters();
@@ -301,29 +334,6 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
 //        assertTrue(gotCc2);
 //        assertTrue(gotCc4);
 //
-//        //TODO
-//        //Check Links merged
-//        pub = busService.getObject(1);
-//        Collection<PublicationCostCenter<?>> costCenters = pub.getCostCenters();
-//        costCenters.remove(costCenters.toArray()[0]);
-//        MpPublicationCostCenter cc = new MpPublicationCostCenter();
-//        cc.setCostCenter((CostCenter) CostCenter.getDao().getById(4));
-//        costCenters.add(cc);
-//        pub = busService.publicationPostProcessing(pub);
-//        assertEquals(2, pub.getCostCenters().size());
-//        boolean gotCc2 = false;
-//        boolean gotCc4 = false;
-//        for (Object i : pub.getCostCenters().toArray()) {
-//        	if (i instanceof MpPublicationCostCenter) {
-//        		if (2 == ((MpPublicationCostCenter) i).getCostCenter().getId()) {
-//        			gotCc2 = true;
-//        		} else if (4 == ((MpPublicationCostCenter) i).getCostCenter().getId()) {
-//            		gotCc4 = true;
-//            	}
-//        	}
-//        }
-//        assertTrue(gotCc2);
-//        assertTrue(gotCc4);
     }
 
 }

@@ -33,7 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class CrossRefBusService implements ICrossRefBusService {
 
-    private final Logger LOG = LoggerFactory.getLogger(getClass());
+    private static final Logger LOG = LoggerFactory.getLogger(CrossRefBusService.class);
 
     @Autowired
     private String crossRefProtocol;
@@ -208,7 +208,7 @@ public class CrossRefBusService implements ICrossRefBusService {
         params.put("publicationId", pub.getId());
         params.put("linkType", LinkType.INDEX_PAGE);
         List<MpPublicationLink> links = MpPublicationLink.getDao().getByMap(params);
-        if (0 < links.size()) {
+        if (!links.isEmpty()) {
             //Should only be one...
             rtn = links.get(0).getUrl();
         }

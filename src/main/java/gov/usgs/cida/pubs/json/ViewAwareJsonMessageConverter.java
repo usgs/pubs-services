@@ -20,8 +20,7 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
-public class ViewAwareJsonMessageConverter extends
-        MappingJackson2HttpMessageConverter {
+public class ViewAwareJsonMessageConverter extends MappingJackson2HttpMessageConverter {
 
     public ViewAwareJsonMessageConverter() {
         super();
@@ -31,8 +30,7 @@ public class ViewAwareJsonMessageConverter extends
     }
 
     @Override
-    protected void writeInternal(Object object, HttpOutputMessage outputMessage)
-            throws IOException, HttpMessageNotWritableException {
+    protected void writeInternal(Object object, HttpOutputMessage outputMessage) throws IOException {
         if (object instanceof IDataView && ((IDataView) object).hasView()) {
             writeView((IDataView) object, outputMessage);
         } else {
@@ -40,13 +38,10 @@ public class ViewAwareJsonMessageConverter extends
         }
     }
 
-    protected void writeView(IDataView view, HttpOutputMessage outputMessage)
-            throws IOException, HttpMessageNotWritableException {
-        JsonEncoding encoding = getJsonEncoding(outputMessage.getHeaders()
-                .getContentType());
+    protected void writeView(IDataView view, HttpOutputMessage outputMessage) throws IOException {
+        JsonEncoding encoding = getJsonEncoding(outputMessage.getHeaders().getContentType());
         ObjectWriter writer = getWriterForView(view.getView());
-        JsonGenerator jsonGenerator = writer.getFactory().createGenerator(
-                outputMessage.getBody(), encoding);
+        JsonGenerator jsonGenerator = writer.getFactory().createGenerator(outputMessage.getBody(), encoding);
         try {
             writer.writeValue(jsonGenerator, view.getData());
         } catch (IOException ex) {

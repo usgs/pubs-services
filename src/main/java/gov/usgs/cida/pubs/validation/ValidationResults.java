@@ -32,7 +32,7 @@ public class ValidationResults {
 
     @JsonIgnore
     public boolean isEmpty() {
-        return null == vErrors || 0 == vErrors.size();
+        return null == vErrors || vErrors.isEmpty();
     }
 
     /** {@inheritDoc}

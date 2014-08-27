@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public abstract class MvcService<D> {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private static final Logger LOG = LoggerFactory.getLogger(MvcService.class);
 
     /**
      * Helper to check if null and add to filters map
@@ -38,7 +38,7 @@ public abstract class MvcService<D> {
         }
     	return filters;
     }
-    
+
     /**
      * Helper creates an array of non-empty values and places it in the filters map.
      */
@@ -54,55 +54,29 @@ public abstract class MvcService<D> {
         }
     	return filters;
     }
-    
+
     /**
      * Extends current order by clause with more options if necessary
      */
     protected Map<String, Object> updateOrderBy(Map<String, Object> filters, String orderBy, String orderByDir) {
     	if ( ! PubsUtilities.isNullOrEmpty(orderBy)) {
     		String newOrderBy = orderBy;
-    		if (newOrderBy.equalsIgnoreCase("reportnumber")) {
+    		if ("reportnumber".equalsIgnoreCase(newOrderBy)) {
     			newOrderBy = "series_number";
             }
-    		
+
 		    String exitingOrderBy = (String) filters.get("orderby");
 	    	String fullOrderBy = newOrderBy + " " + (orderByDir == null ? "" : orderByDir);
-		    
+
 		    if(exitingOrderBy != null) {
 		    	filters.put("orderby", exitingOrderBy + ", " + fullOrderBy);
 		    } else {
 		    	filters.put("orderby", fullOrderBy);
-		    	
+
 		    }
     	}
 
     	return filters;
-    }
-
-    /**
-     * Takes a request body data and maps the values onto the given domain instance
-     * @param body json request data body
-     * @param givenDomain sample instance because of type erasure
-     * @return domain from json body or empty sample on exception.
-     */
-    @SuppressWarnings("unchecked") // need to cast getClass() to Class<D> which returns Class<?>
-    protected D getDomainFromExtRequest(MultiValueMap<String, String> body, D givenDomain) {
-
-        D newDomain = givenDomain; // an empty user to return in exception
-
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            String       data   = body.getFirst("data").toString();
-
-            newDomain = mapper.readValue(data, (Class<D>) givenDomain.getClass());
-
-        } catch (Exception e) {
-            String myError = "Failed to parse " + givenDomain.getClass().getSimpleName() + " from json body";
-            log.error(myError, e);
-            throw new RuntimeException(myError, e); 
-        }
-
-        return newDomain;
     }
 
     @ExceptionHandler(Exception.class)
@@ -116,7 +90,7 @@ public abstract class MvcService<D> {
             //Note: we are giving the user a generic message.  
             //Server logs can be used to troubleshoot problems.
             String msgText = "Something bad happened. Contact us with Reference Number: " + hashValue;
-            log.error(msgText, ex);
+            LOG.error(msgText, ex);
             return msgText;
         }
     }

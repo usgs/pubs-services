@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class PubsEMailer {
 
-    public static final Log LOG = LogFactory.getLog(JmsExceptionListener.class);
+    private static final Log LOG = LogFactory.getLog(PubsEMailer.class);
     private static final String PUBSV2_NO_REPLY_NAME = "PUBSV2_NO_REPLY";
     private static final String PUBSV2_NO_REPLY_ADDRESS = "pubsv2_no_reply@usgs.gov";
 

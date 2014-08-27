@@ -1,18 +1,22 @@
 package gov.usgs.cida.pubs.domain;
 
+import java.io.Serializable;
+
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class CostCenter extends Affiliation<CostCenter> {
+public class CostCenter extends Affiliation<CostCenter> implements Serializable {
 
-    public CostCenter() {
+	private static final long serialVersionUID = -7804226743028056085L;
+
+    private static IDao<Affiliation<?>> costCenterDao;
+
+	public CostCenter() {
         usgs = true;
         active = true;
     }
-
-    private static IDao<Affiliation<?>> costCenterDao;
 
     @JsonIgnore
     private Integer ipdsId;

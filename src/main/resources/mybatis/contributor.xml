@@ -38,7 +38,8 @@
     </resultMap>
 
     <sql id="baseCols">
-        contributor_id, is_corporation, is_usgs
+        contributor_id, is_corporation, is_usgs,
+        <include refid="base.auditCols"/>
     </sql>
 
     <sql id="corpCols">
@@ -52,7 +53,8 @@
     <sql id="baseHosts">
         #{id,jdbcType=NUMERIC},
         #{corporation,jdbcType=VARCHAR},
-        #{usgs,jdbcType=VARCHAR}
+        #{usgs,jdbcType=VARCHAR},
+        <include refid="base.auditHosts"/>
     </sql>
 
      <sql id="corpHosts">
@@ -72,7 +74,8 @@
 
     <sql id="baseSets">
         is_corporation = #{corporation,jdbcType=VARCHAR},
-        is_usgs = #{usgs,jdbcType=VARCHAR}
+        is_usgs = #{usgs,jdbcType=VARCHAR},
+        <include refid="base.auditSets"/>
     </sql>
 
     <sql id="corpSets">
@@ -178,15 +181,13 @@
 
     <update id="updatePersonContributor" parameterType="PersonContributor">
         update contributor
-           set <include refid="personSets"/>,
-               <include refid="base.auditSets"/>
+           set <include refid="personSets"/>
            where contributor_id = #{id,jdbcType=NUMERIC}
     </update>
 
     <update id="updateCorporateContributor" parameterType="CorporateContributor">
         update contributor
-           set <include refid="corpSets"/>,
-               <include refid="base.auditSets"/>
+           set <include refid="corpSets"/>
            where contributor_id = #{id,jdbcType=NUMERIC}
     </update>
 

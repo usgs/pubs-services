@@ -5,7 +5,7 @@
 
     <resultMap id="result" type="MpPublicationCostCenter" extends="publicationCostCenter.result"/>
 
-    <insert id="add" parameterType="MpPublication">
+    <insert id="add" parameterType="MpPublicationCostCenter">
         <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
             select publication_cost_center_seq.nextval id from dual
         </selectKey>
@@ -40,10 +40,9 @@
         <include refid="publicationCostCenter.filters"/>
     </select>
 
-    <update id="update" parameterType="MpPublication">
+    <update id="update" parameterType="MpPublicationCostCenter">
         update mp_pub_cost_center
-           set <include refid="publicationCostCenter.sets"/>,
-               <include refid="base.auditSets"/>
+           set <include refid="publicationCostCenter.sets"/>
            where publication_cost_center_id = #{id,jdbcType=NUMERIC}
     </update>
 

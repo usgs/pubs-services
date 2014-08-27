@@ -1,14 +1,18 @@
 package gov.usgs.cida.pubs.domain;
 
+import java.io.Serializable;
+
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 
-public class PublicationLink<D> extends BaseDomain<D> {
+public class PublicationLink<D> extends BaseDomain<D> implements Serializable {
 
-    @JsonIgnore
+	private static final long serialVersionUID = 5845209857599494487L;
+
+	@JsonIgnore
     private Integer publicationId;
 
     @JsonProperty("rank")
@@ -27,11 +31,9 @@ public class PublicationLink<D> extends BaseDomain<D> {
     @JsonView(IMpView.class)
     private String text;
 
-    @JsonIgnore
+    @JsonProperty("size")
+    @JsonView(IMpView.class)
     private String objectSize;
-
-    @JsonIgnore
-    private String sizeUnits;
 
     @JsonProperty("linkFileType")
     @JsonView(IMpView.class)
@@ -81,36 +83,12 @@ public class PublicationLink<D> extends BaseDomain<D> {
         text = inText;
     }
 
-    @JsonProperty("size")
-    @JsonView(IMpView.class)
-    public String getSize() {
-        return objectSize + " " + sizeUnits;
-    }
-
-    public void setSize(final String inSize) {
-        if (2 == inSize.split(" ").length) {
-            objectSize = inSize.split(" ")[0];
-            sizeUnits = inSize.split(" ")[0];
-        } else {
-            objectSize = inSize;
-            sizeUnits = null;
-        }
-    }
-
     public String getObjectSize() {
         return objectSize;
     }
 
     public void setObjectSize(final String inObjectSize) {
         objectSize = inObjectSize;
-    }
-
-    public String getSizeUnits() {
-        return sizeUnits;
-    }
-
-    public void setSizeUnits(final String inSizeUnits) {
-        sizeUnits = inSizeUnits;
     }
 
     public LinkFileType getLinkFileType() {

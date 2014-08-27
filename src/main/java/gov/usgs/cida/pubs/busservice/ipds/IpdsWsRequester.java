@@ -28,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class IpdsWsRequester {
 
-    private final Logger LOG = LoggerFactory.getLogger(getClass());
+    private static final Logger LOG = LoggerFactory.getLogger(IpdsWsRequester.class);
 
     public static final String URL_PREFIX = "/_vti_bin/listdata.svc/";
     public static final String DOI_XML_PREFIX = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" +
@@ -36,8 +36,8 @@ public class IpdsWsRequester {
                     "xmlns=\"http://schemas.microsoft.com/ado/2007/08/dataservices\"";
     public static final String DOI_XML_SUFFIX = "</DigitalObjectIdentifier>";
     public static final String NULL_DOI = " m:null=\"true\"/>";
-    private static final String ipdsProtocol = "https";
-    private static final int ipdsPort = 443;
+    private static final String IPDS_PROTOCOL = "https";
+    private static final int IPDS_PORT = 443;
 
     private final String ipdsEndpoint;
     private final NTCredentials credentials;
@@ -110,7 +110,7 @@ public class IpdsWsRequester {
     protected String getIpdsXml(final String url, final String ipdsId)  {
         String xml = null;
 
-        HttpResponse response = doGet(url.toString());
+        HttpResponse response = doGet(url);
         try {
             HttpEntity entity = response.getEntity();
             xml = EntityUtils.toString(entity);
@@ -160,7 +160,7 @@ public class IpdsWsRequester {
     }
 
     protected HttpHost getHttpHost() {
-        return new HttpHost(ipdsEndpoint, ipdsPort, ipdsProtocol);
+        return new HttpHost(ipdsEndpoint, IPDS_PORT, IPDS_PROTOCOL);
     }
 
     protected String updateIpdsDoi(MpPublication inPub) {

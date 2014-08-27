@@ -4,10 +4,12 @@ import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
+import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
@@ -35,14 +37,19 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 
     protected final IListBusService<PublicationCostCenter<MpPublicationCostCenter>> costCenterBusService;
 
+    protected final IListBusService<PublicationLink<MpPublicationLink>> linkBusService;
+
     @Autowired
     MpPublicationBusService(final Validator validator,
             final ICrossRefBusService crossRefBusService,
             @Qualifier("mpPublicationCostCenterBusService")
-            IListBusService<PublicationCostCenter<MpPublicationCostCenter>> costCenterBusService) {
+            IListBusService<PublicationCostCenter<MpPublicationCostCenter>> costCenterBusService,
+            @Qualifier("mpPublicationLinkBusService")
+            IListBusService<PublicationLink<MpPublicationLink>> linkBusService) {
         this.validator = validator;
         this.crossRefBusService = crossRefBusService;
         this.costCenterBusService = costCenterBusService;
+        this.linkBusService = linkBusService;
     }
 
     /** {@inheritDoc}
@@ -119,9 +126,9 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
                 if (!validations.isEmpty()) {
                     pub.setValidationErrors(validations);
                 } else {
-//                    MpPublicationLink.getDao().deleteByParent(object.getId());
 //                    MpPublicationContributor.getDao().deleteByParent(object.getId());
                     MpPublicationCostCenter.getDao().deleteByParent(object.getId());
+                    MpPublicationLink.getDao().deleteByParent(object.getId());
     //                MpSupersedeRel.getDao().deleteByParent(object.getId());
                     MpPublication.getDao().delete(object);
                 }
@@ -173,7 +180,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     protected boolean isUsgsNumberedSeries(final PublicationSubtype pubSubtype) {
         boolean rtn = false;
         if (null != pubSubtype
-                && PublicationSubtype.USGS_NUMBERED_SERIES == pubSubtype.getId()) {
+                && PublicationSubtype.USGS_NUMBERED_SERIES.equals(pubSubtype.getId())) {
             rtn = true;
         }
         return rtn;
@@ -182,7 +189,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     protected boolean isUsgsUnnumberedSeries(final PublicationSubtype pubSubtype) {
         boolean rtn = false;
         if (null != pubSubtype
-                && PublicationSubtype.USGS_UNNUMBERED_SERIES == pubSubtype.getId()) {
+                && PublicationSubtype.USGS_UNNUMBERED_SERIES.equals(pubSubtype.getId())) {
             rtn = true;
         }
         return rtn;
@@ -264,6 +271,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 //        }
 
             costCenterBusService.merge(inPublication.getId(), inPublication.getCostCenters());
+            linkBusService.merge(inPublication.getId(), inPublication.getLinks());
             //TODO Add other child object merges here.
 
             outPublication = MpPublication.getDao().getById(inPublication.getId());

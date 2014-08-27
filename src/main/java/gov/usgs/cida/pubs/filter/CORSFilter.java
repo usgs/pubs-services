@@ -13,7 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 public class CORSFilter implements Filter {
 
     @Override
-    public void init(FilterConfig arg0) throws ServletException {}
+    public void init(FilterConfig arg0) throws ServletException {
+    }
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
@@ -28,6 +29,7 @@ public class CORSFilter implements Filter {
     }
 
     @Override
-    public void destroy() {}
+    public void destroy() {
+    }
 
 }

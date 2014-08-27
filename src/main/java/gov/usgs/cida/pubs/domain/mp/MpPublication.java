@@ -5,6 +5,7 @@ import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -35,7 +36,7 @@ public class MpPublication extends Publication<MpPublication> {
         if (null != validationErrors) {
             return validationErrors.getValidatorResults();
         } else {
-            return null;
+            return new ArrayList<ValidatorResult>(); //empty array
         }
     }
 

@@ -29,8 +29,14 @@ public class AuthTokenService {
     @ResponseStatus(value=HttpStatus.OK)
     public @ResponseBody ObjectNode getToken(
     		@RequestParam(value="username", required=false) String username, //single string search
-            @RequestParam(value="password", required=false) String password) {
+            @RequestParam(value="password", required=false) String password) throws UnauthorizedException {
+    	
     	AuthToken token = authClient.getNewToken(username, password);
+    	
+    	if(token == null || token.getTokenId().isEmpty()) {
+    		throw new UnauthorizedException("Invalid username/password");
+    	}
+    	
     	ObjectNode node = JsonNodeFactory.instance.objectNode();
     	node.put("token", token.getTokenId());
     	node.put("expires", token.getExpires() != null ? token.getExpires().toString() : "");

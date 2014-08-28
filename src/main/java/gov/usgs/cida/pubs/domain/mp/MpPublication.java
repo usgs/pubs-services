@@ -19,9 +19,11 @@ import com.fasterxml.jackson.annotation.JsonView;
 //@JsonTypeName ("mpPublication")
 @JsonPropertyOrder({"id", "type", "genre", "collection-title", "number", "subseries-title", "chapter-number",
     "sub-chapter-number", "title", "abstract", "language", "publisher", "publisher-place", "DOI", "ISSN", "ISBN", "number-of-pages",
-    "page-first", "page-last", "author", "editor", "display-to-public-date", "indexID", "collaboration", 
+    "page-first", "page-last", "author", "editor", "display-to-public-date", 
+    "publicationYear", "largerWorkType", "largerWorkTitle", "conferenceTitle", "conferenceDate", "conferenceLocation",
+    "indexID", "collaboration", 
     "usgs-citation", "cost-center", "links", "product-description", "online-only", "additional-online-files",
-    "temporal-start", "temporal-end", "notes", "contact", "ipds-id", "ipds-review-process-state", "ipds-internal-id",
+    "temporal-start", "temporal-end", "lastModifiedDate", "notes", "contact", "ipds-id", "ipds-review-process-state", "ipds-internal-id",
     "validationErrors"})
 public class MpPublication extends Publication<MpPublication> {
 

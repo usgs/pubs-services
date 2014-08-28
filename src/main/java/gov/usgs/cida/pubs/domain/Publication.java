@@ -49,6 +49,12 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
     @NotNull
     private LocalDateTime displayToPublicDate;
+    
+    @JsonProperty("publicationYear")
+    @JsonView(IMpView.class)
+    @NotNull
+    @Length(min=4, max=4)
+    private String publicationYear;
 
     @JsonProperty("publicationType")
     @JsonView(IMpView.class)
@@ -92,6 +98,33 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @JsonProperty("abstract")
     @JsonView(IMpView.class)
     private String docAbstract;
+
+    @JsonProperty("largerWorkType")
+    @JsonView(IMpView.class)
+    @NotNull
+    private PublicationType largerWorkType;
+    
+    @JsonProperty("largerWorkTitle")
+    @JsonView(IMpView.class)
+    @Length(min=1, max=2000)
+    private String largerWorkTitle;
+
+    @JsonProperty("conferenceTitle")
+    @JsonView(IMpView.class)
+    @Length(min=1, max=255)
+    private String conferenceTitle;
+
+    @JsonProperty("conferenceDate")
+    @JsonView(IMpView.class)
+    @JsonDeserialize(using=PubsJsonLocalDateTimeDeSerializer.class)
+    @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
+    @NotNull
+    private LocalDateTime conferenceDate;
+
+    @JsonProperty("conferenceLocation")
+    @JsonView(IMpView.class)
+    @Length(min=1, max=255)
+    private String conferenceLocation;
 
     @JsonProperty("language")
     @JsonView(IMpView.class)
@@ -178,6 +211,13 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @JsonSerialize(using=PubsJsonLocalDateSerializer.class)
     @JsonDeserialize(using=PubsJsonLocalDateDeSerializer.class)
     private LocalDate temporalEnd;
+
+    @JsonProperty("lastModifiedDate")
+    @JsonView(IMpView.class)
+    @JsonDeserialize(using=PubsJsonLocalDateTimeDeSerializer.class)
+    @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
+    @NotNull
+    private LocalDateTime lastModifiedDate;
 
     @JsonProperty("notes")
     @JsonView(IMpView.class)
@@ -680,5 +720,61 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     public void setPublicationDao(final IDao<Publication<?>> inPublicationDao) {
         publicationDao = inPublicationDao;
     }
+
+	public String getPublicationYear() {
+		return publicationYear;
+	}
+
+	public void setPublicationYear(String publicationYear) {
+		this.publicationYear = publicationYear;
+	}
+
+	public PublicationType getLargerWorkType() {
+		return largerWorkType;
+	}
+
+	public void setLargerWorkType(PublicationType largerWorkType) {
+		this.largerWorkType = largerWorkType;
+	}
+
+	public String getLargerWorkTitle() {
+		return largerWorkTitle;
+	}
+
+	public void setLargerWorkTitle(String largerWorkTitle) {
+		this.largerWorkTitle = largerWorkTitle;
+	}
+
+	public String getConferenceTitle() {
+		return conferenceTitle;
+	}
+
+	public void setConferenceTitle(String conferenceTitle) {
+		this.conferenceTitle = conferenceTitle;
+	}
+
+	public LocalDateTime getConferenceDate() {
+		return conferenceDate;
+	}
+
+	public void setConferenceDate(LocalDateTime conferenceDate) {
+		this.conferenceDate = conferenceDate;
+	}
+
+	public String getConferenceLocation() {
+		return conferenceLocation;
+	}
+
+	public void setConferenceLocation(String conferenceLocation) {
+		this.conferenceLocation = conferenceLocation;
+	}
+
+	public LocalDateTime getLastModifiedDate() {
+		return lastModifiedDate;
+	}
+
+	public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+		this.lastModifiedDate = lastModifiedDate;
+	}
 
 }

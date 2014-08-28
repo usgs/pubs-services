@@ -16,7 +16,40 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 	PersonContributorBusService(final Validator validator) {
 		this.validator = validator;
 	}
+	
+	/** {@inheritDoc}
+	 * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#getObject(java.lang.Integer) 
+	 */
+	@Override
+	public PersonContributor<?> getObject(Integer objectId) {
+		PersonContributor result = null;
+		if (null != objectId) {
+			result = (PersonContributor) PersonContributor.getDao().getById(objectId);
+		}
+		return result;
+	}
 
+	@Override
+	@Transactional
+	public PersonContributor<?> updateObject(PersonContributor<?> object) {
+		PersonContributor<?> result = null;
+		if (null != object && null != object.getId()) {
+			Integer id = object.getId();
+			if (object instanceof OutsideContributor) {
+                Contributor<PersonContributor<OutsideContributor>> oc = (OutsideContributor) object;
+                oc.setValidationErrors(validator.validate(oc));
+            } else {
+                Contributor<PersonContributor<UsgsContributor>> uc = (UsgsContributor) object;
+                uc.setValidationErrors(validator.validate(uc));
+            }
+			if (object.getValidationErrors().isEmpty()) {
+				PersonContributor.getDao().update(object);
+				result = (PersonContributor<?>) PersonContributor.getDao().getById(id);
+			}
+		}
+		return result;
+	}
+	
     /** {@inheritDoc}
      * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#createObject(java.lang.Object)
      */

@@ -111,15 +111,13 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     @JsonProperty("conferenceTitle")
     @JsonView(IMpView.class)
-    @Length(min=1, max=255)
+    @Length(min=1, max=2000)
     private String conferenceTitle;
 
     @JsonProperty("conferenceDate")
     @JsonView(IMpView.class)
-    @JsonDeserialize(using=PubsJsonLocalDateTimeDeSerializer.class)
-    @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
-    @NotNull
-    private LocalDateTime conferenceDate;
+    @Length(min=1, max=14)
+    private String conferenceDate;
 
     @JsonProperty("conferenceLocation")
     @JsonView(IMpView.class)
@@ -211,13 +209,6 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @JsonSerialize(using=PubsJsonLocalDateSerializer.class)
     @JsonDeserialize(using=PubsJsonLocalDateDeSerializer.class)
     private LocalDate temporalEnd;
-
-    @JsonProperty("lastModifiedDate")
-    @JsonView(IMpView.class)
-    @JsonDeserialize(using=PubsJsonLocalDateTimeDeSerializer.class)
-    @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
-    @NotNull
-    private LocalDateTime lastModifiedDate;
 
     @JsonProperty("notes")
     @JsonView(IMpView.class)
@@ -753,11 +744,11 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 		this.conferenceTitle = conferenceTitle;
 	}
 
-	public LocalDateTime getConferenceDate() {
+	public String getConferenceDate() {
 		return conferenceDate;
 	}
 
-	public void setConferenceDate(LocalDateTime conferenceDate) {
+	public void setConferenceDate(String conferenceDate) {
 		this.conferenceDate = conferenceDate;
 	}
 
@@ -767,14 +758,6 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
 	public void setConferenceLocation(String conferenceLocation) {
 		this.conferenceLocation = conferenceLocation;
-	}
-
-	public LocalDateTime getLastModifiedDate() {
-		return lastModifiedDate;
-	}
-
-	public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
-		this.lastModifiedDate = lastModifiedDate;
 	}
 
 }

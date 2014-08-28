@@ -116,7 +116,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     @JsonProperty("conferenceDate")
     @JsonView(IMpView.class)
-    @Length(min=1, max=14)
+    @Length(min=1, max=255)
     private String conferenceDate;
 
     @JsonProperty("conferenceLocation")

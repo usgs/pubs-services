@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonView;
     "indexID", "collaboration", 
     "usgs-citation", "cost-center", "links", "product-description", "online-only", "additional-online-files",
     "temporal-start", "temporal-end", "lastModifiedDate", "notes", "contact", "ipds-id", "ipds-review-process-state", "ipds-internal-id",
-    "validationErrors"})
+    "lastModifiedDate", "validationErrors"})
 public class MpPublication extends Publication<MpPublication> {
 
     private static final long serialVersionUID = 8072814759958143994L;

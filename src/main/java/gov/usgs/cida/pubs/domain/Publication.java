@@ -244,8 +244,16 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @JsonProperty("links")
     @JsonView(IMpView.class)
     private Collection<PublicationLink<?>> links;
+    
+    @JsonProperty("lastModifiedDate")
+    @JsonView(IMpView.class)
+    @JsonDeserialize(using=PubsJsonLocalDateTimeDeSerializer.class)
+    @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
+    @NotNull
+    private LocalDateTime updateDate;
 
-   /**
+
+/**
      * @return the indexId
      */
     public String getIndexId() {
@@ -759,5 +767,12 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 	public void setConferenceLocation(String conferenceLocation) {
 		this.conferenceLocation = conferenceLocation;
 	}
+	
+	public LocalDateTime getUpdateDate() {
+		return updateDate;
+	}
 
+	public void setUpdateDate(LocalDateTime updateDate) {
+		this.updateDate = updateDate;
+	}
 }

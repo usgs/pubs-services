@@ -324,10 +324,10 @@
                 	from mp_pub_cost_center 
                 	where cost_center_id in 
                 		(select cost_center_id 
-                		from cost_center 
-                		where
-                		<foreach item="co" collection="contributingOffice" open=""
-								 separator="or" close=""> 
+                		from affiliation 
+                		where is_cost_center = 'Y' and
+                		<foreach item="co" collection="contributingOffice" open="("
+								 separator="or" close=")"> 
 	                	 upper(name) like '%' || upper(#{co}) || '%'
 	                	 )
                 	 	</foreach>
@@ -336,10 +336,10 @@
 					from publication_cost_center 
 					where cost_center_id in 
 						(select cost_center_id 
-						from cost_center 
-						where
-						<foreach item="co" collection="contributingOffice" open=""
-								 separator="or" close=""> 
+						from affiliation 
+						where is_cost_center = 'Y' and
+						<foreach item="co" collection="contributingOffice" open="("
+								 separator="or" close=")"> 
                 	 	upper(name) like '%' || upper(#{co}) || '%'
                 	 	)
                 	 	</foreach>

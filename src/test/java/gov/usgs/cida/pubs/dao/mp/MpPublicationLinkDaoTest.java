@@ -24,7 +24,7 @@ import org.junit.Test;
  */
 public class MpPublicationLinkDaoTest extends BaseSpringDaoTest {
 
-	public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "authors", "editors", "links");
+	public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors");
 
 	@Test
 	public void getbyIdTests() {
@@ -93,8 +93,8 @@ public class MpPublicationLinkDaoTest extends BaseSpringDaoTest {
 		MpPublicationLink.getDao().delete(persistedC);
 		assertNull(MpPublicationLink.getDao().getById(newLink.getId()));
 
-		MpPublicationLink.getDao().deleteById(10);
-		assertNull(MpPublicationLink.getDao().getById(10));
+		MpPublicationLink.getDao().deleteById(2);
+		assertNull(MpPublicationLink.getDao().getById(2));
 
 		MpPublicationLink.getDao().deleteByParent(1);
 		Map<String, Object> filters = new HashMap<>();

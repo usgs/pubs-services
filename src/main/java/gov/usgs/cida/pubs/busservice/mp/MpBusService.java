@@ -2,7 +2,9 @@ package gov.usgs.cida.pubs.busservice.mp;
 
 import gov.usgs.cida.pubs.busservice.BusService;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 
 import org.joda.time.LocalDate;
@@ -29,10 +31,9 @@ public abstract class MpBusService<D> extends BusService<D> {
                 if (null != pwPub) {
                     //There it is, copy it!
                     MpPublication.getDao().copyFromPw(prodId);
-//                    MpPublicationLink.getDao().copyFromPw(prodId);
-//                    MpPublicationContributor.getDao().copyFromPw(prodId);
-//                  MpSupersedeRel.getDao().copyFromPw(prodId);
                     MpPublicationCostCenter.getDao().copyFromPw(prodId);
+                    MpPublicationLink.getDao().copyFromPw(prodId);
+                    MpPublicationContributor.getDao().copyFromPw(prodId);
                 }
             }
         }

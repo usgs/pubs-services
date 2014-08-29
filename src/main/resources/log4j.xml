@@ -31,6 +31,14 @@
         <level value="info"/>
     </category>
 
+    <category name="org.apache.activemq">
+        <level value="info"/>
+    </category>
+
+    <category name="org.apache.ibatis">
+        <level value="info"/>
+    </category>
+
     <category name="java.sql">
         <level value="info"/> 
     </category>

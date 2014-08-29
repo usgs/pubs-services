@@ -107,6 +107,12 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertNull(pub.getIpdsId());
         assertNull(pub.getIpdsReviewProcessState());
         assertNull(pub.getIpdsInternalId());
+        assertEquals("2014", pub.getPublicationYear());
+        assertEquals("Some Journal", pub.getLargerWorkTitle());
+        assertEquals(23, pub.getLargerWorkType().getId().intValue());
+        assertEquals("Conference Title", pub.getConferenceTitle());
+        assertEquals("A free form DATE", pub.getConferenceDate());
+        assertEquals("A conference location", pub.getPublicationYear());
     }
 
     public static void assertMpPub1Children(Publication<?> pub) {
@@ -150,6 +156,13 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals("ipdsid", pub.getIpdsId());
         assertEquals("reviewprocessstate", pub.getIpdsReviewProcessState());
         assertEquals("123", pub.getIpdsInternalId());
+
+        assertNull(pub.getPublicationYear());
+        assertNull(pub.getLargerWorkTitle());
+        assertNull(pub.getLargerWorkType());
+        assertNull(pub.getConferenceTitle());
+        assertNull(pub.getConferenceDate());
+        assertNull(pub.getPublicationYear());
     }
 
     public static void assertMpPub2Children(Publication<?> pub) {

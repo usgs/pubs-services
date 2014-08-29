@@ -56,13 +56,11 @@ public class MpPublicationLinkBusServiceTest extends BaseSpringDaoTest {
         //Add some links
         Collection<PublicationLink<?>> mpLinks = new ArrayList<>();
         MpPublicationLink mpLink1 = new MpPublicationLink();
-        mpLink1.setPublicationId(id);
         mpLink1.setRank(1);
         LinkType linkType = LinkType.getDao().getById(1);
         mpLink1.setLinkType(linkType);
         mpLinks.add(mpLink1);
         MpPublicationLink mpLink2 = new MpPublicationLink();
-        mpLink2.setPublicationId(id);
         mpLink2.setRank(2);
         mpLink2.setLinkType(linkType);
         mpLinks.add(mpLink2);
@@ -90,7 +88,6 @@ public class MpPublicationLinkBusServiceTest extends BaseSpringDaoTest {
         mpLink2.setDescription("an updated description");
         mpLinks.add(mpLink2);
         MpPublicationLink mpLink3 = new MpPublicationLink();
-        mpLink3.setPublicationId(id);
         mpLink3.setRank(3);
         mpLink3.setLinkType(linkType);
         mpLinks.add(mpLink3);

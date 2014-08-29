@@ -370,10 +370,14 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
         assertNull(binding.getStringValue(null, null));
         assertNull(binding.getStringValue(pubMap, null));
         assertNull(binding.getStringValue(pubMap, "xx"));
+        assertNull(binding.getStringValue(pubMap, "xx"));
         assertNull(binding.getStringValue(null, "xx"));
 
         pubMap.put("xxx", "  owiytuiwruto   ");
         assertEquals("owiytuiwruto", binding.getStringValue(pubMap, "xxx"));
+
+        pubMap.put("xxx", "");
+        assertNull(binding.getStringValue(pubMap, "xxx"));
     }
 
     @Test

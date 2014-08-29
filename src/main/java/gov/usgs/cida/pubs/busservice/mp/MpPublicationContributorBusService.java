@@ -44,6 +44,8 @@ public class MpPublicationContributorBusService implements IListBusService<Publi
 	        if (null != collection && !collection.isEmpty()) {
 	            for (Object pubObject : collection) {
 	                MpPublicationContributor pubContrib = (MpPublicationContributor) pubObject;
+	                //Make sure the publicationID matches what it should - (it's typically null with adds)
+	                pubContrib.setPublicationId(parentId);
 	                if (map.containsKey(pubContrib.getId())) {
 	                    //update and remove from the map.
 	                	MpPublicationContributor.getDao().update(pubContrib);

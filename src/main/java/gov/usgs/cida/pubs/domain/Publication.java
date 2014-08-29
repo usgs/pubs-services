@@ -47,7 +47,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @JsonView(IMpView.class)
     @JsonDeserialize(using=PubsJsonLocalDateTimeDeSerializer.class)
     @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
-    @NotNull
+//TODO    @NotNull
     private LocalDateTime displayToPublicDate;
 
     @JsonProperty("publicationType")
@@ -130,7 +130,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     @JsonProperty("usgsCitation")
     @JsonView(IMpView.class)
-    @Length(min=0, max=255)
+    @Length(min=0, max=2000)
     private String usgsCitation;
 
     @JsonProperty("contact")

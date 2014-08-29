@@ -3,17 +3,21 @@ package gov.usgs.cida.pubs.busservice.mp;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,6 +25,7 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,17 +44,22 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 
     protected final IListBusService<PublicationLink<MpPublicationLink>> linkBusService;
 
+    protected final IListBusService<PublicationContributor<MpPublicationContributor>> contributorBusService;
+
     @Autowired
     MpPublicationBusService(final Validator validator,
             final ICrossRefBusService crossRefBusService,
             @Qualifier("mpPublicationCostCenterBusService")
             IListBusService<PublicationCostCenter<MpPublicationCostCenter>> costCenterBusService,
             @Qualifier("mpPublicationLinkBusService")
-            IListBusService<PublicationLink<MpPublicationLink>> linkBusService) {
+            IListBusService<PublicationLink<MpPublicationLink>> linkBusService,
+            @Qualifier("mpPublicationContributorBusService")
+            IListBusService<PublicationContributor<MpPublicationContributor>> contributorBusService) {
         this.validator = validator;
         this.crossRefBusService = crossRefBusService;
         this.costCenterBusService = costCenterBusService;
         this.linkBusService = linkBusService;
+        this.contributorBusService = contributorBusService;
     }
 
     /** {@inheritDoc}
@@ -126,10 +136,9 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
                 if (!validations.isEmpty()) {
                     pub.setValidationErrors(validations);
                 } else {
-//                    MpPublicationContributor.getDao().deleteByParent(object.getId());
+                    MpPublicationContributor.getDao().deleteByParent(object.getId());
                     MpPublicationCostCenter.getDao().deleteByParent(object.getId());
                     MpPublicationLink.getDao().deleteByParent(object.getId());
-    //                MpSupersedeRel.getDao().deleteByParent(object.getId());
                     MpPublication.getDao().delete(object);
                 }
             }
@@ -270,9 +279,17 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 //            }
 //        }
 
+        	Collection<PublicationContributor<?>> publicationContributors = new ArrayList<>();
+        	if (null != inPublication.getAuthors()) {
+        		publicationContributors.addAll(inPublication.getAuthors());
+        	}
+        	if (null != inPublication.getEditors()) {
+        		publicationContributors.addAll(inPublication.getEditors());
+        	}
+        	contributorBusService.merge(inPublication.getId(), publicationContributors);
+
             costCenterBusService.merge(inPublication.getId(), inPublication.getCostCenters());
             linkBusService.merge(inPublication.getId(), inPublication.getLinks());
-            //TODO Add other child object merges here.
 
             outPublication = MpPublication.getDao().getById(inPublication.getId());
         }
@@ -287,10 +304,10 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     public ValidationResults publish(final Integer prodId) {
         //TODO reactivate when implementing the new publish routine.
         ValidationResults validationResults = new ValidationResults();
-//        //One last guarantee that all of the warehouse data is covered in mp
-//        beginPublicationEdit(prodId);
-//        MpPublication mpPub = MpPublication.getDao().getById(prodId);
-//
+        //One last guarantee that all of the warehouse data is covered in mp
+        beginPublicationEdit(prodId);
+        MpPublication mpPub = MpPublication.getDao().getById(prodId);
+
 //        Set<ConstraintViolation<MpPublication>> validations = validator.validate(mpPub);
 //        if ( validations.isEmpty() ) {
 //            Map<String, Object> filters = new HashMap<String, Object>();
@@ -320,11 +337,11 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 //            MpPublication.getDao().publishToPw(prodId);
 //            MpSupersedeRel.getDao().publishToPw(prodId);
 //            MpLinkDim.getDao().publishToPw(prodId);
-//            if ((PublicationType.USGS_NUMBERED_SERIES.contentEquals(mpPub.getPublicationTypeId())
-//                    || PublicationType.USGS_UNNUMBERED_SERIES.contentEquals(mpPub.getPublicationTypeId()))
-//                    && (null != mpPub.getDoiName() && 0 < mpPub.getDoiName().length())) {
-//                crossRefBusService.submitCrossRef(mpPub);
-//            }
+            if ((isUsgsNumberedSeries(mpPub.getPublicationSubtype())
+                    || isUsgsUnnumberedSeries(mpPub.getPublicationSubtype()))
+                    && (null != mpPub.getDoi() && !StringUtils.isEmpty(mpPub.getDoi()))) {
+                crossRefBusService.submitCrossRef(mpPub);
+            }
 //            deleteObject(mpPub);
 //        }
 //

@@ -82,5 +82,4 @@ public class MpPublicationLinkBusService implements IListBusService<PublicationL
         return new MpPublicationLink().getValidationErrors();
     }
 
-
 }

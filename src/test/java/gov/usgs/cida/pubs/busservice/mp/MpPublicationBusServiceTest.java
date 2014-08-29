@@ -9,13 +9,17 @@ import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
 import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
+import gov.usgs.cida.pubs.domain.Contributor;
+import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CostCenter;
+import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 
@@ -50,13 +54,16 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     @Autowired
     public IListBusService<PublicationLink<MpPublicationLink>> linkBusService;
 
+    @Autowired
+    public IListBusService<PublicationContributor<MpPublicationContributor>> contributorBusService;
+
     private MpPublicationBusService busService;
 
     @Before
     public void initTest() throws Exception {
         super.setUp();
         MockitoAnnotations.initMocks(this);
-        busService = new MpPublicationBusService(validator, crossRefBusService, ccBusService, linkBusService);
+        busService = new MpPublicationBusService(validator, crossRefBusService, ccBusService, linkBusService, contributorBusService);
     }
 
     @Test
@@ -274,7 +281,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
         boolean gotLink3 = false;
         for (PublicationLink<?> added : pub.getLinks()) {
             assertEquals(1, added.getPublicationId().intValue());
-            if (1 == link.getRank()) {
+            if (1 == added.getRank()) {
             	gotLink1 = true;
             } else if (2 == added.getRank()) {
             	gotLink2 = true;
@@ -286,54 +293,64 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
         assertTrue(gotLink2);
         assertTrue(gotLink3);
 
-        //        //TODO
-//        //Check Authors merged
-//        pub = busService.getObject(1);
-//        Collection<PublicationCostCenter<?>> costCenters = pub.getCostCenters();
-//        costCenters.remove(costCenters.toArray()[0]);
-//        MpPublicationCostCenter cc = new MpPublicationCostCenter();
-//        cc.setCostCenter((CostCenter) CostCenter.getDao().getById(4));
-//        costCenters.add(cc);
-//        pub = busService.publicationPostProcessing(pub);
-//        assertEquals(2, pub.getCostCenters().size());
-//        boolean gotCc2 = false;
-//        boolean gotCc4 = false;
-//        for (Object i : pub.getCostCenters().toArray()) {
-//        	if (i instanceof MpPublicationCostCenter) {
-//        		if (2 == ((MpPublicationCostCenter) i).getCostCenter().getId()) {
-//        			gotCc2 = true;
-//        		} else if (4 == ((MpPublicationCostCenter) i).getCostCenter().getId()) {
-//            		gotCc4 = true;
-//            	}
-//        	}
-//        }
-//        assertTrue(gotCc2);
-//        assertTrue(gotCc4);
-//
-//        //TODO
-//        //Check Editors merged
-//        pub = busService.getObject(1);
-//        Collection<PublicationCostCenter<?>> costCenters = pub.getCostCenters();
-//        costCenters.remove(costCenters.toArray()[0]);
-//        MpPublicationCostCenter cc = new MpPublicationCostCenter();
-//        cc.setCostCenter((CostCenter) CostCenter.getDao().getById(4));
-//        costCenters.add(cc);
-//        pub = busService.publicationPostProcessing(pub);
-//        assertEquals(2, pub.getCostCenters().size());
-//        boolean gotCc2 = false;
-//        boolean gotCc4 = false;
-//        for (Object i : pub.getCostCenters().toArray()) {
-//        	if (i instanceof MpPublicationCostCenter) {
-//        		if (2 == ((MpPublicationCostCenter) i).getCostCenter().getId()) {
-//        			gotCc2 = true;
-//        		} else if (4 == ((MpPublicationCostCenter) i).getCostCenter().getId()) {
-//            		gotCc4 = true;
-//            	}
-//        	}
-//        }
-//        assertTrue(gotCc2);
-//        assertTrue(gotCc4);
-//
+        //Check Authors merged
+        pub = busService.getObject(1);
+        Collection<PublicationContributor<?>> authors = pub.getAuthors();
+        authors.remove(authors.toArray()[0]);
+        MpPublicationContributor author = new MpPublicationContributor();
+        author.setPublicationId(1);
+        author.setContributorType(ContributorType.getDao().getById(ContributorType.AUTHORS));
+        author.setContributor(Contributor.getDao().getById(3));
+        author.setRank(80);
+        authors.add(author);
+        pub = busService.publicationPostProcessing(pub);
+        assertEquals(2, pub.getAuthors().size());
+        boolean gotAuth1 = false;
+        boolean gotAuth2 = false;
+        boolean gotAuth3 = false;
+        for (PublicationContributor<?> added : pub.getAuthors()) {
+            assertEquals(1, added.getPublicationId().intValue());
+            if (1 == added.getContributor().getId()) {
+            	gotAuth1 = true;
+            } else if (2 == added.getContributor().getId()) {
+            	gotAuth2 = true;
+            } else if (3 == added.getContributor().getId()) {
+            	gotAuth3 = true;
+            }
+        }
+        assertFalse(gotAuth1);
+        assertTrue(gotAuth2);
+        assertTrue(gotAuth3);
+
+        //Check Editors merged
+        pub = busService.getObject(1);
+        Collection<PublicationContributor<?>> editors = pub.getEditors();
+        editors.remove(editors.toArray()[0]);
+        MpPublicationContributor editor = new MpPublicationContributor();
+        editor.setPublicationId(1);
+        editor.setContributorType(ContributorType.getDao().getById(ContributorType.EDITORS));
+        editor.setContributor(Contributor.getDao().getById(3));
+        editor.setRank(80);
+        editors.add(editor);
+        pub = busService.publicationPostProcessing(pub);
+        assertEquals(2, pub.getEditors().size());
+        boolean gotEditor1 = false;
+        boolean gotEditor2 = false;
+        boolean gotEditor3 = false;
+        for (PublicationContributor<?> added : pub.getEditors()) {
+            assertEquals(1, added.getPublicationId().intValue());
+            if (1 == added.getContributor().getId()) {
+            	gotEditor1 = true;
+            } else if (2 == added.getContributor().getId()) {
+            	gotEditor2 = true;
+            } else if (3 == added.getContributor().getId()) {
+            	gotEditor3 = true;
+            }
+        }
+        assertFalse(gotEditor1);
+        assertTrue(gotEditor2);
+        assertTrue(gotEditor3);
+
     }
 
 }

@@ -2,100 +2,152 @@ package gov.usgs.cida.pubs.dao.mp;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
+import gov.usgs.cida.pubs.domain.Contributor;
+import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 
 public class MpPublicationContributorDaoTest extends BaseSpringDaoTest {
 
-    private static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors");
+	public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors");
 
-    @Test
-    public void addAndGetByIds() {
-        Integer id = 1;
-        MpPublicationContributor persistedA = MpPublicationContributor.getDao().getById(id);
-        assertNotNull(persistedA);
-        assertNotNull(persistedA.getId());
-        assertEquals(id, persistedA.getId());
-        assertEquals(id, persistedA.getPublicationId());
-        assertNotNull(persistedA.getContributorType());
-        assertEquals(id, persistedA.getContributorType().getId());
-        assertEquals("Authors", persistedA.getContributorType().getName());
-        assertNotNull(persistedA.getContributor());
-        assertEquals(id, persistedA.getContributor().getId());
-        assertEquals("ConFirst", ((UsgsContributor) persistedA.getContributor()).getFamily());
-        //TODO more property checking
+	@Test
+	public void getbyIdTests() {
+		MpPublicationContributor contrib = MpPublicationContributor.getDao().getById(1);
+		assertMpContributor1(contrib);
+		contrib = MpPublicationContributor.getDao().getById("4");
+		assertMpContributor4(contrib);
+	}
 
+	@Test
+	public void getByMapTests() {
+		Map<String, Object> filters = new HashMap<>();
+		filters.put("id", 1);
+		List<MpPublicationContributor> mpContributors = MpPublicationContributor.getDao().getByMap(filters);
+		assertNotNull(mpContributors);
+		assertEquals(1, mpContributors.size());
+		assertMpContributor1((MpPublicationContributor) mpContributors.get(0));
 
-//        assertDaoTestResults(MpPublication.class, newpubA, persistedA, IGNORE_PROPERTIES, true, true);
-//
-//        Map<String, Object> params = new HashMap<String, Object>();
-//        params.put("id", newpubA.getId());
-//        List<MpPublication> pubs = MpPublication.getDao().getByMap(params);
-//        assertTrue(pubs.size() > 0);
-//        MpPublication persistedB = pubs.get(0);
-//        assertNotNull(persistedB);
-//        assertNotNull(persistedB.getId());
-//        assertDaoTestResults(MpPublication.class, persistedA, persistedB, IGNORE_PROPERTIES, false, true);
-//
-//
-//        persistedA.setIndexId("indexid2");
-//        persistedA.setDisplayToPublicDate(new LocalDateTime(2012, 8, 23, 0, 0, 0));
-//        PublicationType pubType2 = new PublicationType();
-//        pubType2.setId(23);
-//        persistedA.setPublicationType(pubType2);
-//        PublicationSubtype pubSubtype2 = new PublicationSubtype();
-//        pubSubtype2.setId(22);
-//        persistedA.setPublicationSubtype(pubSubtype2);
-//        PublicationSeries pubSeries2 = new PublicationSeries();
-//        pubSeries2.setId(501);
-//        persistedA.setPublicationSeries(pubSeries2);
-//        persistedA.setSeriesNumber("Series Number2");
-//        persistedA.setSubseriesTitle("subseries2");
-//        persistedA.setChapter("chapter2");
-//        persistedA.setSubchapter("subchapter2");
-//        persistedA.setTitle("Title2");
-//        persistedA.setDocAbstract("Abstract Text2");
-//        persistedA.setLanguage("Language2");
-//        persistedA.setPublisher("Publisher2");
-//        persistedA.setPublisherLocation("Publisher Location2");
-//        persistedA.setDoiName("doiname2");
-//        persistedA.setIssn("inIssn2");
-//        persistedA.setIsbn("inIsbn2");
-//        persistedA.setCollaboration("collaboration2");
-//        persistedA.setUsgsCitation("usgscitation2");
-//        Contact contact2 = new Contact();
-//        contact2.setId(2);
-//        persistedA.setContact(contact2);
-//        persistedA.setProductDescription("Prod Description2");
-//        persistedA.setStartPage("inStartPage2");
-//        persistedA.setEndPage("inEndPage2");
-//        persistedA.setNumberOfPages("6");
-//        persistedA.setOnlineOnly("2");
-//        persistedA.setAdditionalOnlineFiles("2");
-//        persistedA.setTemporalStart(new LocalDate(2010,10,10));
-//        persistedA.setTemporalEnd(new LocalDate(2012,12,12));
-//        persistedA.setNotes("notes2");
-//        persistedA.setIpdsId("ipds_id2");
-//        persistedA.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
-//        persistedA.setIpdsInternalId("122");
-//        MpPublication.getDao().update(persistedA);
-//
-//        MpPublication persistedC = MpPublication.getDao().getById(pubId);
-//        assertNotNull(persistedC);
-//        assertNotNull(persistedC.getId());
-//        assertDaoTestResults(MpPublication.class, persistedA, persistedC, IGNORE_PROPERTIES, true, true);
-//
-//        MpPublication.getDao().delete(persistedC);
-//        assertNull(MpPublication.getDao().getById(pubId));
+		filters.clear();
+		filters.put("publicationId", 1);
+		mpContributors = MpPublicationContributor.getDao().getByMap(filters);
+		assertNotNull(mpContributors);
+		assertEquals(4, mpContributors.size());
 
-        //TODO the following tests...
-        //copyFromPw(Integer prodID)
-        //publishToPw(Integer prodID)
-    }
+		filters.put("id", 1);
+		mpContributors = MpPublicationContributor.getDao().getByMap(filters);
+		assertNotNull(mpContributors);
+		assertEquals(1, mpContributors.size());
+	}
+
+	@Test
+	public void addUpdateDeleteTest() {
+		MpPublicationContributor newContrib = new MpPublicationContributor();
+		newContrib.setPublicationId(2);
+		Contributor<?> contrib1 = new UsgsContributor();
+		contrib1.setId(1);
+		newContrib.setContributor(contrib1);
+		ContributorType author = new ContributorType();
+		author.setId(ContributorType.AUTHORS);
+		newContrib.setContributorType(author);
+		newContrib.setRank(98);
+		MpPublicationContributor.getDao().add(newContrib);
+		
+		MpPublicationContributor persistedA = MpPublicationContributor.getDao().getById(newContrib.getId());
+		assertNotNull(persistedA);
+		assertNotNull(persistedA.getId());
+		assertDaoTestResults(MpPublicationContributor.class, newContrib, persistedA, IGNORE_PROPERTIES, true, true);
+	
+		Contributor<?> contrib2 = new UsgsContributor();
+		contrib2.setId(2);
+		persistedA.setContributor(contrib2);
+		ContributorType editor = new ContributorType();
+		editor.setId(ContributorType.EDITORS);
+		persistedA.setContributorType(editor);
+		persistedA.setRank(99);
+		MpPublicationContributor.getDao().update(persistedA);
+	
+		MpPublicationContributor persistedC = MpPublicationContributor.getDao().getById(newContrib.getId());
+		assertNotNull(persistedC);
+		assertNotNull(persistedC.getId());
+		assertDaoTestResults(MpPublicationContributor.class, persistedA, persistedC, IGNORE_PROPERTIES, true, true);
+	
+		MpPublicationContributor.getDao().delete(persistedC);
+		assertNull(MpPublicationContributor.getDao().getById(newContrib.getId()));
+	
+		MpPublicationContributor.getDao().deleteById(1);
+		assertNull(MpPublicationContributor.getDao().getById(1));
+	
+		MpPublicationContributor.getDao().deleteByParent(2);
+		Map<String, Object> filters = new HashMap<>();
+		filters.put("publicationId", 2);
+		List<MpPublicationContributor> mpContribs = MpPublicationContributor.getDao().getByMap(filters);
+		assertTrue(mpContribs.isEmpty());
+	}
+	
+	@Test
+	public void copyFromPwTest() {
+		MpPublication.getDao().copyFromPw(4);
+		MpPublicationContributor.getDao().copyFromPw(4);
+		MpPublicationContributor contrib = MpPublicationContributor.getDao().getById(10);
+		assertMpContributor10(contrib);
+		contrib = MpPublicationContributor.getDao().getById(11);
+		assertMpContributor11(contrib);
+	}
+
+	public static void assertMpContributor1(MpPublicationContributor contrib) {
+		assertNotNull(contrib);
+		assertEquals(1, contrib.getId().intValue());
+		assertEquals(1, contrib.getPublicationId().intValue());
+		assertNotNull(contrib.getContributor());
+		assertEquals(1, contrib.getContributor().getId().intValue());
+		assertNotNull(contrib.getContributorType());
+		assertEquals(1, contrib.getContributorType().getId().intValue());
+		assertEquals(1, contrib.getRank().intValue());
+	}
+
+	public static void assertMpContributor4(MpPublicationContributor contrib) {
+		assertNotNull(contrib);
+		assertEquals(4, contrib.getId().intValue());
+		assertEquals(1, contrib.getPublicationId().intValue());
+		assertNotNull(contrib.getContributor());
+		assertEquals(2, contrib.getContributor().getId().intValue());
+		assertNotNull(contrib.getContributorType());
+		assertEquals(2, contrib.getContributorType().getId().intValue());
+		assertEquals(1, contrib.getRank().intValue());
+	}
+
+	public static void assertMpContributor10(MpPublicationContributor contrib) {
+		assertNotNull(contrib);
+		assertEquals(10, contrib.getId().intValue());
+		assertEquals(4, contrib.getPublicationId().intValue());
+		assertNotNull(contrib.getContributor());
+		assertEquals(1, contrib.getContributor().getId().intValue());
+		assertNotNull(contrib.getContributorType());
+		assertEquals(1, contrib.getContributorType().getId().intValue());
+		assertEquals(1, contrib.getRank().intValue());
+	}
+
+	public static void assertMpContributor11(MpPublicationContributor contrib) {
+		assertNotNull(contrib);
+		assertEquals(11, contrib.getId().intValue());
+		assertEquals(4, contrib.getPublicationId().intValue());
+		assertNotNull(contrib.getContributor());
+		assertEquals(2, contrib.getContributor().getId().intValue());
+		assertNotNull(contrib.getContributorType());
+		assertEquals(2, contrib.getContributorType().getId().intValue());
+		assertEquals(1, contrib.getRank().intValue());
+	}
+
 }

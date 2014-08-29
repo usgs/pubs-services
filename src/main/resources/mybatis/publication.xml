@@ -188,6 +188,7 @@
 			or upper(publication_id) LIKE '%' || upper(#{term}) || '%'
 			or upper(ipds_id) LIKE '%' || upper(#{term}) || '%'
 			or upper(series_number) LIKE '%' || upper(#{term}) || '%'
+			or upper(publication_year) LIKE '%' || upper(#{term}) || '%'
 			
 			<!-- series name -->
 			or publication_id in 
@@ -318,7 +319,7 @@
             	and (
                 <foreach item="y" collection="year" open=""
 								 separator="or" close=""> 
-                	to_char(DISPLAY_TO_PUBLIC_DATE, 'RRRR') = #{y}
+                	PUBLICATION_YEAR = #{y}
                	</foreach>
                 )
             </if>
@@ -327,7 +328,7 @@
             	and (
                 <foreach item="y" collection="yearStart" open=""
 								 separator="or" close=""> 
-                	to_char(DISPLAY_TO_PUBLIC_DATE, 'RRRR') &gt;= #{y}
+                	PUBLICATION_YEAR &gt;= #{y}
                	</foreach>
                 )
             </if>
@@ -336,7 +337,7 @@
             	and (
                 <foreach item="y" collection="yearEnd" open=""
 								 separator="or" close=""> 
-                	to_char(DISPLAY_TO_PUBLIC_DATE, 'RRRR') &lt;= #{y}
+                	PUBLICATION_YEAR &lt;= #{y}
                	</foreach>
                 )
             </if>

@@ -107,6 +107,12 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertNull(pub.getIpdsId());
         assertNull(pub.getIpdsReviewProcessState());
         assertNull(pub.getIpdsInternalId());
+        assertEquals("2014", pub.getPublicationYear());
+        assertEquals("Some Journal", pub.getLargerWorkTitle());
+        assertEquals(23, pub.getLargerWorkType().getId().intValue());
+        assertEquals("Conference Title", pub.getConferenceTitle());
+        assertEquals("A free form DATE", pub.getConferenceDate());
+        assertEquals("A conference location", pub.getConferenceLocation());
     }
 
     public static void assertMpPub1Children(Publication<?> pub) {
@@ -150,6 +156,13 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals("ipdsid", pub.getIpdsId());
         assertEquals("reviewprocessstate", pub.getIpdsReviewProcessState());
         assertEquals("123", pub.getIpdsInternalId());
+
+        assertNull(pub.getPublicationYear());
+        assertNull(pub.getLargerWorkTitle());
+        assertNull(pub.getLargerWorkType());
+        assertNull(pub.getConferenceTitle());
+        assertNull(pub.getConferenceDate());
+        assertNull(pub.getPublicationYear());
     }
 
     public static void assertMpPub2Children(Publication<?> pub) {
@@ -202,6 +215,14 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         newPub.setIpdsReviewProcessState(ProcessType.SPN_PRODUCTION.getIpdsValue());
         newPub.setIpdsInternalId("12");
         newPub.setId(pubId);
+        newPub.setPublicationYear("2001");
+        newPub.setLargerWorkTitle("Larger Work Title");
+        PublicationType largerWorkType = new PublicationType();
+        largerWorkType.setId(PublicationType.ARTICLE);
+        newPub.setLargerWorkType(largerWorkType);
+        newPub.setConferenceDate("a new free form date");
+        newPub.setConferenceTitle("A title");
+        newPub.setConferenceLocation("a conference location");
         MpPublication.getDao().add(newPub);
         return newPub;
     }
@@ -248,6 +269,14 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         updatedPub.setIpdsId("ipds_i2" + updatedPub.getId());
         updatedPub.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
         updatedPub.setIpdsInternalId("122");
+        updatedPub.setPublicationYear("2001");
+        updatedPub.setLargerWorkTitle("Larger Work Title");
+        PublicationType largerWorkType = new PublicationType();
+        largerWorkType.setId(PublicationType.ARTICLE);
+        updatedPub.setLargerWorkType(largerWorkType);
+        updatedPub.setConferenceDate("a new free form date");
+        updatedPub.setConferenceTitle("A title");
+        updatedPub.setConferenceLocation("a conference location");
         return updatedPub;
     }
 }

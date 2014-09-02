@@ -112,7 +112,7 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals(23, pub.getLargerWorkType().getId().intValue());
         assertEquals("Conference Title", pub.getConferenceTitle());
         assertEquals("A free form DATE", pub.getConferenceDate());
-        assertEquals("A conference location", pub.getPublicationYear());
+        assertEquals("A conference location", pub.getConferenceLocation());
     }
 
     public static void assertMpPub1Children(Publication<?> pub) {

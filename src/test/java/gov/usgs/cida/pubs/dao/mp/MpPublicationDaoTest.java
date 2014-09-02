@@ -215,6 +215,14 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         newPub.setIpdsReviewProcessState(ProcessType.SPN_PRODUCTION.getIpdsValue());
         newPub.setIpdsInternalId("12");
         newPub.setId(pubId);
+        newPub.setPublicationYear("2001");
+        newPub.setLargerWorkTitle("Larger Work Title");
+        PublicationType largerWorkType = new PublicationType();
+        largerWorkType.setId(PublicationType.ARTICLE);
+        newPub.setLargerWorkType(largerWorkType);
+        newPub.setConferenceDate("a new free form date");
+        newPub.setConferenceTitle("A title");
+        newPub.setConferenceLocation("a conference location");
         MpPublication.getDao().add(newPub);
         return newPub;
     }

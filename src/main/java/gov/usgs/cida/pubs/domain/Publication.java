@@ -21,6 +21,7 @@ import org.hibernate.validator.constraints.Length;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -220,11 +221,11 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @Length(min=0, max=15)
     private String ipdsId;
 
-	@JsonProperty("ipds-review-process-state")
+	@JsonProperty("ipdsReviewProcessState")
 	@Length(min = 0, max = 400)
 	protected String ipdsReviewProcessState;
 
-	@JsonProperty("ipds-internal-id")
+	@JsonProperty("ipdsInternalId")
 	@Digits(integer = 28, fraction = 0)
 	protected String ipdsInternalId;
 
@@ -245,14 +246,6 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @JsonView(IMpView.class)
     private Collection<PublicationLink<?>> links;
     
-    @JsonProperty("lastModifiedDate")
-    @JsonView(IMpView.class)
-    @JsonDeserialize(using=PubsJsonLocalDateTimeDeSerializer.class)
-    @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
-    @NotNull
-    private LocalDateTime updateDate;
-
-
 /**
      * @return the indexId
      */
@@ -768,11 +761,17 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 		this.conferenceLocation = conferenceLocation;
 	}
 	
+    @JsonProperty("lastModifiedDate")
+    @JsonView(IMpView.class)
+    @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
+    @Override
 	public LocalDateTime getUpdateDate() {
-		return updateDate;
+		return super.getUpdateDate();
 	}
 
-	public void setUpdateDate(LocalDateTime updateDate) {
-		this.updateDate = updateDate;
+    @JsonIgnore
+    @Override
+	public void setUpdateDate(LocalDateTime inUpdateDate) {
+		super.setUpdateDate(inUpdateDate);
 	}
 }

@@ -85,7 +85,6 @@
         ipds_id,
         ipds_review_process_state,
         ipds_internal_id,
-        update_date,
         <include refid="base.auditCols"/>
     </sql>
 

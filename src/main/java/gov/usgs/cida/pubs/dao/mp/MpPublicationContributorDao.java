@@ -37,6 +37,17 @@ public class MpPublicationContributorDao extends MpDao<MpPublicationContributor>
 
     /** 
      * {@inheritDoc}
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.String)
+     */
+    @Transactional(readOnly = true)
+    @ISetDbContext
+    @Override
+    public MpPublicationContributor getById(String domainID) {
+        return getById(Integer.parseInt(domainID));
+    }
+
+    /** 
+     * {@inheritDoc}
      * @see gov.usgs.cida.pubs.dao.BaseDao#getByMap(java.util.Map)
      */
     @Transactional(readOnly = true)
@@ -74,6 +85,17 @@ public class MpPublicationContributorDao extends MpDao<MpPublicationContributor>
     @Override
     public void deleteById(Integer domainID) {
         getSqlSession().delete(NS + DELETE, domainID);
+    }
+
+    /** 
+     * {@inheritDoc}
+     * @see gov.usgs.cida.pubs.dao.intfc.IDao#deleteByParent(java.lang.Integer)
+     */
+    @Transactional
+    @ISetDbContext
+    @Override
+    public void deleteByParent(Integer domainID) {
+        getSqlSession().delete(NS + DELETE_BY_PARENT, domainID);
     }
 
     /** {@inheritDoc}

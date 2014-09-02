@@ -177,16 +177,18 @@
                	select publication_id 
                	from mp_pub_cost_center 
                	where cost_center_id in 
-               		(select cost_center_id 
-               		from cost_center 
-               		where upper(name) like '%' || upper(#{term}) || '%')
+               		(select affiliation_id 
+               		from affiliation 
+               		where is_cost_center = 'Y' and
+               		      upper(name) like '%' || upper(#{term}) || '%')
 				union
 				select publication_id 
 				from publication_cost_center 
 				where cost_center_id in 
-					(select cost_center_id 
-					from cost_center 
-					where upper(name) like '%' || upper(#{term}) || '%')
+					(select affiliation_id 
+					from affiliation 
+					where is_cost_center = 'Y' and
+					      upper(name) like '%' || upper(#{term}) || '%')
                )
                
                <!-- author -->
@@ -323,11 +325,11 @@
                 	select publication_id 
                 	from mp_pub_cost_center 
                 	where cost_center_id in 
-                		(select cost_center_id 
-                		from cost_center 
-                		where
-                		<foreach item="co" collection="contributingOffice" open=""
-								 separator="or" close=""> 
+                		(select affiliation_id 
+                		from affiliation 
+                		where is_cost_center = 'Y' and
+                		<foreach item="co" collection="contributingOffice" open="("
+								 separator="or" close=")"> 
 	                	 upper(name) like '%' || upper(#{co}) || '%'
 	                	 )
                 	 	</foreach>
@@ -335,11 +337,11 @@
 					select publication_id 
 					from publication_cost_center 
 					where cost_center_id in 
-						(select cost_center_id 
-						from cost_center 
-						where
-						<foreach item="co" collection="contributingOffice" open=""
-								 separator="or" close=""> 
+						(select affiliation_id 
+						from affiliation 
+						where is_cost_center = 'Y' and
+						<foreach item="co" collection="contributingOffice" open="("
+								 separator="or" close=")"> 
                 	 	upper(name) like '%' || upper(#{co}) || '%'
                 	 	)
                 	 	</foreach>

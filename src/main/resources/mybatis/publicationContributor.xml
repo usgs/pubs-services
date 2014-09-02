@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="publicationContributor">
 
@@ -16,10 +16,30 @@
         <include refid="base.auditCols"/>
     </sql>
 
+    <sql id="hosts">
+        #{id,jdbcType=NUMERIC},
+        #{publicationId,jdbcType=NUMERIC},
+        #{contributor.id,jdbcType=NUMERIC},
+        #{contributorType.id,jdbcType=NUMERIC},
+        #{rank,jdbcType=NUMERIC},
+        <include refid="base.auditHosts"/>
+    </sql>
+
+    <sql id="sets">
+        publication_id = #{publicationId,jdbcType=NUMERIC},
+        contributor_id = #{contributor.id,jdbcType=NUMERIC},
+        contributor_type_id = #{contributorType.id,jdbcType=NUMERIC},
+        rank = #{rank,jdbcType=NUMERIC},
+        <include refid="base.auditSets"/>
+    </sql>
+
     <sql id="filters">
         <where>
             <if test="id != null">
                 and publication_contributor_id = #{id}
+            </if>
+            <if test="publicationId != null">
+                and publication_id = #{publicationId}
             </if>
         </where>
     </sql>

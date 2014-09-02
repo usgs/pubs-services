@@ -27,7 +27,7 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 
     @JsonProperty("suffix")
     @JsonView(IMpView.class)
-    @Length(min=0, max=40)
+    @Length(min=0, max=14)
     private String suffix;
 
     @JsonProperty("email")

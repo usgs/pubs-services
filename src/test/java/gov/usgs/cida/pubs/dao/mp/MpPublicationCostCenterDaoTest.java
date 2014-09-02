@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.dao.mp;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
@@ -59,6 +60,11 @@ public class MpPublicationCostCenterDaoTest extends BaseSpringDaoTest {
 
         MpPublicationCostCenter.getDao().delete(MpPublicationCostCenter.getDao().getById(id));
         assertNull(MpPublicationCostCenter.getDao().getById(id));
+
+        MpPublicationCostCenter.getDao().deleteByParent(2);
+		filters.put("publicationId", 1);
+		mpccs = MpPublicationCostCenter.getDao().getByMap(filters);
+		assertTrue(mpccs.isEmpty());
     }
 
     @Test

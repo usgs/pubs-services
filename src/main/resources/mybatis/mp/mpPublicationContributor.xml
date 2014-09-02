@@ -6,6 +6,21 @@
     <resultMap id="result" type="MpPublicationContributor" extends="publicationContributor.result">
     </resultMap>
 
+    <insert id="add" parameterType="MpPublicationContributor">
+        <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
+            select publication_contributor_seq.nextval id from dual
+        </selectKey>
+        insert into mp_pub_contributor (<include refid="publicationContributor.cols"/>)
+             values (<include refid="publicationContributor.hosts"/>)
+    </insert>
+
+    <insert id="copyMpFromPw" parameterType="Integer">
+        insert into mp_pub_contributor (<include refid="publicationContributor.cols"/>)
+            (select <include refid="publicationContributor.cols"/>
+               from publication_contributor
+              where publication_id = #{value,jdbcType=NUMERIC})
+    </insert>
+
     <sql id="baseSelect">
         select <include refid="publicationContributor.cols"/>
           from mp_pub_contributor
@@ -30,5 +45,21 @@
         <include refid="baseSelect"/>
         <include refid="publicationContributor.editorsWhere"/>
     </select>
+
+    <update id="update" parameterType="MpPublicationContributor">
+        update mp_pub_contributor
+           set <include refid="publicationContributor.sets"/>
+           where publication_contributor_id = #{id,jdbcType=NUMERIC}
+    </update>
+
+    <delete id="delete" parameterType="Integer">
+        delete from mp_pub_contributor
+         where publication_contributor_id = #{value,jdbcType=NUMERIC}
+    </delete>
+
+    <delete id="deleteByParent" parameterType="Integer">
+        delete from mp_pub_contributor
+         where publication_id = #{value,jdbcType=NUMERIC}
+    </delete>
 
 </mapper>

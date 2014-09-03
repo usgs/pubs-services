@@ -342,7 +342,7 @@ public class IpdsBinding {
             pub.setLanguage("English");
 
             if ((null != conv && IpdsPubTypeConv.USGS_PERIODICAL == conv.getId())
-                    || (null != pub.getPublicationSubtype() && PublicationSubtype.USGS_NUMBERED_SERIES.equals(pub.getPublicationSubtype().getId()))) {
+                    || (PubsUtilities.isUsgsNumberedSeries(pub.getPublicationSubtype()))) {
                 pub.setPublisher("U.S. Geological Survey");
                 pub.setPublisherLocation("Reston VA");
             } else {

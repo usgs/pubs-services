@@ -13,6 +13,8 @@ public class LinkType extends BaseDomain<LinkType> implements ILookup {
 
     public static final String INDEX_PAGE = "15";
 
+	public static final String THUMBNAIL = "24";
+
     private String name;
 
     public String getName() {

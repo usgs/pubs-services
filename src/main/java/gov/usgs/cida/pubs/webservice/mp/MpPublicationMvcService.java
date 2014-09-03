@@ -17,6 +17,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,7 +117,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
      * @return
      */
     private Map<String, Object> configureSingleSearchFilters(Map<String, Object> filters, String searchTerms) {
-        if ( ! PubsUtilities.isNullOrEmpty(searchTerms)) {
+        if (StringUtils.isNotEmpty(searchTerms)) {
 	    	filters.put("searchTerms", searchTerms.split("[\\s+,+]"));
 	    	updateOrderBy(filters, SEARCH_TERM_ORDERBY, SEARCH_TERM_ORDERBY_DIR);
         }

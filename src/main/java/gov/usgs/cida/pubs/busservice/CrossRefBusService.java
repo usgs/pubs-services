@@ -1,16 +1,22 @@
 package gov.usgs.cida.pubs.busservice;
 
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
+import gov.usgs.cida.pubs.domain.CrossRefLog;
 import gov.usgs.cida.pubs.domain.LinkType;
+import gov.usgs.cida.pubs.domain.PersonContributor;
+import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,28 +41,38 @@ public class CrossRefBusService implements ICrossRefBusService {
 
     private static final Logger LOG = LoggerFactory.getLogger(CrossRefBusService.class);
 
+    private static final String FIRST = "first";
+    private static final String ADDITIONAL = "additional";
+
+    protected final String crossRefProtocol;
+    protected final String crossRefHost;
+    protected final String crossRefUrl;
+    protected final Integer crossRefPort;
+    protected final String crossRefUser;
+    protected final String crossRefPwd;
+    protected final String numberedSeriesXml;
+    protected final String unNumberedSeriesXml;
+    protected final String personNameXml;
+    protected final String pagesXml;
+    protected final PubsEMailer pubsEMailer;
+
     @Autowired
-    private String crossRefProtocol;
-    @Autowired
-    private String crossRefHost;
-    @Autowired
-    private String crossRefUrl;
-    @Autowired
-    private Integer crossRefPort;
-    @Autowired
-    private String crossRefUser;
-    @Autowired
-    private String crossRefPwd;
-    @Autowired
-    private String numberedSeriesXml;
-    @Autowired
-    private String unNumberedSeriesXml;
-    @Autowired
-    private String personNameXml;
-    @Autowired
-    private String pagesXml;
-    @Autowired
-    private PubsEMailer pubsEMailer;
+    public CrossRefBusService(final String crossRefProtocol, final String crossRefHost,
+    		final String crossRefUrl, final Integer crossRefPort, final String crossRefUser,
+    		final String crossRefPwd, final String numberedSeriesXml, final String unNumberedSeriesXml,
+    		final String personNameXml, final String pagesXml, final PubsEMailer pubsEMailer) {
+    	this.crossRefProtocol = crossRefProtocol;
+    	this.crossRefHost = crossRefHost;
+    	this.crossRefUrl = crossRefUrl;
+    	this.crossRefPort = crossRefPort;
+    	this.crossRefUser = crossRefUser;
+    	this.crossRefPwd = crossRefPwd;
+    	this.numberedSeriesXml = numberedSeriesXml;
+    	this.unNumberedSeriesXml = unNumberedSeriesXml;
+    	this.personNameXml = personNameXml;
+    	this.pagesXml = pagesXml;
+    	this.pubsEMailer = pubsEMailer;
+    }
 
     @Override
     public void submitCrossRef(final MpPublication mpPublication) {
@@ -95,15 +111,14 @@ public class CrossRefBusService implements ICrossRefBusService {
 
     protected String buildXml(final MpPublication pub, final String indexPage) {
         String xml = null;
-        //TODO new type/subtype/series logic
-//        if (PublicationType.USGS_NUMBERED_SERIES.contentEquals(pub.getPublicationTypeId())) {
-//            xml = buildBaseXml(pub, indexPage, numberedSeriesXml);
-//        } else {
-//            xml = buildBaseXml(pub, indexPage, unNumberedSeriesXml);
-//        }
-//        String batchId = xml.substring(xml.indexOf("<doi_batch_id>") + 14, xml.indexOf("</doi_batch_id>"));
-//        CrossRefLog log = new CrossRefLog(batchId, pub.getId(), xml);
-//        CrossRefLog.getDao().add(log);
+        if (PubsUtilities.isUsgsNumberedSeries(pub.getPublicationSubtype())) {
+            xml = buildBaseXml(pub, indexPage, numberedSeriesXml);
+        } else {
+            xml = buildBaseXml(pub, indexPage, unNumberedSeriesXml);
+        }
+        String batchId = xml.substring(xml.indexOf("<doi_batch_id>") + 14, xml.indexOf("</doi_batch_id>"));
+        CrossRefLog log = new CrossRefLog(batchId, pub.getId(), xml);
+        CrossRefLog.getDao().add(log);
         File temp = null;
         try {
             temp = File.createTempFile(pub.getIndexId(), ".xml");
@@ -127,15 +142,15 @@ public class CrossRefBusService implements ICrossRefBusService {
 //        if (null != pub.getPublicationMonth() && 0 < pub.getPublicationMonth().length()) {
 //            rtn = rtn.replace("{dissemination_month}", "<month>" + pub.getPublicationMonth() + "</month>"); 
 //        } else {
-//            rtn = rtn.replace("{dissemination_month}", ""); 
+            rtn = rtn.replace("{dissemination_month}", ""); 
 //        }
 //        if (null != pub.getPublicationDay() && 0 < pub.getPublicationDay().length()) {
 //            rtn = rtn.replace("{dissemination_day}", "<day>" + pub.getPublicationDay() + "</day>");
 //        } else {
 //            rtn = rtn.replace("{dissemination_day}", "");
 //        }
-//        rtn = rtn.replace("{dissemination_year}", pub.getPublicationYear());
-        rtn = rtn.replace("{contributers}", getAuthors(pub));
+        rtn = rtn.replace("{dissemination_year}", pub.getPublicationYear());
+        rtn = rtn.replace("{contributers}", getContributors(pub));
         rtn = rtn.replace("{title}", pub.getTitle());
         rtn = rtn.replace("{pages}", getPages(pub));
         rtn = rtn.replace("{doi_name}", pub.getDoi());
@@ -156,41 +171,61 @@ public class CrossRefBusService implements ICrossRefBusService {
         return String.valueOf(new Date().getTime());
     }
 
-    protected String getAuthors(MpPublication pub) {
+    protected String getContributors(MpPublication pub) {
         StringBuilder rtn = new StringBuilder("");
-        //TODO new Author logic
-//        String[] authors = null != pub.getAuthorDisplay() ? pub.getAuthorDisplay().split(";") : null;
-//        if (authors != null && 0 != authors.length) {
-//            boolean firstAuthor = true;
-//            for (String author : authors) {
-//                String template = personNameXml;
-//                if (firstAuthor) {
-//                    template = template.replace("{sequence}", "first");
-//                    firstAuthor = false;
-//                } else {
-//                    rtn.append("\n");
-//                    template = template.replace("{sequence}", "additional");
-//                }
-//                String[] parts = author.split(",");
-//                if (0 < parts.length) {
-//                    template = template.replace("{surname}", parts[0].trim());
-//                } else {
-//                    template = template.replace("{surname}", "");
-//                }
-//                if (1 < parts.length) {
-//                    template = template.replace("{given_name}", "<given_name>" + parts[1].trim() + "</given_name>");
-//                } else {
-//                    template = template.replace("{given_name}", "");
-//                }
-//                if (2 < parts.length) {
-//                    template = template.replace("{suffix}", "<suffix>" + parts[2].trim() + "</suffix>");
-//                } else {
-//                    template = template.replace("{suffix}", "");
-//                }
-//                rtn.append(template);
-//            }
-//        }
+        String sequence = "first";
+        Collection<PublicationContributor<?>> authors = pub.getAuthors();
+        if (!authors.isEmpty()) {
+            for (PublicationContributor<?> author : authors) {
+            	if (author.getContributor() instanceof PersonContributor) {
+            		rtn.append(processPerson(author, sequence));
+            	} else {
+            		rtn.append(processCorporation(author, sequence));
+            	}
+            	sequence = "additional";
+            	rtn.append("\n");
+            }
+        }
+
+        Collection<PublicationContributor<?>> editors = pub.getEditors();
+        if (!editors.isEmpty()) {
+            for (PublicationContributor<?> editor : editors) {
+            	if (editor.getContributor() instanceof PersonContributor) {
+            		rtn.append(processPerson(editor, sequence));
+            	} else {
+            		rtn.append(processCorporation(editor, sequence));
+            	}
+            	sequence = "additional";
+            	rtn.append("\n");
+            }
+        }
         return rtn.toString();
+    }
+
+    protected String processPerson(PublicationContributor<?> contributor, String sequence) {
+    	String template = personNameXml;
+    	if (firstContributor) {
+    		template = template.replace("{sequence}", "first");
+    	} else {
+    		template = template.replace("{sequence}", "additional");
+    	}
+    	String[] parts = author.split(",");
+    	if (0 < parts.length) {
+    		template = template.replace("{surname}", parts[0].trim());
+    	} else {
+    		template = template.replace("{surname}", "");
+    	}
+    	if (1 < parts.length) {
+    		template = template.replace("{given_name}", "<given_name>" + parts[1].trim() + "</given_name>");
+    	} else {
+    		template = template.replace("{given_name}", "");
+    	}
+    	if (2 < parts.length) {
+    		template = template.replace("{suffix}", "<suffix>" + parts[2].trim() + "</suffix>");
+    	} else {
+    		template = template.replace("{suffix}", "");
+    	}
+    	return template;
     }
 
     protected String getPages(MpPublication pub) {

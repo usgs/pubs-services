@@ -17,6 +17,8 @@
         <typeAlias alias="baseDomain" type="gov.usgs.cida.pubs.domain.BaseDomain"/>
         <typeAlias alias="pubMap" type="gov.usgs.cida.pubs.PubMap"/>
 
+        <typeAlias alias="mpList" type="gov.usgs.cida.pubs.domain.mp.MpList"/>
+        <typeAlias alias="mpListPublication" type="gov.usgs.cida.pubs.domain.mp.MpListPublication"/>
         <typeAlias alias="mpPublication" type="gov.usgs.cida.pubs.domain.mp.MpPublication"/>
         <typeAlias alias="mpPublicationContributor" type="gov.usgs.cida.pubs.domain.mp.MpPublicationContributor"/>
         <typeAlias alias="mpPublicationCostCenter" type="gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter"/>
@@ -64,6 +66,8 @@
         <!-- Individual sql map file resources. Each one has its own namespace and sql. -->
          <mapper resource="mybatis/baseDao.xml"/>
 
+         <mapper resource="mybatis/mp/mpList.xml"/>
+         <mapper resource="mybatis/mp/mpListPublication.xml"/>
          <mapper resource="mybatis/mp/mpPublication.xml"/>
          <mapper resource="mybatis/mp/mpPublicationContributor.xml"/>
          <mapper resource="mybatis/mp/mpPublicationCostCenter.xml"/>

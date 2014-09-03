@@ -1,7 +1,6 @@
 package gov.usgs.cida.pubs.webservice;
 
 import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,16 +9,14 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author drsteini
@@ -33,7 +30,7 @@ public abstract class MvcService<D> {
      * Helper to check if null and add to filters map
      */
     protected Map<String, Object> addToFiltersIfNotNull(Map<String, Object> filters, String key, String value) {
-        if (!PubsUtilities.isNullOrEmpty(value)) {
+        if (StringUtils.isNotEmpty(value)) {
             filters.put(key, value);
         }
     	return filters;
@@ -44,9 +41,9 @@ public abstract class MvcService<D> {
      */
     protected Map<String, Object> addToFiltersIfNotNull(Map<String, Object> filters, String key, String[] values) {
     	ArrayList<String> filterValues = new ArrayList<>();
-        if (!PubsUtilities.isNullOrEmpty(values)) {
+        if (null != values && 0 < values.length) {
 	    	for(String value : values) {
-		        if (!PubsUtilities.isNullOrEmpty(value)) {
+		        if (StringUtils.isNotEmpty(value)) {
 		        	filterValues.add(value);
 		        }
 	    	}
@@ -59,7 +56,7 @@ public abstract class MvcService<D> {
      * Extends current order by clause with more options if necessary
      */
     protected Map<String, Object> updateOrderBy(Map<String, Object> filters, String orderBy, String orderByDir) {
-    	if ( ! PubsUtilities.isNullOrEmpty(orderBy)) {
+    	if (StringUtils.isNotEmpty(orderBy)) {
     		String newOrderBy = orderBy;
     		if ("reportnumber".equalsIgnoreCase(newOrderBy)) {
     			newOrderBy = "series_number";

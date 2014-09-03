@@ -8,12 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.annotation.JsonView;
 
-//import gov.usgs.cida.pubs.dao.intfc.IDao;
-
 public class PublicationContributor<D> extends BaseDomain<D> implements Serializable {
-
-    //TODO Remove dao if it isn't needed.
-//    private static IDao<PublicationContributor<?>> publicationContributorDao;
 
 	private static final long serialVersionUID = 5911778679824879199L;
 
@@ -60,20 +55,5 @@ public class PublicationContributor<D> extends BaseDomain<D> implements Serializ
     public void setContributor(final Contributor<?> inContributor) {
         contributor = inContributor;
     }
-
-//    /**
-//     * @return the publicationContributorDao
-//     */
-//    public static IDao<PublicationContributor<?>> getPublicationContributorDao() {
-//        return publicationContributorDao;
-//    }
-//
-//    /**
-//     * The setter for publicationContributorDao.
-//     * @param inPublicationContributorDao the publicationContributorDao to set
-//     */
-//    public void setPublicationContributorDao(final IDao<PublicationContributor<?>> inPublicationContributorDao) {
-//        publicationContributorDao = inPublicationContributorDao;
-//    }
 
 }

@@ -48,6 +48,12 @@ public class MpPublicationLinkDaoTest extends BaseSpringDaoTest {
 		mpLinks = MpPublicationLink.getDao().getByMap(filters);
 		assertNotNull(mpLinks);
 		assertEquals(2, mpLinks.size());
+
+		filters.clear();
+		filters.put("linkTypeId", 6);
+		mpLinks = MpPublicationLink.getDao().getByMap(filters);
+		assertNotNull(mpLinks);
+		assertEquals(1, mpLinks.size());
 	}
 
 	@Test

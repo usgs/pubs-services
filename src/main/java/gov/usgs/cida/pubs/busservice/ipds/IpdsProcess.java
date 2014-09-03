@@ -10,12 +10,12 @@ import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
-import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
 import gov.usgs.cida.pubs.domain.ipds.PublicationMap;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -156,10 +156,8 @@ public class IpdsProcess implements IIpdsProcess {
                 if (null != inProcessType && ProcessType.SPN_PRODUCTION == inProcessType) {
                     rtn.append(updateIpdsWithDoi(rtnPub));
                 } else if (null != inProcessType && ProcessType.DISSEMINATION == inProcessType
-                			&& (null != rtnPub.getPublicationSubtype() 
-                				&& (PublicationSubtype.USGS_NUMBERED_SERIES.equals(rtnPub.getPublicationSubtype().getId())
-                						|| PublicationSubtype.USGS_UNNUMBERED_SERIES.equals(rtnPub.getPublicationSubtype().getId()))
-                				)
+                			&& (PubsUtilities.isUsgsNumberedSeries(rtnPub.getPublicationSubtype())
+                					|| PubsUtilities.isUsgsUnnumberedSeries(rtnPub.getPublicationSubtype()))
                             && (null != rtnPub.getDoi() && 0 < rtnPub.getDoi().length())) {
                 	crossRefBusService.submitCrossRef(rtnPub);
                 }
@@ -201,8 +199,7 @@ public class IpdsProcess implements IIpdsProcess {
 
 	protected boolean okToProcessDissemination(final MpPublication pub, final MpPublication existingPub) {
 		if (null != pub) {
-			if (null != pub.getPublicationSubtype()
-				&& PublicationSubtype.USGS_NUMBERED_SERIES.equals(pub.getPublicationSubtype().getId())
+			if (PubsUtilities.isUsgsNumberedSeries(pub.getPublicationSubtype())
 				&& null == pub.getSeriesTitle()) {
 				//Do not process USGS numbered series without an actual series.
 				return false;
@@ -228,7 +225,7 @@ public class IpdsProcess implements IIpdsProcess {
 //        	} else if (PublicationType.USGS_UNNUMBERED_SERIES.contentEquals(String.valueOf(pubType.getId()))) {
 //          	//Process all USGS unnumbered series
 //          	return true;
-			} else if (null != pub.getPublicationSubtype() && PublicationSubtype.USGS_NUMBERED_SERIES == pub.getPublicationSubtype().getId()) {
+			} else if (PubsUtilities.isUsgsNumberedSeries(pub.getPublicationSubtype())) {
 //            	if (null != pub.getSeries()
 //              	      && pub.getSeries().contentEquals("Administrative Report")) {
 //                	//Skip the administrative series

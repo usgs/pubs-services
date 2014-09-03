@@ -8,6 +8,8 @@
         <property name="dataSource" ref="mypubsDataSource"/>
     </bean>
 
+    <bean id="mpListDao" class="gov.usgs.cida.pubs.dao.mp.MpListDao" autowire="byName"/>
+    <bean id="mpListPublicationDao" class="gov.usgs.cida.pubs.dao.mp.MpListPublicationDao" autowire="byName"/>
     <bean id="mpPublicationDao" class="gov.usgs.cida.pubs.dao.mp.MpPublicationDao" autowire="byName"/>
     <bean id="mpPublicationContributorDao" class="gov.usgs.cida.pubs.dao.mp.MpPublicationContributorDao" autowire="byName"/>
     <bean id="mpPublicationCostCenterDao" class="gov.usgs.cida.pubs.dao.mp.MpPublicationCostCenterDao" autowire="byName"/>

@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <CROSS_REF_LOG BATCH_ID="123"
+                   PROD_ID="456"
+                   CROSS_REF_XML="&lt;root/&gt;"
+    />
+    <CROSS_REF_LOG BATCH_ID="abc"
+                   PROD_ID="666"
+                   CROSS_REF_XML="&lt;root2/&gt;"
+    />
+</dataset>

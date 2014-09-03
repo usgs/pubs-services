@@ -25,4 +25,6 @@
     <jee:jndi-lookup id="ipdsPubsWsPwd" jndi-name="java:comp/env/pubs/ipds/pubsWsPwd"/>
     <jee:jndi-lookup id="ipdsPubsWsUser" jndi-name="java:comp/env/pubs/ipds/pubsWsUser"/>
 
+    <jee:jndi-lookup jndi-name="cida/authService" id="authService" resource-ref="true" />
+
 </beans>

@@ -4,7 +4,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
 
     <import resource="classpath:/spring/jndiContext.xml"/>
-    <import resource="classpath:/spring/securityContext.xml" />
     <import resource="classpath:/spring/applicationContext.xml"/>
 
 </beans>

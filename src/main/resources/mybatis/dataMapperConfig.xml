@@ -15,6 +15,7 @@
 
     <typeAliases>
         <typeAlias alias="baseDomain" type="gov.usgs.cida.pubs.domain.BaseDomain"/>
+        <typeAlias alias="crossRefLog" type="gov.usgs.cida.pubs.domain.CrossRefLog"/>
         <typeAlias alias="pubMap" type="gov.usgs.cida.pubs.PubMap"/>
 
         <typeAlias alias="mpList" type="gov.usgs.cida.pubs.domain.mp.MpList"/>
@@ -81,6 +82,7 @@
          <mapper resource="mybatis/affiliation.xml"/>
          <mapper resource="mybatis/contributor.xml"/>
          <mapper resource="mybatis/contributorType.xml"/>
+         <mapper resource="mybatis/crossRefLog.xml"/>
          <mapper resource="mybatis/linkFileType.xml"/>
          <mapper resource="mybatis/linkType.xml"/>
          <mapper resource="mybatis/publication.xml"/>

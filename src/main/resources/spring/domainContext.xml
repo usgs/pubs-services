@@ -16,6 +16,7 @@
     <bean id="contributorType" class="gov.usgs.cida.pubs.domain.ContributorType" autowire="byName"/>
     <bean id="corporateContributor" class="gov.usgs.cida.pubs.domain.CorporateContributor" autowire="byName"/>
     <bean id="costCenter" class="gov.usgs.cida.pubs.domain.CostCenter" autowire="byName"/>
+    <bean id="crossRefLog" class="gov.usgs.cida.pubs.domain.CrossRefLog" autowire="byName"/>
     <bean id="linkFileType" class="gov.usgs.cida.pubs.domain.LinkFileType" autowire="byName"/>
     <bean id="linkType" class="gov.usgs.cida.pubs.domain.LinkType" autowire="byName"/>
     <bean id="outsideAffiliation" class="gov.usgs.cida.pubs.domain.OutsideAffiliation" autowire="byName"/>

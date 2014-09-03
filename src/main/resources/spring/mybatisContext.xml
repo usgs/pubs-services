@@ -20,6 +20,7 @@
     <bean id="contributorTypeDao" class="gov.usgs.cida.pubs.dao.ContributorTypeDao" autowire="byName"/>
     <bean id="corporateContributorDao" class="gov.usgs.cida.pubs.dao.CorporateContributorDao" autowire="byName"/>
     <bean id="costCenterDao" class="gov.usgs.cida.pubs.dao.CostCenterDao" autowire="byName"/>
+    <bean id="crossRefLogDao" class="gov.usgs.cida.pubs.dao.CrossRefLogDao" autowire="byName"/>
     <bean id="linkFileTypeDao" class="gov.usgs.cida.pubs.dao.LinkFileTypeDao" autowire="byName"/>
     <bean id="linkTypeDao" class="gov.usgs.cida.pubs.dao.LinkTypeDao" autowire="byName"/>
     <bean id="outsideAffiliationDao" class="gov.usgs.cida.pubs.dao.OutsideAffiliationDao" autowire="byName"/>

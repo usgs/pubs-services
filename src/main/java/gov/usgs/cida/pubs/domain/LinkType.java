@@ -11,9 +11,9 @@ public class LinkType extends BaseDomain<LinkType> implements ILookup {
 
     private static IDao<LinkType> linkTypeDao;
 
-    public static final String INDEX_PAGE = "15";
+    public static final Integer INDEX_PAGE = 15;
 
-	public static final String THUMBNAIL = "24";
+	public static final Integer THUMBNAIL = 24;
 
     private String name;
 

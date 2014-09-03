@@ -21,6 +21,7 @@ import org.hibernate.validator.constraints.Length;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -49,6 +50,12 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
 //TODO    @NotNull
     private LocalDateTime displayToPublicDate;
+    
+    @JsonProperty("publicationYear")
+    @JsonView(IMpView.class)
+    @NotNull
+    @Length(min=4, max=4)
+    private String publicationYear;
 
     @JsonProperty("publicationType")
     @JsonView(IMpView.class)
@@ -92,6 +99,31 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @JsonProperty("abstract")
     @JsonView(IMpView.class)
     private String docAbstract;
+
+    @JsonProperty("largerWorkType")
+    @JsonView(IMpView.class)
+    @NotNull
+    private PublicationType largerWorkType;
+    
+    @JsonProperty("largerWorkTitle")
+    @JsonView(IMpView.class)
+    @Length(min=1, max=2000)
+    private String largerWorkTitle;
+
+    @JsonProperty("conferenceTitle")
+    @JsonView(IMpView.class)
+    @Length(min=1, max=2000)
+    private String conferenceTitle;
+
+    @JsonProperty("conferenceDate")
+    @JsonView(IMpView.class)
+    @Length(min=1, max=255)
+    private String conferenceDate;
+
+    @JsonProperty("conferenceLocation")
+    @JsonView(IMpView.class)
+    @Length(min=1, max=255)
+    private String conferenceLocation;
 
     @JsonProperty("language")
     @JsonView(IMpView.class)
@@ -189,11 +221,11 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @Length(min=0, max=15)
     private String ipdsId;
 
-	@JsonProperty("ipds-review-process-state")
+	@JsonProperty("ipdsReviewProcessState")
 	@Length(min = 0, max = 400)
 	protected String ipdsReviewProcessState;
 
-	@JsonProperty("ipds-internal-id")
+	@JsonProperty("ipdsInternalId")
 	@Digits(integer = 28, fraction = 0)
 	protected String ipdsInternalId;
 
@@ -213,8 +245,8 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @JsonProperty("links")
     @JsonView(IMpView.class)
     private Collection<PublicationLink<?>> links;
-
-   /**
+    
+/**
      * @return the indexId
      */
     public String getIndexId() {
@@ -681,4 +713,65 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
         publicationDao = inPublicationDao;
     }
 
+	public String getPublicationYear() {
+		return publicationYear;
+	}
+
+	public void setPublicationYear(String publicationYear) {
+		this.publicationYear = publicationYear;
+	}
+
+	public PublicationType getLargerWorkType() {
+		return largerWorkType;
+	}
+
+	public void setLargerWorkType(PublicationType largerWorkType) {
+		this.largerWorkType = largerWorkType;
+	}
+
+	public String getLargerWorkTitle() {
+		return largerWorkTitle;
+	}
+
+	public void setLargerWorkTitle(String largerWorkTitle) {
+		this.largerWorkTitle = largerWorkTitle;
+	}
+
+	public String getConferenceTitle() {
+		return conferenceTitle;
+	}
+
+	public void setConferenceTitle(String conferenceTitle) {
+		this.conferenceTitle = conferenceTitle;
+	}
+
+	public String getConferenceDate() {
+		return conferenceDate;
+	}
+
+	public void setConferenceDate(String conferenceDate) {
+		this.conferenceDate = conferenceDate;
+	}
+
+	public String getConferenceLocation() {
+		return conferenceLocation;
+	}
+
+	public void setConferenceLocation(String conferenceLocation) {
+		this.conferenceLocation = conferenceLocation;
+	}
+	
+    @JsonProperty("lastModifiedDate")
+    @JsonView(IMpView.class)
+    @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
+    @Override
+	public LocalDateTime getUpdateDate() {
+		return super.getUpdateDate();
+	}
+
+    @JsonIgnore
+    @Override
+	public void setUpdateDate(LocalDateTime inUpdateDate) {
+		super.setUpdateDate(inUpdateDate);
+	}
 }

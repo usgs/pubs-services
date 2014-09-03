@@ -41,10 +41,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     //SQL config for single search 
     private static final String SEARCH_TERM_ORDERBY = "display_to_public_date"; //TODO this is temporary until we get PUB DATE
     private static final String SEARCH_TERM_ORDERBY_DIR = "DESC";
-    
-    @Autowired
-    private IMpPublicationBusService mpPublicationBusService;
-    
+
     @Autowired
     private IMpPublicationBusService busService;
 
@@ -100,8 +97,8 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     	addToFiltersIfNotNull(filters, "pageRowStart", pageRowStart);
     	addToFiltersIfNotNull(filters, "pageSize", pageSize);
         
-        List<MpPublication> pubs = mpPublicationBusService.getObjects(filters);
-        Integer totalPubsCount = mpPublicationBusService.getObjectCount(filters);
+        List<MpPublication> pubs = busService.getObjects(filters);
+        Integer totalPubsCount = busService.getObjectCount(filters);
         SearchResults results = new SearchResults();
         results.setPageSize(pageSize);
         results.setPageRowStart(pageRowStart);
@@ -166,13 +163,5 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         }
         return rtn;
     }
-
-
-//    @RequestMapping(value = "mppublications/{id}/publish", method = RequestMethod.POST, produces="application/json")
-//    @ResponseBody
-//    @Transactional
-//    public Map<String,? extends Object> publishPubs(@PathVariable String id, HttpServletResponse response) {
-//        return buildResponseMap(response, null, null, busService.publish(parseId(id)));
-//    }
 
 }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<doi_batch xmlns="http://www.crossref.org/schema/4.3.0"
+<doi_batch xmlns="http://www.crossref.org/schema/4.3.3"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.crossref.org/schema/4.3.0 http://www.crossref.org/schema/deposit/crossref4.3.0.xsd"
-    version="4.3.0">
+    xsi:schemaLocation="http://www.crossref.org/schema/4.3.3 http://www.crossref.org/schema/deposit/crossref4.3.3.xsd"
+    version="4.3.3">
     <head>
-        <doi_batch_id>{doi_batch_id}</doi_batch_id>
-        <timestamp>{submission_timestamp}</timestamp>
+        <doi_batch_id>4554651</doi_batch_id>
+        <timestamp>6546546132</timestamp>
         <depositor>
             <name>USGS</name>
             <email_address>pubs_tech_group@usgs.gov</email_address>
@@ -16,30 +16,28 @@
         <report-paper>
             <report-paper_metadata language="en">
                 <titles>
-                    <title>{series_name}</title>
+                    <title>General Information Product</title>
                 </titles>
                 <publication_date media_type="online">
-                    {dissemination_month}
-                    {dissemination_day}
-                    <year>{dissemination_year}</year>
+                    <year>2013</year>
                 </publication_date>
             </report-paper_metadata>
             <content_item component_type="other">
                 <contributors>
-{contributers}
                 </contributors>
                 <titles>
-                    <title>{title}</title>
+                    <title>Postwildfire debris-flow hazard assessment of the area burned by the 2013 West Fork Fire Complex, southwestern Colorado</title>
                 </titles>
                 <publication_date media_type="online">
-                    {dissemination_month}
-                    {dissemination_day}
-                    <year>{dissemination_year}</year>
+                    <year>2013</year>
                 </publication_date>
-{pages}
+                <pages>
+                    <first_page>52</first_page>
+                    <last_page>56</last_page>
+                </pages>
                 <doi_data>
-                    <doi>{doi_name}</doi>
-                    <resource>{index_page}</resource>
+                    <doi>10.3133/ofr20131259</doi>
+                    <resource>http://pubs.usgs.gov/of/2013/1259/</resource>
                 </doi_data>
             </content_item>
         </report-paper>

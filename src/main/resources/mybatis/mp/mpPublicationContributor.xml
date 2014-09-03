@@ -39,11 +39,13 @@
     <select id="getAuthorsByPublication" parameterType="Integer" resultMap="result">
         <include refid="baseSelect"/>
         <include refid="publicationContributor.authorsWhere"/>
+            order by rank
     </select>
 
     <select id="getEditorsByPublication" parameterType="Integer" resultMap="result">
         <include refid="baseSelect"/>
         <include refid="publicationContributor.editorsWhere"/>
+            order by rank
     </select>
 
     <update id="update" parameterType="MpPublicationContributor">

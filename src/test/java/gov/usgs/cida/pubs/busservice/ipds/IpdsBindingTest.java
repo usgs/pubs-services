@@ -336,9 +336,8 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
         contributors.add(contributorC);
         fixed = binding.fixRanks(contributors);
         assertEquals(3, fixed.size());
-        for (Iterator<MpPublicationContributor> fixedIter = fixed.iterator(); fixedIter.hasNext();) {
-            MpPublicationContributor test = fixedIter.next();
-            assertNull(test.getRank());
+        for (int i=0; i<fixed.size(); i++) {
+            assertEquals(i+1, ((MpPublicationContributor) fixed.toArray()[i]).getRank().intValue());
         }
     }
 
@@ -357,11 +356,11 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
         MpPublicationContributor editorA = (MpPublicationContributor) contributors.toArray()[2];
         assertEquals(3, editorA.getContributor().getId().intValue());
         assertEquals(ContributorType.EDITORS, editorA.getContributorType().getId());
-        assertNull(editorA.getRank());
+        assertEquals(1, editorA.getRank().intValue());
         MpPublicationContributor editorB = (MpPublicationContributor) contributors.toArray()[3];
         assertEquals(1, editorB.getContributor().getId().intValue());
         assertEquals(ContributorType.EDITORS, editorB.getContributorType().getId());
-        assertNull(editorB.getRank());
+        assertEquals(2, editorB.getRank().intValue());
     }
 
     @Test
@@ -370,10 +369,14 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
         assertNull(binding.getStringValue(null, null));
         assertNull(binding.getStringValue(pubMap, null));
         assertNull(binding.getStringValue(pubMap, "xx"));
+        assertNull(binding.getStringValue(pubMap, "xx"));
         assertNull(binding.getStringValue(null, "xx"));
 
         pubMap.put("xxx", "  owiytuiwruto   ");
         assertEquals("owiytuiwruto", binding.getStringValue(pubMap, "xxx"));
+
+        pubMap.put("xxx", "");
+        assertNull(binding.getStringValue(pubMap, "xxx"));
     }
 
     @Test

@@ -1,7 +1,11 @@
 package gov.usgs.cida.pubs.utility;
 
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
+
 import java.text.MessageFormat;
 import java.util.Properties;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author drsteini
@@ -18,7 +22,7 @@ public final class PubsUtilities {
      * @return Boolean .
      * */
     public static Boolean isInteger(final String number) {
-        if (isNullOrEmpty(number)) {
+        if (StringUtils.isEmpty(number)) {
         	return false;
         }
 
@@ -29,19 +33,6 @@ public final class PubsUtilities {
         }
 
         return true;
-    }
-
-    /**
-     * Utility method to check null or empty values.
-     * @param value . 
-     * @return true if null or empty
-     */
-    public static boolean isNullOrEmpty(final Object value) {
-        if (null == value 
-                || 0 == value.toString().trim().length()) {
-                return true;
-            }
-        return false;
     }
 
     /** 
@@ -84,6 +75,24 @@ public final class PubsUtilities {
         }
         MessageFormat messageFormat = new MessageFormat(messageProp);
         return messageFormat.format(messageArguments);
+    }
+
+    public static boolean isUsgsNumberedSeries(final PublicationSubtype pubSubtype) {
+        boolean rtn = false;
+        if (null != pubSubtype
+                && PublicationSubtype.USGS_NUMBERED_SERIES.equals(pubSubtype.getId())) {
+            rtn = true;
+        }
+        return rtn;
+    }
+
+    public static boolean isUsgsUnnumberedSeries(final PublicationSubtype pubSubtype) {
+        boolean rtn = false;
+        if (null != pubSubtype
+                && PublicationSubtype.USGS_UNNUMBERED_SERIES.equals(pubSubtype.getId())) {
+            rtn = true;
+        }
+        return rtn;
     }
 
 }

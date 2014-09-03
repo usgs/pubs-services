@@ -19,7 +19,7 @@
     <bean id="numberedSeriesXml" class="java.lang.String" autowire="byName">
         <constructor-arg>
             <bean class="org.springframework.util.FileCopyUtils" factory-method="copyToByteArray">
-                <constructor-arg value="classpath:templates/crossref.4.3.0/numberedSeries.xml" type="java.io.InputStream" />
+                <constructor-arg value="classpath:templates/crossref.4.3.3/numberedSeries.xml" type="java.io.InputStream" />
             </bean>
         </constructor-arg>
     </bean>
@@ -27,7 +27,15 @@
     <bean id="unNumberedSeriesXml" class="java.lang.String" autowire="byName">
         <constructor-arg>
             <bean class="org.springframework.util.FileCopyUtils" factory-method="copyToByteArray">
-                <constructor-arg value="classpath:templates/crossref.4.3.0/unNumberedSeries.xml" type="java.io.InputStream" />
+                <constructor-arg value="classpath:templates/crossref.4.3.3/unNumberedSeries.xml" type="java.io.InputStream" />
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean id="organizationNameXml" class="java.lang.String" autowire="byName">
+        <constructor-arg>
+            <bean class="org.springframework.util.FileCopyUtils" factory-method="copyToByteArray">
+                <constructor-arg value="classpath:templates/crossref.4.3.3/organizationName.xml" type="java.io.InputStream" />
             </bean>
         </constructor-arg>
     </bean>
@@ -35,7 +43,7 @@
     <bean id="personNameXml" class="java.lang.String" autowire="byName">
         <constructor-arg>
             <bean class="org.springframework.util.FileCopyUtils" factory-method="copyToByteArray">
-                <constructor-arg value="classpath:templates/crossref.4.3.0/personName.xml" type="java.io.InputStream" />
+                <constructor-arg value="classpath:templates/crossref.4.3.3/personName.xml" type="java.io.InputStream" />
             </bean>
         </constructor-arg>
     </bean>
@@ -43,7 +51,7 @@
     <bean id="pagesXml" class="java.lang.String" autowire="byName">
         <constructor-arg>
             <bean class="org.springframework.util.FileCopyUtils" factory-method="copyToByteArray">
-                <constructor-arg value="classpath:templates/crossref.4.3.0/pages.xml" type="java.io.InputStream" />
+                <constructor-arg value="classpath:templates/crossref.4.3.3/pages.xml" type="java.io.InputStream" />
             </bean>
         </constructor-arg>
     </bean>

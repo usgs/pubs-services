@@ -37,11 +37,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.util.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -147,29 +147,39 @@ public class IpdsBinding {
             } else {
                 rtn.setContributorType(ContributorType.getDao().getById(ContributorType.EDITORS));
             }
-            rtn.setRank(PubsUtilities.parseInteger(element.getElementsByTagName("d:Rank").item(0).getTextContent()));
+            Integer rank = PubsUtilities.parseInteger(element.getElementsByTagName("d:Rank").item(0).getTextContent());
+            if (null == rank) {
+            	//rank cannot be null
+            	rtn.setRank(1);
+            } else {
+            	rtn.setRank(rank);
+            }
         }
         return rtn;
     }
 
     protected Contributor<?> getOrCreateNonUsgsContributor(final Element element) {
         Contributor<?> person;
+        String family = null;
+        String given = null;
         Map<String, Object> filters = new HashMap<>();
         String contributorName = getFirstNodeText(element, "d:AuthorNameText");
         String[] nameParts = contributorName.split(",");
         if (0 < nameParts.length) {
-            filters.put("given", nameParts[0].trim());
+        	given = nameParts[0].trim();
         }
         if (1 < nameParts.length) {
-            filters.put("family", nameParts[1].trim());
+        	family = nameParts[1].trim();
         }
+        filters.put("given", given);
+        filters.put("family", family);
         List<Contributor<?>> people = OutsideContributor.getDao().getByMap(filters);
         //TODO what if we get more than one?
-        if (1 == people.size()) {
+        if (people.isEmpty()) {
+            person = createNonUsgsContributor(element, family, given);
+        } else {
             person = people.get(0);
             //TODO - should we update the information on file?
-        } else {
-            person = createNonUsgsContributor(element, filters.get("family").toString(), filters.get("given").toString());
         }
         return person;
     }
@@ -257,7 +267,7 @@ public class IpdsBinding {
     }
 
     protected Document makeDocument(final String xmlStr) throws SAXException, IOException {
-        if (!StringUtils.isEmpty(xmlStr)) {
+        if (StringUtils.isNotEmpty(xmlStr)) {
             return builder.parse(new InputSource(new StringReader(xmlStr)));
         }
         return null;
@@ -282,9 +292,11 @@ public class IpdsBinding {
         }
 
         if (contributors.size() != ranks.size()) {
+        	Integer i = 0;
             for (Iterator<MpPublicationContributor> fixIterator = contributors.iterator(); fixIterator.hasNext();) {
                 MpPublicationContributor fixMe = fixIterator.next();
-                fixMe.setRank(null);
+                i++;
+                fixMe.setRank(i);
             }
         }
 
@@ -330,7 +342,7 @@ public class IpdsBinding {
             pub.setLanguage("English");
 
             if ((null != conv && IpdsPubTypeConv.USGS_PERIODICAL == conv.getId())
-                    || (null != pub.getPublicationSubtype() && PublicationSubtype.USGS_NUMBERED_SERIES.equals(pub.getPublicationSubtype().getId()))) {
+                    || (PubsUtilities.isUsgsNumberedSeries(pub.getPublicationSubtype()))) {
                 pub.setPublisher("U.S. Geological Survey");
                 pub.setPublisherLocation("Reston VA");
             } else {
@@ -394,10 +406,9 @@ public class IpdsBinding {
         return rtn;
     }
 
-
     protected PublicationSeries getPublicationSeries(PublicationSubtype pubSubtype, PubMap inPub) {
         String usgsSeriesValue = getStringValue(inPub, IpdsMessageLog.USGSSERIESVALUE);
-        if (null != pubSubtype && null != pubSubtype.getId() && !StringUtils.isEmpty(usgsSeriesValue)) {
+        if (null != pubSubtype && null != pubSubtype.getId() && StringUtils.isNotEmpty(usgsSeriesValue)) {
             //Only hit the DB if both fields have values - otherwise the db call will return incorrect results.
             Map<String, Object> filters = new HashMap<>();
             filters.put("publicationSubtypeId", pubSubtype.getId());
@@ -416,21 +427,25 @@ public class IpdsBinding {
     }
 
     protected Affiliation<?> getOrCreateCostCenter(final String costCenterId) throws SAXException, IOException {
-        Affiliation<?> affiliation;
-        Map<String, Object> filters = new HashMap<>();
-        filters.put("ipdsId", costCenterId);
-        List<Affiliation<?>> affiliations = CostCenter.getDao().getByMap(filters);
-        //TODO what if we get more than one?
-        if (affiliations.isEmpty()) {
-            affiliation = createUsgsAffiliation(costCenterId);
-        } else {
-            affiliation = (CostCenter) affiliations.get(0);
-        }
-        return affiliation;
+    	if (StringUtils.isEmpty(costCenterId)) {
+    		return null;
+    	} else {
+	        Affiliation<?> affiliation;
+	        Map<String, Object> filters = new HashMap<>();
+	        filters.put("ipdsId", costCenterId);
+	        List<Affiliation<?>> affiliations = CostCenter.getDao().getByMap(filters);
+	        //TODO what if we get more than one?
+	        if (affiliations.isEmpty()) {
+	            affiliation = createUsgsAffiliation(costCenterId);
+	        } else {
+	            affiliation = (CostCenter) affiliations.get(0);
+	        }
+	        return affiliation;
+    	}
     }
 
     protected String getStringValue(PubMap inPub, String key) {
-        if (null != inPub && null != inPub.get(key)) {
+        if (null != inPub && null != inPub.get(key) && StringUtils.isNotEmpty(inPub.get(key).toString().trim())) {
             return inPub.get(key).toString().trim();
         } else {
             return null;

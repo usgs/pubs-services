@@ -3,6 +3,8 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
 
+    <bean id="mpList" class="gov.usgs.cida.pubs.domain.mp.MpList" autowire="byName"/>
+    <bean id="mpListPublication" class="gov.usgs.cida.pubs.domain.mp.MpListPublication" autowire="byName"/>
     <bean id="mpPublication" class="gov.usgs.cida.pubs.domain.mp.MpPublication" autowire="byName"/>
     <bean id="mpPublicationContributor" class="gov.usgs.cida.pubs.domain.mp.MpPublicationContributor" autowire="byName"/>
     <bean id="mpPublicationCostCenter" class="gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter" autowire="byName"/>
@@ -14,6 +16,7 @@
     <bean id="contributorType" class="gov.usgs.cida.pubs.domain.ContributorType" autowire="byName"/>
     <bean id="corporateContributor" class="gov.usgs.cida.pubs.domain.CorporateContributor" autowire="byName"/>
     <bean id="costCenter" class="gov.usgs.cida.pubs.domain.CostCenter" autowire="byName"/>
+    <bean id="crossRefLog" class="gov.usgs.cida.pubs.domain.CrossRefLog" autowire="byName"/>
     <bean id="linkFileType" class="gov.usgs.cida.pubs.domain.LinkFileType" autowire="byName"/>
     <bean id="linkType" class="gov.usgs.cida.pubs.domain.LinkType" autowire="byName"/>
     <bean id="outsideAffiliation" class="gov.usgs.cida.pubs.domain.OutsideAffiliation" autowire="byName"/>

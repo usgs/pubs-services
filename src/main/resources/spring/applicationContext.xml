@@ -68,4 +68,6 @@
 
     <import resource="classpath:/spring/ipdsJmsContext.xml"/>
 
+    <import resource="classpath:/spring/securityContext.xml" />
+
 </beans>

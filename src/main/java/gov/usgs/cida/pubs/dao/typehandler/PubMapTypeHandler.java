@@ -7,10 +7,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import oracle.sql.CLOB;
+
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PubMapTypeHandler implements TypeHandler<PubMap> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PubMapTypeHandler.class);
 
     /** 
      * {@inheritDoc}
@@ -60,7 +66,20 @@ public class PubMapTypeHandler implements TypeHandler<PubMap> {
     }
 
     private Object nullCheckValue(Object value) {
-        return null == value ? "" : value;
+    	Object rtn = "";
+    	if (null == value) {
+    		rtn = "";
+    	} else if (value instanceof CLOB) {
+    		try {
+				rtn = ((CLOB) value).stringValue();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				LOG.info(e.getLocalizedMessage());
+			}
+    	} else {
+    		return rtn = value;
+    	}
+    	return rtn;
     }
 
 }

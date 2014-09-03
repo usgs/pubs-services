@@ -8,7 +8,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({"id","rank","type","url","text","size","mime-type"})
 public class MpPublicationLink extends PublicationLink<MpPublicationLink> {
 
-    private static IMpDao<MpPublicationLink> mpPublicationLinkDao;
+	private static final long serialVersionUID = -3448411849107196775L;
+
+	private static IMpDao<MpPublicationLink> mpPublicationLinkDao;
 
     public static IMpDao<MpPublicationLink> getDao() {
         return mpPublicationLinkDao;

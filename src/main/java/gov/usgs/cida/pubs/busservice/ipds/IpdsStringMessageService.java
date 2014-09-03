@@ -5,7 +5,6 @@ import gov.usgs.cida.pubs.busservice.intfc.IIpdsService;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
 
-import org.apache.http.protocol.BasicHttpContext;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +33,6 @@ public class IpdsStringMessageService implements IIpdsService {
     @Transactional
     public void processIpdsMessage(final String targetDate) throws Exception {
         LocalDate asOf = (null == targetDate || 0 == targetDate.length()) ? new LocalDate() : new LocalDate(targetDate);
-//        requester.setHttpContext(new BasicHttpContext());
         String inMessageText = requester.getIpdsProductXml(asOf.toString());
         IpdsMessageLog newMessage = new IpdsMessageLog();
         newMessage.setMessageText(inMessageText);

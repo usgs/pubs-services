@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="mpList">
+
+	<resultMap id="mpListResult" type="MpList" extends="base.result">
+		<id property="id" column="mp_list_id"/>
+		<result property="name" column="list_name"/>
+		<result property="description" column="list_desc"/>
+		<result property="type" column="list_type"/>
+	</resultMap>
+
+	<sql id="cols">
+		mp_list_id, list_name, list_desc, list_type,
+        <include refid="base.auditCols"/>
+	</sql>
+
+	<sql id="hosts">
+		#{id,jdbcType=NUMERIC},
+		#{name,jdbcType=VARCHAR},
+		#{description,jdbcType=VARCHAR},
+		#{type,jdbcType=VARCHAR},
+        <include refid="base.auditHosts"/>
+	</sql>
+	
+	<sql id="sets">
+		list_name = #{name,jdbcType=VARCHAR},
+		list_desc = #{description,jdbcType=VARCHAR},
+		list_type = #{type,jdbcType=VARCHAR},
+        <include refid="base.auditSets"/>
+	</sql>
+
+	<insert id="add" parameterType="MpList">
+		<selectKey keyProperty="id" resultType="Integer" order="BEFORE">
+			select mp_list_seq.nextval id from dual
+		</selectKey>
+		insert into mp_list (<include refid="cols"/>)
+			values (<include refid="hosts"/>)
+	</insert>
+	
+	<sql id="baseSelect">
+		select <include refid="cols"/>
+		  from mp_list
+	</sql>
+	
+	<sql id="filters">
+		<where>
+            <if test="id != null">
+                and mp_list_id = #{id}
+            </if>
+            <if test="name != null">
+                and upper(list_name) like upper(#{name}) || '%'
+            </if>
+		</where>
+	</sql>
+
+	<select id="getById" parameterType="Integer" resultMap="mpListResult">
+		<include refid="baseSelect"/> 
+		 where mp_list_id = #{value,jdbcType=NUMERIC}
+	</select>
+
+	<select id="getByMap" parameterType="map" resultMap="mpListResult">
+		<include refid="baseSelect"/>
+		<include refid="filters"/>
+	</select>
+
+	<update id="update" parameterType="MpList">
+		update mp_list
+		   set <include refid="sets"/>
+		 where mp_list_id = #{id,jdbcType=NUMERIC}
+	</update>
+	
+	<delete id="delete" parameterType="Integer">
+		delete from mp_list
+		 where mp_list_id = #{value,jdbcType=NUMERIC}
+	</delete>
+	
+</mapper>

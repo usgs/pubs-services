@@ -1,0 +1,3 @@
+                    <organization sequence="{sequence}" contributor_role="{contributor_type}">
+                        {organization}
+                    </organization>

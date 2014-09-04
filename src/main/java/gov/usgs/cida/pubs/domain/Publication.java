@@ -50,7 +50,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
 //TODO    @NotNull
     private LocalDateTime displayToPublicDate;
-    
+
     @JsonProperty("publicationYear")
     @JsonView(IMpView.class)
     @NotNull
@@ -104,7 +104,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @JsonView(IMpView.class)
     @NotNull
     private PublicationType largerWorkType;
-    
+
     @JsonProperty("largerWorkTitle")
     @JsonView(IMpView.class)
     @Length(min=1, max=2000)
@@ -231,7 +231,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     @JsonProperty("authors")
     @JsonView(IMpView.class)
-    private Collection<PublicationContributor<?>> authors;
+	protected Collection<PublicationContributor<?>> authors;
 
     @JsonProperty("editors")
     @JsonView(IMpView.class)
@@ -245,7 +245,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @JsonProperty("links")
     @JsonView(IMpView.class)
     private Collection<PublicationLink<?>> links;
-    
+
 /**
      * @return the indexId
      */

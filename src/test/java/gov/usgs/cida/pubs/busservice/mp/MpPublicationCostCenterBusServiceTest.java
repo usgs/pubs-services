@@ -108,6 +108,7 @@ public class MpPublicationCostCenterBusServiceTest extends BaseSpringDaoTest {
         //Now do a straight delete without the id.
         MpPublicationCostCenter mpcc = new MpPublicationCostCenter();
         mpcc.setCostCenter(cc3);
+        mpcc.setPublicationId(id);
         busService.deleteObject(mpcc);
         updccs = MpPublicationCostCenter.getDao().getByMap(filters);
         assertEquals(1, updccs.size());

@@ -4,7 +4,9 @@ import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
+import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
+import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.json.ResponseView;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
@@ -56,6 +58,42 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 			rtn = (Contributor) personContributorBusService.getObject(PubsUtilities.parseInteger(contributorId));
 		}
 		return rtn;
+	}
+	
+	@RequestMapping(value = {"/usgscontributor"}, method = RequestMethod.POST, produces = PubsConstants.MIME_TYPE_APPLICATION_JSON)
+	@ResponseView(IMpView.class)
+	public @ResponseBody
+	Contributor<?> createUsgsContributor(@RequestBody UsgsContributor person
+			) {
+		LOG.debug("createUsgsContributor");
+		Contributor<?> result = null;
+		if (null != person) {
+			Contributor createdPerson = (Contributor) personContributorBusService.createObject(person);
+			if (null != createdPerson) {
+				Integer id = createdPerson.getId();
+				result = (Contributor) personContributorBusService.getObject(id);
+			}
+			
+		}
+		return result;
+	}
+	
+	@RequestMapping(value = {"/outsidecontributor"}, method = RequestMethod.POST, produces = PubsConstants.MIME_TYPE_APPLICATION_JSON)
+	@ResponseView(IMpView.class)
+	public @ResponseBody
+	Contributor<?> createUsgsContributor(@RequestBody OutsideContributor person
+			) {
+		LOG.debug("createUsgsContributor");
+		Contributor<?> result = null;
+		if (null != person) {
+			Contributor createdPerson = (Contributor) personContributorBusService.createObject(person);
+			if (null != createdPerson) {
+				Integer id = createdPerson.getId();
+				result = (Contributor) personContributorBusService.getObject(id);
+			}
+			
+		}
+		return result;
 	}
 	
 	@RequestMapping(value = {"/person"}, method = RequestMethod.POST, produces = PubsConstants.MIME_TYPE_APPLICATION_JSON)

@@ -2,15 +2,18 @@ package gov.usgs.cida.pubs.domain.mp;
 
 import gov.usgs.cida.pubs.dao.intfc.IMpPublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * @author drsteini
@@ -41,6 +44,13 @@ public class MpPublication extends Publication<MpPublication> {
             return new ArrayList<>();
         }
     }
+
+//    @JsonProperty("authors")
+//    @JsonDeserialize(as=Collection<MpPublicationContributor>.class)
+//    @Override
+//    public void setAuthors(final Collection<PublicationContributor<?>> inAuthors) {
+//        authors = inAuthors;
+//    }
 
     /**
      * @return the mpPublicationDao

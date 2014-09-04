@@ -7,9 +7,7 @@ import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.PubMap;
 import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.domain.ProcessType;
-import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
-import gov.usgs.cida.pubs.domain.ipds.IpdsPubTypeConv;
 
 import java.util.Arrays;
 import java.util.List;
@@ -112,8 +110,8 @@ public class IpdsMessageLogDaoTest extends BaseSpringDaoTest {
         pubMap.put(IpdsMessageLog.IPNUMBER, "IP1234");
         pubMap.put(IpdsMessageLog.IPDSREVIEWPROCESSSTATEVALUE, ProcessType.SPN_PRODUCTION.getIpdsValue());
         pubMap.put(IpdsMessageLog.IPDS_INTERNAL_ID, 453228);
-        pubMap.put(IpdsMessageLog.JOURNALTITLE, "A Journal");
-        pubMap.put(IpdsMessageLog.DISEMINATIONDATE, "2014-10-10");
+        pubMap.put(IpdsMessageLog.JOURNALTITLE, "A Journal Title");
+        pubMap.put(IpdsMessageLog.DISEMINATIONDATE, "1994-10-10");
         return pubMap;
     }
 
@@ -136,8 +134,8 @@ public class IpdsMessageLogDaoTest extends BaseSpringDaoTest {
         pubMap.put(IpdsMessageLog.IPNUMBER, "IP1234");
         pubMap.put(IpdsMessageLog.IPDSREVIEWPROCESSSTATEVALUE, ProcessType.SPN_PRODUCTION.getIpdsValue());
         pubMap.put(IpdsMessageLog.IPDS_INTERNAL_ID, 453228);
-        pubMap.put(IpdsMessageLog.JOURNALTITLE, "A Journal");
-        pubMap.put(IpdsMessageLog.DISEMINATIONDATE, "2014-10-10");
+        pubMap.put(IpdsMessageLog.JOURNALTITLE, "An Article");
+        pubMap.put(IpdsMessageLog.DISEMINATIONDATE, "1857-10-10");
         return pubMap;
     }
 

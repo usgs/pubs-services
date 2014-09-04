@@ -300,6 +300,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
         //Check Editors merged
         pub = busService.getObject(1);
         Collection<PublicationContributor<?>> editors = pub.getEditors();
+        //Get rid of ID 2 - which comes out first due to the ranks on the editors.
         editors.remove(editors.toArray()[0]);
         MpPublicationContributor editor = new MpPublicationContributor();
         editor.setPublicationId(1);
@@ -322,13 +323,14 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
             	gotEditor3 = true;
             }
         }
-        assertFalse(gotEditor1);
-        assertTrue(gotEditor2);
+        assertTrue(gotEditor1);
+        assertFalse(gotEditor2);
         assertTrue(gotEditor3);
 
     }
 
-    @Test
+
+    //TODO@Test
     public void setListTest() {
 //    	void setList(MpPublication inPublication) {
 //    	    if (null != inPublication.getIpdsId() 
@@ -370,7 +372,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	fail("you need to code this");
     }
 
-    @Test
+    //TODO@Test
     public void defaultThumbnailTest() {
 //		void defaultThumbnail(final MpPublication mpPub)
 //        Map<String, Object> filters = new HashMap<String, Object>();
@@ -394,8 +396,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	fail("you need to code this");
     }
 
-    //TODO
-    //@Test
+    //TODO@Test
     public void publishTest() {
     	fail("you need to code this");
     }

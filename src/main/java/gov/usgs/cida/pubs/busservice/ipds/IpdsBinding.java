@@ -373,9 +373,23 @@ public class IpdsBinding {
             pub.setIpdsInternalId(getStringValue(inPub, IpdsMessageLog.IPDS_INTERNAL_ID));
 
             //Not from IPDS - pub.setLargerWorkType()
-            //TODO The journal title will be used to get publication series on articles, otherwise store it here.
-            //TODO pub.setLargerWorkTitle(getStringValue(inPub, IpdsMessageLog.JOURNALTITLE));
-            //TODO pub.setPublicationYear(getStringValue(inPub, IpdsMessageLog.DISEMINATIONDATE).substring(1, 4));
+            String largerWorkTitle = getStringValue(inPub, IpdsMessageLog.JOURNALTITLE);
+            if (StringUtils.isNotEmpty(largerWorkTitle)) {
+            	if (PubsUtilities.isPublicationTypeArticle(pub.getPublicationType())
+            			&& null != pub.getPublicationSubtype()) {
+            		Map<String, Object> filters = new HashMap<>();
+            		filters.put("name", largerWorkTitle);
+            		filters.put("publicationSubtypeId", pub.getPublicationSubtype().getId());
+            		List<PublicationSeries> seriesList = PublicationSeries.getDao().getByMap(filters);
+            		if (0 < seriesList.size()) {
+            			//Take the first one.
+            			pub.setSeriesTitle(seriesList.get(0));
+            		}
+	            } else {
+	            	pub.setLargerWorkTitle(getStringValue(inPub, IpdsMessageLog.JOURNALTITLE));
+	            }
+            }
+            pub.setPublicationYear(getStringValue(inPub, IpdsMessageLog.DISEMINATIONDATE).substring(0, 4));
             //Not from IPDS - pub.setConferenceTitle();
             //Not from IPDS - pub.setConferenceDate();
             //Not from IPDS - pub.setConferenceLocation();

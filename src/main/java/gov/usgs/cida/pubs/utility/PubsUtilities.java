@@ -1,6 +1,7 @@
 package gov.usgs.cida.pubs.utility;
 
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
+import gov.usgs.cida.pubs.domain.PublicationType;
 
 import java.text.MessageFormat;
 import java.util.Properties;
@@ -95,4 +96,12 @@ public final class PubsUtilities {
         return rtn;
     }
 
+    public static boolean isPublicationTypeArticle(final PublicationType pubType) {
+        boolean rtn = false;
+        if (null != pubType
+                && PublicationType.ARTICLE.equals(pubType.getId())) {
+            rtn = true;
+        }
+        return rtn;
+    }
 }

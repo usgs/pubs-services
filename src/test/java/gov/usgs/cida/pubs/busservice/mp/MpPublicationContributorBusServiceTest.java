@@ -57,14 +57,12 @@ public class MpPublicationContributorBusServiceTest extends BaseSpringDaoTest {
         //Add some contributors
         Collection<PublicationContributor<?>> mpContributors = new ArrayList<>();
         MpPublicationContributor mpContributor1 = new MpPublicationContributor();
-        mpContributor1.setPublicationId(id);
         mpContributor1.setContributor(Contributor.getDao().getById(1));
         ContributorType contributorType = ContributorType.getDao().getById(1);
         mpContributor1.setContributorType(contributorType);
         mpContributor1.setRank(1);
         mpContributors.add(mpContributor1);
         MpPublicationContributor mpContributor2 = new MpPublicationContributor();
-        mpContributor2.setPublicationId(id);
         mpContributor2.setContributor(Contributor.getDao().getById(2));
         mpContributor2.setContributorType(contributorType);
         mpContributors.add(mpContributor2);
@@ -93,7 +91,6 @@ public class MpPublicationContributorBusServiceTest extends BaseSpringDaoTest {
         mpContributor2.setRank(4);
         mpContributors.add(mpContributor2);
         MpPublicationContributor mpContributor3 = new MpPublicationContributor();
-        mpContributor3.setPublicationId(id);
         mpContributor3.setContributor(Contributor.getDao().getById(3));
         mpContributor3.setContributorType(contributorType);
         mpContributor3.setRank(3);

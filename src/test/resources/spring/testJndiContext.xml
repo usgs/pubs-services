@@ -63,10 +63,10 @@
         <constructor-arg value="80"/>
     </bean>
     <bean id="crossRefUser" class="java.lang.String">
-        <constructor-arg value="usgs"/>
+        <constructor-arg value="${crossref.username}"/>
     </bean>
     <bean id="crossRefPwd" class="java.lang.String">
-        <constructor-arg value="1234"/>
+        <constructor-arg value="${crossref.password}"/>
     </bean>
 
     <bean id="pubsEmailList" class="java.lang.String">
@@ -74,6 +74,10 @@
     </bean>
     <bean id="mailHost" class="java.lang.String">
         <constructor-arg value="gsvaresh01.er.usgs.gov"/>
+    </bean>
+
+    <bean id="authService" class="java.lang.String">
+        <constructor-arg value="localhost"/>
     </bean>
 
 </beans>

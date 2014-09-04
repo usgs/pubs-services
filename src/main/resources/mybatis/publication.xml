@@ -241,6 +241,10 @@
 
     <sql id="filters">
         <where>
+        	<if test="null != IPDS_ID">
+        		and ipds_id = #{IPDS_ID}
+        	</if>
+        	
         	<include refid="publication.singleSearchTermFilter"/>
         	
        		<if test="title != null and title.length > 0">

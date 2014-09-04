@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
 import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
@@ -185,32 +186,6 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     }
 
     @Test
-    public void isUsgsNumberedSeriesTest() {
-        assertFalse(busService.isUsgsNumberedSeries(null));
-        PublicationSubtype pubSubtype = new PublicationSubtype();
-        assertFalse(busService.isUsgsNumberedSeries(pubSubtype));
-        pubSubtype.setId(1);
-        assertFalse(busService.isUsgsNumberedSeries(pubSubtype));
-        pubSubtype.setId(PublicationSubtype.USGS_UNNUMBERED_SERIES);
-        assertFalse(busService.isUsgsNumberedSeries(pubSubtype));
-        pubSubtype.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
-        assertTrue(busService.isUsgsNumberedSeries(pubSubtype));
-    }
-
-    @Test
-    public void isUsgsUnnumberedSeriesTest() {
-        assertFalse(busService.isUsgsUnnumberedSeries(null));
-        PublicationSubtype pubSubtype = new PublicationSubtype();
-        assertFalse(busService.isUsgsUnnumberedSeries(pubSubtype));
-        pubSubtype.setId(1);
-        assertFalse(busService.isUsgsUnnumberedSeries(pubSubtype));
-        pubSubtype.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
-        assertFalse(busService.isUsgsUnnumberedSeries(pubSubtype));
-        pubSubtype.setId(PublicationSubtype.USGS_UNNUMBERED_SERIES);
-        assertTrue(busService.isUsgsUnnumberedSeries(pubSubtype));
-    }
-
-    @Test
     public void getUsgsNumberedSeriesIndexId() {
         assertNull(busService.getUsgsNumberedSeriesIndexId(null));
         assertNull(busService.getUsgsNumberedSeriesIndexId(new MpPublication()));
@@ -351,6 +326,78 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
         assertTrue(gotEditor2);
         assertTrue(gotEditor3);
 
+    }
+
+    @Test
+    public void setListTest() {
+//    	void setList(MpPublication inPublication) {
+//    	    if (null != inPublication.getIpdsId() 
+//    	            && null == PwPublication.getDao().getById(inPublication.getId()) ) {
+//    	        MpListPublication newListEntry = new MpListPublication();
+//    	        newListEntry.setMpPublication(inPublication);
+//    	        if (null != inPublication.getPublicationType()
+//    	        		&& PublicationType.ARTICLE.equals(inPublication.getPublicationType().getId())) {
+//    	            newListEntry.setMpList(MpList.getDao().getById(MpList.IPDS_JOURNAL_ARTICLES));
+//    	        } else {
+//    	            if (isUsgsNumberedSeries(inPublication.getPublicationSubtype())) {
+//    	                if (null != inPublication.getIpdsReviewProcessState() &&
+//    	                        ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(inPublication.getIpdsReviewProcessState())) {
+//    	                    newListEntry.setMpList(MpList.getDao().getById(MpList.PENDING_USGS_SERIES));
+//    	                } else {
+//    	                    newListEntry.setMpList(MpList.getDao().getById(MpList.IPDS_USGS_NUMBERED_SERIES));
+//    	                }
+//    	            } else {
+//    	                if (null != inPublication.getIpdsReviewProcessState() &&
+//    	                        ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(inPublication.getIpdsReviewProcessState())) {
+//    	                    newListEntry.setMpList(MpList.getDao().getById(MpList.PENDING_USGS_SERIES));
+//    	                } else {
+//    	                    newListEntry.setMpList(MpList.getDao().getById(MpList.IPDS_OTHER_PUBS));
+//    	                }
+//    	            }
+//    	        }
+//    	
+//    	        //Check for existing list entry
+//    	        Map<String, Object> params = new HashMap<>();
+//    	        params.put("publicationId", newListEntry.getMpPublication().getId());
+//    	        params.put("mpListId", newListEntry.getMpList().getId());
+//    	        List<MpListPublication> listEntries = MpListPublication.getDao().getByMap(params);
+//    	        if (0 == listEntries.size()) {
+//    	            MpListPublication.getDao().add(newListEntry);
+//    	        } else {
+//    	            MpListPublication.getDao().update(newListEntry);
+//    	        }
+//    	    }
+    	fail("you need to code this");
+    }
+
+    @Test
+    public void defaultThumbnailTest() {
+//		void defaultThumbnail(final MpPublication mpPub)
+//        Map<String, Object> filters = new HashMap<String, Object>();
+//        filters.put("linkTypeId", LinkType.THUMBNAIL);
+//        filters.put("publicationId", mpPub.getId());
+//        List<MpPublicationLink> thumbnails = MpPublicationLink.getDao().getByMap(filters);
+//        if (0 == thumbnails.size()) {
+//        	MpPublicationLink thumbnail = new MpPublicationLink();
+//            thumbnail.setPublicationId(mpPub.getId());
+//            thumbnail.setLinkType(LinkType.getDao().getById(LinkType.THUMBNAIL.toString()));
+//            if (null != mpPub.getPublicationSubtype() &&
+//                    (PublicationSubtype.USGS_NUMBERED_SERIES.equals(mpPub.getPublicationSubtype())
+//                            || PublicationSubtype.USGS_UNNUMBERED_SERIES.equals(mpPub.getPublicationSubtype()))) {
+//                thumbnail.setUrl(MpPublicationLink.USGS_THUMBNAIL);
+//            } else {
+//                thumbnail.setUrl(MpPublicationLink.EXTERNAL_THUMBNAIL);
+//            }
+//            MpPublicationLink.getDao().add(thumbnail);
+//        }
+
+    	fail("you need to code this");
+    }
+
+    //TODO
+    //@Test
+    public void publishTest() {
+    	fail("you need to code this");
     }
 
 }

@@ -53,6 +53,9 @@
             <if test="publicationId != null">
                 and publication_id = #{publicationId}
             </if>
+            <if test="linkTypeId != null">
+                and link_type_id = #{linkTypeId}
+            </if>
         </where>
     </sql>
 

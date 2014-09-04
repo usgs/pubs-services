@@ -10,12 +10,12 @@ import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
-import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
 import gov.usgs.cida.pubs.domain.ipds.PublicationMap;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class IpdsProcess implements IIpdsProcess {
@@ -50,7 +51,7 @@ public class IpdsProcess implements IIpdsProcess {
         this.pubBusService = pubBusService;
     }
 
-    public String processLog(final ProcessType inProcessType, final int logId) throws Exception {
+    public String processLog(final ProcessType inProcessType, final int logId) {
         StringBuilder rtn = new StringBuilder();
         int totalEntries = 0;
         additions = 0;
@@ -76,7 +77,7 @@ public class IpdsProcess implements IIpdsProcess {
 
         //Check for existing data in MyPubs land - use the first hit if any found.
         Map<String, Object> filters = new HashMap<String, Object>();
-        filters.put("ipdsId", pub.getIpdsId());
+        filters.put("IPDS_ID", pub.getIpdsId());
         List<MpPublication> existingPubs = MpPublication.getDao().getByMap(filters);
         MpPublication existingPub = null == existingPubs ? null : existingPubs.isEmpty() ? null : existingPubs.get(0);
 
@@ -155,10 +156,8 @@ public class IpdsProcess implements IIpdsProcess {
                 if (null != inProcessType && ProcessType.SPN_PRODUCTION == inProcessType) {
                     rtn.append(updateIpdsWithDoi(rtnPub));
                 } else if (null != inProcessType && ProcessType.DISSEMINATION == inProcessType
-                			&& (null != rtnPub.getPublicationSubtype() 
-                				&& (PublicationSubtype.USGS_NUMBERED_SERIES.equals(rtnPub.getPublicationSubtype().getId())
-                						|| PublicationSubtype.USGS_UNNUMBERED_SERIES.equals(rtnPub.getPublicationSubtype().getId()))
-                				)
+                			&& (PubsUtilities.isUsgsNumberedSeries(rtnPub.getPublicationSubtype())
+                					|| PubsUtilities.isUsgsUnnumberedSeries(rtnPub.getPublicationSubtype()))
                             && (null != rtnPub.getDoi() && 0 < rtnPub.getDoi().length())) {
                 	crossRefBusService.submitCrossRef(rtnPub);
                 }
@@ -167,11 +166,17 @@ public class IpdsProcess implements IIpdsProcess {
             }
 
         } else {
-            rtn.append("\n\t" + "IPDS record not processed (" + inProcessType + ")- Publication Type: ")
-                .append(pub.getPublicationType().getText())
-                .append(" PublicationSubtype: " + pub.getPublicationSubtype().getText())
-                .append(" Series: " + pub.getSeriesTitle().getText())
-                .append(" Process State: " + pub.getIpdsReviewProcessState() + " DOI: " + pub.getDoi());
+            rtn.append("\n\t" + "IPDS record not processed (" + inProcessType + ")-");
+            if (null != pub.getPublicationType()) {
+            	rtn.append(" Publication Type: " + pub.getPublicationType().getText());
+            }
+            if (null != pub.getPublicationSubtype()) {
+            	rtn.append(" PublicationSubtype: " + pub.getPublicationSubtype().getText());
+            }
+            if (null != pub.getSeriesTitle()) {
+            	rtn.append(" Series: " + pub.getSeriesTitle().getText());
+            }
+            rtn.append(" Process State: " + pub.getIpdsReviewProcessState() + " DOI: " + pub.getDoi());
         }
 
         return rtn.append("\n\n").toString();
@@ -194,8 +199,7 @@ public class IpdsProcess implements IIpdsProcess {
 
 	protected boolean okToProcessDissemination(final MpPublication pub, final MpPublication existingPub) {
 		if (null != pub) {
-			if (null != pub.getPublicationSubtype()
-				&& PublicationSubtype.USGS_NUMBERED_SERIES.equals(pub.getPublicationSubtype().getId())
+			if (PubsUtilities.isUsgsNumberedSeries(pub.getPublicationSubtype())
 				&& null == pub.getSeriesTitle()) {
 				//Do not process USGS numbered series without an actual series.
 				return false;
@@ -211,7 +215,7 @@ public class IpdsProcess implements IIpdsProcess {
 
 	protected boolean okToProcessSpnProduction(final MpPublication pub) {
 		if (null != pub) {
-			if (null != pub.getDoi()) {
+			if (StringUtils.isNotEmpty(pub.getDoi())) {
 				//Skip if we have already assigned a DOI (shouldn't happen as we are querying for null DOI publications)
 				return false;
 			} else if (null == pub.getIpdsReviewProcessState() || !ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(pub.getIpdsReviewProcessState())) {
@@ -221,7 +225,7 @@ public class IpdsProcess implements IIpdsProcess {
 //        	} else if (PublicationType.USGS_UNNUMBERED_SERIES.contentEquals(String.valueOf(pubType.getId()))) {
 //          	//Process all USGS unnumbered series
 //          	return true;
-			} else if (null != pub.getPublicationSubtype() && PublicationSubtype.USGS_NUMBERED_SERIES == pub.getPublicationSubtype().getId()) {
+			} else if (PubsUtilities.isUsgsNumberedSeries(pub.getPublicationSubtype())) {
 //            	if (null != pub.getSeries()
 //              	      && pub.getSeries().contentEquals("Administrative Report")) {
 //                	//Skip the administrative series

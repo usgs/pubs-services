@@ -3,21 +3,27 @@ package gov.usgs.cida.pubs.busservice.mp;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.domain.LinkType;
+import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
-import gov.usgs.cida.pubs.domain.PublicationSubtype;
+import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.domain.mp.MpList;
+import gov.usgs.cida.pubs.domain.mp.MpListPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -165,11 +171,11 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
                 //Only auto update index ID if publication in not in the warehouse.
                 String indexId = outPublication.getId().toString();
                 String doi = null;
-                if (isUsgsNumberedSeries(outPublication.getPublicationSubtype())) {
+                if (PubsUtilities.isUsgsNumberedSeries(outPublication.getPublicationSubtype())) {
                     //Only USGS Numbered Series get a "special" index ID
                     indexId = getUsgsNumberedSeriesIndexId(outPublication);
                     doi = getDoiName(indexId);
-                } else if (isUsgsUnnumberedSeries(outPublication.getPublicationSubtype())) {
+                } else if (PubsUtilities.isUsgsUnnumberedSeries(outPublication.getPublicationSubtype())) {
                     doi = getDoiName(indexId);
                 }
 
@@ -184,24 +190,6 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
             }
         }
         return outPublication;
-    }
-
-    protected boolean isUsgsNumberedSeries(final PublicationSubtype pubSubtype) {
-        boolean rtn = false;
-        if (null != pubSubtype
-                && PublicationSubtype.USGS_NUMBERED_SERIES.equals(pubSubtype.getId())) {
-            rtn = true;
-        }
-        return rtn;
-    }
-
-    protected boolean isUsgsUnnumberedSeries(final PublicationSubtype pubSubtype) {
-        boolean rtn = false;
-        if (null != pubSubtype
-                && PublicationSubtype.USGS_UNNUMBERED_SERIES.equals(pubSubtype.getId())) {
-            rtn = true;
-        }
-        return rtn;
     }
 
     public String getUsgsNumberedSeriesIndexId(final MpPublication pub) {
@@ -242,42 +230,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     	MpPublication outPublication = null;
         if (null != inPublication) {
 
-        //TODO Reactive when lists are implemented.
-//        if (null != outPublication.getIpdsId() 
-//                && null == PwPublication.getDao().getById(outPublication.getId()) ) {
-//            MpListPubsRel newListEntry = new MpListPubsRel();
-//            newListEntry.setProdId(outPublication.getId().toString());
-//            if (outPublication.getPublicationTypeId().contentEquals(PublicationType.ARTICLE)) {
-//                newListEntry.setListId(MpList.IPDS_JOURNAL_ARTICLES);
-//            } else {
-//                if (outPublication.getPublicationTypeId().contentEquals(PublicationType.USGS_NUMBERED_SERIES)) {
-//                    if (null != outPublication.getIpdsReviewProcessState() &&
-//                            ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(outPublication.getIpdsReviewProcessState())) {
-//                        newListEntry.setListId(MpList.PENDING_USGS_SERIES);
-//                    } else {
-//                        newListEntry.setListId(MpList.IPDS_USGS_NUMBERED_SERIES);
-//                    }
-//                } else {
-//                    if (null != outPublication.getIpdsReviewProcessState() &&
-//                            ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(outPublication.getIpdsReviewProcessState())) {
-//                        newListEntry.setListId(MpList.PENDING_USGS_SERIES);
-//                    } else {
-//                        newListEntry.setListId(MpList.IPDS_OTHER_PUBS);
-//                    }
-//                }
-//            }
-//
-//            //Check for existing list entry
-//            Map<String, Object> params = new HashMap<String, Object>();
-//            params.put("prodId", newListEntry.getProdId());
-//            params.put("listId", newListEntry.getListId());
-//            List<MpListPubsRel> listEntries = MpListPubsRel.getDao().getByMap(params);
-//            if (0 == listEntries.size()) {
-//                MpListPubsRel.getDao().add(newListEntry);
-//            } else {
-//                MpListPubsRel.getDao().update(newListEntry);
-//            }
-//        }
+        	setList(inPublication);
 
         	Collection<PublicationContributor<?>> publicationContributors = new ArrayList<>();
         	if (null != inPublication.getAuthors()) {
@@ -318,7 +271,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 //                validationResults.addValidationResults(mpSuper.getValidationErrors());
 //            }
 //
-//            defaultThumbnail(mpPub);
+            defaultThumbnail(mpPub);
 //
 //            List<MpLinkDim> links = MpLinkDim.getDao().getByMap(filters);
 //            for (MpLinkDim link : links) {
@@ -337,9 +290,9 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 //            MpPublication.getDao().publishToPw(prodId);
 //            MpSupersedeRel.getDao().publishToPw(prodId);
 //            MpLinkDim.getDao().publishToPw(prodId);
-            if ((isUsgsNumberedSeries(mpPub.getPublicationSubtype())
-                    || isUsgsUnnumberedSeries(mpPub.getPublicationSubtype()))
-                    && (null != mpPub.getDoi() && !StringUtils.isEmpty(mpPub.getDoi()))) {
+            if ((PubsUtilities.isUsgsNumberedSeries(mpPub.getPublicationSubtype())
+                    || PubsUtilities.isUsgsUnnumberedSeries(mpPub.getPublicationSubtype()))
+                    && (null != mpPub.getDoi() && StringUtils.isNotEmpty(mpPub.getDoi()))) {
                 crossRefBusService.submitCrossRef(mpPub);
             }
 //            deleteObject(mpPub);
@@ -349,28 +302,63 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     }
 
     /**
-     * For linkDim, on publish, we create a placeholder thumbnail link if none already exist.
+     * For publicationLink, on publish, we create a placeholder thumbnail link if none already exist.
      */
-    @Transactional
-    private void defaultThumbnail(final MpPublication mpPub) {
-        //TODO reactivate when implementing the new publish routine.
-//        Map<String, Object> filters = new HashMap<String, Object>();
-//        filters.put("linkClass", LinkClass.THUMBNAIL.toString());
-//        filters.put("prodId", mpPub.getId());
-//        List<MpLinkDim> thumbnails = MpLinkDim.getDao().getByMap(filters);
-//        if (0 == thumbnails.size()) {
-//            MpLinkDim thumbnail = new MpLinkDim();
-//            thumbnail.setProdId(mpPub.getId().toString());
-//            thumbnail.setLinkClass(LinkClass.THUMBNAIL.toString());
-//            if (null != mpPub.getPublicationTypeId() &&
-//                    (PublicationType.USGS_NUMBERED_SERIES.contentEquals(mpPub.getPublicationTypeId())
-//                            || PublicationType.USGS_UNNUMBERED_SERIES.contentEquals(mpPub.getPublicationTypeId()))) {
-//                thumbnail.setLink(MpLinkDim.USGS_THUMBNAIL);
-//            } else {
-//                thumbnail.setLink(MpLinkDim.EXTERNAL_THUMBNAIL);
-//            }
-//            MpLinkDim.getDao().add(thumbnail);
-//        }
+    protected void defaultThumbnail(final MpPublication mpPub) {
+        Map<String, Object> filters = new HashMap<String, Object>();
+        filters.put("linkTypeId", LinkType.THUMBNAIL);
+        filters.put("publicationId", mpPub.getId());
+        List<MpPublicationLink> thumbnails = MpPublicationLink.getDao().getByMap(filters);
+        if (0 == thumbnails.size()) {
+        	MpPublicationLink thumbnail = new MpPublicationLink();
+            thumbnail.setPublicationId(mpPub.getId());
+            thumbnail.setLinkType(LinkType.getDao().getById(LinkType.THUMBNAIL.toString()));
+            if (PubsUtilities.isUsgsNumberedSeries(mpPub.getPublicationSubtype())
+            		|| PubsUtilities.isUsgsUnnumberedSeries(mpPub.getPublicationSubtype())) {
+                thumbnail.setUrl(MpPublicationLink.USGS_THUMBNAIL);
+            } else {
+                thumbnail.setUrl(MpPublicationLink.EXTERNAL_THUMBNAIL);
+            }
+            MpPublicationLink.getDao().add(thumbnail);
+        }
     }
 
+    protected void setList(MpPublication inPublication) {
+	    if (null != inPublication.getIpdsId() 
+	            && null == PwPublication.getDao().getById(inPublication.getId()) ) {
+	        MpListPublication newListEntry = new MpListPublication();
+	        newListEntry.setMpPublication(inPublication);
+	        if (null != inPublication.getPublicationType()
+	        		&& PublicationType.ARTICLE.equals(inPublication.getPublicationType().getId())) {
+	            newListEntry.setMpList(MpList.getDao().getById(MpList.IPDS_JOURNAL_ARTICLES));
+	        } else {
+	            if (PubsUtilities.isUsgsNumberedSeries(inPublication.getPublicationSubtype())) {
+	                if (null != inPublication.getIpdsReviewProcessState() &&
+	                        ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(inPublication.getIpdsReviewProcessState())) {
+	                    newListEntry.setMpList(MpList.getDao().getById(MpList.PENDING_USGS_SERIES));
+	                } else {
+	                    newListEntry.setMpList(MpList.getDao().getById(MpList.IPDS_USGS_NUMBERED_SERIES));
+	                }
+	            } else {
+	                if (null != inPublication.getIpdsReviewProcessState() &&
+	                        ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(inPublication.getIpdsReviewProcessState())) {
+	                    newListEntry.setMpList(MpList.getDao().getById(MpList.PENDING_USGS_SERIES));
+	                } else {
+	                    newListEntry.setMpList(MpList.getDao().getById(MpList.IPDS_OTHER_PUBS));
+	                }
+	            }
+	        }
+	
+	        //Check for existing list entry
+	        Map<String, Object> params = new HashMap<>();
+	        params.put("publicationId", newListEntry.getMpPublication().getId());
+	        params.put("mpListId", newListEntry.getMpList().getId());
+	        List<MpListPublication> listEntries = MpListPublication.getDao().getByMap(params);
+	        if (0 == listEntries.size()) {
+	            MpListPublication.getDao().add(newListEntry);
+	        } else {
+	            MpListPublication.getDao().update(newListEntry);
+	        }
+	    }
+    }
 }

@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.busservice;
 
+import gov.usgs.cida.pubs.domain.Contributor;
 import javax.validation.Validator;
 
 import gov.usgs.cida.pubs.domain.CorporateContributor;
@@ -14,11 +15,44 @@ public class CorporateContributorBusService extends BusService<CorporateContribu
 		this.validator = validator;
 	}
 
+	@Override
+	public CorporateContributor getObject(Integer objectId) {
+		CorporateContributor result = null;
+		if (null != objectId) {
+			result = (CorporateContributor) CorporateContributor.getDao().getById(objectId);
+		}
+		return result;
+	}
+
+	@Override
+	@Transactional
+	public CorporateContributor updateObject(CorporateContributor object) {
+		CorporateContributor result = null;
+		if (null != object && null != object.getId()) {
+			Integer id = object.getId();
+			Contributor<CorporateContributor> castObject = object;
+			castObject.setValidationErrors(validator.validate(castObject));
+			if (castObject.getValidationErrors().isEmpty()) {
+				CorporateContributor.getDao().update(castObject);
+				result = (CorporateContributor) CorporateContributor.getDao().getById(id);
+			}
+		}
+		return result;
+	}
+	
     @Override
     @Transactional
     public CorporateContributor createObject(final CorporateContributor object) {
-        //TODO provide logic similar to the PersonContributorBusService
-        return null;
+		CorporateContributor result = object;
+        if (null != object) {
+			Contributor<CorporateContributor> castObject = object;
+            castObject.setValidationErrors(validator.validate(castObject));
+            if (castObject.getValidationErrors().isEmpty()) {
+                Integer id = CorporateContributor.getDao().add(castObject);
+                result = (CorporateContributor) CorporateContributor.getDao().getById(id);
+            }
+        }
+        return result;
     }
 
 }

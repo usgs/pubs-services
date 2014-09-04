@@ -8,6 +8,7 @@
     <bean id="mpPublicationCostCenterBusService" class="gov.usgs.cida.pubs.busservice.mp.MpPublicationCostCenterBusService" autowire="byName"/>
     <bean id="mpPublicationLinkBusService" class="gov.usgs.cida.pubs.busservice.mp.MpPublicationLinkBusService" autowire="byName"/>
 
+	<bean id="corporateContributorBusService" class="gov.usgs.cida.pubs.busservice.CorporateContributorBusService" autowire="byName"/>
     <bean id="personContributorBusService" class="gov.usgs.cida.pubs.busservice.PersonContributorBusService" autowire="byName"/>
 
     <bean id="ipdsBinding" class="gov.usgs.cida.pubs.busservice.ipds.IpdsBinding" autowire="byName"/>

@@ -155,7 +155,7 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
         assertEquals(1, links.size());
         PublicationLink<?> link = (PublicationLink<?>) links.toArray()[0];
         assertEquals("http://dave.com/this/url", link.getUrl());
-        assertEquals(LinkType.INDEX_PAGE, link.getLinkType().getId().toString());
+        assertEquals(LinkType.INDEX_PAGE, link.getLinkType().getId());
     }
 
     @Test
@@ -462,8 +462,8 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
         assertEquals(ProcessType.SPN_PRODUCTION.getIpdsValue(), pub.getIpdsReviewProcessState());
 
         assertEquals("453228", pub.getIpdsInternalId());
-        //TODO pub.setLargerWorkTitle(getStringValue(inPub, IpdsMessageLog.JOURNALTITLE));
-        //TODO pub.setPublicationYear(getStringValue(inPub, IpdsMessageLog.DISEMINATIONDATE).substring(1, 4));
+        assertEquals("A Journal", pub.getLargerWorkTitle());
+        assertEquals("2014", pub.getPublicationYear());
     }
 
     protected void assertPub2(MpPublication pub) {
@@ -494,8 +494,8 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
         assertEquals(ProcessType.SPN_PRODUCTION.getIpdsValue(), pub.getIpdsReviewProcessState());
 
         assertEquals("453228", pub.getIpdsInternalId());
-        //TODO pub.setLargerWorkTitle(getStringValue(inPub, IpdsMessageLog.JOURNALTITLE));
-        //TODO pub.setPublicationYear(getStringValue(inPub, IpdsMessageLog.DISEMINATIONDATE).substring(1, 4));
+        assertEquals("A Journal Title", pub.getLargerWorkTitle());
+        assertEquals("1994", pub.getPublicationYear());
     }
 
     protected void assertPub3(MpPublication pub) {
@@ -527,7 +527,7 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
 
         assertEquals("453228", pub.getIpdsInternalId());
         //TODO pub.setLargerWorkTitle(getStringValue(inPub, IpdsMessageLog.JOURNALTITLE));
-        //TODO pub.setPublicationYear(getStringValue(inPub, IpdsMessageLog.DISEMINATIONDATE).substring(1, 4));
+        assertEquals("1857", pub.getPublicationYear());
     }
 
     protected void assertPub4(MpPublication pub) {
@@ -558,8 +558,8 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
         assertEquals(ProcessType.SPN_PRODUCTION.getIpdsValue(), pub.getIpdsReviewProcessState());
 
         assertEquals("453228", pub.getIpdsInternalId());
-        //TODO pub.setLargerWorkTitle(getStringValue(inPub, IpdsMessageLog.JOURNALTITLE));
-        //TODO pub.setPublicationYear(getStringValue(inPub, IpdsMessageLog.DISEMINATIONDATE).substring(1, 4));
+        assertEquals("A Journal", pub.getLargerWorkTitle());
+        assertEquals("2014", pub.getPublicationYear());
     }
 
     protected void assertPubCommon(MpPublication pub) {
@@ -583,11 +583,11 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
 
         assertNull(pub.getTemporalStart());
         assertNull(pub.getTemporalEnd());
-        //TODO assertNull(pub.getLargerWorkType());
+        assertNull(pub.getLargerWorkType());
 
-        //TODO assertNull(pub.getConferenceTitle());
-        //TODO assertNull(pub.setConferenceDate();
-        //TODO assertNull(pub.setConferenceLocation();
+        assertNull(pub.getConferenceTitle());
+        assertNull(pub.getConferenceDate());
+        assertNull(pub.getConferenceLocation());
 
         assertNull(pub.getAuthors());
         assertNull(pub.getEditors());

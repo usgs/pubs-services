@@ -126,5 +126,22 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		}
 		return rtn;
 	}
-
+	
+	@RequestMapping(value = {"/corporation"}, method = RequestMethod.POST, produces = PubsConstants.MIME_TYPE_APPLICATION_JSON)
+	@ResponseView(IMpView.class)
+	public @ResponseBody
+	Contributor<?> createCorporation(@RequestBody CorporateContributor corporation
+			) {
+		LOG.debug("createCorporation");
+		Contributor<?> result = null;
+		if (null != corporation) {
+			Contributor createdCorporation = (Contributor) corporateContributorBusService.createObject(corporation);
+			if (null != createdCorporation) {
+				Integer id = createdCorporation.getId();
+				result = (Contributor) corporateContributorBusService.getObject(id);
+			}
+			
+		}
+		return result;
+	}
 }

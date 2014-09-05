@@ -90,7 +90,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		LOG.debug("updateUsgsContributor");
         setHeaders(response);
         Contributor<PersonContributor<UsgsContributor>> castPerson = (Contributor<PersonContributor<UsgsContributor>>) personContributorBusService.updateObject(person);
-        if (null != castPerson && castPerson.getValidationErrors().isEmpty()) {
+        if (null != castPerson && (null == castPerson.getValidationErrors() || castPerson.getValidationErrors().isEmpty())) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -121,11 +121,11 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	@RequestMapping(value = "/outsidecontributor/{id}", method = RequestMethod.PUT, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
     @ResponseView(IMpView.class)
     @Transactional
-    public @ResponseBody Contributor<?> updateUsgsContributor(@RequestBody OutsideContributor person, @PathVariable String id, HttpServletResponse response) {
-		LOG.debug("updateUsgsContributor");
+    public @ResponseBody Contributor<?> updateOutsideContributor(@RequestBody OutsideContributor person, @PathVariable String id, HttpServletResponse response) {
+		LOG.debug("updateOutsideContributor");
         setHeaders(response);
         Contributor<PersonContributor<OutsideContributor>> castPerson = (Contributor<PersonContributor<OutsideContributor>>) personContributorBusService.updateObject(person);
-        if (null != castPerson && castPerson.getValidationErrors().isEmpty()) {
+        if (null != castPerson && (null == castPerson.getValidationErrors() || castPerson.getValidationErrors().isEmpty())) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -194,7 +194,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		LOG.debug("updateCorporation");
         setHeaders(response);
         Contributor<CorporateContributor> castCorporation = (Contributor<CorporateContributor>) corporateContributorBusService.updateObject(corporation);
-        if (null != castCorporation && castCorporation.getValidationErrors().isEmpty()) {
+        if (null != castCorporation && (null == castCorporation.getValidationErrors() || castCorporation.getValidationErrors().isEmpty())) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

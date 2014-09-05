@@ -9,6 +9,7 @@ import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
+import gov.usgs.cida.pubs.domain.pw.PwPublicationContributor;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,13 +57,13 @@ public class MpPublicationContributorBusServiceTest extends BaseSpringDaoTest {
 
         //Add some contributors
         Collection<PublicationContributor<?>> mpContributors = new ArrayList<>();
-        MpPublicationContributor mpContributor1 = new MpPublicationContributor();
+        PwPublicationContributor mpContributor1 = new PwPublicationContributor();
         mpContributor1.setContributor(Contributor.getDao().getById(1));
         ContributorType contributorType = ContributorType.getDao().getById(1);
         mpContributor1.setContributorType(contributorType);
         mpContributor1.setRank(1);
         mpContributors.add(mpContributor1);
-        MpPublicationContributor mpContributor2 = new MpPublicationContributor();
+        PublicationContributor<?> mpContributor2 = new PublicationContributor<MpPublicationContributor>();
         mpContributor2.setContributor(Contributor.getDao().getById(2));
         mpContributor2.setContributorType(contributorType);
         mpContributors.add(mpContributor2);

@@ -15,6 +15,7 @@
     <!-- and this is the message listener container -->
     <bean id="mlc" class="org.springframework.jms.listener.DefaultMessageListenerContainer" autowire="byName">
         <property name="concurrentConsumers" value="1"/>
+        <property name="maxConcurrentConsumers" value="1"/>
         <property name="connectionFactory" ref="connectionFactory"/>
         <property name="destinationName" ref="queueName"/>
         <property name="messageListener" ref="messageListener"/>

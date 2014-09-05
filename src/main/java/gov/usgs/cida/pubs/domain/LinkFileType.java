@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
 import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
@@ -7,6 +8,7 @@ import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class LinkFileType extends BaseDomain<LinkFileType> implements ILookup {
 
     private static IDao<LinkFileType> linkFileTypeDao;

@@ -8,6 +8,7 @@ import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
+import gov.usgs.cida.pubs.domain.pw.PwPublicationLink;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,12 +56,12 @@ public class MpPublicationLinkBusServiceTest extends BaseSpringDaoTest {
 
         //Add some links
         Collection<PublicationLink<?>> mpLinks = new ArrayList<>();
-        MpPublicationLink mpLink1 = new MpPublicationLink();
+        PwPublicationLink mpLink1 = new PwPublicationLink();
         mpLink1.setRank(1);
         LinkType linkType = LinkType.getDao().getById(1);
         mpLink1.setLinkType(linkType);
         mpLinks.add(mpLink1);
-        MpPublicationLink mpLink2 = new MpPublicationLink();
+        PublicationLink<?> mpLink2 = new PublicationLink<PwPublicationLink>();
         mpLink2.setRank(2);
         mpLink2.setLinkType(linkType);
         mpLinks.add(mpLink2);

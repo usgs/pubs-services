@@ -6,7 +6,6 @@ import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
 
-import org.apache.http.protocol.BasicHttpContext;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -38,7 +37,6 @@ public class SpnProductionMessageService implements IIpdsService {
     @Override
     public void processIpdsMessage(final String targetDate) throws Exception {
         LocalDate asOf = (null == targetDate || 0 == targetDate.length()) ? new LocalDate() : new LocalDate(targetDate);
-//        requester.setHttpContext(new BasicHttpContext());
         String atomFeed = requester.getSpnProduction(asOf.toString());
         IpdsMessageLog newMessage = new IpdsMessageLog();
         newMessage.setMessageText(atomFeed);

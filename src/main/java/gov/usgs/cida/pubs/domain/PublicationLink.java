@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -16,6 +17,7 @@ public class PublicationLink<D> extends BaseDomain<D> implements Serializable {
 	public static final String EXTERNAL_THUMBNAIL = "http://pubs.er.usgs.gov/thumbnails/outside_thumb.jpg";
 
 	@JsonIgnore
+//	@JsonBackReference
     private Integer publicationId;
 
     @JsonProperty("rank")

@@ -9,6 +9,17 @@ public class MpPublicationContributor extends PublicationContributor<MpPublicati
 
 	private static IMpDao<MpPublicationContributor> mpPublicationContributorDao;
 
+	public MpPublicationContributor() {}
+
+	public MpPublicationContributor(final PublicationContributor<?> pubContributor) {
+		//TODO this constructor is only here to create an MpPublicationContributor from the Jackson deserialized PublicationContributor...
+		this.setId(pubContributor.getId());
+		this.setPublicationId(pubContributor.getPublicationId());
+		this.setContributorType(pubContributor.getContributorType());
+		this.setContributor(pubContributor.getContributor());
+		this.setRank(pubContributor.getRank());
+	}
+
     /**
      * @return the mpPublicationContributorDao
      */

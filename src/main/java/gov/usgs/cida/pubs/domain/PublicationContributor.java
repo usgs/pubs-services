@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -12,6 +13,7 @@ public class PublicationContributor<D> extends BaseDomain<D> implements Serializ
 
 	private static final long serialVersionUID = 5911778679824879199L;
 
+//	@JsonBackReference
 	private Integer publicationId;
 
     private ContributorType contributorType;

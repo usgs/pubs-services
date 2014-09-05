@@ -43,7 +43,15 @@ public class MpPublicationLinkBusService implements IListBusService<PublicationL
 	        //And do the merge.
 	        if (null != collection && !collection.isEmpty()) {
 	            for (Object pubObject : collection) {
-	                MpPublicationLink pubLink = (MpPublicationLink) pubObject;
+	            	MpPublicationLink pubLink = new MpPublicationLink();
+	            	//TODO figure out if we can get Jackson to marshall to an Mp...
+	            	if (pubObject instanceof MpPublicationLink) {
+	            		//No need to translate - I am an MpPublicationLink
+	            		pubLink = (MpPublicationLink) pubObject;
+	            	} else {
+	            		//Any other flavor of PublicationLink needs to be translated.
+	            		pubLink = new MpPublicationLink((PublicationLink<?>) pubObject);
+	            	}
 	                //Make sure the publicationID matches what it should - (it's typically null with adds)
 	                pubLink.setPublicationId(parentId);
 	                if (map.containsKey(pubLink.getId())) {
@@ -53,6 +61,8 @@ public class MpPublicationLinkBusService implements IListBusService<PublicationL
 	                } else {
 	                    //Add in the new link.
 	                    MpPublicationLink.getDao().add(pubLink);
+	                    //Force a set the ID for the //TODO marshalled objects.
+	                    ((PublicationLink<?>) pubObject).setId(pubLink.getId());
 	                }
 	            }
 	        }

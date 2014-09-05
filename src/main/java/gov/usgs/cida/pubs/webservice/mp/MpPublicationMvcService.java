@@ -81,7 +81,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         Map<String, Object> filters = new HashMap<String, Object>();
 
     	configureSingleSearchFilters(filters, searchTerms);
-    	
+
     	addToFiltersIfNotNull(filters, "title", title);
     	addToFiltersIfNotNull(filters, "abstract", pubAbstract);
     	addToFiltersIfNotNull(filters, "author", author);
@@ -96,7 +96,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     	addToFiltersIfNotNull(filters, "reportNumber", reportNumber);
     	addToFiltersIfNotNull(filters, "pageRowStart", pageRowStart);
     	addToFiltersIfNotNull(filters, "pageSize", pageSize);
-        
+
         List<MpPublication> pubs = busService.getObjects(filters);
         Integer totalPubsCount = busService.getObjectCount(filters);
         SearchResults results = new SearchResults();
@@ -104,10 +104,10 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         results.setPageRowStart(pageRowStart);
         results.setRecords(pubs);
         results.setRecordCount(totalPubsCount);
-        
+
         return results;
     }
-    
+
     /**
      * Configures the filters/orderby settings to support single search
      * @param filters

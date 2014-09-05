@@ -22,6 +22,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -102,7 +103,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     @JsonProperty("largerWorkType")
     @JsonView(IMpView.class)
-    @NotNull
+//    @NotNull
     private PublicationType largerWorkType;
 
     @JsonProperty("largerWorkTitle")
@@ -231,10 +232,12 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     @JsonProperty("authors")
     @JsonView(IMpView.class)
+//    @JsonManagedReference
 	protected Collection<PublicationContributor<?>> authors;
 
     @JsonProperty("editors")
     @JsonView(IMpView.class)
+//    @JsonManagedReference
     private Collection<PublicationContributor<?>> editors;
 
     @JsonProperty("costCenters")
@@ -244,6 +247,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     @JsonProperty("links")
     @JsonView(IMpView.class)
+//    @JsonManagedReference
     private Collection<PublicationLink<?>> links;
 
 /**

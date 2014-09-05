@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.busservice.mp;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
 
@@ -43,7 +44,15 @@ public class MpPublicationContributorBusService implements IListBusService<Publi
 	        //And do the merge.
 	        if (null != collection && !collection.isEmpty()) {
 	            for (Object pubObject : collection) {
-	                MpPublicationContributor pubContrib = (MpPublicationContributor) pubObject;
+	            	MpPublicationContributor pubContrib = new MpPublicationContributor();
+	            	//TODO figure out if we can get Jackson to marshall to an Mp...
+	            	if (pubObject instanceof MpPublicationLink) {
+	            		//No need to translate - I am an MpPublicationContributor
+	            		pubContrib = (MpPublicationContributor) pubObject;
+	            	} else {
+	            		//Any other flavor of PublicationContributor needs to be translated.
+	            		pubContrib = new MpPublicationContributor((PublicationContributor<?>) pubObject);
+	            	}
 	                //Make sure the publicationID matches what it should - (it's typically null with adds)
 	                pubContrib.setPublicationId(parentId);
 	                if (map.containsKey(pubContrib.getId())) {
@@ -53,6 +62,8 @@ public class MpPublicationContributorBusService implements IListBusService<Publi
 	                } else {
 	                    //Add in the new contributor.
 	                    MpPublicationContributor.getDao().add(pubContrib);
+	                    //Force a set the ID for the //TODO marshalled objects.
+	                    ((PublicationContributor<?>) pubObject).setId(pubContrib.getId());
 	                }
 	            }
 	        }

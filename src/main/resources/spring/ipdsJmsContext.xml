@@ -28,6 +28,15 @@
         <constructor-arg value="GS"/>
     </bean>
 
+    <bean id="costCenterListener" class="gov.usgs.cida.pubs.jms.CostCenterConsumer" autowire="byName"/>
+    <bean id="ccmlc" class="org.springframework.jms.listener.DefaultMessageListenerContainer" autowire="byName">
+        <property name="concurrentConsumers" value="1"/>
+        <property name="maxConcurrentConsumers" value="1"/>
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="destinationName" ref="costCenterQueueName"/>
+        <property name="messageListener" ref="costCenterListener"/>
+    </bean>
+
     <bean id="httpClient" class="org.apache.http.impl.client.DefaultHttpClient" autowire="byName"/>
 
 </beans>

@@ -22,7 +22,7 @@ public class MessageConsumer implements MessageListener {
     protected final IIpdsService spnProductionMessageService;
 
     @Autowired
-    MessageConsumer(@Qualifier("ipdsStringMessageService") final IIpdsService ipdsStringMessageService,
+    public MessageConsumer(@Qualifier("ipdsStringMessageService") final IIpdsService ipdsStringMessageService,
             @Qualifier("spnProductionMessageService") final IIpdsService spnProductionMessageService) {
         this.ipdsStringMessageService = ipdsStringMessageService;
         this.spnProductionMessageService = spnProductionMessageService;

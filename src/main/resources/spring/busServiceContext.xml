@@ -16,6 +16,7 @@
     <bean id="ipdsStringMessageService" class="gov.usgs.cida.pubs.busservice.ipds.IpdsStringMessageService" autowire="byName"/>
     <bean id="ipdsWsRequester" class="gov.usgs.cida.pubs.busservice.ipds.IpdsWsRequester" autowire="byName"/>
     <bean id="spnProductionMessageService" class="gov.usgs.cida.pubs.busservice.ipds.SpnProductionMessageService" autowire="byName"/>
+    <bean id="costCenterMessageService" class="gov.usgs.cida.pubs.busservice.ipds.CostCenterMessageService" autowire="byName"/>
 
     <bean id="numberedSeriesXml" class="java.lang.String" autowire="byName">
         <constructor-arg>

@@ -242,4 +242,11 @@ public class IpdsWsRequester {
         return rtn.toString();
     }
 
+	public String getIpdsCostCenterXml() {
+        StringBuilder url = new StringBuilder(URL_PREFIX)
+        .append("CostCenters()");
+
+        return getIpdsXml(url.toString(), null);
+	}
+
 }

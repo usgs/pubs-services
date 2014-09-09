@@ -6,7 +6,9 @@ import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 
 public class PwPublicationContributor extends PublicationContributor<MpPublicationContributor> {
 
-    private static IMpDao<PwPublicationContributor> pwPublicationContributorDao;
+	private static final long serialVersionUID = -2142787008474259876L;
+
+	private static IMpDao<PwPublicationContributor> pwPublicationContributorDao;
 
     /**
      * @return the pwPublicationContributorDao

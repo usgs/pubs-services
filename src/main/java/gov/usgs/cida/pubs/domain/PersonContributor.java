@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.domain;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Length;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
@@ -94,7 +95,20 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
     @Override
     @JsonView(ILookupView.class)
     public String getText() {
-        return family + " " + given + " " + suffix + " " + email;
+    	StringBuilder text = new StringBuilder();
+    	if (StringUtils.isNotEmpty(family)) {
+    		text.append(family);
+    	}
+    	if (StringUtils.isNotEmpty(given)) {
+    		text.append(" ").append(given);
+    	}
+    	if (StringUtils.isNotEmpty(suffix)) {
+    		text.append(" ").append(suffix);
+    	}
+    	if (StringUtils.isNotEmpty(email)) {
+    		text.append(" ").append(email);
+    	}
+        return text.toString();
     }
 
 

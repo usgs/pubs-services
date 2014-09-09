@@ -1,10 +1,9 @@
 package gov.usgs.cida.pubs.domain;
 
-import java.io.Serializable;
-
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;

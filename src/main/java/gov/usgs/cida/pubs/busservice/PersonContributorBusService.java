@@ -22,9 +22,9 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 	 */
 	@Override
 	public PersonContributor<?> getObject(Integer objectId) {
-		PersonContributor result = null;
+		PersonContributor<?> result = null;
 		if (null != objectId) {
-			result = (PersonContributor) PersonContributor.getDao().getById(objectId);
+			result = (PersonContributor<?>) PersonContributor.getDao().getById(objectId);
 		}
 		return result;
 	}

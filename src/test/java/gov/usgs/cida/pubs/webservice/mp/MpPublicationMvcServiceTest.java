@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.webservice.mp;
 
+
 import static com.jayway.jsonassert.JsonAssert.with;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -18,6 +19,7 @@ import javax.annotation.Resource;
 
 import org.json.JSONObject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -26,6 +28,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+@Ignore
 @WebAppConfiguration
 public class MpPublicationMvcServiceTest extends BaseSpringTest {
 

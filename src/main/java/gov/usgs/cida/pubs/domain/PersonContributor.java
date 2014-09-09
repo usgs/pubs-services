@@ -18,7 +18,7 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 
     @JsonProperty("family")
     @JsonView(IMpView.class)
-    @Length(min=0, max=40)
+    @Length(min=1, max=40)
     private String family;
 
     @JsonProperty("given")

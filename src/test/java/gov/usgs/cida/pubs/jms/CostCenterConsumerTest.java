@@ -2,21 +2,24 @@ package gov.usgs.cida.pubs.jms;
 
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.busservice.intfc.IIpdsService;
-import gov.usgs.cida.pubs.domain.ProcessType;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.jms.MapMessage;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /**
  * @author drsteini
@@ -24,65 +27,47 @@ import org.junit.Test;
  */
 public class CostCenterConsumerTest extends BaseSpringTest {
 
-    private class Isms implements IIpdsService {
-        public String msgText;
-        @Override
-        public void processIpdsMessage(String ipdsMessage) throws Exception {
-            msgText = null == ipdsMessage ? "nullInput" : ipdsMessage;
-        }
+	@Mock
+	public IIpdsService service;
+
+    private CostCenterConsumer mc;
+    
+    @Before
+    public void initTest() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        mc = new CostCenterConsumer(service);
     }
-
-    private Isms isms = new Isms();
-
-    private class Spms implements IIpdsService {
-        public String msgText;
-        @Override
-        public void processIpdsMessage(String ipdsMessage) throws Exception {
-            msgText = null == ipdsMessage ? "nullInput" : ipdsMessage;
-        }
-    }
-
-    private Spms spms = new Spms();
 
     @Test
     public void testOnMessage() {
         ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost?broker.persistent=false");
-        MessageConsumer mc = new MessageConsumer(isms, spms);
         try {
             Connection conn = connectionFactory.createConnection();
             Session sess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            TextMessage message = sess.createTextMessage("hi");
+            TextMessage message = sess.createTextMessage(null);
             mc.onMessage(message);
-            assertEquals("hi", isms.msgText);
-            assertNull(spms.msgText);
-
-            message = sess.createTextMessage("2013-10-25");
-            mc.onMessage(message);
-            assertEquals("2013-10-25", isms.msgText);
-            assertNull(spms.msgText);
-
-            message = sess.createTextMessage(null);
-            mc.onMessage(message);
-            assertEquals("nullInput", isms.msgText);
-            assertNull(spms.msgText);
-
-            isms.msgText = null;
-            message = sess.createTextMessage(ProcessType.SPN_PRODUCTION.toString()+"abc");
-            mc.onMessage(message);
-            assertNull(isms.msgText);
-            assertEquals("abc", spms.msgText);
-
-            try {
-                MapMessage mmessage = sess.createMapMessage();
-                mc.onMessage(mmessage);
-                fail("should have gotten \"Invalid Message\"");
-            } catch (Exception e){
-                assertEquals("Bad JMS Karma", e.getMessage());
-                assertEquals("Invalid Message", e.getCause().getMessage());
-            }
-        } catch (JMSException e) {
+            verify(service, times(1)).processIpdsMessage(null);
+        } catch (Exception e) {
             e.printStackTrace();
             fail();
+        }
+
+    }
+
+    @Test
+    public void testOnMessageErrorThown() {
+    	try {
+			doThrow(new RuntimeException()).when(service).processIpdsMessage(null);
+
+			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost?broker.persistent=false");
+            Connection conn = connectionFactory.createConnection();
+            Session sess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            TextMessage message = sess.createTextMessage(null);
+            mc.onMessage(message);
+            verify(service, times(1)).processIpdsMessage(null);
+        } catch (Exception e) {
+            assertTrue(e instanceof RuntimeException);
+            assertEquals("Bad JMS Karma - CostCenter", e.getMessage());
         }
 
     }

@@ -26,23 +26,26 @@ public class ParentExistsValidatorForMpPublication implements ConstraintValidato
     public boolean isValid(Publication<?> value, ConstraintValidatorContext context) {
         boolean rtn = true;
 
-        if (null != value.getPublicationType() && null == PublicationType.getDao().getById(value.getPublicationType().getId())) {
+        if (null != value.getPublicationType() && null != value.getPublicationType().getId()
+        		&& null == PublicationType.getDao().getById(value.getPublicationType().getId())) {
             rtn = false;
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
                 .addPropertyNode("type").addConstraintViolation();
         }
-        if (null != value.getPublicationSubtype() && null == PublicationSubtype.getDao().getById(value.getPublicationSubtype().getId())) {
+        if (null != value.getPublicationSubtype() && null != value.getPublicationSubtype().getId()
+        		&& null == PublicationSubtype.getDao().getById(value.getPublicationSubtype().getId())) {
             rtn = false;
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
                 .addPropertyNode("genre").addConstraintViolation();
         }
-        if (null != value.getSeriesTitle() && null == PublicationSeries.getDao().getById(value.getSeriesTitle().getId())) {
+        if (null != value.getSeriesTitle() && null != value.getSeriesTitle().getId()
+        		&& null == PublicationSeries.getDao().getById(value.getSeriesTitle().getId())) {
             rtn = false;
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
-                .addPropertyNode("collectionTitle").addConstraintViolation();
+                .addPropertyNode("seriesTitle").addConstraintViolation();
         }
         //TODO implement Contact
 //        if (null != value.getContact()) {

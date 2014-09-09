@@ -33,6 +33,9 @@
     <bean id="queueName" class="java.lang.String">
         <constructor-arg value="dummy"/>
     </bean>
+    <bean id="costCenterQueueName" class="java.lang.String">
+        <constructor-arg value="dummy"/>
+    </bean>
     <bean id="mqBroker" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
         <property name="staticMethod" value="org.apache.activemq.broker.BrokerFactory.createBroker"/>
         <property name="arguments">

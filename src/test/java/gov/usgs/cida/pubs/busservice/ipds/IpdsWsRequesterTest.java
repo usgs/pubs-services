@@ -118,6 +118,11 @@ public class IpdsWsRequesterTest extends BaseSpringTest {
 
     //TODO Activate this Test?
 //  @Test
+//  public void getIpdsCostCenterXml() {
+//  }
+
+    //TODO Activate this Test?
+//  @Test
 //  public void getNotesTest() {
 //  }
 

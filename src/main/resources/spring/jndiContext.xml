@@ -19,6 +19,7 @@
 
     <jee:jndi-lookup id="brokerURL" jndi-name="java:comp/env/jms/ipdsBrokerURL"/>
     <jee:jndi-lookup id="queueName" jndi-name="java:comp/env/jms/ipdsQueueName"/>
+    <jee:jndi-lookup id="costCenterQueueName" jndi-name="java:comp/env/jms/costCenterQueueName"/>
 
     <jee:jndi-lookup id="ipdsEndpoint" jndi-name="java:comp/env/pubs/ipds/endpoint"/>
     <jee:jndi-lookup id="ipdsProtocol" jndi-name="java:comp/env/pubs/ipds/protocol"/>

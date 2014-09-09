@@ -1,7 +1,5 @@
 package gov.usgs.cida.pubs.utility;
 
-import gov.usgs.cida.pubs.jms.JmsExceptionListener;
-
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -45,12 +43,5 @@ public class PubsEMailer {
             LOG.info(e.getMessage());
         }
     }
-
-//    public void setPubsEmailList(final String inPubsEmailList) {
-//        pubsEmailList = inPubsEmailList;
-//    }
-//    public void setMailHost(final String inMailHost) {
-//        mailHost = inMailHost;
-//    }
 
 }

@@ -25,7 +25,10 @@
 	</properties>
 
 	<scm>
-		<developerConnection>scm:git:ssh://git@cida-eros-stash.er.usgs.gov:7999/pubs/pubs-services.git</developerConnection>
+		<connection>scm:git:http://cida-eros-stash.er.usgs.gov:7999/pubs/pubs-services.git</connection>
+		<developerConnection>scm:git:ssh://cida-eros-stash.er.usgs.gov:7999/pubs/pubs-services.git</developerConnection>
+		<url>http:cida-eros-stash.er.usgs.gov:7999/pubs/pubs-services.git</url>
+		<tag>HEAD</tag>
 	</scm>
 
 	<distributionManagement>

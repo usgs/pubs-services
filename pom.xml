@@ -25,7 +25,7 @@
 	</properties>
 
 	<scm>
-		<developerConnection>scm:svn:https://cida-svn.er.usgs.gov/repos/dev/usgs/pubs/pubsCore/trunk</developerConnection>
+		<developerConnection>scm:git:ssh://git@cida-eros-stash.er.usgs.gov:7999/pubs/pubs-services.git</developerConnection>
 	</scm>
 
 	<distributionManagement>
@@ -407,13 +407,6 @@
 			</testResource>
 		</testResources>
 		<plugins>
-			<plugin>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.4.1</version>
-				<configuration>
-					<tagBase>${cida.svn.url}/usgs/pubs/pubsCore/tags</tagBase>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

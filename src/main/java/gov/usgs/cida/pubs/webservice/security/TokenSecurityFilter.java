@@ -1,9 +1,11 @@
 package gov.usgs.cida.pubs.webservice.security;
 
-import gov.usgs.cida.auth.client.AuthClient;
+import gov.usgs.cida.auth.client.IAuthClient;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -28,7 +30,7 @@ public class TokenSecurityFilter implements Filter  {
 	public static final String AUTH_BEARER_STRING = "Bearer";
 	
 	@Autowired
-	private AuthClient authClient;
+	private IAuthClient authClient;
 	
 	@Override
 	public void destroy() {
@@ -104,7 +106,15 @@ public class TokenSecurityFilter implements Filter  {
 		ArrayList<SimpleGrantedAuthority> auths = new ArrayList<>();
 		auths.add(new SimpleGrantedAuthority(PubsAuthentication.ROLE_AUTHENTICATED));
 		
-		//TODO retrieve authorization roles associated with this token, and add them to lists of authorities
+		List<String> roles = authClient.getRolesByToken(token);
+		for(String role : roles) {
+			try {
+				PubsRoles.valueOf(role); //role validation
+				auths.add(new SimpleGrantedAuthority(PubsAuthentication.ROLE_PREFIX + role));
+			} catch (Exception e) {
+				LOG.debug(MessageFormat.format("Role {0} for token {1} ignored.", role, token), e);
+			}
+		}
 		
         SecurityContextHolder.getContext().setAuthentication(new PubsAuthentication(auths));
 	}

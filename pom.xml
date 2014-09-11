@@ -73,7 +73,7 @@
 		<dependency>
 			<groupId>gov.usgs.cida.auth</groupId>
 			<artifactId>auth-client</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>ch.qos.logback</groupId>

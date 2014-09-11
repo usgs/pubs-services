@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,22 +49,28 @@ public class TokenSecurityFilter implements Filter  {
 	public void doFilter(ServletRequest req, ServletResponse resp,
 			FilterChain filterChain) throws IOException, ServletException {
 		
-		HttpServletRequest httpReq = (HttpServletRequest) req; //not sure if this cast is safe
+		HttpServletRequest httpReq = (HttpServletRequest) req; 
 		
 		if ("OPTIONS".equals(httpReq.getMethod())) {
 			setAnonymousRole();
+			filterChain.doFilter(req, resp); 
 		} else {
 			String token = getTokenFromHeader(httpReq);
 			
 			if(authClient.isValidToken(token)) {
 				setAuthorizationRoles(token);
+				filterChain.doFilter(req, resp); 
 			} else {
 				LOG.debug("Invalid token");
-				setAnonymousRole();
+				if(SecurityContextHolder.getContext().getAuthentication() != null) {
+					LOG.debug("Anonymous role set for this request, proceeding down filter chain");
+					filterChain.doFilter(req, resp); 
+				} else {
+					LOG.debug("Anonymous role not set previously, not authenticated");
+					((HttpServletResponse) resp).setStatus(401);
+				}
 			}
 		}
-
-		filterChain.doFilter(req, resp); //continue down the chain
 	}
 
 	@Override

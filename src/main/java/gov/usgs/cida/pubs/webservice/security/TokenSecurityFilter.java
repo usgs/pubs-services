@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.webservice.security;
 import gov.usgs.cida.auth.client.AuthClient;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -10,11 +11,12 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.servlet.Filter;
 
@@ -26,7 +28,7 @@ public class TokenSecurityFilter implements Filter  {
 	
 	@Autowired
 	private AuthClient authClient;
-
+	
 	@Override
 	public void destroy() {
 		//clean up?
@@ -49,18 +51,19 @@ public class TokenSecurityFilter implements Filter  {
 		HttpServletRequest httpReq = (HttpServletRequest) req; //not sure if this cast is safe
 		
 		if ("OPTIONS".equals(httpReq.getMethod())) {
-			filterChain.doFilter(req, resp); //continue down the chain
+			setAnonymousRole();
 		} else {
 			String token = getTokenFromHeader(httpReq);
 			
 			if(authClient.isValidToken(token)) {
 				setAuthorizationRoles(token);
-				filterChain.doFilter(req, resp); //continue down the chain
 			} else {
 				LOG.debug("Invalid token");
-				((HttpServletResponse) resp).setStatus(401);
+				setAnonymousRole();
 			}
 		}
+
+		filterChain.doFilter(req, resp); //continue down the chain
 	}
 
 	@Override
@@ -91,6 +94,17 @@ public class TokenSecurityFilter implements Filter  {
 	}
 	
 	private void setAuthorizationRoles(String token) {
-		//TODO retrieve authorization roles associated with this token, and update security context with information
+		ArrayList<SimpleGrantedAuthority> auths = new ArrayList<>();
+		auths.add(new SimpleGrantedAuthority(PubsAuthentication.ROLE_AUTHENTICATED));
+		
+		//TODO retrieve authorization roles associated with this token, and add them to lists of authorities
+		
+        SecurityContextHolder.getContext().setAuthentication(new PubsAuthentication(auths));
+	}
+	
+	private void setAnonymousRole() {
+		ArrayList<SimpleGrantedAuthority> auths = new ArrayList<>();
+		auths.add(new SimpleGrantedAuthority(PubsAuthentication.ROLE_ANONYMOUS));
+        SecurityContextHolder.getContext().setAuthentication(new PubsAuthentication(auths));
 	}
 }

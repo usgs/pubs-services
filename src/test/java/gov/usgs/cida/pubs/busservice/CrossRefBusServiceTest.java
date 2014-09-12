@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
@@ -104,13 +105,13 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	@Test
 	public void buildXmlNumberedSeriesTest() {
 		MpPublication pub = buildNumberedSeriesPub();
-		assertEquals("/tmp/numbered", busService.buildXml(pub, "http://pubs.usgs.gov/of/2013/1259/").substring(0, 13));
+		assertTrue(busService.buildXml(pub, "http://pubs.usgs.gov/of/2013/1259/").matches(".*[\\\\/]numbered[0-9]+\\.xml"));
 	}
 
 	@Test
 	public void buildXmlUnNumberedSeriesTest() {
 		MpPublication pub = buildUnNumberedSeriesPub();
-		assertEquals("/tmp/unnumbered", busService.buildXml(pub, "http://pubs.usgs.gov/of/2013/1259/").substring(0, 15));
+		assertTrue(busService.buildXml(pub, "http://pubs.usgs.gov/of/2013/1259/").matches(".*[\\\\/]unnumbered[0-9]+\\.xml"));
 	}
 
 	@Test

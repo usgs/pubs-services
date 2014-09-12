@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:sec="http://www.springframework.org/schema/security"
-	xmlns:util="http://www.springframework.org/schema/util" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:sec="http://www.springframework.org/schema/security" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
                            http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
                            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
 						   http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd">
 
-	<sec:global-method-security secured-annotations="enabled" />
+	<sec:global-method-security
+		secured-annotations="enabled" proxy-target-class="true" />
 
 	<sec:http create-session="stateless">
-		<sec:intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY" requires-channel="https" />
 		<sec:form-login />
+		<!-- 
+		IMPORTANT: to allow enable anonymous entry, do not use an intercept URL here, add an entry to the
+		filterChainProxy bean below in this file. DO NOT use an intercept-url. This is a by-product of our
+		custom tokenSecurityFilter chain -->
+		<sec:intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY" requires-channel="https" />
 		<sec:logout />
 	</sec:http>
-	
+
 	<bean id="authClient" class="gov.usgs.cida.auth.client.CachingAuthClient">
 		<constructor-arg ref="authService" />
 	</bean>
@@ -26,21 +29,27 @@
 		class="gov.usgs.cida.pubs.webservice.security.TokenSecurityFilter">
 	</bean>
 
-	<!-- Everything but the auth path is wrapped by the token filter -->
+	<!-- Any service URL allowing anonymous access must use this in the filter chain -->
+	<bean id="anonymousAuthenticationFilter" class="org.springframework.security.web.authentication.AnonymousAuthenticationFilter">
+		<constructor-arg value="anon-filter-key" />
+	</bean>
+	<bean id="securityContextPersistenceFilter" class="org.springframework.security.web.context.SecurityContextPersistenceFilter" />
+
 	<bean id="filterChainProxy" class="org.springframework.security.web.FilterChainProxy">
 		<constructor-arg>
 			<util:list>
-				<sec:filter-chain pattern="/auth/**" filters="none" />
-				<sec:filter-chain pattern="/**" filters="tokenSecurityFilter" />
+				<sec:filter-chain pattern="/lookup/**" filters="securityContextPersistenceFilter, anonymousAuthenticationFilter, tokenSecurityFilter" /> <!-- Give anon access to lookup services -->
+				<sec:filter-chain pattern="/auth/ad/token/**" filters="securityContextPersistenceFilter, anonymousAuthenticationFilter, tokenSecurityFilter" /> <!-- authentication service -->
+				<sec:filter-chain pattern="/**" filters="securityContextPersistenceFilter, tokenSecurityFilter" />
 			</util:list>
 		</constructor-arg>
 	</bean>
 
-	<!-- //TODO - we shouldn't have to do this? -->
+	<!-- This is a dummy user service -->
 	<sec:authentication-manager>
 		<sec:authentication-provider>
 			<sec:user-service>
-				<sec:user name="test" password="test" authorities="ROLE_USER, ROLE_ADMIN" />
+				<sec:user name="none" password="none" authorities="" />
 			</sec:user-service>
 		</sec:authentication-provider>
 	</sec:authentication-manager>

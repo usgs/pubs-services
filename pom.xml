@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>gov.usgs.cida</groupId>
 	<artifactId>pubs-services</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<properties>
@@ -25,7 +24,10 @@
 	</properties>
 
 	<scm>
-		<developerConnection>scm:svn:https://cida-svn.er.usgs.gov/repos/dev/usgs/pubs/pubsCore/trunk</developerConnection>
+		<connection>scm:git:http://cida-eros-stash.er.usgs.gov:7999/pubs/pubs-services.git</connection>
+		<developerConnection>scm:git:ssh://cida-eros-stash.er.usgs.gov:7999/pubs/pubs-services.git</developerConnection>
+		<url>http:cida-eros-stash.er.usgs.gov:7999/pubs/pubs-services.git</url>
+		<tag>HEAD</tag>
 	</scm>
 
 	<distributionManagement>
@@ -71,7 +73,7 @@
 		<dependency>
 			<groupId>gov.usgs.cida.auth</groupId>
 			<artifactId>auth-client</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1</version>
 			<exclusions>
 				<exclusion>
 					<groupId>ch.qos.logback</groupId>
@@ -407,13 +409,6 @@
 			</testResource>
 		</testResources>
 		<plugins>
-			<plugin>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.4.1</version>
-				<configuration>
-					<tagBase>${cida.svn.url}/usgs/pubs/pubsCore/tags</tagBase>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

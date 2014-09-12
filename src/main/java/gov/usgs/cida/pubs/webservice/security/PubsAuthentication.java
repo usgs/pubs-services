@@ -9,14 +9,14 @@ public class PubsAuthentication implements Authentication {
 	private static final long serialVersionUID = 1L;
 
 	public static final String ROLE_PREFIX = "ROLE_";
-	public static final String ROLE_ANONYMOUS = ROLE_PREFIX + "ANONYMOUS";
-	public static final String ROLE_AUTHENTICATED = ROLE_PREFIX +"AUTHENTICATED";
-	public static final String ROLE_PUBS_ADMIN = ROLE_PREFIX +"PUBS_ADMIN";
-	public static final String ROLE_PUBS_TAGGING_USER = ROLE_PREFIX +"PUBS_TAGGING_USER";
-	public static final String ROLE_PUBS_SPN_USER = ROLE_PREFIX +"PUBS_SPN_USER";
-	public static final String ROLE_PUBS_CATALOGER_USER = ROLE_PREFIX +"PUBS_CATALOGER_USER";
-	public static final String ROLE_PUBS_SPN_SUPERVISOR = ROLE_PREFIX +"PUBS_SPN_SUPERVISOR";
-	public static final String ROLE_PUBS_CATALOGER_SUPERVISOR = ROLE_PREFIX +"PUBS_CATALOGER_SUPERVISOR";
+	public static final String ROLE_ANONYMOUS = ROLE_PREFIX + PubsRoles.ANONYMOUS.name();
+	public static final String ROLE_AUTHENTICATED = ROLE_PREFIX + PubsRoles.AUTHENTICATED.name();
+	public static final String ROLE_PUBS_ADMIN = ROLE_PREFIX + PubsRoles.PUBS_ADMIN.name();
+	public static final String ROLE_PUBS_TAGGING_USER = ROLE_PREFIX + PubsRoles.PUBS_TAGGING_USER.name();
+	public static final String ROLE_PUBS_SPN_USER = ROLE_PREFIX + PubsRoles.PUBS_SPN_USER.name();
+	public static final String ROLE_PUBS_CATALOGER_USER = ROLE_PREFIX + PubsRoles.PUBS_CATALOGER_USER.name();
+	public static final String ROLE_PUBS_SPN_SUPERVISOR = ROLE_PREFIX + PubsRoles.PUBS_SPN_SUPERVISOR.name();
+	public static final String ROLE_PUBS_CATALOGER_SUPERVISOR = ROLE_PREFIX + PubsRoles.PUBS_CATALOGER_SUPERVISOR.name();
 	
 	private Collection<? extends GrantedAuthority> authorities;
 	

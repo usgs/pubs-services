@@ -1,0 +1,12 @@
+package gov.usgs.cida.pubs.webservice.security;
+
+public enum PubsRoles {
+	ANONYMOUS,
+	AUTHENTICATED,
+	PUBS_ADMIN,
+	PUBS_TAGGING_USER,
+	PUBS_SPN_USER,
+	PUBS_CATALOGER_USER,
+	PUBS_SPN_SUPERVISOR,
+	PUBS_CATALOGER_SUPERVISOR
+}

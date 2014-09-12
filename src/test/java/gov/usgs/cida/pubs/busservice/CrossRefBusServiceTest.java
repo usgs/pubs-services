@@ -171,7 +171,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		UsgsContributor contributor = new UsgsContributor();
 		contributor.setFamily("familyNameAuthor");
 		ContributorType contributorTypeAuthor = new ContributorType();
-		contributorTypeAuthor.setText("Authors");
+		contributorTypeAuthor.setName("Authors");
 		PublicationContributor<?> pubContributor = new MpPublicationContributor();
 		pubContributor.setContributor(contributor);
 		pubContributor.setContributorType(contributorTypeAuthor);
@@ -223,7 +223,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		pub.setPublicationSubtype(unnumbered);
 		PublicationSeries series = new PublicationSeries();
 		series.setCode("GIP");
-		series.setText("General Information Product");
+		series.setName("General Information Product");
 		pub.setIndexId("unnumbered");
 		pub.setSeriesTitle(series);
 		pub.setPublicationYear("2013");
@@ -249,7 +249,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		assertEquals("", harmonizeXml(busService.getContributors(pub)));
 		
 		ContributorType contributorTypeEditor = new ContributorType();
-		contributorTypeEditor.setText("Editors");
+		contributorTypeEditor.setName("Editors");
 		UsgsContributor contributor1 = new UsgsContributor();
 		contributor1.setFamily("familyNameEditor");
 		PublicationContributor<?> pubContributor1 = new MpPublicationContributor();
@@ -267,7 +267,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 				harmonizeXml(busService.getContributors(pub)));
 		
 		ContributorType contributorTypeAuthor = new ContributorType();
-		contributorTypeAuthor.setText("Authors");
+		contributorTypeAuthor.setName("Authors");
 		CorporateContributor contributor4 = new CorporateContributor();
 		contributor4.setOrganization("orgNameAuthor");
 		PublicationContributor<?> pubContributor4 = new MpPublicationContributor();
@@ -351,7 +351,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		UsgsContributor contributor = new UsgsContributor();
 		contributor.setFamily("familyName");
 		ContributorType contributorType = new ContributorType();
-		contributorType.setText("Authors");
+		contributorType.setName("Authors");
 		PublicationContributor<?> pubContributor = new MpPublicationContributor();
 		pubContributor.setContributor(contributor);
 		pubContributor.setContributorType(contributorType);
@@ -375,7 +375,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		CorporateContributor contributor = new CorporateContributor();
 		contributor.setOrganization("orgName");
 		ContributorType contributorType = new ContributorType();
-		contributorType.setText("Authors");
+		contributorType.setName("Authors");
 		PublicationContributor<?> pubContributor = new MpPublicationContributor();
 		pubContributor.setContributor(contributor);
 		pubContributor.setContributorType(contributorType);
@@ -398,13 +398,13 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		pubContributor.setContributorType(contributorType);
 		assertEquals("", busService.getContributorType(pubContributor));
 
-		contributorType.setText("Authors");
+		contributorType.setName("Authors");
 		assertEquals("author", busService.getContributorType(pubContributor));
 
-		contributorType.setText("Authorss");
+		contributorType.setName("Authorss");
 		assertEquals("authors", busService.getContributorType(pubContributor));
 
-		contributorType.setText("sAsuthors");
+		contributorType.setName("sAsuthors");
 		assertEquals("sasuthor", busService.getContributorType(pubContributor));
 	}
 

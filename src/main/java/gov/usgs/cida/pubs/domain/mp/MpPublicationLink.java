@@ -5,7 +5,7 @@ import gov.usgs.cida.pubs.domain.PublicationLink;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonPropertyOrder({"id","rank","type","url","text","size","mime-type"})
+@JsonPropertyOrder({"id", "rank", "type", "url", "text", "description", "size", "linkFileType"})
 public class MpPublicationLink extends PublicationLink<MpPublicationLink> {
 
 	private static final long serialVersionUID = -3448411849107196775L;
@@ -21,7 +21,7 @@ public class MpPublicationLink extends PublicationLink<MpPublicationLink> {
 		this.setLinkType(pubLink.getLinkType());
 		this.setUrl(pubLink.getUrl());
 		this.setText(pubLink.getText());
-		this.setObjectSize(pubLink.getObjectSize());
+		this.setSize(pubLink.getSize());
 		this.setLinkFileType(pubLink.getLinkFileType());
 		this.setDescription(pubLink.getDescription());
 		this.setPublicationId(pubLink.getPublicationId());

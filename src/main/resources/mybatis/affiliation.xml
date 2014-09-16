@@ -5,7 +5,7 @@
 
     <resultMap id="result" type="Affiliation" extends="base.result">
         <id property="id" column="affiliation_id"/>
-        <result property="name" column="name"/>
+        <result property="text" column="name"/>
         <result property="active" column="is_active"/>
         <result property="usgs" column="is_cost_center"/>
         <discriminator javaType="String" column="is_cost_center">
@@ -31,7 +31,7 @@
 
     <sql id="baseHosts">
         #{id,jdbcType=NUMERIC},
-        #{name,jdbcType=VARCHAR},
+        #{text,jdbcType=VARCHAR},
         #{usgs,jdbcType=VARCHAR},
         #{active,jdbcType=VARCHAR},
         <include refid="base.auditHosts"/>
@@ -43,7 +43,7 @@
     </sql>
 
     <sql id="baseSets">
-        name = #{name,jdbcType=VARCHAR},
+        name = #{text,jdbcType=VARCHAR},
         is_cost_center = #{usgs,jdbcType=VARCHAR},
         is_active = #{active,jdbcType=VARCHAR},
         <include refid="base.auditSets"/>
@@ -59,8 +59,8 @@
         <if test="id != null">
             and affiliation_id = #{id}
         </if>
-        <if test="name != null">
-            and upper(name) like upper(#{name}) || '%'
+        <if test="text != null">
+            and upper(name) like upper(#{text}) || '%'
         </if>
         <if test="active != null">
             and is_active = #{active}

@@ -1,7 +1,9 @@
 package gov.usgs.cida.pubs.webservice.mp;
 
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.json.ResponseView;
@@ -21,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,9 +45,18 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     private static final String SEARCH_TERM_ORDERBY = "display_to_public_date"; //TODO this is temporary until we get PUB DATE
     private static final String SEARCH_TERM_ORDERBY_DIR = "DESC";
 
-    @Autowired
-    private IMpPublicationBusService busService;
+    private final IBusService<Publication<?>> pubBusService;
+    private final IMpPublicationBusService busService;
 
+    @Autowired
+    MpPublicationMvcService(@Qualifier("publicationBusService")
+    		final IBusService<Publication<?>> pubBusService,
+    		@Qualifier("mpPublicationBusService")
+    		final IMpPublicationBusService busService) {
+    	this.pubBusService = pubBusService;
+    	this.busService = busService;
+    }
+    
     @RequestMapping(value={"/mppublication/{publicationId}"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
     @ResponseView(IMpView.class)
     public @ResponseBody MpPublication getMpPublication(HttpServletRequest request, HttpServletResponse response,
@@ -97,8 +109,8 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     	addToFiltersIfNotNull(filters, "pageRowStart", pageRowStart);
     	addToFiltersIfNotNull(filters, "pageSize", pageSize);
 
-        List<MpPublication> pubs = busService.getObjects(filters);
-        Integer totalPubsCount = busService.getObjectCount(filters);
+        List<Publication<?>> pubs = pubBusService.getObjects(filters);
+        Integer totalPubsCount = pubBusService.getObjectCount(filters);
         SearchResults results = new SearchResults();
         results.setPageSize(pageSize);
         results.setPageRowStart(pageRowStart);

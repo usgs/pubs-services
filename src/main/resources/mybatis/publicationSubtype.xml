@@ -6,7 +6,7 @@
     <resultMap id="result" type="PublicationSubtype" extends="base.result">
         <id property="id" column="publication_subtype_id"/>
         <result property="publicationType.id" column="publication_type_id"/>
-        <result property="name" column="name"/>
+        <result property="text" column="name"/>
     </resultMap>
 
     <sql id="cols">
@@ -22,8 +22,8 @@
             <if test="publicationTypeId != null">
                 and publication_type_id = #{publicationTypeId}
             </if>
-            <if test="name != null">
-                and upper(name) like upper(#{name}) || '%'
+            <if test="text != null">
+                and upper(name) like upper(#{text}) || '%'
             </if>
         </where>
     </sql>

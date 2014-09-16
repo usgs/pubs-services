@@ -15,14 +15,16 @@ public class LinkType extends BaseDomain<LinkType> implements ILookup {
 
 	public static final Integer THUMBNAIL = 24;
 
-    private String name;
+    private String text;
 
-    public String getName() {
-        return name;
+    @Override
+    @JsonView({ILookupView.class, IMpView.class})
+    public String getText() {
+        return text;
     }
 
-    public void setName(final String inName) {
-        name = inName;
+    public void setText(final String inText) {
+        text = inText;
     }
 
     public static IDao<LinkType> getDao() {
@@ -31,12 +33,6 @@ public class LinkType extends BaseDomain<LinkType> implements ILookup {
 
     public void setLinkTypeDao(final IDao<LinkType> inLinkTypeDao) {
         linkTypeDao = inLinkTypeDao;
-    }
-
-    @Override
-    @JsonView({ILookupView.class, IMpView.class})
-    public String getText() {
-        return name;
     }
 
 }

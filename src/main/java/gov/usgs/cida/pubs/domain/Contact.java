@@ -5,23 +5,26 @@ import gov.usgs.cida.pubs.dao.intfc.IDao;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+@JsonPropertyOrder({"id", "text", "addressLine1", "addressLine2", "addressLine3", "city", "state", "zipcode",
+	"website", "linkText", "link"})
 public class Contact extends BaseDomain<Contact> implements Serializable {
 
     private static final long serialVersionUID = 7112475559005537898L;
 
     private static IDao<Contact> contactDao;
 
-    @JsonProperty("name")
-    private String name;
+    @JsonProperty("text")
+    private String text;
 
-    @JsonProperty("address_line_1")
+    @JsonProperty("addressLine1")
     private String addressLine1;
 
-    @JsonProperty("address_line_2")
+    @JsonProperty("addressLine2")
     private String addressLine2;
 
-    @JsonProperty("address_line_3")
+    @JsonProperty("addressLine3")
     private String addressLine3;
 
     @JsonProperty("city")
@@ -36,18 +39,18 @@ public class Contact extends BaseDomain<Contact> implements Serializable {
     @JsonProperty("website")
     private String website;
 
-    @JsonProperty("link_text")
+    @JsonProperty("linkText")
     private String linkText;
 
     @JsonProperty("link")
     private String link;
 
-    public String getName() {
-        return name;
+    public String getText() {
+        return text;
     }
 
-    public void setName(final String inName) {
-        name = inName;
+    public void setText(final String inText) {
+        text = inText;
     }
 
     public String getAddressLine1() {

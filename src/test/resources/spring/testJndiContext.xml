@@ -83,4 +83,8 @@
         <constructor-arg value="localhost"/>
     </bean>
 
+    <bean id="lockTimeoutHours" class="java.lang.Integer">
+        <constructor-arg value="3"/>
+    </bean>
+
 </beans>

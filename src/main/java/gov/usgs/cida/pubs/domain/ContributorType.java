@@ -13,14 +13,16 @@ public class ContributorType extends BaseDomain<ContributorType> implements ILoo
 
     private static IDao<ContributorType> contributorTypeDao;
 
-    private String name;
+    private String text;
 
-    public String getName() {
-        return name;
+    @Override
+    @JsonView(ILookupView.class)
+    public String getText() {
+        return text;
     }
 
-    public void setName(final String inName) {
-        name = inName;
+    public void setText(final String inText) {
+        text = inText;
     }
 
     /**
@@ -36,12 +38,6 @@ public class ContributorType extends BaseDomain<ContributorType> implements ILoo
      */
     public void setContributorTypeDao(final IDao<ContributorType> inContributorTypeDao) {
         contributorTypeDao = inContributorTypeDao;
-    }
-
-    @Override
-    @JsonView(ILookupView.class)
-    public String getText() {
-        return name;
     }
 
 }

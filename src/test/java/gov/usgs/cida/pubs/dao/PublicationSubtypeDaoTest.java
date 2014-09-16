@@ -23,7 +23,7 @@ public class PublicationSubtypeDaoTest extends BaseSpringDaoTest {
         PublicationSubtype pubSubtype = PublicationSubtype.getDao().getById(5);
         assertEquals(5, pubSubtype.getId().intValue());
         assertEquals(18, pubSubtype.getPublicationType().getId().intValue());
-        assertEquals("USGS Numbered Series", pubSubtype.getName());
+        assertEquals("USGS Numbered Series", pubSubtype.getText());
     }
 
     @Test
@@ -31,7 +31,7 @@ public class PublicationSubtypeDaoTest extends BaseSpringDaoTest {
         PublicationSubtype pubSubtype = PublicationSubtype.getDao().getById("6");
         assertEquals(6, pubSubtype.getId().intValue());
         assertEquals(18, pubSubtype.getPublicationType().getId().intValue());
-        assertEquals("USGS Unnumbered Series", pubSubtype.getName());
+        assertEquals("USGS Unnumbered Series", pubSubtype.getText());
     }
 
     @Test
@@ -45,7 +45,7 @@ public class PublicationSubtypeDaoTest extends BaseSpringDaoTest {
         assertEquals(1, pubSubtypes.size());
         assertEquals(10, pubSubtypes.get(0).getId().intValue());
         assertEquals(2, pubSubtypes.get(0).getPublicationType().getId().intValue());
-        assertEquals("Journal Article", pubSubtypes.get(0).getName());
+        assertEquals("Journal Article", pubSubtypes.get(0).getText());
 
         filters.clear();
         filters.put("publicationTypeId", "4");
@@ -55,12 +55,12 @@ public class PublicationSubtypeDaoTest extends BaseSpringDaoTest {
             assertEquals(4, pubSubtype.getPublicationType().getId().intValue());
         }
 
-        filters.put("name", "hand");
+        filters.put("text", "hand");
         pubSubtypes = PublicationSubtype.getDao().getByMap(filters);
         assertEquals(1, pubSubtypes.size());
         assertEquals(13, pubSubtypes.get(0).getId().intValue());
         assertEquals(4, pubSubtypes.get(0).getPublicationType().getId().intValue());
-        assertEquals("Handbook", pubSubtypes.get(0).getName());
+        assertEquals("Handbook", pubSubtypes.get(0).getText());
     }
 
     @Test

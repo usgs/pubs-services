@@ -165,17 +165,6 @@ public class CrossRefBusService implements ICrossRefBusService {
 	        String rtn = xml;
 	        rtn = replacePlaceHolder(rtn, "{doi_batch_id}", getBatchId());
 	        rtn = replacePlaceHolder(rtn, "{submission_timestamp}", String.valueOf(new Date().getTime()));
-	        //TODO new dissemination date logic
-	//        if (null != pub.getPublicationMonth() && 0 < pub.getPublicationMonth().length()) {
-	//            rtn = rtn.replace("{dissemination_month}", "<month>" + pub.getPublicationMonth() + "</month>"); 
-	//        } else {
-	            rtn = replacePlaceHolder(rtn, "{dissemination_month}", ""); 
-	//        }
-	//        if (null != pub.getPublicationDay() && 0 < pub.getPublicationDay().length()) {
-	//            rtn = rtn.replace("{dissemination_day}", "<day>" + pub.getPublicationDay() + "</day>");
-	//        } else {
-	            rtn = replacePlaceHolder(rtn, "{dissemination_day}", "");
-	//        }
 	        rtn = replacePlaceHolder(rtn, "{dissemination_year}", pub.getPublicationYear());
 	        rtn = replacePlaceHolder(rtn, "{contributers}", getContributors(pub));
 	        rtn = replacePlaceHolder(rtn, "{title}", pub.getTitle());
@@ -183,12 +172,12 @@ public class CrossRefBusService implements ICrossRefBusService {
 	        rtn = replacePlaceHolder(rtn, "{doi_name}", pub.getDoi());
 	        rtn = replacePlaceHolder(rtn, "{index_page}", indexPage);
 	        if (null != pub.getSeriesTitle()) {
-	        	if (null != pub.getSeriesTitle().getName()) {
-	        		rtn = replacePlaceHolder(rtn, "{series_name}", pub.getSeriesTitle().getName());
+	        	if (null != pub.getSeriesTitle().getText()) {
+	        		rtn = replacePlaceHolder(rtn, "{series_name}", pub.getSeriesTitle().getText());
 	        	} else {
 	        		rtn = replacePlaceHolder(rtn, "{series_name}", "");
 	        	}
-	        	if (null != pub.getSeriesTitle().getName()) {
+	        	if (null != pub.getSeriesTitle().getText()) {
 	        		rtn = replacePlaceHolder(rtn, "{online_issn}", pub.getSeriesTitle().getOnlineIssn());
 	        	} else {
 	        		rtn = replacePlaceHolder(rtn, "{online_issn}", "");

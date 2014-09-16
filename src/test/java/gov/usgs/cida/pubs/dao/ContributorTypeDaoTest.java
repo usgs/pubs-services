@@ -18,14 +18,14 @@ public class ContributorTypeDaoTest extends BaseSpringDaoTest {
     public void getByIdInteger() {
         ContributorType contributorType = ContributorType.getDao().getById(1);
         assertEquals(1, contributorType.getId().intValue());
-        assertEquals("Authors", contributorType.getName());
+        assertEquals("Authors", contributorType.getText());
     }
 
     @Test
     public void getByIdString() {
         ContributorType contributorType = ContributorType.getDao().getById("2");
         assertEquals(2, contributorType.getId().intValue());
-        assertEquals("Editors", contributorType.getName());
+        assertEquals("Editors", contributorType.getText());
     }
 
     @Test
@@ -38,10 +38,10 @@ public class ContributorTypeDaoTest extends BaseSpringDaoTest {
         contributorTypes = ContributorType.getDao().getByMap(filters);
         assertEquals(1, contributorTypes.size());
         assertEquals(1, contributorTypes.get(0).getId().intValue());
-        assertEquals("Authors", contributorTypes.get(0).getName());
+        assertEquals("Authors", contributorTypes.get(0).getText());
 
         filters.clear();
-        filters.put("name", "ed");
+        filters.put("text", "ed");
         contributorTypes = ContributorType.getDao().getByMap(filters);
         assertEquals(1, contributorTypes.size());
 

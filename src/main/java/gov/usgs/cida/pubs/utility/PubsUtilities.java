@@ -7,12 +7,18 @@ import java.text.MessageFormat;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 /**
  * @author drsteini
  *
  */
 public final class PubsUtilities {
+
+    /** The default username for anonymous access. */
+    public static final String ANONYMOUS_USER = "anonymous";
 
 	private PubsUtilities() {
 		
@@ -49,6 +55,20 @@ public final class PubsUtilities {
         return outIntegerArray;
     }
 
+    public static String getUsername() {
+	    String username = ANONYMOUS_USER;
+	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    
+		if (null != auth) {
+			if (auth.getPrincipal() instanceof User) {
+				username = ((User) auth.getPrincipal()).getUsername();
+//TODO What is our real Authentication???				
+//			} else {
+//				username = auth.toString();
+			}
+		}
+		return username;
+    }
 
     public static Integer parseInteger(final String intString) {
         return isInteger(intString) ? Integer.parseInt(intString) : null;
@@ -60,22 +80,26 @@ public final class PubsUtilities {
 
     public static String buildErrorMsg(final String messageName, final Object[] messageArguments) {
         String messageProp;
-        if (messageName.startsWith("{") && messageName.endsWith("}")) {
-            Properties props = new Properties();
-            try {
-                props.load(PubsUtilities.class.getClassLoader().getResourceAsStream("ValidationMessages.properties"));
-            } catch (Exception e) {
-                throw new RuntimeException("Unable to load ValidationMessages.properties", e);
-            }
-            messageProp = props.getProperty(messageName.substring(1, messageName.length() - 1));
-            if (null == messageProp) {
-                throw new RuntimeException("Unable to load messageResource " + messageName);
-            }
+        if (null != messageName) {
+        	if (messageName.startsWith("{") && messageName.endsWith("}")) {
+	            Properties props = new Properties();
+	            try {
+	                props.load(PubsUtilities.class.getClassLoader().getResourceAsStream("ValidationMessages.properties"));
+	            } catch (Exception e) {
+	                throw new RuntimeException("Unable to load ValidationMessages.properties", e);
+	            }
+	            messageProp = props.getProperty(messageName.substring(1, messageName.length() - 1));
+	            if (null == messageProp) {
+	                throw new RuntimeException("Unable to load messageResource " + messageName);
+	            }
+	        } else {
+	            messageProp = messageName;
+	        }
+	        MessageFormat messageFormat = new MessageFormat(messageProp);
+	        return messageFormat.format(messageArguments);
         } else {
-            messageProp = messageName;
+        	return messageName;
         }
-        MessageFormat messageFormat = new MessageFormat(messageProp);
-        return messageFormat.format(messageArguments);
     }
 
     public static boolean isUsgsNumberedSeries(final PublicationSubtype pubSubtype) {

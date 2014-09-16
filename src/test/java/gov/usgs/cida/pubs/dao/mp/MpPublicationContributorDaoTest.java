@@ -45,7 +45,23 @@ public class MpPublicationContributorDaoTest extends BaseSpringDaoTest {
 		assertNotNull(mpContributors);
 		assertEquals(4, mpContributors.size());
 
-		filters.put("id", 1);
+		filters.clear();
+		filters.put("contributorTypeId", 1);
+		mpContributors = MpPublicationContributor.getDao().getByMap(filters);
+		assertNotNull(mpContributors);
+		assertEquals(3, mpContributors.size());
+
+		filters.clear();
+		filters.put("contributorId", 1);
+		mpContributors = MpPublicationContributor.getDao().getByMap(filters);
+		assertNotNull(mpContributors);
+		assertEquals(3, mpContributors.size());
+
+		filters.clear();
+		filters.put("id", 6);
+		filters.put("publicationId", 2);
+		filters.put("contributorTypeId", 2);
+		filters.put("contributorId", 2);
 		mpContributors = MpPublicationContributor.getDao().getByMap(filters);
 		assertNotNull(mpContributors);
 		assertEquals(1, mpContributors.size());

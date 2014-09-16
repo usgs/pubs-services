@@ -2,11 +2,10 @@ package gov.usgs.cida.pubs.validation.constraint;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-//import gov.usgs.cida.pubs.validation.link.UniqueKeyValidatorForLinkDim;
-//import gov.usgs.cida.pubs.validation.mpListPubsRel.UniqueKeyValidatorForMpListPubsRel;
-import gov.usgs.cida.pubs.validation.mp.UniqueKeyValidatorForMpPublication;
-//import gov.usgs.cida.pubs.validation.supersedeRel.UniqueKeyValidatorForSupersedeRel;
-
+import gov.usgs.cida.pubs.validation.mp.unique.UniqueKeyValidatorForMpListPublication;
+import gov.usgs.cida.pubs.validation.mp.unique.UniqueKeyValidatorForMpPublication;
+import gov.usgs.cida.pubs.validation.mp.unique.UniqueKeyValidatorForMpPublicationContributor;
+import gov.usgs.cida.pubs.validation.mp.unique.UniqueKeyValidatorForMpPublicationCostCenter;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -21,10 +20,10 @@ import javax.validation.Constraint;
 @Target(TYPE)
 @Retention(RUNTIME)
 @Constraint(validatedBy={
-//        UniqueKeyValidatorForLinkDim.class,
-//        UniqueKeyValidatorForMpListPubsRel.class,
+        UniqueKeyValidatorForMpListPublication.class,
         UniqueKeyValidatorForMpPublication.class,
-//        UniqueKeyValidatorForSupersedeRel.class
+        UniqueKeyValidatorForMpPublicationContributor.class,
+        UniqueKeyValidatorForMpPublicationCostCenter.class
 })
 @Documented
 public @interface UniqueKey {

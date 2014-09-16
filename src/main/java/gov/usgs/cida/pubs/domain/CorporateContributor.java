@@ -21,7 +21,7 @@ public class CorporateContributor extends Contributor<CorporateContributor> impl
 
     @JsonProperty("organization")
     @JsonView(IMpView.class)
-    @Length(min=0, max=400)
+    @Length(min=1, max=400)
     private String organization;
 
     public String getOrganization() {

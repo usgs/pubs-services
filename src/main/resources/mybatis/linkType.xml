@@ -5,7 +5,7 @@
 
     <resultMap id="result" type="LinkType" extends="base.result">
         <id property="id" column="link_type_id"/>
-        <result property="name" column="name"/>
+        <result property="text" column="name"/>
     </resultMap>
 
     <sql id="cols">
@@ -18,8 +18,8 @@
             <if test="id != null">
                 and link_type_id = #{id}
             </if>
-            <if test="name != null">
-                and upper(name) like upper(#{name}) || '%'
+            <if test="text != null">
+                and upper(name) like upper(#{text}) || '%'
             </if>
         </where>
     </sql>

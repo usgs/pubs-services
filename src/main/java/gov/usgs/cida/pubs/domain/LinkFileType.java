@@ -12,14 +12,16 @@ public class LinkFileType extends BaseDomain<LinkFileType> implements ILookup {
     private static IDao<LinkFileType> linkFileTypeDao;
 
 
-    private String name;
+    private String text;
 
-    public String getName() {
-        return name;
+    @Override
+    @JsonView({ILookupView.class, IMpView.class})
+    public String getText() {
+        return text;
     }
 
-    public void setName(final String inName) {
-        name = inName;
+    public void setText(final String inText) {
+        text = inText;
     }
 
     public static IDao<LinkFileType> getDao() {
@@ -28,12 +30,6 @@ public class LinkFileType extends BaseDomain<LinkFileType> implements ILookup {
 
     public void setLinkFileTypeDao(final IDao<LinkFileType> inLinkFileTypeDao) {
         linkFileTypeDao = inLinkFileTypeDao;
-    }
-
-    @Override
-    @JsonView({ILookupView.class, IMpView.class})
-    public String getText() {
-        return name;
     }
 
 }

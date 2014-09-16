@@ -71,13 +71,13 @@ public class ContributorDaoTest extends BaseSpringDaoTest {
         assertEquals(1, contributors.get(0).getId().intValue());
 
         filters.clear();
-        filters.put("name", "con");
+        filters.put("text", "con");
         contributors = Contributor.getDao().getByMap(filters);
         assertEquals(1, contributors.size());
         assertEquals(1, contributors.get(0).getId().intValue());
 
         filters.clear();
-        filters.put("name", "us");
+        filters.put("text", "us");
         contributors = Contributor.getDao().getByMap(filters);
         assertEquals(1, contributors.size());
         assertEquals(2, contributors.get(0).getId().intValue());
@@ -105,7 +105,7 @@ public class ContributorDaoTest extends BaseSpringDaoTest {
         contributors = Contributor.getDao().getByMap(filters);
         assertEquals(2, contributors.size());
         assertEquals(1, contributors.get(0).getId().intValue());
-        filters.put("name", "out");
+        filters.put("text", "out");
         contributors = Contributor.getDao().getByMap(filters);
         assertEquals(1, contributors.size());
         assertEquals(3, contributors.get(0).getId().intValue());
@@ -128,7 +128,7 @@ public class ContributorDaoTest extends BaseSpringDaoTest {
         contributors = Contributor.getDao().getByMap(filters);
         assertEquals(1, contributors.size());
         assertEquals(2, contributors.get(0).getId().intValue());
-        filters.put("name", "us");
+        filters.put("text", "us");
         contributors = Contributor.getDao().getByMap(filters);
         assertEquals(1, contributors.size());
         assertEquals(2, contributors.get(0).getId().intValue());

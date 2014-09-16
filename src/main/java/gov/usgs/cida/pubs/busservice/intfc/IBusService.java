@@ -21,13 +21,6 @@ public interface IBusService <D> {
     D getObject(final Integer objectId);
 
     /**
-     * Returns a list of all objects in the system.
-     * 
-     * @return a list of all objects
-     */
-    List<D> getObjects();
-
-    /**
      * Returns a list of all objects in the system filtered by the parameters.
      *
      * @param filter

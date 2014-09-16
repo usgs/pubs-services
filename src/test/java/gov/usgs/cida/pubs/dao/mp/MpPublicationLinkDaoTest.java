@@ -66,7 +66,7 @@ public class MpPublicationLinkDaoTest extends BaseSpringDaoTest {
 		newLink.setLinkType(linkType);
 		newLink.setUrl("www.newlink.org");
 		newLink.setText("newlink text");
-		newLink.setObjectSize("15 bytes");
+		newLink.setSize("15 bytes");
 		newLink.setDescription("my link description");
 		LinkFileType linkFileType = new LinkFileType();
 		linkFileType.setId(4);
@@ -84,7 +84,7 @@ public class MpPublicationLinkDaoTest extends BaseSpringDaoTest {
 		persistedA.setLinkType(newLinkType);
 		persistedA.setUrl("www.updated.org");
 		persistedA.setText("updated text");
-		persistedA.setObjectSize("86 TB");
+		persistedA.setSize("86 TB");
 		newLink.setDescription("my new link description");
 		LinkFileType newLinkFileType = new LinkFileType();
 		newLinkFileType.setId(3);
@@ -125,7 +125,7 @@ public class MpPublicationLinkDaoTest extends BaseSpringDaoTest {
 		assertEquals(1, link.getLinkType().getId().intValue());
 		assertEquals("www.wow.org", link.getUrl());
 		assertEquals("amazing link", link.getText());
-		assertEquals("12 GB", link.getObjectSize());
+		assertEquals("12 GB", link.getSize());
 		assertEquals(2, link.getLinkFileType().getId().intValue());
 		assertEquals("This description is wow!", link.getDescription());
 	}
@@ -138,7 +138,7 @@ public class MpPublicationLinkDaoTest extends BaseSpringDaoTest {
 		assertEquals(2, link.getLinkType().getId().intValue());
 		assertEquals("www.xyz.org", link.getUrl());
 		assertEquals("end of the line", link.getText());
-		assertEquals("1 TB", link.getObjectSize());
+		assertEquals("1 TB", link.getSize());
 		assertEquals(3, link.getLinkFileType().getId().intValue());
 		assertEquals("I'm at the end", link.getDescription());
 	}
@@ -150,7 +150,7 @@ public class MpPublicationLinkDaoTest extends BaseSpringDaoTest {
 		assertEquals(1, link.getRank().intValue());
 		assertEquals("url", link.getUrl());
 		assertEquals("text", link.getText());
-		assertEquals("12 GB", link.getObjectSize());
+		assertEquals("12 GB", link.getSize());
 		assertEquals(1, link.getLinkFileType().getId().intValue());
 		assertEquals("just a normal description", link.getDescription());
 	}

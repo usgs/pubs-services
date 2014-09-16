@@ -1,17 +1,20 @@
 package gov.usgs.cida.pubs.domain;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
 import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
+import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 
+@ParentExists
 public class PersonContributor<D> extends Contributor<PersonContributor<D>> implements ILookup {
 
     private static IDao<Contributor<?>> personContributorDao;
@@ -28,12 +31,13 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 
     @JsonProperty("suffix")
     @JsonView(IMpView.class)
-    @Length(min=0, max=14)
+    @Length(min=0, max=40)
     private String suffix;
 
     @JsonProperty("email")
     @JsonView(IMpView.class)
     @Length(min=0, max=400)
+    @Email
     private String email;
 
     @JsonProperty("affiliation")

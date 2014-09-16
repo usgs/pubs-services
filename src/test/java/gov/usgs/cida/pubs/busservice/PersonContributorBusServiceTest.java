@@ -34,7 +34,7 @@ public class PersonContributorBusServiceTest extends BaseSpringTest {
         person.setFamily("family");
         person.setGiven("given");
         person.setSuffix("suffix");
-        person.setEmail("email");
+        person.setEmail("email@usgs.gov");
         person.setIpdsContributorId(12);
         person.setAffiliation(Affiliation.getDao().getById(1));
         busService.createObject(person);
@@ -47,7 +47,7 @@ public class PersonContributorBusServiceTest extends BaseSpringTest {
         outperson.setFamily("outfamily");
         outperson.setGiven("outgiven");
         outperson.setSuffix("outsuffix");
-        outperson.setEmail("outemail");
+        outperson.setEmail("outemail@usgs.gov");
         outperson.setIpdsContributorId(13);
         outperson.setAffiliation(Affiliation.getDao().getById(182));
         busService.createObject(outperson);

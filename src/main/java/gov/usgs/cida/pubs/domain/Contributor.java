@@ -1,5 +1,7 @@
 package gov.usgs.cida.pubs.domain;
 
+import javax.validation.constraints.NotNull;
+
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
@@ -14,11 +16,13 @@ public class Contributor<D> extends BaseDomain<Contributor<D>> {
 
     @JsonProperty("corporation")
     @JsonView(IMpView.class)
+    @NotNull
     //TODO cross-field validations
     protected boolean corporation;
 
     @JsonProperty("usgs")
     @JsonView(IMpView.class)
+    @NotNull
     //TODO cross-field validations
     protected boolean usgs;
 

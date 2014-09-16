@@ -35,7 +35,7 @@ public class MpListDaoTest extends BaseSpringDaoTest {
 		assertMpList1((MpList) mpLists.get(0));
 
 		filters.clear();
-		filters.put("name", "pend");
+		filters.put("text", "pend");
 		mpLists = MpList.getDao().getByMap(filters);
 		assertNotNull(mpLists);
 		assertEquals(2, mpLists.size());
@@ -44,7 +44,7 @@ public class MpListDaoTest extends BaseSpringDaoTest {
 	@Test
 	public void addUpdateDeleteTest() {
 		MpList newList = new MpList();
-		newList.setName("test name");
+		newList.setText("test name");
 		newList.setDescription("test description");
 		newList.setType("TEST_TYPE");
 		MpList.getDao().add(newList);
@@ -54,7 +54,7 @@ public class MpListDaoTest extends BaseSpringDaoTest {
 		assertNotNull(persistedA.getId());
 		assertDaoTestResults(MpList.class, newList, persistedA, IGNORE_PROPERTIES, true, true);
 
-		persistedA.setName("updatedName");
+		persistedA.setText("updatedName");
 		persistedA.setDescription("updated description");
 		persistedA.setType("UPDATED_TYPE");
 		MpList.getDao().update(persistedA);
@@ -74,7 +74,7 @@ public class MpListDaoTest extends BaseSpringDaoTest {
 	public static void assertMpList1(MpList list) {
 		assertNotNull(list);
 		assertEquals(1, list.getId().intValue());
-		assertEquals("Need Approval", list.getName());
+		assertEquals("Need Approval", list.getText());
 		assertEquals("Citations that need to be approved", list.getDescription());
 		assertEquals("MP_SHARED_SUPER_NEED_APPROVAL", list.getType());
 	}
@@ -82,7 +82,7 @@ public class MpListDaoTest extends BaseSpringDaoTest {
 	public static void assertMpList2(MpList list) {
 		assertNotNull(list);
 		assertEquals(2, list.getId().intValue());
-		assertEquals("Approved", list.getName());
+		assertEquals("Approved", list.getText());
 		assertEquals("Citations that have been approved, and will be loaded", list.getDescription());
 		assertEquals("MP_SHARED_SUPER_APPROVED", list.getType());
 	}

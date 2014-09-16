@@ -22,8 +22,8 @@
             <if test="costCenterId != null">
                 and cost_center_id = #{costCenterId}
             </if>
-            <if test="name != null">
-                and upper(name) like upper(#{name}) || '%'
+            <if test="text != null">
+                and upper(name) like upper(#{text}) || '%'
             </if>
         </where>
     </sql>

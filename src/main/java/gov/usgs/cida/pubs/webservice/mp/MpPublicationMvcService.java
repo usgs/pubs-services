@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -152,9 +151,6 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     @ResponseView(IMpView.class)
     @Transactional
     public @ResponseBody MpPublication updateMpPublication(@RequestBody MpPublication pub, @PathVariable String id, HttpServletResponse response) {
-    	//get the authenticated username
-    	String username = getUsernameFromSecurityContext();
-    	
         setHeaders(response);
         MpPublication updPub = busService.updateObject(pub);
         if (null != updPub && updPub.getValErrors().isEmpty()) {

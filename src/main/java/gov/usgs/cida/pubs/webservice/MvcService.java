@@ -14,8 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
@@ -106,10 +104,5 @@ public abstract class MvcService<D> {
 
     protected void setHeaders(HttpServletResponse response) {
         response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
-    }
-    
-    protected String getUsernameFromSecurityContext() {
-    	//get username from security context
-    	return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
     }
 }

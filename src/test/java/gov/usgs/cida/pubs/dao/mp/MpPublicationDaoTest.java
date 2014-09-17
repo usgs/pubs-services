@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
 import gov.usgs.cida.pubs.domain.Contact;
@@ -165,7 +166,10 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertNull(pub.getConferenceDate());
         assertNull(pub.getPublicationYear());
         if (pub instanceof MpPublication) {
-        	assertNull(((MpPublication) pub).getLockUsername());
+        	String lockUserName = ((MpPublication) pub).getLockUsername();
+        	if (null != lockUserName) {
+        		assertEquals(lockUserName, PubsConstants.ANONYMOUS_USER);
+        	}
         }
     }
 

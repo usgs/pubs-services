@@ -1,9 +1,9 @@
 package gov.usgs.cida.pubs.domain.mp;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
 import gov.usgs.cida.pubs.dao.intfc.IMpDao;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
+
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({"id", "corporation", "usgs", "contributorType", "rank", "family", "given", "suffix",
 	"email", "organization", "affiliation"})

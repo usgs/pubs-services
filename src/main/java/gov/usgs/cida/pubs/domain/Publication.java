@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.domain;
 
+import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.json.PubsJsonLocalDateDeSerializer;
 import gov.usgs.cida.pubs.json.PubsJsonLocalDateSerializer;
@@ -52,8 +53,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     @JsonProperty("publicationYear")
     @JsonView(IMpView.class)
-    @NotNull
-    @Length(min=4, max=4)
+    @Pattern(regexp=PubsConstants.FOUR_DIGIT_REGEX, message="Publication Year must be a four digit year.")
     private String publicationYear;
 
     @JsonProperty("publicationType")
@@ -183,7 +183,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     @JsonProperty("numberOfPages")
     @JsonView(IMpView.class)
-    @Pattern(regexp="^\\d+$")
+    @Pattern(regexp=PubsConstants.SPACES_OR_NUMBER_REGEX)
     private String numberOfPages;
 
     @JsonProperty("onlineOnly")
@@ -222,7 +222,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 	protected String ipdsReviewProcessState;
 
 	@JsonProperty("ipdsInternalId")
-    @Pattern(regexp="^\\d+$")
+    @Pattern(regexp=PubsConstants.SPACES_OR_NUMBER_REGEX)
 	protected String ipdsInternalId;
 
     @JsonProperty("authors")

@@ -10,6 +10,7 @@ import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
 import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
+import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CostCenter;
@@ -23,6 +24,7 @@ import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
+import gov.usgs.cida.pubs.utility.PubsUtilitiesTest;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,7 +45,9 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "authors", "editors", "links",
             "doi", "indexId");
 
-    @Autowired
+	public Integer lockTimeoutHours = 1;
+
+	@Autowired
     public Validator validator;
 
     @Mock
@@ -64,7 +68,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     public void initTest() throws Exception {
         super.setUp();
         MockitoAnnotations.initMocks(this);
-        busService = new MpPublicationBusService(validator, crossRefBusService, ccBusService, linkBusService, contributorBusService);
+        busService = new MpPublicationBusService(validator, lockTimeoutHours, crossRefBusService, ccBusService, linkBusService, contributorBusService);
     }
 
     @Test
@@ -329,6 +333,45 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
 
     }
 
+    @Test
+    public void beginPublicationEditTest() {
+        //This one should change nothing
+        busService.beginPublicationEdit(2);
+        MpPublication mpPub2after = MpPublication.getDao().getById(2);
+        MpPublicationDaoTest.assertMpPub2(mpPub2after);
+        MpPublicationDaoTest.assertMpPub2Children(mpPub2after);
+
+        //This one is in PW, not MP and should be moved
+        MpPublication mpPub4before = MpPublication.getDao().getById(4);
+        assertNull(mpPub4before);
+        busService.beginPublicationEdit(4);
+        MpPublication mpPub4after = MpPublication.getDao().getById(4);
+        PwPublicationDaoTest.assertPwPub4(mpPub4after);
+        PwPublicationDaoTest.assertPwPub4Children(mpPub4after);
+    }
+
+    @Test
+    public void checkLocksTest() {
+        //nulls = OK (assume this is an add)
+    	assertNull(busService.checkAvailability(null));
+        
+    	//No lockedUsername = OK
+    	assertNull(busService.checkAvailability(3));
+    	
+    	//Not expired = not OK
+    	assertEquals("drsteini", busService.checkAvailability(1).getValue());
+    	
+    	//Same user = OK
+    	PubsUtilitiesTest.buildTestAuthentication("drsteini", null);
+    	assertNull("drsteini", busService.checkAvailability(1));
+
+    	//Expired = OK (We are testing by setting the timeout to 0 and -1 for these test)
+    	PubsUtilitiesTest.clearTestAuthentication();
+        busService = new MpPublicationBusService(validator, 0, crossRefBusService, ccBusService, linkBusService, contributorBusService);
+    	assertNull("drsteini", busService.checkAvailability(1));
+        busService = new MpPublicationBusService(validator, -1, crossRefBusService, ccBusService, linkBusService, contributorBusService);
+    	assertNull("drsteini", busService.checkAvailability(1));
+    }
 
     //TODO@Test
     public void setListTest() {

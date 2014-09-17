@@ -1,11 +1,11 @@
 package gov.usgs.cida.pubs.domain;
 
-import java.io.Serializable;
-
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
 import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
+
+import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonView;
 

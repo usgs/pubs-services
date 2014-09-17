@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.utility;
 
+import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
 
@@ -16,9 +17,6 @@ import org.springframework.security.core.userdetails.User;
  *
  */
 public final class PubsUtilities {
-
-    /** The default username for anonymous access. */
-    public static final String ANONYMOUS_USER = "anonymous";
 
 	private PubsUtilities() {
 		
@@ -56,15 +54,12 @@ public final class PubsUtilities {
     }
 
     public static String getUsername() {
-	    String username = ANONYMOUS_USER;
+	    String username = PubsConstants.ANONYMOUS_USER;
 	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 	    
 		if (null != auth) {
 			if (auth.getPrincipal() instanceof User) {
 				username = ((User) auth.getPrincipal()).getUsername();
-//TODO What is our real Authentication???				
-//			} else {
-//				username = auth.toString();
 			}
 		}
 		return username;

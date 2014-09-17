@@ -36,18 +36,6 @@
     <bean id="costCenterQueueName" class="java.lang.String">
         <constructor-arg value="dummy"/>
     </bean>
-    <bean id="mqBroker" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-        <property name="staticMethod" value="org.apache.activemq.broker.BrokerFactory.createBroker"/>
-        <property name="arguments">
-            <list><value>broker:(tcp://localhost:61616)?persistent=false&amp;useJmx=false</value></list>
-        </property>
-    </bean>
-
-    <bean id="mqBrokerStart" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-        <property name="targetClass" value="org.apache.activemq.broker.BrokerService"/>
-        <property name="targetMethod" value="start"/>
-        <property name="targetObject" ref="mqBroker"/>
-    </bean>
 
     <bean id="ipdsEndpoint" class="java.lang.String">
         <constructor-arg value="ipdsdev.usgs.gov"/>

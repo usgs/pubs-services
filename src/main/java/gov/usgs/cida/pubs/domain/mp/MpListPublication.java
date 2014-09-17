@@ -1,12 +1,12 @@
 package gov.usgs.cida.pubs.domain.mp;
 
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
 import gov.usgs.cida.pubs.dao.intfc.IMpDao;
 import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
+
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
  * @author drsteini

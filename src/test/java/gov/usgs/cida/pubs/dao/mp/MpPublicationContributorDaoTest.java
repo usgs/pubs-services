@@ -71,9 +71,9 @@ public class MpPublicationContributorDaoTest extends BaseSpringDaoTest {
 	public void addUpdateDeleteTest() {
 		MpPublicationContributor newContrib = new MpPublicationContributor();
 		newContrib.setPublicationId(2);
-		Contributor<?> contrib1 = new UsgsContributor();
-		contrib1.setId(1);
-		newContrib.setContributor(contrib1);
+		Contributor<?> contrib3 = new UsgsContributor();
+		contrib3.setId(3);
+		newContrib.setContributor(contrib3);
 		ContributorType author = new ContributorType();
 		author.setId(ContributorType.AUTHORS);
 		newContrib.setContributorType(author);
@@ -85,9 +85,9 @@ public class MpPublicationContributorDaoTest extends BaseSpringDaoTest {
 		assertNotNull(persistedA.getId());
 		assertDaoTestResults(MpPublicationContributor.class, newContrib, persistedA, IGNORE_PROPERTIES, true, true);
 	
-		Contributor<?> contrib2 = new UsgsContributor();
-		contrib2.setId(2);
-		persistedA.setContributor(contrib2);
+		Contributor<?> contrib1 = new UsgsContributor();
+		contrib1.setId(1);
+		persistedA.setContributor(contrib1);
 		ContributorType editor = new ContributorType();
 		editor.setId(ContributorType.EDITORS);
 		persistedA.setContributorType(editor);

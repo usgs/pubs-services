@@ -248,7 +248,7 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
     protected void assertNewOutside(Affiliation<?> affiliation) {
         assertTrue(affiliation instanceof OutsideAffiliation);
         assertNotNull(affiliation.getId());
-        assertEquals("Outside Test", affiliation.getName());
+        assertEquals("Outside Test", affiliation.getText());
         assertTrue(affiliation.isActive());
         assertFalse(affiliation.isUsgs());
     }
@@ -302,7 +302,7 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
     protected void assertNewUsgs(Affiliation<?> affiliation, String ipdsId) {
         assertTrue(affiliation instanceof CostCenter);
         assertNotNull(affiliation.getId());
-        assertEquals("CostCenter Test", affiliation.getName());
+        assertEquals("CostCenter Test", affiliation.getText());
         assertTrue(affiliation.isActive());
         assertTrue(affiliation.isUsgs());
         assertEquals(ipdsId, ((CostCenter) affiliation).getIpdsId().toString());

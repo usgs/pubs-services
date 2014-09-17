@@ -1,4 +1,4 @@
-package gov.usgs.cida.pubs.validation.mp;
+package gov.usgs.cida.pubs.validation.mp.parent;
 
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
@@ -25,19 +25,23 @@ public class ParentExistsValidatorForMpPublicationCostCenter implements Constrai
     public boolean isValid(PublicationCostCenter<?> value, ConstraintValidatorContext context) {
         boolean rtn = true;
 
-        if (null != value.getPublicationId() && null == MpPublication.getDao().getById(value.getPublicationId())) {
-            rtn = false;
-            context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
-                .addPropertyNode("publicationId").addConstraintViolation();
+        if (null != value && null != context) {
+	        if (null != value.getPublicationId() && null == MpPublication.getDao().getById(value.getPublicationId())) {
+	            rtn = false;
+	            context.disableDefaultConstraintViolation();
+	            context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
+	                .addPropertyNode("publicationId").addConstraintViolation();
+	        }
+	        
+	        if (null != value.getCostCenter() && null != value.getCostCenter().getId() 
+	        		&& null == CostCenter.getDao().getById(value.getCostCenter().getId())) {
+	            rtn = false;
+	            context.disableDefaultConstraintViolation();
+	            context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
+	                .addPropertyNode("costCenter").addConstraintViolation();
+	        }
         }
-        if (null != value.getCostCenter() && null == CostCenter.getDao().getById(value.getCostCenter().getId())) {
-            rtn = false;
-            context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
-                .addPropertyNode("costCenter").addConstraintViolation();
-        }
-
+        
         return rtn;
     }
 

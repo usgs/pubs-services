@@ -25,7 +25,7 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
 
     private PublicationSubtype publicationSubtype;
 
-    private String name;
+    private String text;
 
     private String code;
 
@@ -51,30 +51,20 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
         publicationSubtype = inPublicationSubtype;
     }
 
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
+    @Override
+    @JsonView({ILookupView.class, IMpView.class})
+    public String getText() {
+        return text;
     }
+    
+	public void setText(String text) {
+		this.text = text;
+	}
 
-    /**
-     * @param inName the name to set
-     */
-    public void setName(final String inName) {
-        name = inName;
-    }
-
-    /**
-     * @return the code
-     */
     public String getCode() {
         return code;
     }
 
-    /**
-     * @param inCode the code to set
-     */
     public void setCode(final String inCode) {
         code = inCode;
     }
@@ -103,9 +93,6 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
         printIssn = inPrintIssn;
     }
 
-    /**
-     * @return the publicationSeriesDao
-     */
     public static IDao<PublicationSeries> getDao() {
         return publicationSeriesDao;
     }
@@ -118,12 +105,4 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
         publicationSeriesDao = inPublicationSeriesDao;
     }
 
-    @Override
-    @JsonView({ILookupView.class, IMpView.class})
-    public String getText() {
-        return name;
-    }
-	public void setText(String text) {
-		this.name = text;
-	}
 }

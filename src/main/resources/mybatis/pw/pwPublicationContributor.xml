@@ -11,16 +11,6 @@
           from publication_contributor
     </sql>
 
-<!--     <select id="getById" parameterType="Integer" resultMap="result"> -->
-<!--         <include refid="baseSelect"/> -->
-<!--          where publication_contributor_id = #{value,jdbcType=NUMERIC} -->
-<!--     </select> -->
-
-<!--     <select id="getByMap" resultMap="result"> -->
-<!--         <include refid="baseSelect"/> -->
-<!--         <include refid="publicationContributor.filters"/> -->
-<!--     </select> -->
-
     <select id="getAuthorsByPublication" parameterType="Integer" resultMap="result">
         <include refid="baseSelect"/>
         <include refid="publicationContributor.authorsWhere"/>

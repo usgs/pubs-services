@@ -7,13 +7,13 @@ import gov.usgs.cida.pubs.json.PubsJsonLocalDateTimeDeSerializer;
 import gov.usgs.cida.pubs.json.PubsJsonLocalDateTimeSerializer;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
+import gov.usgs.cida.pubs.validation.constraint.PublishChecks;
 import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
 
 import java.io.Serializable;
 import java.util.Collection;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -21,7 +21,6 @@ import org.hibernate.validator.constraints.Length;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -48,7 +47,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @JsonView(IMpView.class)
     @JsonDeserialize(using=PubsJsonLocalDateTimeDeSerializer.class)
     @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
-//TODO    @NotNull
+    @NotNull(groups = PublishChecks.class)
     private LocalDateTime displayToPublicDate;
 
     @JsonProperty("publicationYear")
@@ -64,7 +63,6 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     @JsonProperty("publicationSubtype")
     @JsonView(IMpView.class)
-    @NotNull
     private PublicationSubtype publicationSubtype;
 
     @JsonProperty("seriesTitle")
@@ -96,33 +94,32 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @Length(min=1, max=2000)
     private String title;
 
-    @JsonProperty("abstract")
+    @JsonProperty("docAbstract")
     @JsonView(IMpView.class)
     private String docAbstract;
 
     @JsonProperty("largerWorkType")
     @JsonView(IMpView.class)
-//    @NotNull
     private PublicationType largerWorkType;
 
     @JsonProperty("largerWorkTitle")
     @JsonView(IMpView.class)
-    @Length(min=1, max=2000)
+    @Length(min=0, max=2000)
     private String largerWorkTitle;
 
     @JsonProperty("conferenceTitle")
     @JsonView(IMpView.class)
-    @Length(min=1, max=2000)
+    @Length(min=0, max=2000)
     private String conferenceTitle;
 
     @JsonProperty("conferenceDate")
     @JsonView(IMpView.class)
-    @Length(min=1, max=255)
+    @Length(min=0, max=255)
     private String conferenceDate;
 
     @JsonProperty("conferenceLocation")
     @JsonView(IMpView.class)
-    @Length(min=1, max=255)
+    @Length(min=0, max=255)
     private String conferenceLocation;
 
     @JsonProperty("language")
@@ -157,12 +154,12 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     @JsonProperty("collaboration")
     @JsonView(IMpView.class)
-    @Length(min=0, max=255)
+    @Length(min=0, max=4000)
     private String collaboration;
 
     @JsonProperty("usgsCitation")
     @JsonView(IMpView.class)
-    @Length(min=0, max=2000)
+    @Length(min=0, max=4000)
     private String usgsCitation;
 
     @JsonProperty("contact")
@@ -186,7 +183,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     @JsonProperty("numberOfPages")
     @JsonView(IMpView.class)
-    @Digits(integer=4, fraction=0)
+    @Pattern(regexp="^\\d+$")
     private String numberOfPages;
 
     @JsonProperty("onlineOnly")
@@ -213,7 +210,6 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     @JsonProperty("notes")
     @JsonView(IMpView.class)
-    @Length(min=0, max=400000)
     private String notes;
 
     @JsonProperty("ipdsId")
@@ -226,17 +222,17 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 	protected String ipdsReviewProcessState;
 
 	@JsonProperty("ipdsInternalId")
-	@Digits(integer = 28, fraction = 0)
+    @Pattern(regexp="^\\d+$")
 	protected String ipdsInternalId;
 
     @JsonProperty("authors")
     @JsonView(IMpView.class)
-//    @JsonManagedReference
+    @Valid
 	protected Collection<PublicationContributor<?>> authors;
 
     @JsonProperty("editors")
     @JsonView(IMpView.class)
-//    @JsonManagedReference
+    @Valid
     private Collection<PublicationContributor<?>> editors;
 
     @JsonProperty("costCenters")
@@ -246,7 +242,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     @JsonProperty("links")
     @JsonView(IMpView.class)
-//    @JsonManagedReference
+    @Valid
     private Collection<PublicationLink<?>> links;
 
 /**
@@ -772,9 +768,4 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 		return super.getUpdateDate();
 	}
 
-    @JsonIgnore
-    @Override
-	public void setUpdateDate(LocalDateTime inUpdateDate) {
-		super.setUpdateDate(inUpdateDate);
-	}
 }

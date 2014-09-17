@@ -22,14 +22,14 @@ public class PublicationTypeDaoTest extends BaseSpringDaoTest {
     public void getByIdInteger() {
         PublicationType pubType = PublicationType.getDao().getById(2);
         assertEquals(2, pubType.getId().intValue());
-        assertEquals("Article", pubType.getName());
+        assertEquals("Article", pubType.getText());
     }
 
     @Test
     public void getByIdString() {
         PublicationType pubType = PublicationType.getDao().getById(PublicationType.REPORT);
         assertEquals(PublicationType.REPORT, pubType.getId());
-        assertEquals("Report", pubType.getName());
+        assertEquals("Report", pubType.getText());
     }
 
     @Test
@@ -42,10 +42,10 @@ public class PublicationTypeDaoTest extends BaseSpringDaoTest {
         pubTypes = PublicationType.getDao().getByMap(filters);
         assertEquals(1, pubTypes.size());
         assertEquals(16, pubTypes.get(0).getId().intValue());
-        assertEquals("Patent", pubTypes.get(0).getName());
+        assertEquals("Patent", pubTypes.get(0).getText());
 
         filters.clear();
-        filters.put("name", "p");
+        filters.put("text", "p");
         pubTypes = PublicationType.getDao().getByMap(filters);
         assertEquals(2, pubTypes.size());
     }

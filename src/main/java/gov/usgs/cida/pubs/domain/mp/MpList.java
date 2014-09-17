@@ -39,7 +39,7 @@ public class MpList extends BaseDomain<MpList>  implements Serializable {
 			WAF_ISSUES;
 
 	@JsonProperty("text")
-	private String name;
+	private String text;
 
 	@JsonProperty("description")
 	private String description;
@@ -47,12 +47,12 @@ public class MpList extends BaseDomain<MpList>  implements Serializable {
 	@JsonProperty("type")
 	private String type;
 	
-	public String getName() {
-		return name;
+	public String getText() {
+		return text;
 	}
 
-	public void setName(final String inName) {
-		name = inName;
+	public void setText(final String inText) {
+		text = inText;
 	}
 
 	public String getDescription() {

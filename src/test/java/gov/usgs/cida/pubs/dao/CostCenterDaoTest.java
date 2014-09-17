@@ -81,13 +81,13 @@ public class CostCenterDaoTest extends BaseSpringDaoTest {
     @Test
     public void addUpdateTest() {
         CostCenter affiliation = new CostCenter();
-        affiliation.setName("cost center 1");
+        affiliation.setText("cost center 1");
         affiliation.setIpdsId(randomPositiveInt());
         CostCenter.getDao().add(affiliation);
         CostCenter persistedAffiliation = (CostCenter) CostCenter.getDao().getById(affiliation.getId());
         assertDaoTestResults(CostCenter.class, affiliation, persistedAffiliation, IGNORE_PROPERTIES, true, true);
 
-        affiliation.setName("cost center 2");
+        affiliation.setText("cost center 2");
         affiliation.setIpdsId(randomPositiveInt()+4);
         CostCenter.getDao().update(affiliation);
         persistedAffiliation = (CostCenter) CostCenter.getDao().getById(affiliation.getId());

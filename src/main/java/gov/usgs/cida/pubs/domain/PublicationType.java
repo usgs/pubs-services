@@ -24,23 +24,19 @@ public class PublicationType extends BaseDomain<PublicationType> implements ILoo
 
     public static final Integer REPORT = 18;
 
-    private String name;
+    private String text;
 
     private Collection<PublicationSubtype> publicationSubtypes;
 
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
+    @Override
+    @JsonView({ILookupView.class, IMpView.class})
+    public String getText() {
+        return text;
     }
-
-    /**
-     * @param inName the name to set
-     */
-    public void setName(final String inName) {
-        name = inName;
-    }
+    
+	public void setText(String text) {
+		this.text = text;
+	}
 
     /**
      * @return the publicationSubtypes
@@ -70,14 +66,5 @@ public class PublicationType extends BaseDomain<PublicationType> implements ILoo
     public void setPublicationTypeDao(final IDao<PublicationType> inPublicationTypeDao) {
         publicationTypeDao = inPublicationTypeDao;
     }
-
-    @Override
-    @JsonView({ILookupView.class, IMpView.class})
-    public String getText() {
-        return name;
-    }
-	public void setText(String text) {
-		this.name = text;
-	}
 
 }

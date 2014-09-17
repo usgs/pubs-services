@@ -27,7 +27,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * @author drsteini
  * @param <D> the specific domain of the object 
  */
-//@JsonInclude(JsonInclude.Include.NON_EMPTY or .NON_NULL?)
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class BaseDomain<D> implements IBaseView {

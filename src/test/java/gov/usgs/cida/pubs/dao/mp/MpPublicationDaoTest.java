@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
 import gov.usgs.cida.pubs.domain.Contact;
-//import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
@@ -74,6 +73,7 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
     //publishToPw(Integer prodID)
 
     public static void assertMpPub1(Publication<?> pub) {
+    	assertTrue(pub instanceof MpPublication);
         assertEquals(1, pub.getId().intValue());
         assertEquals("sir20145083", pub.getIndexId());
         assertEquals("2014-07-14T17:27:36.000", pub.getDisplayToPublicDate().toString());
@@ -113,6 +113,7 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals("Conference Title", pub.getConferenceTitle());
         assertEquals("A free form DATE", pub.getConferenceDate());
         assertEquals("A conference location", pub.getConferenceLocation());
+        assertEquals("drsteini", ((MpPublication) pub).getLockUsername());
     }
 
     public static void assertMpPub1Children(Publication<?> pub) {
@@ -163,6 +164,9 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertNull(pub.getConferenceTitle());
         assertNull(pub.getConferenceDate());
         assertNull(pub.getPublicationYear());
+        if (pub instanceof MpPublication) {
+        	assertNull(((MpPublication) pub).getLockUsername());
+        }
     }
 
     public static void assertMpPub2Children(Publication<?> pub) {
@@ -223,6 +227,7 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         newPub.setConferenceDate("a new free form date");
         newPub.setConferenceTitle("A title");
         newPub.setConferenceLocation("a conference location");
+        newPub.setLockUsername("lockedBy");
         MpPublication.getDao().add(newPub);
         return newPub;
     }
@@ -275,8 +280,9 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         largerWorkType.setId(PublicationType.ARTICLE);
         updatedPub.setLargerWorkType(largerWorkType);
         updatedPub.setConferenceDate("a new free form date");
-        updatedPub.setConferenceTitle("A title");
-        updatedPub.setConferenceLocation("a conference location");
+        updatedPub.setConferenceTitle("A new title");
+        updatedPub.setConferenceLocation("a new conference location");
+        updatedPub.setLockUsername("newUser");
         return updatedPub;
     }
 }

@@ -41,6 +41,12 @@
             <if test="publicationId != null">
                 and publication_id = #{publicationId}
             </if>
+            <if test="contributorTypeId != null">
+                and contributor_type_id = #{contributorTypeId}
+            </if>
+            <if test="contributorId != null">
+                and contributor_id = #{contributorId}
+            </if>
         </where>
     </sql>
 

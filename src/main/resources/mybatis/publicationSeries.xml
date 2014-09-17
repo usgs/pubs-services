@@ -6,7 +6,7 @@
     <resultMap id="result" type="PublicationSeries" extends="base.result">
         <id property="id" column="publication_series_id"/>
         <result property="publicationSubtype.id" column="publication_subtype_id"/>
-        <result property="name" column="name"/>
+        <result property="text" column="name"/>
         <result property="code" column="code"/>
         <result property="doi" column="doi_name"/>
         <result property="printIssn" column="print_issn"/>
@@ -29,8 +29,8 @@
             <if test="code != null">
                 and code = #{code}
             </if>
-            <if test="name != null">
-                and upper(name) like upper(#{name}) || '%'
+            <if test="text != null">
+                and upper(name) like upper(#{text}) || '%'
             </if>
          </where>
     </sql>

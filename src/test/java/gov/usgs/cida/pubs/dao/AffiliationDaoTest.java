@@ -53,7 +53,7 @@ public class AffiliationDaoTest extends BaseSpringDaoTest {
         assertAffiliation5(affiliations.get(0));
 
         filters.clear();
-        filters.put("name", "out");
+        filters.put("text", "out");
         affiliations = Affiliation.getDao().getByMap(filters);
         assertEquals(3, affiliations.size());
 
@@ -78,7 +78,7 @@ public class AffiliationDaoTest extends BaseSpringDaoTest {
         assertEquals(4, affiliations.size());
 
         filters.put("id", "4");
-        filters.put("name", "affil");
+        filters.put("text", "affil");
         filters.put("active", true);
         filters.put("ipdsId", "1");
         affiliations = Affiliation.getDao().getByMap(filters);
@@ -127,7 +127,7 @@ public class AffiliationDaoTest extends BaseSpringDaoTest {
 
     public static void assertAffiliation1(Affiliation<?> affiliation) {
         assertEquals(1, affiliation.getId().intValue());
-        assertEquals("Affiliation Cost Center 1", affiliation.getName());
+        assertEquals("Affiliation Cost Center 1", affiliation.getText());
         assertTrue(affiliation.isActive());
         assertTrue(affiliation.isUsgs());
         assertTrue(affiliation instanceof CostCenter);
@@ -136,7 +136,7 @@ public class AffiliationDaoTest extends BaseSpringDaoTest {
 
     public static void assertAffiliation5(Affiliation<?> affiliation) {
         assertEquals(5, affiliation.getId().intValue());
-        assertEquals("Outside Affiliation 1", affiliation.getName());
+        assertEquals("Outside Affiliation 1", affiliation.getText());
         assertTrue(affiliation.isActive());
         assertFalse(affiliation.isUsgs());
         assertTrue(affiliation instanceof OutsideAffiliation);

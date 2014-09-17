@@ -1,13 +1,21 @@
 package gov.usgs.cida.pubs.domain;
 
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
+import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 
 import java.io.Serializable;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.URL;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 
+@ParentExists
 public class PublicationLink<D> extends BaseDomain<D> implements Serializable {
 
 	private static final long serialVersionUID = 5845209857599494487L;
@@ -16,28 +24,33 @@ public class PublicationLink<D> extends BaseDomain<D> implements Serializable {
 	public static final String EXTERNAL_THUMBNAIL = "http://pubs.er.usgs.gov/thumbnails/outside_thumb.jpg";
 
 	@JsonIgnore
-//	@JsonBackReference
+	@NotNull
     private Integer publicationId;
 
     @JsonProperty("rank")
     @JsonView(IMpView.class)
+    @Pattern(regexp="^\\d+$")
     private Integer rank;
 
     @JsonProperty("type")
     @JsonView(IMpView.class)
+    @NotNull
     private LinkType linkType;
 
     @JsonProperty("url")
     @JsonView(IMpView.class)
+    @URL
     private String url;
 
     @JsonProperty("text")
     @JsonView(IMpView.class)
+	@Length(min = 0, max = 4000)
     private String text;
 
     @JsonProperty("size")
     @JsonView(IMpView.class)
-    private String objectSize;
+	@Length(min = 0, max = 100)
+    private String size;
 
     @JsonProperty("linkFileType")
     @JsonView(IMpView.class)
@@ -45,6 +58,7 @@ public class PublicationLink<D> extends BaseDomain<D> implements Serializable {
 
     @JsonProperty("description")
     @JsonView(IMpView.class)
+	@Length(min = 0, max = 4000)
     private String description;
 
     public Integer getPublicationId() {
@@ -87,12 +101,12 @@ public class PublicationLink<D> extends BaseDomain<D> implements Serializable {
         text = inText;
     }
 
-    public String getObjectSize() {
-        return objectSize;
+    public String getSize() {
+        return size;
     }
 
-    public void setObjectSize(final String inObjectSize) {
-        objectSize = inObjectSize;
+    public void setSize(final String inSize) {
+        size = inSize;
     }
 
     public LinkFileType getLinkFileType() {

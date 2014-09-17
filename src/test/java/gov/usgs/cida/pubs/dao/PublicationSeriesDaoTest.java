@@ -25,7 +25,7 @@ public class PublicationSeriesDaoTest extends BaseSpringDaoTest {
         PublicationSeries pubSeries = PublicationSeries.getDao().getById(330);
         assertNotNull(pubSeries);
         assertEquals(330, pubSeries.getId().intValue());
-        assertEquals("Open-File Report", pubSeries.getName());
+        assertEquals("Open-File Report", pubSeries.getText());
         assertEquals("OFR", pubSeries.getCode());
         assertNull(pubSeries.getSeriesDoiName());
         assertEquals("0196-1497", pubSeries.getPrintIssn());
@@ -34,7 +34,7 @@ public class PublicationSeriesDaoTest extends BaseSpringDaoTest {
         pubSeries = PublicationSeries.getDao().getById(341);
         assertNotNull(pubSeries);
         assertEquals(341, pubSeries.getId().intValue());
-        assertEquals("Water Supply Paper", pubSeries.getName());
+        assertEquals("Water Supply Paper", pubSeries.getText());
         assertEquals("WSP", pubSeries.getCode());
         assertNull(pubSeries.getSeriesDoiName());
         assertNull(pubSeries.getPrintIssn());
@@ -46,7 +46,7 @@ public class PublicationSeriesDaoTest extends BaseSpringDaoTest {
         PublicationSeries pubSeries = PublicationSeries.getDao().getById("1");
         assertNotNull(pubSeries);
         assertEquals(1, pubSeries.getId().intValue());
-        assertEquals("Administrative Report", pubSeries.getName());
+        assertEquals("Administrative Report", pubSeries.getText());
         assertNull(pubSeries.getCode());
         assertNull(pubSeries.getSeriesDoiName());
         assertNull(pubSeries.getPrintIssn());
@@ -64,7 +64,7 @@ public class PublicationSeriesDaoTest extends BaseSpringDaoTest {
         assertNotNull(pubSeries);
         assertEquals(1, pubSeries.size());
         assertEquals(133, pubSeries.get(0).getId().intValue());
-        assertEquals("Report", pubSeries.get(0).getName());
+        assertEquals("Report", pubSeries.get(0).getText());
         assertNull(pubSeries.get(0).getCode());
         assertNull(pubSeries.get(0).getSeriesDoiName());
         assertNull(pubSeries.get(0).getPrintIssn());
@@ -76,7 +76,7 @@ public class PublicationSeriesDaoTest extends BaseSpringDaoTest {
         assertNotNull(pubSeries);
         assertEquals(50, pubSeries.size());
 
-        filters.put("name", "to");
+        filters.put("text", "to");
         pubSeries = PublicationSeries.getDao().getByMap(filters);
         assertEquals(2, pubSeries.size());
 
@@ -85,7 +85,7 @@ public class PublicationSeriesDaoTest extends BaseSpringDaoTest {
         pubSeries = PublicationSeries.getDao().getByMap(filters);
         assertEquals(1, pubSeries.size());
         assertEquals(323, pubSeries.get(0).getId().intValue());
-        assertEquals("Mineral Commodities Summaries", pubSeries.get(0).getName());
+        assertEquals("Mineral Commodities Summaries", pubSeries.get(0).getText());
         assertEquals("MINERAL", pubSeries.get(0).getCode());
         assertNull(pubSeries.get(0).getSeriesDoiName());
         assertEquals("0076-8952", pubSeries.get(0).getPrintIssn());

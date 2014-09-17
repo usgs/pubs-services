@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 
 public class PubsAuthentication implements Authentication {
 	private static final long serialVersionUID = 1L;
@@ -19,9 +20,16 @@ public class PubsAuthentication implements Authentication {
 	public static final String ROLE_PUBS_CATALOGER_SUPERVISOR = ROLE_PREFIX + PubsRoles.PUBS_CATALOGER_SUPERVISOR.name();
 	
 	private Collection<? extends GrantedAuthority> authorities;
+	private User principal;
 	
 	public PubsAuthentication(Collection<? extends GrantedAuthority> inAuthorities) {
 		authorities = inAuthorities;
+	}
+	
+	public PubsAuthentication(String username, Collection<? extends GrantedAuthority> inAuthorities) {
+		authorities = inAuthorities;
+		principal = new User(username, "******", authorities);
+		
 	}
 	
 	@Override
@@ -49,8 +57,7 @@ public class PubsAuthentication implements Authentication {
 
 	@Override
 	public Object getPrincipal() {
-		// TODO Auto-generated method stub
-		return null;
+		return principal;
 	}
 
 	@Override

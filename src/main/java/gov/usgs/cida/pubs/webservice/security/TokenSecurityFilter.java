@@ -1,6 +1,7 @@
 package gov.usgs.cida.pubs.webservice.security;
 
 import gov.usgs.cida.auth.client.IAuthClient;
+import gov.usgs.cida.auth.model.AuthToken;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -107,6 +108,7 @@ public class TokenSecurityFilter implements Filter  {
 		auths.add(new SimpleGrantedAuthority(PubsAuthentication.ROLE_AUTHENTICATED));
 		
 		List<String> roles = authClient.getRolesByToken(token);
+		
 		for(String role : roles) {
 			try {
 				PubsRoles.valueOf(role); //role validation
@@ -116,7 +118,7 @@ public class TokenSecurityFilter implements Filter  {
 			}
 		}
 		
-        SecurityContextHolder.getContext().setAuthentication(new PubsAuthentication(auths));
+        SecurityContextHolder.getContext().setAuthentication(new PubsAuthentication(authClient.getToken(token).getUsername(), auths));
 	}
 	
 	private void setAnonymousRole() {

@@ -9,7 +9,7 @@
         <result property="rank" column="rank"/>
         <result property="url" column="url"/>
         <result property="text" column="text"/>
-        <result property="objectSize" column="object_size"/>
+        <result property="size" column="object_size"/>
         <result property="description" column="description"/>
         <association property="linkType" column="link_type_id" select="linkType.getById"/>
         <association property="linkFileType" column="link_file_type_id" select="linkFileType.getById"/>
@@ -26,7 +26,7 @@
         #{rank,jdbcType=NUMERIC},
         #{url,jdbcType=VARCHAR},
         #{text,jdbcType=VARCHAR},
-        #{objectSize,jdbcType=VARCHAR},
+        #{size,jdbcType=VARCHAR},
         #{linkFileType.id,jdbcType=NUMERIC},
         #{linkType.id,jdbcType=NUMERIC},
         #{description,jdbcType=VARCHAR},
@@ -38,7 +38,7 @@
         rank = #{rank,jdbcType=NUMERIC},
         url = #{url,jdbcType=VARCHAR},
         text = #{text,jdbcType=VARCHAR},
-        object_size = #{objectSize,jdbcType=VARCHAR},
+        object_size = #{size,jdbcType=VARCHAR},
         link_file_type_id = #{linkFileType.id,jdbcType=NUMERIC},
         link_type_id = #{linkType.id,jdbcType=NUMERIC},
         description = #{description,jdbcType=VARCHAR},

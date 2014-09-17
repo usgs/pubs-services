@@ -1,5 +1,7 @@
 package gov.usgs.cida.pubs.aop;
 
+import gov.usgs.cida.pubs.utility.PubsUtilities;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -10,8 +12,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -20,9 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Aspect
 public class SetDbContextAspect extends SqlSessionDaoSupport {
-
-    /** The default username for anonymous access. */
-    public static final String ANONYMOUS_USER = "anonymous";
 
     /** The clientId/username. */
     private String clientId;
@@ -36,11 +33,7 @@ public class SetDbContextAspect extends SqlSessionDaoSupport {
     @Transactional(readOnly = true)
     protected void registerContextValues() {
         try {
-            clientId = ANONYMOUS_USER;
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (null != auth) {
-                clientId = auth.getName();
-            }
+            clientId = PubsUtilities.getUsername();
 
             String[] metrics = new String[OracleConnection.END_TO_END_STATE_INDEX_MAX];
             metrics[OracleConnection.END_TO_END_CLIENTID_INDEX] = clientId;

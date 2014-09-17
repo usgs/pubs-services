@@ -53,7 +53,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
-                filters.put("name", text[0]);
+                filters.put("text", text[0]);
             }
             rtn = PublicationType.getDao().getByMap(filters);
         }
@@ -71,7 +71,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
             Map<String, Object> filters = new HashMap<>();
             filters.put("publicationTypeId", publicationTypeId);
             if (null != text && 0 < text.length) {
-                filters.put("name", text[0]);
+                filters.put("text", text[0]);
             }
             rtn = PublicationSubtype.getDao().getByMap(filters);
         }
@@ -91,7 +91,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
                 filters.put("publicationTypeId", publicationTypeId[0]);
             }
             if (null != text && 0 < text.length) {
-                filters.put("name", text[0]);
+                filters.put("text", text[0]);
             }
             rtn = PublicationSubtype.getDao().getByMap(filters);
             }
@@ -110,7 +110,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
             Map<String, Object> filters = new HashMap<>();
             filters.put("publicationSubtypeId", publicationSubtypeId);
             if (null != text && 0 < text.length) {
-                filters.put("name", text[0]);
+                filters.put("text", text[0]);
             }
             rtn = PublicationSeries.getDao().getByMap(filters);
         }
@@ -130,7 +130,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
                 filters.put("publicationSubtypeId", publicationSubtypeId[0]);
             }
             if (null != text && 0 < text.length) {
-                filters.put("name", text[0]);
+                filters.put("text", text[0]);
             }
             rtn = PublicationSeries.getDao().getByMap(filters);
         }
@@ -146,7 +146,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
-                filters.put("name", text[0]);
+                filters.put("text", text[0]);
             }
             rtn = CostCenter.getDao().getByMap(filters);
         }
@@ -162,7 +162,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
-                filters.put("name", text[0]);
+                filters.put("text", text[0]);
             }
             rtn = OutsideAffiliation.getDao().getByMap(filters);
         }
@@ -178,7 +178,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
-                filters.put("name", text[0]);
+                filters.put("text", text[0]);
             }
             rtn = ContributorType.getDao().getByMap(filters);
         }
@@ -194,7 +194,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
-                filters.put("name", text[0]);
+                filters.put("text", text[0]);
             }
             rtn = LinkType.getDao().getByMap(filters);
         }
@@ -210,7 +210,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
-                filters.put("name", text[0]);
+                filters.put("text", text[0]);
             }
             rtn = LinkFileType.getDao().getByMap(filters);
         }
@@ -226,7 +226,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
-                filters.put("name", text[0]);
+                filters.put("text", text[0]);
             }
 //            rtn = personContributorBusService.getObjects(filters);
             rtn = PersonContributor.getDao().getByMap(filters);
@@ -243,7 +243,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
-                filters.put("name", text[0]);
+                filters.put("text", text[0]);
             }
 //            rtn = corporateContributorBusService.getObjects(filters);
             rtn = CorporateContributor.getDao().getByMap(filters);

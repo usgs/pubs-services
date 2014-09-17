@@ -195,7 +195,7 @@ public class IpdsBinding {
     protected Affiliation<?> getOrCreateNonUsgsAffiliation(final String name) {
         Affiliation<?> affiliation;
         Map<String, Object> filters = new HashMap<>();
-        filters.put("name", name);
+        filters.put("text", name);
         List<Affiliation<?>> affiliations = OutsideAffiliation.getDao().getByMap(filters);
         //TODO what if we get more than one?
         if (affiliations.isEmpty()) {
@@ -208,7 +208,7 @@ public class IpdsBinding {
 
     protected Affiliation<?> createNonUsgsAffiliation(final String name) {
         Affiliation<?> affiliation = new OutsideAffiliation();
-        affiliation.setName(name);
+        affiliation.setText(name);
         //TODO this should be the business service.
 //        return affiliationBusService.createObject(affiliation);
         OutsideAffiliation.getDao().add(affiliation);
@@ -258,7 +258,7 @@ public class IpdsBinding {
         Document doc = makeDocument(costCenterXml);
 
         CostCenter affiliation = new CostCenter();
-        affiliation.setName(getFirstNodeText(doc.getDocumentElement(), "d:Name"));
+        affiliation.setText(getFirstNodeText(doc.getDocumentElement(), "d:Name"));
         affiliation.setIpdsId(ipdsId);
         //TODO this should be the business service.
 //      return affiliationBusService.createObject(affiliation);
@@ -378,7 +378,7 @@ public class IpdsBinding {
             	if (PubsUtilities.isPublicationTypeArticle(pub.getPublicationType())
             			&& null != pub.getPublicationSubtype()) {
             		Map<String, Object> filters = new HashMap<>();
-            		filters.put("name", largerWorkTitle);
+            		filters.put("text", largerWorkTitle);
             		filters.put("publicationSubtypeId", pub.getPublicationSubtype().getId());
             		List<PublicationSeries> seriesList = PublicationSeries.getDao().getByMap(filters);
             		if (0 < seriesList.size()) {
@@ -426,7 +426,7 @@ public class IpdsBinding {
             //Only hit the DB if both fields have values - otherwise the db call will return incorrect results.
             Map<String, Object> filters = new HashMap<>();
             filters.put("publicationSubtypeId", pubSubtype.getId());
-            filters.put("name", usgsSeriesValue);
+            filters.put("text", usgsSeriesValue);
             List<PublicationSeries> pubSeries = PublicationSeries.getDao().getByMap(filters);
             if (!pubSeries.isEmpty()) {
                 //We should really only get one, so just take the first...

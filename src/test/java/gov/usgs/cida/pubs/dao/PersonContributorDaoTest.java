@@ -53,7 +53,7 @@ public class PersonContributorDaoTest extends BaseSpringDaoTest {
         assertEquals(1, contributors.get(0).getId().intValue());
 
         filters.clear();
-        filters.put("name", "con");
+        filters.put("text", "con");
         contributors = PersonContributor.getDao().getByMap(filters);
         assertEquals(1, contributors.size());
         assertEquals(1, contributors.get(0).getId().intValue());
@@ -77,7 +77,7 @@ public class PersonContributorDaoTest extends BaseSpringDaoTest {
         filters.put("given", "out");
         contributors = PersonContributor.getDao().getByMap(filters);
         assertEquals(1, contributors.size());
-        filters.put("name", "out");
+        filters.put("text", "out");
         contributors = PersonContributor.getDao().getByMap(filters);
         assertEquals(1, contributors.size());
         filters.put("id", 3);

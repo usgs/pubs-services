@@ -19,8 +19,6 @@
                     <title>{series_name}</title>
                 </titles>
                 <publication_date media_type="online">
-                    {dissemination_month}
-                    {dissemination_day}
                     <year>{dissemination_year}</year>
                 </publication_date>
             </report-paper_metadata>
@@ -32,8 +30,6 @@
                     <title>{title}</title>
                 </titles>
                 <publication_date media_type="online">
-                    {dissemination_month}
-                    {dissemination_day}
                     <year>{dissemination_year}</year>
                 </publication_date>
 {pages}

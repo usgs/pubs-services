@@ -46,7 +46,7 @@ public class OutsideAffiliationDaoTest extends BaseSpringDaoTest {
         AffiliationDaoTest.assertAffiliation5(outsideAffiliations.get(0));
 
         filters.clear();
-        filters.put("name", "out");
+        filters.put("text", "out");
         outsideAffiliations = OutsideAffiliation.getDao().getByMap(filters);
         assertEquals(3, outsideAffiliations.size());
 
@@ -71,7 +71,7 @@ public class OutsideAffiliationDaoTest extends BaseSpringDaoTest {
         assertEquals(3, outsideAffiliations.size());
 
         filters.put("id", "5");
-        filters.put("name", "out");
+        filters.put("text", "out");
         filters.put("active", true);
         outsideAffiliations = OutsideAffiliation.getDao().getByMap(filters);
         assertEquals(1, outsideAffiliations.size());
@@ -80,12 +80,12 @@ public class OutsideAffiliationDaoTest extends BaseSpringDaoTest {
     @Test
     public void addUpdateTest() {
         OutsideAffiliation affiliation = new OutsideAffiliation();
-        affiliation.setName("outside org 1");
+        affiliation.setText("outside org 1");
         OutsideAffiliation.getDao().add(affiliation);
         OutsideAffiliation persistedAffiliation = (OutsideAffiliation) OutsideAffiliation.getDao().getById(affiliation.getId());
         assertDaoTestResults(OutsideAffiliation.class, affiliation, persistedAffiliation, IGNORE_PROPERTIES, true, true);
 
-        affiliation.setName("outside org 2");
+        affiliation.setText("outside org 2");
         OutsideAffiliation.getDao().update(affiliation);
         persistedAffiliation = (OutsideAffiliation) OutsideAffiliation.getDao().getById(affiliation.getId());
         assertDaoTestResults(OutsideAffiliation.class, affiliation, persistedAffiliation, IGNORE_PROPERTIES, true, true);

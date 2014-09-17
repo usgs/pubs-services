@@ -2,13 +2,12 @@ package gov.usgs.cida.pubs.validation.constraint;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import gov.usgs.cida.pubs.validation.mp.ParentExistsValidatorForMpPublication;
-import gov.usgs.cida.pubs.validation.mp.ParentExistsValidatorForMpPublicationCostCenter;
-//import gov.usgs.cida.pubs.validation.link.ParentExistsValidatorForLinkDim;
-//import gov.usgs.cida.pubs.validation.mpListPubsRel.ParentExistsValidatorForMpListPubsRel;
-//import gov.usgs.cida.pubs.validation.supersedeRel.ParentExistsValidatorForSupersedeRel;
-
-
+import gov.usgs.cida.pubs.validation.mp.parent.ParentExistsValidatorForMpListPublication;
+import gov.usgs.cida.pubs.validation.mp.parent.ParentExistsValidatorForMpPublication;
+import gov.usgs.cida.pubs.validation.mp.parent.ParentExistsValidatorForMpPublicationContributor;
+import gov.usgs.cida.pubs.validation.mp.parent.ParentExistsValidatorForMpPublicationCostCenter;
+import gov.usgs.cida.pubs.validation.mp.parent.ParentExistsValidatorForMpPublicationLink;
+import gov.usgs.cida.pubs.validation.mp.parent.ParentExistsValidatorForPersonContributor;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -19,11 +18,12 @@ import javax.validation.Constraint;
 @Target(TYPE)
 @Retention(RUNTIME)
 @Constraint(validatedBy={
-//        ParentExistsValidatorForLinkDim.class,
-//        ParentExistsValidatorForMpListPubsRel.class,
+        ParentExistsValidatorForMpListPublication.class,
         ParentExistsValidatorForMpPublication.class,
+        ParentExistsValidatorForMpPublicationContributor.class,
         ParentExistsValidatorForMpPublicationCostCenter.class,
-//        ParentExistsValidatorForSupersedeRel.class
+        ParentExistsValidatorForMpPublicationLink.class,
+        ParentExistsValidatorForPersonContributor.class
 })
 @Documented
 public @interface ParentExists {

@@ -5,29 +5,39 @@ import gov.usgs.cida.pubs.domain.intfc.ILookup;
 import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonView;
 
+@JsonPropertyOrder({"id", "text", "active", "usgs"})
 public class Affiliation<D> extends BaseDomain<Affiliation<D>> implements ILookup {
 
     private static IDao<Affiliation<?>> affiliationDao;
 
-    @JsonProperty("name")
-    private String name;
+    @JsonProperty("text")
+	@Length(min=1, max=500)
+    private String text;
 
-    @JsonIgnore
+    @JsonProperty("active")
+    @NotNull
     protected boolean active;
 
-    @JsonIgnore
+    @JsonProperty("usgs")
+    @NotNull
     protected boolean usgs;
 
-    public String getName() {
-        return name;
+    @Override
+    @JsonView({ILookupView.class, IMpView.class})
+    public String getText() {
+        return text;
     }
 
-    public void setName(final String inName) {
-        name = inName;
+    public void setText(final String inText) {
+        text = inText;
     }
 
     public boolean isActive() {
@@ -44,12 +54,6 @@ public class Affiliation<D> extends BaseDomain<Affiliation<D>> implements ILooku
 
     public void setAffiliationDao(final IDao<Affiliation<?>> inAffiliationDao) {
         affiliationDao = inAffiliationDao;
-    }
-
-    @Override
-    @JsonView({ILookupView.class, IMpView.class})
-    public String getText() {
-        return name;
     }
 
 }

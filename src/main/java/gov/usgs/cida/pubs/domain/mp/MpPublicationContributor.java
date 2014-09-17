@@ -1,8 +1,12 @@
 package gov.usgs.cida.pubs.domain.mp;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import gov.usgs.cida.pubs.dao.intfc.IMpDao;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 
+@JsonPropertyOrder({"id", "corporation", "usgs", "contributorType", "rank", "family", "given", "suffix",
+	"email", "organization", "affiliation"})
 public class MpPublicationContributor extends PublicationContributor<MpPublicationContributor> {
 
 	private static final long serialVersionUID = 5207277965533996229L;

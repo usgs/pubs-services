@@ -100,12 +100,12 @@
         <if test="ipdsContributorId != null">
             and ipds_contributor_id = #{ipdsContributorId}
         </if>
-        <if test="name != null">
-            and (upper(first) like upper(#{name}) || '%'
-              or upper(given) like upper(#{name}) || '%'
-              or upper(suffix) like upper(#{name}) || '%'
-              or upper(email) like upper(#{name}) || '%'
-              or upper(literal) like upper(#{name}) || '%')
+        <if test="text != null">
+            and (upper(first) like upper(#{text}) || '%'
+              or upper(given) like upper(#{text}) || '%'
+              or upper(suffix) like upper(#{text}) || '%'
+              or upper(email) like upper(#{text}) || '%'
+              or upper(literal) like upper(#{text}) || '%')
         </if>
         <if test="given != null">
             and upper(given) like upper(#{given}) || '%'

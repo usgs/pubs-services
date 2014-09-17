@@ -26,10 +26,6 @@ public interface IDao<D> {
 
     D getById(String domainID);
 
-    boolean exists(Integer domainID);
-
-    boolean exists(String domainID);
-
     /** 
      * Get domain objects by the given filter.
      * @param filters - id of the object to retrieve. 

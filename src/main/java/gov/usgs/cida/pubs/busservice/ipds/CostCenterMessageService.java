@@ -76,12 +76,12 @@ public class CostCenterMessageService implements IIpdsService {
 			        //TODO what if we get more than one?
 			        if (costCenters.isEmpty()) {
 			        	costCenter.setIpdsId(ipdsId);
-			        	costCenter.setName(name);
+			        	costCenter.setText(name);
 			        	CostCenter.getDao().add(costCenter);
 			        	additions++;
 			        } else {
 			        	costCenter = (CostCenter) costCenters.get(0);
-			        	costCenter.setName(name);
+			        	costCenter.setText(name);
 			        	CostCenter.getDao().update(costCenter);
 			        }
 	            }

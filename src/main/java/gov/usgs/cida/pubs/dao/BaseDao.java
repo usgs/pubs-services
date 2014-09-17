@@ -64,24 +64,6 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
         throw new RuntimeException("NOT IMPLEMENTED.");
     }
 
-    /** {@inheritDoc}
-     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
-     */
-    @Transactional(readOnly = true)
-    @Override
-    public final boolean exists(Integer domainID) {
-        return null!=getById(domainID);
-    }
-
-    /** {@inheritDoc}
-     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
-     */
-    @Transactional(readOnly = true)
-    @Override
-    public final boolean exists(String domainID) {
-        return null!=getById(domainID);
-    }
-
     /** 
      * {@inheritDoc}
      * @see gov.usgs.cida.pubs.dao.intfc.IDao#getByMap(Map)

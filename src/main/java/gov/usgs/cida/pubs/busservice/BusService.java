@@ -22,11 +22,6 @@ public abstract class BusService<D> implements IBusService<D> {
     }
 
     @Override
-    public List<D> getObjects() {
-        throw new RuntimeException("NOT IMPLEMENTED.");
-    }
-
-    @Override
     public List<D> getObjects(Map<String, Object> filters) {
         throw new RuntimeException("NOT IMPLEMENTED.");
     }

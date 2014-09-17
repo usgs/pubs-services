@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.busservice.intfc;
 
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
 
 /**
  * @author drsteini
@@ -9,11 +10,18 @@ import gov.usgs.cida.pubs.validation.ValidationResults;
  */
 public interface IMpPublicationBusService extends IBusService<MpPublication> {
 
+	/** 
+	 * Check to see if this publication is available for editing (not locked).
+	 * @param publicationId of the publication to check.
+	 * @return a validator result containing the username of the person holding the lock. null if not locked.
+	 */
+	ValidatorResult checkAvailability(Integer publicationId);
+
     /**
      * Publish the publication identified by the prodId.
-     * @param prodId to publish.
+     * @param publicationId to publish.
      * @return any validation errors that may have prevented the publishing of this citation
      */
-    ValidationResults publish(Integer prodId);
+    ValidationResults publish(String publicationId);
 
 }

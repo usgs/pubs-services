@@ -6,7 +6,6 @@ import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
@@ -24,12 +23,10 @@ public class PublicationLink<D> extends BaseDomain<D> implements Serializable {
 	public static final String EXTERNAL_THUMBNAIL = "http://pubs.er.usgs.gov/thumbnails/outside_thumb.jpg";
 
 	@JsonIgnore
-	@NotNull
     private Integer publicationId;
 
     @JsonProperty("rank")
     @JsonView(IMpView.class)
-    @Pattern(regexp="^\\d+$")
     private Integer rank;
 
     @JsonProperty("type")

@@ -9,14 +9,14 @@ public interface IMpDao<D> extends IDao<D> {
 
     /** 
      * Copy domain object from pw to mp.
-     * @param prodID ID of the publication we are copying info for.
+     * @param publicationId ID of the publication we are copying info for.
      */
-    void copyFromPw(Integer prodID);
+    void copyFromPw(Integer publicationId);
 
     /** 
      * Publish domain object to pw from mp.
-     * @param prodID ID of the publication we are publishing info for.
+     * @param publicationId ID of the publication we are publishing info for.
      */
-    void publishToPw(Integer prodID);
+    void publishToPw(Integer publicationId);
 
 }

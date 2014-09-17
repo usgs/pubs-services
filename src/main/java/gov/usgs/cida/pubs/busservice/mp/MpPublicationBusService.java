@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.busservice.mp;
 
+import gov.usgs.cida.pubs.busservice.BusService;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
@@ -20,7 +21,9 @@ import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
+import gov.usgs.cida.pubs.validation.constraint.PublishChecks;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,8 +34,10 @@ import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import javax.validation.groups.Default;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,9 +46,12 @@ import org.springframework.transaction.annotation.Transactional;
  * @author drsteini
  *
  */
-public class MpPublicationBusService extends MpBusService<MpPublication> implements IMpPublicationBusService {
+public class MpPublicationBusService extends BusService<MpPublication> implements IMpPublicationBusService {
 
     public static final String DOI_PREFIX = "10.3133";
+
+    //This can/should be overridden from JNDI. 
+    protected Integer lockTimeoutHours = 3;
 
     private final ICrossRefBusService crossRefBusService;
 
@@ -55,6 +63,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 
     @Autowired
     MpPublicationBusService(final Validator validator,
+    		final Integer lockTimeoutHours,
             final ICrossRefBusService crossRefBusService,
             @Qualifier("mpPublicationCostCenterBusService")
             IListBusService<PublicationCostCenter<MpPublicationCostCenter>> costCenterBusService,
@@ -62,6 +71,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
             IListBusService<PublicationLink<MpPublicationLink>> linkBusService,
             @Qualifier("mpPublicationContributorBusService")
             IListBusService<PublicationContributor<MpPublicationContributor>> contributorBusService) {
+    	this.lockTimeoutHours = lockTimeoutHours;
         this.validator = validator;
         this.crossRefBusService = crossRefBusService;
         this.costCenterBusService = costCenterBusService;
@@ -74,6 +84,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
      */
     @Override
     public MpPublication getObject(Integer objectId) {
+        beginPublicationEdit(objectId);
         return MpPublication.getDao().getById(objectId);
     }
 
@@ -267,15 +278,16 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
      */
     @Override
     @Transactional
-    public ValidationResults publish(final Integer prodId) {
+    public ValidationResults publish(final String publicationId) {
         //TODO reactivate when implementing the new publish routine.
         ValidationResults validationResults = new ValidationResults();
         //One last guarantee that all of the warehouse data is covered in mp
-        beginPublicationEdit(prodId);
-        MpPublication mpPub = MpPublication.getDao().getById(prodId);
+        beginPublicationEdit(PubsUtilities.parseInteger(publicationId));
+        MpPublication mpPub = MpPublication.getDao().getById(publicationId);
 
-//        Set<ConstraintViolation<MpPublication>> validations = validator.validate(mpPub);
-//        if ( validations.isEmpty() ) {
+        Set<ConstraintViolation<MpPublication>> validations = validator.validate(mpPub, Default.class, PublishChecks.class);
+        if ( validations.isEmpty() ) {
+        	//TODO Supersedes logic
 //            Map<String, Object> filters = new HashMap<String, Object>();
 //            filters.put("prodId", prodId);
 //            List<MpSupersedeRel> supers = MpSupersedeRel.getDao().getByMap(filters);
@@ -283,7 +295,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 //                mpSuper.setValidationErrors(validator.validate(mpSuper));
 //                validationResults.addValidationResults(mpSuper.getValidationErrors());
 //            }
-//
+
             defaultThumbnail(mpPub);
 //
 //            List<MpLinkDim> links = MpLinkDim.getDao().getByMap(filters);
@@ -308,12 +320,34 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
                     && (null != mpPub.getDoi() && StringUtils.isNotEmpty(mpPub.getDoi()))) {
                 crossRefBusService.submitCrossRef(mpPub);
             }
-//            deleteObject(mpPub);
-//        }
-//
+            deleteObject(mpPub);
+        }
+
         return validationResults;
     }
-
+    
+    /**
+     * Make sure the pw publication information exists in mp before working with it in mp.
+     * @param publicationId
+     */
+    protected void beginPublicationEdit(Integer publicationId) {
+        if (null != publicationId) {
+            //Look in MP to see if this key exists
+            MpPublication mpPub = MpPublication.getDao().getById(publicationId);
+            if (null == mpPub) {
+                //Didn't find it in MP, look in PW
+                PwPublication pwPub = PwPublication.getDao().getById(publicationId);
+                if (null != pwPub) {
+                    //There it is, copy it!
+                    MpPublication.getDao().copyFromPw(publicationId);
+                    MpPublicationCostCenter.getDao().copyFromPw(publicationId);
+                    MpPublicationLink.getDao().copyFromPw(publicationId);
+                    MpPublicationContributor.getDao().copyFromPw(publicationId);
+                }
+            }
+        }
+    }
+    
     /**
      * For publicationLink, on publish, we create a placeholder thumbnail link if none already exist.
      */
@@ -374,4 +408,37 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 	        }
 	    }
     }
+
+	@Override
+	public ValidatorResult checkAvailability(Integer publicationId) {
+		boolean available = false;
+    	LocalDateTime now = new LocalDateTime();
+    	MpPublication mpPub = MpPublication.getDao().getById(publicationId);
+		if (null == mpPub) {
+			//Not in MpPublication, so available (ok to edit)
+			available = true;
+		} else {
+			//We found it, so check if it is already locked.
+			if (StringUtils.isNotEmpty(mpPub.getLockUsername())) {
+				//Now, was it locked by the current user.
+				if (PubsUtilities.getUsername().equalsIgnoreCase(mpPub.getLockUsername())) {
+					//Yes, this user locked it so we are ok to edit.
+					available = true;
+				} else if (null == mpPub.getUpdateDate() || 0 < now.compareTo(mpPub.getUpdateDate().plusHours(lockTimeoutHours))) {
+					//The lock has expired, so let this person edit it.
+					available = true;
+				}
+			} else {
+				//Not already locked, so let this person edit it.
+				available = true;
+			}
+		}
+		
+		if (available) {
+			return null;
+		} else {
+			return new ValidatorResult("Publication", "This Publication is being edited by " + mpPub.getLockUsername(),
+					"fatal", mpPub.getLockUsername());
+		}
+	}
 }

@@ -10,6 +10,7 @@ import gov.usgs.cida.pubs.json.ResponseView;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
 import gov.usgs.cida.pubs.webservice.MvcService;
 
 import java.util.HashMap;
@@ -24,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,10 +43,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class MpPublicationMvcService extends MvcService<MpPublication> {
     private static final Logger LOG = LoggerFactory.getLogger(MpPublicationMvcService.class);
 
-    //SQL config for single search 
-    private static final String SEARCH_TERM_ORDERBY = "display_to_public_date"; //TODO this is temporary until we get PUB DATE
-    private static final String SEARCH_TERM_ORDERBY_DIR = "DESC";
-
     private final IBusService<Publication<?>> pubBusService;
     private final IMpPublicationBusService busService;
 
@@ -57,19 +55,6 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     	this.busService = busService;
     }
     
-    @RequestMapping(value={"/mppublication/{publicationId}"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
-    @ResponseView(IMpView.class)
-    public @ResponseBody MpPublication getMpPublication(HttpServletRequest request, HttpServletResponse response,
-                @PathVariable("publicationId") String publicationId) {
-        LOG.debug("getMpPublication");
-        MpPublication rtn = new MpPublication();
-        if (validateParametersSetHeaders(request, response)) {
-            rtn = busService.getObject(PubsUtilities.parseInteger(publicationId));
-        }
-        //TODO set http status to 404 on a not found?
-        return rtn;
-    }
-
     @RequestMapping(value = "mppublications", method = RequestMethod.GET,  produces="application/json")
     @ResponseView(IMpView.class)
     public @ResponseBody SearchResults getPubs(
@@ -128,9 +113,33 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     private Map<String, Object> configureSingleSearchFilters(Map<String, Object> filters, String searchTerms) {
         if (StringUtils.isNotEmpty(searchTerms)) {
 	    	filters.put("searchTerms", searchTerms.split("[\\s+,+]"));
-	    	updateOrderBy(filters, SEARCH_TERM_ORDERBY, SEARCH_TERM_ORDERBY_DIR);
+	    	updateOrderBy(filters, PubsConstants.SEARCH_TERM_ORDERBY, PubsConstants.SEARCH_TERM_ORDERBY_DIR);
         }
     	return filters;
+    }
+
+    @RequestMapping(value={"/mppublication/{publicationId}"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
+    @ResponseView(IMpView.class)
+    @Transactional
+    public @ResponseBody MpPublication getMpPublication(HttpServletRequest request, HttpServletResponse response,
+                @PathVariable("publicationId") String publicationId) {
+        LOG.debug("getMpPublication");
+        setHeaders(response);
+        Integer id = PubsUtilities.parseInteger(publicationId);
+        MpPublication rtn = new MpPublication();
+        ValidatorResult locked = busService.checkAvailability(id);
+        if (null == locked) {
+	        if (validateParametersSetHeaders(request, response)) {
+	            rtn = busService.getObject(id);
+	        }
+	        if (null == rtn) {
+	        	response.setStatus(HttpStatus.NOT_FOUND.value());
+	        }
+        } else {
+        	rtn.addValidatorResult(locked);
+        	response.setStatus(HttpStatus.CONFLICT.value());
+        }
+        return rtn;
     }
 
     @RequestMapping(value = "mppublications", method = RequestMethod.POST, produces="application/json")
@@ -147,33 +156,73 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         return newPub;
     }
 
-    @RequestMapping(value = "mppublication/{id}", method = RequestMethod.PUT, produces="application/json")
+    @RequestMapping(value = "mppublication/{publicationId}", method = RequestMethod.PUT, produces="application/json")
     @ResponseView(IMpView.class)
     @Transactional
-    public @ResponseBody MpPublication updateMpPublication(@RequestBody MpPublication pub, @PathVariable String id, HttpServletResponse response) {
+    public @ResponseBody MpPublication updateMpPublication(@RequestBody MpPublication pub, @PathVariable String publicationId,
+    		HttpServletResponse response) {
         setHeaders(response);
-        MpPublication updPub = busService.updateObject(pub);
-        if (null != updPub && updPub.getValErrors().isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_OK);
+        Integer id = PubsUtilities.parseInteger(publicationId);
+        MpPublication rtn = pub;
+        ValidatorResult locked = busService.checkAvailability(id);
+        if (null == locked) {
+        	rtn = busService.updateObject(pub);
+            if (null != rtn && rtn.getValErrors().isEmpty()) {
+                response.setStatus(HttpServletResponse.SC_OK);
+            } else {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
         } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        }
-        return updPub;
-    }
-
-    @RequestMapping(value = "mppublications/{id}", method = RequestMethod.DELETE, produces="application/json")
-    @ResponseView(IMpView.class)
-    @Transactional
-    public @ResponseBody ValidationResults deletePub(@PathVariable String id, HttpServletResponse response) {
-        MpPublication pub = new MpPublication();
-        pub.setId(id);
-        ValidationResults rtn = busService.deleteObject(pub);
-        if (null != rtn && rtn.isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_OK);
-        } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        	rtn.addValidatorResult(locked);
+        	response.setStatus(HttpStatus.CONFLICT.value());
         }
         return rtn;
     }
 
+    @RequestMapping(value = "mppublications/{publicationId}", method = RequestMethod.DELETE, produces="application/json")
+    @ResponseView(IMpView.class)
+    @Transactional
+    public @ResponseBody ValidationResults deletePub(@PathVariable String publicationId, HttpServletResponse response) {
+        setHeaders(response);
+        Integer id = PubsUtilities.parseInteger(publicationId);
+        ValidationResults rtn = new ValidationResults();
+        ValidatorResult locked = busService.checkAvailability(id);
+        if (null == locked) {
+	        MpPublication pub = new MpPublication();
+	        pub.setId(id);
+	        rtn = busService.deleteObject(pub);
+	        if (null != rtn && rtn.isEmpty()) {
+	        	response.setStatus(HttpServletResponse.SC_OK);
+	        } else {
+	        	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	        }
+        } else {
+        	rtn.addValidatorResult(locked);
+        	response.setStatus(HttpStatus.CONFLICT.value());
+        }
+        return rtn;
+    }
+
+    @RequestMapping(value = "mppublications/publish", method = RequestMethod.POST, produces="application/json")
+    @ResponseView(IMpView.class)
+	@Transactional
+	public @ResponseBody ValidationResults publishPubs(@RequestParam("publicationId") String publicationId, HttpServletResponse response) {
+        setHeaders(response);
+        Integer id = PubsUtilities.parseInteger(publicationId);
+        ValidationResults rtn = new ValidationResults();
+        ValidatorResult locked = busService.checkAvailability(id);
+        if (null == locked) {
+        	rtn = busService.publish(publicationId);
+	        if (null != rtn && rtn.isEmpty()) {
+	        	response.setStatus(HttpServletResponse.SC_OK);
+	        } else {
+	        	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	        }
+        } else {
+        	rtn.addValidatorResult(locked);
+        	response.setStatus(HttpStatus.CONFLICT.value());
+        }
+        return rtn;
+	}
+	
 }

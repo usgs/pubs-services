@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
 
@@ -55,15 +56,13 @@ public class PubsUtilitiesTest extends BaseSpringTest {
 
     @Test
     public void getUsernameTest() {
-    	assertEquals("Not Authenticated", PubsUtilities.ANONYMOUS_USER, PubsUtilities.getUsername());
+    	assertEquals("Not Authenticated", PubsConstants.ANONYMOUS_USER, PubsUtilities.getUsername());
     	
-    	//TODO What is our real Authentication???				
-//    	buildTestAuthentication("dummy");
-//    	assertEquals("Is Authenticated", "dummy", PubsUtilities.getUsername());
-//    }
-//
-//    public static void buildTestAuthentication(String username) {
-//    	SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(username, "password"));
+    	buildTestAuthentication("dummy", null);
+    	assertEquals("Is Authenticated", "dummy", PubsUtilities.getUsername());
+    	
+    	clearTestAuthentication();
+    	assertEquals("Not Authenticated", PubsConstants.ANONYMOUS_USER, PubsUtilities.getUsername());
     }
 
     @Test

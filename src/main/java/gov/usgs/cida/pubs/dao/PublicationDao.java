@@ -1,12 +1,12 @@
 package gov.usgs.cida.pubs.dao;
 
+import gov.usgs.cida.pubs.aop.ISetDbContext;
+import gov.usgs.cida.pubs.domain.Publication;
+
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.transaction.annotation.Transactional;
-
-import gov.usgs.cida.pubs.aop.ISetDbContext;
-import gov.usgs.cida.pubs.domain.Publication;
 
 /**
  * @author drsteini

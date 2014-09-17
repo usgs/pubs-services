@@ -4,11 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.domain.BaseDomain;
+import gov.usgs.cida.pubs.webservice.security.PubsAuthentication;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +18,11 @@ import java.util.Random;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -54,6 +60,23 @@ public abstract class BaseSpringTest {
     /** Log for errors etc. */
     public static final Log LOG = LogFactory.getLog(BaseSpringTest.class);
 
+    @Before
+    public void setup() {
+    	clearTestAuthentication();
+    }
+    
+    public static void buildTestAuthentication(String username, Collection<? extends GrantedAuthority> inAuthorities) {
+    	if (null == inAuthorities) {
+    		SecurityContextHolder.getContext().setAuthentication(new PubsAuthentication(username, new ArrayList<SimpleGrantedAuthority>()));
+    	} else {
+    		SecurityContextHolder.getContext().setAuthentication(new PubsAuthentication(username, inAuthorities));
+    	}
+    }
+
+    public static void clearTestAuthentication() {
+    	SecurityContextHolder.getContext().setAuthentication(null);
+    }
+    
     public void assertDaoTestResults(final Class<?> inClass, final Object inObject, final Object resultObject) {
         assertDaoTestResults(inClass, inObject, resultObject, null, false, false, false);
     }

@@ -1,9 +1,9 @@
 package gov.usgs.cida.pubs.domain;
 
-import java.io.Serializable;
-
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
+
+import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

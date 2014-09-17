@@ -1,13 +1,13 @@
 package gov.usgs.cida.pubs.validation.mp.unique;
 
+import gov.usgs.cida.pubs.domain.mp.MpListPublication;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import gov.usgs.cida.pubs.domain.mp.MpListPublication;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
-import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

@@ -1,13 +1,13 @@
 package gov.usgs.cida.pubs.webservice.security;
 
 import gov.usgs.cida.auth.client.IAuthClient;
-import gov.usgs.cida.auth.model.AuthToken;
 
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
@@ -21,8 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import javax.servlet.Filter;
 
 public class TokenSecurityFilter implements Filter  {
 	private static final Logger LOG = LoggerFactory.getLogger(TokenSecurityFilter.class);

@@ -109,7 +109,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     
     @JsonProperty("largerWorkSubtype")
     @JsonView(IMpView.class)
-    private PublicationType largerWorkSubtype;
+    private PublicationSubtype largerWorkSubtype;
 
     @JsonProperty("conferenceTitle")
     @JsonView(IMpView.class)
@@ -784,11 +784,11 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 		this.largerWorkTitle = largerWorkTitle;
 	}
 
-	public PublicationType getLargerWorkSubtype() {
+	public PublicationSubtype getLargerWorkSubtype() {
 		return largerWorkSubtype;
 	}
 
-	public void setLargerWorkSubtype(PublicationType largerWorkSubtype) {
+	public void setLargerWorkSubtype(PublicationSubtype largerWorkSubtype) {
 		this.largerWorkSubtype = largerWorkSubtype;
 	}
 	

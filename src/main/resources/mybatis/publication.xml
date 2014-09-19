@@ -51,7 +51,7 @@
         <association property="publicationType" column="publication_type_id" select="publicationType.getById"/>
         <association property="publicationSubtype" column="publication_subtype_id" select="publicationSubtype.getById"/>
         <association property="largerWorkType" column="larger_work_type_id" select="publicationType.getById"/>
-        <association property="largerWorkSubtype" column="larger_work_subtype_id" select="publicationType.getById"/>
+        <association property="largerWorkSubtype" column="larger_work_subtype_id" select="publicationSubtype.getById"/>
         <association property="seriesTitle" column="publication_series_id" select="publicationSeries.getById"/>
 <!--         <association property="contact" column="contact_id" select="contact.getById"/> -->
     </resultMap>

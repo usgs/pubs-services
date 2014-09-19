@@ -253,7 +253,9 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         newPub.setConferenceTitle("A title");
         newPub.setConferenceLocation("a conference location");
         newPub.setLockUsername("lockedBy");
-        newPub.setLargerWorkSubtype(largerWorkType);
+        PublicationSubtype largerWorkSubype = new PublicationSubtype();
+        largerWorkSubype.setId(23);
+        newPub.setLargerWorkSubtype(largerWorkSubype);
         newPub.setScale(100);
         newPub.setProjection("EPSG:3857");
         newPub.setDatum("NAD83");

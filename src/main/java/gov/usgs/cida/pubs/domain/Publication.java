@@ -251,8 +251,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     
     @JsonProperty("scale")
     @JsonView(IMpView.class)
-    @Length(min=0, max=500)
-    private String scale;
+    private Integer scale;
     
     @JsonProperty("projection")
     @JsonView(IMpView.class)
@@ -817,11 +816,11 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 		this.conferenceLocation = conferenceLocation;
 	}
 	
-	public String getScale() {
+	public Integer getScale() {
 		return scale;
 	}
 
-	public void setScale(String scale) {
+	public void setScale(Integer scale) {
 		this.scale = scale;
 	}
 	

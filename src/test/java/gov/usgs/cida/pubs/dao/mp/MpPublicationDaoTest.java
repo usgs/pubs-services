@@ -115,7 +115,7 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals("A free form DATE", pub.getConferenceDate());
         assertEquals("A conference location", pub.getConferenceLocation());
         assertEquals("drsteini", ((MpPublication) pub).getLockUsername());
-        assertEquals("100", pub.getScale());
+        assertEquals(Integer.valueOf(100), pub.getScale());
         assertEquals(23, pub.getLargerWorkSubtype().getId().intValue());
         assertEquals("100", pub.getScale());
         assertEquals("EPSG:3857", pub.getProjection());
@@ -255,7 +255,7 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         newPub.setConferenceLocation("a conference location");
         newPub.setLockUsername("lockedBy");
         newPub.setLargerWorkSubtype(largerWorkType);
-        newPub.setScale("100");
+        newPub.setScale(100);
         newPub.setProjection("EPSG:3857");
         newPub.setDatum("NAD83");
         newPub.setCountry("USA");

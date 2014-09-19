@@ -51,6 +51,15 @@ public class PwPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals("2014-07-23", pub.getTemporalEnd().toString());
         assertEquals("notes", pub.getNotes());
         assertEquals("ipds_id", pub.getIpdsId());
+        assertEquals(Integer.valueOf(100), pub.getScale());
+        assertEquals("EPSG:3857", pub.getProjection());
+        assertEquals("NAD83", pub.getDatum());
+        assertEquals("USA", pub.getCountry());
+        assertEquals("WI", pub.getState());
+        assertEquals("DANE", pub.getCounty());
+        assertEquals("MIDDLETON", pub.getCity());
+        assertEquals("On the moon", pub.getOtherGeospatial());
+        assertEquals("{ \"json\": \"extents\" }", pub.getGeographicExtents());
     }
 
     public static void assertPwPub4Children(Publication<?> pub) {

@@ -39,10 +39,19 @@
         <result property="ipdsId" column="ipds_id"/>
         <result property="updateDate" column="update_date"/>
         <result property="ipdsReviewProcessState" column="ipds_review_process_state"/>
-        <result property="ipdsInternalId" column="ipds_internal_id"/>
+        <result property="scale" column="scale"/>
+        <result property="projection" column="projection"/>
+        <result property="datum" column="datum"/>
+        <result property="country" column="country"/>
+        <result property="state" column="state"/>
+        <result property="county" column="county"/>
+        <result property="city" column="city"/>
+        <result property="otherGeospatial" column="other_geospatial"/>
+        <result property="geographicExtents" column="geographic_extents"/>
         <association property="publicationType" column="publication_type_id" select="publicationType.getById"/>
-        <association property="largerWorkType" column="larger_work_type_id" select="publicationType.getById"/>
         <association property="publicationSubtype" column="publication_subtype_id" select="publicationSubtype.getById"/>
+        <association property="largerWorkType" column="larger_work_type_id" select="publicationType.getById"/>
+        <association property="largerWorkSubtype" column="larger_work_subtype_id" select="publicationType.getById"/>
         <association property="seriesTitle" column="publication_series_id" select="publicationSeries.getById"/>
 <!--         <association property="contact" column="contact_id" select="contact.getById"/> -->
     </resultMap>
@@ -63,6 +72,7 @@
         abstract,
         larger_work_type_id,
         larger_work_title,
+        larger_work_subtype_id,
         conference_title,
         conference_date,
         conference_location,
@@ -87,6 +97,15 @@
         ipds_id,
         ipds_review_process_state,
         ipds_internal_id,
+        scale,
+        projection,
+        datum,
+        country,
+        state,
+        county,
+        city,
+        other_geospatial,
+        geographic_extents,
         <include refid="base.auditCols"/>
     </sql>
 
@@ -106,6 +125,7 @@
         #{docAbstract,jdbcType=CLOB},
         #{largerWorkType.id,jdbcType=NUMERIC},
         #{largerWorkTitle,jdbcType=VARCHAR},
+        #{largerWorkSubtype.id,jdbcType=NUMERIC},
         #{conferenceTitle,jdbcType=VARCHAR},
         #{conferenceDate,jdbcType=VARCHAR},
         #{conferenceLocation,jdbcType=VARCHAR},
@@ -130,6 +150,15 @@
         #{ipdsId,jdbcType=VARCHAR},
         #{ipdsReviewProcessState,jdbcType=VARCHAR},
         #{ipdsInternalId,jdbcType=NUMERIC},
+        #{scale,jdbcType=NUMERIC},
+        #{projection,jdbcType=VARCHAR},
+        #{datum,jdbcType=VARCHAR},
+        #{country,jdbcType=VARCHAR},
+        #{state,jdbcType=VARCHAR},
+        #{county,jdbcType=VARCHAR},
+        #{city,jdbcType=VARCHAR},
+        #{otherGeospatial,jdbcType=VARCHAR},
+        #{geographicExtents,jdbcType=VARCHAR},
         <include refid="base.auditHosts"/>
     </sql>
 
@@ -148,6 +177,7 @@
         abstract = #{docAbstract,jdbcType=CLOB},
         larger_work_type_id = #{largerWorkType.id,jdbcType=NUMERIC},
         larger_work_title = #{largerWorkTitle,jdbcType=VARCHAR},
+        larger_work_subtype_id = #{largerWorkSubtype.id,jdbcType=NUMERIC},
         conference_title = #{conferenceTitle,jdbcType=VARCHAR},
         conference_date = #{conferenceDate,jdbcType=VARCHAR},
         conference_location = #{conferenceLocation,jdbcType=VARCHAR},
@@ -172,6 +202,15 @@
         ipds_id = #{ipdsId,jdbcType=VARCHAR},
         ipds_review_process_state = #{ipdsReviewProcessState,jdbcType=VARCHAR},
         ipds_internal_id = #{ipdsInternalId,jdbcType=NUMERIC},
+        scale = #{scale,jdbcType=NUMERIC},
+        projection = #{projection,jdbcType=VARCHAR},
+        datum = #{datum,jdbcType=VARCHAR},
+        country = #{country,jdbcType=VARCHAR},
+        state = #{state,jdbcType=VARCHAR},
+        county = #{county,jdbcType=VARCHAR},
+        city = #{city,jdbcType=VARCHAR},
+        other_geospatial = #{otherGeospatial,jdbcType=VARCHAR},
+        geographic_extents = #{geographicExtents,jdbcType=VARCHAR},
         <include refid="base.auditSets"/>
     </sql>
     

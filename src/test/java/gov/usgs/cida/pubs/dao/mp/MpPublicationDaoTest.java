@@ -117,7 +117,6 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals("drsteini", ((MpPublication) pub).getLockUsername());
         assertEquals(Integer.valueOf(100), pub.getScale());
         assertEquals(23, pub.getLargerWorkSubtype().getId().intValue());
-        assertEquals("100", pub.getScale());
         assertEquals("EPSG:3857", pub.getProjection());
         assertEquals("NAD83", pub.getDatum());
         assertEquals("USA", pub.getCountry());

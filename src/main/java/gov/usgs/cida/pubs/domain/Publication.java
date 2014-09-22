@@ -106,6 +106,10 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @JsonView(IMpView.class)
     @Length(min=0, max=2000)
     private String largerWorkTitle;
+    
+    @JsonProperty("largerWorkSubtype")
+    @JsonView(IMpView.class)
+    private PublicationSubtype largerWorkSubtype;
 
     @JsonProperty("conferenceTitle")
     @JsonView(IMpView.class)
@@ -244,6 +248,51 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @JsonView(IMpView.class)
     @Valid
     private Collection<PublicationLink<?>> links;
+    
+    @JsonProperty("scale")
+    @JsonView(IMpView.class)
+    @Pattern(regexp=PubsConstants.SPACES_OR_NUMBER_REGEX)
+    private String scale;
+    
+    @JsonProperty("projection")
+    @JsonView(IMpView.class)
+    @Length(min=0, max=500)
+    private String projection;
+    
+    @JsonProperty("datum")
+    @JsonView(IMpView.class)
+    @Length(min=0, max=500)
+    private String datum;
+    
+    @JsonProperty("country")
+    @JsonView(IMpView.class)
+    @Length(min=0, max=500)
+    private String country;
+    
+    @JsonProperty("state")
+    @JsonView(IMpView.class)
+    @Length(min=0, max=500)
+    private String state;
+    
+    @JsonProperty("county")
+    @JsonView(IMpView.class)
+    @Length(min=0, max=500)
+    private String county;
+    
+    @JsonProperty("city")
+    @JsonView(IMpView.class)
+    @Length(min=0, max=500)
+    private String city;
+    
+    @JsonProperty("otherGeospatial")
+    @JsonView(IMpView.class)
+    @Length(min=0, max=500)
+    private String otherGeospatial;
+    
+    @JsonProperty("geographicExtents")
+    @JsonView(IMpView.class)
+    @Length(min=0, max=4000)
+    private String geographicExtents;
 
 /**
      * @return the indexId
@@ -731,11 +780,19 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 	public String getLargerWorkTitle() {
 		return largerWorkTitle;
 	}
-
+	
 	public void setLargerWorkTitle(String largerWorkTitle) {
 		this.largerWorkTitle = largerWorkTitle;
 	}
 
+	public PublicationSubtype getLargerWorkSubtype() {
+		return largerWorkSubtype;
+	}
+
+	public void setLargerWorkSubtype(PublicationSubtype largerWorkSubtype) {
+		this.largerWorkSubtype = largerWorkSubtype;
+	}
+	
 	public String getConferenceTitle() {
 		return conferenceTitle;
 	}
@@ -758,6 +815,78 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
 	public void setConferenceLocation(String conferenceLocation) {
 		this.conferenceLocation = conferenceLocation;
+	}
+	
+	public String getScale() {
+		return scale;
+	}
+
+	public void setScale(String scale) {
+		this.scale = scale;
+	}
+	
+	public String getProjection() {
+		return projection;
+	}
+
+	public void setProjection(String projection) {
+		this.projection = projection;
+	}
+	
+	public String getDatum() {
+		return datum;
+	}
+
+	public void setDatum(String datum) {
+		this.datum = datum;
+	}
+	
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+	
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+	
+	public String getCounty() {
+		return county;
+	}
+
+	public void setCounty(String county) {
+		this.county = county;
+	}
+	
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+	
+	public String getOtherGeospatial() {
+		return otherGeospatial;
+	}
+
+	public void setOtherGeospatial(String otherGeospatial) {
+		this.otherGeospatial = otherGeospatial;
+	}
+	
+	public String getGeographicExtents() {
+		return geographicExtents;
+	}
+
+	public void setGeographicExtents(String geographicExtents) {
+		this.geographicExtents = geographicExtents;
 	}
 	
     @JsonProperty("lastModifiedDate")

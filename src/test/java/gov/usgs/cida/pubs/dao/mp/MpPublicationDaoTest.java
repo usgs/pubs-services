@@ -120,6 +120,16 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals("A free form DATE", pub.getConferenceDate());
         assertEquals("A conference location", pub.getConferenceLocation());
         assertEquals("drsteini", ((MpPublication) pub).getLockUsername());
+        assertEquals("100", pub.getScale());
+        assertEquals(23, pub.getLargerWorkSubtype().getId().intValue());
+        assertEquals("EPSG:3857", pub.getProjection());
+        assertEquals("NAD83", pub.getDatum());
+        assertEquals("USA", pub.getCountry());
+        assertEquals("WI", pub.getState());
+        assertEquals("DANE", pub.getCounty());
+        assertEquals("MIDDLETON", pub.getCity());
+        assertEquals("On the moon", pub.getOtherGeospatial());
+        assertEquals("{ \"json\": \"extents\" }", pub.getGeographicExtents());
     }
 
     public static void assertMpPub1Children(Publication<?> pub) {
@@ -170,6 +180,17 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertNull(pub.getConferenceTitle());
         assertNull(pub.getConferenceDate());
         assertNull(pub.getPublicationYear());
+
+        assertNull(pub.getScale());
+        assertNull(pub.getProjection());
+        assertNull(pub.getDatum());
+        assertNull(pub.getCountry());
+        assertNull(pub.getState());
+        assertNull(pub.getCounty());
+        assertNull(pub.getCity());
+        assertNull(pub.getOtherGeospatial());
+        assertNull(pub.getGeographicExtents());
+        
         if (pub instanceof MpPublication) {
         	String lockUserName = ((MpPublication) pub).getLockUsername();
         	if (null != lockUserName) {
@@ -237,6 +258,18 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         newPub.setConferenceTitle("A title");
         newPub.setConferenceLocation("a conference location");
         newPub.setLockUsername("lockedBy");
+        PublicationSubtype largerWorkSubype = new PublicationSubtype();
+        largerWorkSubype.setId(23);
+        newPub.setLargerWorkSubtype(largerWorkSubype);
+        newPub.setScale("100");
+        newPub.setProjection("EPSG:3857");
+        newPub.setDatum("NAD83");
+        newPub.setCountry("USA");
+        newPub.setState("WI");
+        newPub.setCounty("DANE");
+        newPub.setCity("MIDDLETON");
+        newPub.setOtherGeospatial("On the moon");
+        newPub.setGeographicExtents("{ \"json\": \"extents\" }");
         MpPublication.getDao().add(newPub);
         return newPub;
     }

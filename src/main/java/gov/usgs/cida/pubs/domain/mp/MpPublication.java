@@ -18,11 +18,12 @@ import com.fasterxml.jackson.annotation.JsonView;
  *
  */
 @JsonPropertyOrder({"id", "indexID", "displayToPublicDate", "lastModifiedDate", "publicationType", "publicationSubtype",
-	"largerWorkType", "largerWorkTitle", "seriesTitle", "costCenters", "subseriesTitle", "seriesNumber", "chapter",
+	"largerWorkType", "largerWorkTitle", "largerWorkSubtype", "seriesTitle", "costCenters", "subseriesTitle", "seriesNumber", "chapter",
 	"subchapterNumber", "title", "docAbstract", "usgsCitation", "collaboration", "language", "publisher", "publisherLocation",
 	"publicationYear", "conferenceTitle", "conferenceDate", "conferenceLocation", "doi", "issn", "isbn", "ipdsId",
 	"productDescription", "startPage", "endPage", "numberOfPages", "onlineOnly", "additionalOnlineFiles", "temporalStart", 
 	"temporalEnd", "notes", "ipdsReviewProcessState", "ipdsInternalId", "lockUsername","authors", "editors", "links", "contact", 
+	"scale", "projection", "datum", "country", "state", "county","city", "otherGeospatial", "geographicExtents",
     "validationErrors"})
 public class MpPublication extends Publication<MpPublication> {
 

@@ -28,7 +28,7 @@
     </category>
 
     <category name="org.mybatis">
-        <level value="DEBUG"/>
+        <level value="info"/>
     </category>
 
     <category name="org.apache.activemq">
@@ -36,15 +36,15 @@
     </category>
 
     <category name="org.apache.ibatis">
-        <level value="DEBUG"/>
+        <level value="info"/>
     </category>
 
     <category name="java.sql">
-        <level value="DEBUG"/> 
+        <level value="info"/> 
     </category>
 
     <root>
-        <level value="DEBUG"/>
+        <level value="info"/>
         <appender-ref ref="myconsole" />
         <appender-ref ref="appLog" />
     </root>

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
 import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
@@ -156,7 +157,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
         assertNotNull(outPublication);
         assertNotNull(outPublication.getId());
         assertEquals("sirnumber", outPublication.getIndexId());
-        assertEquals(MpPublicationBusService.DOI_PREFIX + "/" + outPublication.getIndexId(), outPublication.getDoi());
+        assertEquals(PubsConstants.DOI_PREFIX + "/" + outPublication.getIndexId(), outPublication.getDoi());
 
         inPublication = new MpPublication();
         inPublication.setSeriesNumber("nu-m,be r");
@@ -185,7 +186,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
         assertNotNull(outPublication);
         assertNotNull(outPublication.getId());
         assertEquals(outPublication.getId().toString(), outPublication.getIndexId());
-        assertEquals(MpPublicationBusService.DOI_PREFIX + "/" + outPublication.getIndexId(), outPublication.getDoi());
+        assertEquals(PubsConstants.DOI_PREFIX + "/" + outPublication.getIndexId(), outPublication.getDoi());
 
     }
 
@@ -212,7 +213,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     public void doiNameTest() {
         assertNull(MpPublicationBusService.getDoiName(null));
         assertNull(MpPublicationBusService.getDoiName(""));
-        assertEquals(MpPublicationBusService.DOI_PREFIX + "/abc", MpPublicationBusService.getDoiName("abc"));
+        assertEquals(PubsConstants.DOI_PREFIX + "/abc", MpPublicationBusService.getDoiName("abc"));
     }
 
     @Test
@@ -340,6 +341,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
         MpPublication mpPub2after = MpPublication.getDao().getById(2);
         MpPublicationDaoTest.assertMpPub2(mpPub2after);
         MpPublicationDaoTest.assertMpPub2Children(mpPub2after);
+        assertEquals(PubsConstants.ANONYMOUS_USER, mpPub2after.getLockUsername());
 
         //This one is in PW, not MP and should be moved
         MpPublication mpPub4before = MpPublication.getDao().getById(4);
@@ -348,6 +350,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
         MpPublication mpPub4after = MpPublication.getDao().getById(4);
         PwPublicationDaoTest.assertPwPub4(mpPub4after);
         PwPublicationDaoTest.assertPwPub4Children(mpPub4after);
+        assertEquals(PubsConstants.ANONYMOUS_USER, mpPub4after.getLockUsername());
     }
 
     @Test
@@ -373,7 +376,45 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	assertNull("drsteini", busService.checkAvailability(1));
     }
 
-    //TODO@Test
+    @Test
+    public void releaseLocksUserTest() {
+    	MpPublication mpPub = MpPublicationDaoTest.addAPub(MpPublication.getDao().getNewProdId());
+    	busService.releaseLocksUser(PubsConstants.ANONYMOUS_USER);
+    	mpPub = MpPublication.getDao().getById(mpPub.getId());
+    	assertNull(mpPub.getLockUsername());
+    	
+    	//this one was also anonymous
+    	mpPub = MpPublication.getDao().getById(2);
+    	assertNull(mpPub.getLockUsername());
+    	
+    	//this should still be locked
+    	mpPub = MpPublication.getDao().getById(1);
+    	assertEquals("drsteini", mpPub.getLockUsername());
+
+    	busService.releaseLocksUser("drsteini");
+    	mpPub = MpPublication.getDao().getById(1);
+    	assertNull(mpPub.getLockUsername());
+    }
+    
+    @Test
+    public void releaseLocksPubTest() {
+    	MpPublication mpPub = MpPublicationDaoTest.addAPub(MpPublication.getDao().getNewProdId());
+    	busService.releaseLocksPub(mpPub.getId());
+    	mpPub = MpPublication.getDao().getById(mpPub.getId());
+    	assertNull(mpPub.getLockUsername());
+    	
+    	mpPub = MpPublication.getDao().getById(2);
+    	assertEquals(PubsConstants.ANONYMOUS_USER,mpPub.getLockUsername());
+    	
+    	mpPub = MpPublication.getDao().getById(1);
+    	assertEquals("drsteini", mpPub.getLockUsername());
+
+    	busService.releaseLocksPub(1);
+    	mpPub = MpPublication.getDao().getById(1);
+    	assertNull(mpPub.getLockUsername());
+    }
+
+	//TODO@Test
     public void setListTest() {
 //    	void setList(MpPublication inPublication) {
 //    	    if (null != inPublication.getIpdsId() 

@@ -11,9 +11,21 @@ public interface IMpPublicationDao extends IMpDao<MpPublication>{
     Integer getNewProdId();
 
     /**
+     * Lock a publication by the username.
+     * @param domainId - id of the pub to lock.
+     */
+    void lockPub(Integer domainId);
+
+    /**
      * Release all publication locks held by the username.
      * @param lockUsername for which to remove locks.
      */
-    void releaseLocks(String lockUsername);
+    void releaseLocksUser(String lockUsername);
+
+    /**
+     * Release publication lock.
+     * @param domainId for which to remove lock.
+     */
+    void releaseLocksPub(Integer domainId);
 
 }

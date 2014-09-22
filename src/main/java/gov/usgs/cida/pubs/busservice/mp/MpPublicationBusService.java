@@ -343,6 +343,8 @@ public class MpPublicationBusService extends BusService<MpPublication> implement
                     MpPublicationLink.getDao().copyFromPw(publicationId);
                     MpPublicationContributor.getDao().copyFromPw(publicationId);
                 }
+            } else if (StringUtils.isEmpty(mpPub.getLockUsername())){
+            	MpPublication.getDao().lockPub(publicationId);
             }
         }
     }
@@ -442,7 +444,12 @@ public class MpPublicationBusService extends BusService<MpPublication> implement
 	}
 
 	@Override
-	public void releaseLocks(String lockUsername) {
-		MpPublication.getDao().releaseLocks(lockUsername);
+	public void releaseLocksUser(String lockUsername) {
+		MpPublication.getDao().releaseLocksUser(lockUsername);
+	}
+
+	@Override
+	public void releaseLocksPub(Integer publicationId) {
+		MpPublication.getDao().releaseLocksPub(publicationId);
 	}
 }

@@ -17,6 +17,10 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
 
     private static final String NS = "mpPublication";
     public static final String GET_NEW_ID = ".getNewProdId";
+    public static final String LOCK_PUB = ".locPub";
+    public static final String RELEASE_LOCKS = ".releaseLocks";
+    public static final String RELEASE_LOCKS_USER = RELEASE_LOCKS + "User";
+    public static final String RELEASE_LOCKS_PUB = RELEASE_LOCKS + "Pub";
 
    /**
      * {@inheritDoc}
@@ -98,8 +102,8 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
     @Transactional
     @ISetDbContext
     @Override
-    public void copyFromPw(Integer prodID) {
-        getSqlSession().insert(NS + COPY_FROM_PW, prodID);
+    public void copyFromPw(Integer domainID) {
+        getSqlSession().insert(NS + COPY_FROM_PW, domainID);
     }
 
     /** {@inheritDoc}
@@ -108,8 +112,8 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
     @Transactional
     @ISetDbContext
     @Override
-    public void publishToPw(Integer prodID) {
-        getSqlSession().update(NS + PUBLISH, prodID);
+    public void publishToPw(Integer domainID) {
+        getSqlSession().update(NS + PUBLISH, domainID);
     }
 
     /**
@@ -122,5 +126,26 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
     public Integer getNewProdId() {
         return getSqlSession().selectOne(NS + GET_NEW_ID);
     }
+
+    @Transactional
+    @ISetDbContext
+	@Override
+	public void lockPub(Integer domainId) {
+    	getSqlSession().update(NS + LOCK_PUB, domainId);
+	}
+
+    @Transactional
+    @ISetDbContext
+	@Override
+	public void releaseLocksUser(String lockUsername) {
+    	getSqlSession().update(NS + RELEASE_LOCKS_USER, lockUsername);
+	}
+
+    @Transactional
+    @ISetDbContext
+	@Override
+	public void releaseLocksPub(Integer domainID) {
+    	getSqlSession().update(NS + RELEASE_LOCKS_PUB, domainID);
+	}
 
 }

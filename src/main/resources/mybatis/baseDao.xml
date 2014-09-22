@@ -10,8 +10,12 @@
         <result property="updateUsername" column="update_username"/>
     </resultMap>
 
+	<sql id="clientId">
+		sys_context( 'userenv', 'client_identifier')
+	</sql>
+	
     <select id="getClientId" resultType="String" useCache="false" >
-        select sys_context( 'userenv', 'client_identifier' )
+        select <include refid="clientId"/>
           from dual
     </select>
 

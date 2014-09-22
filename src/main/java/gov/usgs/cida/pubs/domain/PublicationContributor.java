@@ -23,7 +23,7 @@ public class PublicationContributor<D> extends BaseDomain<D> implements Serializ
 
     @JsonProperty("contributorType")
     @JsonView(IMpView.class)
-    @NotNull
+  //TODO Activate this once we can populate from front-end    @NotNull
     private ContributorType contributorType;
 
     @JsonProperty("rank")

@@ -68,8 +68,54 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         MpPublication.getDao().copyFromPw(4);
         Publication<MpPublication> mpPub = MpPublication.getDao().getById(4);
         PwPublicationDaoTest.assertPwPub4(mpPub);
+        assertEquals(PubsConstants.ANONYMOUS_USER, ((MpPublication) mpPub).getLockUsername());
     }
 
+    @Test
+    public void lockPubTest() {
+    	MpPublication.getDao().lockPub(3);
+    	MpPublication mpPub = MpPublication.getDao().getById(3);
+    	assertEquals(PubsConstants.ANONYMOUS_USER, mpPub.getLockUsername());
+    }
+    
+    @Test
+    public void releaseLocksUserTest() {
+    	MpPublication mpPub = addAPub(MpPublication.getDao().getNewProdId());
+    	MpPublication.getDao().releaseLocksUser(PubsConstants.ANONYMOUS_USER);
+    	mpPub = MpPublication.getDao().getById(mpPub.getId());
+    	assertNull(mpPub.getLockUsername());
+    	
+    	//this one was also anonymous
+    	mpPub = MpPublication.getDao().getById(2);
+    	assertNull(mpPub.getLockUsername());
+    	
+    	//this should still be locked
+    	mpPub = MpPublication.getDao().getById(1);
+    	assertEquals("drsteini", mpPub.getLockUsername());
+
+    	MpPublication.getDao().releaseLocksUser("drsteini");
+    	mpPub = MpPublication.getDao().getById(1);
+    	assertNull(mpPub.getLockUsername());
+    }
+    
+    @Test
+    public void releaseLocksPubTest() {
+    	MpPublication mpPub = addAPub(MpPublication.getDao().getNewProdId());
+    	MpPublication.getDao().releaseLocksPub(mpPub.getId());
+    	mpPub = MpPublication.getDao().getById(mpPub.getId());
+    	assertNull(mpPub.getLockUsername());
+    	
+    	mpPub = MpPublication.getDao().getById(2);
+    	assertEquals(PubsConstants.ANONYMOUS_USER,mpPub.getLockUsername());
+    	
+    	mpPub = MpPublication.getDao().getById(1);
+    	assertEquals("drsteini", mpPub.getLockUsername());
+
+    	MpPublication.getDao().releaseLocksPub(1);
+    	mpPub = MpPublication.getDao().getById(1);
+    	assertNull(mpPub.getLockUsername());
+    }
+    
     //TODO the following tests...
     //publishToPw(Integer prodID)
 
@@ -252,7 +298,7 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         newPub.setConferenceDate("a new free form date");
         newPub.setConferenceTitle("A title");
         newPub.setConferenceLocation("a conference location");
-        newPub.setLockUsername("lockedBy");
+        newPub.setLockUsername(PubsConstants.ANONYMOUS_USER);
         PublicationSubtype largerWorkSubype = new PublicationSubtype();
         largerWorkSubype.setId(23);
         newPub.setLargerWorkSubtype(largerWorkSubype);

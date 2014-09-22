@@ -36,8 +36,8 @@
     </insert>
 
     <insert id="copyMpFromPw" parameterType="Integer">
-        insert into mp_publication (<include refid="publication.cols"/>)
-            (select <include refid="publication.cols"/>
+        insert into mp_publication (<include refid="cols"/>)
+            (select <include refid="publication.cols"/>, <include refid="base.clientId"/>
                from publication
               where publication_id = #{value,jdbcType=NUMERIC})
     </insert>
@@ -70,6 +70,27 @@
         update mp_publication
            set <include refid="sets"/>
            where publication_id = #{id,jdbcType=NUMERIC}
+    </update>
+
+    <update id="locPub" parameterType="Integer">
+    	update mp_publication
+           set lock_username = <include refid="base.clientId"/>
+         where publication_id = #{value,jdbcType=NUMERIC}
+    </update>
+
+    <sql id="releaseLocks">
+        update mp_publication
+           set lock_username = null
+    </sql>
+
+    <update id="releaseLocksUser" parameterType="String">
+        <include refid="releaseLocks"/>
+           where lock_username = #{value,jdbcType=VARCHAR}
+    </update>
+
+    <update id="releaseLocksPub" parameterType="Integer">
+        <include refid="releaseLocks"/>
+           where publication_id = #{value,jdbcType=NUMERIC}
     </update>
 
     <update id="publish" parameterType="Integer">

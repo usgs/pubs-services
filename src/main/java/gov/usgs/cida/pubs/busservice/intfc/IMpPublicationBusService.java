@@ -24,4 +24,16 @@ public interface IMpPublicationBusService extends IBusService<MpPublication> {
      */
     ValidationResults publish(String publicationId);
 
+    /**
+     * Release all publication locks held by the username.
+     * @param lockUsername for which to remove locks.
+     */
+    void releaseLocksUser(String lockUsername);
+
+    /**
+     * Release the publication lock.
+     * @param publicationId of the pub to unlock.
+     */
+    void releaseLocksPub(Integer publicationId);
+
 }

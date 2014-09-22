@@ -206,7 +206,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     @RequestMapping(value = "mppublications/publish", method = RequestMethod.POST, produces="application/json")
     @ResponseView(IMpView.class)
 	@Transactional
-	public @ResponseBody ValidationResults publishPubs(@RequestParam("publicationId") String publicationId, HttpServletResponse response) {
+	public @ResponseBody ValidationResults publishPub(@RequestParam("publicationId") String publicationId, HttpServletResponse response) {
         setHeaders(response);
         Integer id = PubsUtilities.parseInteger(publicationId);
         ValidationResults rtn = new ValidationResults();
@@ -218,6 +218,24 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 	        } else {
 	        	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 	        }
+        } else {
+        	rtn.addValidatorResult(locked);
+        	response.setStatus(HttpStatus.CONFLICT.value());
+        }
+        return rtn;
+	}
+	
+
+    @RequestMapping(value = "mppublications/release", method = RequestMethod.POST, produces="application/json")
+    @ResponseView(IMpView.class)
+	@Transactional
+	public @ResponseBody ValidationResults releasePub(@RequestParam("publicationId") String publicationId, HttpServletResponse response) {
+        setHeaders(response);
+        Integer id = PubsUtilities.parseInteger(publicationId);
+        ValidationResults rtn = new ValidationResults();
+        ValidatorResult locked = busService.checkAvailability(id);
+        if (null == locked) {
+        	response.setStatus(HttpServletResponse.SC_OK);
         } else {
         	rtn.addValidatorResult(locked);
         	response.setStatus(HttpStatus.CONFLICT.value());

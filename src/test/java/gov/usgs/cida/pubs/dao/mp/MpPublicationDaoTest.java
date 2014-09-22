@@ -70,6 +70,11 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         PwPublicationDaoTest.assertPwPub4(mpPub);
     }
 
+    @Test
+    public void releaseLocksTest() {
+    	assertfail("implement");
+    }
+    
     //TODO the following tests...
     //publishToPw(Integer prodID)
 

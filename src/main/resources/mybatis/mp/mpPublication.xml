@@ -72,6 +72,12 @@
            where publication_id = #{id,jdbcType=NUMERIC}
     </update>
 
+    <update id="releaseLocks" parameterType="String">
+        update mp_publication
+           set lock_username = null
+           where lock_username = #{value,jdbcType=VARCHAR}
+    </update>
+
     <update id="publish" parameterType="Integer">
 <!--         merge into pw_publication pw -->
 <!--             using (select mp_newpubs.*, -->

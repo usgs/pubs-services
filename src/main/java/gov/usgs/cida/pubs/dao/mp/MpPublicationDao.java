@@ -17,6 +17,7 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
 
     private static final String NS = "mpPublication";
     public static final String GET_NEW_ID = ".getNewProdId";
+    public static final String RELEASE_LOCKS = ".releaseLocks";
 
    /**
      * {@inheritDoc}
@@ -122,5 +123,12 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
     public Integer getNewProdId() {
         return getSqlSession().selectOne(NS + GET_NEW_ID);
     }
+
+    @Transactional
+    @ISetDbContext
+	@Override
+	public void releaseLocks(String lockUsername) {
+    	getSqlSession().update(NS + RELEASE_LOCKS, lockUsername);
+	}
 
 }

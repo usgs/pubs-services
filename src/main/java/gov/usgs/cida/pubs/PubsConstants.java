@@ -17,6 +17,10 @@ public final class PubsConstants {
     public static final String SEARCH_TERM_ORDERBY = "publication_year";
     public static final String SEARCH_TERM_ORDERBY_DIR = "DESC";
 
+    public static final String DOI_PREFIX = "10.3133";
+
+    public static final Integer DEFAULT_LOCK_TIMEOUT_HOURS = 3;
+
     private PubsConstants() {
     };
 

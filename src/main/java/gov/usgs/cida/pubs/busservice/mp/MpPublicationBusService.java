@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.busservice.mp;
 
+import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.BusService;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
@@ -48,10 +49,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class MpPublicationBusService extends BusService<MpPublication> implements IMpPublicationBusService {
 
-    public static final String DOI_PREFIX = "10.3133";
-
     //This can/should be overridden from JNDI. 
-    protected Integer lockTimeoutHours = 3;
+    protected Integer lockTimeoutHours = PubsConstants.DEFAULT_LOCK_TIMEOUT_HOURS;
 
     private final ICrossRefBusService crossRefBusService;
 
@@ -233,7 +232,7 @@ public class MpPublicationBusService extends BusService<MpPublication> implement
     public static String getDoiName(final String inIndexId) {
         String rtn = null;
         if (null != inIndexId && 0 < inIndexId.length()) {
-            rtn = DOI_PREFIX + "/" + inIndexId;
+            rtn = PubsConstants.DOI_PREFIX + "/" + inIndexId;
         }
         return rtn;
     }
@@ -440,5 +439,10 @@ public class MpPublicationBusService extends BusService<MpPublication> implement
 			return new ValidatorResult("Publication", "This Publication is being edited by " + mpPub.getLockUsername(),
 					"fatal", mpPub.getLockUsername());
 		}
+	}
+
+	@Override
+	public void releaseLocks(String lockUsername) {
+		MpPublication.getDao().releaseLocks(lockUsername);
 	}
 }

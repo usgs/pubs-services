@@ -1,6 +1,7 @@
 package gov.usgs.cida.pubs.utility;
 
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
 
@@ -40,19 +41,6 @@ public final class PubsUtilities {
         return true;
     }
 
-    /** 
-     * Utility method to scan a string array an turn all non-Integer values into -1
-     * @param inStringArray .
-     * @return .
-     */
-    public static Integer[] cleanStringArray(final String[] inStringArray) {
-        Integer[] outIntegerArray = new Integer[inStringArray.length];
-        for (int i=0; i<inStringArray.length; i++) {
-            outIntegerArray[i] = isInteger(inStringArray[i]) ? Integer.parseInt(inStringArray[i]) : -1;
-        }
-        return outIntegerArray;
-    }
-
     public static String getUsername() {
 	    String username = PubsConstants.ANONYMOUS_USER;
 	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -67,10 +55,6 @@ public final class PubsUtilities {
 
     public static Integer parseInteger(final String intString) {
         return isInteger(intString) ? Integer.parseInt(intString) : null;
-    }
-
-    public static String parseString(final String inString) {
-        return null == inString ? null : 0 == inString.trim().length() ? null : inString.trim();
     }
 
     public static String buildErrorMsg(final String messageName, final Object[] messageArguments) {
@@ -123,4 +107,14 @@ public final class PubsUtilities {
         }
         return rtn;
     }
+    
+    public static boolean isSpnProduction(final String ipdsReviewProcessState) {
+        boolean rtn = false;
+        if (StringUtils.isNotEmpty(ipdsReviewProcessState)
+        		&& ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(ipdsReviewProcessState)) {
+        	rtn = true;
+        }
+        return rtn;
+    }
+    
 }

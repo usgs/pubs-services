@@ -22,7 +22,7 @@ public interface IMpPublicationBusService extends IBusService<MpPublication> {
      * @param publicationId to publish.
      * @return any validation errors that may have prevented the publishing of this citation
      */
-    ValidationResults publish(String publicationId);
+    ValidationResults publish(Integer publicationId);
 
     /**
      * Release all publication locks held by the username.

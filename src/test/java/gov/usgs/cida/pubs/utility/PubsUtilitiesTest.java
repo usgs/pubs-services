@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
 
@@ -52,6 +53,16 @@ public class PubsUtilitiesTest extends BaseSpringTest {
         assertFalse(PubsUtilities.isPublicationTypeArticle(pubType));
         pubType.setId(PublicationType.ARTICLE);
         assertTrue(PubsUtilities.isPublicationTypeArticle(pubType));
+    }
+
+    @Test
+    public void isSpnProductionTest() {
+        assertFalse(PubsUtilities.isSpnProduction(null));
+        assertFalse(PubsUtilities.isSpnProduction(""));
+        assertFalse(PubsUtilities.isSpnProduction(" "));
+        assertFalse(PubsUtilities.isSpnProduction("xyz"));
+        assertTrue(PubsUtilities.isSpnProduction(ProcessType.SPN_PRODUCTION.getIpdsValue()));
+        assertFalse(PubsUtilities.isSpnProduction(ProcessType.SPN_PRODUCTION.getIpdsValueEncoded()));
     }
 
     @Test

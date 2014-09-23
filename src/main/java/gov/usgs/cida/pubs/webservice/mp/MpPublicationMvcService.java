@@ -212,7 +212,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         ValidationResults rtn = new ValidationResults();
         ValidatorResult locked = busService.checkAvailability(id);
         if (null == locked) {
-        	rtn = busService.publish(publicationId);
+        	rtn = busService.publish(id);
 	        if (null != rtn && rtn.isEmpty()) {
 	        	response.setStatus(HttpServletResponse.SC_OK);
 	        } else {

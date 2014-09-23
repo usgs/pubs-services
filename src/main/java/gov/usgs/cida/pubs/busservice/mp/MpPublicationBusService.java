@@ -7,12 +7,10 @@ import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.LinkType;
-import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
-import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 import gov.usgs.cida.pubs.domain.mp.MpListPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
@@ -153,6 +151,7 @@ public class MpPublicationBusService extends BusService<MpPublication> implement
                 if (!validations.isEmpty()) {
                     pub.setValidationErrors(validations);
                 } else {
+                	MpPublicationLink.getDao().deleteByParent(object.getId());
                     MpPublicationContributor.getDao().deleteByParent(object.getId());
                     MpPublicationCostCenter.getDao().deleteByParent(object.getId());
                     MpPublicationLink.getDao().deleteByParent(object.getId());
@@ -277,49 +276,29 @@ public class MpPublicationBusService extends BusService<MpPublication> implement
      */
     @Override
     @Transactional
-    public ValidationResults publish(final String publicationId) {
-        //TODO reactivate when implementing the new publish routine.
-        ValidationResults validationResults = new ValidationResults();
+    public ValidationResults publish(final Integer publicationId) {
+    	ValidationResults validationResults = new ValidationResults();
         //One last guarantee that all of the warehouse data is covered in mp
-        beginPublicationEdit(PubsUtilities.parseInteger(publicationId));
+        beginPublicationEdit(publicationId);
         MpPublication mpPub = MpPublication.getDao().getById(publicationId);
 
         Set<ConstraintViolation<MpPublication>> validations = validator.validate(mpPub, Default.class, PublishChecks.class);
-        if ( validations.isEmpty() ) {
-        	//TODO Supersedes logic
-//            Map<String, Object> filters = new HashMap<String, Object>();
-//            filters.put("prodId", prodId);
-//            List<MpSupersedeRel> supers = MpSupersedeRel.getDao().getByMap(filters);
-//            for (MpSupersedeRel mpSuper : supers) {
-//                mpSuper.setValidationErrors(validator.validate(mpSuper));
-//                validationResults.addValidationResults(mpSuper.getValidationErrors());
-//            }
-
+        if (validations.isEmpty()) {
             defaultThumbnail(mpPub);
-//
-//            List<MpLinkDim> links = MpLinkDim.getDao().getByMap(filters);
-//            for (MpLinkDim link : links) {
-//                if (null != link.getLink() && !link.getLink().contains(LinkDim.DOI_LINK_SITE)) {
-//                    //Skip validating the DOI link.
-//                    link.setValidationErrors(validator.validate(link));
-//                    validationResults.addValidationResults(link.getValidationErrors());
-//                }
-//            }
-//        } else {
-//            mpPub.setValidationErrors(validations);
-//            validationResults.addValidationResults(mpPub.getValidationErrors());
-//        }
-//
-//        if (validationResults.isEmpty()) {
-//            MpPublication.getDao().publishToPw(prodId);
-//            MpSupersedeRel.getDao().publishToPw(prodId);
-//            MpLinkDim.getDao().publishToPw(prodId);
+
+            MpPublication.getDao().publishToPw(publicationId);
+            MpPublicationCostCenter.getDao().publishToPw(publicationId);
+            MpPublicationLink.getDao().publishToPw(publicationId);
+            MpPublicationContributor.getDao().publishToPw(publicationId);
             if ((PubsUtilities.isUsgsNumberedSeries(mpPub.getPublicationSubtype())
                     || PubsUtilities.isUsgsUnnumberedSeries(mpPub.getPublicationSubtype()))
                     && (null != mpPub.getDoi() && StringUtils.isNotEmpty(mpPub.getDoi()))) {
                 crossRefBusService.submitCrossRef(mpPub);
             }
             deleteObject(mpPub);
+        } else {
+            mpPub.setValidationErrors(validations);
+            validationResults.addValidationResults(mpPub.getValidationErrors());
         }
 
         return validationResults;
@@ -343,7 +322,7 @@ public class MpPublicationBusService extends BusService<MpPublication> implement
                     MpPublicationLink.getDao().copyFromPw(publicationId);
                     MpPublicationContributor.getDao().copyFromPw(publicationId);
                 }
-            } else if (StringUtils.isEmpty(mpPub.getLockUsername())){
+            } else {
             	MpPublication.getDao().lockPub(publicationId);
             }
         }
@@ -353,43 +332,42 @@ public class MpPublicationBusService extends BusService<MpPublication> implement
      * For publicationLink, on publish, we create a placeholder thumbnail link if none already exist.
      */
     protected void defaultThumbnail(final MpPublication mpPub) {
-        Map<String, Object> filters = new HashMap<String, Object>();
-        filters.put("linkTypeId", LinkType.THUMBNAIL);
-        filters.put("publicationId", mpPub.getId());
-        List<MpPublicationLink> thumbnails = MpPublicationLink.getDao().getByMap(filters);
-        if (0 == thumbnails.size()) {
-        	MpPublicationLink thumbnail = new MpPublicationLink();
-            thumbnail.setPublicationId(mpPub.getId());
-            thumbnail.setLinkType(LinkType.getDao().getById(LinkType.THUMBNAIL.toString()));
-            if (PubsUtilities.isUsgsNumberedSeries(mpPub.getPublicationSubtype())
-            		|| PubsUtilities.isUsgsUnnumberedSeries(mpPub.getPublicationSubtype())) {
-                thumbnail.setUrl(MpPublicationLink.USGS_THUMBNAIL);
-            } else {
-                thumbnail.setUrl(MpPublicationLink.EXTERNAL_THUMBNAIL);
-            }
-            MpPublicationLink.getDao().add(thumbnail);
-        }
+    	if (null != mpPub && null != mpPub.getId()) {
+	        Map<String, Object> filters = new HashMap<String, Object>();
+	        filters.put("linkTypeId", LinkType.THUMBNAIL);
+	        filters.put("publicationId", mpPub.getId());
+	        List<MpPublicationLink> thumbnails = MpPublicationLink.getDao().getByMap(filters);
+	        if (0 == thumbnails.size()) {
+	        	MpPublicationLink thumbnail = new MpPublicationLink();
+	            thumbnail.setPublicationId(mpPub.getId());
+	            thumbnail.setLinkType(LinkType.getDao().getById(LinkType.THUMBNAIL.toString()));
+	            if (PubsUtilities.isUsgsNumberedSeries(mpPub.getPublicationSubtype())
+	            		|| PubsUtilities.isUsgsUnnumberedSeries(mpPub.getPublicationSubtype())) {
+	                thumbnail.setUrl(MpPublicationLink.USGS_THUMBNAIL);
+	            } else {
+	                thumbnail.setUrl(MpPublicationLink.EXTERNAL_THUMBNAIL);
+	            }
+	            MpPublicationLink.getDao().add(thumbnail);
+	        }
+    	}
     }
 
     protected void setList(MpPublication inPublication) {
-	    if (null != inPublication.getIpdsId() 
+	    if (null != inPublication && null != inPublication.getIpdsId() && null != inPublication.getId()
 	            && null == PwPublication.getDao().getById(inPublication.getId()) ) {
 	        MpListPublication newListEntry = new MpListPublication();
 	        newListEntry.setMpPublication(inPublication);
-	        if (null != inPublication.getPublicationType()
-	        		&& PublicationType.ARTICLE.equals(inPublication.getPublicationType().getId())) {
+	        if (PubsUtilities.isPublicationTypeArticle(inPublication.getPublicationType())) {
 	            newListEntry.setMpList(MpList.getDao().getById(MpList.IPDS_JOURNAL_ARTICLES));
 	        } else {
 	            if (PubsUtilities.isUsgsNumberedSeries(inPublication.getPublicationSubtype())) {
-	                if (null != inPublication.getIpdsReviewProcessState() &&
-	                        ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(inPublication.getIpdsReviewProcessState())) {
+	                if (PubsUtilities.isSpnProduction(inPublication.getIpdsReviewProcessState())) {
 	                    newListEntry.setMpList(MpList.getDao().getById(MpList.PENDING_USGS_SERIES));
 	                } else {
 	                    newListEntry.setMpList(MpList.getDao().getById(MpList.IPDS_USGS_NUMBERED_SERIES));
 	                }
 	            } else {
-	                if (null != inPublication.getIpdsReviewProcessState() &&
-	                        ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(inPublication.getIpdsReviewProcessState())) {
+	                if (PubsUtilities.isSpnProduction(inPublication.getIpdsReviewProcessState())) {
 	                    newListEntry.setMpList(MpList.getDao().getById(MpList.PENDING_USGS_SERIES));
 	                } else {
 	                    newListEntry.setMpList(MpList.getDao().getById(MpList.IPDS_OTHER_PUBS));

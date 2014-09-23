@@ -119,7 +119,7 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
     //TODO the following tests...
     //publishToPw(Integer prodID)
 
-    public static void assertMpPub1(Publication<?> pub) {
+    public static void assertMpPub1(Publication<?> pub, String expectedLockUsername) {
     	assertTrue(pub instanceof MpPublication);
         assertEquals(1, pub.getId().intValue());
         assertEquals("sir20145083", pub.getIndexId());
@@ -160,7 +160,7 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals("Conference Title", pub.getConferenceTitle());
         assertEquals("A free form DATE", pub.getConferenceDate());
         assertEquals("A conference location", pub.getConferenceLocation());
-        assertEquals("drsteini", ((MpPublication) pub).getLockUsername());
+        assertEquals(expectedLockUsername, ((MpPublication) pub).getLockUsername());
         assertEquals("100", pub.getScale());
         assertEquals(23, pub.getLargerWorkSubtype().getId().intValue());
         assertEquals("EPSG:3857", pub.getProjection());

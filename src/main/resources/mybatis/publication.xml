@@ -229,7 +229,6 @@
 			or upper(index_id) LIKE '%' || upper(#{term}) || '%'
 			or upper(publication_id) LIKE '%' || upper(#{term}) || '%'
 			or upper(ipds_id) LIKE '%' || upper(#{term}) || '%'
-			or upper(series_number) LIKE '%' || upper(#{term}) || '%'
 			or upper(publication_year) LIKE '%' || upper(#{term}) || '%'
 			
 			<!-- series name -->

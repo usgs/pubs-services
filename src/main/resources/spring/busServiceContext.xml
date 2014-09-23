@@ -3,6 +3,8 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
 
+    <bean id="mpListBusService" class="gov.usgs.cida.pubs.busservice.mp.MpListBusService" autowire="byName"/>
+    <bean id="mpListPublicationBusService" class="gov.usgs.cida.pubs.busservice.mp.MpListPublicationBusService" autowire="byName"/>
     <bean id="mpPublicationBusService" class="gov.usgs.cida.pubs.busservice.mp.MpPublicationBusService" autowire="byName"/>
     <bean id="mpPublicationContributorBusService" class="gov.usgs.cida.pubs.busservice.mp.MpPublicationContributorBusService" autowire="byName"/>
     <bean id="mpPublicationCostCenterBusService" class="gov.usgs.cida.pubs.busservice.mp.MpPublicationCostCenterBusService" autowire="byName"/>

@@ -25,7 +25,7 @@ public class TokenSecurityFilter implements Filter  {
 	public static final String AUTH_BEARER_STRING = "Bearer";
 	
 	@Autowired
-	private IAuthClient authClient;
+	protected IAuthClient authClient;
 	
 	@Override
 	public void destroy() {
@@ -55,7 +55,13 @@ public class TokenSecurityFilter implements Filter  {
 			
 			if(token != null && authClient.isValidToken(token)) {
 				setContextAuthorization(token);
-				filterChain.doFilter(req, resp); 
+				
+				if(SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
+					filterChain.doFilter(req, resp); 
+				} else {
+					LOG.debug("User is not authorized to use Publications Warehouse");
+					((HttpServletResponse) resp).setStatus(401);
+				}
 			} else {
 				LOG.debug("Invalid token or no token provided");
 				if(SecurityContextHolder.getContext().getAuthentication() != null) {
@@ -86,7 +92,7 @@ public class TokenSecurityFilter implements Filter  {
 		
 		String authHeader = httpRequest.getHeader(AUTHORIZATION_HEADER);
 		if(authHeader != null &&
-				authHeader.toLowerCase().contains(AUTH_BEARER_STRING.toLowerCase())) {
+				authHeader.toLowerCase().startsWith(AUTH_BEARER_STRING.toLowerCase() + " ")) {
 			token = authHeader;
 			token = token.replaceAll(AUTH_BEARER_STRING + "\\s+", "");
 			token = token.replaceAll(AUTH_BEARER_STRING.toLowerCase() + "\\s+", "");

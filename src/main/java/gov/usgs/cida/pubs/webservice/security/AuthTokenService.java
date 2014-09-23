@@ -3,7 +3,7 @@ package gov.usgs.cida.pubs.webservice.security;
 import java.text.MessageFormat;
 import java.util.List;
 
-import gov.usgs.cida.auth.client.AuthClient;
+import gov.usgs.cida.auth.client.IAuthClient;
 import gov.usgs.cida.auth.model.AuthToken;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
@@ -32,11 +32,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class AuthTokenService {
 	private static final Logger LOG = LoggerFactory.getLogger(AuthTokenService.class);
 
-	private final AuthClient authClient;
+	private final IAuthClient authClient;
 	private final IMpPublicationBusService busService;
 
 	@Autowired
-	public AuthTokenService(final AuthClient authClient,
+	public AuthTokenService(final IAuthClient authClient,
 			@Qualifier("mpPublicationBusService")
 	final IMpPublicationBusService busService) {
 		this.authClient = authClient;

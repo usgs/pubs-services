@@ -29,7 +29,7 @@
 		class="gov.usgs.cida.pubs.webservice.security.TokenSecurityFilter">
 	</bean>
 
-	<!-- Any service URL allowing anonymous access must use this in the filter chain -->
+	<!-- Any service URL allowing anonymous access must use this in the filter in it's chain -->
 	<bean id="anonymousAuthenticationFilter" class="org.springframework.security.web.authentication.AnonymousAuthenticationFilter">
 		<constructor-arg value="anon-filter-key" />
 	</bean>
@@ -40,7 +40,7 @@
 			<util:list>
 				<sec:filter-chain pattern="/lookup/**" filters="securityContextPersistenceFilter, anonymousAuthenticationFilter, tokenSecurityFilter" /> <!-- Give anon access to lookup services -->
 				<sec:filter-chain pattern="/auth/ad/token/**" filters="securityContextPersistenceFilter, anonymousAuthenticationFilter, tokenSecurityFilter" /> <!-- authentication service -->
-				<sec:filter-chain pattern="/**" filters="securityContextPersistenceFilter, tokenSecurityFilter" />
+				<sec:filter-chain pattern="/**" filters="securityContextPersistenceFilter, tokenSecurityFilter" /> <!-- everything else requires authentication/authorizaion -->
 			</util:list>
 		</constructor-arg>
 	</bean>

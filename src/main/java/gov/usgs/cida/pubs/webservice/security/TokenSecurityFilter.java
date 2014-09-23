@@ -3,9 +3,6 @@ package gov.usgs.cida.pubs.webservice.security;
 import gov.usgs.cida.auth.client.IAuthClient;
 
 import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -19,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class TokenSecurityFilter implements Filter  {
@@ -53,21 +49,20 @@ public class TokenSecurityFilter implements Filter  {
 		HttpServletRequest httpReq = (HttpServletRequest) req; 
 		
 		if ("OPTIONS".equals(httpReq.getMethod())) {
-			setAnonymousRole();
 			filterChain.doFilter(req, resp); 
 		} else {
 			String token = getTokenFromHeader(httpReq);
 			
-			if(authClient.isValidToken(token)) {
-				setAuthorizationRoles(token);
+			if(token != null && authClient.isValidToken(token)) {
+				setContextAuthorization(token);
 				filterChain.doFilter(req, resp); 
 			} else {
-				LOG.debug("Invalid token");
+				LOG.debug("Invalid token or no token provided");
 				if(SecurityContextHolder.getContext().getAuthentication() != null) {
 					LOG.debug("Anonymous role set for this request, proceeding down filter chain");
 					filterChain.doFilter(req, resp); 
 				} else {
-					LOG.debug("Anonymous role not set previously, not authenticated");
+					LOG.debug("This end point not authenticated anonymously");
 					((HttpServletResponse) resp).setStatus(401);
 				}
 			}
@@ -101,27 +96,9 @@ public class TokenSecurityFilter implements Filter  {
 		return token;
 	}
 	
-	private void setAuthorizationRoles(String token) {
-		ArrayList<SimpleGrantedAuthority> auths = new ArrayList<>();
-		auths.add(new SimpleGrantedAuthority(PubsAuthentication.ROLE_AUTHENTICATED));
-		
-		List<String> roles = authClient.getRolesByToken(token);
-		
-		for(String role : roles) {
-			try {
-				PubsRoles.valueOf(role); //role validation
-				auths.add(new SimpleGrantedAuthority(PubsAuthentication.ROLE_PREFIX + role));
-			} catch (Exception e) {
-				LOG.debug(MessageFormat.format("Role {0} for token {1} ignored.", role, token), e);
-			}
-		}
-		
-        SecurityContextHolder.getContext().setAuthentication(new PubsAuthentication(authClient.getToken(token).getUsername(), auths));
-	}
-	
-	private void setAnonymousRole() {
-		ArrayList<SimpleGrantedAuthority> auths = new ArrayList<>();
-		auths.add(new SimpleGrantedAuthority(PubsAuthentication.ROLE_ANONYMOUS));
-        SecurityContextHolder.getContext().setAuthentication(new PubsAuthentication(auths));
+	private void setContextAuthorization(String token) {
+        SecurityContextHolder.getContext().setAuthentication(
+    		new PubsAuthentication(authClient.getToken(token).getUsername(), authClient.getRolesByToken(token))
+        );
 	}
 }

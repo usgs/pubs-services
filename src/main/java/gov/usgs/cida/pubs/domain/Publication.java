@@ -22,6 +22,7 @@ import org.hibernate.validator.constraints.Length;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -896,5 +897,11 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 	public LocalDateTime getUpdateDate() {
 		return super.getUpdateDate();
 	}
+
+    @JsonIgnore
+    @Override
+    public void setUpdateDate(final LocalDateTime inUpdateDate) {
+    	super.setUpdateDate(inUpdateDate);
+    }
 
 }

@@ -118,7 +118,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     	return filters;
     }
 
-    @RequestMapping(value={"/mppublication/{publicationId}"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
+    @RequestMapping(value={"/mppublication/{publicationId}","/mppublications/{publicationId}"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
     @ResponseView(IMpView.class)
     @Transactional
     public @ResponseBody MpPublication getMpPublication(HttpServletRequest request, HttpServletResponse response,
@@ -156,7 +156,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         return newPub;
     }
 
-    @RequestMapping(value = "mppublication/{publicationId}", method = RequestMethod.PUT, produces="application/json")
+    @RequestMapping(value = {"mppublication/{publicationId}","mppublications/{publicationId}"}, method = RequestMethod.PUT, produces="application/json")
     @ResponseView(IMpView.class)
     @Transactional
     public @ResponseBody MpPublication updateMpPublication(@RequestBody MpPublication pub, @PathVariable String publicationId,

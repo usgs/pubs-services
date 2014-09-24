@@ -140,13 +140,17 @@ public class LookupMvcService extends MvcService<PublicationType> {
     @RequestMapping(value={"/costcenters"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
     @ResponseView(ILookupView.class)
     public @ResponseBody Collection<Affiliation<?>> getCostCenters(HttpServletRequest request, HttpServletResponse response,
-                @RequestParam(value="text", required=false) String[] text) {
+                @RequestParam(value="text", required=false) String[] text,
+                @RequestParam(value="active", required=false) String[] active) {
         LOG.debug("CostCenter");
         Collection<Affiliation<?>> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
                 filters.put("text", text[0]);
+            }
+            if (null != active && 0 < active.length) {
+                filters.put("active", active[0].toUpperCase());
             }
             rtn = CostCenter.getDao().getByMap(filters);
         }
@@ -156,13 +160,17 @@ public class LookupMvcService extends MvcService<PublicationType> {
 	@RequestMapping(value={"/outsideaffiliates"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
     @ResponseView(ILookupView.class)
     public @ResponseBody Collection<Affiliation<?>> getOutsideAffiliates(HttpServletRequest request, HttpServletResponse response,
-                @RequestParam(value="text", required=false) String[] text) {
+                @RequestParam(value="text", required=false) String[] text,
+                @RequestParam(value="active", required=false) String[] active) {
         LOG.debug("OutsideAffiliate");
         Collection<Affiliation<?>> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
                 filters.put("text", text[0]);
+            }
+            if (null != active && 0 < active.length) {
+                filters.put("active", active[0].toUpperCase());
             }
             rtn = OutsideAffiliation.getDao().getByMap(filters);
         }

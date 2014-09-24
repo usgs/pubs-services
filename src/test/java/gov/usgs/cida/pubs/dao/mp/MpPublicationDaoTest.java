@@ -68,7 +68,6 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         MpPublication.getDao().copyFromPw(4);
         Publication<MpPublication> mpPub = MpPublication.getDao().getById(4);
         PwPublicationDaoTest.assertPwPub4(mpPub);
-        assertEquals(PubsConstants.ANONYMOUS_USER, ((MpPublication) mpPub).getLockUsername());
     }
 
     @Test

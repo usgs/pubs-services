@@ -322,9 +322,8 @@ public class MpPublicationBusService extends BusService<MpPublication> implement
                     MpPublicationLink.getDao().copyFromPw(publicationId);
                     MpPublicationContributor.getDao().copyFromPw(publicationId);
                 }
-            } else {
-            	MpPublication.getDao().lockPub(publicationId);
             }
+           	MpPublication.getDao().lockPub(publicationId);
         }
     }
     

@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
@@ -79,10 +80,13 @@ public abstract class MvcService<D> {
     @ExceptionHandler(Exception.class)
     public @ResponseBody String handleUncaughtException(Exception ex, WebRequest request, HttpServletResponse response) throws IOException {
         if (ex instanceof AccessDeniedException) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setStatus(HttpStatus.FORBIDDEN.value());
             return "You are not authorized to perform this action.";
+        } else if (ex instanceof MissingServletRequestParameterException) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return ex.getLocalizedMessage();
         } else {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             int hashValue = response.hashCode();
             //Note: we are giving the user a generic message.  
             //Server logs can be used to troubleshoot problems.

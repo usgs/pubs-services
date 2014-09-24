@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 
 
 public class ValidationResults {
 
     @JsonView(IMpView.class)
+    @JsonProperty("validationErrors")
     private List<ValidatorResult> vErrors = new ArrayList<ValidatorResult>();
 
     public void setValidationErrors(final List<ValidatorResult> inValidationErrors) {

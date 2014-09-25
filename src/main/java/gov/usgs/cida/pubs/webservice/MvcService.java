@@ -13,9 +13,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 
@@ -23,6 +26,7 @@ import org.springframework.web.context.request.WebRequest;
  * @author drsteini
  *
  */
+@RequestMapping(produces={PubsConstants.MIME_TYPE_APPLICATION_JSON, PubsConstants.MIME_TYPE_TEXT_PLAIN})
 public abstract class MvcService<D> {
 
     private static final Logger LOG = LoggerFactory.getLogger(MvcService.class);
@@ -82,9 +86,14 @@ public abstract class MvcService<D> {
         if (ex instanceof AccessDeniedException) {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             return "You are not authorized to perform this action.";
-        } else if (ex instanceof MissingServletRequestParameterException) {
+        } else if (ex instanceof MissingServletRequestParameterException
+        		|| ex instanceof HttpMediaTypeNotSupportedException) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return ex.getLocalizedMessage();
+        } else if (ex instanceof HttpMessageNotReadableException) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            //This exception's message contains implementation details after the new line, so only take up to that.
+            return ex.getLocalizedMessage().substring(0, ex.getLocalizedMessage().indexOf("\n"));
         } else {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             int hashValue = response.hashCode();

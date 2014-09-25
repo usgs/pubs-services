@@ -5,6 +5,7 @@ public final class PubsConstants {
     public static final String DEFAULT_ENCODING = "UTF-8";
 
     public static final String MIME_TYPE_APPLICATION_JSON = "application/json";
+    public static final String MIME_TYPE_TEXT_PLAIN = "text/plain";
     
     public static final String SPACES_OR_NUMBER_REGEX = "^ *\\d*$";
     

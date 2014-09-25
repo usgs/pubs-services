@@ -55,7 +55,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     	this.busService = busService;
     }
     
-    @RequestMapping(value = "mppublications", method = RequestMethod.GET,  produces="application/json")
+    @RequestMapping(value = "mppublications", method = RequestMethod.GET)
     @ResponseView(IMpView.class)
     public @ResponseBody SearchResults getPubs(
     		@RequestParam(value="q", required=false) String searchTerms, //single string search
@@ -118,7 +118,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     	return filters;
     }
 
-    @RequestMapping(value={"/mppublication/{publicationId}","/mppublications/{publicationId}"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
+    @RequestMapping(value={"/mppublication/{publicationId}","/mppublications/{publicationId}"}, method=RequestMethod.GET)
     @ResponseView(IMpView.class)
     @Transactional
     public @ResponseBody MpPublication getMpPublication(HttpServletRequest request, HttpServletResponse response,
@@ -142,7 +142,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         return rtn;
     }
 
-    @RequestMapping(value = "mppublications", method = RequestMethod.POST, produces="application/json")
+    @RequestMapping(value = "mppublications", method = RequestMethod.POST)
     @ResponseView(IMpView.class)
     @Transactional
     public @ResponseBody MpPublication createPub(@RequestBody MpPublication pub, HttpServletResponse response) {
@@ -156,7 +156,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         return newPub;
     }
 
-    @RequestMapping(value = {"mppublication/{publicationId}","mppublications/{publicationId}"}, method = RequestMethod.PUT, produces="application/json")
+    @RequestMapping(value = {"mppublication/{publicationId}","mppublications/{publicationId}"}, method = RequestMethod.PUT)
     @ResponseView(IMpView.class)
     @Transactional
     public @ResponseBody MpPublication updateMpPublication(@RequestBody MpPublication pub, @PathVariable String publicationId,
@@ -179,7 +179,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         return rtn;
     }
 
-    @RequestMapping(value = "mppublications/{publicationId}", method = RequestMethod.DELETE, produces="application/json")
+    @RequestMapping(value = "mppublications/{publicationId}", method = RequestMethod.DELETE)
     @ResponseView(IMpView.class)
     @Transactional
     public @ResponseBody ValidationResults deletePub(@PathVariable String publicationId, HttpServletResponse response) {
@@ -203,16 +203,15 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         return rtn;
     }
 
-    @RequestMapping(value = "mppublications/publish", method = RequestMethod.POST, produces="application/json")
+    @RequestMapping(value = "mppublications/publish", method = RequestMethod.POST)
     @ResponseView(IMpView.class)
 	@Transactional
-	public @ResponseBody ValidationResults publishPub(@RequestParam("publicationId") String publicationId, HttpServletResponse response) {
+	public @ResponseBody ValidationResults publishPub(@RequestBody MpPublication pub, HttpServletResponse response) {
         setHeaders(response);
-        Integer id = PubsUtilities.parseInteger(publicationId);
         ValidationResults rtn = new ValidationResults();
-        ValidatorResult locked = busService.checkAvailability(id);
+        ValidatorResult locked = busService.checkAvailability(pub.getId());
         if (null == locked) {
-        	rtn = busService.publish(id);
+        	rtn = busService.publish(pub.getId());
 	        if (null != rtn && rtn.isEmpty()) {
 	        	response.setStatus(HttpServletResponse.SC_OK);
 	        } else {
@@ -226,17 +225,16 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 	}
 	
 
-    @RequestMapping(value = "mppublications/release", method = RequestMethod.POST, produces="application/json")
+    @RequestMapping(value = "mppublications/release", method = RequestMethod.POST)
     @ResponseView(IMpView.class)
 	@Transactional
-	public @ResponseBody ValidationResults releasePub(@RequestParam("publicationId") String publicationId, HttpServletResponse response) {
+	public @ResponseBody ValidationResults releasePub(@RequestBody MpPublication pub, HttpServletResponse response) {
         setHeaders(response);
-        Integer id = PubsUtilities.parseInteger(publicationId);
         ValidationResults rtn = new ValidationResults();
-        ValidatorResult locked = busService.checkAvailability(id);
+        ValidatorResult locked = busService.checkAvailability(pub.getId());
         if (null == locked) {
         	response.setStatus(HttpServletResponse.SC_OK);
-        	busService.releaseLocksPub(id);
+        	busService.releaseLocksPub(pub.getId());
         } else {
         	rtn.addValidatorResult(locked);
         	response.setStatus(HttpStatus.CONFLICT.value());

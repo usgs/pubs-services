@@ -151,7 +151,7 @@ public class MpPublicationBusService extends BusService<MpPublication> implement
                 if (!validations.isEmpty()) {
                     pub.setValidationErrors(validations);
                 } else {
-                	MpPublicationLink.getDao().deleteByParent(object.getId());
+                	MpListPublication.getDao().deleteByParent(object.getId());
                     MpPublicationContributor.getDao().deleteByParent(object.getId());
                     MpPublicationCostCenter.getDao().deleteByParent(object.getId());
                     MpPublicationLink.getDao().deleteByParent(object.getId());

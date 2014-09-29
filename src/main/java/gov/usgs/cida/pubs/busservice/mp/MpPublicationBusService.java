@@ -107,7 +107,7 @@ public class MpPublicationBusService extends BusService<MpPublication> implement
         if (null != object) {
             MpPublication pub = publicationPreProcessing(object);
             pub.setValidationErrors(validator.validate(pub));
-            if (pub.getValErrors().isEmpty()) {
+            if (pub.getValidationErrors().isEmpty()) {
                 MpPublication.getDao().add(pub);
                 pub = publicationPostProcessing(pub);
             }
@@ -126,7 +126,7 @@ public class MpPublicationBusService extends BusService<MpPublication> implement
             beginPublicationEdit(object.getId());
             MpPublication pub = publicationPreProcessing(object);
             pub.setValidationErrors(validator.validate(pub));
-            if (pub.getValErrors().isEmpty()) {
+            if (pub.getValidationErrors().isEmpty()) {
                 MpPublication.getDao().update(pub);
                 pub = publicationPostProcessing(pub);
             }
@@ -136,13 +136,13 @@ public class MpPublicationBusService extends BusService<MpPublication> implement
     }
 
     /** {@inheritDoc}
-     * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#deleteObject(java.lang.Object)
+     * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#deleteObject(Integer)
      */
     @Override
     @Transactional
-    public ValidationResults deleteObject(MpPublication object) {
-        if (null != object) {
-            MpPublication pub = MpPublication.getDao().getById(object.getId());
+    public ValidationResults deleteObject(Integer objectId) {
+        if (null != objectId) {
+            MpPublication pub = MpPublication.getDao().getById(objectId);
             if (null == pub) {
                 pub = new MpPublication();
             } else {
@@ -151,11 +151,11 @@ public class MpPublicationBusService extends BusService<MpPublication> implement
                 if (!validations.isEmpty()) {
                     pub.setValidationErrors(validations);
                 } else {
-                	MpListPublication.getDao().deleteByParent(object.getId());
-                    MpPublicationContributor.getDao().deleteByParent(object.getId());
-                    MpPublicationCostCenter.getDao().deleteByParent(object.getId());
-                    MpPublicationLink.getDao().deleteByParent(object.getId());
-                    MpPublication.getDao().delete(object);
+                	MpListPublication.getDao().deleteByParent(objectId);
+                    MpPublicationContributor.getDao().deleteByParent(objectId);
+                    MpPublicationCostCenter.getDao().deleteByParent(objectId);
+                    MpPublicationLink.getDao().deleteByParent(objectId);
+                    MpPublication.getDao().delete(pub);
                 }
             }
             return pub.getValidationErrors();
@@ -278,29 +278,34 @@ public class MpPublicationBusService extends BusService<MpPublication> implement
     @Transactional
     public ValidationResults publish(final Integer publicationId) {
     	ValidationResults validationResults = new ValidationResults();
-        //One last guarantee that all of the warehouse data is covered in mp
-        beginPublicationEdit(publicationId);
-        MpPublication mpPub = MpPublication.getDao().getById(publicationId);
-
-        Set<ConstraintViolation<MpPublication>> validations = validator.validate(mpPub, Default.class, PublishChecks.class);
-        if (validations.isEmpty()) {
-            defaultThumbnail(mpPub);
-
-            MpPublication.getDao().publishToPw(publicationId);
-            MpPublicationCostCenter.getDao().publishToPw(publicationId);
-            MpPublicationLink.getDao().publishToPw(publicationId);
-            MpPublicationContributor.getDao().publishToPw(publicationId);
-            if ((PubsUtilities.isUsgsNumberedSeries(mpPub.getPublicationSubtype())
-                    || PubsUtilities.isUsgsUnnumberedSeries(mpPub.getPublicationSubtype()))
-                    && (null != mpPub.getDoi() && StringUtils.isNotEmpty(mpPub.getDoi()))) {
-                crossRefBusService.submitCrossRef(mpPub);
-            }
-            deleteObject(mpPub);
-        } else {
-            mpPub.setValidationErrors(validations);
-            validationResults.addValidationResults(mpPub.getValidationErrors());
-        }
-
+    	if (null != publicationId) {
+	        //One last guarantee that all of the warehouse data is covered in mp
+	        beginPublicationEdit(publicationId);
+	        MpPublication mpPub = MpPublication.getDao().getById(publicationId);
+	
+	        if (null != mpPub) {
+		        Set<ConstraintViolation<MpPublication>> validations = validator.validate(mpPub, Default.class, PublishChecks.class);
+		        if (validations.isEmpty()) {
+		            defaultThumbnail(mpPub);
+		
+		            MpPublication.getDao().publishToPw(publicationId);
+		            MpPublicationCostCenter.getDao().publishToPw(publicationId);
+		            MpPublicationLink.getDao().publishToPw(publicationId);
+		            MpPublicationContributor.getDao().publishToPw(publicationId);
+		            if ((PubsUtilities.isUsgsNumberedSeries(mpPub.getPublicationSubtype())
+		                    || PubsUtilities.isUsgsUnnumberedSeries(mpPub.getPublicationSubtype()))
+		                    && (null != mpPub.getDoi() && StringUtils.isNotEmpty(mpPub.getDoi()))) {
+		                crossRefBusService.submitCrossRef(mpPub);
+		            }
+		            deleteObject(publicationId);
+		        } else {
+		            mpPub.setValidationErrors(validations);
+		            validationResults.addValidationResults(mpPub.getValidationErrors());
+		        }
+	        } else {
+	        	validationResults.addValidatorResult(new ValidatorResult("Publication", "Publication does not exist.", "fatal", publicationId.toString()));
+	        }
+    	}
         return validationResults;
     }
     

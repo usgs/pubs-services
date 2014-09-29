@@ -9,6 +9,7 @@ public abstract class MpDao<D> extends BaseDao<D> implements IMpDao<D> {
 
     public static final String COPY_FROM_PW = ".copyMpFromPw";
     public static final String PUBLISH = ".publish";
+    public static final String PUBLISH_DELETE = ".publishDelete";
 
     /** {@inheritDoc}
      * @see gov.usgs.cida.pubs.dao.intfc.IMpDao#copyFromPw(java.lang.Integer)

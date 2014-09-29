@@ -136,7 +136,11 @@ public abstract class BaseDomain<D> implements IBaseView {
      * @return the validationErrors
      */
     public ValidationResults getValidationErrors() {
-        return validationErrors;
+    	 if (null != validationErrors) {
+           return validationErrors;
+       } else {
+           return new ValidationResults();
+       }
     }
 
     /**

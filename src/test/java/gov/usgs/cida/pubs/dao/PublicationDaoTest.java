@@ -5,6 +5,7 @@ import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
 import gov.usgs.cida.pubs.domain.Publication;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +26,7 @@ public class PublicationDaoTest extends BaseSpringDaoTest {
 
         //From mypubs
         Publication<?> pub2 = Publication.getPublicationDao().getById(2);
-        MpPublicationDaoTest.assertMpPub2(pub2);
+        MpPublicationDaoTest.assertPub2(pub2);
     }
 
     @Test
@@ -55,6 +56,11 @@ public class PublicationDaoTest extends BaseSpringDaoTest {
         pubs = Publication.getPublicationDao().getByMap(filters);
         assertEquals(1, pubs.size());
         assertEquals(4, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
+        
+        filters.clear();
+        filters.put("searchTerms", Arrays.asList("a").toArray());
+        pubs = Publication.getPublicationDao().getByMap(filters);
+        //TODO asserts
     }
 
     @Test

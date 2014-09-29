@@ -58,8 +58,8 @@ public class MpListBusService extends BusService<MpList> {
 
 	@Override
 	@Transactional
-	public ValidationResults deleteObject(final MpList object) {
-		MpList list = MpList.getDao().getById(object.getId());
+	public ValidationResults deleteObject(final Integer objectId) {
+		MpList list = MpList.getDao().getById(objectId);
 		if (null == list) {
 			list = new MpList();
 		} else {
@@ -68,7 +68,7 @@ public class MpListBusService extends BusService<MpList> {
 			if (!validations.isEmpty()) {
 				list.setValidationErrors(validations);
 			} else {
-				MpList.getDao().delete(object);
+				MpList.getDao().delete(list);
 			}
 		}
 		return list.getValidationErrors();

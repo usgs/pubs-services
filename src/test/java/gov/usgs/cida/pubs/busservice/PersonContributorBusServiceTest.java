@@ -1,7 +1,7 @@
 package gov.usgs.cida.pubs.busservice;
 
 import static org.junit.Assert.assertNotNull;
-import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.dao.ContributorDaoTest;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.Contributor;
@@ -15,7 +15,7 @@ import org.junit.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class PersonContributorBusServiceTest extends BaseSpringTest {
+public class PersonContributorBusServiceTest extends BaseSpringDaoTest {
 
     @Autowired
     public Validator validator;
@@ -24,6 +24,7 @@ public class PersonContributorBusServiceTest extends BaseSpringTest {
 
     @Before
     public void initTest() throws Exception {
+        super.setUp();
         MockitoAnnotations.initMocks(this);
         busService = new PersonContributorBusService(validator);
     }
@@ -49,7 +50,7 @@ public class PersonContributorBusServiceTest extends BaseSpringTest {
         outperson.setSuffix("outsuffix");
         outperson.setEmail("outemail@usgs.gov");
         outperson.setIpdsContributorId(13);
-        outperson.setAffiliation(Affiliation.getDao().getById(182));
+        outperson.setAffiliation(Affiliation.getDao().getById(5));
         busService.createObject(outperson);
         assertNotNull(outperson.getId());
         OutsideContributor outpersisted = (OutsideContributor) Contributor.getDao().getById(outperson.getId());

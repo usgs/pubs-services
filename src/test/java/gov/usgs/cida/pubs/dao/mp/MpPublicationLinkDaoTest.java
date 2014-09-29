@@ -4,12 +4,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.domain.LinkFileType;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
+import gov.usgs.cida.pubs.domain.pw.PwPublication;
+import gov.usgs.cida.pubs.domain.pw.PwPublicationLink;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -64,7 +67,7 @@ public class MpPublicationLinkDaoTest extends BaseSpringDaoTest {
 		LinkType linkType = new LinkType();
 		linkType.setId(1);
 		newLink.setLinkType(linkType);
-		newLink.setUrl("www.newlink.org");
+		newLink.setUrl("http://www.newlink.org");
 		newLink.setText("newlink text");
 		newLink.setSize("15 bytes");
 		newLink.setDescription("my link description");
@@ -82,7 +85,7 @@ public class MpPublicationLinkDaoTest extends BaseSpringDaoTest {
 		LinkType newLinkType = new LinkType();
 		newLinkType.setId(2);
 		persistedA.setLinkType(newLinkType);
-		persistedA.setUrl("www.updated.org");
+		persistedA.setUrl("http://www.updated.org");
 		persistedA.setText("updated text");
 		persistedA.setSize("86 TB");
 		newLink.setDescription("my new link description");
@@ -117,33 +120,102 @@ public class MpPublicationLinkDaoTest extends BaseSpringDaoTest {
 		assertMpLink10(link);
 	}
 
-	public static void assertMpLink1(MpPublicationLink link) {
+    @Test
+    public void publishToPwTest() {
+    	MpPublicationLink.getDao().publishToPw(null);
+    	MpPublicationLink.getDao().publishToPw(-1);
+    	MpPublication.getDao().publishToPw(1);
+    	
+    	//this one should be a straight add.
+    	MpPublicationLink.getDao().publishToPw(1);
+    	PwPublication pub = PwPublication.getDao().getById(1);
+    	assertEquals(2, pub.getLinks().size());
+    	for (PublicationLink<?> link : pub.getLinks()) {
+    		if (1 == link.getId()) {
+    			assertPwLink1(link);
+    		} else if (2 == link.getId()) {
+    			assertPwLink2(link);
+    		} else {
+    			fail("Got a bad contributor:" + link.getId());
+    		}
+    	}
+    	
+//    	//this one should be a merge.
+//    	MpPublication.getDao().copyFromPw(4);
+//    	MpPublicationCostCenter.getDao().copyFromPw(4);
+//    	MpPublication.getDao().publishToPw(4);
+//    	MpPublicationCostCenter.getDao().deleteById(10);
+//    	MpPublicationCostCenter mpPCC = new MpPublicationCostCenter();
+//    	CostCenter cc = new CostCenter();
+//    	cc.setId(3);
+//    	mpPCC.setCostCenter(cc);
+//    	mpPCC.setPublicationId(4);
+//    	MpPublicationCostCenter.getDao().add(mpPCC);
+//    	MpPublicationCostCenter.getDao().publishToPw(4);
+//    	pub = PwPublication.getDao().getById(4);
+//    	assertEquals(1, pub.getCostCenters().size());
+//    	for (PublicationCostCenter<?> costCenter : pub.getCostCenters()) {
+//    		assertPwCostCenterXX(mpPCC.getId(), costCenter);
+//    	}
+    }
+
+	public static void assertPwLink1(PublicationLink<?> link) {
+		assertTrue(link instanceof PwPublicationLink);
+		assertLink1(link);
+	}
+
+	public static void assertMpLink1(PublicationLink<?> link) {
+		assertTrue(link instanceof MpPublicationLink);
+		assertLink1(link);
+	}
+	
+	public static void assertLink1(PublicationLink<?> link) {
 		assertNotNull(link);
 		assertEquals(1, link.getId().intValue());
 		assertEquals(1, link.getPublicationId().intValue());
 		assertEquals(1, link.getRank().intValue());
 		assertEquals(1, link.getLinkType().getId().intValue());
-		assertEquals("www.wow.org", link.getUrl());
+		assertEquals("http://www.wow.org", link.getUrl());
 		assertEquals("amazing link", link.getText());
 		assertEquals("12 GB", link.getSize());
 		assertEquals(2, link.getLinkFileType().getId().intValue());
 		assertEquals("This description is wow!", link.getDescription());
 	}
 
+	public static void assertPwLink2(PublicationLink<?> link) {
+		assertTrue(link instanceof PwPublicationLink);
+		assertLink2(link);
+	}
+
 	public static void assertMpLink2(PublicationLink<?> link) {
+		assertTrue(link instanceof MpPublicationLink);
+		assertLink2(link);
+	}
+	
+	public static void assertLink2(PublicationLink<?> link) {
 		assertNotNull(link);
 		assertEquals(2, link.getId().intValue());
 		assertEquals(1, link.getPublicationId().intValue());
 		assertEquals(2, link.getRank().intValue());
 		assertEquals(2, link.getLinkType().getId().intValue());
-		assertEquals("www.xyz.org", link.getUrl());
+		assertEquals("http://www.xyz.org", link.getUrl());
 		assertEquals("end of the line", link.getText());
 		assertEquals("1 TB", link.getSize());
 		assertEquals(3, link.getLinkFileType().getId().intValue());
 		assertEquals("I'm at the end", link.getDescription());
 	}
 
+	public static void assertPwLink10(PublicationLink<?> link) {
+		assertTrue(link instanceof PwPublicationLink);
+		assertLink10(link);
+	}
+
 	public static void assertMpLink10(PublicationLink<?> link) {
+		assertTrue(link instanceof MpPublicationLink);
+		assertLink10(link);
+	}
+	
+	public static void assertLink10(PublicationLink<?> link) {
 		assertNotNull(link);
 		assertEquals(10, link.getId().intValue());
 		assertEquals(4, link.getPublicationId().intValue());

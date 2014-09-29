@@ -46,6 +46,31 @@
            where publication_cost_center_id = #{id,jdbcType=NUMERIC}
     </update>
 
+	<update id="publish" parameterType="Integer">
+		merge into publication_cost_center pw 
+			using (<include refid="baseSelect"/>
+			         where publication_id = #{value,jdbcType=NUMERIC}) mp 
+			   on (mp.publication_cost_center_id = pw.publication_cost_center_id) 
+			 when matched then update 
+				  set pw.cost_center_id = mp.cost_center_id,
+					  pw.insert_date = mp.insert_date,
+					  pw.insert_username = mp.insert_username,
+					  pw.update_date = sysdate,
+					  pw.update_username = audit_trail_util.get_username
+			 when not matched then insert (<include refid="publicationCostCenter.cols"/>)
+				  values (mp.publication_cost_center_id, 	mp.publication_id, 		mp.cost_center_id, 
+				          mp.insert_date,		 			mp.insert_username, 	sysdate,	 		audit_trail_util.get_username)
+ 
+	</update>
+	
+	<delete id="publishDelete" parameterType="Integer">
+		delete from publication_cost_center
+		 where publication_id = #{value,jdbcType=NUMERIC} and
+		       publication_cost_center_id not in (select publication_cost_center_id
+		                                            from mp_pub_cost_center
+		                                           where publication_id = #{value,jdbcType=NUMERIC}) 
+	</delete>
+
     <delete id="delete" parameterType="Integer">
         delete from mp_pub_cost_center
          where publication_cost_center_id = #{value,jdbcType=NUMERIC}

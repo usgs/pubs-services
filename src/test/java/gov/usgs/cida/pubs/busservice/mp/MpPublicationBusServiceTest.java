@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
@@ -17,6 +16,7 @@ import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.ProcessType;
+import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
 import gov.usgs.cida.pubs.domain.PublicationLink;
@@ -29,7 +29,9 @@ import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
+import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.utility.PubsUtilitiesTest;
+import gov.usgs.cida.pubs.validation.ValidationResults;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -129,15 +131,18 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
         mid.setIpdsId("12345678901234567890");
         after = busService.updateObject(mid);
         assertDaoTestResults(MpPublication.class, pub, after, IGNORE_PROPERTIES, true, true);
-        assertEquals(3, after.getValErrors().size());
+        assertEquals(3, after.getValidationErrors().getValidationErrors().size());
     }
 
     @Test
     public void deleteObjectTest() {
-        //TODO both a good delete and a delete w/validation errors.
+        //TODO a delete w/validation errors.
         //public ValidationResults deleteObject(MpPublication object)
         busService.deleteObject(null);
-        busService.deleteObject(new MpPublication());
+        busService.deleteObject(-1);
+        
+        busService.deleteObject(2);
+        assertMpPublicationDeleted(2);
     }
 
     @Test
@@ -342,10 +347,9 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     public void beginPublicationEditTest() {
         //This one should change nothing
         busService.beginPublicationEdit(2);
-        MpPublication mpPub2after = MpPublication.getDao().getById(2);
-        MpPublicationDaoTest.assertMpPub2(mpPub2after);
+        Publication<?> mpPub2after = MpPublication.getDao().getById(2);
+        MpPublicationDaoTest.assertMpPub2(mpPub2after, PubsConstants.ANONYMOUS_USER);
         MpPublicationDaoTest.assertMpPub2Children(mpPub2after);
-        assertEquals(PubsConstants.ANONYMOUS_USER, mpPub2after.getLockUsername());
 
         //This one is in PW, not MP and should be moved
         MpPublication mpPub4before = MpPublication.getDao().getById(4);
@@ -525,9 +529,33 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	assertEquals("something else", link.getUrl());
     }
 
-    //TODO@Test
+    @Test
     public void publishTest() {
-    	fail("you need to code this");
+    	assertTrue(busService.publish(null).isEmpty());
+    	assertEquals("Field:Publication - Message:Publication does not exist. - Level:fatal - Value:-1\nValidator Results: 1 result(s)\n",
+    			busService.publish(-1).toString());
+
+    	ValidationResults valRes = busService.publish(2);
+    	assertTrue(valRes.isEmpty());
+    	Publication<?> pub = PwPublication.getDao().getById(2);
+    	MpPublicationDaoTest.assertPwPub2(pub);
+    	assertEquals(1, pub.getAuthors().size());
+    	assertEquals(1, pub.getEditors().size());
+    	//Link count is one more than in the dataset.xml because a default thumbnail is added by the service.
+    	assertEquals(2, pub.getLinks().size());
+    	assertEquals(1, pub.getCostCenters().size());
+
+    	assertMpPublicationDeleted(2);
+    }
+    
+    public void assertMpPublicationDeleted(Integer id) {
+    	assertNull(MpPublication.getDao().getById(id));
+    	Map<String, Object> filters = new HashMap<>();
+    	filters.put("publicationId", id);
+    	assertTrue(MpPublicationLink.getDao().getByMap(filters).isEmpty());
+    	assertTrue(MpPublicationCostCenter.getDao().getByMap(filters).isEmpty());
+    	assertTrue(MpPublicationContributor.getDao().getByMap(filters).isEmpty());
+    	assertTrue(MpListPublication.getDao().getByMap(filters).isEmpty());
     }
 
 }

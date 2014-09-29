@@ -19,16 +19,20 @@
         </layout>
     </appender>
 
-    <category name="org.springframework">
-        <level value="info"/>
+    <category name="org.springframework.web">
+        <level value="DEBUG"/>
+    </category>
+
+    <category name="org.springframework.security">
+        <level value="DEBUG"/>
     </category>
 
     <category name="gov.usgs">
-        <level value="info"/>
+        <level value="DEBUG"/>
     </category>
 
     <category name="org.mybatis">
-        <level value="info"/>
+        <level value="DEBUG"/>
     </category>
 
     <category name="org.apache.activemq">
@@ -36,15 +40,15 @@
     </category>
 
     <category name="org.apache.ibatis">
-        <level value="info"/>
+        <level value="DEBUG"/>
     </category>
 
     <category name="java.sql">
-        <level value="info"/> 
+        <level value="DEBUG"/> 
     </category>
 
     <root>
-        <level value="info"/>
+        <level value="DEBUG"/>
         <appender-ref ref="myconsole" />
         <appender-ref ref="appLog" />
     </root>

@@ -48,6 +48,8 @@
         <result property="city" column="city"/>
         <result property="otherGeospatial" column="other_geospatial"/>
         <result property="geographicExtents" column="geographic_extents"/>
+        <result property="volume" column="volume"/>
+        <result property="issue" column="issue"/>
         <association property="publicationType" column="publication_type_id" select="publicationType.getById"/>
         <association property="publicationSubtype" column="publication_subtype_id" select="publicationSubtype.getById"/>
         <association property="largerWorkType" column="larger_work_type_id" select="publicationType.getById"/>
@@ -106,6 +108,8 @@
         city,
         other_geospatial,
         geographic_extents,
+        volume,
+        issue,
         <include refid="base.auditCols"/>
     </sql>
 
@@ -159,6 +163,8 @@
         #{city,jdbcType=VARCHAR},
         #{otherGeospatial,jdbcType=VARCHAR},
         #{geographicExtents,jdbcType=VARCHAR},
+        #{volume,jdbcType=VARCHAR},
+        #{issue,jdbcType=VARCHAR},
         <include refid="base.auditHosts"/>
     </sql>
 
@@ -211,6 +217,8 @@
         city = #{city,jdbcType=VARCHAR},
         other_geospatial = #{otherGeospatial,jdbcType=VARCHAR},
         geographic_extents = #{geographicExtents,jdbcType=VARCHAR},
+        volume = #{volume,jdbcType=VARCHAR},
+        issue = #{issue,jdbcType=VARCHAR},
         <include refid="base.auditSets"/>
     </sql>
     
@@ -227,7 +235,7 @@
 			or upper(subseries_title) LIKE '%' || upper(#{term}) || '%'
 			or upper(series_number) LIKE '%' || upper(#{term}) || '%'
 			or upper(index_id) LIKE '%' || upper(#{term}) || '%'
-			or upper(publication_id) LIKE '%' || upper(#{term}) || '%'
+			or to_char(publication_id) = #{term} || '%'
 			or upper(ipds_id) LIKE '%' || upper(#{term}) || '%'
 			or upper(publication_year) LIKE '%' || upper(#{term}) || '%'
 			
@@ -287,6 +295,14 @@
         	
         	<include refid="publication.singleSearchTermFilter"/>
         	
+			<if test="null != listId">
+				<if test="listId.length > 0">
+					<foreach item="list" collection="listId" open=" and publication_id in (select publication_id from mp_list_publication where mp_list_id in(" separator="," close="))">
+						#{list,jdbcType=NUMERIC}
+					</foreach>
+				</if>
+			</if>
+
        		<if test="title != null and title.length > 0">
        			and (
 				<foreach item="t" collection="title" open=""

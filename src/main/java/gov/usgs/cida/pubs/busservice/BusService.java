@@ -42,7 +42,7 @@ public abstract class BusService<D> implements IBusService<D> {
     }
 
     @Override
-    public ValidationResults deleteObject(D object) {
+    public ValidationResults deleteObject(Integer objectId) {
         throw new RuntimeException("NOT IMPLEMENTED.");
     }
 

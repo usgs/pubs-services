@@ -4,12 +4,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.ContributorType;
+import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
+import gov.usgs.cida.pubs.domain.pw.PwPublication;
+import gov.usgs.cida.pubs.domain.pw.PwPublicationContributor;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -122,7 +126,61 @@ public class MpPublicationContributorDaoTest extends BaseSpringDaoTest {
 		assertMpContributor11(contrib);
 	}
 
-	public static void assertMpContributor1(MpPublicationContributor contrib) {
+    @Test
+    public void publishToPwTest() {
+    	MpPublicationContributor.getDao().publishToPw(null);
+    	MpPublicationContributor.getDao().publishToPw(-1);
+    	MpPublication.getDao().publishToPw(1);
+    	
+    	//this one should be a straight add.
+    	MpPublicationContributor.getDao().publishToPw(1);
+    	PwPublication pub = PwPublication.getDao().getById(1);
+    	assertEquals(2, pub.getAuthors().size());
+    	for (PublicationContributor<?> contrib : pub.getAuthors()) {
+    		if (1 == contrib.getId()) {
+    			assertPwContributor1(contrib);
+    		} else if (2 == contrib.getId()) {
+    			assertPwContributor2(contrib);
+    		} else {
+    			fail("Got a bad contributor:" + contrib.getId());
+    		}
+    	}
+    	assertEquals(2, pub.getEditors().size());
+    	for (PublicationContributor<?> contrib : pub.getEditors()) {
+    		if (3 == contrib.getId()) {
+    			assertPwContributor3(contrib);
+    		} else if (4 == contrib.getId()) {
+    			assertPwContributor4(contrib);
+    		} else {
+    			fail("Got a bad contributor:" + contrib.getId());
+    		}
+    	}
+    	
+    	//this one should be a merge.
+    	MpPublication.getDao().copyFromPw(4);
+    	MpPublicationContributor.getDao().copyFromPw(4);
+    	MpPublication.getDao().publishToPw(4);
+    	MpPublicationContributor.getDao().deleteById(10);
+    	MpPublicationContributor.getDao().publishToPw(4);
+    	pub = PwPublication.getDao().getById(4);
+    	assertEquals(0, pub.getAuthors().size());
+    	assertEquals(1, pub.getEditors().size());
+    	for (PublicationContributor<?> contrib : pub.getEditors()) {
+    		assertPwContributor11(contrib);
+    	}
+    }
+
+	public static void assertPwContributor1(PublicationContributor<?> contrib) {
+		assertTrue(contrib instanceof PwPublicationContributor);
+		assertContributor1(contrib);
+	}
+
+	public static void assertMpContributor1(PublicationContributor<?> contrib) {
+		assertTrue(contrib instanceof MpPublicationContributor);
+		assertContributor1(contrib);
+	}
+
+	public static void assertContributor1(PublicationContributor<?> contrib) {
 		assertNotNull(contrib);
 		assertEquals(1, contrib.getId().intValue());
 		assertEquals(1, contrib.getPublicationId().intValue());
@@ -133,7 +191,59 @@ public class MpPublicationContributorDaoTest extends BaseSpringDaoTest {
 		assertEquals(1, contrib.getRank().intValue());
 	}
 
-	public static void assertMpContributor4(MpPublicationContributor contrib) {
+	public static void assertPwContributor2(PublicationContributor<?> contrib) {
+		assertTrue(contrib instanceof PwPublicationContributor);
+		assertContributor2(contrib);
+	}
+
+	public static void assertMpContributor2(PublicationContributor<?> contrib) {
+		assertTrue(contrib instanceof MpPublicationContributor);
+		assertContributor2(contrib);
+	}
+
+	public static void assertContributor2(PublicationContributor<?> contrib) {
+		assertNotNull(contrib);
+		assertEquals(2, contrib.getId().intValue());
+		assertEquals(1, contrib.getPublicationId().intValue());
+		assertNotNull(contrib.getContributor());
+		assertEquals(2, contrib.getContributor().getId().intValue());
+		assertNotNull(contrib.getContributorType());
+		assertEquals(1, contrib.getContributorType().getId().intValue());
+		assertEquals(2, contrib.getRank().intValue());
+	}
+
+	public static void assertPwContributor3(PublicationContributor<?> contrib) {
+		assertTrue(contrib instanceof PwPublicationContributor);
+		assertContributor3(contrib);
+	}
+
+	public static void assertMpContributor3(PublicationContributor<?> contrib) {
+		assertTrue(contrib instanceof MpPublicationContributor);
+		assertContributor3(contrib);
+	}
+
+	public static void assertContributor3(PublicationContributor<?> contrib) {
+		assertNotNull(contrib);
+		assertEquals(3, contrib.getId().intValue());
+		assertEquals(1, contrib.getPublicationId().intValue());
+		assertNotNull(contrib.getContributor());
+		assertEquals(1, contrib.getContributor().getId().intValue());
+		assertNotNull(contrib.getContributorType());
+		assertEquals(2, contrib.getContributorType().getId().intValue());
+		assertEquals(2, contrib.getRank().intValue());
+	}
+
+	public static void assertPwContributor4(PublicationContributor<?> contrib) {
+		assertTrue(contrib instanceof PwPublicationContributor);
+		assertContributor4(contrib);
+	}
+
+	public static void assertMpContributor4(PublicationContributor<?> contrib) {
+		assertTrue(contrib instanceof MpPublicationContributor);
+		assertContributor4(contrib);
+	}
+
+	public static void assertContributor4(PublicationContributor<?> contrib) {
 		assertNotNull(contrib);
 		assertEquals(4, contrib.getId().intValue());
 		assertEquals(1, contrib.getPublicationId().intValue());
@@ -155,7 +265,17 @@ public class MpPublicationContributorDaoTest extends BaseSpringDaoTest {
 		assertEquals(1, contrib.getRank().intValue());
 	}
 
-	public static void assertMpContributor11(MpPublicationContributor contrib) {
+	public static void assertPwContributor11(PublicationContributor<?> contrib) {
+		assertTrue(contrib instanceof PwPublicationContributor);
+		assertContributor11(contrib);
+	}
+
+	public static void assertMpContributor11(PublicationContributor<?> contrib) {
+		assertTrue(contrib instanceof MpPublicationContributor);
+		assertContributor11(contrib);
+	}
+
+	public static void assertContributor11(PublicationContributor<?> contrib) {
 		assertNotNull(contrib);
 		assertEquals(11, contrib.getId().intValue());
 		assertEquals(4, contrib.getPublicationId().intValue());

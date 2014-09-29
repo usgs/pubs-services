@@ -87,7 +87,7 @@ public class IpdsProcess implements IIpdsProcess {
             //We only keep the prodID from the original MP record. The delete is to make sure we kill all child objects.
             if (null != existingPub) {
                 pub.setId(existingPub.getId());
-                pubBusService.deleteObject(existingPub);
+                pubBusService.deleteObject(existingPub.getId());
             };
 
             // get contributors from web service

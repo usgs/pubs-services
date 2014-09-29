@@ -54,6 +54,34 @@
            where publication_contributor_id = #{id,jdbcType=NUMERIC}
     </update>
 
+	<update id="publish" parameterType="Integer">
+		merge into publication_contributor pw 
+			using (<include refid="baseSelect"/>
+			         where publication_id = #{value,jdbcType=NUMERIC}) mp 
+			   on (mp.publication_contributor_id = pw.publication_contributor_id) 
+			 when matched then update 
+				  set pw.contributor_id = mp.contributor_id, 
+					  pw.contributor_type_id = mp.contributor_type_id,
+					  pw.rank = mp.rank,
+					  pw.insert_date = mp.insert_date,
+					  pw.insert_username = mp.insert_username,
+					  pw.update_date = sysdate,
+					  pw.update_username = audit_trail_util.get_username
+			 when not matched then insert (<include refid="publicationContributor.cols"/>)
+				  values (mp.publication_contributor_id, 	mp.publication_id, 		mp.contributor_id,
+				          mp.contributor_type_id,			mp.rank,
+				          mp.insert_date, 					mp.insert_username, 	sysdate, 			audit_trail_util.get_username)
+ 
+	</update>
+	
+	<delete id="publishDelete" parameterType="Integer">
+		delete from publication_contributor
+		 where publication_id = #{value,jdbcType=NUMERIC} and
+		       publication_contributor_id not in (select publication_contributor_id
+		                                            from mp_pub_contributor
+		                                           where publication_id = #{value,jdbcType=NUMERIC}) 
+	</delete>
+
     <delete id="delete" parameterType="Integer">
         delete from mp_pub_contributor
          where publication_contributor_id = #{value,jdbcType=NUMERIC}

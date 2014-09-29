@@ -55,9 +55,9 @@ public interface IBusService <D> {
     /**
      * Delete an object
      * 
-     * @param object to delete
+     * @param objectId to delete
      * @return TODO
      */
-    ValidationResults deleteObject(final D object);
+    ValidationResults deleteObject(final Integer objectId);
 
 }

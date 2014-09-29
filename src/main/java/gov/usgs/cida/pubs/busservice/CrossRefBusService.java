@@ -123,7 +123,8 @@ public class CrossRefBusService implements ICrossRefBusService {
                 pubsEMailer.sendMail("Unexpected error in POST to crossref", e.getMessage());
             }
 
-            if (HttpStatus.SC_OK != rtn.getStatusLine().getStatusCode()) {
+            if (null == rtn || null == rtn.getStatusLine()
+            		|| HttpStatus.SC_OK != rtn.getStatusLine().getStatusCode()) {
                 LOG.info("not cool" + rtn.getStatusLine().getStatusCode());
                 pubsEMailer.sendMail("Unexpected error in POST to crossref", rtn.getStatusLine().toString());
             }

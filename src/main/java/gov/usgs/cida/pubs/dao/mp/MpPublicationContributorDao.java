@@ -116,6 +116,7 @@ public class MpPublicationContributorDao extends MpDao<MpPublicationContributor>
     @Override
     public void publishToPw(Integer prodID) {
         getSqlSession().update(NS + PUBLISH, prodID);
+		getSqlSession().update(NS + PUBLISH_DELETE, prodID);
     }
 
 }

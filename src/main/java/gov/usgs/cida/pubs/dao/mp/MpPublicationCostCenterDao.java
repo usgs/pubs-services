@@ -105,6 +105,7 @@ public class MpPublicationCostCenterDao extends MpDao<MpPublicationCostCenter> {
     @Override
     public void publishToPw(Integer prodID) {
         getSqlSession().update(NS + PUBLISH, prodID);
+		getSqlSession().update(NS + PUBLISH_DELETE, prodID);
     }
 
 }

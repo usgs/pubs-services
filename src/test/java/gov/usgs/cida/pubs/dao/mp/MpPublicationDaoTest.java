@@ -14,6 +14,7 @@ import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.domain.pw.PwPublication;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -115,12 +116,33 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
     	assertNull(mpPub.getLockUsername());
     }
     
-    //TODO the following tests...
-    //publishToPw(Integer prodID)
+    @Test
+    public void publishToPwTest() {
+    	MpPublication.getDao().publishToPw(null);
+    	MpPublication.getDao().publishToPw(-1);
+    	
+    	//this one should be a straight add.
+    	MpPublication.getDao().publishToPw(1);
+    	assertPwPub1(PwPublication.getDao().getById(1));
+
+    	//this one should be a merge.
+    	MpPublication.getDao().publishToPw(4);
+    	PwPublicationDaoTest.assertPwPub4(PwPublication.getDao().getById(4));
+    }
 
     public static void assertMpPub1(Publication<?> pub, String expectedLockUsername) {
     	assertTrue(pub instanceof MpPublication);
-        assertEquals(1, pub.getId().intValue());
+    	assertPub1(pub);
+        assertEquals(expectedLockUsername, ((MpPublication) pub).getLockUsername());
+    }
+
+    public static void assertPwPub1(Publication<?> pub) {
+       	assertTrue(pub instanceof PwPublication);
+    	assertPub1(pub);
+    }
+
+    public static void assertPub1(Publication<?> pub) {
+    	assertEquals(1, pub.getId().intValue());
         assertEquals("sir20145083", pub.getIndexId());
         assertEquals("2014-07-14T17:27:36.000", pub.getDisplayToPublicDate().toString());
         assertEquals(18, pub.getPublicationType().getId().intValue());
@@ -159,7 +181,6 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals("Conference Title", pub.getConferenceTitle());
         assertEquals("A free form DATE", pub.getConferenceDate());
         assertEquals("A conference location", pub.getConferenceLocation());
-        assertEquals(expectedLockUsername, ((MpPublication) pub).getLockUsername());
         assertEquals("100", pub.getScale());
         assertEquals(23, pub.getLargerWorkSubtype().getId().intValue());
         assertEquals("EPSG:3857", pub.getProjection());
@@ -169,6 +190,8 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals("DANE", pub.getCounty());
         assertEquals("MIDDLETON", pub.getCity());
         assertEquals("On the moon", pub.getOtherGeospatial());
+        assertEquals("VOL123", pub.getVolume());
+        assertEquals("IS IIVI", pub.getIssue());
         assertEquals("{ \"json\": \"extents\" }", pub.getGeographicExtents());
     }
 
@@ -179,7 +202,18 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals(2, pub.getLinks().size());
     }
 
-    public static void assertMpPub2(Publication<?> pub) {
+    public static void assertMpPub2(Publication<?> pub, String expectedLockUsername) {
+    	assertTrue(pub instanceof MpPublication);
+    	assertPub2(pub);
+        assertEquals(expectedLockUsername, ((MpPublication) pub).getLockUsername());
+    }
+
+    public static void assertPwPub2(Publication<?> pub) {
+       	assertTrue(pub instanceof PwPublication);
+    	assertPub2(pub);
+    }
+
+    public static void assertPub2(Publication<?> pub) {
         assertEquals(2, pub.getId().intValue());
         assertEquals("2", pub.getIndexId());
         assertEquals("2014-07-22T20:06:10.000", pub.getDisplayToPublicDate().toString());
@@ -246,7 +280,7 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals(1, pub.getLinks().size());
     }
 
-    public static MpPublication addAPub(final Integer pubId) {
+    public static MpPublication buildAPub(final Integer pubId) {
         MpPublication newPub = new MpPublication();
         newPub.setIndexId("indexid" + pubId);
         newPub.setDisplayToPublicDate(new LocalDateTime(2012, 8, 23, 0, 0, 0));
@@ -310,6 +344,13 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         newPub.setCity("MIDDLETON");
         newPub.setOtherGeospatial("On the moon");
         newPub.setGeographicExtents("{ \"json\": \"extents\" }");
+        newPub.setVolume("VOL12");
+        newPub.setIssue("ISIV");
+        return newPub;
+    }
+    
+    public static MpPublication addAPub(final Integer pubId) {
+        MpPublication newPub = buildAPub(pubId);
         MpPublication.getDao().add(newPub);
         return newPub;
     }
@@ -365,6 +406,8 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         updatedPub.setConferenceTitle("A new title");
         updatedPub.setConferenceLocation("a new conference location");
         updatedPub.setLockUsername("newUser");
+        updatedPub.setVolume("VOL13");
+        updatedPub.setIssue("ISIX");
         return updatedPub;
     }
 }

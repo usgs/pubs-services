@@ -295,7 +295,17 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @Length(min=0, max=4000)
     private String geographicExtents;
 
-/**
+    @JsonProperty("volume")
+    @JsonView(IMpView.class)
+    @Length(min=0, max=50)
+    private String volume;
+
+    @JsonProperty("issue")
+    @JsonView(IMpView.class)
+    @Length(min=0, max=20)
+    private String issue;
+
+    /**
      * @return the indexId
      */
     public String getIndexId() {
@@ -890,7 +900,23 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 		this.geographicExtents = geographicExtents;
 	}
 	
-    @JsonProperty("lastModifiedDate")
+    public String getVolume() {
+		return volume;
+	}
+
+	public void setVolume(final String inVolume) {
+		volume = inVolume;
+	}
+
+	public String getIssue() {
+		return issue;
+	}
+
+	public void setIssue(final String inIssue) {
+		issue = inIssue;
+	}
+
+	@JsonProperty("lastModifiedDate")
     @JsonView(IMpView.class)
     @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
     @Override

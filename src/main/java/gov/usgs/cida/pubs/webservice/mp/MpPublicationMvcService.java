@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  *
  */
 @Controller
+@RequestMapping(value = "mppublications", produces="application/json")
 public class MpPublicationMvcService extends MvcService<MpPublication> {
     private static final Logger LOG = LoggerFactory.getLogger(MpPublicationMvcService.class);
 
@@ -55,7 +56,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     	this.busService = busService;
     }
     
-    @RequestMapping(value = "mppublications", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     @ResponseView(IMpView.class)
     public @ResponseBody SearchResults getPubs(
     		@RequestParam(value="q", required=false) String searchTerms, //single string search
@@ -73,9 +74,10 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
             @RequestParam(value="reportNumber", required=false) String[] reportNumber,
             @RequestParam(value="page_row_start", required=false, defaultValue = "0") String pageRowStart,
             @RequestParam(value="page_size", required=false, defaultValue = "25") String pageSize,
-            HttpServletResponse response) {
+            @RequestParam(value="listId", required=false) String[] listId,
+			HttpServletResponse response) {
 
-        Map<String, Object> filters = new HashMap<String, Object>();
+        Map<String, Object> filters = new HashMap<>();
 
     	configureSingleSearchFilters(filters, searchTerms);
 
@@ -93,6 +95,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     	addToFiltersIfNotNull(filters, "reportNumber", reportNumber);
     	addToFiltersIfNotNull(filters, "pageRowStart", pageRowStart);
     	addToFiltersIfNotNull(filters, "pageSize", pageSize);
+    	addToFiltersIfNotNull(filters, "listId", listId);
 
         List<Publication<?>> pubs = pubBusService.getObjects(filters);
         Integer totalPubsCount = pubBusService.getObjectCount(filters);
@@ -118,7 +121,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     	return filters;
     }
 
-    @RequestMapping(value={"/mppublication/{publicationId}","/mppublications/{publicationId}"}, method=RequestMethod.GET)
+    @RequestMapping(value="{publicationId}", method=RequestMethod.GET)
     @ResponseView(IMpView.class)
     @Transactional
     public @ResponseBody MpPublication getMpPublication(HttpServletRequest request, HttpServletResponse response,
@@ -142,13 +145,13 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         return rtn;
     }
 
-    @RequestMapping(value = "mppublications", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     @ResponseView(IMpView.class)
     @Transactional
     public @ResponseBody MpPublication createPub(@RequestBody MpPublication pub, HttpServletResponse response) {
         setHeaders(response);
         MpPublication newPub = busService.createObject(pub);
-        if (null != newPub && newPub.getValErrors().isEmpty()) {
+        if (null != newPub && newPub.getValidationErrors().isEmpty()) {
             response.setStatus(HttpServletResponse.SC_CREATED);
         } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -156,7 +159,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         return newPub;
     }
 
-    @RequestMapping(value = {"mppublication/{publicationId}","mppublications/{publicationId}"}, method = RequestMethod.PUT)
+    @RequestMapping(value = "{publicationId}", method = RequestMethod.PUT)
     @ResponseView(IMpView.class)
     @Transactional
     public @ResponseBody MpPublication updateMpPublication(@RequestBody MpPublication pub, @PathVariable String publicationId,
@@ -167,7 +170,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         ValidatorResult locked = busService.checkAvailability(id);
         if (null == locked) {
         	rtn = busService.updateObject(pub);
-            if (null != rtn && rtn.getValErrors().isEmpty()) {
+            if (null != rtn && rtn.getValidationErrors().isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_OK);
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -179,7 +182,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         return rtn;
     }
 
-    @RequestMapping(value = "mppublications/{publicationId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "{publicationId}", method = RequestMethod.DELETE)
     @ResponseView(IMpView.class)
     @Transactional
     public @ResponseBody ValidationResults deletePub(@PathVariable String publicationId, HttpServletResponse response) {
@@ -188,9 +191,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         ValidationResults rtn = new ValidationResults();
         ValidatorResult locked = busService.checkAvailability(id);
         if (null == locked) {
-	        MpPublication pub = new MpPublication();
-	        pub.setId(id);
-	        rtn = busService.deleteObject(pub);
+	        rtn = busService.deleteObject(id);
 	        if (null != rtn && rtn.isEmpty()) {
 	        	response.setStatus(HttpServletResponse.SC_OK);
 	        } else {
@@ -203,7 +204,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         return rtn;
     }
 
-    @RequestMapping(value = "mppublications/publish", method = RequestMethod.POST)
+    @RequestMapping(value = "publish", method = RequestMethod.POST)
     @ResponseView(IMpView.class)
 	@Transactional
 	public @ResponseBody ValidationResults publishPub(@RequestBody MpPublication pub, HttpServletResponse response) {
@@ -214,6 +215,8 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         	rtn = busService.publish(pub.getId());
 	        if (null != rtn && rtn.isEmpty()) {
 	        	response.setStatus(HttpServletResponse.SC_OK);
+	        } else if (null != rtn && rtn.toString().contains("Publication does not exist.")) {
+	        	response.setStatus(HttpStatus.NOT_FOUND.value());
 	        } else {
 	        	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 	        }
@@ -225,7 +228,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 	}
 	
 
-    @RequestMapping(value = "mppublications/release", method = RequestMethod.POST)
+    @RequestMapping(value = "release", method = RequestMethod.POST)
     @ResponseView(IMpView.class)
 	@Transactional
 	public @ResponseBody ValidationResults releasePub(@RequestBody MpPublication pub, HttpServletResponse response) {

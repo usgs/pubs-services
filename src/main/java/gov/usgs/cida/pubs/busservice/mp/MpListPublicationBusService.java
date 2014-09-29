@@ -3,7 +3,6 @@ package gov.usgs.cida.pubs.busservice.mp;
 import gov.usgs.cida.pubs.busservice.BusService;
 import gov.usgs.cida.pubs.domain.mp.MpListPublication;
 import gov.usgs.cida.pubs.validation.ValidationResults;
-import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,26 +39,14 @@ public class MpListPublicationBusService extends BusService<MpListPublication> {
 	}
 
 	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.core.busservice.intfc.IBusService#deleteObject(java.lang.Object)
+	 * @see gov.usgs.cida.pubs.core.busservice.intfc.IBusService#deleteObject(Integer)
 	 */
 	@Override
 	@Transactional
-	public ValidationResults deleteObject(MpListPublication object) {
-		MpListPublication rtnListPub = getMe(object);
-		if (null == rtnListPub) {
-			rtnListPub = new MpListPublication();
-		} else {
-			//only delete if we found it...
-			Set<ConstraintViolation<MpListPublication>> validations = validator.validate(rtnListPub, DeleteChecks.class);
-			if (!validations.isEmpty()) {
-				rtnListPub.setValidationErrors(validations);
-			} else {
-				MpListPublication.getDao().delete(object);
-			}
-		}
-		return rtnListPub.getValidationErrors();
+	public ValidationResults deleteObject(Integer objectId) {
+		MpListPublication.getDao().deleteById(objectId);
+		return null;
 	}
-
 	
 	private MpListPublication getMe(final MpListPublication object) {
 		//We have a two column primary, so do a dance to get the row back out... 

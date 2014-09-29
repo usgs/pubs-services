@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.webservice.mp;
 
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.domain.mp.MpList;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.webservice.MvcService;
 
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
+@RequestMapping(value = "lists", produces="application/json")
 public class MpListMvcService extends MvcService<MpList> {
 
 	private final IBusService<MpList> busService;
@@ -32,30 +34,28 @@ public class MpListMvcService extends MvcService<MpList> {
     	this.busService = busService;
     }
 
-	@RequestMapping(value = "lists", method = RequestMethod.GET, produces="application/json")
+	@RequestMapping(method = RequestMethod.GET)
 	public @ResponseBody Collection<MpList> getLists(HttpServletResponse response) {
 		Map<String, Object> filters = new HashMap<String, Object>();
 		return busService.getObjects(filters);
 	}
 	
-	@RequestMapping(value = "lists", method = RequestMethod.POST, produces="application/json")
+	@RequestMapping(method = RequestMethod.POST)
 	@Transactional
 	public @ResponseBody MpList createList(@RequestBody MpList mpList, HttpServletResponse response) {
 		return busService.createObject(mpList);
 	}
 	
-	@RequestMapping(value = "lists/{id}", method = RequestMethod.PUT, produces="application/json")
+	@RequestMapping(value = "{id}", method = RequestMethod.PUT)
 	@Transactional
 	public @ResponseBody MpList updateList(@RequestBody MpList mpList, @PathVariable String id, HttpServletResponse response) {
 		return busService.updateObject(mpList);
 	}
 	
-	@RequestMapping(value = "lists/{id}", method = RequestMethod.DELETE, produces="application/json")
+	@RequestMapping(value = "{id}", method = RequestMethod.DELETE)
 	@Transactional
 	public @ResponseBody ValidationResults deleteList(@PathVariable String id, HttpServletResponse response) {
-		MpList list = new MpList();
-		list.setId(id);
-		return busService.deleteObject(list);
+		return busService.deleteObject(PubsUtilities.parseInteger(id));
 	}
 
 }

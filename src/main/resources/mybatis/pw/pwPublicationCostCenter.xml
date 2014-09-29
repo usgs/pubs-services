@@ -3,7 +3,7 @@
 
 <mapper namespace="pwPublicationCostCenter">
 
-    <resultMap id="result" type="MpPublicationCostCenter" extends="publicationCostCenter.result">
+    <resultMap id="result" type="PwPublicationCostCenter" extends="publicationCostCenter.result">
 <!--     <resultMap id="result" type="CostCenter" extends="costCenter.result"> -->
     </resultMap>
 

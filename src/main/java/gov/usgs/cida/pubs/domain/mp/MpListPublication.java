@@ -6,15 +6,12 @@ import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
 /**
  * @author drsteini
  *
  */
 @ParentExists
 @UniqueKey
-@JsonPropertyOrder({""})//TODO
 public class MpListPublication extends BaseDomain<MpListPublication> {
 
 	private static IMpDao<MpListPublication> mpListPublicationDao;

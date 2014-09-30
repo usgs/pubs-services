@@ -1,7 +1,6 @@
 package gov.usgs.cida.pubs.busservice.mp;
 
 import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.busservice.BusService;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
@@ -45,7 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author drsteini
  *
  */
-public class MpPublicationBusService extends BusService<MpPublication> implements IMpPublicationBusService {
+public class MpPublicationBusService extends MpBusService<MpPublication> implements IMpPublicationBusService {
 
     //This can/should be overridden from JNDI. 
     protected Integer lockTimeoutHours = PubsConstants.DEFAULT_LOCK_TIMEOUT_HOURS;
@@ -307,29 +306,6 @@ public class MpPublicationBusService extends BusService<MpPublication> implement
 	        }
     	}
         return validationResults;
-    }
-    
-    /**
-     * Make sure the pw publication information exists in mp before working with it in mp.
-     * @param publicationId
-     */
-    protected void beginPublicationEdit(Integer publicationId) {
-        if (null != publicationId) {
-            //Look in MP to see if this key exists
-            MpPublication mpPub = MpPublication.getDao().getById(publicationId);
-            if (null == mpPub) {
-                //Didn't find it in MP, look in PW
-                PwPublication pwPub = PwPublication.getDao().getById(publicationId);
-                if (null != pwPub) {
-                    //There it is, copy it!
-                    MpPublication.getDao().copyFromPw(publicationId);
-                    MpPublicationCostCenter.getDao().copyFromPw(publicationId);
-                    MpPublicationLink.getDao().copyFromPw(publicationId);
-                    MpPublicationContributor.getDao().copyFromPw(publicationId);
-                }
-            }
-           	MpPublication.getDao().lockPub(publicationId);
-        }
     }
     
     /**

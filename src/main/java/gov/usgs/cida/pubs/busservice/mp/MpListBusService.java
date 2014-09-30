@@ -32,12 +32,14 @@ public class MpListBusService extends BusService<MpList> {
 	@Transactional
 	public MpList createObject(final MpList object) {
 		MpList rtnList = new MpList();
-		Set<ConstraintViolation<MpList>> validations = validator.validate(object);
-		if (!validations.isEmpty()) {
-			rtnList.setValidationErrors(validations);
-		} else {
-			Integer id = MpList.getDao().add(object);
-			rtnList = MpList.getDao().getById(id);
+		if (null != object) {
+			Set<ConstraintViolation<MpList>> validations = validator.validate(object);
+			if (!validations.isEmpty()) {
+				rtnList.setValidationErrors(validations);
+			} else {
+				Integer id = MpList.getDao().add(object);
+				rtnList = MpList.getDao().getById(id);
+			}
 		}
 		return rtnList;
 	}
@@ -46,12 +48,14 @@ public class MpListBusService extends BusService<MpList> {
 	@Transactional
 	public MpList updateObject(final MpList object) {
 		MpList rtnList = new MpList();
-		Set<ConstraintViolation<MpList>> validations = validator.validate(object);
-		if (!validations.isEmpty()) {
-			rtnList.setValidationErrors(validations);
-		} else {
-			MpList.getDao().update(object);
-			rtnList = MpList.getDao().getById(object.getId());
+		if (null != object) {
+			Set<ConstraintViolation<MpList>> validations = validator.validate(object);
+			if (!validations.isEmpty()) {
+				rtnList.setValidationErrors(validations);
+			} else {
+				MpList.getDao().update(object);
+				rtnList = MpList.getDao().getById(object.getId());
+			}
 		}
 		return rtnList;
 	}

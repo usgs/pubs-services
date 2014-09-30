@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.dao.mp;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.LocalDateTime;
 import org.junit.Test;
 
 public class MpListDaoTest extends BaseSpringDaoTest {
@@ -87,4 +89,29 @@ public class MpListDaoTest extends BaseSpringDaoTest {
 		assertEquals("MP_SHARED_SUPER_APPROVED", list.getType());
 	}
 
+    public static MpList buildMpList(Integer id) {
+    	MpList mpList = new MpList();
+    	mpList.setId(id);
+    	mpList.setText("List " + id);
+    	mpList.setDescription("Description " + id);
+    	mpList.setType("Type " + id);
+    	mpList.setInsertDate(new LocalDateTime());
+    	mpList.setInsertUsername(PubsConstants.ANONYMOUS_USER);
+    	mpList.setUpdateDate(new LocalDateTime());
+    	mpList.setUpdateUsername(PubsConstants.ANONYMOUS_USER);
+    	return mpList;
+    }
+
+    public static void assertMpList(String suffix, MpList mpList) {
+    	assertNotNull(mpList);
+    	//Checking for not null since on insert, the id is really set from the sequence, not the passed object.
+    	assertNotNull(mpList.getId());
+    	assertEquals("List " + suffix, mpList.getText());
+    	assertEquals("Description " + suffix, mpList.getDescription());
+    	assertEquals("Type " + suffix, mpList.getType());
+    	assertNotNull(mpList.getInsertDate());
+    	assertNotNull(mpList.getInsertUsername());
+    	assertNotNull(mpList.getUpdateDate());
+    	assertNotNull(mpList.getUpdateUsername());
+    }
 }

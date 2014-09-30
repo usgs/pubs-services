@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping(value = "lists", produces="application/json")
+@ResponseBody 
 public class MpListMvcService extends MvcService<MpList> {
 
 	private final IBusService<MpList> busService;
@@ -35,27 +36,49 @@ public class MpListMvcService extends MvcService<MpList> {
     }
 
 	@RequestMapping(method = RequestMethod.GET)
-	public @ResponseBody Collection<MpList> getLists(HttpServletResponse response) {
+	public Collection<MpList> getLists(HttpServletResponse response) {
+		setHeaders(response);
 		Map<String, Object> filters = new HashMap<String, Object>();
 		return busService.getObjects(filters);
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@Transactional
-	public @ResponseBody MpList createList(@RequestBody MpList mpList, HttpServletResponse response) {
-		return busService.createObject(mpList);
+	public MpList createList(@RequestBody MpList mpList, HttpServletResponse response) {
+		setHeaders(response);
+		MpList newList = busService.createObject(mpList);
+        if (null != newList && newList.getValidationErrors().isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_CREATED);
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+        return newList;
 	}
 	
 	@RequestMapping(value = "{id}", method = RequestMethod.PUT)
 	@Transactional
-	public @ResponseBody MpList updateList(@RequestBody MpList mpList, @PathVariable String id, HttpServletResponse response) {
-		return busService.updateObject(mpList);
+	public MpList updateList(@RequestBody MpList mpList, @PathVariable String id, HttpServletResponse response) {
+		setHeaders(response);
+		MpList rtn =  busService.updateObject(mpList);
+        if (null != rtn && rtn.getValidationErrors().isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+        return rtn;
 	}
 	
 	@RequestMapping(value = "{id}", method = RequestMethod.DELETE)
 	@Transactional
-	public @ResponseBody ValidationResults deleteList(@PathVariable String id, HttpServletResponse response) {
-		return busService.deleteObject(PubsUtilities.parseInteger(id));
+	public ValidationResults deleteList(@PathVariable String id, HttpServletResponse response) {
+		setHeaders(response);
+		ValidationResults rtn =  busService.deleteObject(PubsUtilities.parseInteger(id));
+        if (null != rtn && rtn.isEmpty()) {
+        	response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+        	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+        return rtn;
 	}
 
 }

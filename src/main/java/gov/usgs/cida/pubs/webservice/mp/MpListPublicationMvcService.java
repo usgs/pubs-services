@@ -1,10 +1,12 @@
 package gov.usgs.cida.pubs.webservice.mp;
 
-import java.util.ArrayList;
+import gov.usgs.cida.pubs.busservice.intfc.IMpListPublicationBusService;
+import gov.usgs.cida.pubs.domain.mp.MpListPublication;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.webservice.MvcService;
+
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,22 +20,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import gov.usgs.cida.pubs.busservice.intfc.IBusService;
-import gov.usgs.cida.pubs.domain.mp.MpList;
-import gov.usgs.cida.pubs.domain.mp.MpListPublication;
-import gov.usgs.cida.pubs.domain.mp.MpPublication;
-import gov.usgs.cida.pubs.validation.ValidationResults;
-import gov.usgs.cida.pubs.webservice.MvcService;
-
 @Controller
 @RequestMapping(value = "lists/{listId}/pubs", produces="application/json")
 public class MpListPublicationMvcService extends MvcService<MpListPublication> {
 
-	private final IBusService<MpListPublication> busService;
+	private final IMpListPublicationBusService busService;
 	
     @Autowired
     MpListPublicationMvcService(@Qualifier("mpListPublicationBusService")
-    		final IBusService<MpListPublication> busService) {
+    		final IMpListPublicationBusService busService) {
     	this.busService = busService;
     }
 
@@ -41,32 +36,17 @@ public class MpListPublicationMvcService extends MvcService<MpListPublication> {
 	@Transactional
 	public @ResponseBody Collection<MpListPublication> addPubToList(@PathVariable String listId,
 			@RequestParam("publicationId") String[] publicationIds, HttpServletResponse response) {
-		List<MpListPublication> newlistPubs = new ArrayList<MpListPublication>();
-		MpList mpList = new MpList();
-		mpList.setId(listId);
-		for (String publicationId : publicationIds) {
-			MpListPublication listPub = new MpListPublication();
-			MpPublication mpPub = new MpPublication();
-			mpPub.setId(publicationId);
-			listPub.setMpList(mpList);
-			listPub.setMpPublication(mpPub);
-			MpListPublication newListPub = busService.createObject(listPub);
-			newlistPubs.add(newListPub);
-		}
-		return newlistPubs;
+		setHeaders(response);
+		response.setStatus(HttpServletResponse.SC_CREATED);
+		return busService.addPubToList(PubsUtilities.parseInteger(listId), publicationIds);
 	}
 	
 	@RequestMapping(value = "{publicationId}", method = RequestMethod.DELETE)
 	@Transactional
-	public @ResponseBody ValidationResults removePubsFromList(@PathVariable String listId,
+	public @ResponseBody ValidationResults removePubFromList(@PathVariable String listId,
 			@PathVariable("publicationId") String publicationId, HttpServletResponse response) {
-        Map<String, Object> filters = new HashMap<>();
-        filters.put("listId", listId);
-        filters.put("publicationId", publicationId);
-		for (MpListPublication mpListPublication : MpListPublication.getDao().getByMap(filters)) {
-			busService.deleteObject(mpListPublication.getId());
-		}
-		return null;
+		setHeaders(response);
+		return busService.removePubFromList(PubsUtilities.parseInteger(listId), PubsUtilities.parseInteger(publicationId));
 	}
 
 }

@@ -9,10 +9,14 @@ import gov.usgs.cida.pubs.validation.mp.MpListProtected;
 
 import java.io.Serializable;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @NoChildren(groups = DeleteChecks.class)
 @MpListProtected(groups = DeleteChecks.class, protectedIds = MpList.PROTECTED_IDS)
+@JsonPropertyOrder({"id", "text", "description", "type"})
 public class MpList extends BaseDomain<MpList>  implements Serializable {
 
 	private static final long serialVersionUID = 4584540523823086709L;
@@ -39,12 +43,15 @@ public class MpList extends BaseDomain<MpList>  implements Serializable {
 			WAF_ISSUES;
 
 	@JsonProperty("text")
+    @Length(min=0, max=500)
 	private String text;
 
 	@JsonProperty("description")
+    @Length(min=0, max=2000)
 	private String description;
 	
 	@JsonProperty("type")
+    @Length(min=0, max=500)
 	private String type;
 	
 	public String getText() {

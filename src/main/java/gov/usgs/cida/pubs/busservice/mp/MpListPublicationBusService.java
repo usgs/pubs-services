@@ -1,9 +1,14 @@
 package gov.usgs.cida.pubs.busservice.mp;
 
-import gov.usgs.cida.pubs.busservice.BusService;
+import gov.usgs.cida.pubs.busservice.intfc.IMpListPublicationBusService;
+import gov.usgs.cida.pubs.domain.mp.MpList;
 import gov.usgs.cida.pubs.domain.mp.MpListPublication;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,46 +20,49 @@ import javax.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-public class MpListPublicationBusService extends BusService<MpListPublication> {
+public class MpListPublicationBusService extends MpBusService<MpListPublication> implements IMpListPublicationBusService {
 
     @Autowired
     MpListPublicationBusService(final Validator validator) {
     	this.validator = validator;
     }
 
-    @Override
-	@Transactional
-	public MpListPublication createObject(MpListPublication object) {
-//TODO		beginPublicationEdit(object.getMpPublication().getId());
-		
-		MpListPublication rtnListPub = new MpListPublication();
-		Set<ConstraintViolation<MpListPublication>> validations = validator.validate(object);
-		if (!validations.isEmpty()) {
-			rtnListPub.setValidationErrors(validations);
-		} else {
-			MpListPublication.getDao().add(object);
-			rtnListPub = getMe(object);
-		}
-		return rtnListPub;
-	}
-
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.core.busservice.intfc.IBusService#deleteObject(Integer)
-	 */
 	@Override
 	@Transactional
-	public ValidationResults deleteObject(Integer objectId) {
-		MpListPublication.getDao().deleteById(objectId);
-		return null;
+	public Collection<MpListPublication> addPubToList(Integer listId, String[] publicationIds) {
+		List<MpListPublication> newlistPubs = new ArrayList<MpListPublication>();
+		if (null != listId && null != publicationIds && 0 < publicationIds.length) {
+			MpList mpList = new MpList();
+			mpList.setId(listId);
+			for (String publicationId : publicationIds) {
+				beginPublicationEdit(PubsUtilities.parseInteger(publicationId));
+				MpListPublication listPub = new MpListPublication();
+				MpPublication mpPub = new MpPublication();
+				mpPub.setId(publicationId);
+				listPub.setMpList(mpList);
+				listPub.setMpPublication(mpPub);
+				Set<ConstraintViolation<MpListPublication>> validations = validator.validate(listPub);
+				if (!validations.isEmpty()) {
+					listPub.setValidationErrors(validations);
+				} else {
+					MpListPublication.getDao().add(listPub);
+				}
+				newlistPubs.add(listPub);
+			}
+		}
+		return newlistPubs;
 	}
-	
-	private MpListPublication getMe(final MpListPublication object) {
-		//We have a two column primary, so do a dance to get the row back out... 
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("publicationId", object.getMpPublication().getId());
-		params.put("listId", object.getMpList().getId());
-		List<MpListPublication> listPubs = MpListPublication.getDao().getByMap(params);
-		return 1 == listPubs.size() ? listPubs.get(0) : null;
+
+	@Override
+	@Transactional
+	public ValidationResults removePubFromList(Integer listId, Integer publicationId) {
+        Map<String, Object> filters = new HashMap<>();
+        filters.put("listId", listId);
+        filters.put("publicationId", publicationId);
+		for (MpListPublication mpListPublication : MpListPublication.getDao().getByMap(filters)) {
+			MpListPublication.getDao().deleteById(mpListPublication.getId());
+		}
+		return new ValidationResults();
 	}
 
 }

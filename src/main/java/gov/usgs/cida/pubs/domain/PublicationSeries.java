@@ -7,7 +7,6 @@ import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 
 import java.io.Serializable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -28,6 +27,7 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
 
     private PublicationSubtype publicationSubtype;
 
+    @JsonView({ILookupView.class, IMpView.class})
     private String text;
 
     private String code;
@@ -40,7 +40,7 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
     @JsonView(IMpView.class)
     private String printIssn;
 
-    @JsonProperty("active")
+    @JsonView(IMpView.class)
     private boolean active;
 
     /**
@@ -57,8 +57,6 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
         publicationSubtype = inPublicationSubtype;
     }
 
-    @Override
-    @JsonView({ILookupView.class, IMpView.class})
     public String getText() {
         return text;
     }

@@ -59,12 +59,12 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
     private MockMvc mockMvc;
 
     @InjectMocks
-    MpPublicationMvcService mpPublicationMvcService;
+    MpPublicationMvcService mvcService;
     
     @Before
     public void setup() {
     	MockitoAnnotations.initMocks(this);
-    	mockMvc = MockMvcBuilders.standaloneSetup(mpPublicationMvcService).build();
+    	mockMvc = MockMvcBuilders.standaloneSetup(mvcService).build();
 
         when(busService.checkAvailability(1)).thenReturn(VR_NOT_LOCKED);
         when(busService.checkAvailability(2)).thenReturn(VR_LOCKED);

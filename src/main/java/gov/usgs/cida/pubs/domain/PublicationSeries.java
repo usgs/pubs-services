@@ -7,12 +7,15 @@ import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonView;
 
 /**
  * @author drsteini
  *
  */
+@JsonPropertyOrder({"id", "text", "code", "seriesDoiName", "onlineIssn", "printIssn", "active"})
 public class PublicationSeries extends BaseDomain<PublicationSeries> implements ILookup, Serializable {
 
 	private static final long serialVersionUID = -4799472987508509766L;
@@ -36,6 +39,9 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
 
     @JsonView(IMpView.class)
     private String printIssn;
+
+    @JsonProperty("active")
+    private boolean active;
 
     /**
      * @return the publicationSubtype
@@ -91,6 +97,14 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
 
     public void setPrintIssn(final String inPrintIssn) {
         printIssn = inPrintIssn;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(final boolean inActive) {
+        active = inActive;
     }
 
     public static IDao<PublicationSeries> getDao() {

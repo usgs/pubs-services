@@ -11,10 +11,11 @@
         <result property="doi" column="doi_name"/>
         <result property="printIssn" column="print_issn"/>
         <result property="onlineIssn" column="online_issn"/>
+        <result property="active" column="is_active"/>
     </resultMap>
 
     <sql id="cols">
-        publication_series_id, publication_subtype_id, name, code, doi_name, print_issn, online_issn,
+        publication_series_id, publication_subtype_id, name, code, doi_name, print_issn, online_issn, is_active,
         <include refid="base.auditCols"/>
     </sql>
 
@@ -32,6 +33,9 @@
             <if test="text != null">
                 and upper(name) like upper(#{text}) || '%'
             </if>
+	        <if test="active != null">
+	            and is_active = #{active}
+	        </if>
          </where>
     </sql>
 

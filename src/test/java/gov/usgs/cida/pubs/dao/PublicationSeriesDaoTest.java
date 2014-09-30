@@ -1,8 +1,10 @@
 package gov.usgs.cida.pubs.dao;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 
@@ -30,6 +32,7 @@ public class PublicationSeriesDaoTest extends BaseSpringDaoTest {
         assertNull(pubSeries.getSeriesDoiName());
         assertEquals("0196-1497", pubSeries.getPrintIssn());
         assertEquals("2331-1258", pubSeries.getOnlineIssn());
+        assertTrue(pubSeries.isActive());
 
         pubSeries = PublicationSeries.getDao().getById(341);
         assertNotNull(pubSeries);
@@ -39,6 +42,7 @@ public class PublicationSeriesDaoTest extends BaseSpringDaoTest {
         assertNull(pubSeries.getSeriesDoiName());
         assertNull(pubSeries.getPrintIssn());
         assertNull(pubSeries.getOnlineIssn());
+        assertFalse(pubSeries.isActive());
     }
 
     @Test
@@ -51,6 +55,7 @@ public class PublicationSeriesDaoTest extends BaseSpringDaoTest {
         assertNull(pubSeries.getSeriesDoiName());
         assertNull(pubSeries.getPrintIssn());
         assertNull(pubSeries.getOnlineIssn());
+        assertFalse(pubSeries.isActive());
     }
 
     @Test
@@ -69,6 +74,7 @@ public class PublicationSeriesDaoTest extends BaseSpringDaoTest {
         assertNull(pubSeries.get(0).getSeriesDoiName());
         assertNull(pubSeries.get(0).getPrintIssn());
         assertNull(pubSeries.get(0).getOnlineIssn());
+        assertFalse(pubSeries.get(0).isActive());
 
         filters.clear();
         filters.put("publicationSubtypeId", 6);
@@ -90,6 +96,12 @@ public class PublicationSeriesDaoTest extends BaseSpringDaoTest {
         assertNull(pubSeries.get(0).getSeriesDoiName());
         assertEquals("0076-8952", pubSeries.get(0).getPrintIssn());
         assertNull(pubSeries.get(0).getOnlineIssn());
+        assertTrue(pubSeries.get(0).isActive());
+
+        filters.clear();
+        filters.put("active", "Y");
+        pubSeries = PublicationSeries.getDao().getByMap(filters);
+        assertEquals(9, pubSeries.size());
 
     }
 

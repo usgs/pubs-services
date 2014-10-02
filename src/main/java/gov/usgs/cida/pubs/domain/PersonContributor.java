@@ -2,8 +2,7 @@ package gov.usgs.cida.pubs.domain;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
-import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
-import gov.usgs.cida.pubs.json.view.intfc.IMpView;
+import gov.usgs.cida.pubs.json.view.intfc.IPwView;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 
 import org.apache.commons.lang3.StringUtils;
@@ -20,29 +19,28 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
     private static IDao<Contributor<?>> personContributorDao;
 
     @JsonProperty("family")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=1, max=40)
     private String family;
 
     @JsonProperty("given")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=40)
     private String given;
 
     @JsonProperty("suffix")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=40)
     private String suffix;
 
     @JsonProperty("email")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=400)
     @Email
     private String email;
 
     @JsonProperty("affiliation")
-    @JsonView(IMpView.class)
-    //TODO parent exists validation
+    @JsonView(IPwView.class)
     private Affiliation<?> affiliation;
 
     @JsonIgnore
@@ -97,7 +95,6 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
     }
 
     @Override
-    @JsonView({ILookupView.class, IMpView.class})
     public String getText() {
     	StringBuilder text = new StringBuilder();
     	if (StringUtils.isNotEmpty(family)) {
@@ -114,7 +111,6 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
     	}
         return text.toString();
     }
-
 
     public static IDao<Contributor<?>> getDao() {
         return personContributorDao;

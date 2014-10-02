@@ -2,7 +2,7 @@ package gov.usgs.cida.pubs.domain;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
-import gov.usgs.cida.pubs.json.view.intfc.IMpView;
+import gov.usgs.cida.pubs.json.view.intfc.IPwView;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import javax.validation.constraints.NotNull;
@@ -15,13 +15,13 @@ public class Contributor<D> extends BaseDomain<Contributor<D>> {
     private static IDao<Contributor<?>> contributorDao;
 
     @JsonProperty("corporation")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @NotNull
     //TODO cross-field validations
     protected boolean corporation;
 
     @JsonProperty("usgs")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @NotNull
     //TODO cross-field validations
     protected boolean usgs;
@@ -36,14 +36,14 @@ public class Contributor<D> extends BaseDomain<Contributor<D>> {
 
     @Override
     @JsonProperty("contributorId")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     public Integer getId() {
         return id;
     }
 
     @Override
     @JsonProperty("contributorId")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     public void setId(final String inId) {
         id = PubsUtilities.parseInteger(inId);
     }

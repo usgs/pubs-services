@@ -2,13 +2,9 @@ package gov.usgs.cida.pubs.domain;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
-import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
-import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 
 import java.io.Serializable;
 import java.util.Collection;
-
-import com.fasterxml.jackson.annotation.JsonView;
 
 /**
  * @author drsteini
@@ -29,7 +25,6 @@ public class PublicationType extends BaseDomain<PublicationType> implements ILoo
     private Collection<PublicationSubtype> publicationSubtypes;
 
     @Override
-    @JsonView({ILookupView.class, IMpView.class})
     public String getText() {
         return text;
     }

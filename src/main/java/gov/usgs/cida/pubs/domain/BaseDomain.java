@@ -2,7 +2,7 @@ package gov.usgs.cida.pubs.domain;
 
 import gov.usgs.cida.pubs.json.view.intfc.IBaseView;
 import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
-import gov.usgs.cida.pubs.json.view.intfc.IMpView;
+import gov.usgs.cida.pubs.json.view.intfc.IPwView;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
@@ -71,7 +71,7 @@ public abstract class BaseDomain<D> implements IBaseView {
      * @param inId the id to set
      */
     @JsonProperty("id")
-    @JsonView({IMpView.class, ILookupView.class})
+    @JsonView({IPwView.class, ILookupView.class})
     public void setId(final String inId) {
         id = PubsUtilities.parseInteger(inId);
     }

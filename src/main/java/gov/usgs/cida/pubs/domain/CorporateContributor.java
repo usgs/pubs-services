@@ -33,7 +33,7 @@ public class CorporateContributor extends Contributor<CorporateContributor> impl
     }
 
     @Override
-    @JsonView(ILookupView.class)
+    @JsonView({ILookupView.class, IMpView.class})
     public String getText() {
         return organization;
     }

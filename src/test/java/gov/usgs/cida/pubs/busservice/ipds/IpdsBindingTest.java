@@ -422,6 +422,7 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
     }
 
     protected void assertUsgsContributorXml(UsgsContributor person) {
+    	assertEquals(1, person.getIpdsContributorId().intValue());
         assertEquals("Jane", person.getFamily());
         assertEquals("Doe", person.getGiven());
         assertEquals("jmdoe@usgs.gov", person.getEmail());

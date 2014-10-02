@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.domain;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
 import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
+import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -16,7 +17,7 @@ public class ContributorType extends BaseDomain<ContributorType> implements ILoo
     private String text;
 
     @Override
-    @JsonView(ILookupView.class)
+    @JsonView({ILookupView.class, IMpView.class})
     public String getText() {
         return text;
     }

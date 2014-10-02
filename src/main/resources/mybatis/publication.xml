@@ -322,7 +322,7 @@
             </if>
             
             <!-- TODO: refactor and split to mypubs and regular pubs versions -->
-            <if test="author != null and author.length > 0">
+            <if test="contributor != null and contributor.length > 0">
                 and publication_id in (
                 select publication_id 
                 	from mp_pub_contributor 
@@ -330,7 +330,7 @@
                 		(select contributor_id 
                 		from contributor
                 		where 
-                		<foreach item="a" collection="author" open=""
+                		<foreach item="a" collection="contributor" open=""
 								 separator="or" close=""> 
 		                	upper(first) || ' ' || upper(given) like '%' || upper(#{a}) || '%'
 		                </foreach>
@@ -342,7 +342,7 @@
 						(select contributor_id 
                 		from contributor
                 		where 
-                		<foreach item="a" collection="author" open=""
+                		<foreach item="a" collection="contributor" open=""
 								 separator="or" close=""> 
 		                	upper(first) || ' ' || upper(given) like '%' || upper(#{a}) || '%'
 		                </foreach>

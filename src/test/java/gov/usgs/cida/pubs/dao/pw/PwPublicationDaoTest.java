@@ -2,6 +2,12 @@ package gov.usgs.cida.pubs.dao.pw;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
@@ -14,9 +20,46 @@ public class PwPublicationDaoTest extends BaseSpringDaoTest {
     public void getByIdTest() {
         PwPublication pub = PwPublication.getDao().getById(4);
         assertNotNull(pub);
-        //TODO - These should probably be combined once the full copyFromPw logic is working.
         assertPwPub4(pub);
         assertPwPub4Children(pub);
+    }
+
+    @Test
+    public void getByMapTest() {
+    	Map<String, Object> filters = new HashMap<>();
+    	filters.put("searchTerms", new String[]{"title"});
+        List<PwPublication> pubs = PwPublication.getDao().getByMap(filters);
+        assertNotNull(pubs);
+        assertEquals(1, pubs.size());
+        assertPwPub4(pubs.get(0));
+        assertPwPub4Children(pubs.get(0));
+        
+        //TODO add in real filter tests
+    }
+
+    @Test
+    public void getObjectCountTest() {
+    	Map<String, Object> filters = new HashMap<>();
+    	filters.put("searchTerms", new String[]{"title"});
+        Integer cnt = PwPublication.getDao().getObjectCount(filters);
+        assertEquals(1, cnt.intValue());
+        
+        //TODO add in real filter tests
+    }
+
+    @Test
+    public void getByIndexIdTest() {
+    	//We can get 4
+        PwPublication pub = PwPublication.getDao().getByIndexId("4");
+        assertNotNull(pub);
+        assertPwPub4(pub);
+        assertPwPub4Children(pub);
+        
+        //5 is not ready to display
+        pub = PwPublication.getDao().getByIndexId("9");
+        assertNull(pub);
+        //but it really does exist
+        assertNotNull(PwPublication.getDao().getById(5));
     }
 
     public static void assertPwPub4(Publication<?> pub) {

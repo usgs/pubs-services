@@ -1,7 +1,6 @@
 package gov.usgs.cida.pubs.webservice.mp;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -12,11 +11,14 @@ import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONArrayAs;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.busservice.intfc.IBusService;
+import gov.usgs.cida.pubs.busservice.intfc.IMpListPublicationBusService;
 import gov.usgs.cida.pubs.dao.mp.MpListDaoTest;
 import gov.usgs.cida.pubs.domain.mp.MpListPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.validation.ValidationResults;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,7 +35,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 public class MpListPublicationMvcServiceTest extends BaseSpringTest {
 
 	@Mock
-	private IBusService<MpListPublication> busService;
+	private IMpListPublicationBusService busService;
 
     private MockMvc mockMvc;
 
@@ -48,7 +50,8 @@ public class MpListPublicationMvcServiceTest extends BaseSpringTest {
 
     @Test
     public void addPubToListTest() throws Exception {
-        when(busService.createObject(any(MpListPublication.class))).thenReturn(buildIt());
+    	String[] ids = new String[]{"12"};
+        when(busService.addPubToList(66, ids)).thenReturn(buildIt());
         MvcResult rtn = mockMvc.perform(post("/lists/66/pubs?publicationId=12")
         .accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
         .andExpect(status().isCreated())
@@ -62,7 +65,7 @@ public class MpListPublicationMvcServiceTest extends BaseSpringTest {
 
     @Test
     public void removePubFromListTest() throws Exception {
-        when(busService.deleteObject(anyInt())).thenReturn(new ValidationResults());
+        when(busService.removePubFromList(anyInt(), anyInt())).thenReturn(new ValidationResults());
         MvcResult rtn = mockMvc.perform(delete("/lists/66/pubs/12")
         .accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
         .andExpect(status().isOk())
@@ -74,12 +77,14 @@ public class MpListPublicationMvcServiceTest extends BaseSpringTest {
                 sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
     }
 
-    private MpListPublication buildIt() {
+    private List<MpListPublication> buildIt() {
     	MpListPublication it = new MpListPublication();
     	it.setMpList(MpListDaoTest.buildMpList(66));
     	MpPublication mpPub = new MpPublication();
     	mpPub.setId(12);
     	it.setMpPublication(mpPub);
-    	return it;
+    	List<MpListPublication> list = new ArrayList<>();
+    	list.add(it);
+    	return list;
     }
 }

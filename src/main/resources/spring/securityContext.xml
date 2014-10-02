@@ -38,9 +38,14 @@
 	<bean id="filterChainProxy" class="org.springframework.security.web.FilterChainProxy">
 		<constructor-arg>
 			<util:list>
-				<sec:filter-chain pattern="/lookup/**" filters="securityContextPersistenceFilter, anonymousAuthenticationFilter, tokenSecurityFilter" /> <!-- Give anon access to lookup services -->
-				<sec:filter-chain pattern="/auth/ad/token/**" filters="securityContextPersistenceFilter, anonymousAuthenticationFilter, tokenSecurityFilter" /> <!-- authentication service -->
-				<sec:filter-chain pattern="/**" filters="securityContextPersistenceFilter, tokenSecurityFilter" /> <!-- everything else requires authentication/authorizaion -->
+				 <!-- Give anon access to lookup services -->
+				<sec:filter-chain pattern="/lookup/**" filters="securityContextPersistenceFilter, anonymousAuthenticationFilter, tokenSecurityFilter" />
+				 <!-- Give anon access to warehouse services -->
+				<sec:filter-chain pattern="/publication/**" filters="securityContextPersistenceFilter, anonymousAuthenticationFilter, tokenSecurityFilter" />
+				 <!-- authentication service -->
+				<sec:filter-chain pattern="/auth/ad/token/**" filters="securityContextPersistenceFilter, anonymousAuthenticationFilter, tokenSecurityFilter" />
+				 <!-- everything else requires authentication/authorizaion -->
+				<sec:filter-chain pattern="/**" filters="securityContextPersistenceFilter, tokenSecurityFilter" />
 			</util:list>
 		</constructor-arg>
 	</bean>

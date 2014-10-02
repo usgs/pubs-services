@@ -1,6 +1,5 @@
 package gov.usgs.cida.pubs.webservice.mp;
 
-import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.domain.Publication;
@@ -20,7 +19,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +60,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     		@RequestParam(value="q", required=false) String searchTerms, //single string search
             @RequestParam(value="title", required=false) String[] title,
             @RequestParam(value="abstract", required=false) String[] pubAbstract,
-            @RequestParam(value="author", required=false) String[] author,
+            @RequestParam(value="contributor", required=false) String[] contributor,
             @RequestParam(value="prodId", required=false) String[] prodId,
             @RequestParam(value="indexId", required=false) String[] indexId,
             @RequestParam(value="ipdsId", required=false) String[] ipdsId,
@@ -83,7 +81,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 
     	addToFiltersIfNotNull(filters, "title", title);
     	addToFiltersIfNotNull(filters, "abstract", pubAbstract);
-    	addToFiltersIfNotNull(filters, "author", author);
+    	addToFiltersIfNotNull(filters, "contributor", contributor);
     	addToFiltersIfNotNull(filters, "id", prodId);
     	addToFiltersIfNotNull(filters, "indexId", indexId);
     	addToFiltersIfNotNull(filters, "ipdsId", ipdsId);
@@ -106,19 +104,6 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         results.setRecordCount(totalPubsCount);
 
         return results;
-    }
-
-    /**
-     * Configures the filters/orderby settings to support single search
-     * @param filters
-     * @return
-     */
-    private Map<String, Object> configureSingleSearchFilters(Map<String, Object> filters, String searchTerms) {
-        if (StringUtils.isNotEmpty(searchTerms)) {
-	    	filters.put("searchTerms", searchTerms.split("[\\s+,+]"));
-	    	updateOrderBy(filters, PubsConstants.SEARCH_TERM_ORDERBY, PubsConstants.SEARCH_TERM_ORDERBY_DIR);
-        }
-    	return filters;
     }
 
     @RequestMapping(value="{publicationId}", method=RequestMethod.GET)

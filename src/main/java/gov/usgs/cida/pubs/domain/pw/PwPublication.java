@@ -1,6 +1,6 @@
 package gov.usgs.cida.pubs.domain.pw;
 
-import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.dao.intfc.IPwPublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
 
 import org.hibernate.validator.constraints.Length;
@@ -13,7 +13,7 @@ public class PwPublication extends Publication<PwPublication> {
 
     private static final long serialVersionUID = 1176886529474726822L;
 
-    private static IDao<PwPublication> pwPublicationDao;
+    private static IPwPublicationDao pwPublicationDao;
 
     @Length(min=0, max=1)
     private String webDocFlag;
@@ -63,7 +63,7 @@ public class PwPublication extends Publication<PwPublication> {
     /**
      * @return the pwPublicationDao
      */
-    public static IDao<PwPublication> getDao() {
+    public static IPwPublicationDao getDao() {
         return pwPublicationDao;
     }
 
@@ -71,7 +71,7 @@ public class PwPublication extends Publication<PwPublication> {
      * The setter for pwPublicationDao.
      * @param inPwPublicationDao the pwPublicationDao to set
      */
-    public void setPwPublicationDao(final IDao<PwPublication> inPwPublicationDao) {
+    public void setPwPublicationDao(final IPwPublicationDao inPwPublicationDao) {
         pwPublicationDao = inPwPublicationDao;
     }
 

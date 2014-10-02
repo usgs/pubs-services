@@ -2,8 +2,7 @@ package gov.usgs.cida.pubs.domain;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
-import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
-import gov.usgs.cida.pubs.json.view.intfc.IMpView;
+import gov.usgs.cida.pubs.json.view.intfc.IPwView;
 
 import org.hibernate.validator.constraints.Length;
 
@@ -20,7 +19,7 @@ public class CorporateContributor extends Contributor<CorporateContributor> impl
     }
 
     @JsonProperty("organization")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=1, max=400)
     private String organization;
 
@@ -33,7 +32,6 @@ public class CorporateContributor extends Contributor<CorporateContributor> impl
     }
 
     @Override
-    @JsonView({ILookupView.class, IMpView.class})
     public String getText() {
         return organization;
     }

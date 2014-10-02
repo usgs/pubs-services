@@ -1,5 +1,5 @@
 package gov.usgs.cida.pubs.json.view.intfc;
 
-public interface IMpView extends IPwView {
+public interface IPwView extends IBaseView {
 
 }

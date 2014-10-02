@@ -1,6 +1,6 @@
 package gov.usgs.cida.pubs.domain;
 
-import gov.usgs.cida.pubs.json.view.intfc.IMpView;
+import gov.usgs.cida.pubs.json.view.intfc.IPwView;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 
 import java.io.Serializable;
@@ -26,35 +26,35 @@ public class PublicationLink<D> extends BaseDomain<D> implements Serializable {
     private Integer publicationId;
 
     @JsonProperty("rank")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     private Integer rank;
 
     @JsonProperty("type")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @NotNull
     private LinkType linkType;
 
     @JsonProperty("url")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @URL
     private String url;
 
     @JsonProperty("text")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
 	@Length(min = 0, max = 4000)
     private String text;
 
     @JsonProperty("size")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
 	@Length(min = 0, max = 100)
     private String size;
 
     @JsonProperty("linkFileType")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     private LinkFileType linkFileType;
 
     @JsonProperty("description")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
 	@Length(min = 0, max = 4000)
     private String description;
 

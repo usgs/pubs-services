@@ -4,7 +4,7 @@ import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.json.ResponseView;
-import gov.usgs.cida.pubs.json.view.intfc.IMpView;
+import gov.usgs.cida.pubs.json.view.intfc.IPwView;
 import gov.usgs.cida.pubs.webservice.MvcService;
 
 import java.util.HashMap;
@@ -36,7 +36,7 @@ public class PwPublicationMvcService  extends MvcService<PwPublication> {
     }
     
     @RequestMapping(method = RequestMethod.GET)
-    @ResponseView(IMpView.class)
+    @ResponseView(IPwView.class)
     public @ResponseBody SearchResults getPubs(
     		@RequestParam(value="q", required=false) String searchTerms, //single string search
             @RequestParam(value="title", required=false) String[] title,
@@ -88,7 +88,7 @@ public class PwPublicationMvcService  extends MvcService<PwPublication> {
     }
 
     @RequestMapping(value="{indexId}", method=RequestMethod.GET)
-    @ResponseView(IMpView.class)
+    @ResponseView(IPwView.class)
     public @ResponseBody PwPublication getPwPublication(HttpServletRequest request, HttpServletResponse response,
                 @PathVariable("indexId") String indexId) {
         setHeaders(response);

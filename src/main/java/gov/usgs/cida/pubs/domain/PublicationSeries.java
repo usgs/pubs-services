@@ -2,8 +2,7 @@ package gov.usgs.cida.pubs.domain;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
-import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
-import gov.usgs.cida.pubs.json.view.intfc.IMpView;
+import gov.usgs.cida.pubs.json.view.intfc.IPwView;
 
 import java.io.Serializable;
 
@@ -34,10 +33,10 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
 
     private String seriesDoiName;
 
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     private String onlineIssn;
 
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     private String printIssn;
 
     @JsonIgnore
@@ -58,7 +57,6 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
     }
 
     @Override
-    @JsonView({ILookupView.class, IMpView.class})
     public String getText() {
         return text;
     }

@@ -7,6 +7,7 @@ import gov.usgs.cida.pubs.json.PubsJsonLocalDateSerializer;
 import gov.usgs.cida.pubs.json.PubsJsonLocalDateTimeDeSerializer;
 import gov.usgs.cida.pubs.json.PubsJsonLocalDateTimeSerializer;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
+import gov.usgs.cida.pubs.json.view.intfc.IPwView;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 import gov.usgs.cida.pubs.validation.constraint.PublishChecks;
 import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
@@ -41,174 +42,174 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     private static IDao<Publication<?>> publicationDao;
 
     @JsonProperty("indexId")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=1, max=100)
     private String indexId;
 
     @JsonProperty("displayToPublicDate")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @JsonDeserialize(using=PubsJsonLocalDateTimeDeSerializer.class)
     @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
     @NotNull(groups = PublishChecks.class)
     private LocalDateTime displayToPublicDate;
 
     @JsonProperty("publicationYear")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Pattern(regexp=PubsConstants.FOUR_DIGIT_REGEX, message="Publication Year must be a four digit year.")
     private String publicationYear;
 
     @JsonProperty("publicationType")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @NotNull
     private PublicationType publicationType;
 
     @JsonProperty("publicationSubtype")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     private PublicationSubtype publicationSubtype;
 
     @JsonProperty("seriesTitle")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     private PublicationSeries seriesTitle;
 
     @JsonProperty("seriesNumber")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=100)
     private String seriesNumber;
 
     @JsonProperty("subseriesTitle")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=255)
     private String subseriesTitle;
 
     @JsonProperty("chapter")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=255)
     private String chapter;
 
     @JsonProperty("subchapterNumber")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=255)
     private String subchapterNumber;
 
     @JsonProperty("title")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=1, max=2000)
     private String title;
 
     @JsonProperty("docAbstract")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     private String docAbstract;
 
     @JsonProperty("largerWorkType")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     private PublicationType largerWorkType;
 
     @JsonProperty("largerWorkTitle")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=2000)
     private String largerWorkTitle;
     
     @JsonProperty("largerWorkSubtype")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     private PublicationSubtype largerWorkSubtype;
 
     @JsonProperty("conferenceTitle")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=2000)
     private String conferenceTitle;
 
     @JsonProperty("conferenceDate")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=255)
     private String conferenceDate;
 
     @JsonProperty("conferenceLocation")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=255)
     private String conferenceLocation;
 
     @JsonProperty("language")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=70)
     private String language;
 
     @JsonProperty("publisher")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=255)
     private String publisher;
 
     @JsonProperty("publisherLocation")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=255)
     private String publisherLocation;
 
     @JsonProperty("doi")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=2000)
     private String doi;
 
     @JsonProperty("issn")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=20)
     private String issn;
 
     @JsonProperty("isbn")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=30)
     private String isbn;
 
     @JsonProperty("collaboration")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=4000)
     private String collaboration;
 
     @JsonProperty("usgsCitation")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=4000)
     private String usgsCitation;
 
     @JsonProperty("contact")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     private Contact contact;
 
     @JsonProperty("productDescription")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=4000)
     private String productDescription;
 
     @JsonProperty("startPage")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=20)
     private String startPage;
 
     @JsonProperty("endPage")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=20)
     private String endPage;
 
     @JsonProperty("numberOfPages")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Pattern(regexp=PubsConstants.SPACES_OR_NUMBER_REGEX)
     private String numberOfPages;
 
     @JsonProperty("onlineOnly")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Pattern(regexp="[YN]")
     private String onlineOnly;
 
     @JsonProperty("additionalOnlineFiles")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Pattern(regexp="[YN]")
     private String additionalOnlineFiles;
 
     @JsonProperty("temporalStart")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @JsonSerialize(using=PubsJsonLocalDateSerializer.class)
     @JsonDeserialize(using=PubsJsonLocalDateDeSerializer.class)
     private LocalDate temporalStart;
 
     @JsonProperty("temporalEnd")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @JsonSerialize(using=PubsJsonLocalDateSerializer.class)
     @JsonDeserialize(using=PubsJsonLocalDateDeSerializer.class)
     private LocalDate temporalEnd;
@@ -218,7 +219,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     private String notes;
 
     @JsonProperty("ipdsId")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=15)
     private String ipdsId;
 
@@ -231,77 +232,77 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 	protected String ipdsInternalId;
 
     @JsonProperty("authors")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Valid
 	protected Collection<PublicationContributor<?>> authors;
 
     @JsonProperty("editors")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Valid
     private Collection<PublicationContributor<?>> editors;
 
     @JsonProperty("costCenters")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Valid
     private Collection<PublicationCostCenter<?>> costCenters;
 
     @JsonProperty("links")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Valid
     private Collection<PublicationLink<?>> links;
     
     @JsonProperty("scale")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Pattern(regexp=PubsConstants.SPACES_OR_NUMBER_REGEX)
     private String scale;
     
     @JsonProperty("projection")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=500)
     private String projection;
     
     @JsonProperty("datum")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=500)
     private String datum;
     
     @JsonProperty("country")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=500)
     private String country;
     
     @JsonProperty("state")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=500)
     private String state;
     
     @JsonProperty("county")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=500)
     private String county;
     
     @JsonProperty("city")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=500)
     private String city;
     
     @JsonProperty("otherGeospatial")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=500)
     private String otherGeospatial;
     
     @JsonProperty("geographicExtents")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=4000)
     private String geographicExtents;
 
     @JsonProperty("volume")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=50)
     private String volume;
 
     @JsonProperty("issue")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @Length(min=0, max=20)
     private String issue;
 
@@ -917,7 +918,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 	}
 
 	@JsonProperty("lastModifiedDate")
-    @JsonView(IMpView.class)
+    @JsonView(IPwView.class)
     @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
     @Override
 	public LocalDateTime getUpdateDate() {

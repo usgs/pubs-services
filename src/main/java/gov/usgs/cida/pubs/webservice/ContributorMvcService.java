@@ -8,7 +8,7 @@ import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.json.ResponseView;
-import gov.usgs.cida.pubs.json.view.intfc.IMpView;
+import gov.usgs.cida.pubs.json.view.intfc.IPwView;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +37,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	private IBusService personContributorBusService;
 	
     @RequestMapping(value={"/contributor/{contributorId}"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
-    @ResponseView(IMpView.class)
+    @ResponseView(IPwView.class)
     public @ResponseBody Contributor<?> getContributor(HttpServletRequest request, HttpServletResponse response,
                 @PathVariable("contributorId") String contributorId) {
         LOG.debug("getContributor");
@@ -50,7 +50,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
     }
 	
 	@RequestMapping(value = {"/person/{contributorId}"}, method = RequestMethod.GET, produces = PubsConstants.MIME_TYPE_APPLICATION_JSON)
-	@ResponseView(IMpView.class)
+	@ResponseView(IPwView.class)
 	public @ResponseBody
 	Contributor<?> getPerson(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable("contributorId") String contributorId) {
@@ -64,7 +64,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	}
 	
 	@RequestMapping(value = {"/usgscontributor"}, method = RequestMethod.POST, produces = PubsConstants.MIME_TYPE_APPLICATION_JSON)
-	@ResponseView(IMpView.class)
+	@ResponseView(IPwView.class)
 	@Transactional
 	public @ResponseBody
 	Contributor<?> createUsgsContributor(@RequestBody UsgsContributor person, HttpServletResponse response
@@ -84,7 +84,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	}
 	
 	@RequestMapping(value = "/usgscontributor/{id}", method = RequestMethod.PUT, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
-    @ResponseView(IMpView.class)
+    @ResponseView(IPwView.class)
     @Transactional
     public @ResponseBody Contributor<?> updateUsgsContributor(@RequestBody UsgsContributor person, @PathVariable String id, HttpServletResponse response) {
 		LOG.debug("updateUsgsContributor");
@@ -99,7 +99,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
     }
 	
 	@RequestMapping(value = {"/outsidecontributor"}, method = RequestMethod.POST, produces = PubsConstants.MIME_TYPE_APPLICATION_JSON)
-	@ResponseView(IMpView.class)
+	@ResponseView(IPwView.class)
 	@Transactional
 	public @ResponseBody
 	Contributor<?> createOutsideContributor(@RequestBody OutsideContributor person, HttpServletResponse response
@@ -119,7 +119,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	}
 	
 	@RequestMapping(value = "/outsidecontributor/{id}", method = RequestMethod.PUT, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
-    @ResponseView(IMpView.class)
+    @ResponseView(IPwView.class)
     @Transactional
     public @ResponseBody Contributor<?> updateOutsideContributor(@RequestBody OutsideContributor person, @PathVariable String id, HttpServletResponse response) {
 		LOG.debug("updateOutsideContributor");
@@ -134,7 +134,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
     }
 	
 	@RequestMapping(value = {"/person"}, method = RequestMethod.POST, produces = PubsConstants.MIME_TYPE_APPLICATION_JSON)
-	@ResponseView(IMpView.class)
+	@ResponseView(IPwView.class)
 	@Transactional
 	public @ResponseBody
 	Contributor<?> createPerson(@RequestBody PersonContributor person, HttpServletResponse response
@@ -154,7 +154,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	}
 	
 	@RequestMapping(value = {"/corporation/{contributorId}"}, method = RequestMethod.GET, produces = PubsConstants.MIME_TYPE_APPLICATION_JSON)
-	@ResponseView(IMpView.class)
+	@ResponseView(IPwView.class)
 	public @ResponseBody
 	Contributor<?> getCorporation(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable("contributorId") String contributorId) {
@@ -168,7 +168,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	}
 	
 	@RequestMapping(value = {"/corporation"}, method = RequestMethod.POST, produces = PubsConstants.MIME_TYPE_APPLICATION_JSON)
-	@ResponseView(IMpView.class)
+	@ResponseView(IPwView.class)
 	@Transactional
 	public @ResponseBody
 	Contributor<?> createCorporation(@RequestBody CorporateContributor corporation, HttpServletResponse response
@@ -188,7 +188,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	}
 	
 	@RequestMapping(value = "/corporation/{id}", method = RequestMethod.PUT, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
-    @ResponseView(IMpView.class)
+    @ResponseView(IPwView.class)
     @Transactional
     public @ResponseBody Contributor<?> updateCorporation(@RequestBody CorporateContributor corporation, @PathVariable String id, HttpServletResponse response) {
 		LOG.debug("updateCorporation");

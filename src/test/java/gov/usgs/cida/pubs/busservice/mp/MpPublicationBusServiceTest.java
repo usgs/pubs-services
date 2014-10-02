@@ -374,14 +374,14 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	
     	//Same user = OK
     	PubsUtilitiesTest.buildTestAuthentication("drsteini", null);
-    	assertNull("drsteini", busService.checkAvailability(1));
+    	assertNull(busService.checkAvailability(1));
 
     	//Expired = OK (We are testing by setting the timeout to 0 and -1 for these test)
     	PubsUtilitiesTest.clearTestAuthentication();
         busService = new MpPublicationBusService(validator, 0, crossRefBusService, ccBusService, linkBusService, contributorBusService);
-    	assertNull("drsteini", busService.checkAvailability(1));
+    	assertNull(busService.checkAvailability(1));
         busService = new MpPublicationBusService(validator, -1, crossRefBusService, ccBusService, linkBusService, contributorBusService);
-    	assertNull("drsteini", busService.checkAvailability(1));
+    	assertNull(busService.checkAvailability(1));
     }
 
     @Test

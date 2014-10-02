@@ -10,25 +10,41 @@
         <collection property="links" column="publication_id" select="pwPublicationLink.getByPublication"/>
     </resultMap>
 
-    <sql id="baseSelect">
+    <sql id="filters">
+		<include refid="publication.filters"/>
+	</sql>
+
+	<!-- NOTE - this query DOES NOT use the VPD -->
+    <select id="getById" parameterType="Integer" resultMap="result">
         select <include refid="publication.cols"/>
           from publication
+         where publication_id = #{value,jdbcType=VARCHAR}
+    </select>
+	<!-- END_NOTE - this query DOES NOT use the VPD -->
+
+
+
+	<!-- NOTE - the remaining queries DO use the VPD -->
+    <sql id="baseSelectPublic">
+        select <include refid="publication.cols"/>
+          from public_publication
     </sql>
 
-    <select id="getById" parameterType="Integer" resultMap="result">
-        <include refid="baseSelect"/> 
-           where publication_id = #{value,jdbcType=VARCHAR}
+	
+    <select id="getByIndexId" parameterType="String" resultMap="result">
+        <include refid="baseSelectPublic"/>
+         where index_id = #{value,jdbcType=VARCHAR}
     </select>
 
-<!--     <select id="getByMap" parameterType="map" resultMap="result"> -->
-<!--         <include refid="baseSelect"/> -->
-<!--         <include refid="publication.filters"/> -->
-<!--     </select> -->
+    <select id="getByMap" parameterType="map" resultMap="result">
+        <include refid="baseSelectPublic"/>
+        <include refid="filters"/>
+    </select>
 
-<!--     <select id="getCount" parameterType="map" resultType="Integer"> -->
-<!--         select count(*) -->
-<!--           from publication -->
-<!--         <include refid="publication.filters"/> -->
-<!--     </select> -->
+    <select id="getCount" parameterType="map" resultType="Integer">
+        select count(*)
+          from public_publication
+        <include refid="filters"/>
+    </select>
 
 </mapper>

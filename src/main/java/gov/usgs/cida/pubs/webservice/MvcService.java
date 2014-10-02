@@ -58,6 +58,19 @@ public abstract class MvcService<D> {
     }
 
     /**
+     * Configures the filters/orderby settings to support single search
+     * @param filters
+     * @return
+     */
+    protected Map<String, Object> configureSingleSearchFilters(Map<String, Object> filters, String searchTerms) {
+        if (StringUtils.isNotEmpty(searchTerms)) {
+	    	filters.put("searchTerms", searchTerms.split("[\\s+,+]"));
+	    	updateOrderBy(filters, PubsConstants.SEARCH_TERM_ORDERBY, PubsConstants.SEARCH_TERM_ORDERBY_DIR);
+        }
+    	return filters;
+    }
+
+    /**
      * Extends current order by clause with more options if necessary
      */
     protected Map<String, Object> updateOrderBy(Map<String, Object> filters, String orderBy, String orderByDir) {

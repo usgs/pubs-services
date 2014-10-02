@@ -242,6 +242,7 @@ public class IpdsBinding {
         UsgsContributor contributor = new UsgsContributor();
         Document doc = makeDocument(contributorXml);
 
+        contributor.setIpdsContributorId(PubsUtilities.parseInteger(getFirstNodeText(doc.getDocumentElement(), "d:Id")));
         contributor.setFamily(getFirstNodeText(doc.getDocumentElement(), "d:FirstName"));
         contributor.setGiven(getFirstNodeText(doc.getDocumentElement(), "d:LastName"));
         contributor.setEmail(getFirstNodeText(doc.getDocumentElement(), "d:WorkEMail"));

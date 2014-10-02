@@ -60,8 +60,6 @@
 
     <bean id="pubsEMailer" class="gov.usgs.cida.pubs.utility.PubsEMailer" autowire="byName"/>
 
-<!--     <import resource="classpath:/spring/webServiceContext.xml"/> -->
-
     <import resource="classpath:/spring/busServiceContext.xml"/>
 
     <import resource="classpath:/spring/domainContext.xml"/>

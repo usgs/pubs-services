@@ -67,7 +67,7 @@ public class PublicationDaoTest extends BaseSpringDaoTest {
     public void getObjectCountTest() {
         Map<String, Object> filters = new HashMap<>();
         Integer cnt = Publication.getPublicationDao().getObjectCount(null);
-        assertEquals(4, cnt.intValue());
+        assertEquals(5, cnt.intValue());
 
         filters.put("ipdsId", new String[] { "ipds_id" });
         cnt = Publication.getPublicationDao().getObjectCount(filters);

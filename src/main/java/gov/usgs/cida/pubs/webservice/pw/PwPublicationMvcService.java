@@ -52,8 +52,15 @@ public class PwPublicationMvcService  extends MvcService<PwPublication> {
             @RequestParam(value="seriesName", required=false) String[] reportSeries,
             @RequestParam(value="reportNumber", required=false) String[] reportNumber,
             @RequestParam(value="page_row_start", required=false, defaultValue = "0") String pageRowStart,
+            @RequestParam(value="page_number", required=false) String pageNumber,
             @RequestParam(value="page_size", required=false, defaultValue = "25") String pageSize,
-            @RequestParam(value="listId", required=false) String[] listId,
+            @RequestParam(value="pub_x_days", required=false) String pubXDays,
+            @RequestParam(value="pub_date_low", required=false) String pubDateLow,
+            @RequestParam(value="pub_date_high", required=false) String pubDateHigh,
+            @RequestParam(value="mod_x_days", required=false) String modXDays,
+            @RequestParam(value="mod_date_low", required=false) String modDateLow,
+            @RequestParam(value="mod_date_high", required=false) String modDateHigh,
+            @RequestParam(value="orderBy", required=false) String orderBy,
 			HttpServletResponse response) {
 
         Map<String, Object> filters = new HashMap<>();
@@ -74,7 +81,14 @@ public class PwPublicationMvcService  extends MvcService<PwPublication> {
     	addToFiltersIfNotNull(filters, "reportNumber", reportNumber);
     	addToFiltersIfNotNull(filters, "pageRowStart", pageRowStart);
     	addToFiltersIfNotNull(filters, "pageSize", pageSize);
-    	addToFiltersIfNotNull(filters, "listId", listId);
+    	addToFiltersIfNotNull(filters, "pageNumber", pageNumber);
+    	addToFiltersIfNotNull(filters, "pubXDays", pubXDays);
+    	addToFiltersIfNotNull(filters, "pubDateLow", pubDateLow);
+    	addToFiltersIfNotNull(filters, "pubDateHigh", pubDateHigh);
+    	addToFiltersIfNotNull(filters, "modXDays", modXDays);
+    	addToFiltersIfNotNull(filters, "modDateLow", modDateLow);
+    	addToFiltersIfNotNull(filters, "modDateHigh", modDateHigh);
+    	addToFiltersIfNotNull(filters, "orderBy", orderBy);
 
         List<PwPublication> pubs = busService.getObjects(filters);
         Integer totalPubsCount = busService.getObjectCount(filters);

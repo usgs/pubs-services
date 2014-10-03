@@ -65,7 +65,6 @@ public abstract class MvcService<D> {
     protected Map<String, Object> configureSingleSearchFilters(Map<String, Object> filters, String searchTerms) {
         if (StringUtils.isNotEmpty(searchTerms)) {
 	    	filters.put("searchTerms", searchTerms.split("[\\s+,+]"));
-	    	updateOrderBy(filters, PubsConstants.SEARCH_TERM_ORDERBY, PubsConstants.SEARCH_TERM_ORDERBY_DIR);
         }
     	return filters;
     }
@@ -74,23 +73,24 @@ public abstract class MvcService<D> {
      * Extends current order by clause with more options if necessary
      */
     protected Map<String, Object> updateOrderBy(Map<String, Object> filters, String orderBy, String orderByDir) {
-    	if (StringUtils.isNotEmpty(orderBy)) {
-    		String newOrderBy = orderBy;
-    		if ("reportnumber".equalsIgnoreCase(newOrderBy)) {
-    			newOrderBy = "series_number";
-            }
+//    	if (StringUtils.isNotEmpty(orderBy)) {
+//    		String newOrderBy = orderBy;
+//    		if ("reportnumber".equalsIgnoreCase(newOrderBy)) {
+//    			newOrderBy = "series_number";
+//            }
+//
+//		    String exitingOrderBy = (String) filters.get("orderby");
+//	    	String fullOrderBy = newOrderBy + " " + (orderByDir == null ? "" : orderByDir);
+//
+//		    if(exitingOrderBy != null) {
+//		    	filters.put("orderby", exitingOrderBy + ", " + fullOrderBy);
+//		    } else {
+//		    	filters.put("orderby", fullOrderBy);
+//
+//		    }
+//    	}
 
-		    String exitingOrderBy = (String) filters.get("orderby");
-	    	String fullOrderBy = newOrderBy + " " + (orderByDir == null ? "" : orderByDir);
-
-		    if(exitingOrderBy != null) {
-		    	filters.put("orderby", exitingOrderBy + ", " + fullOrderBy);
-		    } else {
-		    	filters.put("orderby", fullOrderBy);
-
-		    }
-    	}
-
+    	filters.put("orderby", "publication_year desc nulls last, display_to_public_date desc");
     	return filters;
     }
 

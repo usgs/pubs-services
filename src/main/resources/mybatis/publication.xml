@@ -58,6 +58,27 @@
 <!--         <association property="contact" column="contact_id" select="contact.getById"/> -->
     </resultMap>
 
+    <resultMap id="genericResult" type="Publication" extends="result">
+        <discriminator javaType="String" column="tname">
+            <case value="mp_publication" resultMap="mpResult"/>
+            <case value="publication" resultMap="pwResult"/>
+        </discriminator>
+	</resultMap>
+	
+    <resultMap id="mpResult" type="Publication" extends="genericResult">
+        <collection property="costCenters" column="publication_id" select="mpPublicationCostCenter.getByPublication"/>
+        <collection property="authors" column="publication_id" select="mpPublicationContributor.getAuthorsByPublication"/>
+        <collection property="editors" column="publication_id" select="mpPublicationContributor.getEditorsByPublication"/>
+        <collection property="links" column="publication_id" select="mpPublicationLink.getByPublication"/>
+    </resultMap>
+	
+    <resultMap id="pwResult" type="Publication" extends="genericResult">
+        <collection property="costCenters" column="publication_id" select="pwPublicationCostCenter.getByPublication"/>
+        <collection property="authors" column="publication_id" select="pwPublicationContributor.getAuthorsByPublication"/>
+        <collection property="editors" column="publication_id" select="pwPublicationContributor.getEditorsByPublication"/>
+        <collection property="links" column="publication_id" select="pwPublicationLink.getByPublication"/>
+    </resultMap>
+
     <sql id="cols">
         publication_id,
         index_id,
@@ -457,16 +478,16 @@
     </sql>
 
     <sql id="baseSelect">
-        select <include refid="cols"/>
+        select <include refid="cols"/>, tname
             from all_publication
     </sql>
 
-    <select id="getById" parameterType="Integer" resultMap="result">
+    <select id="getById" parameterType="Integer" resultMap="genericResult">
         <include refid="baseSelect"/>
            where publication_id = #{value,jdbcType=VARCHAR}
     </select>
 
-    <select id="getByMap" parameterType="map" resultMap="result">
+    <select id="getByMap" parameterType="map" resultMap="genericResult">
         <include refid="base.pagingTop"/>
         <include refid="baseSelect"/>
         <include refid="filters"/>

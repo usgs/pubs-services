@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.webservice.mp;
 
+import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.domain.Publication;
@@ -94,6 +95,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     	addToFiltersIfNotNull(filters, "pageRowStart", pageRowStart);
     	addToFiltersIfNotNull(filters, "pageSize", pageSize);
     	addToFiltersIfNotNull(filters, "listId", listId);
+    	updateOrderBy(filters, PubsConstants.SEARCH_TERM_ORDERBY, PubsConstants.SEARCH_TERM_ORDERBY_DIR);
 
         List<Publication<?>> pubs = pubBusService.getObjects(filters);
         Integer totalPubsCount = pubBusService.getObjectCount(filters);

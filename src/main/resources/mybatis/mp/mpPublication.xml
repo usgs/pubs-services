@@ -30,6 +30,79 @@
         select publication_seq.nextval id from dual
     </select>
 
+    <sql id="singleSearchTermFilter">
+    <!-- single search term needs to or/and correctly -->
+       	<if test="searchTerms != null and searchTerms.length > 0">
+       		and 
+			<foreach item="term" collection="searchTerms" open=""
+					 separator="and" close=""> 
+				(<include refid="publication.singleSearchTermFilter"/>
+				<!--  contributing office -->
+				 or exists (select null
+                 	  	      from mp_pub_cost_center
+                  		           join affiliation
+                 	        	     on cost_center_id = affiliation_id
+                 	    	 where mp_publication.publication_id = mp_pub_cost_center.publication_id and
+             	        	       upper(name) <include refid="publication.likeTerm"/>
+                           )
+               
+               <!-- author -->
+                or exists (select null
+                   	         from mp_pub_contributor
+                   	              join contributor
+                   	                on mp_pub_contributor.contributor_id = contributor.contributor_id 
+               	            where mp_publication.publication_id = mp_pub_contributor.publication_id and
+                 	         	  (upper(first) <include refid="publication.likeTerm"/> or
+                 	         	   upper(given) <include refid="publication.likeTerm"/> or
+                 	         	   upper(literal) <include refid="publication.likeTerm"/>
+                 	         	  )
+                 	      )
+              )
+			</foreach>
+       	</if>
+    </sql>
+    
+    <sql id="filters">
+    	<where>
+	    	<include refid="mpPublication.singleSearchTermFilter"/>
+	    	<include refid="publication.filters"/>
+	
+			<if test="null != listId">
+				<if test="listId.length > 0">
+					<foreach item="list" collection="listId" open=" and publication_id in (select publication_id from mp_list_publication where mp_list_id in(" separator="," close="))">
+						#{list,jdbcType=NUMERIC}
+					</foreach>
+				</if>
+			</if>
+
+            <if test="contributor != null and contributor.length > 0">
+                and exists (select null
+                   	          from mp_pub_contributor
+                   	               join contributor
+                   	                 on mp_pub_contributor.contributor_id = contributor.contributor_id 
+               	             where mp_publication.publication_id = mp_pub_contributor.publication_id and
+                				   <foreach item="a" collection="contributor" open="(" separator="or" close=")"> 
+		                			   upper(first) like '%' || upper(#{a}) || '%' or
+		                			   upper(given) like '%' || upper(#{a}) || '%' or
+		                			   upper(literal) like '%' || upper(#{a}) || '%'
+		                		   </foreach>
+		                   )
+            </if>
+            
+            <if test="contributingOffice != null and contributingOffice.length > 0">
+                and exists (select null
+                   	          from mp_pub_cost_center
+                   	               join affiliation
+                   	                 on mp_pub_cost_center.affiliation_id = affiliation.affiliation_id 
+               	             where mp_pub_cost_center.publication_id = mp_pub_contributor.publication_id and
+                				   <foreach item="co" collection="contributingOffice" open="(" separator="or" close=")"> 
+		                			   upper(name) like '%' || upper(#{co}) || '%'
+		                		   </foreach>
+		                   )
+            </if>
+		</where>
+    </sql>
+
     <insert id="add" parameterType="MpPublication">
         insert into mp_publication (<include refid="cols"/>)
              values (<include refid="hosts"/>)
@@ -44,7 +117,7 @@
 
     <sql id="baseSelect">
         select <include refid="cols"/>
-            from mp_publication
+          from mp_publication
     </sql>
 
     <select id="getById" parameterType="Integer" resultMap="result">
@@ -55,7 +128,7 @@
     <select id="getByMap" parameterType="map" resultMap="result">
         <include refid="base.pagingTop"/>
         <include refid="baseSelect"/>
-        <include refid="publication.filters"/>
+        <include refid="filters"/>
         <include refid="base.orderBy"/>
         <include refid="base.pagingBottom"/>
     </select>
@@ -63,7 +136,7 @@
     <select id="getCount" parameterType="map" resultType="Integer">
         select count(*)
           from mp_publication
-        <include refid="publication.filters"/>
+        <include refid="filters"/>
     </select>
 
     <update id="update" parameterType="MpPublication">
@@ -72,7 +145,7 @@
            where publication_id = #{id,jdbcType=NUMERIC}
     </update>
 
-    <update id="locPub" parameterType="Integer">
+    <update id="lockPub" parameterType="Integer">
     	update mp_publication
            set lock_username = <include refid="base.clientId"/>,
                <include refid="base.auditSets"/>

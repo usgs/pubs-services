@@ -1,9 +1,11 @@
 package gov.usgs.cida.pubs.webservice;
 
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -69,31 +71,46 @@ public abstract class MvcService<D> {
     	return filters;
     }
 
-    /**
-     * Extends current order by clause with more options if necessary
-     */
-    protected Map<String, Object> updateOrderBy(Map<String, Object> filters, String orderBy, String orderByDir) {
-//    	if (StringUtils.isNotEmpty(orderBy)) {
-//    		String newOrderBy = orderBy;
-//    		if ("reportnumber".equalsIgnoreCase(newOrderBy)) {
-//    			newOrderBy = "series_number";
-//            }
-//
-//		    String exitingOrderBy = (String) filters.get("orderby");
-//	    	String fullOrderBy = newOrderBy + " " + (orderByDir == null ? "" : orderByDir);
-//
-//		    if(exitingOrderBy != null) {
-//		    	filters.put("orderby", exitingOrderBy + ", " + fullOrderBy);
-//		    } else {
-//		    	filters.put("orderby", fullOrderBy);
-//
-//		    }
-//    	}
+    protected String buildOrderBy(String orderBy) {
+    	StringBuilder rtn = new StringBuilder("publication_year desc nulls last, display_to_public_date desc"); 
+    	if (StringUtils.isNotEmpty(orderBy)) {
+    		if ("date".equalsIgnoreCase(orderBy)) {
+    			//Nothing to see here, this is the default sort
+    		} else if ("title".equalsIgnoreCase(orderBy)) {
+    			rtn.insert(0, "title asc, ");
+    		}
+    	}
 
-    	filters.put("orderby", "publication_year desc nulls last, display_to_public_date desc");
-    	return filters;
+    	return rtn.toString();
     }
 
+    protected Map<String, Object> buildPaging (String inPageRowStart, String inPageSize, String inPageNumber) {
+    	Integer pageRowStart = PubsUtilities.parseInteger(inPageRowStart);
+    	Integer pageSize = PubsUtilities.parseInteger(inPageSize);
+    	Integer pageNumber = PubsUtilities.parseInteger(inPageNumber);
+        Map<String, Object> paging = new HashMap<>();
+        if (null != pageNumber) {
+        	//pageNumber overrides the pageRowStart
+        	if (null == pageSize) {
+        		//default pageSize with pageNumber
+        		pageSize = 25;
+        	}
+        	pageRowStart = ((pageNumber - 1) * pageSize);
+        } else {
+        	if (null == pageRowStart) {
+        		pageRowStart = 0;
+        	}
+        	if (null == pageSize) {
+        		//default pageSize with pageRowStart
+        		pageSize = 15;
+        	}
+        }
+    	paging.put("pageRowStart", pageRowStart);
+    	paging.put("pageSize", pageSize);
+    	paging.put("pageNumber", pageNumber);
+    	return paging;
+    }
+    
     @ExceptionHandler(Exception.class)
     public @ResponseBody String handleUncaughtException(Exception ex, WebRequest request, HttpServletResponse response) throws IOException {
         if (ex instanceof AccessDeniedException) {

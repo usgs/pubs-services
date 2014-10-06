@@ -46,14 +46,14 @@ public class PwPublicationMvcService  extends MvcService<PwPublication> {
             @RequestParam(value="indexId", required=false) String[] indexId,
             @RequestParam(value="ipdsId", required=false) String[] ipdsId,
             @RequestParam(value="year", required=false) String[] year,
-            @RequestParam(value="startYear", required=false) String[] yearStart,
-            @RequestParam(value="endYear", required=false) String[] yearEnd,
+            @RequestParam(value="startYear", required=false) String yearStart,
+            @RequestParam(value="endYear", required=false) String yearEnd,
     		@RequestParam(value="contributingOffice", required=false) String[] contributingOffice,
             @RequestParam(value="seriesName", required=false) String[] reportSeries,
             @RequestParam(value="reportNumber", required=false) String[] reportNumber,
-            @RequestParam(value="page_row_start", required=false, defaultValue = "0") String pageRowStart,
+            @RequestParam(value="page_row_start", required=false) String pageRowStart,
             @RequestParam(value="page_number", required=false) String pageNumber,
-            @RequestParam(value="page_size", required=false, defaultValue = "25") String pageSize,
+            @RequestParam(value="page_size", required=false) String pageSize,
             @RequestParam(value="pub_x_days", required=false) String pubXDays,
             @RequestParam(value="pub_date_low", required=false) String pubDateLow,
             @RequestParam(value="pub_date_high", required=false) String pubDateHigh,
@@ -79,22 +79,23 @@ public class PwPublicationMvcService  extends MvcService<PwPublication> {
     	addToFiltersIfNotNull(filters, "contributingOffice", contributingOffice);
     	addToFiltersIfNotNull(filters, "reportSeries", reportSeries);
     	addToFiltersIfNotNull(filters, "reportNumber", reportNumber);
-    	addToFiltersIfNotNull(filters, "pageRowStart", pageRowStart);
-    	addToFiltersIfNotNull(filters, "pageSize", pageSize);
-    	addToFiltersIfNotNull(filters, "pageNumber", pageNumber);
     	addToFiltersIfNotNull(filters, "pubXDays", pubXDays);
     	addToFiltersIfNotNull(filters, "pubDateLow", pubDateLow);
     	addToFiltersIfNotNull(filters, "pubDateHigh", pubDateHigh);
     	addToFiltersIfNotNull(filters, "modXDays", modXDays);
     	addToFiltersIfNotNull(filters, "modDateLow", modDateLow);
     	addToFiltersIfNotNull(filters, "modDateHigh", modDateHigh);
-    	addToFiltersIfNotNull(filters, "orderBy", orderBy);
+    	
+    	filters.put("orderby", buildOrderBy(orderBy));
 
+    	filters.putAll(buildPaging(pageRowStart, pageSize, pageNumber));
+    	
         List<PwPublication> pubs = busService.getObjects(filters);
         Integer totalPubsCount = busService.getObjectCount(filters);
         SearchResults results = new SearchResults();
-        results.setPageSize(pageSize);
-        results.setPageRowStart(pageRowStart);
+        results.setPageSize(filters.get("pageSize").toString());
+        results.setPageRowStart(filters.get("pageRowStart").toString());
+        results.setPageNumber(filters.get("pageNumber").toString());
         results.setRecords(pubs);
         results.setRecordCount(totalPubsCount);
 

@@ -17,7 +17,7 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
 
     private static final String NS = "mpPublication";
     public static final String GET_NEW_ID = ".getNewProdId";
-    public static final String LOCK_PUB = ".locPub";
+    public static final String LOCK_PUB = ".lockPub";
     public static final String RELEASE_LOCKS = ".releaseLocks";
     public static final String RELEASE_LOCKS_USER = RELEASE_LOCKS + "User";
     public static final String RELEASE_LOCKS_PUB = RELEASE_LOCKS + "Pub";

@@ -1,6 +1,5 @@
 package gov.usgs.cida.pubs.webservice.mp;
 
-import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.domain.Publication;
@@ -66,8 +65,8 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
             @RequestParam(value="indexId", required=false) String[] indexId,
             @RequestParam(value="ipdsId", required=false) String[] ipdsId,
             @RequestParam(value="year", required=false) String[] year,
-            @RequestParam(value="startYear", required=false) String[] yearStart,
-            @RequestParam(value="endYear", required=false) String[] yearEnd,
+            @RequestParam(value="startYear", required=false) String yearStart,
+            @RequestParam(value="endYear", required=false) String yearEnd,
     		@RequestParam(value="contributingOffice", required=false) String[] contributingOffice,
             @RequestParam(value="seriesName", required=false) String[] reportSeries,
             @RequestParam(value="reportNumber", required=false) String[] reportNumber,
@@ -95,7 +94,8 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     	addToFiltersIfNotNull(filters, "pageRowStart", pageRowStart);
     	addToFiltersIfNotNull(filters, "pageSize", pageSize);
     	addToFiltersIfNotNull(filters, "listId", listId);
-    	updateOrderBy(filters, PubsConstants.SEARCH_TERM_ORDERBY, PubsConstants.SEARCH_TERM_ORDERBY_DIR);
+    	
+    	filters.put("orderby", buildOrderBy(null));
 
         List<Publication<?>> pubs = pubBusService.getObjects(filters);
         Integer totalPubsCount = pubBusService.getObjectCount(filters);

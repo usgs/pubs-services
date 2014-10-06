@@ -10,6 +10,10 @@
         <result property="updateUsername" column="update_username"/>
     </resultMap>
 
+	<sql id="dateFormat">
+		'YYYY-MM-DD'
+	</sql>
+	
 	<sql id="clientId">
 		sys_context( 'userenv', 'client_identifier')
 	</sql>

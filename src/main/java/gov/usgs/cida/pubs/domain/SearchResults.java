@@ -23,6 +23,10 @@ public class SearchResults implements Serializable {
     @JsonView(IPwView.class)
 	private String pageRowStart;
     
+    @JsonProperty("pageNumber")
+    @JsonView(IPwView.class)
+	private String pageNumber;
+    
     @JsonProperty("recordCount")
     @JsonView(IPwView.class)
 	private Integer recordCount;
@@ -42,6 +46,12 @@ public class SearchResults implements Serializable {
 	}
 	public void setPageRowStart(String pageRowStart) {
 		this.pageRowStart = pageRowStart;
+	}
+	public String getPageNumber() {
+		return pageNumber;
+	}
+	public void setPageNumber(String pageNumber) {
+		this.pageNumber = pageNumber;
 	}
     public Integer getRecordCount() {
 		return recordCount;

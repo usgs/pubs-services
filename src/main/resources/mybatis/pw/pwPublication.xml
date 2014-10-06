@@ -10,9 +10,92 @@
         <collection property="links" column="publication_id" select="pwPublicationLink.getByPublication"/>
     </resultMap>
 
+    <sql id="singleSearchTermFilter">
+    <!-- single search term needs to or/and correctly -->
+       	<if test="searchTerms != null and searchTerms.length > 0">
+       		and 
+			<foreach item="term" collection="searchTerms" open=""
+					 separator="and" close=""> 
+				(<include refid="publication.singleSearchTermFilter"/>
+				<!--  contributing office -->
+				 or exists (select null
+                 	  	      from publication_cost_center
+                  		           join affiliation
+                 	        	     on cost_center_id = affiliation_id
+                 	    	 where publication.publication_id = publication_cost_center.publication_id and
+             	        	       upper(name) <include refid="publication.likeTerm"/>
+                           )
+               
+               <!-- author -->
+                or exists (select null
+                   	         from publication_contributor
+                   	              join contributor
+                   	                on publication_contributor.contributor_id = contributor.contributor_id 
+               	            where publication.publication_id = publication_contributor.publication_id and
+                 	         	  (upper(first) <include refid="publication.likeTerm"/> or
+                 	         	   upper(given) <include refid="publication.likeTerm"/> or
+                 	         	   upper(literal) <include refid="publication.likeTerm"/>
+                 	         	  )
+                 	      )
+              )
+			</foreach>
+       	</if>
+    </sql>
+    
     <sql id="filters">
-		<include refid="publication.filters"/>
-	</sql>
+		<include refid="pwPublication.singleSearchTermFilter"/>
+    	<include refid="publication.filters"/>
+
+		<if test="null != pubXDays">
+			and trunc(display_to_public_date) &gt;= trunc(sysdate - #{pubXdays})
+		</if>
+
+		<if test="null != pubDateLow">
+			and trunc(display_to_public_date) &gt;= to_date(#{pubDateLow}, <include refid="base.dateFormat"/>)
+		</if>		
+		
+		<if test="null != pubDateHigh">
+			and trunc(display_to_public_date) &lt;= to_date(#{pubDateHigh}, <include refid="base.dateFormat"/>)
+		</if>		
+		
+		<if test="null != modXDays">
+			and trunc(update_date) &gt;= trunc(sysdate - #{modXDays})
+		</if>
+
+		<if test="null != modDateLow">
+			and trunc(display_to_public_date) &gt;= to_date(#{modDateLow}, <include refid="base.dateFormat"/>)
+		</if>		
+		
+		<if test="null != modDateHigh">
+			and trunc(display_to_public_date) &lt;= to_date(#{modDateHigh}, <include refid="base.dateFormat"/>)
+		</if>		
+		
+        <if test="contributor != null and contributor.length > 0">
+        	and exists (select null
+               	          from publication_contributor
+               	               join contributor
+               	                 on publication_contributor.contributor_id = contributor.contributor_id 
+                         where publication.publication_id = publication_contributor.publication_id and
+              				   <foreach item="a" collection="contributor" open="(" separator="or" close=")"> 
+	                			   upper(first) like '%' || upper(#{a}) || '%' or
+		                		   upper(given) like '%' || upper(#{a}) || '%' or
+		                		   upper(literal) like '%' || upper(#{a}) || '%'
+	                		   </foreach>
+	                   )
+        </if>
+           
+        <if test="contributingOffice != null and contributingOffice.length > 0">
+            and exists (select null
+               	          from publication_cost_center
+               	               join affiliation
+               	                 on publication_cost_center.affiliation_id = affiliation.affiliation_id 
+           	             where publication_cost_center.publication_id = publication_contributor.publication_id and
+               				   <foreach item="co" collection="contributingOffice" open="(" separator="or" close=")"> 
+	                			   upper(name) like '%' || upper(#{co}) || '%'
+	                		   </foreach>
+	                   )
+        </if>
+    </sql>
 
 	<!-- NOTE - this query DOES NOT use the VPD -->
     <select id="getById" parameterType="Integer" resultMap="result">
@@ -27,7 +110,7 @@
 	<!-- NOTE - the remaining queries DO use the VPD -->
     <sql id="baseSelectPublic">
         select <include refid="publication.cols"/>
-          from public_publication
+          from public_publication publication
     </sql>
 
 	
@@ -37,14 +120,21 @@
     </select>
 
     <select id="getByMap" parameterType="map" resultMap="result">
+        <include refid="base.pagingTop"/>
         <include refid="baseSelectPublic"/>
-        <include refid="filters"/>
+        <where>
+        	<include refid="filters"/>
+        </where>
+        <include refid="base.orderBy"/>
+        <include refid="base.pagingBottom"/>
     </select>
 
     <select id="getCount" parameterType="map" resultType="Integer">
         select count(*)
-          from public_publication
-        <include refid="filters"/>
+          from public_publication publication
+        <where>
+        	<include refid="filters"/>
+        </where>
     </select>
 
 </mapper>

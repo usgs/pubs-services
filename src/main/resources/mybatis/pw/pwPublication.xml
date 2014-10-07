@@ -46,6 +46,12 @@
 		<include refid="pwPublication.singleSearchTermFilter"/>
     	<include refid="publication.filters"/>
 
+		<if test="null != listId">
+			<if test="listId.length > 0">
+				and 1 = 0 
+			</if>
+		</if>
+
 		<if test="null != pubXDays">
 			and trunc(display_to_public_date) &gt;= trunc(sysdate - #{pubXdays})
 		</if>

@@ -16,7 +16,7 @@ import org.junit.Test;
  */
 public class PublicationSubtypeDaoTest extends BaseSpringDaoTest {
 
-    public static final int pubSubTypeCnt = 30;
+    public static final int pubSubTypeCnt = 29;
 
     @Test
     public void getByIdInteger() {

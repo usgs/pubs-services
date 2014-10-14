@@ -95,7 +95,9 @@ public class PwPublicationMvcService  extends MvcService<PwPublication> {
         SearchResults results = new SearchResults();
         results.setPageSize(filters.get("pageSize").toString());
         results.setPageRowStart(filters.get("pageRowStart").toString());
-        results.setPageNumber(filters.get("pageNumber").toString());
+        if (null != filters.get("pageNumber")) {
+        	results.setPageNumber(filters.get("pageNumber").toString());
+        }
         results.setRecords(pubs);
         results.setRecordCount(totalPubsCount);
 

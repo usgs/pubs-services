@@ -18,7 +18,7 @@
     </resultMap>
 
     <resultMap id="personResult" type="PersonContributor" extends="contributor.result">
-        <result property="family" column="first"/>
+        <result property="family" column="family"/>
         <result property="given" column="given"/>
         <result property="suffix" column="suffix"/>
         <result property="email" column="email"/>
@@ -47,7 +47,7 @@
     </sql>
 
     <sql id="personCols">
-        first, given, suffix, email, ipds_contributor_id, affiliation_id
+        family, given, suffix, email, ipds_contributor_id, affiliation_id
     </sql>
 
     <sql id="baseHosts">
@@ -85,7 +85,7 @@
 
     <sql id="personSets">
         <include refid="baseSets"/>,
-        first = #{family,jdbcType=VARCHAR},
+        family = #{family,jdbcType=VARCHAR},
         given = #{given,jdbcType=VARCHAR},
         suffix = #{suffix,jdbcType=VARCHAR},
         email = #{email,jdbcType=VARCHAR},
@@ -101,7 +101,7 @@
             and ipds_contributor_id = #{ipdsContributorId}
         </if>
         <if test="text != null">
-            and (upper(first) like upper(#{text}) || '%'
+            and (upper(family) like upper(#{text}) || '%'
               or upper(given) like upper(#{text}) || '%'
               or upper(suffix) like upper(#{text}) || '%'
               or upper(email) like upper(#{text}) || '%'
@@ -111,7 +111,7 @@
             and upper(given) like upper(#{given}) || '%'
         </if>
         <if test="family != null">
-            and upper(first) like upper(#{family}) || '%'
+            and upper(family) like upper(#{family}) || '%'
         </if>
         <if test="corporation != null">
             and is_corporation = #{corporation}

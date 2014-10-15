@@ -52,7 +52,7 @@
                    	              join contributor
                    	                on mp_pub_contributor.contributor_id = contributor.contributor_id 
                	            where mp_publication.publication_id = mp_pub_contributor.publication_id and
-                 	         	  (upper(first) <include refid="publication.likeTerm"/> or
+                 	         	  (upper(family) <include refid="publication.likeTerm"/> or
                  	         	   upper(given) <include refid="publication.likeTerm"/> or
                  	         	   upper(literal) <include refid="publication.likeTerm"/>
                  	         	  )
@@ -82,7 +82,7 @@
                    	                 on mp_pub_contributor.contributor_id = contributor.contributor_id 
                	             where mp_publication.publication_id = mp_pub_contributor.publication_id and
                 				   <foreach item="a" collection="contributor" open="(" separator="or" close=")"> 
-		                			   upper(first) like '%' || upper(#{a}) || '%' or
+		                			   upper(family) like '%' || upper(#{a}) || '%' or
 		                			   upper(given) like '%' || upper(#{a}) || '%' or
 		                			   upper(literal) like '%' || upper(#{a}) || '%'
 		                		   </foreach>

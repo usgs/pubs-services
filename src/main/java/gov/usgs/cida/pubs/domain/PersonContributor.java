@@ -99,6 +99,9 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
     	StringBuilder text = new StringBuilder();
     	if (StringUtils.isNotEmpty(family)) {
     		text.append(family);
+    		if (StringUtils.isNotEmpty(given) || StringUtils.isNotEmpty(suffix)) {
+    			text.append(",");
+    		}
     	}
     	if (StringUtils.isNotEmpty(given)) {
     		text.append(" ").append(given);

@@ -94,7 +94,7 @@
                    	          from mp_pub_cost_center
                    	               join affiliation
                    	                 on mp_pub_cost_center.cost_center_id = affiliation.affiliation_id 
-               	             where mp_pub_cost_center.publication_id = mp_pub_contributor.publication_id and
+               	             where mp_publication.publication_id = mp_pub_cost_center.publication_id and
                 				   <foreach item="co" collection="contributingOffice" open="(" separator="or" close=")"> 
 		                			   upper(name) like '%' || upper(#{co}) || '%'
 		                		   </foreach>

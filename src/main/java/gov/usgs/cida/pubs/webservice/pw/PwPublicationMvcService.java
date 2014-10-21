@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,6 +64,8 @@ public class PwPublicationMvcService  extends MvcService<PwPublication> {
             @RequestParam(value="orderBy", required=false) String orderBy,
 			HttpServletResponse response) {
 
+        setHeaders(response);
+
         Map<String, Object> filters = new HashMap<>();
 
     	configureSingleSearchFilters(filters, searchTerms);
@@ -109,7 +112,11 @@ public class PwPublicationMvcService  extends MvcService<PwPublication> {
     public @ResponseBody PwPublication getPwPublication(HttpServletRequest request, HttpServletResponse response,
                 @PathVariable("indexId") String indexId) {
         setHeaders(response);
-        return busService.getByIndexId(indexId);
+        PwPublication rtn = busService.getByIndexId(indexId);
+        if (null == rtn) {
+        	response.setStatus(HttpStatus.NOT_FOUND.value());
+        }
+        return rtn;
     }
 
 }

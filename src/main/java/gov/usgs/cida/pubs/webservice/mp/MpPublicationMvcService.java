@@ -75,6 +75,8 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
             @RequestParam(value="listId", required=false) String[] listId,
 			HttpServletResponse response) {
 
+        setHeaders(response);
+
         Map<String, Object> filters = new HashMap<>();
 
     	configureSingleSearchFilters(filters, searchTerms);

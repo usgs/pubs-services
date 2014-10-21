@@ -6,6 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyMap;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -28,12 +29,14 @@ import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
@@ -56,21 +59,46 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
     @Resource(name="expectedGetMpPub1")
     public String expectedGetMpPub1;
 
+    public String expectedGetPubsDefault;
+    
     private MockMvc mockMvc;
 
-    @InjectMocks
-    MpPublicationMvcService mvcService;
+    private MpPublicationMvcService mvcService;
     
     @Before
     public void setup() {
     	MockitoAnnotations.initMocks(this);
+    	mvcService = new MpPublicationMvcService(pubBusService, busService);
     	mockMvc = MockMvcBuilders.standaloneSetup(mvcService).build();
 
         when(busService.checkAvailability(1)).thenReturn(VR_NOT_LOCKED);
         when(busService.checkAvailability(2)).thenReturn(VR_LOCKED);
         when(busService.checkAvailability(3)).thenReturn(VR_NOT_LOCKED);
+
+    	StringBuilder temp = new StringBuilder("{\"pageSize\":\"25\",\"pageRowStart\":\"0\",");
+    	temp.append("\"pageNumber\":null,\"recordCount\":12,\"records\":[");
+    	temp.append(expectedGetMpPub1);
+    	temp.append("]}");
+    	expectedGetPubsDefault = temp.toString();
     }
 
+    @SuppressWarnings("unchecked")
+	@Test
+    public void getPubsTest() throws Exception {
+    	//Happy Path
+        when(pubBusService.getObjects(anyMap())).thenReturn(buildAPubList());
+        when(pubBusService.getObjectCount(anyMap())).thenReturn(Integer.valueOf(12));
+    	
+        MvcResult rtn = mockMvc.perform(get("/mppublications?mimetype=json").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+        .andReturn();
+
+        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+                sameJSONObjectAs(new JSONObject(expectedGetPubsDefault)));
+    }
+    
     @Test
     public void getMpPublicationTest() throws Exception {
     	//Happy Path
@@ -249,5 +277,11 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
     public MpPublication buildAPub(Integer id) {
     	MpPublication pub = MpPublicationDaoTest.buildAPub(id);
     	return pub;
+    }
+
+    public List<Publication<?>> buildAPubList() {
+    	List<Publication<?>> rtn = new ArrayList<>();
+    	rtn.add(MpPublicationDaoTest.buildAPub(1));
+    	return rtn;
     }
 }

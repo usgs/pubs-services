@@ -24,7 +24,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
@@ -39,12 +38,12 @@ public class MpListPublicationMvcServiceTest extends BaseSpringTest {
 
     private MockMvc mockMvc;
 
-    @InjectMocks
-    MpListPublicationMvcService mvcService;
+    private MpListPublicationMvcService mvcService;
     
     @Before
     public void setup() {
     	MockitoAnnotations.initMocks(this);
+    	mvcService = new MpListPublicationMvcService(busService);
     	mockMvc = MockMvcBuilders.standaloneSetup(mvcService).build();
     }
 

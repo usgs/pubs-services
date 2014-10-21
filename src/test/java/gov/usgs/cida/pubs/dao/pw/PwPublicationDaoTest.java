@@ -3,15 +3,21 @@ package gov.usgs.cida.pubs.dao.pw;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
+import gov.usgs.cida.pubs.domain.Contact;
+import gov.usgs.cida.pubs.domain.ProcessType;
+import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.PublicationSeries;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
+import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.domain.pw.PwPublication;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
-import gov.usgs.cida.pubs.domain.Publication;
-import gov.usgs.cida.pubs.domain.pw.PwPublication;
-
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.junit.Test;
 
 public class PwPublicationDaoTest extends BaseSpringDaoTest {
@@ -112,4 +118,72 @@ public class PwPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals(1, pub.getLinks().size());
     }
 
+    public static PwPublication buildAPub(final Integer pubId) {
+    	PwPublication newPub = new PwPublication();
+        newPub.setIndexId("indexid" + pubId);
+        newPub.setDisplayToPublicDate(new LocalDateTime(2012, 8, 23, 0, 0, 0));
+        PublicationType pubType = new PublicationType();
+        pubType.setId(PublicationType.REPORT);
+        newPub.setPublicationType(pubType);
+        PublicationSubtype pubSubtype = new PublicationSubtype();
+        pubSubtype.setId(5);
+        newPub.setPublicationSubtype(pubSubtype);
+        PublicationSeries pubSeries = new PublicationSeries();
+        pubSeries.setId(PublicationSeries.SIR);
+        newPub.setSeriesTitle(pubSeries);
+        newPub.setSeriesNumber("Series Number");
+        newPub.setSubseriesTitle("subseries");
+        newPub.setChapter("chapter");
+        newPub.setSubchapterNumber("subchapter");
+        newPub.setTitle("Title");
+        newPub.setDocAbstract("Abstract Text");
+        newPub.setLanguage("Language");
+        newPub.setPublisher("Publisher");
+        newPub.setPublisherLocation("Publisher Location");
+        newPub.setDoi("doiname");
+        newPub.setIssn("inIssn");
+        newPub.setIsbn("inIsbn");
+        newPub.setCollaboration("collaboration");
+        newPub.setUsgsCitation("usgscitation");
+        Contact contact = new Contact();
+        contact.setId(1);
+        newPub.setContact(contact);
+        newPub.setProductDescription("Prod Description");
+        newPub.setStartPage("inStartPage");
+        newPub.setEndPage("inEndPage");
+        newPub.setNumberOfPages("5");
+        newPub.setOnlineOnly("O");
+        newPub.setAdditionalOnlineFiles("A");
+        newPub.setTemporalStart(new LocalDate(2010,10,10));
+        newPub.setTemporalEnd(new LocalDate(2012,12,12));
+        newPub.setNotes("notes");
+        newPub.setIpdsId("ipds_id" + pubId);
+        newPub.setIpdsReviewProcessState(ProcessType.SPN_PRODUCTION.getIpdsValue());
+        newPub.setIpdsInternalId("12");
+        newPub.setId(pubId);
+        newPub.setPublicationYear("2001");
+        newPub.setLargerWorkTitle("Larger Work Title");
+        PublicationType largerWorkType = new PublicationType();
+        largerWorkType.setId(PublicationType.ARTICLE);
+        newPub.setLargerWorkType(largerWorkType);
+        newPub.setConferenceDate("a new free form date");
+        newPub.setConferenceTitle("A title");
+        newPub.setConferenceLocation("a conference location");
+        PublicationSubtype largerWorkSubype = new PublicationSubtype();
+        largerWorkSubype.setId(23);
+        newPub.setLargerWorkSubtype(largerWorkSubype);
+        newPub.setScale("100");
+        newPub.setProjection("EPSG:3857");
+        newPub.setDatum("NAD83");
+        newPub.setCountry("USA");
+        newPub.setState("WI");
+        newPub.setCounty("DANE");
+        newPub.setCity("MIDDLETON");
+        newPub.setOtherGeospatial("On the moon");
+        newPub.setGeographicExtents("{ \"json\": \"extents\" }");
+        newPub.setVolume("VOL12");
+        newPub.setIssue("ISIV");
+        return newPub;
+    }
+    
 }

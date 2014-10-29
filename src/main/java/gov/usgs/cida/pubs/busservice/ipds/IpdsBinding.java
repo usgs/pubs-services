@@ -390,7 +390,10 @@ public class IpdsBinding {
 	            	pub.setLargerWorkTitle(getStringValue(inPub, IpdsMessageLog.JOURNALTITLE));
 	            }
             }
-            pub.setPublicationYear(getStringValue(inPub, IpdsMessageLog.DISEMINATIONDATE).substring(0, 4));
+            String publicationYear = getStringValue(inPub, IpdsMessageLog.DISEMINATIONDATE);
+            if (null != publicationYear && 3 < publicationYear.length()) {
+            	pub.setPublicationYear(getStringValue(inPub, IpdsMessageLog.DISEMINATIONDATE).substring(0, 4));
+            }
             //Not from IPDS - pub.setConferenceTitle();
             //Not from IPDS - pub.setConferenceDate();
             //Not from IPDS - pub.setConferenceLocation();

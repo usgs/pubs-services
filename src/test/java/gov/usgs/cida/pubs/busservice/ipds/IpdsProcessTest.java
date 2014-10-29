@@ -158,9 +158,9 @@ public class IpdsProcessTest extends BaseSpringTest {
 
 //    @Test
 //    public void processLogTest() {
-//    	for (int i=2; i<32; i++) {
-//    		LOG.info(ipdsProcess.processLog(ProcessType.SPN_PRODUCTION, i));
-//    	}
+////    	for (int i=2; i<32; i++) {
+//    		LOG.info(ipdsProcess.processLog(ProcessType.SPN_PRODUCTION, 1));
+////    	}
 ////    	for (int i=58; i<99; i++) {
 ////    		LOG.info(ipdsProcess.processLog(ProcessType.DISSEMINATION, i));
 ////    	}

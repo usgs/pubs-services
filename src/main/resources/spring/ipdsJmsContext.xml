@@ -20,7 +20,6 @@
         <property name="destinationName" ref="queueName"/>
         <property name="messageListener" ref="messageListener"/>
         <property name="recoveryInterval" value="50000"/>
-        <property name="receiveTimeout" value="300000"/>
     </bean>
 
     <bean id="credentials" class="org.apache.http.auth.NTCredentials" autowire="byName">
@@ -38,7 +37,6 @@
         <property name="destinationName" ref="costCenterQueueName"/>
         <property name="messageListener" ref="costCenterListener"/>
         <property name="recoveryInterval" value="50000"/>
-        <property name="receiveTimeout" value="300000"/>
     </bean>
 
     <bean id="httpClient" class="org.apache.http.impl.client.DefaultHttpClient" autowire="byName"/>

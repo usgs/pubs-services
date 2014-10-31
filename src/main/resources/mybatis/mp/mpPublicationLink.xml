@@ -47,37 +47,19 @@
            where publication_link_id = #{id,jdbcType=NUMERIC}
     </update>
 
-	<update id="publish" parameterType="Integer">
-		merge into publication_link pw 
-			using (<include refid="baseSelect"/>
-			         where publication_id = #{value,jdbcType=NUMERIC}) mp 
-			   on (mp.publication_link_id = pw.publication_link_id) 
-			 when matched then update 
-				  set pw.rank = mp.rank, 
-					  pw.link_type_id = mp.link_type_id,
-					  pw.url = mp.url,
-					  pw.text = mp.text,
-					  pw.object_size = mp.object_size,
-					  pw.link_file_type_id = mp.link_file_type_id,
-					  pw.description = mp.description,
-					  pw.insert_date = mp.insert_date,
-					  pw.insert_username = mp.insert_username,
-					  pw.update_date = sysdate,
-					  pw.update_username = audit_trail_util.get_username
-			 when not matched then insert (<include refid="publicationLink.cols"/>)
-				  values (mp.publication_link_id, 	mp.publication_id, 		mp.rank, 
-					  	  mp.url,					mp.text,		      	mp.object_size,
-					  	  mp.link_file_type_id,		mp.link_type_id,		mp.description,
-				          mp.insert_date, 			mp.insert_username, 	sysdate, 		audit_trail_util.get_username)
- 
-	</update>
+	<insert id="publish" parameterType="Integer">
+		insert into publication_link (<include refid="publicationLink.cols"/>)
+		select publication_link_id, 	publication_id, 	rank, 
+			   url,						text,		      	object_size,
+			   link_file_type_id,		link_type_id,		description,
+			   insert_date, 			insert_username, 	sysdate, 		audit_trail_util.get_username
+		  from mp_publication_link
+           where publication_id = #{value,jdbcType=NUMERIC}
+	</insert>
 	
 	<delete id="publishDelete" parameterType="Integer">
 		delete from publication_link
-		 where publication_id = #{value,jdbcType=NUMERIC} and
-		       publication_link_id not in (select publication_link_id
-		                                     from mp_publication_link
-		                                    where publication_id = #{value,jdbcType=NUMERIC}) 
+		 where publication_id = #{value,jdbcType=NUMERIC}
 	</delete>
 
     <delete id="delete" parameterType="Integer">

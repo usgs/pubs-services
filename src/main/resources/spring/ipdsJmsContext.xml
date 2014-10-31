@@ -1,35 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:tx="http://www.springframework.org/schema/tx"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
-       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
          <property name="brokerURL" ref="brokerURL"/> 
     </bean>
 
-    <!-- this is the Message Driven POJO (MDP) -->
-    <bean id="messageListener" class="gov.usgs.cida.pubs.jms.MessageConsumer" autowire="byName"/>
-
-    <!-- and this is the message listener container -->
+    <bean id="ipdsMessageListener" class="gov.usgs.cida.pubs.jms.IpdsMessageListener" autowire="byName"/>
     <bean id="mlc" class="org.springframework.jms.listener.DefaultMessageListenerContainer" autowire="byName">
         <property name="concurrentConsumers" value="1"/>
-        <property name="maxConcurrentConsumers" value="1"/>
         <property name="connectionFactory" ref="connectionFactory"/>
         <property name="destinationName" ref="queueName"/>
-        <property name="messageListener" ref="messageListener"/>
-        <property name="recoveryInterval" value="50000"/>
+        <property name="messageListener" ref="ipdsMessageListener"/>
+        <property name="sessionTransacted" value="true"/>
     </bean>
 
-    <bean id="credentials" class="org.apache.http.auth.NTCredentials" autowire="byName">
-        <constructor-arg ref="ipdsPubsWsUser"/>
-        <constructor-arg ref="ipdsPubsWsPwd"/>
-        <constructor-arg value=""/>
-        <constructor-arg value="GS"/>
-    </bean>
-
-    <bean id="costCenterListener" class="gov.usgs.cida.pubs.jms.CostCenterConsumer" autowire="byName"/>
+    <bean id="costCenterListener" class="gov.usgs.cida.pubs.jms.CostCenterMessageListener" autowire="byName"/>
     <bean id="ccmlc" class="org.springframework.jms.listener.DefaultMessageListenerContainer" autowire="byName">
         <property name="concurrentConsumers" value="1"/>
         <property name="maxConcurrentConsumers" value="1"/>
@@ -37,8 +24,16 @@
         <property name="destinationName" ref="costCenterQueueName"/>
         <property name="messageListener" ref="costCenterListener"/>
         <property name="recoveryInterval" value="50000"/>
+        <property name="sessionTransacted" value="true"/>
     </bean>
 
     <bean id="httpClient" class="org.apache.http.impl.client.DefaultHttpClient" autowire="byName"/>
+
+    <bean id="credentials" class="org.apache.http.auth.NTCredentials" autowire="byName">
+        <constructor-arg ref="ipdsPubsWsUser"/>
+        <constructor-arg ref="ipdsPubsWsPwd"/>
+        <constructor-arg value=""/>
+        <constructor-arg value="GS"/>
+    </bean>
 
 </beans>

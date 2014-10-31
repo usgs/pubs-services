@@ -3,10 +3,10 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:sec="http://www.springframework.org/schema/security" xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
-                           http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
-                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
-						   http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd">
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+						   http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd">
 
 	<sec:global-method-security
 		secured-annotations="enabled" proxy-target-class="true" />

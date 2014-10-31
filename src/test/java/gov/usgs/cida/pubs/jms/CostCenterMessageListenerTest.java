@@ -25,17 +25,17 @@ import org.mockito.MockitoAnnotations;
  * @author drsteini
  *
  */
-public class CostCenterConsumerTest extends BaseSpringTest {
+public class CostCenterMessageListenerTest extends BaseSpringTest {
 
 	@Mock
 	public IIpdsService service;
 
-    private CostCenterConsumer mc;
+    private CostCenterMessageListener mc;
     
     @Before
     public void initTest() throws Exception {
         MockitoAnnotations.initMocks(this);
-        mc = new CostCenterConsumer(service);
+        mc = new CostCenterMessageListener(service);
     }
 
     @Test

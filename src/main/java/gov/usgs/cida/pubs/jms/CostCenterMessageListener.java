@@ -11,14 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 
-public class CostCenterConsumer implements MessageListener {
+public class CostCenterMessageListener implements MessageListener {
 
-    private static final Log LOG = LogFactory.getLog(MessageConsumer.class);
+    private static final Log LOG = LogFactory.getLog(IpdsMessageListener.class);
 
     protected final IIpdsService costCenterMessageService;
 
     @Autowired
-    public CostCenterConsumer(@Qualifier("costCenterMessageService") final IIpdsService costCenterMessageService) {
+    public CostCenterMessageListener(@Qualifier("costCenterMessageService") final IIpdsService costCenterMessageService) {
         this.costCenterMessageService = costCenterMessageService;
      }
 

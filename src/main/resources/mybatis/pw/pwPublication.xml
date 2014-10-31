@@ -53,7 +53,7 @@
 		</if>
 
 		<if test="null != pubXDays">
-			and trunc(display_to_public_date) &gt;= trunc(sysdate - #{pubXdays})
+			and trunc(display_to_public_date) &gt;= trunc(sysdate - #{pubXDays})
 		</if>
 
 		<if test="null != pubDateLow">

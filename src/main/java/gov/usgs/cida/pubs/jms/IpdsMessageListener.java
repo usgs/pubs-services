@@ -13,16 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 
-public class MessageConsumer implements MessageListener {
+public class IpdsMessageListener implements MessageListener {
 
-    private static final Log LOG = LogFactory.getLog(MessageConsumer.class);
+    private static final Log LOG = LogFactory.getLog(IpdsMessageListener.class);
 
     protected final IIpdsService ipdsStringMessageService;
 
     protected final IIpdsService spnProductionMessageService;
 
     @Autowired
-    public MessageConsumer(@Qualifier("ipdsStringMessageService") final IIpdsService ipdsStringMessageService,
+    public IpdsMessageListener(@Qualifier("ipdsStringMessageService") final IIpdsService ipdsStringMessageService,
             @Qualifier("spnProductionMessageService") final IIpdsService spnProductionMessageService) {
         this.ipdsStringMessageService = ipdsStringMessageService;
         this.spnProductionMessageService = spnProductionMessageService;

@@ -317,7 +317,7 @@
             </if>
             
             <if test="yearStart != null">
-            	and (publication_year &gt;= #{yearStart}
+            	and publication_year &gt;= #{yearStart}
             </if>
             
             <if test="yearEnd != null">

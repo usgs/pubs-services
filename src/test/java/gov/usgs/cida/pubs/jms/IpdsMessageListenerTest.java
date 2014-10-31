@@ -22,7 +22,7 @@ import org.junit.Test;
  * @author drsteini
  *
  */
-public class MessageConsumerTest extends BaseSpringTest {
+public class IpdsMessageListenerTest extends BaseSpringTest {
 
     private class Isms implements IIpdsService {
         public String msgText;
@@ -47,7 +47,7 @@ public class MessageConsumerTest extends BaseSpringTest {
     @Test
     public void testOnMessage() {
         ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost?broker.persistent=false");
-        MessageConsumer mc = new MessageConsumer(isms, spms);
+        IpdsMessageListener mc = new IpdsMessageListener(isms, spms);
         try {
             Connection conn = connectionFactory.createConnection();
             Session sess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);

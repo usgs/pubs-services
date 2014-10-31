@@ -166,10 +166,10 @@ public class IpdsBinding {
         String contributorName = getFirstNodeText(element, "d:AuthorNameText");
         String[] nameParts = contributorName.split(",");
         if (0 < nameParts.length) {
-        	given = nameParts[0].trim();
+        	family = nameParts[0].trim();
         }
         if (1 < nameParts.length) {
-        	family = nameParts[1].trim();
+        	given = nameParts[1].trim();
         }
         filters.put("given", given);
         filters.put("family", family);
@@ -243,8 +243,8 @@ public class IpdsBinding {
         Document doc = makeDocument(contributorXml);
 
         contributor.setIpdsContributorId(PubsUtilities.parseInteger(getFirstNodeText(doc.getDocumentElement(), "d:Id")));
-        contributor.setFamily(getFirstNodeText(doc.getDocumentElement(), "d:FirstName"));
-        contributor.setGiven(getFirstNodeText(doc.getDocumentElement(), "d:LastName"));
+        contributor.setFamily(getFirstNodeText(doc.getDocumentElement(), "d:LastName"));
+        contributor.setGiven(getFirstNodeText(doc.getDocumentElement(), "d:FirstName"));
         contributor.setEmail(getFirstNodeText(doc.getDocumentElement(), "d:WorkEMail"));
 
         return contributor;

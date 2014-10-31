@@ -6,7 +6,7 @@
   <link rel="self" title="IPDSAuthors" href="IPDSAuthors" />
   <entry m:etag="W/&quot;2&quot;">
     <id>https://ipds.usgs.gov/_vti_bin/listdata.svc/IPDSAuthors(331386)</id>
-    <title type="text">ConGiven, ConFirst</title>
+    <title type="text">ConFamily, ConGiven</title>
     <updated>2013-08-21T11:41:38-06:00</updated>
     <author>
       <name />
@@ -21,7 +21,7 @@
     <content type="application/xml">
       <m:properties>
         <d:ContentTypeID>0x0100A1B2D36CE37F734EACC7D84A7815DA59009483ED2B3D9E8240B7A270CCF8751D40</d:ContentTypeID>
-        <d:AuthorNameText>ConGiven, ConFirst</d:AuthorNameText>
+        <d:AuthorNameText>ConFamily, ConGiven</d:AuthorNameText>
         <d:IPNumber>IP-050927</d:IPNumber>
         <d:NonUSGSContributor m:null="true" />
         <d:NonUSGSAffiliation m:null="true" />
@@ -46,7 +46,7 @@
   </entry>
   <entry m:etag="W/&quot;2&quot;">
     <id>https://ipds.usgs.gov/_vti_bin/listdata.svc/IPDSAuthors(331406)</id>
-    <title type="text">outerGiven, outerfamily</title>
+    <title type="text">outerfamily, outerGiven</title>
     <updated>2013-08-21T11:42:32-06:00</updated>
     <author>
       <name />
@@ -61,9 +61,9 @@
     <content type="application/xml">
       <m:properties>
         <d:ContentTypeID>0x0100A1B2D36CE37F734EACC7D84A7815DA59009483ED2B3D9E8240B7A270CCF8751D40</d:ContentTypeID>
-        <d:AuthorNameText>outerGiven, outerfamily</d:AuthorNameText>
+        <d:AuthorNameText>outerfamily, outerGiven</d:AuthorNameText>
         <d:IPNumber>IP-050927</d:IPNumber>
-        <d:NonUSGSContributor>outerGiven, outerfamily</d:NonUSGSContributor>
+        <d:NonUSGSContributor>outerfamily, outerGiven</d:NonUSGSContributor>
         <d:NonUSGSAffiliation>The Outer Limits</d:NonUSGSAffiliation>
         <d:Rank m:type="Edm.Double">3</d:Rank>
         <d:AuthorNameId m:type="Edm.Int32" m:null="true" />
@@ -86,7 +86,7 @@
   </entry>
   <entry m:etag="W/&quot;2&quot;">
     <id>https://ipds.usgs.gov/_vti_bin/listdata.svc/IPDSAuthors(331406)</id>
-    <title type="text">outerGiven, outerfamily</title>
+    <title type="text">outerfamily, outerGiven</title>
     <updated>2013-08-21T11:42:32-06:00</updated>
     <author>
       <name />
@@ -101,9 +101,9 @@
     <content type="application/xml">
       <m:properties>
         <d:ContentTypeID>0x0100A1B2D36CE37F734EACC7D84A7815DA59009483ED2B3D9E8240B7A270CCF8751D40</d:ContentTypeID>
-        <d:AuthorNameText>outerGiven, outerfamily</d:AuthorNameText>
+        <d:AuthorNameText>outerfamily, outerGiven</d:AuthorNameText>
         <d:IPNumber>IP-050927</d:IPNumber>
-        <d:NonUSGSContributor>outerGiven, outerfamily</d:NonUSGSContributor>
+        <d:NonUSGSContributor>outerfamily, outerGiven</d:NonUSGSContributor>
         <d:NonUSGSAffiliation>The Outer Limits</d:NonUSGSAffiliation>
         <d:Rank m:type="Edm.Double">4</d:Rank>
         <d:AuthorNameId m:type="Edm.Int32" m:null="true" />
@@ -126,7 +126,7 @@
   </entry>
   <entry m:etag="W/&quot;2&quot;">
     <id>https://ipds.usgs.gov/_vti_bin/listdata.svc/IPDSAuthors(331386)</id>
-    <title type="text">ConGiven, ConFirst</title>
+    <title type="text">ConFamily, ConGiven</title>
     <updated>2013-08-21T11:41:38-06:00</updated>
     <author>
       <name />
@@ -141,7 +141,7 @@
     <content type="application/xml">
       <m:properties>
         <d:ContentTypeID>0x0100A1B2D36CE37F734EACC7D84A7815DA59009483ED2B3D9E8240B7A270CCF8751D40</d:ContentTypeID>
-        <d:AuthorNameText>ConGiven, ConFirst</d:AuthorNameText>
+        <d:AuthorNameText>ConFamily, ConGiven</d:AuthorNameText>
         <d:IPNumber>IP-050927</d:IPNumber>
         <d:NonUSGSContributor m:null="true" />
         <d:NonUSGSAffiliation m:null="true" />

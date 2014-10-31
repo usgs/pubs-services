@@ -192,7 +192,7 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
     @Test
     public void createNonUsgsContributor() throws SAXException, IOException {
         Document d = binding.makeDocument(newOutsideContributorXml);
-        Contributor<?> contributor = binding.createNonUsgsContributor(d.getDocumentElement(), "Jane", "ODoe");
+        Contributor<?> contributor = binding.createNonUsgsContributor(d.getDocumentElement(), "ODoe", "Jane");
         assertNotNull(contributor);
         assertTrue(contributor instanceof OutsideContributor);
         assertNotNull(contributor.getId());
@@ -423,14 +423,14 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
 
     protected void assertUsgsContributorXml(UsgsContributor person) {
     	assertEquals(1, person.getIpdsContributorId().intValue());
-        assertEquals("Jane", person.getFamily());
-        assertEquals("Doe", person.getGiven());
+        assertEquals("Doe", person.getFamily());
+        assertEquals("Jane", person.getGiven());
         assertEquals("jmdoe@usgs.gov", person.getEmail());
     }
 
     protected void assertNewOutsideContributorXml(OutsideContributor contributor) {
-        assertEquals("Jane", contributor.getFamily());
-        assertEquals("ODoe", contributor.getGiven());
+        assertEquals("ODoe", contributor.getFamily());
+        assertEquals("Jane", contributor.getGiven());
         assertNull(contributor.getEmail());
         assertEquals("7", contributor.getAffiliation().getId().toString());
     }

@@ -6,7 +6,7 @@
   <link rel="self" title="IPDSAuthors" href="IPDSAuthors" />
   <entry m:etag="W/&quot;2&quot;">
     <id>https://ipds.usgs.gov/_vti_bin/listdata.svc/IPDSAuthors(331405)</id>
-    <title type="text">outerGiven, outerFamily </title>
+    <title type="text">outerFamily, outerGiven</title>
     <updated>2013-08-21T11:37:08-06:00</updated>
     <author>
       <name />
@@ -21,9 +21,9 @@
     <content type="application/xml">
       <m:properties>
         <d:ContentTypeID>0x0100A1B2D36CE37F734EACC7D84A7815DA59009483ED2B3D9E8240B7A270CCF8751D40</d:ContentTypeID>
-        <d:AuthorNameText xml:space="preserve">outerGiven, outerFamily </d:AuthorNameText>
+        <d:AuthorNameText xml:space="preserve">outerFamily, outerGiven</d:AuthorNameText>
         <d:IPNumber>IP-050927</d:IPNumber>
-        <d:NonUSGSContributor xml:space="preserve">outerGiven, outerFamily </d:NonUSGSContributor>
+        <d:NonUSGSContributor xml:space="preserve">outerFamily, outerGiven</d:NonUSGSContributor>
         <d:NonUSGSAffiliation>Outer Affiliation 1</d:NonUSGSAffiliation>
         <d:Rank m:type="Edm.Double">1</d:Rank>
         <d:AuthorNameId m:type="Edm.Int32" m:null="true" />

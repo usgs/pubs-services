@@ -165,7 +165,7 @@ public class ContributorDaoTest extends BaseSpringDaoTest {
         assertEquals(1, contributor.getId().intValue());
         assertTrue(contributor instanceof UsgsContributor);
         UsgsContributor usgsContributor = (UsgsContributor) contributor;
-        assertEquals("ConFirst", usgsContributor.getFamily());
+        assertEquals("ConFamily", usgsContributor.getFamily());
         assertEquals("ConGiven", usgsContributor.getGiven());
         assertEquals("ConSuffix", usgsContributor.getSuffix());
         assertEquals("con@usgs.gov", usgsContributor.getEmail());

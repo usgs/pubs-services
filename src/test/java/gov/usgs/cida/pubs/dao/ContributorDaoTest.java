@@ -17,7 +17,9 @@ import org.junit.Test;
 
 public class ContributorDaoTest extends BaseSpringDaoTest {
 
-    public static final int contributorCnt = 3;
+    public static final int contributorCnt = 4;
+	public static final int personContributorCnt = 3;
+	public static final int corporateContributorCnt = 1;
 
     public static final List<String> IGNORE_PROPERTIES_PERSON = Arrays.asList("validationErrors", "valErrors", "organization");
     public static final List<String> IGNORE_PROPERTIES_CORPORATION = Arrays.asList("validationErrors", "valErrors", "family", 
@@ -73,8 +75,20 @@ public class ContributorDaoTest extends BaseSpringDaoTest {
         filters.clear();
         filters.put("text", "con");
         contributors = Contributor.getDao().getByMap(filters);
-        assertEquals(1, contributors.size());
-        assertEquals(1, contributors.get(0).getId().intValue());
+        assertEquals(2, contributors.size());
+        boolean got1 = false;
+        boolean got4 = false;
+        for (Contributor<?> contributor : contributors) {
+        	if (1 == contributor.getId()) {
+        		got1 = true;
+        	} else if (4 == contributor.getId()) {
+        		got4 = true;
+        	} else {
+        		fail("Got wrong contributor" + contributor.getId());
+        	}
+        }
+        assertTrue("Got 1", got1);
+        assertTrue("Got 4", got4);
 
         filters.clear();
         filters.put("text", "us");
@@ -103,7 +117,7 @@ public class ContributorDaoTest extends BaseSpringDaoTest {
         filters.clear();
         filters.put("corporation", false);
         contributors = Contributor.getDao().getByMap(filters);
-        assertEquals(2, contributors.size());
+        assertEquals(personContributorCnt, contributors.size());
         assertEquals(1, contributors.get(0).getId().intValue());
         filters.put("text", "out");
         contributors = Contributor.getDao().getByMap(filters);
@@ -126,7 +140,7 @@ public class ContributorDaoTest extends BaseSpringDaoTest {
         filters.clear();
         filters.put("corporation", true);
         contributors = Contributor.getDao().getByMap(filters);
-        assertEquals(1, contributors.size());
+        assertEquals(corporateContributorCnt, contributors.size());
         assertEquals(2, contributors.get(0).getId().intValue());
         filters.put("text", "us");
         contributors = Contributor.getDao().getByMap(filters);
@@ -181,6 +195,17 @@ public class ContributorDaoTest extends BaseSpringDaoTest {
         assertEquals("outerSuffix", outsideContributor.getSuffix());
         assertEquals("outer@gmail.com", outsideContributor.getEmail());
         assertEquals(5, outsideContributor.getAffiliation().getId().intValue());
+    }
+
+    public static void assertContributor4(Contributor<?> contributor, Integer affiliationId) {
+        assertEquals(4, contributor.getId().intValue());
+        assertTrue(contributor instanceof UsgsContributor);
+        UsgsContributor usgsContributor = (UsgsContributor) contributor;
+        assertEquals("4Family", usgsContributor.getFamily());
+        assertEquals("4Given", usgsContributor.getGiven());
+        assertEquals("4Suffix", usgsContributor.getSuffix());
+        assertEquals("con4@usgs.gov", usgsContributor.getEmail());
+        assertEquals(affiliationId, usgsContributor.getAffiliation().getId());
     }
 
 }

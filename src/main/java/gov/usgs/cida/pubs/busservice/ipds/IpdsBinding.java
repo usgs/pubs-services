@@ -216,7 +216,7 @@ public class IpdsBinding {
     }
 
     protected Contributor<?> getOrCreateUsgsContributor(final Element element, final String ipdsContributorId) throws SAXException, IOException {
-        Contributor<?> person;
+        PersonContributor<?> person;
         Map<String, Object> filters = new HashMap<>();
 
         filters.put("ipdsContributorId", ipdsContributorId);
@@ -225,13 +225,16 @@ public class IpdsBinding {
         if (people.isEmpty()) {
             person = createUsgsContributor(element, ipdsContributorId);
         } else {
-            person = people.get(0);
-            //TODO - should we update the information on file?
+            person = (PersonContributor<?>) people.get(0);
+            if (null == person.getAffiliation()) {
+            	person.setAffiliation(getOrCreateUsgsAffiliation(element));
+            	person = contributorBusService.updateObject(person);
+            }
         }
         return person;
     }
 
-    protected Contributor<?> createUsgsContributor(final Element element, final String ipdsContributorId) throws SAXException, IOException {
+    protected PersonContributor<?> createUsgsContributor(final Element element, final String ipdsContributorId) throws SAXException, IOException {
         String contributorXml = requester.getContributor(ipdsContributorId);
         UsgsContributor person = bindContributor(contributorXml);
         person.setAffiliation(getOrCreateUsgsAffiliation(element));

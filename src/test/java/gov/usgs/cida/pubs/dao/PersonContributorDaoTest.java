@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.dao;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.Contributor;
@@ -16,8 +17,6 @@ import java.util.Map;
 import org.junit.Test;
 
 public class PersonContributorDaoTest extends BaseSpringDaoTest {
-
-    private static final int personContributorCnt = 2;
 
     @Test
     public void getByIdInteger() {
@@ -44,7 +43,7 @@ public class PersonContributorDaoTest extends BaseSpringDaoTest {
     @Test
     public void getByMap() {
         List<Contributor<?>> contributors = PersonContributor.getDao().getByMap(null);
-        assertEquals(personContributorCnt, contributors.size());
+        assertEquals(ContributorDaoTest.personContributorCnt, contributors.size());
 
         Map<String, Object> filters = new HashMap<>();
         filters.put("id", "1");
@@ -55,8 +54,20 @@ public class PersonContributorDaoTest extends BaseSpringDaoTest {
         filters.clear();
         filters.put("text", "con");
         contributors = PersonContributor.getDao().getByMap(filters);
-        assertEquals(1, contributors.size());
-        assertEquals(1, contributors.get(0).getId().intValue());
+        assertEquals(2, contributors.size());
+        boolean got1 = false;
+        boolean got4 = false;
+        for (Contributor<?> contributor : contributors) {
+        	if (1 == contributor.getId()) {
+        		got1 = true;
+        	} else if (4 == contributor.getId()) {
+        		got4 = true;
+        	} else {
+        		fail("Got wrong contributor" + contributor.getId());
+        	}
+        }
+        assertTrue("Got 1", got1);
+        assertTrue("Got 4", got4);
 
         filters.clear();
         filters.put("given", "con");

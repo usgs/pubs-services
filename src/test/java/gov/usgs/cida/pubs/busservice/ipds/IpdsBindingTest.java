@@ -204,6 +204,7 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
         when(ipdsWsRequester.getContributor(anyString())).thenReturn(usgsContributorXml);
         Document d = binding.makeDocument("<root><d:CostCenterId>1</d:CostCenterId></root>");
         Contributor<?> contributor = binding.getOrCreateUsgsContributor(d.getDocumentElement(), "3");
+        //Don't change affiliation
         ContributorDaoTest.assertContributor1(contributor);
 
         contributor = binding.getOrCreateUsgsContributor(d.getDocumentElement(), "123");
@@ -212,6 +213,10 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
         assertNotNull(contributor.getId());
         assertUsgsContributorXml((UsgsContributor) contributor);
         assertEquals("4", ((UsgsContributor) contributor).getAffiliation().getId().toString());
+
+        contributor = binding.getOrCreateUsgsContributor(d.getDocumentElement(), "1");
+        //Add affiliation
+        ContributorDaoTest.assertContributor4(contributor, 4);
     }
 
     @Test
@@ -422,7 +427,7 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
     }
 
     protected void assertUsgsContributorXml(UsgsContributor person) {
-    	assertEquals(1, person.getIpdsContributorId().intValue());
+    	assertEquals(123, person.getIpdsContributorId().intValue());
         assertEquals("Doe", person.getFamily());
         assertEquals("Jane", person.getGiven());
         assertEquals("jmdoe@usgs.gov", person.getEmail());

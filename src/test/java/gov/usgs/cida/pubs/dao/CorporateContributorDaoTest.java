@@ -15,8 +15,6 @@ import org.junit.Test;
 
 public class CorporateContributorDaoTest extends BaseSpringDaoTest {
 
-    private static final int corporateContributorCnt = 1;
-
     @Test
     public void getByIdInteger() {
         Contributor<?> contributor = CorporateContributor.getDao().getById(2);
@@ -38,7 +36,7 @@ public class CorporateContributorDaoTest extends BaseSpringDaoTest {
     @Test
     public void getByMap() {
         List<Contributor<?>> contributors = CorporateContributor.getDao().getByMap(null);
-        assertEquals(corporateContributorCnt, contributors.size());
+        assertEquals(ContributorDaoTest.corporateContributorCnt, contributors.size());
 
         Map<String, Object> filters = new HashMap<>();
         filters.put("id", "2");

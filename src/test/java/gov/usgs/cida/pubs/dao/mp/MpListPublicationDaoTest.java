@@ -38,14 +38,19 @@ public class MpListPublicationDaoTest extends BaseSpringDaoTest {
 		filters.put("mpListId", 9);
 		List<MpListPublication> listPubs = MpListPublication.getDao().getByMap(filters);
 		assertNotNull(listPubs);
-		assertEquals(1, listPubs.size());
-		assertMpListPublication2((MpListPublication) listPubs.get(0));
+		assertEquals(2, listPubs.size());
 
 		filters.clear();
 		filters.put("publicationId", 3);
 		listPubs = MpListPublication.getDao().getByMap(filters);
 		assertNotNull(listPubs);
+		assertEquals(2, listPubs.size());
+
+		filters.put("mpListId", 9);
+		listPubs = MpListPublication.getDao().getByMap(filters);
+		assertNotNull(listPubs);
 		assertEquals(1, listPubs.size());
+		assertMpListPublication2((MpListPublication) listPubs.get(0));
 	}
 
 	@Test

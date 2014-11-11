@@ -59,13 +59,20 @@ public class MpListPublicationBusServiceTest extends BaseSpringDaoTest {
 
     @Test
     public void removePubFromListTest() {
-        busService.removePubFromList(null, null);
-        busService.removePubFromList(-1, null);
-        busService.removePubFromList(null, -1);
-        
-        ValidationResults res = busService.removePubFromList(9, 3);
+    	ValidationResults res = busService.removePubFromList(null, null);
+    	assertEquals(2, res.getValidationErrors().size());
+    	res = busService.removePubFromList(-1, null);
+    	assertEquals(1, res.getValidationErrors().size());
+    	res = busService.removePubFromList(null, -1);
+    	assertEquals(1, res.getValidationErrors().size());
+    	
+        res = busService.removePubFromList(9, 3);
         assertEquals(0, res.getValidationErrors().size());
+        //This one matches the alternate key
         assertNull(MpListPublication.getDao().getById(2));
+        //These two only match part of the alternate key
+        assertNotNull(MpListPublication.getDao().getById(3));
+        assertNotNull(MpListPublication.getDao().getById(4));
     }
 
 }

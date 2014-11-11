@@ -6,6 +6,7 @@ import gov.usgs.cida.pubs.domain.mp.MpListPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,13 +57,23 @@ public class MpListPublicationBusService extends MpBusService<MpListPublication>
 	@Override
 	@Transactional
 	public ValidationResults removePubFromList(Integer listId, Integer publicationId) {
-        Map<String, Object> filters = new HashMap<>();
-        filters.put("listId", listId);
-        filters.put("publicationId", publicationId);
-		for (MpListPublication mpListPublication : MpListPublication.getDao().getByMap(filters)) {
-			MpListPublication.getDao().deleteById(mpListPublication.getId());
+		ValidationResults rtn = new ValidationResults();
+		if (null != listId && null != publicationId) {
+	        Map<String, Object> filters = new HashMap<>();
+	        filters.put("mpListId", listId);
+	        filters.put("publicationId", publicationId);
+			for (MpListPublication mpListPublication : MpListPublication.getDao().getByMap(filters)) {
+				MpListPublication.getDao().deleteById(mpListPublication.getId());
+			}
+		} else {
+			if (null == listId) {
+				rtn.addValidatorResult(new ValidatorResult("listID", "Must be provided", "Fatal", null));
+			}
+			if (null == publicationId) {
+				rtn.addValidatorResult(new ValidatorResult("publicationId", "Must be provided", "Fatal", null));
+			}
 		}
-		return new ValidationResults();
+		return rtn;
 	}
 
 }

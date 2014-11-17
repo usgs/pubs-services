@@ -256,11 +256,21 @@
 				or to_char(publication_id) = #{term}
 				or upper(ipds_id) <include refid="publication.likeTerm"/>
 				or upper(publication_year) <include refid="publication.likeTerm"/>
+
+				<!-- publication type name -->
+				or publication_type_id in (select publication_type_id 
+	              		                     from publication_type
+	              		                    where upper(name) <include refid="publication.likeTerm"/>)
+
+				<!-- publication subtype name -->
+				or publication_subtype_id in (select publication_subtype_id 
+	              		                        from publication_subtype
+	              		                       where upper(name) <include refid="publication.likeTerm"/>)
 				
 				<!-- series name -->
-				or publication_id in (select publication_series_id 
-	              		                from publication_series
-	              		               where upper(name) <include refid="publication.likeTerm"/>)
+				or publication_series_id in (select publication_series_id 
+	              		                       from publication_series
+	              		                      where upper(name) <include refid="publication.likeTerm"/>)
     </sql>
 
     <sql id="filters">
@@ -322,6 +332,26 @@
             
             <if test="yearEnd != null">
             	and publication_year &lt;= #{yearEnd}
+            </if>
+            
+            <if test="typeName != null and typeName.length > 0">
+                and publication_type_id in (select publication_type_id 
+               		                          from publication_type
+               		                         where
+               		<foreach item="r" collection="typeName" open="" separator="or" close=""> 
+                	 upper(name) like '%' || upper(#{r}) || '%'
+                	 </foreach>
+                	 )
+            </if>
+            
+            <if test="subtypeName != null and subtypeName.length > 0">
+                and publication_subtype_id in (select publication_subtype_id 
+               		                             from publication_subtype
+               		                            where
+               		<foreach item="r" collection="subtypeName" open="" separator="or" close=""> 
+                	 upper(name) like '%' || upper(#{r}) || '%'
+                	 </foreach>
+                	 )
             </if>
             
             <if test="reportSeries != null and reportSeries.length > 0">

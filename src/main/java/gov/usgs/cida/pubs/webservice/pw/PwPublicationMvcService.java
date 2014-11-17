@@ -50,6 +50,8 @@ public class PwPublicationMvcService  extends MvcService<PwPublication> {
             @RequestParam(value="startYear", required=false) String yearStart,
             @RequestParam(value="endYear", required=false) String yearEnd,
     		@RequestParam(value="contributingOffice", required=false) String[] contributingOffice,
+            @RequestParam(value="typeName", required=false) String[] typeName,
+            @RequestParam(value="subtypeName", required=false) String[] subtypeName,
             @RequestParam(value="seriesName", required=false) String[] reportSeries,
             @RequestParam(value="reportNumber", required=false) String[] reportNumber,
             @RequestParam(value="page_row_start", required=false) String pageRowStart,
@@ -80,6 +82,8 @@ public class PwPublicationMvcService  extends MvcService<PwPublication> {
     	addToFiltersIfNotNull(filters, "yearStart", yearStart);
     	addToFiltersIfNotNull(filters, "yearEnd", yearEnd);
     	addToFiltersIfNotNull(filters, "contributingOffice", contributingOffice);
+    	addToFiltersIfNotNull(filters, "typeName", typeName);
+    	addToFiltersIfNotNull(filters, "subtypeName", subtypeName);
     	addToFiltersIfNotNull(filters, "reportSeries", reportSeries);
     	addToFiltersIfNotNull(filters, "reportNumber", reportNumber);
     	addToFiltersIfNotNull(filters, "pubXDays", pubXDays);

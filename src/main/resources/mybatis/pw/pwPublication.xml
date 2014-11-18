@@ -16,7 +16,7 @@
        		and 
 			<foreach item="term" collection="searchTerms" open=""
 					 separator="and" close=""> 
-				(<include refid="publication.singleSearchTermFilter"/>
+				(contains(publication.q, #{term}) > 0
 				<!--  contributing office -->
 				 or exists (select null
                  	  	      from publication_cost_center

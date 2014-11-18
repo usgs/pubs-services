@@ -13,32 +13,13 @@
     <sql id="singleSearchTermFilter">
     <!-- single search term needs to or/and correctly -->
        	<if test="searchTerms != null and searchTerms.length > 0">
-       		and 
-			<foreach item="term" collection="searchTerms" open=""
-					 separator="and" close=""> 
-				(<include refid="publication.singleSearchTermFilter"/>
-				<!--  contributing office -->
-				 or exists (select null
-                 	  	      from publication_cost_center
-                  		           join affiliation
-                 	        	     on cost_center_id = affiliation_id
-                 	    	 where publication.publication_id = publication_cost_center.publication_id and
-             	        	       upper(name) <include refid="publication.likeTerm"/>
-                           )
-               
-               <!-- author -->
-                or exists (select null
-                   	         from publication_contributor
-                   	              join contributor
-                   	                on publication_contributor.contributor_id = contributor.contributor_id 
-               	            where publication.publication_id = publication_contributor.publication_id and
-                 	         	  (upper(family) <include refid="publication.likeTerm"/> or
-                 	         	   upper(given) <include refid="publication.likeTerm"/> or
-                 	         	   upper(literal) <include refid="publication.likeTerm"/>
-                 	         	  )
-                 	      )
-              )
+       		and exists (select null
+       		              from publication_index
+       		             where publication.publication_id = publication_index.publication_id
+			<foreach item="term" collection="searchTerms" open="and (" separator="or" close=")"> 
+				contains(publication_index.q, #{term}) > 0
 			</foreach>
+			)
        	</if>
     </sql>
     

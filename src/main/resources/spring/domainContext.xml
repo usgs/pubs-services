@@ -22,6 +22,7 @@
     <bean id="outsideAffiliation" class="gov.usgs.cida.pubs.domain.OutsideAffiliation" autowire="byName"/>
     <bean id="personContributor" class="gov.usgs.cida.pubs.domain.PersonContributor" autowire="byName"/>
     <bean id="publication" class="gov.usgs.cida.pubs.domain.Publication" autowire="byName"/>
+    <bean id="publicationIndex" class="gov.usgs.cida.pubs.domain.PublicationIndex" autowire="byName"/>
     <bean id="publicationType" class="gov.usgs.cida.pubs.domain.PublicationType" autowire="byName"/>
     <bean id="publicationSubtype" class="gov.usgs.cida.pubs.domain.PublicationSubtype" autowire="byName"/>
     <bean id="publicationSeries" class="gov.usgs.cida.pubs.domain.PublicationSeries" autowire="byName"/>

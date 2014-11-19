@@ -26,6 +26,7 @@
     <bean id="outsideAffiliationDao" class="gov.usgs.cida.pubs.dao.OutsideAffiliationDao" autowire="byName"/>
     <bean id="personContributorDao" class="gov.usgs.cida.pubs.dao.PersonContributorDao" autowire="byName"/>
     <bean id="publicationDao" class="gov.usgs.cida.pubs.dao.PublicationDao" autowire="byName"/>
+    <bean id="publicationIndexDao" class="gov.usgs.cida.pubs.dao.PublicationIndexDao" autowire="byName"/>
     <bean id="publicationSeriesDao" class="gov.usgs.cida.pubs.dao.PublicationSeriesDao" autowire="byName"/>
     <bean id="publicationSubtypeDao" class="gov.usgs.cida.pubs.dao.PublicationSubtypeDao" autowire="byName"/>
     <bean id="publicationTypeDao" class="gov.usgs.cida.pubs.dao.PublicationTypeDao" autowire="byName"/>

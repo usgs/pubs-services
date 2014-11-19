@@ -8,6 +8,7 @@ import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
+import gov.usgs.cida.pubs.domain.PublicationIndex;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.mp.MpList;
@@ -297,6 +298,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 		                crossRefBusService.submitCrossRef(mpPub);
 		            }
 		            deleteObject(publicationId);
+		            PublicationIndex.getDao().publish(publicationId);
 		        } else {
 		            mpPub.setValidationErrors(validations);
 		            validationResults.addValidationResults(mpPub.getValidationErrors());

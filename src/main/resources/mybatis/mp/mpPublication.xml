@@ -170,11 +170,7 @@
 
     <update id="publish" parameterType="Integer">
         merge into publication pw
-            using (select <include refid="publication.cols"/>,
-                          title || ' ' || abstract || ' ' || subseries_title || ' ' || series_number || ' ' || index_id || ' ' || ipds_id || ' ' || publication_year ||
-                              (select name from publication_type where publication_type_id = mp_publication.publication_type_id) || ' ' || 
-                              (select name from publication_subtype where publication_subtype_id = mp_publication.publication_subtype_id) || ' ' || 
-                              (select name from publication_series where publication_series_id = mp_publication.publication_series_id) q
+            using (select <include refid="publication.cols"/>
                      from mp_publication
                     where publication_id = #{value,jdbcType=NUMERIC}) mp
                on (mp.publication_id = pw.publication_id)
@@ -232,9 +228,8 @@
                       pw.insert_date               = mp.insert_date,
                       pw.insert_username           = mp.insert_username,
                       pw.update_date               = sysdate,
-                      pw.update_username           = audit_trail_util.get_username,
-                      pw.q                         = mp.q
-             when not matched then insert (<include refid="publication.cols"/>, q)
+                      pw.update_username           = audit_trail_util.get_username
+             when not matched then insert (<include refid="publication.cols"/>)
                   values (mp.publication_id, 		mp.index_id,				mp.display_to_public_date,		mp.publication_year,
                           mp.publication_type_id,	mp.publication_subtype_id,	mp.publication_series_id,		mp.series_number,
                           mp.subseries_title,		mp.chapter,					mp.subchapter,					mp.title,
@@ -249,7 +244,6 @@
                           mp.state,					mp.county,					mp.city,						mp.other_geospatial,
                           mp.geographic_extents,	mp.volume,					mp.issue,
                           mp.insert_date, 			mp.insert_username, 		sysdate, 						audit_trail_util.get_username)
-                          mp.q
     </update>
 
     <delete id="delete" parameterType="Integer">

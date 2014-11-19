@@ -44,6 +44,7 @@
         <typeAlias alias="publication" type="gov.usgs.cida.pubs.domain.Publication"/>
         <typeAlias alias="publicationContributor" type="gov.usgs.cida.pubs.domain.PublicationContributor"/>
         <typeAlias alias="publicationCostCenter" type="gov.usgs.cida.pubs.domain.PublicationCostCenter"/>
+        <typeAlias alias="publicationIndex" type="gov.usgs.cida.pubs.domain.PublicationIndex"/>
         <typeAlias alias="publicationLink" type="gov.usgs.cida.pubs.domain.PublicationLink"/>
         <typeAlias alias="publicationSeries" type="gov.usgs.cida.pubs.domain.PublicationSeries"/>
         <typeAlias alias="publicationSubtype" type="gov.usgs.cida.pubs.domain.PublicationSubtype"/>
@@ -88,6 +89,7 @@
          <mapper resource="mybatis/publication.xml"/>
          <mapper resource="mybatis/publicationContributor.xml"/>
          <mapper resource="mybatis/publicationCostCenter.xml"/>
+         <mapper resource="mybatis/publicationIndex.xml"/>
          <mapper resource="mybatis/publicationLink.xml"/>
          <mapper resource="mybatis/publicationSeries.xml"/>
          <mapper resource="mybatis/publicationSubtype.xml"/>

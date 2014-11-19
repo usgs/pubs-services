@@ -19,6 +19,7 @@ import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
+import gov.usgs.cida.pubs.domain.PublicationIndex;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
@@ -545,6 +546,9 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	//Link count is one more than in the dataset.xml because a default thumbnail is added by the service.
     	assertEquals(2, pub.getLinks().size());
     	assertEquals(1, pub.getCostCenters().size());
+    	PublicationIndex pi = PublicationIndex.getDao().getById(2);
+    	assertNotNull(pi);
+    	assertEquals("title the abstract subseries title series number 2 ipdsid Report USGS Numbered Series Professional Paper ConFamily, ConGiven, ConSuffix US Geological Survey Ice Survey Team Affiliation Cost Center 4", pi.getQ());
 
     	assertMpPublicationDeleted(2);
     }

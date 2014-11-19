@@ -26,6 +26,7 @@ public class PublicationIndexDao extends SqlSessionDaoSupport implements IPublic
      * @see gov.usgs.cida.pubs.dao.intfc.IPublicationIndexDao#publish(java.lang.Integer)
      */
     @Transactional
+    @ISetDbContext
     @Override
     public void publish(Integer publicationId) {
     	getSqlSession().selectOne(NS + BaseDao.UPDATE, publicationId);

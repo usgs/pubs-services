@@ -14,6 +14,7 @@ import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.webservice.MvcService;
 
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -79,9 +80,6 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 
     	LOG.debug("PWPublicationRssMvcService.getRSS()");
     	
-    	response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
-    	response.setContentType("text/xml");
-    	
         Map<String, Object> filters = new HashMap<>();
 
     	configureSingleSearchFilters(filters, searchTerms);
@@ -122,8 +120,22 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
         results.setRecords(pubs);
         results.setRecordCount(totalPubsCount);
         
-        String rssResults = getSearchResultsAsRSS(results);
-        LOG.error("\n\nRESULTS:\n\n[" + rssResults + "]\n\n");
+        String rssResults = "";
+		try {
+			rssResults = new String(getSearchResultsAsRSS(results).getBytes("ISO-8859-1"), PubsConstants.DEFAULT_ENCODING);
+		} catch (UnsupportedEncodingException e) {
+			LOG.error("Unable to force UTF-8 on RSS content: " + e.getMessage());
+		}
+        
+        response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
+    	response.setContentType("text/xml");
+    	try {
+			response.setContentLength(rssResults.getBytes(PubsConstants.DEFAULT_ENCODING).length);
+		} catch (UnsupportedEncodingException e) {
+			LOG.error("Unable to set content length of resulting RSS content: " + e.getMessage());
+		}
+    	
+    	//LOG.error("RESULTS: \n\n" + rssResults + "]\n\n");
         
         return rssResults;
     }

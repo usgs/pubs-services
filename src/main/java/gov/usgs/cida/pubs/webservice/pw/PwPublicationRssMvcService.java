@@ -110,19 +110,10 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
     	filters.putAll(buildPaging(pageRowStart, pageSize, pageNumber));
     	
         List<PwPublication> pubs = busService.getObjects(filters);
-        Integer totalPubsCount = busService.getObjectCount(filters);
-        SearchResults results = new SearchResults();
-        results.setPageSize(filters.get("pageSize").toString());
-        results.setPageRowStart(filters.get("pageRowStart").toString());
-        if (null != filters.get("pageNumber")) {
-        	results.setPageNumber(filters.get("pageNumber").toString());
-        }
-        results.setRecords(pubs);
-        results.setRecordCount(totalPubsCount);
-        
+
         String rssResults = "";
 		try {
-			rssResults = new String(getSearchResultsAsRSS(results).getBytes("ISO-8859-1"), PubsConstants.DEFAULT_ENCODING);
+			rssResults = new String(getSearchResultsAsRSS(pubs).getBytes("ISO-8859-1"), PubsConstants.DEFAULT_ENCODING);
 		} catch (UnsupportedEncodingException e) {
 			LOG.error("Unable to force UTF-8 on RSS content: " + e.getMessage());
 		}
@@ -138,7 +129,7 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
         return rssResults;
     }
     
-    private String getSearchResultsAsRSS(SearchResults results) {
+    private String getSearchResultsAsRSS(List<PwPublication> records) {
     	/**
     	 * Per JIM JIRA PUBSTWO-971
     	 * 
@@ -183,7 +174,6 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
     	/**
     	 * Now per item
     	 */
-    	List<? extends BaseDomain<?>> records = results.getRecords();
     	if(records != null) {
 	    	for(BaseDomain<?> record : records) {
 	    		Publication<?> publication = (Publication<?>)record;

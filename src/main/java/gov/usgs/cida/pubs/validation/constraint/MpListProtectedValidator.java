@@ -27,11 +27,10 @@ public class MpListProtectedValidator implements ConstraintValidator<MpListProte
 	@Override
 	public boolean isValid(MpList value, ConstraintValidatorContext context) {
 		boolean rtn = true;
-		if (null != value) {
-			if ((null != value.getType() && value.getType().contains("MP_SHARED")) ||
-					protectedIds.contains(value.getId().toString())) {
-				rtn = false;
-			}
+		if (null != value 
+				&& (null != value.getType() && value.getType().contains("MP_SHARED"))
+				|| protectedIds.contains(value.getId().toString())) {
+			rtn = false;
 		}
 
 		return rtn;

@@ -27,9 +27,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class IpdsProcess implements IIpdsProcess {
+
+    private static final Logger LOG = LoggerFactory.getLogger(IpdsProcess.class);
 
     private final ICrossRefBusService crossRefBusService;
     private final IpdsBinding binder;
@@ -73,7 +77,6 @@ public class IpdsProcess implements IIpdsProcess {
 
     protected String processPublication(final ProcessType inProcessType, final PubMap inPub) {
         MpPublication pub = binder.bindPublication(inPub);
-        pub.setIpdsReviewProcessState(inProcessType.getIpdsValue());
 
         //Check for existing data in MyPubs land - use the first hit if any found.
         Map<String, Object> filters = new HashMap<String, Object>();
@@ -84,11 +87,12 @@ public class IpdsProcess implements IIpdsProcess {
         StringBuilder rtn = new StringBuilder("");
 
         if (okToProcess(inProcessType, pub, existingPub)) {
+            pub.setIpdsReviewProcessState(inProcessType.getIpdsValue());
             //We only keep the prodID from the original MP record. The delete is to make sure we kill all child objects.
             if (null != existingPub) {
                 pub.setId(existingPub.getId());
                 pubBusService.deleteObject(existingPub.getId());
-            };
+            }
 
             // get contributors from web service
             String contributorXml = requester.getContributors(pub.getIpdsId());
@@ -108,6 +112,7 @@ public class IpdsProcess implements IIpdsProcess {
                 pub.setAuthors(authors);
                 pub.setEditors(editors);
             } catch (Exception e) {
+            	LOG.info(e.getMessage());
                 rtn.append("\n\tTrouble getting authors/editors: " + e.getMessage());
                 errors++;
             }
@@ -123,6 +128,7 @@ public class IpdsProcess implements IIpdsProcess {
                     pub.setCostCenters(pccs);
                 }
             } catch (Exception e) {
+            	LOG.info(e.getMessage());
                 rtn.append("\n\tTrouble getting cost center: " + e.getMessage());
                 errors++;
             }
@@ -142,6 +148,7 @@ public class IpdsProcess implements IIpdsProcess {
                     }
                 }
             } catch (Exception e) {
+            	LOG.info(e.getMessage());
                 rtn.append("\n\tTrouble getting note comment: " + e.getMessage());
                 errors++;
             }
@@ -153,9 +160,9 @@ public class IpdsProcess implements IIpdsProcess {
             if (null == rtnPub.getValidationErrors() || rtnPub.getValidationErrors().isEmpty()) {
                 additions++;
                 rtn.append("\n\tAdded to MyPubs as ProdId: " + rtnPub.getId());
-                if (null != inProcessType && ProcessType.SPN_PRODUCTION == inProcessType) {
+                if (ProcessType.SPN_PRODUCTION == inProcessType) {
                     rtn.append(updateIpdsWithDoi(rtnPub));
-                } else if (null != inProcessType && ProcessType.DISSEMINATION == inProcessType
+                } else if (ProcessType.DISSEMINATION == inProcessType
                 			&& (PubsUtilities.isUsgsNumberedSeries(rtnPub.getPublicationSubtype())
                 					|| PubsUtilities.isUsgsUnnumberedSeries(rtnPub.getPublicationSubtype()))
                             && (null != rtnPub.getDoi() && 0 < rtnPub.getDoi().length())) {
@@ -221,17 +228,7 @@ public class IpdsProcess implements IIpdsProcess {
 			} else if (null == pub.getIpdsReviewProcessState() || !ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(pub.getIpdsReviewProcessState())) {
 				//Skip if not in SPN Production (shouldn't happen as we are querying SPN Production only)
 				return false;
-//TODO remove if we really don't have these
-//        	} else if (PublicationType.USGS_UNNUMBERED_SERIES.contentEquals(String.valueOf(pubType.getId()))) {
-//          	//Process all USGS unnumbered series
-//          	return true;
 			} else if (PubsUtilities.isUsgsNumberedSeries(pub.getPublicationSubtype())) {
-//            	if (null != pub.getSeries()
-//              	      && pub.getSeries().contentEquals("Administrative Report")) {
-//                	//Skip the administrative series
-//                	return false;
-//          } else {
-			//Process all other USGS numbered series
 				return true;
 			}
 		}

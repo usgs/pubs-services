@@ -73,11 +73,10 @@ public class PubMapTypeHandler implements TypeHandler<PubMap> {
     		try {
 				rtn = ((CLOB) value).stringValue();
 			} catch (SQLException e) {
-				e.printStackTrace();
 				LOG.info(e.getLocalizedMessage());
 			}
     	} else {
-    		return rtn = value;
+    		rtn = value;
     	}
     	return rtn;
     }

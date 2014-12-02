@@ -47,13 +47,13 @@ public class MpPublicationLinkDaoTest extends BaseSpringDaoTest {
 		assertMpLink1((MpPublicationLink) mpLinks.get(0));
 
 		filters.clear();
-		filters.put("publicationId", 1);
+		filters.put(MpPublicationLinkDao.PUB_SEARCH, 1);
 		mpLinks = MpPublicationLink.getDao().getByMap(filters);
 		assertNotNull(mpLinks);
 		assertEquals(2, mpLinks.size());
 
 		filters.clear();
-		filters.put("linkTypeId", 6);
+		filters.put(MpPublicationLinkDao.LINK_TYPE_SEARCH, 6);
 		mpLinks = MpPublicationLink.getDao().getByMap(filters);
 		assertNotNull(mpLinks);
 		assertEquals(1, mpLinks.size());
@@ -107,7 +107,7 @@ public class MpPublicationLinkDaoTest extends BaseSpringDaoTest {
 
 		MpPublicationLink.getDao().deleteByParent(1);
 		Map<String, Object> filters = new HashMap<>();
-		filters.put("publicationId", 1);
+		filters.put(MpPublicationLinkDao.PUB_SEARCH, 1);
 		List<MpPublicationLink> mpLinks = MpPublicationLink.getDao().getByMap(filters);
 		assertTrue(mpLinks.isEmpty());
 	}

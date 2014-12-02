@@ -1,6 +1,7 @@
 package gov.usgs.cida.pubs.dao;
 
 
+import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.aop.ISetDbContext;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 
@@ -43,7 +44,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
     @Transactional(readOnly = true)
     @Override
     public Integer add(D domainObject) {
-        throw new RuntimeException("NOT IMPLEMENTED.");
+        throw new RuntimeException(PubsConstants.NOT_IMPLEMENTED);
     }
 
     /** {@inheritDoc}
@@ -52,7 +53,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
     @Transactional(readOnly = true)
     @Override
     public D getById(Integer domainID) {
-        throw new RuntimeException("NOT IMPLEMENTED.");
+        throw new RuntimeException(PubsConstants.NOT_IMPLEMENTED);
     }
 
     /** {@inheritDoc}
@@ -61,7 +62,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
     @Transactional(readOnly = true)
     @Override
     public D getById(String domainID) {
-        throw new RuntimeException("NOT IMPLEMENTED.");
+        throw new RuntimeException(PubsConstants.NOT_IMPLEMENTED);
     }
 
     /** 
@@ -71,7 +72,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
     @Transactional(readOnly = true)
     @Override
     public List<D> getByMap(Map<String, Object> filters) {
-        throw new RuntimeException("NOT IMPLEMENTED.");
+        throw new RuntimeException(PubsConstants.NOT_IMPLEMENTED);
     }
 
     /** 
@@ -81,7 +82,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
     @Transactional(readOnly = true)
     @Override
     public Integer getObjectCount(Map<String, Object> filters) {
-        throw new RuntimeException("NOT IMPLEMENTED.");
+        throw new RuntimeException(PubsConstants.NOT_IMPLEMENTED);
     }
 
     /** {@inheritDoc}
@@ -90,7 +91,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
     @Transactional(readOnly = true)
     @Override
     public void update(D domainObject) {
-        throw new RuntimeException("NOT IMPLEMENTED.");
+        throw new RuntimeException(PubsConstants.NOT_IMPLEMENTED);
     }
 
     /** {@inheritDoc}
@@ -99,7 +100,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
     @Transactional(readOnly = true)
     @Override
     public void delete(D domainObject) {
-        throw new RuntimeException("NOT IMPLEMENTED.");
+        throw new RuntimeException(PubsConstants.NOT_IMPLEMENTED);
     }
 
     /** {@inheritDoc}
@@ -108,7 +109,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
     @Transactional(readOnly = true)
     @Override
     public void deleteById(Integer domainID) {
-        throw new RuntimeException("NOT IMPLEMENTED.");
+        throw new RuntimeException(PubsConstants.NOT_IMPLEMENTED);
     }
 
     /** 
@@ -118,7 +119,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
     @Transactional(readOnly = true)
     @Override
     public void deleteByParent(Integer parentID) {
-        throw new RuntimeException("NOT IMPLEMENTED.");
+        throw new RuntimeException(PubsConstants.NOT_IMPLEMENTED);
     }
 
 }

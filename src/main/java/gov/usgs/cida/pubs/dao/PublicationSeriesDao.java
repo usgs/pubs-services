@@ -15,6 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class PublicationSeriesDao extends BaseDao<PublicationSeries> {
 
     private static final String NS = "publicationSeries";
+    
+    public static final String ACTIVE_SEARCH = "active";
+    public static final String SUBTYPE_SEARCH = "publicationSubtypeId";
+    public static final String TEXT_SEARCH = "text";
 
     /** 
      * {@inheritDoc}

@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.dao;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.domain.ContributorType;
 
 import java.util.HashMap;
@@ -53,7 +54,7 @@ public class ContributorTypeDaoTest extends BaseSpringDaoTest {
             ContributorType.getDao().add(new ContributorType());
             fail("Was able to add.");
         } catch (Exception e) {
-            assertEquals("NOT IMPLEMENTED.", e.getMessage());
+            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
         }
 
         try {
@@ -62,28 +63,28 @@ public class ContributorTypeDaoTest extends BaseSpringDaoTest {
             ContributorType.getDao().getObjectCount(params);
             fail("Was able to get count.");
         } catch (Exception e) {
-            assertEquals("NOT IMPLEMENTED.", e.getMessage());
+            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
         }
 
         try {
             ContributorType.getDao().update(new ContributorType());
             fail("Was able to update.");
         } catch (Exception e) {
-            assertEquals("NOT IMPLEMENTED.", e.getMessage());
+            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
         }
 
         try {
             ContributorType.getDao().delete(new ContributorType());
             fail("Was able to delete.");
         } catch (Exception e) {
-            assertEquals("NOT IMPLEMENTED.", e.getMessage());
+            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
         }
 
         try {
             ContributorType.getDao().deleteById(1);
             fail("Was able to delete by it.");
         } catch (Exception e) {
-            assertEquals("NOT IMPLEMENTED.", e.getMessage());
+            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
         }
     }
 

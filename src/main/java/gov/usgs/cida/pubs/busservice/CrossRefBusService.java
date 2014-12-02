@@ -42,7 +42,17 @@ public class CrossRefBusService implements ICrossRefBusService {
 
     public static final String FIRST = "first";
     public static final String ADDITIONAL = "additional";
+    
+    public static final String SERIES_NAME_REPLACE = "{series_name}";
+    public static final String ONLINE_ISSN_REPLACE = "{online_issn}";
+    public static final String SURNAME_REPLACE = "{surname}";
+    public static final String GIVEN_NAME_REPLACE = "{given_name}";
+    public static final String SUFFIX_REPLACE = "{suffix}";
+    public static final String ORGANIZATION_REPLACE = "{organization}";
+    public static final String SEQUENCE_REPLACE = "{sequence}";
+    public static final String CONTRIBUTOR_TYPE_REPLACE = "{contributor_type}";
 
+    
     protected final String crossRefProtocol;
     protected final String crossRefHost;
     protected final String crossRefUrl;
@@ -111,22 +121,25 @@ public class CrossRefBusService implements ICrossRefBusService {
 
             String fileName = buildXml(mpPublication, indexPage);
 
-            try {
-                FileBody file = new FileBody(new File(fileName), ContentType.TEXT_XML, mpPublication.getIndexId() + ".xml");
-                HttpEntity httpEntity = MultipartEntityBuilder.create()
-                        .addPart("fname", file)
-                        .build();
-                httpPost.setEntity(httpEntity);
-                rtn = httpClient.execute(httpHost, httpPost, new BasicHttpContext());
-            } catch (Exception e) {
-                e.printStackTrace();
-                pubsEMailer.sendMail("Unexpected error in POST to crossref", e.getMessage());
+            if (null != fileName) {
+	            try {
+	                FileBody file = new FileBody(new File(fileName), ContentType.TEXT_XML, mpPublication.getIndexId() + ".xml");
+	                HttpEntity httpEntity = MultipartEntityBuilder.create()
+	                        .addPart("fname", file)
+	                        .build();
+	                httpPost.setEntity(httpEntity);
+	                rtn = httpClient.execute(httpHost, httpPost, new BasicHttpContext());
+	            } catch (Exception e) {
+	            	LOG.info(e.getMessage());
+	                pubsEMailer.sendMail("Unexpected error in POST to crossref", e.getMessage());
+	            }
             }
 
             if (null == rtn || null == rtn.getStatusLine()
             		|| HttpStatus.SC_OK != rtn.getStatusLine().getStatusCode()) {
-                LOG.info("not cool" + rtn.getStatusLine().getStatusCode());
-                pubsEMailer.sendMail("Unexpected error in POST to crossref", rtn.getStatusLine().toString());
+            	String msg = null == rtn ? "rtn is null" : rtn.getStatusLine().toString();
+                LOG.info("not cool" + msg);
+                pubsEMailer.sendMail("Unexpected error in POST to crossref", msg);
             }
         }
     }
@@ -153,10 +166,10 @@ public class CrossRefBusService implements ICrossRefBusService {
             bw.write(xml);
             bw.close();
         } catch (IOException e) {
-            e.printStackTrace();
+        	LOG.info(e.getMessage());
             pubsEMailer.sendMail("Unexpected error in building xml for crossref", e.getMessage());
         }
-        return temp.getAbsolutePath();
+        return null == temp ? null : temp.getAbsolutePath();
     }
 
     protected String buildBaseXml(final MpPublication pub, final String indexPage, final String xml) {
@@ -174,18 +187,18 @@ public class CrossRefBusService implements ICrossRefBusService {
 	        rtn = replacePlaceHolder(rtn, "{index_page}", indexPage);
 	        if (null != pub.getSeriesTitle()) {
 	        	if (null != pub.getSeriesTitle().getText()) {
-	        		rtn = replacePlaceHolder(rtn, "{series_name}", pub.getSeriesTitle().getText());
+	        		rtn = replacePlaceHolder(rtn, SERIES_NAME_REPLACE, pub.getSeriesTitle().getText());
 	        	} else {
-	        		rtn = replacePlaceHolder(rtn, "{series_name}", "");
+	        		rtn = replacePlaceHolder(rtn, SERIES_NAME_REPLACE, "");
 	        	}
 	        	if (null != pub.getSeriesTitle().getText()) {
-	        		rtn = replacePlaceHolder(rtn, "{online_issn}", pub.getSeriesTitle().getOnlineIssn());
+	        		rtn = replacePlaceHolder(rtn, ONLINE_ISSN_REPLACE, pub.getSeriesTitle().getOnlineIssn());
 	        	} else {
-	        		rtn = replacePlaceHolder(rtn, "{online_issn}", "");
+	        		rtn = replacePlaceHolder(rtn, ONLINE_ISSN_REPLACE, "");
 	        	}
 	        } else {
-	        	rtn = replacePlaceHolder(rtn, "{series_name}", "");
-	        	rtn = replacePlaceHolder(rtn, "{online_issn}", "");
+	        	rtn = replacePlaceHolder(rtn, SERIES_NAME_REPLACE, "");
+	        	rtn = replacePlaceHolder(rtn, ONLINE_ISSN_REPLACE, "");
 	        }
             rtn = replacePlaceHolder(rtn, "{series_number}", pub.getSeriesNumber());
 	        return rtn;
@@ -249,22 +262,22 @@ public class CrossRefBusService implements ICrossRefBusService {
     protected String processPerson(PublicationContributor<?> pubContributor, String sequence) {
     	PersonContributor<?> contributor = (PersonContributor<?>) pubContributor.getContributor();
     	String template = personNameXml;
-		template = template.replace("{sequence}", sequence);
-		template = template.replace("{contributor_type}", getContributorType(pubContributor));
+		template = template.replace(SEQUENCE_REPLACE, sequence);
+		template = template.replace(CONTRIBUTOR_TYPE_REPLACE, getContributorType(pubContributor));
     	if (StringUtils.isNotEmpty(contributor.getFamily())) {
-    		template = template.replace("{surname}", contributor.getFamily());
+    		template = template.replace(SURNAME_REPLACE, contributor.getFamily());
     	} else {
-    		template = template.replace("{surname}", "");
+    		template = template.replace(SURNAME_REPLACE, "");
     	}
     	if (StringUtils.isNotEmpty(contributor.getGiven())) {
-    		template = template.replace("{given_name}", "<given_name>" + contributor.getGiven() + "</given_name>");
+    		template = template.replace(GIVEN_NAME_REPLACE, "<given_name>" + contributor.getGiven() + "</given_name>");
     	} else {
-    		template = template.replace("{given_name}", "");
+    		template = template.replace(GIVEN_NAME_REPLACE, "");
     	}
     	if (StringUtils.isNotEmpty(contributor.getSuffix())) {
-    		template = template.replace("{suffix}", "<suffix>" + contributor.getSuffix() + "</suffix>");
+    		template = template.replace(SUFFIX_REPLACE, "<suffix>" + contributor.getSuffix() + "</suffix>");
     	} else {
-    		template = template.replace("{suffix}", "");
+    		template = template.replace(SUFFIX_REPLACE, "");
     	}
     	return template;
     }
@@ -272,12 +285,12 @@ public class CrossRefBusService implements ICrossRefBusService {
     protected String processCorporation(PublicationContributor<?> pubContributor, String sequence) {
     	CorporateContributor contributor = (CorporateContributor) pubContributor.getContributor();
     	String template = organizationNameXml;
-		template = template.replace("{sequence}", sequence);
-		template = template.replace("{contributor_type}", getContributorType(pubContributor));
+		template = template.replace(SEQUENCE_REPLACE, sequence);
+		template = template.replace(CONTRIBUTOR_TYPE_REPLACE, getContributorType(pubContributor));
     	if (StringUtils.isNotEmpty(contributor.getOrganization())) {
-    		template = template.replace("{organization}", contributor.getOrganization());
+    		template = template.replace(ORGANIZATION_REPLACE, contributor.getOrganization());
     	} else {
-    		template = template.replace("{organization}", "");
+    		template = template.replace(ORGANIZATION_REPLACE, "");
     	}
     	return template;
     }

@@ -385,22 +385,40 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
     }
 
     @Test
-    public void getPublicationSeriesTest() {
-        PubMap pubMap = new PubMap();
+    public void getSeriesTitlePubMapTest() {
+        PubMap pubMap = null;
         PublicationSubtype subtype = new PublicationSubtype();
-        assertNull(binding.getPublicationSeries(null, null));
-        assertNull(binding.getPublicationSeries(subtype, null));
-        assertNull(binding.getPublicationSeries(subtype, pubMap));
-        assertNull(binding.getPublicationSeries(null, pubMap));
+        assertNull(binding.getSeriesTitle(null, pubMap));
+        assertNull(binding.getSeriesTitle(subtype, pubMap));
+        pubMap = new PubMap();
+        assertNull(binding.getSeriesTitle(subtype, pubMap));
+        assertNull(binding.getSeriesTitle(null, pubMap));
 
         subtype.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
-        assertNull(binding.getPublicationSeries(subtype, pubMap));
+        assertNull(binding.getSeriesTitle(subtype, pubMap));
 
         pubMap.put(IpdsMessageLog.USGSSERIESVALUE, "");
-        assertNull(binding.getPublicationSeries(subtype, pubMap));
+        assertNull(binding.getSeriesTitle(subtype, pubMap));
 
         pubMap.put(IpdsMessageLog.USGSSERIESVALUE, "Coal Map");
-        assertEquals(309, binding.getPublicationSeries(subtype, pubMap).getId().intValue());
+        assertEquals(309, binding.getSeriesTitle(subtype, pubMap).getId().intValue());
+    }
+
+    @Test
+    public void getSeriesTitleStringTest() {
+        String text = null;
+        PublicationSubtype subtype = new PublicationSubtype();
+        assertNull(binding.getSeriesTitle(null, text));
+        assertNull(binding.getSeriesTitle(subtype, text));
+        text = "";
+        assertNull(binding.getSeriesTitle(subtype, text));
+        assertNull(binding.getSeriesTitle(null, text));
+
+        subtype.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
+        assertNull(binding.getSeriesTitle(subtype, text));
+
+        text = "Coal Map";
+        assertEquals(309, binding.getSeriesTitle(subtype, text).getId().intValue());
     }
 
     @Test

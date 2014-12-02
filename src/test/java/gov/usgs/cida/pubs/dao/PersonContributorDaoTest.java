@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
@@ -157,7 +158,7 @@ public class PersonContributorDaoTest extends BaseSpringDaoTest {
             PersonContributor.getDao().getObjectCount(params);
             fail("Was able to get count.");
         } catch (Exception e) {
-            assertEquals("NOT IMPLEMENTED.", e.getMessage());
+            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
         }
     }
 

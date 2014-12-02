@@ -22,8 +22,10 @@ public final class PubsConstants {
     public static final String DOI_PREFIX = "10.3133";
 
     public static final Integer DEFAULT_LOCK_TIMEOUT_HOURS = 3;
+    
+    public static final String NOT_IMPLEMENTED = "NOT IMPLEMENTED.";
 
     private PubsConstants() {
-    };
+    }
 
 }

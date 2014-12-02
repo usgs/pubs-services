@@ -117,7 +117,6 @@ public class IpdsWsRequester {
             EntityUtils.consume(response.getEntity());
         } catch (Exception e) {
             LOG.info(e.getMessage());
-            e.printStackTrace();
             pubsEMailer.sendMail("Unexpected error in mypubsJMS.getIpdsXml", e.getMessage());
         }
 
@@ -144,7 +143,6 @@ public class IpdsWsRequester {
             rtn = httpClient.execute(getHttpHost(), httpGet, httpContext);
         } catch (Exception e) {
             LOG.info(e.getMessage());
-            e.printStackTrace();
             pubsEMailer.sendMail("Unexpected error in mypubsJMS.doGet", e.getMessage());
         }
 
@@ -187,7 +185,6 @@ public class IpdsWsRequester {
                         EntityUtils.consume(getResponse.getEntity());
                     } catch (IOException e) {
                         LOG.info(e.getMessage());
-                        e.printStackTrace();
                         rtn.append("\n\tERROR: ").append(e.getMessage());
                     }
                     try {
@@ -213,12 +210,10 @@ public class IpdsWsRequester {
                             }
                         } catch (IOException e) {
                             LOG.info(e.getMessage());
-                            e.printStackTrace();
                             rtn.append("\n\tERROR: ").append(e.getMessage());
                         }
                     } catch (Exception e) {
                         LOG.info(e.getMessage());
-                        e.printStackTrace();
                         rtn.append("\n\tERROR: ").append(e.getMessage());
                     }
                 } else {
@@ -236,7 +231,6 @@ public class IpdsWsRequester {
             }
         } catch (IOException e) {
             LOG.info(e.getMessage());
-            e.printStackTrace();
             rtn.append("\n\tERROR: ").append(e.getMessage());
         }
         return rtn.toString();

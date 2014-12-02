@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.busservice.mp;
 
+import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.busservice.intfc.IMpListPublicationBusService;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 import gov.usgs.cida.pubs.domain.mp.MpListPublication;
@@ -67,10 +68,10 @@ public class MpListPublicationBusService extends MpBusService<MpListPublication>
 			}
 		} else {
 			if (null == listId) {
-				rtn.addValidatorResult(new ValidatorResult("listID", "Must be provided", "Fatal", null));
+				rtn.addValidatorResult(new ValidatorResult("listID", "Must be provided", SeverityLevel.FATAL, null));
 			}
 			if (null == publicationId) {
-				rtn.addValidatorResult(new ValidatorResult("publicationId", "Must be provided", "Fatal", null));
+				rtn.addValidatorResult(new ValidatorResult("publicationId", "Must be provided", SeverityLevel.FATAL, null));
 			}
 		}
 		return rtn;

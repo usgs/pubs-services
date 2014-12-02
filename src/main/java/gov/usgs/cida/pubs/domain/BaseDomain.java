@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.domain;
 
+import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.json.view.intfc.IBaseView;
 import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
 import gov.usgs.cida.pubs.json.view.intfc.IPwView;
@@ -151,7 +152,7 @@ public abstract class BaseDomain<D> implements IBaseView {
         if (null != inValidationErrors) {
             List<ValidatorResult> vResults = new ArrayList<ValidatorResult>();
             for (ConstraintViolation<D> vError : inValidationErrors) {
-                ValidatorResult vResult = new ValidatorResult(vError.getPropertyPath().toString(), vError.getMessage(), "fatal", null);
+                ValidatorResult vResult = new ValidatorResult(vError.getPropertyPath().toString(), vError.getMessage(), SeverityLevel.FATAL, null);
                 vResults.add(vResult);
             }
             validationErrors.setValidationErrors(vResults);

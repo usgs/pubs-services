@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class MpPublicationLinkDao extends MpDao<MpPublicationLink> {
 
 	private static final String NS = "mpPublicationLink";
+	
+	public static final String LINK_TYPE_SEARCH = "linkTypeId";
+	public static final String PUB_SEARCH = "publicationId";
 
 	/**
 	 * {@inheritDoc}

@@ -9,6 +9,7 @@ import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationLink;
+import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
@@ -24,6 +25,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,8 +80,6 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
             @RequestParam(value="orderBy", required=false) String orderBy,
 			HttpServletResponse response) {
 
-    	LOG.debug("PWPublicationRssMvcService.getRSS()");
-    	
         Map<String, Object> filters = new HashMap<>();
 
     	configureSingleSearchFilters(filters, searchTerms);
@@ -134,8 +134,6 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 		} catch (UnsupportedEncodingException e) {
 			LOG.error("Unable to set content length of resulting RSS content: " + e.getMessage());
 		}
-    	
-    	//LOG.error("RESULTS: \n\n" + rssResults + "]\n\n");
         
         return rssResults;
     }
@@ -186,83 +184,136 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
     	 * Now per item
     	 */
     	List<? extends BaseDomain<?>> records = results.getRecords();
-    	for(BaseDomain<?> record : records) {
-    		Publication<?> publication = (Publication<?>)record;
-    		
-    		rssResults.append("\t\t<item>\n");
-    		
-    		rssResults.append("\t\t\t<title>");
-    		rssResults.append(publication.getTitle().trim());
-    		rssResults.append("</title>\n");
-    		
-    		/**
-    		 * Authors is a list
-    		 */
-    		rssResults.append("\t\t\t<author>");
-    		List<PublicationContributor<?>> authors = (List<PublicationContributor<?>>) publication.getAuthors();
-    		for(int i = 0; i < authors.size(); i++) {
-    			PublicationContributor<?> author = authors.get(i);
-    			
-    			Contributor<?> contributor = author.getContributor();
-    			
-    			if(contributor.isUsgs()) {
-    				UsgsContributor usgsContributor = (UsgsContributor) contributor;
-    				rssResults.append(usgsContributor.getFamily().trim());
-    				rssResults.append(", ");
-    				rssResults.append(usgsContributor.getGiven().trim());
-    			} else if(contributor.isUsgs()) {
-    				CorporateContributor corpContributor = (CorporateContributor) contributor;
-    				rssResults.append(corpContributor.getOrganization().trim());
-    			} else {
-    				if(contributor instanceof PersonContributor) {
-    					PersonContributor<?> person = (PersonContributor<?>) contributor;
-
-    					rssResults.append(person.getFamily().trim());
-        				rssResults.append(", ");
-        				rssResults.append(person.getGiven().trim());
-    				} else {
-    					rssResults.append(contributor.getId());
-    				}
-    			}
-    			
-    			if((i + 1) < authors.size()) {
-    				rssResults.append("; ");
-    			}
-    		}
-    		rssResults.append("</author>\n");
-    		
-    		/**
-    		 * Links is a list
-    		 */
-    		rssResults.append("\t\t\t<link>");
-    		List<PublicationLink<?>> pubLinks = (List<PublicationLink<?>>) publication.getLinks();
-    		for(int i = 0; i < pubLinks.size(); i++) {
-    			PublicationLink<?> pubLink = pubLinks.get(i);
-    			
-    			rssResults.append(pubLink.getUrl().trim());
-    			
-    			if((i + 1) < pubLinks.size()) {
-    				rssResults.append("; ");
-    			}
-    		}
-    		rssResults.append("</link>\n");
-    		
-    		rssResults.append("\t\t\t<description>");
-    		rssResults.append(StringEscapeUtils.escapeXml10(publication.getDocAbstract().trim()));
-    		rssResults.append("</description>\n");
-    		
-    		rssResults.append("\t\t\t<pubDate>");
-    		Date pubDateTime = publication.getUpdateDate().toDate();
-    		String pubDate = sdf.format(pubDateTime);
-    		rssResults.append(pubDate);
-    		rssResults.append("</pubDate>\n");
-    		
-    		rssResults.append("\t\t\t<category>");
-    		rssResults.append(publication.getSeriesTitle().getText().trim());
-    		rssResults.append("</category>\n");
-    		
-    		
-    		rssResults.append("\t\t</item>\n");
+    	if(records != null) {
+	    	for(BaseDomain<?> record : records) {
+	    		Publication<?> publication = (Publication<?>)record;
+	    		
+	    		rssResults.append("\t\t<item>\n");
+	    		
+	    		// ==== TITLE
+	    		rssResults.append("\t\t\t<title>");
+	    		
+	    		String itemTitle = publication.getTitle();
+	    		if(itemTitle != null) {
+	    			rssResults.append(itemTitle.trim());
+	    		}
+	    		rssResults.append("</title>\n");
+	    		
+	    		// ==== AUTHORS
+	    		/**
+	    		 * Authors is a list
+	    		 */
+	    		rssResults.append("\t\t\t<author>");
+	    		List<PublicationContributor<?>> authors = (List<PublicationContributor<?>>) publication.getAuthors();
+	    		if(authors != null) {
+		    		for(int i = 0; i < authors.size(); i++) {
+		    			PublicationContributor<?> author = authors.get(i);
+		    			
+		    			Contributor<?> contributor = author.getContributor();
+		    			
+		    			if(contributor != null) {
+			    			if(contributor.isUsgs()) {
+			    				UsgsContributor usgsContributor = (UsgsContributor) contributor;
+			    				
+			    				String family = usgsContributor.getFamily();
+			    				if(family != null) {
+				    				rssResults.append(family.trim());
+				    				rssResults.append(", ");
+			    				}
+			    				
+			    				String given = usgsContributor.getGiven();
+			    				if(given != null) {
+			    					rssResults.append(given.trim());
+			    				}
+			    			} else if(contributor.isUsgs()) {
+			    				CorporateContributor corpContributor = (CorporateContributor) contributor;
+			    				
+			    				String organization = corpContributor.getOrganization();
+			    				if(organization != null) {
+			    					rssResults.append(organization.trim());
+			    				}
+			    			} else {
+			    				if(contributor instanceof PersonContributor) {
+			    					PersonContributor<?> person = (PersonContributor<?>) contributor;
+			
+			    					String family = person.getFamily();
+				    				if(family != null) {
+					    				rssResults.append(family.trim());
+					    				rssResults.append(", ");
+				    				}
+				    				
+				    				String given = person.getGiven();
+				    				if(given != null) {
+				    					rssResults.append(given.trim());
+				    				}
+			    				} else {
+			    					rssResults.append(contributor.getId());
+			    				}
+			    			}
+		    			}
+		    			
+		    			if((i + 1) < authors.size()) {
+		    				rssResults.append("; ");
+		    			}
+		    		}
+	    		}
+	    		rssResults.append("</author>\n");
+	    		
+	    		// ==== LINKS
+	    		/**
+	    		 * Links is a list
+	    		 */
+	    		rssResults.append("\t\t\t<link>");
+	    		List<PublicationLink<?>> pubLinks = (List<PublicationLink<?>>) publication.getLinks();
+	    		if(pubLinks != null) {
+		    		for(int i = 0; i < pubLinks.size(); i++) {
+		    			PublicationLink<?> pubLink = pubLinks.get(i);
+		    			
+		    			String itemLink = pubLink.getUrl();
+			    		if(itemLink != null) {
+			    			rssResults.append(itemLink.trim());
+			    		}
+		    			
+		    			if((i + 1) < pubLinks.size()) {
+		    				rssResults.append("; ");
+		    			}
+		    		}
+	    		}
+	    		rssResults.append("</link>\n");
+	    		
+	    		// ==== DESCRIPTION
+	    		rssResults.append("\t\t\t<description>");
+	    		
+	    		String itemDesc = publication.getDocAbstract();
+	    		if(itemDesc != null) {
+	    			rssResults.append(StringEscapeUtils.escapeXml10(itemDesc.trim()));
+	    		}
+	    		rssResults.append("</description>\n");
+	    		
+	    		// ==== PUBLICATION DATE
+	    		rssResults.append("\t\t\t<pubDate>");
+	    		LocalDateTime pubLocalDateTime = publication.getUpdateDate();
+	    		if(pubLocalDateTime != null) {
+		    		Date pubDateTime = pubLocalDateTime.toDate();
+		    		String pubDate = sdf.format(pubDateTime);
+		    		rssResults.append(pubDate);
+	    		}
+	    		rssResults.append("</pubDate>\n");
+	    		
+	    		// ==== CATEGORY
+	    		rssResults.append("\t\t\t<category>");
+	    		PublicationSeries pubSeries = publication.getSeriesTitle();
+	    		if(pubSeries != null) {
+	    			String pubSeriesTitle = pubSeries.getText();
+	    			if(pubSeriesTitle != null) {
+	    				rssResults.append(pubSeriesTitle.trim());
+	    			}
+	    		}
+	    		rssResults.append("</category>\n");
+	    		
+	    		
+	    		rssResults.append("\t\t</item>\n");
+	    	}
     	}
     	
     	rssResults.append("\t</channel>\n");

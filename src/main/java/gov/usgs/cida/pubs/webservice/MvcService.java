@@ -29,7 +29,7 @@ import org.springframework.web.context.request.WebRequest;
  * @author drsteini
  *
  */
-@RequestMapping(produces={PubsConstants.MIME_TYPE_APPLICATION_JSON, PubsConstants.MIME_TYPE_TEXT_PLAIN})
+@RequestMapping(produces={PubsConstants.MIME_TYPE_APPLICATION_JSON, PubsConstants.MIME_TYPE_TEXT_PLAIN, PubsConstants.MIME_TYPE_APPLICATION_RSS})
 public abstract class MvcService<D> {
 
     private static final Logger LOG = LoggerFactory.getLogger(MvcService.class);

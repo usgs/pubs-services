@@ -11,7 +11,7 @@ public class CrossRefLog extends BaseDomain<CrossRefLog> {
     private String crossrefXml;
 
     public CrossRefLog() {
-    };
+    }
 
     public CrossRefLog(final String inBatchId, final Integer inProdId, final String inCrossref) {
         batchId = inBatchId;

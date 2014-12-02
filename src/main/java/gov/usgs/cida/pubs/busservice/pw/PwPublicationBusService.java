@@ -16,8 +16,7 @@ public class PwPublicationBusService extends BusService<PwPublication> implement
 	
 	@Override
 	public List<PwPublication> getObjects(Map<String, Object> filters) {
-		List<PwPublication> pubs = PwPublication.getDao().getByMap(filters);
-		return pubs;
+		return PwPublication.getDao().getByMap(filters);
 	}
 
 	@Override

@@ -46,7 +46,7 @@ public class MpPublicationContributorBusService implements IListBusService<Publi
 	            for (Object pubObject : collection) {
 	            	MpPublicationContributor pubContrib = new MpPublicationContributor();
 	            	//TODO figure out if we can get Jackson to marshall to an Mp...
-	            	if (pubObject instanceof MpPublicationLink) {
+	            	if (pubObject instanceof MpPublicationContributor) {
 	            		//No need to translate - I am an MpPublicationContributor
 	            		pubContrib = (MpPublicationContributor) pubObject;
 	            	} else {

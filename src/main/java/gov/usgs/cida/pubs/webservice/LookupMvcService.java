@@ -1,6 +1,7 @@
 package gov.usgs.cida.pubs.webservice;
 
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.ContributorType;
@@ -101,20 +102,20 @@ public class LookupMvcService extends MvcService<PublicationType> {
     @RequestMapping("publicationtype/{publicationTypeId}/publicationsubtype/{publicationSubtypeId}/publicationseries")
     @ResponseView(ILookupView.class)
     public @ResponseBody Collection<PublicationSeries> getPublicationSeriesREST(HttpServletRequest request, HttpServletResponse response,
-                @RequestParam(value="text", required=false) String[] text,
+                @RequestParam(value=PublicationSeriesDao.TEXT_SEARCH, required=false) String[] text,
                 @PathVariable("publicationTypeId") String publicationTypeId,
-                @PathVariable("publicationSubtypeId") String publicationSubtypeId,
-                @RequestParam(value="active", required=false) String[] active) {
+                @PathVariable(PublicationSeriesDao.TEXT_SEARCH) String publicationSubtypeId,
+                @RequestParam(value=PublicationSeriesDao.ACTIVE_SEARCH, required=false) String[] active) {
         LOG.debug("publicationSeries");
         Collection<PublicationSeries> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
-            filters.put("publicationSubtypeId", publicationSubtypeId);
+            filters.put(PublicationSeriesDao.TEXT_SEARCH, publicationSubtypeId);
             if (null != text && 0 < text.length) {
-                filters.put("text", text[0]);
+                filters.put(PublicationSeriesDao.TEXT_SEARCH, text[0]);
             }
             if (null != active && 0 < active.length) {
-                filters.put("active", active[0].toUpperCase());
+                filters.put(PublicationSeriesDao.ACTIVE_SEARCH, active[0].toUpperCase());
             }
             rtn = PublicationSeries.getDao().getByMap(filters);
         }
@@ -124,21 +125,21 @@ public class LookupMvcService extends MvcService<PublicationType> {
     @RequestMapping("publicationseries")
     @ResponseView(ILookupView.class)
     public @ResponseBody Collection<PublicationSeries> getPublicationSeriesQuery(HttpServletRequest request, HttpServletResponse response,
-                @RequestParam(value="text", required=false) String[] text,
-                @RequestParam(value="publicationsubtypeid", required=false) String[] publicationSubtypeId,
-                @RequestParam(value="active", required=false) String[] active) {
+                @RequestParam(value=PublicationSeriesDao.TEXT_SEARCH, required=false) String[] text,
+                @RequestParam(value=PublicationSeriesDao.SUBTYPE_SEARCH, required=false) String[] publicationSubtypeId,
+                @RequestParam(value=PublicationSeriesDao.ACTIVE_SEARCH, required=false) String[] active) {
         LOG.debug("publicationSeries");
         Collection<PublicationSeries> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
             if (null != publicationSubtypeId && 0 < publicationSubtypeId.length) {
-                filters.put("publicationSubtypeId", publicationSubtypeId[0]);
+                filters.put(PublicationSeriesDao.SUBTYPE_SEARCH, publicationSubtypeId[0]);
             }
             if (null != text && 0 < text.length) {
-                filters.put("text", text[0]);
+                filters.put(PublicationSeriesDao.TEXT_SEARCH, text[0]);
             }
             if (null != active && 0 < active.length) {
-                filters.put("active", active[0].toUpperCase());
+                filters.put(PublicationSeriesDao.ACTIVE_SEARCH, active[0].toUpperCase());
             }
             rtn = PublicationSeries.getDao().getByMap(filters);
         }

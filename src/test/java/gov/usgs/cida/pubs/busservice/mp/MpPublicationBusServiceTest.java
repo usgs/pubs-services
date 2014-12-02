@@ -10,6 +10,7 @@ import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
 import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
+import gov.usgs.cida.pubs.dao.mp.MpPublicationLinkDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.ContributorType;
@@ -125,7 +126,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
         MpPublication after = busService.updateObject(MpPublicationDaoTest.updatePubProperties(pub));
         assertDaoTestResults(MpPublication.class, pub, after, IGNORE_PROPERTIES, true, true);
         assertEquals(pub.getId().toString(), after.getIndexId());
-        assertNull("Doi gets nulled out because the pub should no longer have one.", after.getDoi());
+        assertEquals("doiname2", after.getDoi());
 
         pub = MpPublicationDaoTest.updatePubProperties(MpPublicationDaoTest.addAPub(MpPublication.getDao().getNewProdId()));
         MpPublication mid = MpPublicationDaoTest.updatePubProperties(pub);
@@ -148,7 +149,6 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
 
     @Test
     public void preProcessingTest() {
-        //TODO - more than just the basic doi testing
         busService.publicationPreProcessing(null);
         busService.publicationPreProcessing(new MpPublication());
 
@@ -163,11 +163,13 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
         pubSeries.setId(PublicationSeries.SIR);
         inPublication.setSeriesTitle(pubSeries);
         inPublication.setSeriesNumber("nu-m,be r");
+        inPublication.setTitle("test\nnewline\rcarriage\n\rreturn\n\n\r\r");
         MpPublication outPublication = busService.publicationPreProcessing(inPublication);
         assertNotNull(outPublication);
         assertNotNull(outPublication.getId());
         assertEquals("sirnumber", outPublication.getIndexId());
         assertEquals(PubsConstants.DOI_PREFIX + "/" + outPublication.getIndexId(), outPublication.getDoi());
+        assertEquals("testnewlinecarriagereturn", outPublication.getTitle());
 
         inPublication = new MpPublication();
         inPublication.setSeriesNumber("nu-m,be r");
@@ -198,6 +200,71 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
         assertEquals(outPublication.getId().toString(), outPublication.getIndexId());
         assertEquals(PubsConstants.DOI_PREFIX + "/" + outPublication.getIndexId(), outPublication.getDoi());
 
+        //Test that we cannot update indexId or doi on a USGS series
+        inPublication = new MpPublication();
+        inPublication.setId(4);
+        inPublication.setIndexId("inIndexId");
+        inPublication.setDoi("inDoi");
+        inPublication.setPublicationType(pubType);
+        pubSubtype.setId(PublicationSubtype.USGS_UNNUMBERED_SERIES);
+        inPublication.setPublicationSubtype(pubSubtype);
+        outPublication = busService.publicationPreProcessing(inPublication);
+        assertNotNull(outPublication);
+        assertNotNull(outPublication.getId());
+        assertEquals("4", outPublication.getIndexId());
+        assertEquals("doi", outPublication.getDoi());
+        
+        inPublication = new MpPublication();
+        inPublication.setId(4);
+        inPublication.setIndexId("inIndexId");
+        inPublication.setDoi("inDoi");
+        inPublication.setPublicationType(pubType);
+        pubSubtype.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
+        inPublication.setPublicationSubtype(pubSubtype);
+        outPublication = busService.publicationPreProcessing(inPublication);
+        assertNotNull(outPublication);
+        assertNotNull(outPublication.getId());
+        assertEquals("4", outPublication.getIndexId());
+        assertEquals("doi", outPublication.getDoi());
+
+        //Test that we can update doi (but not indexId) when not a USGS series
+        inPublication = new MpPublication();
+        inPublication.setId(4);
+        inPublication.setIndexId("inIndexId");
+        inPublication.setDoi("inDoi");
+        inPublication.setPublicationType(pubType);
+        outPublication = busService.publicationPreProcessing(inPublication);
+        assertNotNull(outPublication);
+        assertNotNull(outPublication.getId());
+        assertEquals("4", outPublication.getIndexId());
+        assertEquals("inDoi", outPublication.getDoi());
+
+        //Test that we can update doi (but not indexId) when a USGS series without a doi
+        inPublication = new MpPublication();
+        inPublication.setId(5);
+        inPublication.setIndexId("inIndexId");
+        inPublication.setDoi("inDoi");
+        inPublication.setPublicationType(pubType);
+        pubSubtype.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
+        inPublication.setPublicationSubtype(pubSubtype);
+        outPublication = busService.publicationPreProcessing(inPublication);
+        assertNotNull(outPublication);
+        assertNotNull(outPublication.getId());
+        assertEquals("9", outPublication.getIndexId());
+        assertEquals("inDoi", outPublication.getDoi());
+
+        inPublication = new MpPublication();
+        inPublication.setId(5);
+        inPublication.setIndexId("inIndexId");
+        inPublication.setDoi("inDoi");
+        inPublication.setPublicationType(pubType);
+        pubSubtype.setId(PublicationSubtype.USGS_UNNUMBERED_SERIES);
+        inPublication.setPublicationSubtype(pubSubtype);
+        outPublication = busService.publicationPreProcessing(inPublication);
+        assertNotNull(outPublication);
+        assertNotNull(outPublication.getId());
+        assertEquals("9", outPublication.getIndexId());
+        assertEquals("inDoi", outPublication.getDoi());
     }
 
     @Test
@@ -501,7 +568,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	mpPub = MpPublicationDaoTest.addAPub(MpPublication.getDao().getNewProdId());
     	busService.defaultThumbnail(mpPub);
     	Map<String, Object> filters = new HashMap<>();
-    	filters.put("publicationId", mpPub.getId());
+    	filters.put(MpPublicationLinkDao.PUB_SEARCH, mpPub.getId());
     	List<MpPublicationLink> links = MpPublicationLink.getDao().getByMap(filters);
     	assertEquals(1, links.size());
     	MpPublicationLink link = links.get(0);
@@ -514,7 +581,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	mpPub.setPublicationSubtype(pubSubtype);
     	busService.defaultThumbnail(mpPub);
     	filters.clear();
-    	filters.put("publicationId", mpPub.getId());
+    	filters.put(MpPublicationLinkDao.PUB_SEARCH, mpPub.getId());
     	links = MpPublicationLink.getDao().getByMap(filters);
     	assertEquals(1, links.size());
     	link = links.get(0);
@@ -534,7 +601,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     @Test
     public void publishTest() {
     	assertTrue(busService.publish(null).isEmpty());
-    	assertEquals("Field:Publication - Message:Publication does not exist. - Level:fatal - Value:-1\nValidator Results: 1 result(s)\n",
+    	assertEquals("Field:Publication - Message:Publication does not exist. - Level:FATAL - Value:-1\nValidator Results: 1 result(s)\n",
     			busService.publish(-1).toString());
 
     	ValidationResults valRes = busService.publish(2);

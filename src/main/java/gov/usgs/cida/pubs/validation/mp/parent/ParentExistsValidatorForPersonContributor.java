@@ -24,14 +24,13 @@ public class ParentExistsValidatorForPersonContributor implements ConstraintVali
     public boolean isValid(PersonContributor<?> value, ConstraintValidatorContext context) {
         boolean rtn = true;
 
-        if (null != value && null != context) {
-	        if (null != value.getAffiliation() && null != value.getAffiliation().getId() 
+        if (null != value && null != context
+        		&& null != value.getAffiliation() && null != value.getAffiliation().getId() 
 	        		&& null == Affiliation.getDao().getById(value.getAffiliation().getId())) {
-	            rtn = false;
-	            context.disableDefaultConstraintViolation();
-	            context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
-	                .addPropertyNode("affiliation").addConstraintViolation();
-	        }
+            rtn = false;
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
+                .addPropertyNode("affiliation").addConstraintViolation();
         }
         
         return rtn;

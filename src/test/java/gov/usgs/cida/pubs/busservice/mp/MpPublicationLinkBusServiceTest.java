@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
+import gov.usgs.cida.pubs.dao.mp.MpPublicationLinkDao;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
@@ -49,7 +50,7 @@ public class MpPublicationLinkBusServiceTest extends BaseSpringDaoTest {
         //update with no links either side
         busService.merge(id, null);
         Map<String, Object> filters = new HashMap<>();
-        filters.put("publicationId", id);
+        filters.put(MpPublicationLinkDao.PUB_SEARCH, id);
         assertEquals(0, MpPublicationLink.getDao().getByMap(filters).size());
         busService.merge(id, new ArrayList<PublicationLink<?>>());
         assertEquals(0, MpPublicationLink.getDao().getByMap(filters).size());

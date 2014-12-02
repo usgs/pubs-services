@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.dao;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
@@ -159,19 +160,19 @@ public class ContributorDaoTest extends BaseSpringDaoTest {
             Contributor.getDao().getObjectCount(params);
             fail("Was able to get count.");
         } catch (Exception e) {
-            assertEquals("NOT IMPLEMENTED.", e.getMessage());
+            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
         }
         try {
             Contributor.getDao().add(new CorporateContributor());
             fail("Was able to add.");
         } catch (Exception e) {
-            assertEquals("NOT IMPLEMENTED.", e.getMessage());
+            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
         }
         try {
             Contributor.getDao().update(new CorporateContributor());
             fail("Was able to update.");
         } catch (Exception e) {
-            assertEquals("NOT IMPLEMENTED.", e.getMessage());
+            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
         }
     }
 

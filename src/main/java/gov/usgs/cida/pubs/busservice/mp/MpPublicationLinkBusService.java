@@ -1,6 +1,7 @@
 package gov.usgs.cida.pubs.busservice.mp;
 
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
+import gov.usgs.cida.pubs.dao.mp.MpPublicationLinkDao;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.validation.ValidationResults;
@@ -31,7 +32,7 @@ public class MpPublicationLinkBusService implements IListBusService<PublicationL
     	if (null != parentId) {
 	        //First grab the current collection from the database.
 	        Map<String, Object> filters = new HashMap<>();
-	        filters.put("publicationId", parentId);
+	        filters.put(MpPublicationLinkDao.PUB_SEARCH, parentId);
 	        List<MpPublicationLink> mpLinks = MpPublicationLink.getDao().getByMap(filters);
 	
 	        //Now put into a map keyed by id.

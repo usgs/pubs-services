@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.busservice.ipds;
 
 import gov.usgs.cida.pubs.PubMap;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
+import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.ContributorType;
@@ -321,7 +322,7 @@ public class IpdsBinding {
             }
 
             if (null != pub.getPublicationSubtype()) {
-                pub.setSeriesTitle(getPublicationSeries(pub.getPublicationSubtype(), inPub));
+                pub.setSeriesTitle(getSeriesTitle(pub.getPublicationSubtype(), inPub));
             }
 
             String tempSeriesNumber = getStringValue(inPub, IpdsMessageLog.USGSSERIESNUMBER);
@@ -381,14 +382,7 @@ public class IpdsBinding {
             if (StringUtils.isNotEmpty(largerWorkTitle)) {
             	if (PubsUtilities.isPublicationTypeArticle(pub.getPublicationType())
             			&& null != pub.getPublicationSubtype()) {
-            		Map<String, Object> filters = new HashMap<>();
-            		filters.put("text", largerWorkTitle);
-            		filters.put("publicationSubtypeId", pub.getPublicationSubtype().getId());
-            		List<PublicationSeries> seriesList = PublicationSeries.getDao().getByMap(filters);
-            		if (0 < seriesList.size()) {
-            			//Take the first one.
-            			pub.setSeriesTitle(seriesList.get(0));
-            		}
+           			pub.setSeriesTitle(getSeriesTitle(pub.getPublicationSubtype(), largerWorkTitle));
 	            } else {
 	            	pub.setLargerWorkTitle(getStringValue(inPub, IpdsMessageLog.JOURNALTITLE));
 	            }
@@ -427,13 +421,17 @@ public class IpdsBinding {
         return rtn;
     }
 
-    protected PublicationSeries getPublicationSeries(PublicationSubtype pubSubtype, PubMap inPub) {
+    protected PublicationSeries getSeriesTitle(PublicationSubtype pubSubtype, PubMap inPub) {
         String usgsSeriesValue = getStringValue(inPub, IpdsMessageLog.USGSSERIESVALUE);
-        if (null != pubSubtype && null != pubSubtype.getId() && StringUtils.isNotEmpty(usgsSeriesValue)) {
+        return getSeriesTitle(pubSubtype, usgsSeriesValue);
+    }
+
+    protected PublicationSeries getSeriesTitle(PublicationSubtype pubSubtype, String text) {
+        if (null != pubSubtype && null != pubSubtype.getId() && StringUtils.isNotEmpty(text)) {
             //Only hit the DB if both fields have values - otherwise the db call will return incorrect results.
             Map<String, Object> filters = new HashMap<>();
-            filters.put("publicationSubtypeId", pubSubtype.getId());
-            filters.put("text", usgsSeriesValue);
+            filters.put(PublicationSeriesDao.SUBTYPE_SEARCH, pubSubtype.getId());
+            filters.put(PublicationSeriesDao.TEXT_SEARCH, text);
             List<PublicationSeries> pubSeries = PublicationSeries.getDao().getByMap(filters);
             if (!pubSeries.isEmpty()) {
                 //We should really only get one, so just take the first...

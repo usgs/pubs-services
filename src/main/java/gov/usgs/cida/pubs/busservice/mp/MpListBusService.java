@@ -24,8 +24,7 @@ public class MpListBusService extends BusService<MpList> {
 
     @Override
 	public List<MpList> getObjects(final Map<String, Object> filters) {
-		List<MpList> lists = MpList.getDao().getByMap(filters);
-		return lists;
+		return MpList.getDao().getByMap(filters);
 	}
 
 	@Override

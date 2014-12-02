@@ -1,9 +1,11 @@
 package gov.usgs.cida.pubs.busservice.mp;
 
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.dao.mp.MpPublicationLinkDao;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
@@ -180,7 +182,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
             if (null == published) {
                 //Only auto update index ID if publication in not in the warehouse.
                 String indexId = outPublication.getId().toString();
-                String doi = null;
+                String doi = outPublication.getDoi();
                 if (PubsUtilities.isUsgsNumberedSeries(outPublication.getPublicationSubtype())) {
                     //Only USGS Numbered Series get a "special" index ID
                     indexId = getUsgsNumberedSeriesIndexId(outPublication);
@@ -194,7 +196,10 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
             } else {
                 //Otherwise overlay with the values from the published pub.
                 outPublication.setIndexId(published.getIndexId());
-                if (null != published.getDoi() && 0 < published.getDoi().length()) {
+                if ((PubsUtilities.isUsgsNumberedSeries(outPublication.getPublicationSubtype())
+                		|| PubsUtilities.isUsgsUnnumberedSeries(outPublication.getPublicationSubtype()))
+                		&& (null != published.getDoi() && 0 < published.getDoi().length())) {
+                	//USGS Numbered and Unnumbered Series with a published DOI keep it, everyone else can update from the UI input.
                     outPublication.setDoi(published.getDoi());
                 }
             }
@@ -304,7 +309,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 		            validationResults.addValidationResults(mpPub.getValidationErrors());
 		        }
 	        } else {
-	        	validationResults.addValidatorResult(new ValidatorResult("Publication", "Publication does not exist.", "fatal", publicationId.toString()));
+	        	validationResults.addValidatorResult(new ValidatorResult("Publication", "Publication does not exist.", SeverityLevel.FATAL, publicationId.toString()));
 	        }
     	}
         return validationResults;
@@ -316,10 +321,10 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     protected void defaultThumbnail(final MpPublication mpPub) {
     	if (null != mpPub && null != mpPub.getId()) {
 	        Map<String, Object> filters = new HashMap<String, Object>();
-	        filters.put("linkTypeId", LinkType.THUMBNAIL);
-	        filters.put("publicationId", mpPub.getId());
+	        filters.put(MpPublicationLinkDao.LINK_TYPE_SEARCH, LinkType.THUMBNAIL);
+	        filters.put(MpPublicationLinkDao.PUB_SEARCH, mpPub.getId());
 	        List<MpPublicationLink> thumbnails = MpPublicationLink.getDao().getByMap(filters);
-	        if (0 == thumbnails.size()) {
+	        if (thumbnails.isEmpty()) {
 	        	MpPublicationLink thumbnail = new MpPublicationLink();
 	            thumbnail.setPublicationId(mpPub.getId());
 	            thumbnail.setLinkType(LinkType.getDao().getById(LinkType.THUMBNAIL.toString()));
@@ -362,7 +367,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 	        params.put("publicationId", newListEntry.getMpPublication().getId());
 	        params.put("mpListId", newListEntry.getMpList().getId());
 	        List<MpListPublication> listEntries = MpListPublication.getDao().getByMap(params);
-	        if (0 == listEntries.size()) {
+	        if (listEntries.isEmpty()) {
 	            MpListPublication.getDao().add(newListEntry);
 	        } else {
 	            MpListPublication.getDao().update(newListEntry);
@@ -399,7 +404,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 			return null;
 		} else {
 			return new ValidatorResult("Publication", "This Publication is being edited by " + mpPub.getLockUsername(),
-					"fatal", mpPub.getLockUsername());
+					SeverityLevel.FATAL, mpPub.getLockUsername());
 		}
 	}
 

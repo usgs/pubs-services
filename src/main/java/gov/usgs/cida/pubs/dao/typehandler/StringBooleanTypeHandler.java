@@ -15,29 +15,17 @@ public class StringBooleanTypeHandler implements TypeHandler<Boolean> {
 
     @Override
     public Boolean getResult(ResultSet arg0, String arg1) throws SQLException {
-    	if (TRUE.equalsIgnoreCase(arg0.getString(arg1))) {
-    		return true;
-    	} else {
-    		return false;
-    	}
+    	return TRUE.equalsIgnoreCase(arg0.getString(arg1));
     }
 
     @Override
     public Boolean getResult(ResultSet arg0, int arg1) throws SQLException {
-    	if (TRUE.equalsIgnoreCase(arg0.getString(arg1))) {
-    		return true;
-    	} else {
-    		return false;
-    	}
+    	return TRUE.equalsIgnoreCase(arg0.getString(arg1));
     }
 
     @Override
     public Boolean getResult(CallableStatement arg0, int arg1) throws SQLException {
-    	if (TRUE.equalsIgnoreCase(arg0.getString(arg1))) {
-    		return true;
-    	} else {
-    		return false;
-    	}
+    	return TRUE.equalsIgnoreCase(arg0.getString(arg1));
     }
 
     @Override

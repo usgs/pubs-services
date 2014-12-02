@@ -77,7 +77,7 @@ public class PublicationMap {
     }
 
     public boolean isImmutable() {
-        return isImmutable();
+        return this.isImmutable();
     }
 
     @Override

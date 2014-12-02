@@ -45,10 +45,8 @@ public final class PubsUtilities {
 	    String username = PubsConstants.ANONYMOUS_USER;
 	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 	    
-		if (null != auth) {
-			if (auth.getPrincipal() instanceof User) {
-				username = ((User) auth.getPrincipal()).getUsername();
-			}
+		if (null != auth && auth.getPrincipal() instanceof User) {
+			username = ((User) auth.getPrincipal()).getUsername();
 		}
 		return username;
     }

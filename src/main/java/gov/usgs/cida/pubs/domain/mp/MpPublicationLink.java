@@ -12,7 +12,8 @@ public class MpPublicationLink extends PublicationLink<MpPublicationLink> {
 
 	private static IMpDao<MpPublicationLink> mpPublicationLinkDao;
 
-	public MpPublicationLink() {}
+	public MpPublicationLink() {
+	}
 	
 	public MpPublicationLink(final PublicationLink<?> pubLink) {
 		//TODO this constructor is only here to create an MpPublicationLink from the Jackson deserialized PublicationLink...

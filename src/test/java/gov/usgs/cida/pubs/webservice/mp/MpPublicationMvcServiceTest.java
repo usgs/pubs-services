@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
@@ -46,9 +47,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 public class MpPublicationMvcServiceTest extends BaseSpringTest {
 
-    public static final String LOCK_MSG = "{\"validationErrors\":[{\"field\":\"Publication\",\"message\":\"This Publication is being edited by somebody\",\"level\":\"fatal\",\"value\":\"somebody\"}]}\"";
+    public static final String LOCK_MSG = "{\"validationErrors\":[{\"field\":\"Publication\",\"message\":\"This Publication is being edited by somebody\",\"level\":\"FATAL\",\"value\":\"somebody\"}]}\"";
 
-    public static final ValidatorResult VR_LOCKED = new ValidatorResult("Publication", "This Publication is being edited by somebody", "fatal", "somebody");
+    public static final ValidatorResult VR_LOCKED = new ValidatorResult("Publication", "This Publication is being edited by somebody", SeverityLevel.FATAL, "somebody");
     public static final ValidatorResult VR_NOT_LOCKED = null;
 
 	@Mock
@@ -236,7 +237,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
         
         //Pub not found
         ValidationResults vr = new ValidationResults();
-        vr.addValidatorResult(new ValidatorResult("Publication", "Publication does not exist.", "fatal", "3"));
+        vr.addValidatorResult(new ValidatorResult("Publication", "Publication does not exist.", SeverityLevel.FATAL, "3"));
         when(busService.publish(3)).thenReturn(vr);
         rtn = mockMvc.perform(post("/mppublications/publish").content("{\"id\":3}}").contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
@@ -244,7 +245,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
                 .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
                 .andReturn();
         assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-                sameJSONObjectAs(new JSONObject("{\"validationErrors\":[{\"field\":\"Publication\",\"message\":\"Publication does not exist.\",\"level\":\"fatal\",\"value\":\"3\"}]}")));
+                sameJSONObjectAs(new JSONObject("{\"validationErrors\":[{\"field\":\"Publication\",\"message\":\"Publication does not exist.\",\"level\":\"FATAL\",\"value\":\"3\"}]}")));
         
     }
     

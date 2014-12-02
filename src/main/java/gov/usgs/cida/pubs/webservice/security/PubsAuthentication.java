@@ -37,7 +37,7 @@ public class PubsAuthentication implements Authentication {
 	}
 	
 	public PubsAuthentication(String username, List<String> rawRoles) {
-		ArrayList<SimpleGrantedAuthority> auths = new ArrayList<>();
+		List<SimpleGrantedAuthority> auths = new ArrayList<>();
 		
 		for(String role : rawRoles) {
 			try {
@@ -78,7 +78,7 @@ public class PubsAuthentication implements Authentication {
 
 	@Override
 	public boolean isAuthenticated() {
-		return authorities.size() > 0;
+		return !authorities.isEmpty();
 	}
 
 	@Override

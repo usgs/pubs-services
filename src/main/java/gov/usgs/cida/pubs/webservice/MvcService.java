@@ -6,6 +6,7 @@ import gov.usgs.cida.pubs.utility.PubsUtilities;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +35,7 @@ public abstract class MvcService<D> {
     private static final Logger LOG = LoggerFactory.getLogger(MvcService.class);
 
     /**
-     * Helper to check if null and add to filters map
+     * Helper to check if null and add to filters map - will NPE if filters or key are null!
      */
     protected Map<String, Object> addToFiltersIfNotNull(Map<String, Object> filters, String key, String value) {
         if (StringUtils.isNotEmpty(value)) {
@@ -44,29 +45,27 @@ public abstract class MvcService<D> {
     }
 
     /**
-     * Helper creates an array of non-empty values and places it in the filters map.
+     * Helper creates an array of non-empty values and places it in the filters map. - will NPE if filters or key are null!
      */
     protected Map<String, Object> addToFiltersIfNotNull(Map<String, Object> filters, String key, String[] values) {
-    	ArrayList<String> filterValues = new ArrayList<>();
+    	List<String> filterValues = new ArrayList<>();
         if (null != values && 0 < values.length) {
 	    	for(String value : values) {
 		        if (StringUtils.isNotEmpty(value)) {
 		        	filterValues.add(value);
 		        }
 	    	}
-	    	filters.put(key, filterValues.toArray());
+	    	if (!filterValues.isEmpty()) {
+	    		filters.put(key, filterValues.toArray());
+	    	}
         }
     	return filters;
     }
 
-    /**
-     * Configures the filters/orderby settings to support single search
-     * @param filters
-     * @return
-     */
     protected Map<String, Object> configureSingleSearchFilters(Map<String, Object> filters, String searchTerms) {
+    	//We split the input on spaces and commas to ultimately create an "and" query on each word
         if (StringUtils.isNotEmpty(searchTerms)) {
-	    	filters.put("searchTerms", searchTerms.split("[\\s+,+]"));
+        	addToFiltersIfNotNull(filters, "searchTerms", searchTerms.split("[\\s+,+]"));
         }
     	return filters;
     }

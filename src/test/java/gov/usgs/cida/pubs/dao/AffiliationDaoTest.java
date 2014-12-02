@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
@@ -91,7 +92,7 @@ public class AffiliationDaoTest extends BaseSpringDaoTest {
             Affiliation.getDao().add(new OutsideAffiliation());
             fail("Was able to add.");
         } catch (Exception e) {
-            assertEquals("NOT IMPLEMENTED.", e.getMessage());
+            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
         }
 
         try {
@@ -100,28 +101,28 @@ public class AffiliationDaoTest extends BaseSpringDaoTest {
             Affiliation.getDao().getObjectCount(params);
             fail("Was able to get count.");
         } catch (Exception e) {
-            assertEquals("NOT IMPLEMENTED.", e.getMessage());
+            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
         }
 
         try {
             Affiliation.getDao().update(new OutsideAffiliation());
             fail("Was able to update.");
         } catch (Exception e) {
-            assertEquals("NOT IMPLEMENTED.", e.getMessage());
+            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
         }
 
         try {
             Affiliation.getDao().delete(new OutsideAffiliation());
             fail("Was able to delete.");
         } catch (Exception e) {
-            assertEquals("NOT IMPLEMENTED.", e.getMessage());
+            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
         }
 
         try {
             Affiliation.getDao().deleteById(1);
             fail("Was able to delete by it.");
         } catch (Exception e) {
-            assertEquals("NOT IMPLEMENTED.", e.getMessage());
+            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
         }
     }
 

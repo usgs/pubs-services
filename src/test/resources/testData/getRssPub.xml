@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<rss version="2.0">
+	<channel>
+		<title>USGS Publications Warehouse</title>
+		<link>http://pubs.er.usgs.gov</link>
+		<description>New publications of the USGS.</description>
+		<language>en-us</language>
+		<lastBuildDate>== RUN DATE ==</lastBuildDate>
+		<webmaster>http://pubs.er.usgs.gov/feedback</webmaster>
+		<pubDate>== RUN DATE ==</pubDate>
+		<item>
+			<title>Title</title>
+			<author></author>
+			<link></link>
+			<description>Abstract Text</description>
+			<pubDate></pubDate>
+			<category></category>
+		</item>
+	</channel>
+</rss>

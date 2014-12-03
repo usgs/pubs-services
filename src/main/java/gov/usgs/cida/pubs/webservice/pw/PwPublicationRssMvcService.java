@@ -252,20 +252,9 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 	    		 * Links is a list
 	    		 */
 	    		rssResults.append("\t\t\t<link>");
-	    		List<PublicationLink<?>> pubLinks = (List<PublicationLink<?>>) publication.getLinks();
-	    		if(pubLinks != null) {
-		    		for(int i = 0; i < pubLinks.size(); i++) {
-		    			PublicationLink<?> pubLink = pubLinks.get(i);
-		    			
-		    			String itemLink = pubLink.getUrl();
-			    		if(itemLink != null) {
-			    			rssResults.append(itemLink.trim());
-			    		}
-		    			
-		    			if((i + 1) < pubLinks.size()) {
-		    				rssResults.append("; ");
-		    			}
-		    		}
+	    		String pubId = publication.getIndexId();
+	    		if(pubId != null) {
+		    		rssResults.append("http://pubs.er.usgs.gov/publication/" + pubId.trim());
 	    		}
 	    		rssResults.append("</link>\n");
 	    		

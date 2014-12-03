@@ -10,7 +10,6 @@ import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
-import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.webservice.MvcService;
@@ -37,8 +36,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-//@RequestMapping(value = "rss", produces="application/rss+xml")
-@RequestMapping(value = "rss", produces="text/xml")
+@RequestMapping(value = "publication/rss", produces="text/xml")
 public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 	private static final Logger LOG = LoggerFactory.getLogger(PwPublicationRssMvcService.class);
 

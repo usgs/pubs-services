@@ -64,7 +64,7 @@ public class PwPublicationRssMvcServiceTest extends BaseSpringTest {
     	//Happy Path
         when(busService.getObjects(anyMap())).thenReturn(Arrays.asList(PwPublicationDaoTest.buildAPub(1)));
     	
-        MvcResult rtn = mockMvc.perform(get("/rss/?orderby=dispPubDate").accept(MediaType.parseMediaType("text/xml")))
+        MvcResult rtn = mockMvc.perform(get("/publication/rss?orderby=dispPubDate").accept(MediaType.parseMediaType("text/xml")))
         .andExpect(status().isOk())
         .andExpect(content().contentType("text/xml"))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))

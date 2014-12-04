@@ -15,6 +15,8 @@
     <jee:jndi-lookup id="crossRefPort" jndi-name="java:comp/env/pubs/crossRef/port"/>
     <jee:jndi-lookup id="crossRefUser" jndi-name="java:comp/env/pubs/crossRef/user"/>
     <jee:jndi-lookup id="crossRefPwd" jndi-name="java:comp/env/pubs/crossRef/pwd"/>
+    <jee:jndi-lookup id="crossRefDepositorEmail" jndi-name="java:comp/env/pubs/crossRef/depositorEmail"/>
+    
 
     <jee:jndi-lookup id="pubsEmailList" jndi-name="java:comp/env/pubs/emailList"/>
     <jee:jndi-lookup id="mailHost" jndi-name="java:comp/env/pubs/mailHost"/>

@@ -19,6 +19,7 @@
     <Environment name="pubs/crossRef/port" type="java.lang.Integer" value="80"/>
     <Environment name="pubs/crossRef/user" type="java.lang.String" value="usgs"/>
     <Environment name="pubs/crossRef/pwd" type="java.lang.String" value="**********"/>
+    <Environment name="pubs/crossRef/depositorEmail" type="java.lang.String" value="your_email@your_email"/>
 
     <Environment name="pubs/emailList" type="java.lang.String" value="your_email@your_email"/>
     <Environment name="pubs/mailHost" type="java.lang.String" value="gsvaresh01.er.usgs.gov"/>

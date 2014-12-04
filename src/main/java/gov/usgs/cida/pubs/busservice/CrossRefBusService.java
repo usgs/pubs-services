@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -51,7 +52,18 @@ public class CrossRefBusService implements ICrossRefBusService {
     public static final String ORGANIZATION_REPLACE = "{organization}";
     public static final String SEQUENCE_REPLACE = "{sequence}";
     public static final String CONTRIBUTOR_TYPE_REPLACE = "{contributor_type}";
-
+    public static final String DEPOSITOR_EMAIL_REPLACE = "{depositor_email}";
+    public static final String DOI_BATCH_ID_REPLACE = "{doi_batch_id}";
+    public static final String SUBMISSION_TIMESTAMP_REPLACE = "{submission_timestamp}";
+    public static final String DISSEMINATION_YEAR_REPLACE = "{dissemination_year}";
+    public static final String CONTRIBUTORS_REPLACE = "{contributers}";
+    public static final String TITLE_REPLACE = "{title}";
+    public static final String PAGES_REPLACE = "{pages}";
+    public static final String DOI_NAME_REPLACE = "{doi_name}";
+	public static final String INDEX_PAGE_REPLACE = "{index_page}";
+	public static final String SERIES_NUMBER_REPLACE = "{series_number}";
+	public static final String START_PAGE_REPLACE = "{start_page}";
+	public static final String END_PAGE_REPLACE = "{end_page}";
     
     protected final String crossRefProtocol;
     protected final String crossRefHost;
@@ -64,6 +76,7 @@ public class CrossRefBusService implements ICrossRefBusService {
     protected final String personNameXml;
     protected final String organizationNameXml;
     protected final String pagesXml;
+    protected final String depositorEmail;
     protected final PubsEMailer pubsEMailer;
 
     @Autowired
@@ -90,6 +103,8 @@ public class CrossRefBusService implements ICrossRefBusService {
     		final String personNameXml,
     		@Qualifier("pagesXml")
     		final String pagesXml,
+    		@Qualifier("crossRefDepositorEmail")
+    		final String depositorEmail,
     		final PubsEMailer pubsEMailer) {
     	this.crossRefProtocol = crossRefProtocol;
     	this.crossRefHost = crossRefHost;
@@ -102,6 +117,7 @@ public class CrossRefBusService implements ICrossRefBusService {
     	this.organizationNameXml = organizationNameXml;
     	this.personNameXml = personNameXml;
     	this.pagesXml = pagesXml;
+    	this.depositorEmail = depositorEmail;
     	this.pubsEMailer = pubsEMailer;
     }
 
@@ -177,22 +193,23 @@ public class CrossRefBusService implements ICrossRefBusService {
     		return "";
     	} else {
 	        String rtn = xml;
-	        rtn = replacePlaceHolder(rtn, "{doi_batch_id}", getBatchId());
-	        rtn = replacePlaceHolder(rtn, "{submission_timestamp}", String.valueOf(new Date().getTime()));
-	        rtn = replacePlaceHolder(rtn, "{dissemination_year}", pub.getPublicationYear());
-	        rtn = replacePlaceHolder(rtn, "{contributers}", getContributors(pub));
-	        rtn = replacePlaceHolder(rtn, "{title}", pub.getTitle());
-	        rtn = replacePlaceHolder(rtn, "{pages}", getPages(pub));
-	        rtn = replacePlaceHolder(rtn, "{doi_name}", pub.getDoi());
-	        rtn = replacePlaceHolder(rtn, "{index_page}", indexPage);
+	        rtn = replacePlaceHolder(rtn, DOI_BATCH_ID_REPLACE, getBatchId());
+	        rtn = replacePlaceHolder(rtn, SUBMISSION_TIMESTAMP_REPLACE, String.valueOf(new Date().getTime()));
+	        rtn = replacePlaceHolder(rtn, DEPOSITOR_EMAIL_REPLACE, StringEscapeUtils.escapeXml10(depositorEmail));
+	        rtn = replacePlaceHolder(rtn, DISSEMINATION_YEAR_REPLACE, StringEscapeUtils.escapeXml10(pub.getPublicationYear()));
+	        rtn = replacePlaceHolder(rtn, CONTRIBUTORS_REPLACE, getContributors(pub));
+	        rtn = replacePlaceHolder(rtn, TITLE_REPLACE, StringEscapeUtils.escapeXml10(pub.getTitle()));
+	        rtn = replacePlaceHolder(rtn, PAGES_REPLACE, getPages(pub));
+	        rtn = replacePlaceHolder(rtn, DOI_NAME_REPLACE, StringEscapeUtils.escapeXml10(pub.getDoi()));
+	        rtn = replacePlaceHolder(rtn, INDEX_PAGE_REPLACE, StringEscapeUtils.escapeXml10(indexPage));
 	        if (null != pub.getSeriesTitle()) {
 	        	if (null != pub.getSeriesTitle().getText()) {
-	        		rtn = replacePlaceHolder(rtn, SERIES_NAME_REPLACE, pub.getSeriesTitle().getText());
+	        		rtn = replacePlaceHolder(rtn, SERIES_NAME_REPLACE, StringEscapeUtils.escapeXml10(pub.getSeriesTitle().getText()));
 	        	} else {
 	        		rtn = replacePlaceHolder(rtn, SERIES_NAME_REPLACE, "");
 	        	}
 	        	if (null != pub.getSeriesTitle().getText()) {
-	        		rtn = replacePlaceHolder(rtn, ONLINE_ISSN_REPLACE, pub.getSeriesTitle().getOnlineIssn());
+	        		rtn = replacePlaceHolder(rtn, ONLINE_ISSN_REPLACE, StringEscapeUtils.escapeXml10(pub.getSeriesTitle().getOnlineIssn()));
 	        	} else {
 	        		rtn = replacePlaceHolder(rtn, ONLINE_ISSN_REPLACE, "");
 	        	}
@@ -200,7 +217,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 	        	rtn = replacePlaceHolder(rtn, SERIES_NAME_REPLACE, "");
 	        	rtn = replacePlaceHolder(rtn, ONLINE_ISSN_REPLACE, "");
 	        }
-            rtn = replacePlaceHolder(rtn, "{series_number}", pub.getSeriesNumber());
+            rtn = replacePlaceHolder(rtn, SERIES_NUMBER_REPLACE, StringEscapeUtils.escapeXml10(pub.getSeriesNumber()));
 	        return rtn;
     	}
     }
@@ -212,7 +229,7 @@ public class CrossRefBusService implements ICrossRefBusService {
         if (null == placeHolder || -1 == rawString.indexOf(placeHolder)) {
         	return rawString;
         } else {
-        	if (null == replaceWith) {
+        	if (StringUtils.isBlank(replaceWith)) {
         		return rawString.replace(placeHolder, "");
         	} else {
         		return rawString.replace(placeHolder, replaceWith);
@@ -264,18 +281,18 @@ public class CrossRefBusService implements ICrossRefBusService {
     	String template = personNameXml;
 		template = template.replace(SEQUENCE_REPLACE, sequence);
 		template = template.replace(CONTRIBUTOR_TYPE_REPLACE, getContributorType(pubContributor));
-    	if (StringUtils.isNotEmpty(contributor.getFamily())) {
-    		template = template.replace(SURNAME_REPLACE, contributor.getFamily());
+    	if (StringUtils.isNotBlank(contributor.getFamily())) {
+    		template = template.replace(SURNAME_REPLACE, StringEscapeUtils.escapeXml10(contributor.getFamily()));
     	} else {
     		template = template.replace(SURNAME_REPLACE, "");
     	}
-    	if (StringUtils.isNotEmpty(contributor.getGiven())) {
-    		template = template.replace(GIVEN_NAME_REPLACE, "<given_name>" + contributor.getGiven() + "</given_name>");
+    	if (StringUtils.isNotBlank(contributor.getGiven())) {
+    		template = template.replace(GIVEN_NAME_REPLACE, "<given_name>" + StringEscapeUtils.escapeXml10(contributor.getGiven()) + "</given_name>");
     	} else {
     		template = template.replace(GIVEN_NAME_REPLACE, "");
     	}
-    	if (StringUtils.isNotEmpty(contributor.getSuffix())) {
-    		template = template.replace(SUFFIX_REPLACE, "<suffix>" + contributor.getSuffix() + "</suffix>");
+    	if (StringUtils.isNotBlank(contributor.getSuffix())) {
+    		template = template.replace(SUFFIX_REPLACE, "<suffix>" + StringEscapeUtils.escapeXml10(contributor.getSuffix()) + "</suffix>");
     	} else {
     		template = template.replace(SUFFIX_REPLACE, "");
     	}
@@ -287,8 +304,8 @@ public class CrossRefBusService implements ICrossRefBusService {
     	String template = organizationNameXml;
 		template = template.replace(SEQUENCE_REPLACE, sequence);
 		template = template.replace(CONTRIBUTOR_TYPE_REPLACE, getContributorType(pubContributor));
-    	if (StringUtils.isNotEmpty(contributor.getOrganization())) {
-    		template = template.replace(ORGANIZATION_REPLACE, contributor.getOrganization());
+    	if (StringUtils.isNotBlank(contributor.getOrganization())) {
+    		template = template.replace(ORGANIZATION_REPLACE, StringEscapeUtils.escapeXml10(contributor.getOrganization()));
     	} else {
     		template = template.replace(ORGANIZATION_REPLACE, "");
     	}
@@ -297,8 +314,8 @@ public class CrossRefBusService implements ICrossRefBusService {
 
     protected String getContributorType(PublicationContributor<?> pubContributor) {
     	if (null != pubContributor && null != pubContributor.getContributorType()
-    			&& StringUtils.isNotEmpty(pubContributor.getContributorType().getText())) {
-    		return pubContributor.getContributorType().getText().toLowerCase().replaceAll("s$", "");
+    			&& StringUtils.isNotBlank(pubContributor.getContributorType().getText())) {
+    		return StringEscapeUtils.escapeXml10(pubContributor.getContributorType().getText().toLowerCase().replaceAll("s$", ""));
     	} else {
     		return "";
     	}
@@ -306,9 +323,10 @@ public class CrossRefBusService implements ICrossRefBusService {
 
     protected String getPages(MpPublication pub) {
         String rtn = "";
-        if (null != pub && StringUtils.isNoneEmpty(pub.getStartPage())
-                && StringUtils.isNotEmpty(pub.getEndPage())) {
-            rtn = pagesXml.replace("{start_page}", pub.getStartPage().trim()).replace("{end_page}", pub.getEndPage().trim());
+        if (null != pub && StringUtils.isNotBlank(pub.getStartPage())
+                && StringUtils.isNotBlank(pub.getEndPage())) {
+            rtn = pagesXml.replace(START_PAGE_REPLACE, StringEscapeUtils.escapeXml10(pub.getStartPage().trim()))
+            		.replace(END_PAGE_REPLACE, StringEscapeUtils.escapeXml10(pub.getEndPage().trim()));
         }
         return rtn;
     }
@@ -324,7 +342,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 	        	}
         	}
         }
-        return rtn;
+        return StringEscapeUtils.escapeXml10(rtn);
     }
 
 }

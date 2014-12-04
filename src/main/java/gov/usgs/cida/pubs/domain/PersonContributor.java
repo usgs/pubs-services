@@ -97,19 +97,19 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
     @Override
     public String getText() {
     	StringBuilder text = new StringBuilder();
-    	if (StringUtils.isNotEmpty(family)) {
+    	if (StringUtils.isNotBlank(family)) {
     		text.append(family);
-    		if (StringUtils.isNotEmpty(given) || StringUtils.isNotEmpty(suffix)) {
+    		if (StringUtils.isNotBlank(given) || StringUtils.isNotBlank(suffix)) {
     			text.append(",");
     		}
     	}
-    	if (StringUtils.isNotEmpty(given)) {
+    	if (StringUtils.isNotBlank(given)) {
     		text.append(" ").append(given);
     	}
-    	if (StringUtils.isNotEmpty(suffix)) {
+    	if (StringUtils.isNotBlank(suffix)) {
     		text.append(" ").append(suffix);
     	}
-    	if (StringUtils.isNotEmpty(email)) {
+    	if (StringUtils.isNotBlank(email)) {
     		text.append(" ").append(email);
     	}
         return text.toString();

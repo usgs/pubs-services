@@ -1,11 +1,15 @@
 package gov.usgs.cida.pubs.utility;
 
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.StopWords;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +32,7 @@ public final class PubsUtilities {
      * @return Boolean .
      * */
     public static Boolean isInteger(final String number) {
-        if (StringUtils.isEmpty(number)) {
+        if (StringUtils.isBlank(number)) {
         	return false;
         }
 
@@ -108,11 +112,23 @@ public final class PubsUtilities {
     
     public static boolean isSpnProduction(final String ipdsReviewProcessState) {
         boolean rtn = false;
-        if (StringUtils.isNotEmpty(ipdsReviewProcessState)
+        if (StringUtils.isNotBlank(ipdsReviewProcessState)
         		&& ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(ipdsReviewProcessState)) {
         	rtn = true;
         }
         return rtn;
+    }
+    
+    public static List<String> removeStopWords(final String q) {
+    	if (StringUtils.isBlank(q)) {
+    		return null;
+    	} else {
+    		//Arrays.asList returns a fixed size java.util.Arrays$ArrayList, so we actually need to create a real list to 
+    		//be able to remove entries from it.
+	    	List<String> splitQ = new LinkedList<>(Arrays.asList(q.trim().toLowerCase().split(PubsConstants.SEARCH_TERMS_SPLIT_REGEX)));
+	    	splitQ.removeAll(StopWords.STOP_WORD_LIST);
+	    	return splitQ;
+    	}
     }
     
 }

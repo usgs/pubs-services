@@ -222,7 +222,7 @@ public class IpdsProcess implements IIpdsProcess {
 
 	protected boolean okToProcessSpnProduction(final MpPublication pub) {
 		if (null != pub) {
-			if (StringUtils.isNotEmpty(pub.getDoi())) {
+			if (StringUtils.isNotBlank(pub.getDoi())) {
 				//Skip if we have already assigned a DOI (shouldn't happen as we are querying for null DOI publications)
 				return false;
 			} else if (null == pub.getIpdsReviewProcessState() || !ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(pub.getIpdsReviewProcessState())) {

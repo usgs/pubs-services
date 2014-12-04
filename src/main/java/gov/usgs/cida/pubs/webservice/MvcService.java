@@ -5,6 +5,7 @@ import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public abstract class MvcService<D> {
      * Helper to check if null and add to filters map - will NPE if filters or key are null!
      */
     protected Map<String, Object> addToFiltersIfNotNull(Map<String, Object> filters, String key, String value) {
-        if (StringUtils.isNotEmpty(value)) {
+        if (StringUtils.isNotBlank(value)) {
             filters.put(key, value);
         }
     	return filters;
@@ -48,10 +49,21 @@ public abstract class MvcService<D> {
      * Helper creates an array of non-empty values and places it in the filters map. - will NPE if filters or key are null!
      */
     protected Map<String, Object> addToFiltersIfNotNull(Map<String, Object> filters, String key, String[] values) {
+    	if (null == values || 0 == values.length) {
+    		return filters;
+    	} else {
+    		return addToFiltersIfNotNull(filters, key, Arrays.asList(values));
+    	}
+    }
+
+    /**
+     * Helper creates an array of non-empty values and places it in the filters map. - will NPE if filters or key are null!
+     */
+    protected Map<String, Object> addToFiltersIfNotNull(Map<String, Object> filters, String key, List<String> values) {
     	List<String> filterValues = new ArrayList<>();
-        if (null != values && 0 < values.length) {
+        if (!values.isEmpty()) {
 	    	for(String value : values) {
-		        if (StringUtils.isNotEmpty(value)) {
+		        if (StringUtils.isNotBlank(value)) {
 		        	filterValues.add(value);
 		        }
 	    	}
@@ -63,16 +75,19 @@ public abstract class MvcService<D> {
     }
 
     protected Map<String, Object> configureSingleSearchFilters(Map<String, Object> filters, String searchTerms) {
-    	//We split the input on spaces and commas to ultimately create an "and" query on each word
-        if (StringUtils.isNotEmpty(searchTerms)) {
-        	addToFiltersIfNotNull(filters, "searchTerms", searchTerms.split("[\\s+,+]"));
+    	//On the MP side, We split the input on spaces and commas to ultimately create an "and" query on each word
+    	//On the warehouse side, we are doing Oracle Text queries and just cleanse the "stop words" from the input
+        if (StringUtils.isNotBlank(searchTerms)) {
+        	List<String> splitTerms = PubsUtilities.removeStopWords(searchTerms);
+        	addToFiltersIfNotNull(filters, "searchTerms", splitTerms);
+        	addToFiltersIfNotNull(filters, "q", StringUtils.join(splitTerms, " and "));
         }
     	return filters;
     }
 
     protected String buildOrderBy(String orderBy) {
     	StringBuilder rtn = new StringBuilder("publication_year desc nulls last, display_to_public_date desc"); 
-    	if (StringUtils.isNotEmpty(orderBy)) {
+    	if (StringUtils.isNotBlank(orderBy)) {
     		if ("date".equalsIgnoreCase(orderBy)) {
     			//Nothing to see here, this is the default sort
     		} else if ("title".equalsIgnoreCase(orderBy)) {

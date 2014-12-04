@@ -140,7 +140,7 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 	    		
 	    		String itemTitle = publication.getTitle();
 	    		if(itemTitle != null) {
-	    			rssResults.append(itemTitle.trim());
+	    			rssResults.append(StringEscapeUtils.escapeXml10(itemTitle.trim()));
 	    		}
 	    		rssResults.append("</title>\n");
 	    		
@@ -149,59 +149,65 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 	    		 * Authors is a list
 	    		 */
 	    		rssResults.append("\t\t\t<author>");
+	    		StringBuffer authorship = new StringBuffer();
 	    		List<PublicationContributor<?>> authors = (List<PublicationContributor<?>>) publication.getAuthors();
-	    		if(authors != null) {
-		    		for(int i = 0; i < authors.size(); i++) {
-		    			PublicationContributor<?> author = authors.get(i);
-		    			
-		    			Contributor<?> contributor = author.getContributor();
-		    			
-		    			if(contributor != null) {
-			    			if(contributor.isUsgs()) {
-			    				UsgsContributor usgsContributor = (UsgsContributor) contributor;
-			    				
-			    				String family = usgsContributor.getFamily();
-			    				if(family != null) {
-				    				rssResults.append(family.trim());
-				    				rssResults.append(", ");
-			    				}
-			    				
-			    				String given = usgsContributor.getGiven();
-			    				if(given != null) {
-			    					rssResults.append(given.trim());
-			    				}
-			    			} else if(contributor.isUsgs()) {
-			    				CorporateContributor corpContributor = (CorporateContributor) contributor;
-			    				
-			    				String organization = corpContributor.getOrganization();
-			    				if(organization != null) {
-			    					rssResults.append(organization.trim());
-			    				}
-			    			} else {
-			    				if(contributor instanceof PersonContributor) {
-			    					PersonContributor<?> person = (PersonContributor<?>) contributor;
-			
-			    					String family = person.getFamily();
+	    		try {
+		    		if(authors != null) {
+			    		for(int i = 0; i < authors.size(); i++) {
+			    			PublicationContributor<?> author = authors.get(i);
+			    			
+			    			Contributor<?> contributor = author.getContributor();
+			    			
+			    			if(contributor != null) {
+			    				if(contributor.isCorporation()) {
+				    				CorporateContributor corpContributor = (CorporateContributor) contributor;
+				    				
+				    				String organization = corpContributor.getOrganization();
+				    				if(organization != null) {
+				    					authorship.append(organization.trim());
+				    				}
+				    			} else if(contributor.isUsgs()) {
+				    				UsgsContributor usgsContributor = (UsgsContributor) contributor;
+				    				
+				    				String family = usgsContributor.getFamily();
 				    				if(family != null) {
-					    				rssResults.append(family.trim());
-					    				rssResults.append(", ");
+				    					authorship.append(family.trim());
+				    					authorship.append(", ");
 				    				}
 				    				
-				    				String given = person.getGiven();
+				    				String given = usgsContributor.getGiven();
 				    				if(given != null) {
-				    					rssResults.append(given.trim());
+				    					authorship.append(given.trim());
 				    				}
-			    				} else {
-			    					rssResults.append(contributor.getId());
-			    				}
+				    			} else {
+				    				if(contributor instanceof PersonContributor) {
+				    					PersonContributor<?> person = (PersonContributor<?>) contributor;
+				
+				    					String family = person.getFamily();
+					    				if(family != null) {
+					    					authorship.append(family.trim());
+					    					authorship.append(", ");
+					    				}
+					    				
+					    				String given = person.getGiven();
+					    				if(given != null) {
+					    					authorship.append(given.trim());
+					    				}
+				    				} else {
+				    					authorship.append(contributor.getId());
+				    				}
+				    			}
 			    			}
-		    			}
-		    			
-		    			if((i + 1) < authors.size()) {
-		    				rssResults.append("; ");
-		    			}
+			    			
+			    			if((i + 1) < authors.size()) {
+			    				authorship.append("; ");
+			    			}
+			    		}
 		    		}
+	    		} catch (ClassCastException e) {
+	    			LOG.error("Error extracting contributor information: " + e.getMessage());
 	    		}
+	    		rssResults.append(StringEscapeUtils.escapeXml10(authorship.toString()));
 	    		rssResults.append("</author>\n");
 	    		
 	    		// ==== LINKS
@@ -240,7 +246,7 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 	    		if(pubSeries != null) {
 	    			String pubSeriesTitle = pubSeries.getText();
 	    			if(pubSeriesTitle != null) {
-	    				rssResults.append(pubSeriesTitle.trim());
+	    				rssResults.append(StringEscapeUtils.escapeXml10(pubSeriesTitle.trim()));
 	    			}
 	    		}
 	    		rssResults.append("</category>\n");

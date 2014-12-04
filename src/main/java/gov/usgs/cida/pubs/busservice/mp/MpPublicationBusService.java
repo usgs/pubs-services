@@ -299,7 +299,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 		            MpPublicationContributor.getDao().publishToPw(publicationId);
 		            if ((PubsUtilities.isUsgsNumberedSeries(mpPub.getPublicationSubtype())
 		                    || PubsUtilities.isUsgsUnnumberedSeries(mpPub.getPublicationSubtype()))
-		                    && (null != mpPub.getDoi() && StringUtils.isNotEmpty(mpPub.getDoi()))) {
+		                    && StringUtils.isNotBlank(mpPub.getDoi())) {
 		                crossRefBusService.submitCrossRef(mpPub);
 		            }
 		            deleteObject(publicationId);
@@ -385,7 +385,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 			available = true;
 		} else {
 			//We found it, so check if it is already locked.
-			if (StringUtils.isNotEmpty(mpPub.getLockUsername())) {
+			if (StringUtils.isNotBlank(mpPub.getLockUsername())) {
 				//Now, was it locked by the current user.
 				if (PubsUtilities.getUsername().equalsIgnoreCase(mpPub.getLockUsername())) {
 					//Yes, this user locked it so we are ok to edit.

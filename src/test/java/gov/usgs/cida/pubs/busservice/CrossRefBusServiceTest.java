@@ -32,7 +32,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 public class CrossRefBusServiceTest extends BaseSpringTest {
 	
-	private static final String testPagesXml ="<pages><first_page>52</first_page><last_page>56</last_page></pages>";
+	private static final String testPagesXml = "<pages><first_page>52</first_page><last_page>56</last_page></pages>";
+	private static final String testPagesXmlEscaped = "<pages><first_page>52&lt;&gt;</first_page><last_page>56&lt;&gt;</last_page></pages>";
 
 	@Autowired
 	@Qualifier("ofr20131259Xml")
@@ -68,17 +69,20 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	@Autowired
 	@Qualifier("pagesXml")
     protected String pagesXml;
+	@Autowired
+	@Qualifier("crossRefDepositorEmail")
+    protected String depositorEmail;
 	@Mock
     protected PubsEMailer pubsEMailer;
 
     private CrossRefBusService busService;
-
+    
     @Before
     public void initTest() throws Exception {
         MockitoAnnotations.initMocks(this);
         busService = new CrossRefBusService(crossRefProtocol, crossRefHost, crossRefUrl, crossRefPort, crossRefUser,
         		crossRefPwd, numberedSeriesXml, unNumberedSeriesXml, organizationNameXml, personNameXml,
-        		pagesXml, pubsEMailer);
+        		pagesXml, depositorEmail, pubsEMailer);
     }
 
     @Test
@@ -93,6 +97,8 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
     	assertEquals("abc", busService.replacePlaceHolder("abc", "f", "q"));
     	assertEquals("abq", busService.replacePlaceHolder("abc", "c", "q"));
     	assertEquals("ab", busService.replacePlaceHolder("abc", "c", null));
+    	//We don't escape at this level...
+    	assertEquals("a&b<>q", busService.replacePlaceHolder("a&b<>c", "c", "q"));
     }
 
 	@Test
@@ -128,24 +134,59 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		assertEquals("", busService.buildBaseXml(new MpPublication(), null, "abc"));
 	}
 
+
+	@Test
+	public void buildBaseXmlEscapeTest() {
+	    CrossRefBusService busService2 = new CrossRefBusService(crossRefProtocol, crossRefHost, crossRefUrl, crossRefPort, crossRefUser,
+	    		crossRefPwd, numberedSeriesXml, unNumberedSeriesXml, organizationNameXml, personNameXml,
+	    		pagesXml, "drsteini@usgs.gov<>", pubsEMailer);
+	    String templateXml = "<root><de>" + CrossRefBusService.DEPOSITOR_EMAIL_REPLACE + "</de><yr>"
+		    	+ CrossRefBusService.DISSEMINATION_YEAR_REPLACE + "</yr><ti>"
+		    	+ CrossRefBusService.TITLE_REPLACE + "</ti><doi>"
+		    	+ CrossRefBusService.DOI_NAME_REPLACE + "</doi><i>"
+		    	+ CrossRefBusService.INDEX_PAGE_REPLACE + "</i><sna>"
+		    	+ CrossRefBusService.SERIES_NAME_REPLACE + "</sna><issn>"
+		    	+ CrossRefBusService.ONLINE_ISSN_REPLACE + "</issn><snbr>"
+		    	+ CrossRefBusService.SERIES_NUMBER_REPLACE + "</snbr><root>";
+	    String resultXml = "<root><de>drsteini@usgs.gov&lt;&gt;</de><yr>yr&lt;&gt;</yr><ti>title&lt;&gt;</ti><doi>"
+		    	    	+ "doi&lt;</doi><i>http://pubs.usgs.gov/&lt;&gt;</i><sna>&lt;sname&lt;</sna><issn>"
+		    	    	+ "&gt;issn&lt;</issn><snbr>&lt;snbr&gt;</snbr><root>";
+	    MpPublication pub = new MpPublication();
+	    pub.setPublicationYear("yr<>");
+	    pub.setTitle("title<>");
+	    pub.setDoi("doi<");
+	    pub.setSeriesNumber("<snbr>");
+	    PublicationSeries ps = new PublicationSeries();
+	    ps.setText("<sname<");
+	    ps.setOnlineIssn(">issn<");
+	    pub.setSeriesTitle(ps);
+	    
+	    String xml = busService2.buildBaseXml(pub, "http://pubs.usgs.gov/<>", templateXml);
+		assertNotNull(xml);
+		assertEquals(harmonizeXml(resultXml), harmonizeXml(xml));
+	}
+    
+    
 	@Test
 	public void buildBaseXmlNumberedSeriesTest() {
 		MpPublication pub = buildNumberedSeriesPub();
 		String xml = busService.buildBaseXml(pub, "http://pubs.usgs.gov/of/2013/1259/", numberedSeriesXml);
 		assertNotNull(xml);
-		assertFalse(xml.contains("{doi_batch_id}"));
-		assertFalse(xml.contains("{submission_timestamp}"));
-		assertFalse(xml.contains("{series_name}"));
-		assertFalse(xml.contains("{online_issn}"));
-		assertFalse(xml.contains("{dissemination_year}"));
-		assertFalse(xml.contains("{contributers}"));
-		assertFalse(xml.contains("{title}"));
-		assertFalse(xml.contains("{series_number}"));
-		assertFalse(xml.contains("{pages}"));
-		assertFalse(xml.contains("{doi_name}"));
-		assertFalse(xml.contains("{index_page}"));
+		assertFalse(xml.contains(CrossRefBusService.DOI_BATCH_ID_REPLACE));
+		assertFalse(xml.contains(CrossRefBusService.SUBMISSION_TIMESTAMP_REPLACE));
+		assertFalse(xml.contains(CrossRefBusService.DEPOSITOR_EMAIL_REPLACE));
+		assertFalse(xml.contains(CrossRefBusService.SERIES_NAME_REPLACE));
+		assertFalse(xml.contains(CrossRefBusService.ONLINE_ISSN_REPLACE));
+		assertFalse(xml.contains(CrossRefBusService.DISSEMINATION_YEAR_REPLACE));
+		assertFalse(xml.contains(CrossRefBusService.CONTRIBUTORS_REPLACE));
+		assertFalse(xml.contains(CrossRefBusService.TITLE_REPLACE));
+		assertFalse(xml.contains(CrossRefBusService.SERIES_NUMBER_REPLACE));
+		assertFalse(xml.contains(CrossRefBusService.PAGES_REPLACE));
+		assertFalse(xml.contains(CrossRefBusService.DOI_NAME_REPLACE));
+		assertFalse(xml.contains(CrossRefBusService.INDEX_PAGE_REPLACE));
 		String modCompare = replaceDoiBatchId(ofr20131259Xml, xml);
 		modCompare = replaceTimestamp(modCompare, xml);
+		modCompare = modCompare.replace("pubs_tech_group@usgs.gov", depositorEmail);
 		assertEquals(harmonizeXml(modCompare), harmonizeXml(xml));
 	}
 
@@ -196,19 +237,21 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		MpPublication pub = buildUnNumberedSeriesPub();
 		String xml = busService.buildBaseXml(pub, "http://pubs.usgs.gov/of/2013/1259/", unNumberedSeriesXml);
 		assertNotNull(xml);
-		assertFalse(xml.contains("{doi_batch_id}"));
-		assertFalse(xml.contains("{submission_timestamp}"));
-		assertFalse(xml.contains("{series_name}"));
-		assertFalse(xml.contains("{online_issn}"));
-		assertFalse(xml.contains("{dissemination_year}"));
-		assertFalse(xml.contains("{contributers}"));
-		assertFalse(xml.contains("{title}"));
-		assertFalse(xml.contains("{series_number}"));
-		assertFalse(xml.contains("{pages}"));
-		assertFalse(xml.contains("{doi_name}"));
-		assertFalse(xml.contains("{index_page}"));
+		assertFalse(xml.contains(CrossRefBusService.DOI_BATCH_ID_REPLACE));
+		assertFalse(xml.contains(CrossRefBusService.SUBMISSION_TIMESTAMP_REPLACE));
+		assertFalse(xml.contains(CrossRefBusService.DEPOSITOR_EMAIL_REPLACE));
+		assertFalse(xml.contains(CrossRefBusService.SERIES_NAME_REPLACE));
+		assertFalse(xml.contains(CrossRefBusService.ONLINE_ISSN_REPLACE));
+		assertFalse(xml.contains(CrossRefBusService.DISSEMINATION_YEAR_REPLACE));
+		assertFalse(xml.contains(CrossRefBusService.CONTRIBUTORS_REPLACE));
+		assertFalse(xml.contains(CrossRefBusService.TITLE_REPLACE));
+		assertFalse(xml.contains(CrossRefBusService.SERIES_NUMBER_REPLACE));
+		assertFalse(xml.contains(CrossRefBusService.PAGES_REPLACE));
+		assertFalse(xml.contains(CrossRefBusService.DOI_NAME_REPLACE));
+		assertFalse(xml.contains(CrossRefBusService.INDEX_PAGE_REPLACE));
 		String modCompare = replaceDoiBatchId(testUnNumberedSeriesXml, xml);
 		modCompare = replaceTimestamp(modCompare, xml);
+		modCompare = modCompare.replace("pubs_tech_group@usgs.gov", depositorEmail);
 		assertEquals(harmonizeXml(modCompare), harmonizeXml(xml));
 	}
 
@@ -302,6 +345,10 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		pub.setEndPage("56");
 		assertEquals(testPagesXml, harmonizeXml(busService.getPages(pub)));
 		
+		//escape for xml
+		pub.setStartPage("52<>");
+		pub.setEndPage("56<>");
+		assertEquals(testPagesXmlEscaped, harmonizeXml(busService.getPages(pub)));
 	}
 
 	@Test
@@ -334,6 +381,10 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		link2.setUrl("http://pubs.usgs.gov/of/2013/1259/");
 		links.add(link2);
 		assertEquals("http://pubs.usgs.gov/of/2013/1259/", busService.getIndexPage(pub));
+		
+		//escape for xml
+		link2.setUrl("http://pubs.usgs.gov/of/2013/1259/<>");
+		assertEquals("http://pubs.usgs.gov/of/2013/1259/&lt;&gt;", busService.getIndexPage(pub));
 	}
 
 	@Test
@@ -364,6 +415,14 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		assertEquals("<person_name sequence=\"additional\" contributor_role=\"author\"><given_name>givenName</given_name>" 
 				+ "<surname></surname><suffix>sufF</suffix></person_name>",
 				harmonizeXml(busService.processPerson(pubContributor, CrossRefBusService.ADDITIONAL)));
+
+		//escape for xml
+		contributor.setFamily("familyName<>");
+		contributor.setGiven("givenName<>");
+		contributor.setSuffix("sufF<>");
+		assertEquals("<person_name sequence=\"additional\" contributor_role=\"author\"><given_name>givenName&lt;&gt;</given_name>" 
+				+ "<surname>familyName&lt;&gt;</surname><suffix>sufF&lt;&gt;</suffix></person_name>",
+				harmonizeXml(busService.processPerson(pubContributor, CrossRefBusService.ADDITIONAL)));
 	}
 
 	@Test
@@ -381,6 +440,11 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		contributor.setOrganization("");
 		assertEquals("<organization sequence=\"additional\" contributor_role=\"author\"></organization>",
 				harmonizeXml(busService.processCorporation(pubContributor, CrossRefBusService.ADDITIONAL)));
+		
+		//escape for xml
+		contributor.setOrganization("orgName<>");
+		assertEquals("<organization sequence=\"first\" contributor_role=\"author\">orgName&lt;&gt;</organization>",
+				harmonizeXml(busService.processCorporation(pubContributor, CrossRefBusService.FIRST)));
 	}
 	
 	@Test
@@ -402,6 +466,10 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 
 		contributorType.setText("sAsuthors");
 		assertEquals("sasuthor", busService.getContributorType(pubContributor));
+		
+		//escape for xml
+		contributorType.setText("sAsuthors<>");
+		assertEquals("sasuthors&lt;&gt;", busService.getContributorType(pubContributor));
 	}
 
 	private String replaceDoiBatchId(String referenceXml, String compareXml) {

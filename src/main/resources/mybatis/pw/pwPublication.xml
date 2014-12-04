@@ -10,22 +10,14 @@
         <collection property="links" column="publication_id" select="pwPublicationLink.getByPublication"/>
     </resultMap>
 
-    <sql id="singleSearchTermFilter">
-    	<!-- we are escaping every value with {} in case the user sends a reserved word/symbol in the query
-    	      -->
-       	<if test="searchTerms != null and searchTerms.length > 0">
+    <sql id="filters">
+       	<if test="null != q">
        		and exists (select null
        		              from publication_index
-       		             where publication.publication_id = publication_index.publication_id
-			<foreach item="term" collection="searchTerms" open="and (" separator="and" close=")"> 
-				contains(publication_index.q, '{' || #{term} || '}' ) > 0
-			</foreach>
-			)
+       		             where publication.publication_id = publication_index.publication_id and
+				               contains(publication_index.q, #{q}) > 0
+    			       )
        	</if>
-    </sql>
-
-    <sql id="filters">
-		<include refid="pwPublication.singleSearchTermFilter"/>
 
     	<include refid="publication.filters"/>
 

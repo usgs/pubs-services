@@ -8,7 +8,7 @@
         <timestamp>{submission_timestamp}</timestamp>
         <depositor>
             <name>USGS</name>
-            <email_address>pubs_tech_group@usgs.gov</email_address>
+            <email_address>{depositor_email}</email_address>
         </depositor>
         <registrant>U.S. Geological Survey</registrant>
     </head>

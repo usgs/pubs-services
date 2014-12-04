@@ -88,4 +88,13 @@ public class PubsUtilitiesTest extends BaseSpringTest {
     	assertEquals("abc from def not", PubsUtilities.buildErrorMsg("{0} from {1} not", messageArguments));
     }
 
+    @Test
+    public void removeStopWordsTest() {
+    	assertNull(PubsUtilities.removeStopWords(null));
+    	assertNull(PubsUtilities.removeStopWords(""));
+    	assertNull(PubsUtilities.removeStopWords("   "));
+    	assertEquals("red fox jumped over fence", PubsUtilities.removeStopWords("The red fox jumped over THE fence or not"));
+    	assertEquals("turtles loggerhead", PubsUtilities.removeStopWords("Turtles Loggerhead"));
+    }
+
 }

@@ -8,12 +8,12 @@ import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
-import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.webservice.MvcService;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.http.HttpStatus;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping(value = "publication/rss", produces="text/xml")
 public class PwPublicationRssMvcService extends MvcService<PwPublication> {
+	private static final int DEFAULT_RECORDS = 30;
+	
 	private static final Logger LOG = LoggerFactory.getLogger(PwPublicationRssMvcService.class);
 
     private final IPwPublicationBusService busService;
@@ -50,86 +53,40 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
     
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public String getRSS(
-    		@RequestParam(value="q", required=false) String searchTerms, //single string search
-            @RequestParam(value="title", required=false) String[] title,
-            @RequestParam(value="abstract", required=false) String[] pubAbstract,
-            @RequestParam(value="contributor", required=false) String[] contributor,
-            @RequestParam(value="prodId", required=false) String[] prodId,
-            @RequestParam(value="indexId", required=false) String[] indexId,
-            @RequestParam(value="ipdsId", required=false) String[] ipdsId,
-            @RequestParam(value="year", required=false) String[] year,
-            @RequestParam(value="startYear", required=false) String yearStart,
-            @RequestParam(value="endYear", required=false) String yearEnd,
-    		@RequestParam(value="contributingOffice", required=false) String[] contributingOffice,
-            @RequestParam(value="typeName", required=false) String[] typeName,
-            @RequestParam(value="subtypeName", required=false) String[] subtypeName,
-            @RequestParam(value="seriesName", required=false) String[] reportSeries,
-            @RequestParam(value="reportNumber", required=false) String[] reportNumber,
-            @RequestParam(value="page_row_start", required=false) String pageRowStart,
-            @RequestParam(value="page_number", required=false) String pageNumber,
-            @RequestParam(value="page_size", required=false) String pageSize,
+    public void getRSS(
             @RequestParam(value="pub_x_days", required=false) String pubXDays,
-            @RequestParam(value="pub_date_low", required=false) String pubDateLow,
-            @RequestParam(value="pub_date_high", required=false) String pubDateHigh,
-            @RequestParam(value="mod_x_days", required=false) String modXDays,
-            @RequestParam(value="mod_date_low", required=false) String modDateLow,
-            @RequestParam(value="mod_date_high", required=false) String modDateHigh,
-            @RequestParam(value="orderBy", required=false) String orderBy,
 			HttpServletResponse response) {
 
         Map<String, Object> filters = new HashMap<>();
 
-    	configureSingleSearchFilters(filters, searchTerms);
-
-    	addToFiltersIfNotNull(filters, "title", title);
-    	addToFiltersIfNotNull(filters, "abstract", pubAbstract);
-    	addToFiltersIfNotNull(filters, "contributor", contributor);
-    	addToFiltersIfNotNull(filters, "id", prodId);
-    	addToFiltersIfNotNull(filters, "indexId", indexId);
-    	addToFiltersIfNotNull(filters, "ipdsId", ipdsId);
-    	addToFiltersIfNotNull(filters, "year", year);
-    	addToFiltersIfNotNull(filters, "yearStart", yearStart);
-    	addToFiltersIfNotNull(filters, "yearEnd", yearEnd);
-    	addToFiltersIfNotNull(filters, "contributingOffice", contributingOffice);
-    	addToFiltersIfNotNull(filters, "typeName", typeName);
-    	addToFiltersIfNotNull(filters, "subtypeName", subtypeName);
-    	addToFiltersIfNotNull(filters, "reportSeries", reportSeries);
-    	addToFiltersIfNotNull(filters, "reportNumber", reportNumber);
+        if((pubXDays == null) || (pubXDays.isEmpty())) {
+        	pubXDays = "" + DEFAULT_RECORDS;
+        }
     	addToFiltersIfNotNull(filters, "pubXDays", pubXDays);
-    	addToFiltersIfNotNull(filters, "pubDateLow", pubDateLow);
-    	addToFiltersIfNotNull(filters, "pubDateHigh", pubDateHigh);
-    	addToFiltersIfNotNull(filters, "modXDays", modXDays);
-    	addToFiltersIfNotNull(filters, "modDateLow", modDateLow);
-    	addToFiltersIfNotNull(filters, "modDateHigh", modDateHigh);
-    	
-    	filters.put("orderby", buildOrderBy(orderBy));
-
-    	filters.putAll(buildPaging(pageRowStart, pageSize, pageNumber));
     	
         List<PwPublication> pubs = busService.getObjects(filters);
 
-        String rssResults = "";
-		try {
-			rssResults = new String(getSearchResultsAsRSS(pubs).getBytes("ISO-8859-1"), PubsConstants.DEFAULT_ENCODING);
-		} catch (UnsupportedEncodingException e) {
-			LOG.error("Unable to force UTF-8 on RSS content: " + e.getMessage());
-		}
+        String rssResults = getSearchResultsAsRSS(pubs);
         
         response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
-    	response.setContentType("text/xml");
+    	response.setContentType(PubsConstants.MIME_TYPE_APPLICATION_RSS);
     	try {
 			response.setContentLength(rssResults.getBytes(PubsConstants.DEFAULT_ENCODING).length);
 		} catch (UnsupportedEncodingException e) {
 			LOG.error("Unable to set content length of resulting RSS content: " + e.getMessage());
 		}
-        
-        return rssResults;
+    	
+    	response.setStatus(HttpStatus.SC_OK);
+    	try {
+			response.getWriter().write(rssResults);
+		} catch (IOException e) {
+			LOG.error("Unable to write to response: " + e.getMessage());
+		}
     }
     
     private String getSearchResultsAsRSS(List<PwPublication> records) {
     	/**
-    	 * Per JIM JIRA PUBSTWO-971
+    	 * Per JIM JIRA PUBSTWO-971  ā
     	 * 
     	 * 		<rss version="2.0">
     	 * 			<channel>

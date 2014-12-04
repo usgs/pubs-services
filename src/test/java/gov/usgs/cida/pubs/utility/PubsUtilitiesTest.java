@@ -12,6 +12,7 @@ import gov.usgs.cida.pubs.domain.PublicationType;
 
 import java.util.Arrays;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 public class PubsUtilitiesTest extends BaseSpringTest {
@@ -93,8 +94,9 @@ public class PubsUtilitiesTest extends BaseSpringTest {
     	assertNull(PubsUtilities.removeStopWords(null));
     	assertNull(PubsUtilities.removeStopWords(""));
     	assertNull(PubsUtilities.removeStopWords("   "));
-    	assertEquals("red fox jumped over fence", PubsUtilities.removeStopWords("The red fox jumped over THE fence or not"));
-    	assertEquals("turtles loggerhead", PubsUtilities.removeStopWords("Turtles Loggerhead"));
+    	assertEquals("red and fox and jumped and over and fence",
+    			StringUtils.join(PubsUtilities.removeStopWords("The red fox jumped over THE fence or not"), " and "));
+    	assertEquals("turtles and loggerhead", StringUtils.join(PubsUtilities.removeStopWords("Turtles Loggerhead"), " and "));
     }
 
 }

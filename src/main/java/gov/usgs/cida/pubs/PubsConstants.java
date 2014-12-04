@@ -24,6 +24,8 @@ public final class PubsConstants {
     public static final Integer DEFAULT_LOCK_TIMEOUT_HOURS = 3;
     
     public static final String NOT_IMPLEMENTED = "NOT IMPLEMENTED.";
+    
+    public static final String SEARCH_TERMS_SPLIT_REGEX = "[\\s+,+]";
 
     private PubsConstants() {
     }

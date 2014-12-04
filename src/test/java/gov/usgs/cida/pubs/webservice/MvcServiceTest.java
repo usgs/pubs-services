@@ -67,12 +67,15 @@ public class MvcServiceTest extends BaseSpringTest {
 		testMvcService.configureSingleSearchFilters(filters, "   ,  ");
 		assertEquals(0, filters.keySet().size());
 
-		testMvcService.configureSingleSearchFilters(filters, "turtles  loggerhead,, ");
-		assertEquals(1, filters.keySet().size());
+		testMvcService.configureSingleSearchFilters(filters, "turtles and loggerhead,, ");
+		assertEquals(2, filters.keySet().size());
 		assertTrue(filters.containsKey("searchTerms"));
 		Object[] searchTerms = (Object[]) filters.get("searchTerms");
 		assertEquals(2, searchTerms.length);
 		assertEquals("turtles", searchTerms[0].toString());
 		assertEquals("loggerhead", searchTerms[1].toString());
+		assertTrue(filters.containsKey("searchTerms"));
+		String q = (String) filters.get("q");
+		assertEquals("turtles and loggerhead", q);
 	}
 }

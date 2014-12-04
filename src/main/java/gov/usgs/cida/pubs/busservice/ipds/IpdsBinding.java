@@ -137,7 +137,7 @@ public class IpdsBinding {
             Element element = (Element) entry;
             Contributor<?> person;
             String ipdsContributorId = getFirstNodeText(element, "d:AuthorNameId");
-            if (StringUtils.isEmpty(ipdsContributorId)) {
+            if (StringUtils.isBlank(ipdsContributorId)) {
                 person = getOrCreateNonUsgsContributor(element);
             } else {
                 person = getOrCreateUsgsContributor(element, ipdsContributorId);
@@ -272,7 +272,7 @@ public class IpdsBinding {
     }
 
     protected Document makeDocument(final String xmlStr) throws SAXException, IOException {
-        if (StringUtils.isNotEmpty(xmlStr)) {
+        if (StringUtils.isNotBlank(xmlStr)) {
             return builder.parse(new InputSource(new StringReader(xmlStr)));
         }
         return null;
@@ -379,7 +379,7 @@ public class IpdsBinding {
 
             //Not from IPDS - pub.setLargerWorkType()
             String largerWorkTitle = getStringValue(inPub, IpdsMessageLog.JOURNALTITLE);
-            if (StringUtils.isNotEmpty(largerWorkTitle)) {
+            if (StringUtils.isNotBlank(largerWorkTitle)) {
             	if (PubsUtilities.isPublicationTypeArticle(pub.getPublicationType())
             			&& null != pub.getPublicationSubtype()) {
            			pub.setSeriesTitle(getSeriesTitle(pub.getPublicationSubtype(), largerWorkTitle));
@@ -427,7 +427,7 @@ public class IpdsBinding {
     }
 
     protected PublicationSeries getSeriesTitle(PublicationSubtype pubSubtype, String text) {
-        if (null != pubSubtype && null != pubSubtype.getId() && StringUtils.isNotEmpty(text)) {
+        if (null != pubSubtype && null != pubSubtype.getId() && StringUtils.isNotBlank(text)) {
             //Only hit the DB if both fields have values - otherwise the db call will return incorrect results.
             Map<String, Object> filters = new HashMap<>();
             filters.put(PublicationSeriesDao.SUBTYPE_SEARCH, pubSubtype.getId());
@@ -446,7 +446,7 @@ public class IpdsBinding {
     }
 
     protected Affiliation<?> getOrCreateCostCenter(final String costCenterId) throws SAXException, IOException {
-    	if (StringUtils.isEmpty(costCenterId)) {
+    	if (StringUtils.isBlank(costCenterId)) {
     		return null;
     	} else {
 	        Affiliation<?> affiliation;
@@ -464,7 +464,7 @@ public class IpdsBinding {
     }
 
     protected String getStringValue(PubMap inPub, String key) {
-        if (null != inPub && null != inPub.get(key) && StringUtils.isNotEmpty(inPub.get(key).toString().trim())) {
+        if (null != inPub && null != inPub.get(key) && StringUtils.isNotBlank(inPub.get(key).toString())) {
             return inPub.get(key).toString().trim();
         } else {
             return null;

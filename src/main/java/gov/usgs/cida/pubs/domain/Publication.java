@@ -8,6 +8,7 @@ import gov.usgs.cida.pubs.json.PubsJsonLocalDateTimeDeSerializer;
 import gov.usgs.cida.pubs.json.PubsJsonLocalDateTimeSerializer;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 import gov.usgs.cida.pubs.json.view.intfc.IPwView;
+import gov.usgs.cida.pubs.validation.constraint.CrossProperty;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 import gov.usgs.cida.pubs.validation.constraint.PublishChecks;
 import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
@@ -35,6 +36,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  */
 @UniqueKey(message = "{publication.indexid.duplicate}")
 @ParentExists
+@CrossProperty
 public class Publication<D> extends BaseDomain<D> implements Serializable {
 
     private static final long serialVersionUID = -9013357854464855631L;

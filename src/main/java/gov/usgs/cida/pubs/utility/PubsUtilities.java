@@ -127,6 +127,8 @@ public final class PubsUtilities {
     		//be able to remove entries from it.
 	    	List<String> splitQ = new LinkedList<>(Arrays.asList(q.trim().toLowerCase().split(PubsConstants.SEARCH_TERMS_SPLIT_REGEX)));
 	    	splitQ.removeAll(StopWords.STOP_WORD_LIST);
+	    	//also remove empty strings
+	    	splitQ.remove("");
 	    	return splitQ;
     	}
     }

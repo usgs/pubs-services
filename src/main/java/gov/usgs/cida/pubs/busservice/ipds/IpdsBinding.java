@@ -51,7 +51,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- * Note: when binging author this uses the AuthorsNameText and EditorsNameText names for IPDS 
+ * Note: when binding author this uses the AuthorsNameText and EditorsNameText names for IPDS 
  * and should be mapped to the same field in MyPubs. Whiles is technically a transform within
  * the binding - it felt like the correct location. Of course we could move this if seen fit.
  * 
@@ -359,7 +359,6 @@ public class IpdsBinding {
             pub.setIsbn(getStringValue(inPub, IpdsMessageLog.ISBN));
             pub.setCollaboration(getStringValue(inPub, IpdsMessageLog.COOPERATORS));
             pub.setUsgsCitation(getStringValue(inPub, IpdsMessageLog.CITATION));
-            //Not from IPDS - pub.setContact();
             pub.setProductDescription(getStringValue(inPub, IpdsMessageLog.PHYSICALDESCRIPTION));
 
             pub.setStartPage(getStringValue(inPub, IpdsMessageLog.PAGERANGE));
@@ -398,6 +397,20 @@ public class IpdsBinding {
             //In other section pub.setEditors();
             //In other section pub.setCostCenters();
             //In other section pub.setLinks();
+            //Not from IPDS - pub.setProjection();
+            //Not from IPDS - pub.setDatum();
+            //Not from IPDS - pub.setCountry();
+            //Not from IPDS - pub.setState();
+            //Not from IPDS - pub.setCounty();
+            //Not from IPDS - pub.setCity();
+            //Not from IPDS - pub.setOtherGeospatial();
+            //Not from IPDS - pub.setGeographicExtents();
+            pub.setVolume(getStringValue(inPub, IpdsMessageLog.VOLUME));
+            pub.setIssue(getStringValue(inPub, IpdsMessageLog.ISSUE));
+            pub.setEdition(getStringValue(inPub, IpdsMessageLog.EDITIONNUMBER));
+            //Not from IPDS - pub.setComments();
+            //Not from IPDS - pub.setContact();
+            //Not from IPDS - pub.setTableOfContents();
             return pub;
         }
         return null;

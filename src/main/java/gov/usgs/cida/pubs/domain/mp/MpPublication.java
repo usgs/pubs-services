@@ -20,8 +20,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 	"subchapterNumber", "title", "docAbstract", "usgsCitation", "collaboration", "language", "publisher", "publisherLocation",
 	"publicationYear", "conferenceTitle", "conferenceDate", "conferenceLocation", "doi", "issn", "isbn", "ipdsId",
 	"productDescription", "startPage", "endPage", "numberOfPages", "onlineOnly", "additionalOnlineFiles", "temporalStart", 
-	"temporalEnd", "notes", "ipdsReviewProcessState", "ipdsInternalId", "lockUsername","authors", "editors", "links", "contact", 
+	"temporalEnd", "notes", "ipdsReviewProcessState", "ipdsInternalId", "lockUsername","authors", "editors", "links", 
 	"scale", "projection", "datum", "country", "state", "county","city", "otherGeospatial", "geographicExtents", "volume", "issue",
+	"edition", "comments", "contact", "tableOfContents",
     "validationErrors"})
 public class MpPublication extends Publication<MpPublication> {
 

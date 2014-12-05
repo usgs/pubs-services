@@ -55,15 +55,6 @@ public class ParentExistsValidatorForMpPublication implements ConstraintValidato
 	            context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
 	                .addPropertyNode("largerWorkType").addConstraintViolation();
 	        }
-        //TODO implement Contact
-//        if (null != value.getContact()) {
-//            if (null == Contact.getDao().getById(value.getContact().getId())) {
-//                rtn = false;
-//                context.disableDefaultConstraintViolation();
-//                context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
-//                    .addPropertyNode("contact").addConstraintViolation();
-//            }
-//        }
         }
 
         return rtn;

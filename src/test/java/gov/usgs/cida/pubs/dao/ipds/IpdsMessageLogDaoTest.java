@@ -88,6 +88,10 @@ public class IpdsMessageLogDaoTest extends BaseSpringDaoTest {
         pubMap.put(IpdsMessageLog.IPDS_INTERNAL_ID, 453228);
         pubMap.put(IpdsMessageLog.JOURNALTITLE, "A Journal");
         pubMap.put(IpdsMessageLog.DISEMINATIONDATE, "2014-10-10");
+        pubMap.put(IpdsMessageLog.VOLUME, "V1");
+        pubMap.put(IpdsMessageLog.ISSUE, "I1");
+        pubMap.put(IpdsMessageLog.EDITIONNUMBER, "E1");
+
         return pubMap;
     }
 
@@ -112,6 +116,9 @@ public class IpdsMessageLogDaoTest extends BaseSpringDaoTest {
         pubMap.put(IpdsMessageLog.IPDS_INTERNAL_ID, 453228);
         pubMap.put(IpdsMessageLog.JOURNALTITLE, "A Journal Title");
         pubMap.put(IpdsMessageLog.DISEMINATIONDATE, "1994-10-10");
+        pubMap.put(IpdsMessageLog.VOLUME, "V2");
+        pubMap.put(IpdsMessageLog.ISSUE, "I2");
+        pubMap.put(IpdsMessageLog.EDITIONNUMBER, "E2");
         return pubMap;
     }
 
@@ -136,6 +143,9 @@ public class IpdsMessageLogDaoTest extends BaseSpringDaoTest {
         pubMap.put(IpdsMessageLog.IPDS_INTERNAL_ID, 453228);
         pubMap.put(IpdsMessageLog.JOURNALTITLE, "An Article");
         pubMap.put(IpdsMessageLog.DISEMINATIONDATE, "1857-10-10");
+        pubMap.put(IpdsMessageLog.VOLUME, "V3");
+        pubMap.put(IpdsMessageLog.ISSUE, "I3");
+        pubMap.put(IpdsMessageLog.EDITIONNUMBER, "E3");
         return pubMap;
     }
 
@@ -160,6 +170,9 @@ public class IpdsMessageLogDaoTest extends BaseSpringDaoTest {
         pubMap.put(IpdsMessageLog.IPDS_INTERNAL_ID, 453228);
         pubMap.put(IpdsMessageLog.JOURNALTITLE, "A Journal");
         pubMap.put(IpdsMessageLog.DISEMINATIONDATE, "2014-10-10");
+        pubMap.put(IpdsMessageLog.VOLUME, "V4");
+        pubMap.put(IpdsMessageLog.ISSUE, "I4");
+        pubMap.put(IpdsMessageLog.EDITIONNUMBER, "E4");
         return pubMap;
     }
 

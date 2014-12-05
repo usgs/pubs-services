@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
-import gov.usgs.cida.pubs.domain.Contact;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
@@ -89,7 +88,6 @@ public class PwPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals("isbn", pub.getIsbn());
         assertEquals("collaborator", pub.getCollaboration());
         assertEquals("usgs citation", pub.getUsgsCitation());
-        assertEquals(1, pub.getContact().getId().intValue());
         assertEquals("product description", pub.getProductDescription());
         assertEquals("start", pub.getStartPage());
         assertEquals("end", pub.getEndPage());
@@ -109,6 +107,10 @@ public class PwPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals("MIDDLETON", pub.getCity());
         assertEquals("On the moon", pub.getOtherGeospatial());
         assertEquals("{ \"json\": \"extents\" }", pub.getGeographicExtents());
+        assertEquals("contact for the pub4", pub.getContact());
+        assertEquals("edition4", pub.getEdition());
+        assertEquals("comments on this4", pub.getComments());
+        assertEquals("contents, table of4", pub.getTableOfContents());
     }
 
     public static void assertPwPub4Children(Publication<?> pub) {
@@ -145,9 +147,6 @@ public class PwPublicationDaoTest extends BaseSpringDaoTest {
         newPub.setIsbn("inIsbn");
         newPub.setCollaboration("collaboration");
         newPub.setUsgsCitation("usgscitation");
-        Contact contact = new Contact();
-        contact.setId(1);
-        newPub.setContact(contact);
         newPub.setProductDescription("Prod Description");
         newPub.setStartPage("inStartPage");
         newPub.setEndPage("inEndPage");
@@ -183,6 +182,11 @@ public class PwPublicationDaoTest extends BaseSpringDaoTest {
         newPub.setGeographicExtents("{ \"json\": \"extents\" }");
         newPub.setVolume("VOL12");
         newPub.setIssue("ISIV");
+        newPub.setContact("My Contact Info");
+        newPub.setEdition("Edition X");
+        newPub.setComments("just a little comment");
+        newPub.setTableOfContents("tbl contents");
+
         return newPub;
     }
     

@@ -26,7 +26,6 @@
         <result property="isbn" column="isbn"/>
         <result property="collaboration" column="collaboration"/>
         <result property="usgsCitation" column="usgs_citation"/>
-        <result property="contact.id" column="contact_id"/>
         <result property="productDescription" column="product_description"/>
         <result property="startPage" column="start_page"/>
         <result property="endPage" column="end_page"/>
@@ -50,12 +49,15 @@
         <result property="geographicExtents" column="geographic_extents"/>
         <result property="volume" column="volume"/>
         <result property="issue" column="issue"/>
+        <result property="edition" column="edition"/>
+        <result property="comments" column="public_comments"/>
+        <result property="contact" column="contact_info"/>
+        <result property="tableOfContents" column="table_of_contents"/>
         <association property="publicationType" column="publication_type_id" select="publicationType.getById"/>
         <association property="publicationSubtype" column="publication_subtype_id" select="publicationSubtype.getById"/>
         <association property="largerWorkType" column="larger_work_type_id" select="publicationType.getById"/>
         <association property="largerWorkSubtype" column="larger_work_subtype_id" select="publicationSubtype.getById"/>
         <association property="seriesTitle" column="publication_series_id" select="publicationSeries.getById"/>
-<!--         <association property="contact" column="contact_id" select="contact.getById"/> -->
     </resultMap>
 
     <resultMap id="genericResult" type="Publication" extends="result">
@@ -107,7 +109,6 @@
         isbn,
         collaboration,
         usgs_citation,
-        contact_id,
         product_description,
         start_page,
         end_page,
@@ -131,6 +132,10 @@
         geographic_extents,
         volume,
         issue,
+        edition,
+        public_comments,
+        contact_info,
+        table_of_contents,
         <include refid="base.auditCols"/>
     </sql>
 
@@ -162,7 +167,6 @@
         #{isbn,jdbcType=VARCHAR},
         #{collaboration,jdbcType=VARCHAR},
         #{usgsCitation,jdbcType=VARCHAR},
-        #{contact.id,jdbcType=NUMERIC},
         #{productDescription,jdbcType=VARCHAR},
         #{startPage,jdbcType=NUMERIC},
         #{endPage,jdbcType=NUMERIC},
@@ -186,6 +190,10 @@
         #{geographicExtents,jdbcType=VARCHAR},
         #{volume,jdbcType=VARCHAR},
         #{issue,jdbcType=VARCHAR},
+        #{edition,jdbcType=VARCHAR},
+        #{comments,jdbcType=VARCHAR},
+        #{contact,jdbcType=VARCHAR},
+        #{tableOfContents,jdbcType=VARCHAR},
         <include refid="base.auditHosts"/>
     </sql>
 
@@ -216,7 +224,6 @@
         isbn = #{isbn,jdbcType=VARCHAR},
         collaboration = #{collaboration,jdbcType=VARCHAR},
         usgs_citation = #{usgsCitation,jdbcType=VARCHAR},
-        contact_id = #{contact.id,jdbcType=NUMERIC},
         product_description = #{productDescription,jdbcType=VARCHAR},
         start_page = #{startPage,jdbcType=NUMERIC},
         end_page = #{endPage,jdbcType=NUMERIC},
@@ -237,9 +244,13 @@
         county = #{county,jdbcType=VARCHAR},
         city = #{city,jdbcType=VARCHAR},
         other_geospatial = #{otherGeospatial,jdbcType=VARCHAR},
-        geographic_extents = #{geographicExtents,jdbcType=VARCHAR},
+        geographic_extents = #{geographicExtents,jdbcType=CLOB},
         volume = #{volume,jdbcType=VARCHAR},
         issue = #{issue,jdbcType=VARCHAR},
+        edition = #{edition,jdbcType=VARCHAR},
+        public_comments = #{comments,jdbcType=VARCHAR},
+        contact_info = #{contact,jdbcType=VARCHAR},
+        table_of_contents = #{tableOfContents,jdbcType=VARCHAR},
         <include refid="base.auditSets"/>
     </sql>
     

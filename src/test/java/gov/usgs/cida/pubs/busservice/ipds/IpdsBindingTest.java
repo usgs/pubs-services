@@ -488,6 +488,11 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
         assertEquals("453228", pub.getIpdsInternalId());
         assertEquals("A Journal", pub.getLargerWorkTitle());
         assertEquals("2014", pub.getPublicationYear());
+        
+        assertEquals("V1", pub.getVolume());
+        assertEquals("I1", pub.getIssue());
+        assertEquals("E1", pub.getEdition());
+
     }
 
     protected void assertPub2(MpPublication pub) {
@@ -520,6 +525,10 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
         assertEquals("453228", pub.getIpdsInternalId());
         assertEquals("A Journal Title", pub.getLargerWorkTitle());
         assertEquals("1994", pub.getPublicationYear());
+        
+        assertEquals("V2", pub.getVolume());
+        assertEquals("I2", pub.getIssue());
+        assertEquals("E2", pub.getEdition());
     }
 
     protected void assertPub3(MpPublication pub) {
@@ -552,6 +561,10 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
         assertEquals("453228", pub.getIpdsInternalId());
         //TODO pub.setLargerWorkTitle(getStringValue(inPub, IpdsMessageLog.JOURNALTITLE));
         assertEquals("1857", pub.getPublicationYear());
+        
+        assertEquals("V3", pub.getVolume());
+        assertEquals("I3", pub.getIssue());
+        assertEquals("E3", pub.getEdition());
     }
 
     protected void assertPub4(MpPublication pub) {
@@ -584,6 +597,10 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
         assertEquals("453228", pub.getIpdsInternalId());
         assertEquals("A Journal", pub.getLargerWorkTitle());
         assertEquals("2014", pub.getPublicationYear());
+        
+        assertEquals("V4", pub.getVolume());
+        assertEquals("I4", pub.getIssue());
+        assertEquals("E4", pub.getEdition());
     }
 
     protected void assertPubCommon(MpPublication pub) {
@@ -598,26 +615,29 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
         assertEquals("English", pub.getLanguage());
 
         assertNull(pub.getIssn());
-        assertNull(pub.getContact());
         assertNull(pub.getEndPage());
-
         assertNull(pub.getNumberOfPages());
+
         assertNull(pub.getOnlineOnly());
         assertNull(pub.getAdditionalOnlineFiles());
-
         assertNull(pub.getTemporalStart());
+
         assertNull(pub.getTemporalEnd());
         assertNull(pub.getLargerWorkType());
-
         assertNull(pub.getConferenceTitle());
+
         assertNull(pub.getConferenceDate());
         assertNull(pub.getConferenceLocation());
-
         assertNull(pub.getAuthors());
+
         assertNull(pub.getEditors());
         assertNull(pub.getCostCenters());
-
         assertNull(pub.getLinks());
+
+        assertNull(pub.getContact());
+        assertNull(pub.getComments());
+        assertNull(pub.getTableOfContents());
+        
     }
 
 }

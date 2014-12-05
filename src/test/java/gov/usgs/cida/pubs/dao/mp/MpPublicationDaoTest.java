@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
-import gov.usgs.cida.pubs.domain.Contact;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
@@ -162,7 +161,6 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertNull(pub.getIsbn());
         assertEquals("Written in collaboration with the National Snow and Ice Data Center", pub.getCollaboration());
         assertNull(pub.getUsgsCitation());
-        assertNull(pub.getContact());
         assertNull(pub.getProductDescription());
         assertNull(pub.getStartPage());
         assertNull(pub.getEndPage());
@@ -193,6 +191,10 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals("VOL123", pub.getVolume());
         assertEquals("IS IIVI", pub.getIssue());
         assertEquals("{ \"json\": \"extents\" }", pub.getGeographicExtents());
+        assertEquals("My Contact Info", pub.getContact());
+        assertEquals("Edition X", pub.getEdition());
+        assertEquals("just a little comment", pub.getComments());
+        assertEquals("tbl contents", pub.getTableOfContents());
     }
 
     public static void assertMpPub1Children(Publication<?> pub) {
@@ -234,7 +236,6 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals("isbn", pub.getIsbn());
         assertEquals("collaboration", pub.getCollaboration());
         assertEquals("usgs citation", pub.getUsgsCitation());
-        assertEquals(1, pub.getContact().getId().intValue());
         assertEquals("product description", pub.getProductDescription());
         assertEquals("start", pub.getStartPage());
         assertEquals("end", pub.getEndPage());
@@ -264,6 +265,12 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertNull(pub.getCity());
         assertNull(pub.getOtherGeospatial());
         assertNull(pub.getGeographicExtents());
+        
+        assertNull(pub.getContact());
+        assertNull(pub.getEdition());
+        assertNull(pub.getComments());
+        assertNull(pub.getTableOfContents());
+
         
         if (pub instanceof MpPublication) {
         	String lockUserName = ((MpPublication) pub).getLockUsername();
@@ -307,9 +314,6 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         newPub.setIsbn("inIsbn");
         newPub.setCollaboration("collaboration");
         newPub.setUsgsCitation("usgscitation");
-        Contact contact = new Contact();
-        contact.setId(1);
-        newPub.setContact(contact);
         newPub.setProductDescription("Prod Description");
         newPub.setStartPage("inStartPage");
         newPub.setEndPage("inEndPage");
@@ -346,6 +350,10 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         newPub.setGeographicExtents("{ \"json\": \"extents\" }");
         newPub.setVolume("VOL12");
         newPub.setIssue("ISIV");
+        newPub.setContact("My Contact Info");
+        newPub.setEdition("Edition X");
+        newPub.setComments("just a little comment");
+        newPub.setTableOfContents("tbl contents");
         return newPub;
     }
     
@@ -382,9 +390,6 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         updatedPub.setIsbn("inIsbn2");
         updatedPub.setCollaboration("collaboration2");
         updatedPub.setUsgsCitation("usgscitation2");
-        Contact contact = new Contact();
-        contact.setId(2);
-        updatedPub.setContact(contact);
         updatedPub.setProductDescription("Prod Description2");
         updatedPub.setStartPage("inStartPage2");
         updatedPub.setEndPage("inEndPage2");
@@ -408,6 +413,10 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         updatedPub.setLockUsername("newUser");
         updatedPub.setVolume("VOL13");
         updatedPub.setIssue("ISIX");
+        updatedPub.setContact("My Contact InfoU");
+        updatedPub.setEdition("Edition XU");
+        updatedPub.setComments("just a little commentU");
+        updatedPub.setTableOfContents("tbl contentsU");
         return updatedPub;
     }
 }

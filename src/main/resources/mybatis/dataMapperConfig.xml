@@ -31,7 +31,6 @@
         <typeAlias alias="pwPublicationLink" type="gov.usgs.cida.pubs.domain.pw.PwPublicationLink"/>
 
         <typeAlias alias="affiliation" type="gov.usgs.cida.pubs.domain.Affiliation"/>
-        <typeAlias alias="contact" type="gov.usgs.cida.pubs.domain.Contact"/>
         <typeAlias alias="contributor" type="gov.usgs.cida.pubs.domain.Contributor"/>
         <typeAlias alias="contributorType" type="gov.usgs.cida.pubs.domain.ContributorType"/>
         <typeAlias alias="corporateContributor" type="gov.usgs.cida.pubs.domain.CorporateContributor"/>

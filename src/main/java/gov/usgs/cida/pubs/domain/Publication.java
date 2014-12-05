@@ -170,10 +170,6 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @Length(min=0, max=4000)
     private String usgsCitation;
 
-    @JsonProperty("contact")
-    @JsonView(IPwView.class)
-    private Contact contact;
-
     @JsonProperty("productDescription")
     @JsonView(IPwView.class)
     @Length(min=0, max=4000)
@@ -295,7 +291,6 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     
     @JsonProperty("geographicExtents")
     @JsonView(IPwView.class)
-    @Length(min=0, max=4000)
     private String geographicExtents;
 
     @JsonProperty("volume")
@@ -307,6 +302,26 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @JsonView(IPwView.class)
     @Length(min=0, max=20)
     private String issue;
+
+    @JsonProperty("edition")
+    @JsonView(IPwView.class)
+    @Length(min=0, max=4000)
+    private String edition;
+
+    @JsonProperty("publicComments")
+    @JsonView(IPwView.class)
+    @Length(min=0, max=4000)
+    private String comments;
+
+    @JsonProperty("contact")
+    @JsonView(IPwView.class)
+    @Length(min=0, max=4000)
+    private String contact;
+
+    @JsonProperty("tableOfContents")
+    @JsonView(IPwView.class)
+    @Length(min=0, max=4000)
+    private String tableOfContents;
 
     /**
      * @return the indexId
@@ -555,20 +570,6 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
      */
     public void setUsgsCitation(final String inUsgsCitation) {
         usgsCitation = inUsgsCitation;
-    }
-
-    /**
-     * @return the contact
-     */
-    public Contact getContact() {
-        return contact;
-    }
-
-    /**
-     * @param inContact the contact to set
-     */
-    public void setContact(final Contact inContact) {
-        contact = inContact;
     }
 
     /**
@@ -917,6 +918,38 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 
 	public void setIssue(final String inIssue) {
 		issue = inIssue;
+	}
+
+	public String getEdition() {
+		return edition;
+	}
+
+	public void setEdition(final String inEdition) {
+		edition = inEdition;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(final String inComments) {
+		comments = inComments;
+	}
+
+	public String getContact() {
+		return contact;
+	}
+
+	public void setContact(final String inContact) {
+		contact = inContact;
+	}
+
+	public String getTableOfContents() {
+		return tableOfContents;
+	}
+
+	public void setTableOfContents(final String inTableOfContents) {
+		tableOfContents = inTableOfContents;
 	}
 
 	@JsonProperty("lastModifiedDate")

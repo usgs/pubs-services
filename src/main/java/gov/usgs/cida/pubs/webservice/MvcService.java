@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -79,12 +81,29 @@ public abstract class MvcService<D> {
     	//On the warehouse side, we are doing Oracle Text queries and just cleanse the "stop words" from the input
         if (StringUtils.isNotBlank(searchTerms)) {
         	List<String> splitTerms = PubsUtilities.removeStopWords(searchTerms);
-        	addToFiltersIfNotNull(filters, "searchTerms", splitTerms);
-        	addToFiltersIfNotNull(filters, "q", StringUtils.join(splitTerms, " and "));
+        	if (!splitTerms.isEmpty()) {
+        		addToFiltersIfNotNull(filters, "searchTerms", splitTerms);
+        		
+        		addToFiltersIfNotNull(filters, "q", buildQ(splitTerms));
+        	}
         }
     	return filters;
     }
 
+    protected String buildQ(List<String> splitTerms) {
+    	//The context search should append each term with a $ and join them with an and.
+    	//This gives us a "stem" search with the a logical "and" applied to the terms. 
+    	if (null == splitTerms || splitTerms.isEmpty()) {
+    		return null;
+    	}
+    	List<String> newList = new LinkedList<>();
+    	Iterator<String> i = splitTerms.iterator(); 
+        while (i.hasNext()) {
+        	newList.add("$" + i.next());
+        }
+        return  StringUtils.join(newList, " and ");
+    }
+    
     protected String buildOrderBy(String orderBy) {
     	StringBuilder rtn = new StringBuilder("publication_year desc nulls last, display_to_public_date desc"); 
     	if (StringUtils.isNotBlank(orderBy)) {

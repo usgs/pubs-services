@@ -1,10 +1,13 @@
 package gov.usgs.cida.pubs.webservice;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.BaseSpringTest;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -76,6 +79,21 @@ public class MvcServiceTest extends BaseSpringTest {
 		assertEquals("loggerhead", searchTerms[1].toString());
 		assertTrue(filters.containsKey("searchTerms"));
 		String q = (String) filters.get("q");
-		assertEquals("turtles and loggerhead", q);
+		assertEquals("$turtles and $loggerhead", q);
 	}
+	
+	@Test
+	public void buildQTest() {
+		List<String> list = new LinkedList<>();
+		assertNull(testMvcService.buildQ(null));
+		assertNull(testMvcService.buildQ(list));
+		
+		list.add("test");
+		assertEquals("$test", testMvcService.buildQ(list));
+		
+		list.add("turtles");
+		list.add("loggerhead");
+		assertEquals("$test and $turtles and $loggerhead",  testMvcService.buildQ(list));
+	}
+	
 }

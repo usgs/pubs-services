@@ -31,8 +31,13 @@ public class PwPublicationDaoTest extends BaseSpringDaoTest {
 
     @Test
     public void getByMapTest() {
+    	//This test uses the VPD. If it fails because record counts are off:
+    	// - No rows returned probably means the publication_index_00 table does not have the correct data in it.
+    	//   see the <changeSet author="drsteini" id="testPublicationIndex" context="citrans" runOnChange="true"> in schema-pubs
+    	// - Too many rows returned probably means the VPD got hosed.
+    	//   see the changeLogVpd.xml file in schema-pubs
     	Map<String, Object> filters = new HashMap<>();
-    	filters.put("searchTerms", new String[]{"title"});
+    	filters.put("q", "title");
         List<PwPublication> pubs = PwPublication.getDao().getByMap(filters);
         assertNotNull(pubs);
         assertEquals(1, pubs.size());
@@ -45,7 +50,7 @@ public class PwPublicationDaoTest extends BaseSpringDaoTest {
     @Test
     public void getObjectCountTest() {
     	Map<String, Object> filters = new HashMap<>();
-    	filters.put("searchTerms", new String[]{"title"});
+    	filters.put("q", "title");
         Integer cnt = PwPublication.getDao().getObjectCount(filters);
         assertEquals(1, cnt.intValue());
         
@@ -54,6 +59,11 @@ public class PwPublicationDaoTest extends BaseSpringDaoTest {
 
     @Test
     public void getByIndexIdTest() {
+    	//This test uses the VPD. If it fails because record counts are off:
+    	// - Not getting 4 probably means the publication_index_00 table does not have the correct data in it.
+    	//   see the <changeSet author="drsteini" id="testPublicationIndex" context="citrans" runOnChange="true"> in schema-pubs
+    	// - Getting 5 via getByIndexId means the VPD got hosed.
+    	//   see the changeLogVpd.xml file in schema-pubs
     	//We can get 4
         PwPublication pub = PwPublication.getDao().getByIndexId("4");
         assertNotNull(pub);

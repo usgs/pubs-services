@@ -54,15 +54,66 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public void getRSS(
+    		@RequestParam(value="q", required=false) String searchTerms, //single string search
+            @RequestParam(value="title", required=false) String[] title,
+            @RequestParam(value="abstract", required=false) String[] pubAbstract,
+            @RequestParam(value="contributor", required=false) String[] contributor,
+            @RequestParam(value="prodId", required=false) String[] prodId,
+            @RequestParam(value="indexId", required=false) String[] indexId,
+            @RequestParam(value="ipdsId", required=false) String[] ipdsId,
+            @RequestParam(value="year", required=false) String[] year,
+            @RequestParam(value="startYear", required=false) String yearStart,
+            @RequestParam(value="endYear", required=false) String yearEnd,
+    		@RequestParam(value="contributingOffice", required=false) String[] contributingOffice,
+            @RequestParam(value="typeName", required=false) String[] typeName,
+            @RequestParam(value="subtypeName", required=false) String[] subtypeName,
+            @RequestParam(value="seriesName", required=false) String[] reportSeries,
+            @RequestParam(value="reportNumber", required=false) String[] reportNumber,
             @RequestParam(value="pub_x_days", required=false) String pubXDays,
+            @RequestParam(value="pub_date_low", required=false) String pubDateLow,
+            @RequestParam(value="pub_date_high", required=false) String pubDateHigh,
+            @RequestParam(value="mod_x_days", required=false) String modXDays,
+            @RequestParam(value="mod_date_low", required=false) String modDateLow,
+            @RequestParam(value="mod_date_high", required=false) String modDateHigh,
+            @RequestParam(value="orderBy", required=false) String orderBy,
 			HttpServletResponse response) {
 
         Map<String, Object> filters = new HashMap<>();
-
+        
+        /**
+         * Per JIMK on JIRA PUBSTWO-971:
+         * 
+         * 	"if mod_x_days is there, and pub_x_days is not, mod_x_days should override the default pub_x_days = 30"
+         */
         if((pubXDays == null) || (pubXDays.isEmpty())) {
-        	pubXDays = "" + DEFAULT_RECORDS;
+        	if((modXDays == null) || (modXDays.isEmpty())) {
+        		pubXDays = "" + DEFAULT_RECORDS;
+        	}
         }
+    	
+    	configureSingleSearchFilters(filters, searchTerms);
+
+    	addToFiltersIfNotNull(filters, "title", title);
+    	addToFiltersIfNotNull(filters, "abstract", pubAbstract);
+    	addToFiltersIfNotNull(filters, "contributor", contributor);
+    	addToFiltersIfNotNull(filters, "id", prodId);
+    	addToFiltersIfNotNull(filters, "indexId", indexId);
+    	addToFiltersIfNotNull(filters, "ipdsId", ipdsId);
+    	addToFiltersIfNotNull(filters, "year", year);
+    	addToFiltersIfNotNull(filters, "yearStart", yearStart);
+    	addToFiltersIfNotNull(filters, "yearEnd", yearEnd);
+    	addToFiltersIfNotNull(filters, "contributingOffice", contributingOffice);
+    	addToFiltersIfNotNull(filters, "typeName", typeName);
+    	addToFiltersIfNotNull(filters, "subtypeName", subtypeName);
+    	addToFiltersIfNotNull(filters, "reportSeries", reportSeries);
+    	addToFiltersIfNotNull(filters, "reportNumber", reportNumber);
     	addToFiltersIfNotNull(filters, "pubXDays", pubXDays);
+    	addToFiltersIfNotNull(filters, "pubDateLow", pubDateLow);
+    	addToFiltersIfNotNull(filters, "pubDateHigh", pubDateHigh);
+    	addToFiltersIfNotNull(filters, "modXDays", modXDays);
+    	addToFiltersIfNotNull(filters, "modDateLow", modDateLow);
+    	addToFiltersIfNotNull(filters, "modDateHigh", modDateHigh);    	
+    	filters.put("orderby", buildOrderBy(orderBy));
     	
         List<PwPublication> pubs = busService.getObjects(filters);
 

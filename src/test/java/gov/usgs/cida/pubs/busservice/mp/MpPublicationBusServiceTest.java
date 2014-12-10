@@ -34,7 +34,9 @@ import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.utility.PubsUtilitiesTest;
 import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.webservice.security.PubsRoles;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -441,7 +443,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	assertEquals("drsteini", busService.checkAvailability(1).getValue());
     	
     	//Same user = OK
-    	PubsUtilitiesTest.buildTestAuthentication("drsteini", null);
+    	PubsUtilitiesTest.buildTestAuthentication("drsteini");
     	assertNull(busService.checkAvailability(1));
 
     	//Expired = OK (We are testing by setting the timeout to 0 and -1 for these test)
@@ -535,6 +537,38 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	testLists(lists, true, true, true, true);
 	}
 	
+	@Test
+    public void setList2Test() {
+		//NPE tests
+    	busService.setList(null, null);
+    	MpPublication mpPub = new MpPublication();
+    	busService.setList(mpPub, null);
+    	mpPub.setId(1);
+    	busService.setList(mpPub, null);
+    	busService.setList(null, MpList.IPDS_OTHER_PUBS);
+    	
+    	//New List
+    	mpPub = MpPublicationDaoTest.addAPub(MpPublication.getDao().getNewProdId());
+    	busService.setList(mpPub, MpList.IPDS_OTHER_PUBS);
+    	Map<String, Object> filters = new HashMap<>();
+    	filters.put("publicationId", mpPub.getId());
+    	List<MpListPublication> lists = MpListPublication.getDao().getByMap(filters);
+    	assertEquals(1, lists.size());
+    	testLists(lists, false, true, false, false);
+    	
+    	//Add List
+    	busService.setList(mpPub, MpList.IPDS_USGS_NUMBERED_SERIES);
+    	lists = MpListPublication.getDao().getByMap(filters);
+    	assertEquals(2, lists.size());
+    	testLists(lists, false, true, false, true);
+
+    	//Update List
+    	busService.setList(mpPub, MpList.IPDS_OTHER_PUBS);
+    	lists = MpListPublication.getDao().getByMap(filters);
+    	assertEquals(2, lists.size());
+    	testLists(lists, false, true, false, true);
+	}
+	
 	public void testLists(List<MpListPublication> lists, boolean expect_journal, boolean expect_other,
 			boolean expect_pending, boolean expect_numbered) {
 		boolean got_journal = false;  //IPDS_JOURNAL_ARTICLES = "3";
@@ -620,6 +654,36 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	assertMpPublicationDeleted(2);
     }
     
+    @Test
+    public void publishSPNTest() {
+    	//Stuff published by an SPN User should end up in both the warehouse and MyPubs on the USGS Series list.
+    	buildTestAuthentication("dummy", new ArrayList<>(Arrays.asList(PubsRoles.PUBS_SPN_USER.name())));
+    	ValidationResults valRes = busService.publish(2);
+    	assertTrue(valRes.isEmpty());
+    	Publication<?> pub = PwPublication.getDao().getById(2);
+    	MpPublicationDaoTest.assertPwPub2(pub);
+    	assertEquals(1, pub.getAuthors().size());
+    	assertEquals(1, pub.getEditors().size());
+    	//Link count is one more than in the dataset.xml because a default thumbnail is added by the service.
+    	assertEquals(2, pub.getLinks().size());
+    	assertEquals(1, pub.getCostCenters().size());
+    	PublicationIndex pi = PublicationIndex.getDao().getById(2);
+    	assertNotNull(pi);
+    	assertEquals("title the abstract subseries title series number 2 ipdsid Report USGS Numbered Series Professional Paper ConFamily, ConGiven, ConSuffix US Geological Survey Ice Survey Team Affiliation Cost Center 4", pi.getQ());
+
+    	//Still in MP
+    	MpPublication mpPub = MpPublication.getDao().getById(2);
+    	MpPublicationDaoTest.assertMpPub2(mpPub, "dummy");
+    	
+    	//On the list
+    	Map<String, Object> filters = new HashMap<>();
+    	filters.put("publicationId", 2);
+    	filters.put("mpListId", MpList.IPDS_USGS_NUMBERED_SERIES);
+    	List<MpListPublication> lists = MpListPublication.getDao().getByMap(filters);
+    	assertEquals(1, lists.size());
+    	testLists(lists, false, false, false, true);
+    }
+    
     public void assertMpPublicationDeleted(Integer id) {
     	assertNull(MpPublication.getDao().getById(id));
     	Map<String, Object> filters = new HashMap<>();
@@ -630,4 +694,29 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	assertTrue(MpListPublication.getDao().getByMap(filters).isEmpty());
     }
 
+    @Test
+    public void isSpnuserTest() {
+    	//Anonymous - no roles
+    	assertFalse(busService.isSpnuser());
+    	
+    	List<String> roles = new ArrayList<>();
+    	roles.add(PubsRoles.PUBS_ADMIN.name());
+    	roles.add(PubsRoles.PUBS_TAGGING_USER.name());
+    	roles.add(PubsRoles.PUBS_CATALOGER_USER.name());
+    	roles.add(PubsRoles.PUBS_SPN_SUPERVISOR.name());
+    	roles.add(PubsRoles.PUBS_CATALOGER_SUPERVISOR.name());
+
+    	//Everything but spn
+    	PubsUtilitiesTest.buildTestAuthentication("dummy", roles);
+    	assertFalse(busService.isSpnuser());
+    	
+    	//Everything
+    	roles.add(PubsRoles.PUBS_SPN_USER.name());
+    	PubsUtilitiesTest.buildTestAuthentication("dummy", roles);
+    	assertTrue(busService.isSpnuser());
+    	
+    	//Just spnuser
+    	PubsUtilitiesTest.buildTestAuthentication("dummy", new ArrayList<>(Arrays.asList(PubsRoles.PUBS_SPN_USER.name())));
+    	assertTrue(busService.isSpnuser());
+    }
 }

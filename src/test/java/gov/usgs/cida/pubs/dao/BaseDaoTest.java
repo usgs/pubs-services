@@ -8,6 +8,7 @@ import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.utility.PubsUtilitiesTest;
 
 import org.junit.Test;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * @author drsteini
@@ -26,7 +27,7 @@ public class BaseDaoTest extends BaseSpringTest {
     @Test
     public void getClientIdAuth() {
         //have authentication
-        PubsUtilitiesTest.buildTestAuthentication("dummy", null);
+        PubsUtilitiesTest.buildTestAuthentication("dummy");
         String clientId = PublicationType.getDao().getClientId();
         assertNotNull("Have Authentication", clientId);
         assertEquals("Have Authentication", "dummy", clientId);
@@ -35,7 +36,7 @@ public class BaseDaoTest extends BaseSpringTest {
     @Test
     public void getClientIdNoAuthAgain() {
         //no authentication again
-        PubsUtilitiesTest.clearTestAuthentication();
+    	SecurityContextHolder.clearContext();
         String clientId = PublicationType.getDao().getClientId();
         assertNotNull("No Authentication", clientId);
         assertEquals("No Authentication", PubsConstants.ANONYMOUS_USER, clientId);

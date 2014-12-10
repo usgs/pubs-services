@@ -8,57 +8,32 @@
                            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
 						   http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd">
 
-	<sec:global-method-security
-		secured-annotations="enabled" proxy-target-class="true" />
+	<sec:global-method-security	secured-annotations="enabled" proxy-target-class="true" />
 
-	<sec:http create-session="stateless">
-		<sec:form-login />
-		<!-- 
-		IMPORTANT: to allow enable anonymous entry, do not use an intercept URL here, add an entry to the
-		filterChainProxy bean below in this file. DO NOT use an intercept-url. This is a by-product of our
-		custom tokenSecurityFilter chain -->
+	<sec:http auto-config="false" create-session="stateless" entry-point-ref="unauthorizedEntryPoint" >
+		<sec:custom-filter ref="tokenSecurityFilter" position="FORM_LOGIN_FILTER"/>
+		<sec:intercept-url pattern="/**" method="OPTIONS" access="IS_AUTHENTICATED_ANONYMOUSLY" requires-channel="https"/>
+		<sec:intercept-url pattern="/version" access="IS_AUTHENTICATED_ANONYMOUSLY" requires-channel="https" />
+		<sec:intercept-url pattern="/lookup/**" access="IS_AUTHENTICATED_ANONYMOUSLY" requires-channel="https" />
+		<sec:intercept-url pattern="/publication/**" access="IS_AUTHENTICATED_ANONYMOUSLY" requires-channel="https" />
+		<sec:intercept-url pattern="/auth/ad/token" access="IS_AUTHENTICATED_ANONYMOUSLY" requires-channel="https" />
 		<sec:intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY" requires-channel="https" />
-		<sec:logout />
+		<sec:anonymous />
 	</sec:http>
 
 	<bean id="authClient" class="gov.usgs.cida.auth.client.CachingAuthClient">
 		<constructor-arg ref="authService" />
 	</bean>
 
-	<bean id="tokenSecurityFilter"
-		class="gov.usgs.cida.pubs.webservice.security.TokenSecurityFilter">
-	</bean>
+	<bean id="tokenSecurityFilter" class="gov.usgs.cida.pubs.webservice.security.TokenSecurityFilter"/>
 
-	<!-- Any service URL allowing anonymous access must use this in the filter in it's chain -->
-	<bean id="anonymousAuthenticationFilter" class="org.springframework.security.web.authentication.AnonymousAuthenticationFilter">
-		<constructor-arg value="anon-filter-key" />
-	</bean>
-	<bean id="securityContextPersistenceFilter" class="org.springframework.security.web.context.SecurityContextPersistenceFilter" />
+	<bean id="unauthorizedEntryPoint" class="gov.usgs.cida.pubs.webservice.security.UnauthorizedEntryPoint"/>
 
-	<bean id="filterChainProxy" class="org.springframework.security.web.FilterChainProxy">
-		<constructor-arg>
-			<util:list>
-				 <!-- Give anon access to version services -->
-				<sec:filter-chain pattern="/version/**" filters="securityContextPersistenceFilter, anonymousAuthenticationFilter, tokenSecurityFilter" />
-				 <!-- Give anon access to lookup services -->
-				<sec:filter-chain pattern="/lookup/**" filters="securityContextPersistenceFilter, anonymousAuthenticationFilter, tokenSecurityFilter" />
-				 <!-- Give anon access to warehouse services -->
-				<sec:filter-chain pattern="/publication/**" filters="securityContextPersistenceFilter, anonymousAuthenticationFilter, tokenSecurityFilter" />
-				 <!-- authentication service -->
-				<sec:filter-chain pattern="/auth/ad/token/**" filters="securityContextPersistenceFilter, anonymousAuthenticationFilter, tokenSecurityFilter" />
-				 <!-- everything else requires authentication/authorizaion -->
-				<sec:filter-chain pattern="/**" filters="securityContextPersistenceFilter, tokenSecurityFilter" />
-			</util:list>
-		</constructor-arg>
-	</bean>
-
-	<!-- This is a dummy user service -->
 	<sec:authentication-manager>
-		<sec:authentication-provider>
-			<sec:user-service>
-				<sec:user name="none" password="none" authorities="" />
-			</sec:user-service>
-		</sec:authentication-provider>
+		<sec:authentication-provider ref="pubsAuthenticationProvider"/>
 	</sec:authentication-manager>
+	
+	<bean id="pubsAuthenticationProvider" class="gov.usgs.cida.pubs.webservice.security.PubsAuthenticationProvider"/>
+	<bean id="authenticationService" class="gov.usgs.cida.pubs.webservice.security.AuthenticationService"/>
 
 </beans>

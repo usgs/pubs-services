@@ -27,15 +27,6 @@ public class PubsAuthentication implements Authentication {
 	private Collection<? extends GrantedAuthority> authorities;
 	private User principal;
 	
-	public PubsAuthentication(Collection<? extends GrantedAuthority> inAuthorities) {
-		authorities = inAuthorities;
-	}
-	
-	public PubsAuthentication(String username, Collection<? extends GrantedAuthority> inAuthorities) {
-		authorities = inAuthorities;
-		principal = new User(username, "******", authorities);
-	}
-	
 	public PubsAuthentication(String username, List<String> rawRoles) {
 		List<SimpleGrantedAuthority> auths = new ArrayList<>();
 		

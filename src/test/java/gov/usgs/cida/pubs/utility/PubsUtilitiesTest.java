@@ -14,6 +14,7 @@ import java.util.Arrays;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public class PubsUtilitiesTest extends BaseSpringTest {
 
@@ -70,10 +71,10 @@ public class PubsUtilitiesTest extends BaseSpringTest {
     public void getUsernameTest() {
     	assertEquals("Not Authenticated", PubsConstants.ANONYMOUS_USER, PubsUtilities.getUsername());
     	
-    	buildTestAuthentication("dummy", null);
+    	buildTestAuthentication("dummy");
     	assertEquals("Is Authenticated", "dummy", PubsUtilities.getUsername());
     	
-    	clearTestAuthentication();
+    	SecurityContextHolder.clearContext();
     	assertEquals("Not Authenticated", PubsConstants.ANONYMOUS_USER, PubsUtilities.getUsername());
     }
 

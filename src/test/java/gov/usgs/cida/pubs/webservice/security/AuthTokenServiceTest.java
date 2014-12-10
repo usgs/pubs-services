@@ -1,95 +1,120 @@
 package gov.usgs.cida.pubs.webservice.security;
 
-import java.util.ArrayList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
+import gov.usgs.cida.auth.model.AuthToken;
+import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+
+import java.sql.Timestamp;
 
 import javax.servlet.http.HttpServletRequest;
 
-import gov.usgs.cida.auth.client.IAuthClient;
-import gov.usgs.cida.auth.model.AuthToken;
-import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
-
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
-
 public class AuthTokenServiceTest {
 	AuthTokenService testService;
-	IAuthClient mockAuthClient;
+	AuthenticationService mockAuthService;
 	IMpPublicationBusService mockBusService;
+    private MockMvc mockMvc;
+
 	
 	@Before
 	public void setup() {
-		mockAuthClient = mock(IAuthClient.class);
+		mockAuthService = mock(AuthenticationService.class);
 		mockBusService = mock(IMpPublicationBusService.class);
-		testService = new AuthTokenService(mockAuthClient, mockBusService);
-	}
-	
-	@Test
-	public void testGetToken_invalid_user_pass() {
-		//authClient returns no token if user/pass is bad
-		when(mockAuthClient.getNewToken("username", "password")).thenReturn(null);
-		
-		try {
-			testService.getToken("username", "password");
-			assertTrue("Should never get here", false);
-		} catch (UnauthorizedException e) {
-			assertEquals("Correct exception is thrown", "Invalid username/password", e.getMessage());
-		}
-	}
-	
-	@Test
-	public void testGetToken_no_pubs_roles() {
-		//authClient returns no token if user/pass is bad
-		AuthToken testToken = new AuthToken();
-		testToken.setTokenId("a-token-string");
-		when(mockAuthClient.getNewToken("username", "password")).thenReturn(testToken);
-		when(mockAuthClient.getRolesByToken("a-token-string")).thenReturn(new ArrayList<String>());
-		
-		try {
-			testService.getToken("username", "password");
-			assertTrue("Should never get here", false);
-		} catch (UnauthorizedException e) {
-			assertEquals("Correct exception is thrown", "User is not authorized to use the Publications Warehouse", e.getMessage());
-		}
-	}
-	
-	@Test
-	public void testGetToken_valid_pubs_user() {
-		//authClient returns no token if user/pass is bad
-		AuthToken testToken = new AuthToken();
-		testToken.setTokenId("a-token-string");
-		when(mockAuthClient.getNewToken("username", "password")).thenReturn(testToken);
-		ArrayList<String> pubsRoles = new ArrayList<>();
-		pubsRoles.add(PubsRoles.PUBS_ADMIN.name());
-		when(mockAuthClient.getRolesByToken("a-token-string")).thenReturn(pubsRoles);
-		
-		try {
-			ObjectNode response = testService.getToken("username", "password");
-			assertEquals("Correct token json node returned", "a-token-string", response.get("token").textValue());
-		} catch (UnauthorizedException e) {
-			assertTrue("Should never get here", false);
-		}
+		testService = new AuthTokenService(mockAuthService, mockBusService);
 	}
 	
 	@Test 
-	public void testLogout() {
+	public void logoutTestSuccess() {
 		HttpServletRequest mockRequest = mock(HttpServletRequest.class);
 		when(mockRequest.getHeader(TokenSecurityFilter.AUTHORIZATION_HEADER)).thenReturn("Bearer a-token-string");
 		
-		AuthToken testToken = mock(AuthToken.class);
-		when(testToken.getUsername()).thenReturn("username");
-		
-		when(mockAuthClient.invalidateToken("a-token-string")).thenReturn(true);
-		when(mockAuthClient.getToken("a-token-string")).thenReturn(testToken);
+		when(mockAuthService.invalidateToken("a-token-string")).thenReturn(true);
 
 		ObjectNode response = testService.logout(mockRequest);
 		assertEquals("Valid logout response", "success", response.get("status").textValue());
-		verify(mockAuthClient, times(1)).invalidateToken("a-token-string");
-		verify(mockBusService, times(1)).releaseLocksUser("username");
+		verify(mockAuthService, times(1)).invalidateToken("a-token-string");
+		verify(mockBusService, times(1)).releaseLocksUser(PubsConstants.ANONYMOUS_USER);
+	}
+
+	@Test 
+	public void logoutTestFail() {
+		HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+		when(mockRequest.getHeader(TokenSecurityFilter.AUTHORIZATION_HEADER)).thenReturn("Bearer a-token-string");
+		
+		when(mockAuthService.invalidateToken("a-token-string")).thenReturn(false);
+
+		ObjectNode response = testService.logout(mockRequest);
+		assertEquals("Invalid logout response", "failed", response.get("status").textValue());
+		verify(mockAuthService, times(1)).invalidateToken("a-token-string");
+		verify(mockBusService, times(1)).releaseLocksUser(PubsConstants.ANONYMOUS_USER);
+	}
+	
+	@Test
+	public void logoutTest() throws Exception {
+    	mockMvc = MockMvcBuilders.standaloneSetup(testService).build();
+		when(mockAuthService.invalidateToken("a-token-string")).thenReturn(true);
+
+        MvcResult rtn = mockMvc.perform(post("/auth/logout").header(TokenSecurityFilter.AUTHORIZATION_HEADER, "Bearer a-token-string")
+        		.accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        	.andExpect(status().isOk())
+        	.andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        	.andReturn();
+        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+                sameJSONObjectAs(new JSONObject("{\"status\":\"success\"}")));
+		verify(mockAuthService, times(1)).invalidateToken("a-token-string");
+		verify(mockBusService, times(1)).releaseLocksUser(PubsConstants.ANONYMOUS_USER);
+	}
+
+	@Test
+	public void getTokenTest() throws Exception {
+		Timestamp ts = new Timestamp(0);
+    	mockMvc = MockMvcBuilders.standaloneSetup(testService).build();
+		AuthToken testToken = new AuthToken();
+		testToken.setTokenId("a-token-string");
+		testToken.setExpires(ts);
+		when(mockAuthService.authenticate("user", "pwd")).thenReturn(testToken);
+
+        MvcResult rtn = mockMvc.perform(post("/auth/ad/token").param("username", "user").param("password", "pwd")
+        		.accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        	.andExpect(status().isOk())
+        	.andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        	.andReturn();
+        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+        		sameJSONObjectAs(new JSONObject("{\"token\":\"a-token-string\",\"expires\":\"" + ts.toString() + "\"}")));
+        verify(mockAuthService, times(1)).authenticate("user", "pwd");
+	}
+	
+	@Test
+	public void getTokenFailTest() throws Exception {
+    	mockMvc = MockMvcBuilders.standaloneSetup(testService).build();
+		when(mockAuthService.authenticate("user", "pwd")).thenThrow(new UnauthorizedException("Invalid username/password"));
+
+        MvcResult rtn = mockMvc.perform(post("/auth/ad/token").param("username", "user").param("password", "pwd")
+        		.accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        	.andExpect(status().isUnauthorized())
+        	.andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        	.andReturn();
+        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+        		sameJSONObjectAs(new JSONObject("{\"reason\":\"Invalid username/password\"}")));
+        verify(mockAuthService, times(1)).authenticate("user", "pwd");
 	}
 }

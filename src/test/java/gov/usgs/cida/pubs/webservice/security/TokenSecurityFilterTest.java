@@ -1,9 +1,14 @@
 package gov.usgs.cida.pubs.webservice.security;
 
-import gov.usgs.cida.auth.client.IAuthClient;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -14,29 +19,22 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
-import gov.usgs.cida.auth.model.AuthToken;
-
 public class TokenSecurityFilterTest {
+	
+	private AuthenticationService authServiceMock; 
+	
 	private class TestTokenSecurityFilter extends TokenSecurityFilter {
 		public TestTokenSecurityFilter() {
 			super();
-			authClient = mock(IAuthClient.class);
-		}
-		
-		public IAuthClient getAuthClient() {
-			return authClient;
+			authenticationService = authServiceMock;
 		}
 	}
 	
 	@Before
 	public void setup() {
 		//clear security context each time
-		SecurityContextHolder.getContext().setAuthentication(null);
+		SecurityContextHolder.clearContext();
+		authServiceMock = mock(AuthenticationService.class);
 	}
 	
 	@Test
@@ -54,84 +52,29 @@ public class TokenSecurityFilterTest {
 	}
 	
 	@Test
-	public void testDoFilter_OPTIONS() throws IOException, ServletException {
+	public void doFilterNoTokenTest() throws IOException, ServletException, UnauthorizedException {
 		HttpServletRequest mockRequest = mock(HttpServletRequest.class);
 		HttpServletResponse mockResponse = mock(HttpServletResponse.class);
 		FilterChain mockFilterChain = mock(FilterChain.class);
 		
-		//Verify all OPTIONS requests just continue down the chain
-		when(mockRequest.getMethod()).thenReturn("OPTIONS");
-		new TestTokenSecurityFilter().doFilter(mockRequest, mockResponse, mockFilterChain);
-		verify(mockFilterChain, times(1)).doFilter(mockRequest, mockResponse);
-		verify(mockResponse, times(0)).setStatus(401);
-	}
-	
-	@Test
-	public void testDoFilter_invalid_token() throws IOException, ServletException {
-		HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-		HttpServletResponse mockResponse = mock(HttpServletResponse.class);
-		FilterChain mockFilterChain = mock(FilterChain.class);
-		
-		//Tokens marked invalid produce a 401 response
 		TestTokenSecurityFilter testFilter = new TestTokenSecurityFilter();
-		when(mockRequest.getMethod()).thenReturn("GET");
-		when(mockRequest.getHeader(TokenSecurityFilter.AUTHORIZATION_HEADER)).thenReturn("Bearer the-token-string");
-		when(testFilter.getAuthClient().isValidToken("the-token-string")).thenReturn(false);
-		testFilter.doFilter(mockRequest, mockResponse, mockFilterChain);
-		verify(mockFilterChain, times(0)).doFilter(mockRequest, mockResponse);
-		verify(mockResponse, times(1)).setStatus(401);
-
-	}
-	
-	@Test
-	public void testDoFilter_invalid_roles() throws IOException, ServletException {
-		HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-		HttpServletResponse mockResponse = mock(HttpServletResponse.class);
-		FilterChain mockFilterChain = mock(FilterChain.class);
-
-		TestTokenSecurityFilter testFilter = new TestTokenSecurityFilter();
-		
-		//Tokens marked valid but with no pubs roles produce a 401 response
-		AuthToken testToken = mock(AuthToken.class);
-		when(testToken.getUsername()).thenReturn("username");
-		
-		ArrayList<String> randomRoles = new ArrayList<>();
-		randomRoles.add("RANDOM_ROLE");
-		
-		when(mockRequest.getMethod()).thenReturn("GET");
-		when(mockRequest.getHeader(TokenSecurityFilter.AUTHORIZATION_HEADER)).thenReturn("Bearer the-token-string");
-		when(testFilter.getAuthClient().isValidToken("the-token-string")).thenReturn(true);
-		when(testFilter.getAuthClient().getToken("the-token-string")).thenReturn(testToken);
-		when(testFilter.getAuthClient().getRolesByToken("the-token-string")).thenReturn(randomRoles);
-		testFilter.doFilter(mockRequest, mockResponse, mockFilterChain);
-		verify(mockFilterChain, times(0)).doFilter(mockRequest, mockResponse);
-		verify(mockResponse, times(1)).setStatus(401);
-		assertFalse("Security context has invalid authentication", SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
-	}
-	
-	@Test
-	public void testDoFilter_valid() throws IOException, ServletException {
-		HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-		HttpServletResponse mockResponse = mock(HttpServletResponse.class);
-		FilterChain mockFilterChain = mock(FilterChain.class);
-
-		TestTokenSecurityFilter testFilter = new TestTokenSecurityFilter();
-		
-		//Tokens marked valid but with no pubs roles produce a 401 response
-		AuthToken testToken = mock(AuthToken.class);
-		when(testToken.getUsername()).thenReturn("username");
-		
-		ArrayList<String> pubsRoles = new ArrayList<>();
-		pubsRoles.add(PubsRoles.PUBS_ADMIN.name());
-		
-		when(mockRequest.getMethod()).thenReturn("GET");
-		when(mockRequest.getHeader(TokenSecurityFilter.AUTHORIZATION_HEADER)).thenReturn("Bearer the-token-string");
-		when(testFilter.getAuthClient().isValidToken("the-token-string")).thenReturn(true);
-		when(testFilter.getAuthClient().getToken("the-token-string")).thenReturn(testToken);
-		when(testFilter.getAuthClient().getRolesByToken("the-token-string")).thenReturn(pubsRoles);
+		when(mockRequest.getHeader(TokenSecurityFilter.AUTHORIZATION_HEADER)).thenReturn("");
 		testFilter.doFilter(mockRequest, mockResponse, mockFilterChain);
 		verify(mockFilterChain, times(1)).doFilter(mockRequest, mockResponse);
-		verify(mockResponse, times(0)).setStatus(401);
-		assertTrue("Security context has valid authentication", SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
+		verify(authServiceMock, times(0)).checkToken(anyString());
 	}
+	
+	@Test
+	public void doFilterTokenTest() throws IOException, ServletException, UnauthorizedException {
+		HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+		HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+		FilterChain mockFilterChain = mock(FilterChain.class);
+		
+		TestTokenSecurityFilter testFilter = new TestTokenSecurityFilter();
+		when(mockRequest.getHeader(TokenSecurityFilter.AUTHORIZATION_HEADER)).thenReturn("Bearer a-token-string");
+		testFilter.doFilter(mockRequest, mockResponse, mockFilterChain);
+		verify(mockFilterChain, times(1)).doFilter(mockRequest, mockResponse);
+		verify(authServiceMock, times(1)).checkToken("a-token-string");
+	}
+	
 }

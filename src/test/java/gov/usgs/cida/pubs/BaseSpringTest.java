@@ -5,12 +5,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.webservice.security.PubsAuthentication;
+import gov.usgs.cida.pubs.webservice.security.PubsRoles;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -20,8 +22,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -62,19 +62,17 @@ public abstract class BaseSpringTest {
 
     @Before
     public void setup() {
-    	clearTestAuthentication();
+    	SecurityContextHolder.clearContext();
     }
     
-    public static void buildTestAuthentication(String username, Collection<? extends GrantedAuthority> inAuthorities) {
-    	if (null == inAuthorities) {
-    		SecurityContextHolder.getContext().setAuthentication(new PubsAuthentication(username, new ArrayList<SimpleGrantedAuthority>()));
-    	} else {
-    		SecurityContextHolder.getContext().setAuthentication(new PubsAuthentication(username, inAuthorities));
-    	}
+    public static void buildTestAuthentication(String username) {
+    	List<String> roles = new ArrayList<>(Arrays.asList(PubsRoles.PUBS_ADMIN.name()));
+   		SecurityContextHolder.getContext().setAuthentication(new PubsAuthentication(username, roles));
     }
-
-    public static void clearTestAuthentication() {
-    	SecurityContextHolder.getContext().setAuthentication(null);
+    
+    public static void buildTestAuthentication(String username, List<String> roles) {
+    	SecurityContextHolder.clearContext();
+   		SecurityContextHolder.getContext().setAuthentication(new PubsAuthentication(username, roles));
     }
     
     public void assertDaoTestResults(final Class<?> inClass, final Object inObject, final Object resultObject) {

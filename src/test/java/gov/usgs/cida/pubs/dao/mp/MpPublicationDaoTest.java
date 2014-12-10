@@ -270,14 +270,6 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertNull(pub.getEdition());
         assertNull(pub.getComments());
         assertNull(pub.getTableOfContents());
-
-        
-        if (pub instanceof MpPublication) {
-        	String lockUserName = ((MpPublication) pub).getLockUsername();
-        	if (null != lockUserName) {
-        		assertEquals(lockUserName, PubsConstants.ANONYMOUS_USER);
-        	}
-        }
     }
 
     public static void assertMpPub2Children(Publication<?> pub) {

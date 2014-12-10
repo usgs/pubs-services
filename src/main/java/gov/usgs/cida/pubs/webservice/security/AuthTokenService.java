@@ -1,18 +1,13 @@
 package gov.usgs.cida.pubs.webservice.security;
 
-import java.text.MessageFormat;
-import java.util.List;
-
-import gov.usgs.cida.auth.client.IAuthClient;
 import gov.usgs.cida.auth.model.AuthToken;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -30,16 +25,15 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Controller
 public class AuthTokenService {
-	private static final Logger LOG = LoggerFactory.getLogger(AuthTokenService.class);
 
-	private final IAuthClient authClient;
+	private final AuthenticationService authenticationService;
 	private final IMpPublicationBusService busService;
 
 	@Autowired
-	public AuthTokenService(final IAuthClient authClient,
+	public AuthTokenService(final AuthenticationService authenticationService,
 			@Qualifier("mpPublicationBusService")
 	final IMpPublicationBusService busService) {
-		this.authClient = authClient;
+		this.authenticationService = authenticationService;
 		this.busService = busService;
 	}
 
@@ -49,13 +43,7 @@ public class AuthTokenService {
 			@RequestParam(value="username", required=false) String username, 
 			@RequestParam(value="password", required=false) String password) throws UnauthorizedException {
 
-		AuthToken token = authClient.getNewToken(username, password);
-
-		if(token == null || token.getTokenId().isEmpty()) {
-			throw new UnauthorizedException("Invalid username/password");
-		}
-
-		isPubsAuthorized(token);
+		AuthToken token = authenticationService.authenticate(username, password);
 
 		ObjectNode node = JsonNodeFactory.instance.objectNode();
 		node.put("token", token.getTokenId());
@@ -63,30 +51,12 @@ public class AuthTokenService {
 		return node;
 	}
 
-	protected void isPubsAuthorized(AuthToken token) throws UnauthorizedException  {
-		List<String> roles = authClient.getRolesByToken(token.getTokenId());
-		boolean pubsRolesAssigned = false;
-		for(String role : roles) {
-			try {
-				PubsRoles.valueOf(role); //role validation
-				pubsRolesAssigned = true;
-			} catch (Exception e) {
-				LOG.debug(MessageFormat.format("Role {0} for token {1} ignored.", role, token), e);
-			}
-		}
-
-		if(!pubsRolesAssigned) {
-			authClient.invalidateToken(token);
-			throw new UnauthorizedException("User is not authorized to use the Publications Warehouse");
-		}
-	}
-
 	@RequestMapping(value={"/auth/logout"}, method=RequestMethod.POST, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
 	@ResponseStatus(value=HttpStatus.OK)
 	public @ResponseBody ObjectNode logout(HttpServletRequest request) {
+		busService.releaseLocksUser(PubsUtilities.getUsername());
 		String token = TokenSecurityFilter.getTokenFromHeader(request);
-		busService.releaseLocksUser(authClient.getToken(token).getUsername());
-		boolean invalidated = authClient.invalidateToken(token);
+		boolean invalidated = authenticationService.invalidateToken(token);
 		ObjectNode node = JsonNodeFactory.instance.objectNode();
 		node.put("status", invalidated ? "success" : "failed");
 		return node;

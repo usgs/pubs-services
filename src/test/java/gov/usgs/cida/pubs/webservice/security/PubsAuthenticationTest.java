@@ -1,21 +1,19 @@
 package gov.usgs.cida.pubs.webservice.security;
 
-import static org.junit.Assert.*;
-
-import org.springframework.security.core.userdetails.User;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
 import org.junit.Test;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 
 public class PubsAuthenticationTest {
 
 	@Test
 	public void testAuthStatusAndConstructors() {
-		assertFalse("Without pubs roles, authentication is considered failed", new PubsAuthentication(new ArrayList<SimpleGrantedAuthority>()).isAuthenticated());
-
-		PubsAuthentication auth1 = new PubsAuthentication("username", new ArrayList<SimpleGrantedAuthority>());
+		PubsAuthentication auth1 = new PubsAuthentication("username", new ArrayList<String>());
 		assertFalse("Without pubs roles, authentication is considered failed", auth1.isAuthenticated());
 		assertTrue("getPrinciple returns User object", auth1.getPrincipal() instanceof User);
 		assertEquals("getPrinciple returns User object with correct username", "username", ((User) auth1.getPrincipal()).getUsername());

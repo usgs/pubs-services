@@ -120,17 +120,14 @@ public final class PubsUtilities {
     }
     
     public static List<String> removeStopWords(final String q) {
-    	if (StringUtils.isBlank(q)) {
-    		return null;
-    	} else {
+    	List<String> cleanList = new LinkedList<>();
+    	if (StringUtils.isNotBlank(q)) {
     		//Arrays.asList returns a fixed size java.util.Arrays$ArrayList, so we actually need to create a real list to 
     		//be able to remove entries from it.
-	    	List<String> splitQ = new LinkedList<>(Arrays.asList(q.trim().toLowerCase().split(PubsConstants.SEARCH_TERMS_SPLIT_REGEX)));
-	    	splitQ.removeAll(StopWords.STOP_WORD_LIST);
-	    	//also remove empty strings
-	    	splitQ.remove("");
-	    	return splitQ;
+    		cleanList = new LinkedList<>(Arrays.asList(q.trim().toLowerCase().split(PubsConstants.SEARCH_TERMS_SPLIT_REGEX)));
+    		cleanList.removeAll(StopWords.STOP_WORD_LIST);
     	}
+    	return cleanList;
     }
     
 }

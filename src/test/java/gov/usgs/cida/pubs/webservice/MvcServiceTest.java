@@ -92,8 +92,12 @@ public class MvcServiceTest extends BaseSpringTest {
 		assertEquals("$test", testMvcService.buildQ(list));
 		
 		list.add("turtles");
+		list.add(" ");
+		list.add("");
+		list.add(null);
 		list.add("loggerhead");
 		assertEquals("$test and $turtles and $loggerhead",  testMvcService.buildQ(list));
+
 	}
 	
 }

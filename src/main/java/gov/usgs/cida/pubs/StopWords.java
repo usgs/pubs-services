@@ -5,6 +5,7 @@ import java.util.List;
 
 public final class StopWords {
 
+	//These are the toLowerCase() values from the current CTXSYS.CTX_STOPWORDS view in DBTRANS.
 	public static final List<String> STOP_WORD_LIST = Arrays.asList(
 		"mr",
 		"mrs",

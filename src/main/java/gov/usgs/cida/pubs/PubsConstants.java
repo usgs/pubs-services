@@ -25,7 +25,7 @@ public final class PubsConstants {
     
     public static final String NOT_IMPLEMENTED = "NOT IMPLEMENTED.";
     
-    public static final String SEARCH_TERMS_SPLIT_REGEX = "[\\s+,+]";
+    public static final String SEARCH_TERMS_SPLIT_REGEX = "[^a-zA-Z\\d]";
 
     private PubsConstants() {
     }

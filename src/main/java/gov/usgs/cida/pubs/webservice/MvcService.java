@@ -99,9 +99,12 @@ public abstract class MvcService<D> {
     	List<String> newList = new LinkedList<>();
     	Iterator<String> i = splitTerms.iterator(); 
         while (i.hasNext()) {
-        	newList.add("$" + i.next());
+        	String term = i.next();
+        	if (StringUtils.isNotBlank(term)) {
+        		newList.add("$" + term);
+        	}
         }
-        return  StringUtils.join(newList, " and ");
+        return StringUtils.join(newList, " and ");
     }
     
     protected String buildOrderBy(String orderBy) {

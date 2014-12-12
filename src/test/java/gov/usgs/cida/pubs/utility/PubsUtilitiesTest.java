@@ -92,12 +92,20 @@ public class PubsUtilitiesTest extends BaseSpringTest {
 
     @Test
     public void removeStopWordsTest() {
-    	assertNull(PubsUtilities.removeStopWords(null));
-    	assertNull(PubsUtilities.removeStopWords(""));
-    	assertNull(PubsUtilities.removeStopWords("   "));
+    	assertTrue(PubsUtilities.removeStopWords(null).isEmpty());
+    	assertTrue(PubsUtilities.removeStopWords("").isEmpty());
+    	assertTrue(PubsUtilities.removeStopWords("   ").isEmpty());
     	assertEquals("red and fox and jumped and over and fence",
     			StringUtils.join(PubsUtilities.removeStopWords("The red fox jumped over THE fence or not"), " and "));
     	assertEquals("turtles and loggerhead", StringUtils.join(PubsUtilities.removeStopWords("Turtles Loggerhead"), " and "));
+    	assertTrue(PubsUtilities.removeStopWords("~`!@#$%^&*()_+{}|:\"<>?`-=[]\\;',./").isEmpty());
+    	assertEquals("1234567890qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnm",
+    			StringUtils.join(PubsUtilities.removeStopWords("1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"), " and "));
+    	assertEquals("a1 and b and c and dd and e and f and g and h and ii and j and k and l and m and n and o and p and q and r and ss and tt and u and v and w and x and y and z"
+    			+ " and 1 and 2 and 3 and 4 and 5 and 6 and 7 and 8",
+    			StringUtils.join(PubsUtilities.removeStopWords("a1~b`c!dd@e#f$g%h^ii&j*k(l)m_n+o{p}q|r:ss\"tt<u>v?w`x-y=z[1]2\\3;4'5,6.7/8"), " and "));
+    	assertEquals("new and analysis and mars and  and special and regions and  and  and findings and second and mepag and special and regions and science and analysis and group and  and sr and sag2", 
+    			StringUtils.join(PubsUtilities.removeStopWords("A new analysis of Mars \"Special Regions\": findings of the Second MEPAG Special Regions Science Analysis Group (SR-SAG2)"), " and "));
     }
 
 }

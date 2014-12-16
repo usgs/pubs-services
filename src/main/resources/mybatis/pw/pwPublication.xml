@@ -3,12 +3,7 @@
 
 <mapper namespace="pwPublication">
 
-    <resultMap id="result" type="PwPublication" extends="publication.result">
-        <collection property="costCenters" column="publication_id" select="pwPublicationCostCenter.getByPublication"/>
-        <collection property="authors" column="publication_id" select="pwPublicationContributor.getAuthorsByPublication"/>
-        <collection property="editors" column="publication_id" select="pwPublicationContributor.getEditorsByPublication"/>
-        <collection property="links" column="publication_id" select="pwPublicationLink.getByPublication"/>
-    </resultMap>
+    <resultMap id="result" type="PwPublication" extends="publication.pwResult"/>
 
     <sql id="filters">
        	<if test="null != q">

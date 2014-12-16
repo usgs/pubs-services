@@ -30,8 +30,8 @@ import org.junit.Test;
  */
 public class MpPublicationDaoTest extends BaseSpringDaoTest {
 
-    //TODO editors, authors, links, & CostCenters in test.
-    public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "authors", "editors", "links");
+    //TODO contributors, links, & CostCenters in test.
+    public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "contributors", "contributorsToMap", "links");
 
     @Test
     public void addAndGetByIds() {
@@ -198,8 +198,7 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
     }
 
     public static void assertMpPub1Children(Publication<?> pub) {
-        assertEquals(2, pub.getAuthors().size());
-        assertEquals(2, pub.getEditors().size());
+        assertEquals(4, pub.getContributors().size());
         assertEquals(2, pub.getCostCenters().size());
         assertEquals(2, pub.getLinks().size());
     }
@@ -273,8 +272,7 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
     }
 
     public static void assertMpPub2Children(Publication<?> pub) {
-        assertEquals(1, pub.getAuthors().size());
-        assertEquals(1, pub.getEditors().size());
+        assertEquals(2, pub.getContributors().size());
         assertEquals(1, pub.getCostCenters().size());
         assertEquals(1, pub.getLinks().size());
     }

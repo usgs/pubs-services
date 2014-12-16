@@ -201,63 +201,63 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 	    		 */
 	    		rssResults.append("\t\t\t<author>");
 	    		StringBuffer authorship = new StringBuffer();
-	    		List<PublicationContributor<?>> authors = (List<PublicationContributor<?>>) publication.getAuthors();
-	    		try {
-		    		if(authors != null) {
-			    		for(int i = 0; i < authors.size(); i++) {
-			    			PublicationContributor<?> author = authors.get(i);
-			    			
-			    			Contributor<?> contributor = author.getContributor();
-			    			
-			    			if(contributor != null) {
-			    				if(contributor.isCorporation()) {
-				    				CorporateContributor corpContributor = (CorporateContributor) contributor;
-				    				
-				    				String organization = corpContributor.getOrganization();
-				    				if(organization != null) {
-				    					authorship.append(organization.trim());
-				    				}
-				    			} else if(contributor.isUsgs()) {
-				    				UsgsContributor usgsContributor = (UsgsContributor) contributor;
-				    				
-				    				String family = usgsContributor.getFamily();
-				    				if(family != null) {
-				    					authorship.append(family.trim());
-				    					authorship.append(", ");
-				    				}
-				    				
-				    				String given = usgsContributor.getGiven();
-				    				if(given != null) {
-				    					authorship.append(given.trim());
-				    				}
-				    			} else {
-				    				if(contributor instanceof PersonContributor) {
-				    					PersonContributor<?> person = (PersonContributor<?>) contributor;
-				
-				    					String family = person.getFamily();
-					    				if(family != null) {
-					    					authorship.append(family.trim());
-					    					authorship.append(", ");
-					    				}
-					    				
-					    				String given = person.getGiven();
-					    				if(given != null) {
-					    					authorship.append(given.trim());
-					    				}
-				    				} else {
-				    					authorship.append(contributor.getId());
-				    				}
-				    			}
-			    			}
-			    			
-			    			if((i + 1) < authors.size()) {
-			    				authorship.append("; ");
-			    			}
-			    		}
-		    		}
-	    		} catch (ClassCastException e) {
-	    			LOG.error("Error extracting contributor information: " + e.getMessage());
-	    		}
+//	    		List<PublicationContributor<?>> authors = (List<PublicationContributor<?>>) publication.getAuthors();
+//	    		try {
+//		    		if(authors != null) {
+//			    		for(int i = 0; i < authors.size(); i++) {
+//			    			PublicationContributor<?> author = authors.get(i);
+//			    			
+//			    			Contributor<?> contributor = author.getContributor();
+//			    			
+//			    			if(contributor != null) {
+//			    				if(contributor.isCorporation()) {
+//				    				CorporateContributor corpContributor = (CorporateContributor) contributor;
+//				    				
+//				    				String organization = corpContributor.getOrganization();
+//				    				if(organization != null) {
+//				    					authorship.append(organization.trim());
+//				    				}
+//				    			} else if(contributor.isUsgs()) {
+//				    				UsgsContributor usgsContributor = (UsgsContributor) contributor;
+//				    				
+//				    				String family = usgsContributor.getFamily();
+//				    				if(family != null) {
+//				    					authorship.append(family.trim());
+//				    					authorship.append(", ");
+//				    				}
+//				    				
+//				    				String given = usgsContributor.getGiven();
+//				    				if(given != null) {
+//				    					authorship.append(given.trim());
+//				    				}
+//				    			} else {
+//				    				if(contributor instanceof PersonContributor) {
+//				    					PersonContributor<?> person = (PersonContributor<?>) contributor;
+//				
+//				    					String family = person.getFamily();
+//					    				if(family != null) {
+//					    					authorship.append(family.trim());
+//					    					authorship.append(", ");
+//					    				}
+//					    				
+//					    				String given = person.getGiven();
+//					    				if(given != null) {
+//					    					authorship.append(given.trim());
+//					    				}
+//				    				} else {
+//				    					authorship.append(contributor.getId());
+//				    				}
+//				    			}
+//			    			}
+//			    			
+//			    			if((i + 1) < authors.size()) {
+//			    				authorship.append("; ");
+//			    			}
+//			    		}
+//		    		}
+//	    		} catch (ClassCastException e) {
+//	    			LOG.error("Error extracting contributor information: " + e.getMessage());
+//	    		}
 	    		rssResults.append(StringEscapeUtils.escapeXml10(authorship.toString()));
 	    		rssResults.append("</author>\n");
 	    		

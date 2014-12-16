@@ -11,6 +11,7 @@ import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
+import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
@@ -107,7 +108,7 @@ public class IpdsBinding {
         return notes;
     }
 
-    public Collection<MpPublicationContributor> bindContributors(String contributorsXml) throws SAXException, IOException {
+    public Collection<PublicationContributor<?>> bindContributors(String contributorsXml) throws SAXException, IOException {
         List<MpPublicationContributor> authors = new ArrayList<>();
         List<MpPublicationContributor> editors = new ArrayList<>();
         Document doc = makeDocument(contributorsXml);
@@ -122,7 +123,7 @@ public class IpdsBinding {
             }
         }
 
-        Collection<MpPublicationContributor> pubContributors = new ArrayList<>();
+        Collection<PublicationContributor<?>> pubContributors = new ArrayList<>();
         pubContributors.addAll(fixRanks(authors));
         pubContributors.addAll(fixRanks(editors));
         return pubContributors;

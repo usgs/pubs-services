@@ -5,23 +5,18 @@ import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IIpdsProcess;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.domain.Affiliation;
-import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.ProcessType;
-import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
 import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
 import gov.usgs.cida.pubs.domain.ipds.PublicationMap;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
-import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -97,20 +92,7 @@ public class IpdsProcess implements IIpdsProcess {
             // get contributors from web service
             String contributorXml = requester.getContributors(pub.getIpdsId());
             try {
-                Collection<MpPublicationContributor> contributors = binder.bindContributors(contributorXml);
-                //TODO refactor contributors on the publication so we can just add them all
-                Collection<PublicationContributor<?>> authors = new ArrayList<>();
-                Collection<PublicationContributor<?>> editors = new ArrayList<>();
-                for (Iterator<MpPublicationContributor> contributorsIter = contributors.iterator(); contributorsIter.hasNext();) {
-                    MpPublicationContributor contributor = contributorsIter.next();
-                    if (ContributorType.AUTHORS.equals(contributor.getContributorType().getId())) {
-                        authors.add(contributor);
-                    } else {
-                        editors.add(contributor);
-                    }
-                }
-                pub.setAuthors(authors);
-                pub.setEditors(editors);
+                 pub.setContributors(binder.bindContributors(contributorXml));
             } catch (Exception e) {
             	LOG.info(e.getMessage());
                 rtn.append("\n\tTrouble getting authors/editors: " + e.getMessage());

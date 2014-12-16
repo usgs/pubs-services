@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -245,9 +246,10 @@ public class CrossRefBusService implements ICrossRefBusService {
         StringBuilder rtn = new StringBuilder("");
         //This process requires that the contributors are in rank order.
         //And that the contributor is valid.
-        if (null != pub) {
+        if (null != pub && null != pub.getContributors() && !pub.getContributors().isEmpty()) {
+        	Map<String, Collection<PublicationContributor<?>>> contributors = pub.getContributorsToMap();
 	        String sequence = FIRST;
-	        Collection<PublicationContributor<?>> authors = pub.getAuthors();
+	        Collection<PublicationContributor<?>> authors = contributors.get(PubsUtilities.getAuthorKey());
 	        if (null != authors && !authors.isEmpty()) {
 	            for (PublicationContributor<?> author : authors) {
 	            	if (author.getContributor() instanceof PersonContributor) {
@@ -260,7 +262,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 	            }
 	        }
 	
-	        Collection<PublicationContributor<?>> editors = pub.getEditors();
+	        Collection<PublicationContributor<?>> editors = contributors.get(PubsUtilities.getEditorKey());
 	        if (null != editors && !editors.isEmpty()) {
 	            for (PublicationContributor<?> editor : editors) {
 	            	if (editor.getContributor() instanceof PersonContributor) {

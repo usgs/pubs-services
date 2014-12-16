@@ -13,7 +13,7 @@ import org.junit.Test;
 
 public class ContributorTypeDaoTest extends BaseSpringDaoTest {
 
-    public static final int contributorTypeCnt = 2;
+    public static final int contributorTypeCnt = 3;
 
     @Test
     public void getByIdInteger() {

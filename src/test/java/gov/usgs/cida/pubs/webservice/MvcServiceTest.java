@@ -80,6 +80,17 @@ public class MvcServiceTest extends BaseSpringTest {
 		assertTrue(filters.containsKey("searchTerms"));
 		String q = (String) filters.get("q");
 		assertEquals("$turtles and $loggerhead", q);
+		
+		testMvcService.configureSingleSearchFilters(filters, "turtles-loggerhead");
+		assertEquals(2, filters.keySet().size());
+		assertTrue(filters.containsKey("searchTerms"));
+		searchTerms = (Object[]) filters.get("searchTerms");
+		assertEquals(2, searchTerms.length);
+		assertEquals("turtles", searchTerms[0].toString());
+		assertEquals("loggerhead", searchTerms[1].toString());
+		assertTrue(filters.containsKey("searchTerms"));
+		q = (String) filters.get("q");
+		assertEquals("$turtles and $loggerhead", q);
 	}
 	
 	@Test

@@ -21,7 +21,7 @@ import org.junit.Test;
  */
 public class PublicationSeriesDaoTest extends BaseSpringDaoTest {
 
-    public static final int pubSeriesCnt = 3724;
+    public static final int pubSeriesCnt = 3737;
 
     @Test
     public void getByIdInteger() {

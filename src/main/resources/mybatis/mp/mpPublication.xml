@@ -3,11 +3,8 @@
 
 <mapper namespace="mpPublication">
 
-    <resultMap id="result" type="MpPublication" extends="publication.result">
+    <resultMap id="result" type="MpPublication" extends="publication.mpResult">
         <result property="lockUsername" column="lock_username"/>
-        <collection property="costCenters" column="publication_id" select="mpPublicationCostCenter.getByPublication"/>
-        <collection property="authors" column="publication_id" select="mpPublicationContributor.getAuthorsByPublication"/>
-        <collection property="editors" column="publication_id" select="mpPublicationContributor.getEditorsByPublication"/>
         <collection property="links" column="publication_id" select="mpPublicationLink.getByPublication"/>
     </resultMap>
 

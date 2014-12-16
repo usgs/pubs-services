@@ -11,14 +11,10 @@
           from publication_contributor
     </sql>
 
-    <select id="getAuthorsByPublication" parameterType="Integer" resultMap="result">
+    <select id="getByPublication" parameterType="Integer" resultMap="result">
         <include refid="baseSelect"/>
-        <include refid="publicationContributor.authorsWhere"/>
-    </select>
-
-    <select id="getEditorsByPublication" parameterType="Integer" resultMap="result">
-        <include refid="baseSelect"/>
-        <include refid="publicationContributor.editorsWhere"/>
+        where publication_id = #{value,jdbcType=NUMERIC}
+           order by contributor_type_id, rank
     </select>
 
 </mapper>

@@ -21,6 +21,7 @@ import gov.usgs.cida.pubs.domain.OutsideAffiliation;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.ProcessType;
+import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
@@ -348,7 +349,7 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
 
     @Test
     public void bindContributorsTest() throws SAXException, IOException {
-        Collection<MpPublicationContributor> contributors = binding.bindContributors(contributorsXml);
+        Collection<PublicationContributor<?>> contributors = binding.bindContributors(contributorsXml);
         assertEquals(4, contributors.size());
         MpPublicationContributor authorA = (MpPublicationContributor) contributors.toArray()[0];
         assertEquals(1, authorA.getContributor().getId().intValue());
@@ -628,13 +629,12 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
 
         assertNull(pub.getConferenceDate());
         assertNull(pub.getConferenceLocation());
-        assertNull(pub.getAuthors());
+        assertNull(pub.getContributors());
 
-        assertNull(pub.getEditors());
         assertNull(pub.getCostCenters());
         assertNull(pub.getLinks());
-
         assertNull(pub.getContact());
+
         assertNull(pub.getComments());
         assertNull(pub.getTableOfContents());
         

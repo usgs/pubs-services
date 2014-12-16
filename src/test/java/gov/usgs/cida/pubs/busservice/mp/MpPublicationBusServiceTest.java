@@ -53,7 +53,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
 
-    public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "authors", "editors", "links",
+    public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "contributors", "contributorsToMap", "links",
             "doi", "indexId");
 
 	public Integer lockTimeoutHours = 1;
@@ -352,64 +352,46 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
         assertTrue(gotLink2);
         assertTrue(gotLink3);
 
-        //Check Authors merged
+        //Check Contributors merged
         pub = busService.getObject(1);
-        Collection<PublicationContributor<?>> authors = pub.getAuthors();
-        authors.remove(authors.toArray()[0]);
+        Collection<PublicationContributor<?>> contributors = pub.getContributors();
+        contributors.remove(contributors.toArray()[0]);
         MpPublicationContributor author = new MpPublicationContributor();
         author.setPublicationId(1);
         author.setContributorType(ContributorType.getDao().getById(ContributorType.AUTHORS));
         author.setContributor(Contributor.getDao().getById(3));
         author.setRank(80);
-        authors.add(author);
+        contributors.add(author);
         pub = busService.publicationPostProcessing(pub);
-        assertEquals(2, pub.getAuthors().size());
+        assertEquals(4, pub.getContributors().size());
         boolean gotAuth1 = false;
         boolean gotAuth2 = false;
         boolean gotAuth3 = false;
-        for (PublicationContributor<?> added : pub.getAuthors()) {
+        boolean gotEdit1 = false;
+        boolean gotEdit2 = false;
+        for (PublicationContributor<?> added : pub.getContributors()) {
             assertEquals(1, added.getPublicationId().intValue());
-            if (1 == added.getContributor().getId()) {
-            	gotAuth1 = true;
-            } else if (2 == added.getContributor().getId()) {
-            	gotAuth2 = true;
-            } else if (3 == added.getContributor().getId()) {
-            	gotAuth3 = true;
+            if (ContributorType.AUTHORS == added.getContributorType().getId()) {
+	            if (1 == added.getContributor().getId()) {
+	            	gotAuth1 = true;
+	            } else if (2 == added.getContributor().getId()) {
+	            	gotAuth2 = true;
+	            } else if (3 == added.getContributor().getId()) {
+	            	gotAuth3 = true;
+	            }
+            } else if (ContributorType.EDITORS == added.getContributorType().getId()) {
+	            if (1 == added.getContributor().getId()) {
+	            	gotEdit1 = true;
+	            } else if (2 == added.getContributor().getId()) {
+	            	gotEdit2 = true;
+	            }
             }
         }
         assertFalse(gotAuth1);
         assertTrue(gotAuth2);
         assertTrue(gotAuth3);
-
-        //Check Editors merged
-        pub = busService.getObject(1);
-        Collection<PublicationContributor<?>> editors = pub.getEditors();
-        //Get rid of ID 2 - which comes out first due to the ranks on the editors.
-        editors.remove(editors.toArray()[0]);
-        MpPublicationContributor editor = new MpPublicationContributor();
-        editor.setPublicationId(1);
-        editor.setContributorType(ContributorType.getDao().getById(ContributorType.EDITORS));
-        editor.setContributor(Contributor.getDao().getById(3));
-        editor.setRank(80);
-        editors.add(editor);
-        pub = busService.publicationPostProcessing(pub);
-        assertEquals(2, pub.getEditors().size());
-        boolean gotEditor1 = false;
-        boolean gotEditor2 = false;
-        boolean gotEditor3 = false;
-        for (PublicationContributor<?> added : pub.getEditors()) {
-            assertEquals(1, added.getPublicationId().intValue());
-            if (1 == added.getContributor().getId()) {
-            	gotEditor1 = true;
-            } else if (2 == added.getContributor().getId()) {
-            	gotEditor2 = true;
-            } else if (3 == added.getContributor().getId()) {
-            	gotEditor3 = true;
-            }
-        }
-        assertTrue(gotEditor1);
-        assertFalse(gotEditor2);
-        assertTrue(gotEditor3);
+        assertTrue(gotEdit1);
+        assertTrue(gotEdit2);
 
     }
 
@@ -642,8 +624,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	assertTrue(valRes.isEmpty());
     	Publication<?> pub = PwPublication.getDao().getById(2);
     	MpPublicationDaoTest.assertPwPub2(pub);
-    	assertEquals(1, pub.getAuthors().size());
-    	assertEquals(1, pub.getEditors().size());
+    	assertEquals(2, pub.getContributors().size());
     	//Link count is one more than in the dataset.xml because a default thumbnail is added by the service.
     	assertEquals(2, pub.getLinks().size());
     	assertEquals(1, pub.getCostCenters().size());
@@ -662,8 +643,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	assertTrue(valRes.isEmpty());
     	Publication<?> pub = PwPublication.getDao().getById(2);
     	MpPublicationDaoTest.assertPwPub2(pub);
-    	assertEquals(1, pub.getAuthors().size());
-    	assertEquals(1, pub.getEditors().size());
+    	assertEquals(2, pub.getContributors().size());
     	//Link count is one more than in the dataset.xml because a default thumbnail is added by the service.
     	assertEquals(2, pub.getLinks().size());
     	assertEquals(1, pub.getCostCenters().size());

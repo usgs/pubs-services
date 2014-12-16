@@ -36,16 +36,10 @@
         <include refid="publicationContributor.filters"/>
     </select>
 
-    <select id="getAuthorsByPublication" parameterType="Integer" resultMap="result">
+    <select id="getByPublication" parameterType="Integer" resultMap="result">
         <include refid="baseSelect"/>
-        <include refid="publicationContributor.authorsWhere"/>
-            order by rank
-    </select>
-
-    <select id="getEditorsByPublication" parameterType="Integer" resultMap="result">
-        <include refid="baseSelect"/>
-        <include refid="publicationContributor.editorsWhere"/>
-            order by rank
+        where publication_id = #{value,jdbcType=NUMERIC}
+           order by contributor_type_id, rank
     </select>
 
     <update id="update" parameterType="MpPublicationContributor">

@@ -14,6 +14,7 @@ import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationContributor;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -135,8 +136,9 @@ public class MpPublicationContributorDaoTest extends BaseSpringDaoTest {
     	//this one should be a straight add.
     	MpPublicationContributor.getDao().publishToPw(1);
     	PwPublication pub = PwPublication.getDao().getById(1);
-    	assertEquals(2, pub.getAuthors().size());
-    	for (PublicationContributor<?> contrib : pub.getAuthors()) {
+    	assertEquals(4, pub.getContributors().size());
+    	assertEquals(2, pub.getContributorsToMap().get(PubsUtilities.getAuthorKey()).size());
+    	for (PublicationContributor<?> contrib : pub.getContributorsToMap().get(PubsUtilities.getAuthorKey())) {
     		if (1 == contrib.getId()) {
     			assertPwContributor1(contrib);
     		} else if (2 == contrib.getId()) {
@@ -145,8 +147,8 @@ public class MpPublicationContributorDaoTest extends BaseSpringDaoTest {
     			fail("Got a bad contributor:" + contrib.getId());
     		}
     	}
-    	assertEquals(2, pub.getEditors().size());
-    	for (PublicationContributor<?> contrib : pub.getEditors()) {
+    	assertEquals(2, pub.getContributorsToMap().get(PubsUtilities.getEditorKey()).size());
+    	for (PublicationContributor<?> contrib : pub.getContributorsToMap().get(PubsUtilities.getEditorKey())) {
     		if (3 == contrib.getId()) {
     			assertPwContributor3(contrib);
     		} else if (4 == contrib.getId()) {
@@ -163,9 +165,10 @@ public class MpPublicationContributorDaoTest extends BaseSpringDaoTest {
     	MpPublicationContributor.getDao().deleteById(10);
     	MpPublicationContributor.getDao().publishToPw(4);
     	pub = PwPublication.getDao().getById(4);
-    	assertEquals(0, pub.getAuthors().size());
-    	assertEquals(1, pub.getEditors().size());
-    	for (PublicationContributor<?> contrib : pub.getEditors()) {
+    	assertEquals(1, pub.getContributors().size());
+    	assertNull(pub.getContributorsToMap().get(PubsUtilities.getAuthorKey()));
+    	assertEquals(1, pub.getContributorsToMap().get(PubsUtilities.getEditorKey()).size());
+    	for (PublicationContributor<?> contrib :pub.getContributorsToMap().get(PubsUtilities.getEditorKey())) {
     		assertPwContributor11(contrib);
     	}
     }

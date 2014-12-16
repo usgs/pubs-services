@@ -44,7 +44,7 @@ public class MpPublicationContributorBusServiceTest extends BaseSpringDaoTest {
         mpPub.setId(id);
         mpPub.setIndexId(String.valueOf(id));
         mpPub.setIpdsId("ipds_" + id);
-        mpPub.setAuthors(null);
+        mpPub.setContributors(null);
         MpPublication.getDao().add(mpPub);
 
         //update with no contributors either side

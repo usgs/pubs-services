@@ -6,7 +6,6 @@ import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationLinkDao;
-import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
@@ -27,8 +26,6 @@ import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
 import gov.usgs.cida.pubs.validation.constraint.PublishChecks;
 import gov.usgs.cida.pubs.webservice.security.PubsAuthentication;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -251,27 +248,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
         if (null != inPublication) {
 
         	setList(inPublication);
-
-        	Collection<PublicationContributor<?>> publicationContributors = new ArrayList<>();
-        	if (null != inPublication.getAuthors() && !inPublication.getAuthors().isEmpty()) {
-        		//Deserialize currently doesn't give the contributor type...
-        		ContributorType authors = new ContributorType();
-        		authors.setId(ContributorType.AUTHORS);
-	            for (PublicationContributor<?> author : inPublication.getAuthors()) {
-	            	author.setContributorType(authors);
-	            	publicationContributors.add(author);
-	            }
-        	}
-        	if (null != inPublication.getEditors() && !inPublication.getEditors().isEmpty()) {
-        		//Deserialize currently doesn't give the contributor type...
-        		ContributorType editors = new ContributorType();
-        		editors.setId(ContributorType.EDITORS);
-	            for (PublicationContributor<?> editor : inPublication.getEditors()) {
-	            	editor.setContributorType(editors);
-	            	publicationContributors.add(editor);
-	            }
-        	}
-        	contributorBusService.merge(inPublication.getId(), publicationContributors);
+        	contributorBusService.merge(inPublication.getId(), inPublication.getContributors());
 
             costCenterBusService.merge(inPublication.getId(), inPublication.getCostCenters());
             linkBusService.merge(inPublication.getId(), inPublication.getLinks());

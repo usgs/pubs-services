@@ -206,7 +206,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		pub.setSeriesNumber("2013-1259");
 		pub.setDoi("10.3133/ofr20131259");
 
-		Collection<PublicationContributor<?>> authors = new ArrayList<>();
+		Collection<PublicationContributor<?>> contributors = new ArrayList<>();
 		UsgsContributor contributor = new UsgsContributor();
 		contributor.setFamily("familyNameAuthor");
 		ContributorType contributorTypeAuthor = new ContributorType();
@@ -214,8 +214,8 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		PublicationContributor<?> pubContributor = new MpPublicationContributor();
 		pubContributor.setContributor(contributor);
 		pubContributor.setContributorType(contributorTypeAuthor);
-		authors.add(pubContributor);
-		pub.setAuthors(authors);
+		contributors.add(pubContributor);
+		pub.setContributors(contributors);
 
 		pub.setStartPage("52");
 		pub.setEndPage("56");
@@ -281,10 +281,8 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		MpPublication pub = new MpPublication();
 		assertEquals("", busService.getContributors(pub));
 
-		Collection<PublicationContributor<?>> editors = new ArrayList<>();
-		pub.setEditors(editors);
-		Collection<PublicationContributor<?>> authors = new ArrayList<>();
-		pub.setAuthors(authors);
+		Collection<PublicationContributor<?>> contributors = new ArrayList<>();
+		pub.setContributors(contributors);
 		assertEquals("", harmonizeXml(busService.getContributors(pub)));
 		
 		ContributorType contributorTypeEditor = new ContributorType();
@@ -294,13 +292,13 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		PublicationContributor<?> pubContributor1 = new MpPublicationContributor();
 		pubContributor1.setContributor(contributor1);
 		pubContributor1.setContributorType(contributorTypeEditor);
-		editors.add(pubContributor1);
+		contributors.add(pubContributor1);
 		CorporateContributor contributor2 = new CorporateContributor();
 		contributor2.setOrganization("orgNameEditor");
 		PublicationContributor<?> pubContributor2 = new MpPublicationContributor();
 		pubContributor2.setContributor(contributor2);
 		pubContributor2.setContributorType(contributorTypeEditor);
-		editors.add(pubContributor2);
+		contributors.add(pubContributor2);
 		assertEquals("<person_name sequence=\"first\" contributor_role=\"editor\"><surname>familyNameEditor</surname></person_name>"
 				+ "<organization sequence=\"additional\" contributor_role=\"editor\">orgNameEditor</organization>",
 				harmonizeXml(busService.getContributors(pub)));
@@ -312,13 +310,13 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		PublicationContributor<?> pubContributor4 = new MpPublicationContributor();
 		pubContributor4.setContributor(contributor4);
 		pubContributor4.setContributorType(contributorTypeAuthor);
-		authors.add(pubContributor4);
+		contributors.add(pubContributor4);
 		OutsideContributor contributor3 = new OutsideContributor();
 		contributor3.setFamily("familyNameAuthor");
 		PublicationContributor<?> pubContributor3 = new MpPublicationContributor();
 		pubContributor3.setContributor(contributor3);
 		pubContributor3.setContributorType(contributorTypeAuthor);
-		authors.add(pubContributor3);
+		contributors.add(pubContributor3);
 		assertEquals("<organization sequence=\"first\" contributor_role=\"author\">orgNameAuthor</organization>"
 				+ "<person_name sequence=\"additional\" contributor_role=\"author\"><surname>familyNameAuthor</surname></person_name>"
 				+ "<person_name sequence=\"additional\" contributor_role=\"editor\"><surname>familyNameEditor</surname></person_name>"

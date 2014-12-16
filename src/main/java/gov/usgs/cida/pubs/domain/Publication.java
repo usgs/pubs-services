@@ -14,7 +14,12 @@ import gov.usgs.cida.pubs.validation.constraint.PublishChecks;
 import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -229,15 +234,9 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @Pattern(regexp=PubsConstants.SPACES_OR_NUMBER_REGEX)
 	protected String ipdsInternalId;
 
-    @JsonProperty("authors")
-    @JsonView(IPwView.class)
+	@JsonIgnore
     @Valid
-	protected Collection<PublicationContributor<?>> authors;
-
-    @JsonProperty("editors")
-    @JsonView(IPwView.class)
-    @Valid
-    private Collection<PublicationContributor<?>> editors;
+	protected Collection<PublicationContributor<?>> contributors;
 
     @JsonProperty("costCenters")
     @JsonView(IPwView.class)
@@ -736,20 +735,43 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
         costCenters = inCostCenters;
     }
 
-    public Collection<PublicationContributor<?>> getAuthors() {
-        return authors;
+    public Collection<PublicationContributor<?>> getContributors() {
+        return contributors;
     }
 
-    public void setAuthors(final Collection<PublicationContributor<?>> inAuthors) {
-        authors = inAuthors;
+    public void setContributors(final Collection<PublicationContributor<?>> inContributors) {
+    	contributors = inContributors;
     }
 
-    public Collection<PublicationContributor<?>> getEditors() {
-        return editors;
+    @JsonProperty("contributors")
+    @JsonView(IPwView.class)
+    public Map<String, Collection<PublicationContributor<?>>> getContributorsToMap() {
+    	if (null != contributors && !contributors.isEmpty()) {
+    		Map<String, Collection<PublicationContributor<?>>> rtn = new HashMap<>();
+	    	for (Iterator<PublicationContributor<?>> i = contributors.iterator(); i.hasNext();) {
+	    		PublicationContributor<?> contributor = i.next();
+	    		String key = contributor.getContributorType().getText().toLowerCase();
+	    		if (!rtn.containsKey(key)) {
+	    			rtn.put(key, new ArrayList<PublicationContributor<?>>());
+	    		}
+	    		rtn.get(key).add(contributor);
+	    	}
+	    	return rtn;
+    	} else {
+    		return null;
+    	}
     }
 
-    public void setEditors(final Collection<PublicationContributor<?>> inEditors) {
-        editors = inEditors;
+    @JsonProperty("contributors")
+    public void setContributorsFromMap(final Map<String, Collection<PublicationContributor<?>>> inContributors) {
+    	if (null == contributors) {
+    		contributors = new ArrayList<PublicationContributor<?>>();
+    	} else {
+    		contributors.clear();
+    	}
+    	for (Entry<String, Collection<PublicationContributor<?>>> contributorEntry : inContributors.entrySet()) {
+    		contributors.addAll(contributorEntry.getValue());
+    	}
     }
 
     public Collection<PublicationLink<?>> getLinks() {

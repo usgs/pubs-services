@@ -124,8 +124,7 @@ public class PwPublicationDaoTest extends BaseSpringDaoTest {
     }
 
     public static void assertPwPub4Children(Publication<?> pub) {
-        assertEquals(1, pub.getAuthors().size());
-        assertEquals(1, pub.getEditors().size());
+        assertEquals(2, pub.getContributors().size());
         assertEquals(1, pub.getCostCenters().size());
         assertEquals(1, pub.getLinks().size());
     }

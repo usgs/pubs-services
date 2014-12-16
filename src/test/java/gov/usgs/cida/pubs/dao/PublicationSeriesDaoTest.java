@@ -22,6 +22,7 @@ import org.junit.Test;
 public class PublicationSeriesDaoTest extends BaseSpringDaoTest {
 
     public static final int pubSeriesCnt = 3737;
+    public static final int activePubSeriesCnt = 3242;
 
     @Test
     public void getByIdInteger() {
@@ -102,7 +103,7 @@ public class PublicationSeriesDaoTest extends BaseSpringDaoTest {
         filters.clear();
         filters.put("active", "Y");
         pubSeries = PublicationSeries.getDao().getByMap(filters);
-        assertEquals(3229, pubSeries.size());
+        assertEquals(activePubSeriesCnt, pubSeries.size());
 
     }
 

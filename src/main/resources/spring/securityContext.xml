@@ -10,14 +10,16 @@
 
 	<sec:global-method-security	secured-annotations="enabled" proxy-target-class="true" />
 
-	<sec:http auto-config="false" create-session="stateless" entry-point-ref="unauthorizedEntryPoint" >
+	<sec:http auto-config="false" create-session="stateless" entry-point-ref="unauthorizedEntryPoint" use-expressions="true">
 		<sec:custom-filter ref="tokenSecurityFilter" position="FORM_LOGIN_FILTER"/>
-		<sec:intercept-url pattern="/**" method="OPTIONS" access="IS_AUTHENTICATED_ANONYMOUSLY" requires-channel="https"/>
-		<sec:intercept-url pattern="/version" access="IS_AUTHENTICATED_ANONYMOUSLY" requires-channel="https" />
-		<sec:intercept-url pattern="/lookup/**" access="IS_AUTHENTICATED_ANONYMOUSLY" requires-channel="https" />
-		<sec:intercept-url pattern="/publication/**" access="IS_AUTHENTICATED_ANONYMOUSLY" requires-channel="https" />
-		<sec:intercept-url pattern="/auth/ad/token" access="IS_AUTHENTICATED_ANONYMOUSLY" requires-channel="https" />
-		<sec:intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY" requires-channel="https" />
+		<sec:intercept-url pattern="/**" method="OPTIONS" access="isAnonymous()" requires-channel="https"/>
+		<sec:intercept-url pattern="/auth/token" access="isAnonymous()" requires-channel="https" />
+		<sec:intercept-url pattern="/auth/logout" access="isAuthenticated()" requires-channel="https" />
+		<sec:intercept-url pattern="/lookup/**" access="isAnonymous()" requires-channel="https" />
+		<sec:intercept-url pattern="/mppublications/*/preview*" access="hasAnyRole('AD_AUTHENTICATED','PUBS_AUTHORIZED')" requires-channel="https" />
+		<sec:intercept-url pattern="/publication/**" access="isAnonymous()" requires-channel="https" />
+		<sec:intercept-url pattern="/version" access="isAnonymous()" requires-channel="https" />
+		<sec:intercept-url pattern="/**" access="hasRole('PUBS_AUTHORIZED')" requires-channel="https" />
 		<sec:anonymous />
 	</sec:http>
 

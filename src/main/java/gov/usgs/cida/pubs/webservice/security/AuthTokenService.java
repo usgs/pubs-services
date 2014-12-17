@@ -37,7 +37,7 @@ public class AuthTokenService {
 		this.busService = busService;
 	}
 
-	@RequestMapping(value={"/auth/ad/token"}, method=RequestMethod.POST, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
+	@RequestMapping(value={"/auth/token"}, method=RequestMethod.POST, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
 	@ResponseStatus(value=HttpStatus.OK)
 	public @ResponseBody ObjectNode getToken(
 			@RequestParam(value="username", required=false) String username, 

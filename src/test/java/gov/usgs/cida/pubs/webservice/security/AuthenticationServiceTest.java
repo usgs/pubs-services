@@ -2,9 +2,7 @@ package gov.usgs.cida.pubs.webservice.security;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import gov.usgs.cida.auth.client.IAuthClient;
@@ -46,8 +44,10 @@ public class AuthenticationServiceTest {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		assertEquals("testyUser", auth.getName());
 		assertFalse(auth.getAuthorities().isEmpty());
-		assertEquals(1, auth.getAuthorities().size());
+		assertEquals(3, auth.getAuthorities().size());
 		assertEquals(PubsAuthentication.ROLE_PUBS_SPN_USER, auth.getAuthorities().toArray()[0].toString());
+		assertEquals(PubsRoles.PUBS_AUTHORIZED.name(), auth.getAuthorities().toArray()[1].toString());
+		assertEquals(PubsRoles.AD_AUTHENTICATED.name(), auth.getAuthorities().toArray()[2].toString());
 		
 		AuthToken response = testService.authenticate("username", "password");
 		assertEquals(testToken, response);
@@ -56,7 +56,7 @@ public class AuthenticationServiceTest {
 	}
 	
 	@Test
-	public void noPubsRolesAuthTests() {
+	public void noPubsRolesAuthTests() throws UnauthorizedException {
 		AuthToken testToken = new AuthToken();
 		testToken.setTokenId("a-token-string");
 		testToken.setUsername("testyUser");
@@ -68,36 +68,33 @@ public class AuthenticationServiceTest {
 		when(mockAuthClient.getToken("b-token-string")).thenReturn(testToken);
 		when(mockAuthClient.getRolesByToken("b-token-string")).thenReturn(new ArrayList<String>());
 		
-		try {
-			testService.authorizeToken(testToken.getTokenId());
-			assertTrue("Should never get here", false);
-		} catch (UnauthorizedException e) {
-			assertEquals("Correct exception is thrown", "User is not authorized to use the Publications Warehouse", e.getMessage());
-		}
-		assertNull(SecurityContextHolder.getContext().getAuthentication());
+		testService.authorizeToken(testToken.getTokenId());
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		assertEquals("testyUser", auth.getName());
+		assertFalse(auth.getAuthorities().isEmpty());
+		assertEquals(1, auth.getAuthorities().size());
+		assertEquals(PubsRoles.AD_AUTHENTICATED.name(), auth.getAuthorities().toArray()[0].toString());
 		
-		try {
-			testService.authenticate("username", "password");
-			assertTrue("Should never get here", false);
-		} catch (UnauthorizedException e) {
-			assertEquals("Correct exception is thrown", "User is not authorized to use the Publications Warehouse", e.getMessage());
-		}
-		assertNull(SecurityContextHolder.getContext().getAuthentication());
+		testService.authenticate("username", "password");
+		auth = SecurityContextHolder.getContext().getAuthentication();
+		assertEquals("testyUser", auth.getName());
+		assertFalse(auth.getAuthorities().isEmpty());
+		assertEquals(1, auth.getAuthorities().size());
+		assertEquals(PubsRoles.AD_AUTHENTICATED.name(), auth.getAuthorities().toArray()[0].toString());
 		
-		try {
-			assertFalse(testService.checkToken("a-token-string"));
-		} catch (UnauthorizedException e) {
-			fail("Should not have gotten this exception");
-		}
-		assertNull(SecurityContextHolder.getContext().getAuthentication());
+		testService.checkToken("a-token-string");
+		auth = SecurityContextHolder.getContext().getAuthentication();
+		assertEquals("testyUser", auth.getName());
+		assertFalse(auth.getAuthorities().isEmpty());
+		assertEquals(1, auth.getAuthorities().size());
+		assertEquals(PubsRoles.AD_AUTHENTICATED.name(), auth.getAuthorities().toArray()[0].toString());
 
-		try {
-			testService.checkToken("b-token-string");
-			assertTrue("Should never get here", false);
-		} catch (UnauthorizedException e) {
-			assertEquals("Correct exception is thrown", "User is not authorized to use the Publications Warehouse", e.getMessage());
-		}
-		assertNull(SecurityContextHolder.getContext().getAuthentication());
+		testService.checkToken("b-token-string");
+		auth = SecurityContextHolder.getContext().getAuthentication();
+		assertEquals("testyUser", auth.getName());
+		assertFalse(auth.getAuthorities().isEmpty());
+		assertEquals(1, auth.getAuthorities().size());
+		assertEquals(PubsRoles.AD_AUTHENTICATED.name(), auth.getAuthorities().toArray()[0].toString());
 	}
 	
 	@Test

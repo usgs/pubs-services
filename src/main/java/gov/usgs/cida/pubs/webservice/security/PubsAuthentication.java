@@ -24,11 +24,11 @@ public class PubsAuthentication implements Authentication {
 	public static final String ROLE_PUBS_SPN_SUPERVISOR = ROLE_PREFIX + PubsRoles.PUBS_SPN_SUPERVISOR.name();
 	public static final String ROLE_PUBS_CATALOGER_SUPERVISOR = ROLE_PREFIX + PubsRoles.PUBS_CATALOGER_SUPERVISOR.name();
 	
-	private Collection<? extends GrantedAuthority> authorities;
+	private Collection<GrantedAuthority> authorities;
 	private User principal;
 	
 	public PubsAuthentication(String username, List<String> rawRoles) {
-		List<SimpleGrantedAuthority> auths = new ArrayList<>();
+		Collection<GrantedAuthority> auths = new ArrayList<>();
 		
 		for(String role : rawRoles) {
 			try {
@@ -76,6 +76,10 @@ public class PubsAuthentication implements Authentication {
 	public void setAuthenticated(boolean isAuthenticated)
 			throws IllegalArgumentException {
 		throw new RuntimeException("PubsAuthentication calculates authenticated status based on roles");
+	}
+
+	public void addAuthority(PubsRoles role) {
+		authorities.add(new SimpleGrantedAuthority(role.name()));
 	}
 
 }

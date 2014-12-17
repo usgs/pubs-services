@@ -64,11 +64,11 @@ public class AuthenticationService {
 		PubsAuthentication authentication =
 				new PubsAuthentication(authClient.getToken(token).getUsername(), authClient.getRolesByToken(token));
 
-		if (authentication.getAuthorities().isEmpty()) {
-			throw new UnauthorizedException("User is not authorized to use the Publications Warehouse");
-		} else {
-			SecurityContextHolder.getContext().setAuthentication(authentication);
+		if (!authentication.getAuthorities().isEmpty()) {
+			authentication.addAuthority(PubsRoles.PUBS_AUTHORIZED);
 		}
+		authentication.addAuthority(PubsRoles.AD_AUTHENTICATED);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 	}
 
 }

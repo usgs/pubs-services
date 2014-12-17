@@ -138,6 +138,16 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         return rtn;
     }
 
+    @RequestMapping(value="{indexId}/preview", method=RequestMethod.GET)
+    @ResponseView(IMpView.class)
+    @Transactional(readOnly = true)
+    public @ResponseBody MpPublication getMpPublicationPreview(HttpServletRequest request, HttpServletResponse response,
+                @PathVariable("indexId") String indexId) {
+        LOG.debug("getMpPublication");
+        setHeaders(response);
+        return busService.getObject(PubsUtilities.parseInteger(indexId));
+    }
+
     @RequestMapping(method = RequestMethod.POST)
     @ResponseView(IMpView.class)
     @Transactional

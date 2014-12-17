@@ -93,7 +93,7 @@ public class AuthTokenServiceTest {
 		testToken.setExpires(ts);
 		when(mockAuthService.authenticate("user", "pwd")).thenReturn(testToken);
 
-        MvcResult rtn = mockMvc.perform(post("/auth/ad/token").param("username", "user").param("password", "pwd")
+        MvcResult rtn = mockMvc.perform(post("/auth/token").param("username", "user").param("password", "pwd")
         		.accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
         	.andExpect(status().isOk())
         	.andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
@@ -108,7 +108,7 @@ public class AuthTokenServiceTest {
     	mockMvc = MockMvcBuilders.standaloneSetup(testService).build();
 		when(mockAuthService.authenticate("user", "pwd")).thenThrow(new UnauthorizedException("Invalid username/password"));
 
-        MvcResult rtn = mockMvc.perform(post("/auth/ad/token").param("username", "user").param("password", "pwd")
+        MvcResult rtn = mockMvc.perform(post("/auth/token").param("username", "user").param("password", "pwd")
         		.accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
         	.andExpect(status().isUnauthorized())
         	.andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))

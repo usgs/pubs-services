@@ -33,6 +33,9 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
     //TODO contributors, links, & CostCenters in test.
     public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "contributors", "contributorsToMap", "links");
 
+    public static final String MPPUB1_INDEXID = "sir20145083";
+    public static final String MPPUB1_LOCKEDBY = "drsteini";
+    
     @Test
     public void addAndGetByIds() {
         Integer pubId = MpPublication.getDao().getNewProdId();
@@ -127,6 +130,15 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
     	//this one should be a merge.
     	MpPublication.getDao().publishToPw(4);
     	PwPublicationDaoTest.assertPwPub4(PwPublication.getDao().getById(4));
+    }
+    
+    @Test
+    public void getByIndexIdTest() {
+    	MpPublication pub = MpPublication.getDao().getByIndexId(MPPUB1_INDEXID);
+    	assertMpPub1(pub, MPPUB1_LOCKEDBY);
+    	
+    	//This one is only in Publication, so we shouldn't frind it
+    	assertNull(MpPublication.getDao().getByIndexId("9"));
     }
 
     public static void assertMpPub1(Publication<?> pub, String expectedLockUsername) {

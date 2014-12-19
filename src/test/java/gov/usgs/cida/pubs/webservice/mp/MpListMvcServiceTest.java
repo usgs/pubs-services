@@ -115,7 +115,7 @@ public class MpListMvcServiceTest extends BaseSpringTest {
                 sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
     }
 
-    private List<MpList> getListOfMpList() {
+    public static List<MpList> getListOfMpList() {
     	List<MpList> rtn = new ArrayList<>();
     	rtn.add(MpListDaoTest.buildMpList(1));
     	rtn.add(MpListDaoTest.buildMpList(2));

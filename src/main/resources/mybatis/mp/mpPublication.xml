@@ -122,6 +122,11 @@
            where publication_id = #{value,jdbcType=VARCHAR}
     </select>
 
+    <select id="getByIndexId" parameterType="String" resultMap="result">
+        <include refid="baseSelect"/>
+         where index_id = #{value,jdbcType=VARCHAR}
+    </select>
+
     <select id="getByMap" parameterType="map" resultMap="result">
         <include refid="base.pagingTop"/>
         <include refid="baseSelect"/>

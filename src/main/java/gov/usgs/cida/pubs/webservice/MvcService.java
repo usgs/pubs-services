@@ -171,6 +171,8 @@ public abstract class MvcService<D> {
         }
     }
 
+    //This check is meant to slow any denial-of-service attacks against unsecure ("permitAll") endpoints (see the securityContext.xml).
+    //It should not be necessary to use it on any other endpoints. 
     protected boolean validateParametersSetHeaders(HttpServletRequest request, HttpServletResponse response) {
         boolean rtn = true;
         setHeaders(response);

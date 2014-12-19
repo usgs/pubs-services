@@ -93,6 +93,15 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     }
 
     @Test
+    public void getByIndexIdTest() {
+        busService.getByIndexId(null);
+        assertNull(busService.getByIndexId("9"));
+        MpPublication mpPub = busService.getByIndexId(MpPublicationDaoTest.MPPUB1_INDEXID);
+        MpPublicationDaoTest.assertMpPub1(mpPub, MpPublicationDaoTest.MPPUB1_LOCKEDBY);
+        MpPublicationDaoTest.assertMpPub1Children(mpPub);
+    }
+
+    @Test
     public void getObjectsTest() {
         busService.getObjects(null);
         busService.getObjects(new HashMap<String, Object>());

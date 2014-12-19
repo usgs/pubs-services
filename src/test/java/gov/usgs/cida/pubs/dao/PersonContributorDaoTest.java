@@ -162,4 +162,10 @@ public class PersonContributorDaoTest extends BaseSpringDaoTest {
         }
     }
 
+    public static PersonContributor<?> buildAPerson(final Integer personId, final String type) {
+    	PersonContributor<?> newPerson = type=="USGS" ? new UsgsContributor() : new OutsideContributor();
+    	newPerson.setId(personId);
+    	return newPerson;
+    }
+
 }

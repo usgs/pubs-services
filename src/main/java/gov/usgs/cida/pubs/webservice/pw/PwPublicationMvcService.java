@@ -31,7 +31,7 @@ public class PwPublicationMvcService  extends MvcService<PwPublication> {
     private final IPwPublicationBusService busService;
 
     @Autowired
-    PwPublicationMvcService(@Qualifier("pwPublicationBusService")
+    public PwPublicationMvcService(@Qualifier("pwPublicationBusService")
     		final IPwPublicationBusService busService) {
     	this.busService = busService;
     }

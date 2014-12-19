@@ -750,7 +750,19 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     		Map<String, Collection<PublicationContributor<?>>> rtn = new HashMap<>();
 	    	for (Iterator<PublicationContributor<?>> i = contributors.iterator(); i.hasNext();) {
 	    		PublicationContributor<?> contributor = i.next();
-	    		String key = contributor.getContributorType().getText().toLowerCase();
+	    		//So, this is a lot of work to make sure that we don't NPE in the event that the contributor
+	    		// hasn't been fully populated (mostly likely due to validation errors on the publication) 
+	    		String key = "unknown";
+	    		if (null != contributor.getContributorType()) {
+		    		if (null != contributor.getContributorType().getText()) {
+		    			key = contributor.getContributorType().getText().toLowerCase();
+		    		} else if (null != contributor.getContributorType().getId()) {
+		    			ContributorType ct = ContributorType.getDao().getById(contributor.getContributorType().getId());
+		    			if (null != ct) {
+		    				key = ct.getText().toLowerCase();
+		    			}
+		    		}
+	    		}
 	    		if (!rtn.containsKey(key)) {
 	    			rtn.put(key, new ArrayList<PublicationContributor<?>>());
 	    		}
@@ -769,8 +781,12 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     	} else {
     		contributors.clear();
     	}
-    	for (Entry<String, Collection<PublicationContributor<?>>> contributorEntry : inContributors.entrySet()) {
-    		contributors.addAll(contributorEntry.getValue());
+    	if (null != inContributors) {
+	    	for (Entry<String, Collection<PublicationContributor<?>>> contributorEntry : inContributors.entrySet()) {
+	    		if (null != contributorEntry.getValue()) {
+	    			contributors.addAll(contributorEntry.getValue());
+	    		}
+	    	}
     	}
     }
 

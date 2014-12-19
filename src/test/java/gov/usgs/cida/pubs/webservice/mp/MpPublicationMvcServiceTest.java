@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyMap;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -100,6 +101,22 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
                 sameJSONObjectAs(new JSONObject(expectedGetPubsDefault)));
     }
     
+	@Test
+    public void getPreviewTest() throws Exception {
+    	//Happy Path
+        when(busService.getByIndexId(anyString())).thenReturn(buildAPub(1));
+    	
+        MvcResult rtn = mockMvc.perform(get("/mppublications/" + MpPublicationDaoTest.MPPUB1_INDEXID
+        		+ "/preview").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+        .andReturn();
+
+        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+                sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
+    }
+
     @Test
     public void getMpPublicationTest() throws Exception {
     	//Happy Path

@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,11 +32,17 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ContributorMvcService.class);
 	
+	private IBusService<CorporateContributor> corporateContributorBusService;
+	private IBusService<PersonContributor<?>> personContributorBusService;
+
 	@Autowired
-	private IBusService corporateContributorBusService;
-	
-	@Autowired
-	private IBusService personContributorBusService;
+	public ContributorMvcService(@Qualifier("corporateContributorBusService")
+			IBusService<CorporateContributor> corporateContributorBusService,
+			@Qualifier("personContributorBusService")
+			IBusService<PersonContributor<?>> personContributorBusService) {
+		this.corporateContributorBusService = corporateContributorBusService;
+		this.personContributorBusService = personContributorBusService;
+	}
 	
     @RequestMapping(value={"/contributor/{contributorId}"}, method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
     @ResponseView(IPwView.class)
@@ -42,43 +50,38 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
                 @PathVariable("contributorId") String contributorId) {
         LOG.debug("getContributor");
         setHeaders(response);
-        Contributor<?> rtn = null;
-        if (validateParametersSetHeaders(request, response)) {
-            rtn = Contributor.getDao().getById(PubsUtilities.parseInteger(contributorId));
+        Contributor<?> rtn = Contributor.getDao().getById(PubsUtilities.parseInteger(contributorId));
+        if (null == rtn) {
+        	response.setStatus(HttpStatus.NOT_FOUND.value());
         }
         return rtn;
     }
 	
 	@RequestMapping(value = {"/person/{contributorId}"}, method = RequestMethod.GET, produces = PubsConstants.MIME_TYPE_APPLICATION_JSON)
 	@ResponseView(IPwView.class)
-	public @ResponseBody
-	Contributor<?> getPerson(HttpServletRequest request, HttpServletResponse response,
+	public @ResponseBody Contributor<?> getPerson(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable("contributorId") String contributorId) {
 		LOG.debug("getPerson");
         setHeaders(response);
-		Contributor<?> rtn = null;
-		if (validateParametersSetHeaders(request, response)) {
-			rtn = (Contributor) personContributorBusService.getObject(PubsUtilities.parseInteger(contributorId));
-		}
-		return rtn;
+        Contributor<?> rtn = (Contributor<?>) personContributorBusService.getObject(PubsUtilities.parseInteger(contributorId));
+        if (null == rtn) {
+        	response.setStatus(HttpStatus.NOT_FOUND.value());
+        }
+        return rtn;
 	}
 	
 	@RequestMapping(value = {"/usgscontributor"}, method = RequestMethod.POST, produces = PubsConstants.MIME_TYPE_APPLICATION_JSON)
 	@ResponseView(IPwView.class)
 	@Transactional
-	public @ResponseBody
-	Contributor<?> createUsgsContributor(@RequestBody UsgsContributor person, HttpServletResponse response
-			) {
+	public @ResponseBody UsgsContributor createUsgsContributor(@RequestBody UsgsContributor person, HttpServletResponse response) {
 		LOG.debug("createUsgsContributor");
         setHeaders(response);
-		Contributor<?> result = null;
-		if (null != person) {
-			Contributor createdPerson = (Contributor) personContributorBusService.createObject(person);
-			if (null != createdPerson) {
-				Integer id = createdPerson.getId();
-				result = (Contributor) personContributorBusService.getObject(id);
-			}
-			
+        setHeaders(response);
+        UsgsContributor result = (UsgsContributor) personContributorBusService.createObject(person);
+		if (null != result && result.getValidationErrors().isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_CREATED);
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
 		return result;
 	}
@@ -86,10 +89,10 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	@RequestMapping(value = "/usgscontributor/{id}", method = RequestMethod.PUT, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
     @ResponseView(IPwView.class)
     @Transactional
-    public @ResponseBody Contributor<?> updateUsgsContributor(@RequestBody UsgsContributor person, @PathVariable String id, HttpServletResponse response) {
+    public @ResponseBody UsgsContributor updateUsgsContributor(@RequestBody UsgsContributor person, @PathVariable String id, HttpServletResponse response) {
 		LOG.debug("updateUsgsContributor");
         setHeaders(response);
-        Contributor<PersonContributor<UsgsContributor>> castPerson = (Contributor<PersonContributor<UsgsContributor>>) personContributorBusService.updateObject(person);
+        UsgsContributor castPerson = (UsgsContributor) personContributorBusService.updateObject(person);
         if (null != castPerson && (null == castPerson.getValidationErrors() || castPerson.getValidationErrors().isEmpty())) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
@@ -101,19 +104,15 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	@RequestMapping(value = {"/outsidecontributor"}, method = RequestMethod.POST, produces = PubsConstants.MIME_TYPE_APPLICATION_JSON)
 	@ResponseView(IPwView.class)
 	@Transactional
-	public @ResponseBody
-	Contributor<?> createOutsideContributor(@RequestBody OutsideContributor person, HttpServletResponse response
-			) {
+	public @ResponseBody OutsideContributor createOutsideContributor(@RequestBody OutsideContributor person,
+			HttpServletResponse response) {
 		LOG.debug("createOutsideContributor");
         setHeaders(response);
-		Contributor<?> result = null;
-		if (null != person) {
-			Contributor createdPerson = (Contributor) personContributorBusService.createObject(person);
-			if (null != createdPerson) {
-				Integer id = createdPerson.getId();
-				result = (Contributor) personContributorBusService.getObject(id);
-			}
-			
+        OutsideContributor result = (OutsideContributor) personContributorBusService.createObject(person);
+		if (null != result && result.getValidationErrors().isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_CREATED);
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
 		return result;
 	}
@@ -121,10 +120,10 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	@RequestMapping(value = "/outsidecontributor/{id}", method = RequestMethod.PUT, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
     @ResponseView(IPwView.class)
     @Transactional
-    public @ResponseBody Contributor<?> updateOutsideContributor(@RequestBody OutsideContributor person, @PathVariable String id, HttpServletResponse response) {
+    public @ResponseBody OutsideContributor updateOutsideContributor(@RequestBody OutsideContributor person, @PathVariable String id, HttpServletResponse response) {
 		LOG.debug("updateOutsideContributor");
         setHeaders(response);
-        Contributor<PersonContributor<OutsideContributor>> castPerson = (Contributor<PersonContributor<OutsideContributor>>) personContributorBusService.updateObject(person);
+        OutsideContributor castPerson = (OutsideContributor) personContributorBusService.updateObject(person);
         if (null != castPerson && (null == castPerson.getValidationErrors() || castPerson.getValidationErrors().isEmpty())) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
@@ -133,56 +132,30 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
         return castPerson;
     }
 	
-	@RequestMapping(value = {"/person"}, method = RequestMethod.POST, produces = PubsConstants.MIME_TYPE_APPLICATION_JSON)
-	@ResponseView(IPwView.class)
-	@Transactional
-	public @ResponseBody
-	Contributor<?> createPerson(@RequestBody PersonContributor person, HttpServletResponse response
-			) {
-		LOG.debug("createPerson");
-        setHeaders(response);
-		Contributor<?> result = null;
-		if (null != person) {
-			Contributor createdPerson = (Contributor) personContributorBusService.createObject(person);
-			if (null != createdPerson) {
-				Integer id = createdPerson.getId();
-				result = (Contributor) personContributorBusService.getObject(id);
-			}
-			
-		}
-		return result;
-	}
-	
 	@RequestMapping(value = {"/corporation/{contributorId}"}, method = RequestMethod.GET, produces = PubsConstants.MIME_TYPE_APPLICATION_JSON)
 	@ResponseView(IPwView.class)
-	public @ResponseBody
-	Contributor<?> getCorporation(HttpServletRequest request, HttpServletResponse response,
+	public @ResponseBody CorporateContributor getCorporation(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable("contributorId") String contributorId) {
 		LOG.debug("getCorporation");
         setHeaders(response);
-		Contributor<?> rtn = null;
-		if (validateParametersSetHeaders(request, response)) {
-			rtn = (Contributor) corporateContributorBusService.getObject(PubsUtilities.parseInteger(contributorId));
-		}
-		return rtn;
+        CorporateContributor rtn = corporateContributorBusService.getObject(PubsUtilities.parseInteger(contributorId));
+        if (null == rtn) {
+        	response.setStatus(HttpStatus.NOT_FOUND.value());
+        }
+        return rtn;
 	}
 	
 	@RequestMapping(value = {"/corporation"}, method = RequestMethod.POST, produces = PubsConstants.MIME_TYPE_APPLICATION_JSON)
 	@ResponseView(IPwView.class)
 	@Transactional
-	public @ResponseBody
-	Contributor<?> createCorporation(@RequestBody CorporateContributor corporation, HttpServletResponse response
-			) {
+	public @ResponseBody CorporateContributor createCorporation(@RequestBody CorporateContributor corporation, HttpServletResponse response) {
 		LOG.debug("createCorporation");
         setHeaders(response);
-		Contributor<?> result = null;
-		if (null != corporation) {
-			Contributor createdCorporation = (Contributor) corporateContributorBusService.createObject(corporation);
-			if (null != createdCorporation) {
-				Integer id = createdCorporation.getId();
-				result = (Contributor) corporateContributorBusService.getObject(id);
-			}
-			
+        CorporateContributor result = corporateContributorBusService.createObject(corporation);
+		if (null != result && result.getValidationErrors().isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_CREATED);
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
 		return result;
 	}
@@ -190,15 +163,15 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	@RequestMapping(value = "/corporation/{id}", method = RequestMethod.PUT, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
     @ResponseView(IPwView.class)
     @Transactional
-    public @ResponseBody Contributor<?> updateCorporation(@RequestBody CorporateContributor corporation, @PathVariable String id, HttpServletResponse response) {
+    public @ResponseBody CorporateContributor updateCorporation(@RequestBody CorporateContributor corporation, @PathVariable String id, HttpServletResponse response) {
 		LOG.debug("updateCorporation");
         setHeaders(response);
-        Contributor<CorporateContributor> castCorporation = (Contributor<CorporateContributor>) corporateContributorBusService.updateObject(corporation);
-        if (null != castCorporation && (null == castCorporation.getValidationErrors() || castCorporation.getValidationErrors().isEmpty())) {
+        CorporateContributor result = corporateContributorBusService.updateObject(corporation);
+        if (null != result && (null == result.getValidationErrors() || result.getValidationErrors().isEmpty())) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
-        return castCorporation;
+        return result;
     }
 }

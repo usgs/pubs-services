@@ -102,15 +102,15 @@ public class LookupMvcService extends MvcService<PublicationType> {
     @RequestMapping("publicationtype/{publicationTypeId}/publicationsubtype/{publicationSubtypeId}/publicationseries")
     @ResponseView(ILookupView.class)
     public @ResponseBody Collection<PublicationSeries> getPublicationSeriesREST(HttpServletRequest request, HttpServletResponse response,
-                @RequestParam(value=PublicationSeriesDao.TEXT_SEARCH, required=false) String[] text,
-                @PathVariable("publicationTypeId") String publicationTypeId,
-                @PathVariable(PublicationSeriesDao.TEXT_SEARCH) String publicationSubtypeId,
-                @RequestParam(value=PublicationSeriesDao.ACTIVE_SEARCH, required=false) String[] active) {
+    		@PathVariable("publicationTypeId") String publicationTypeId,
+    		@PathVariable(PublicationSeriesDao.SUBTYPE_SEARCH) String publicationSubtypeId,
+    		@RequestParam(value=PublicationSeriesDao.TEXT_SEARCH, required=false) String[] text,
+    		@RequestParam(value=PublicationSeriesDao.ACTIVE_SEARCH, required=false) String[] active) {
         LOG.debug("publicationSeries");
         Collection<PublicationSeries> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
-            filters.put(PublicationSeriesDao.TEXT_SEARCH, publicationSubtypeId);
+            filters.put(PublicationSeriesDao.SUBTYPE_SEARCH, publicationSubtypeId);
             if (null != text && 0 < text.length) {
                 filters.put(PublicationSeriesDao.TEXT_SEARCH, text[0]);
             }

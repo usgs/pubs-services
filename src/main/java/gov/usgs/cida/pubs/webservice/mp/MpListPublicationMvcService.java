@@ -27,7 +27,7 @@ public class MpListPublicationMvcService extends MvcService<MpListPublication> {
 	private final IMpListPublicationBusService busService;
 	
     @Autowired
-    MpListPublicationMvcService(@Qualifier("mpListPublicationBusService")
+	public MpListPublicationMvcService(@Qualifier("mpListPublicationBusService")
     		final IMpListPublicationBusService busService) {
     	this.busService = busService;
     }

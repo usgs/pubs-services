@@ -21,6 +21,7 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
     public static final String RELEASE_LOCKS = ".releaseLocks";
     public static final String RELEASE_LOCKS_USER = RELEASE_LOCKS + "User";
     public static final String RELEASE_LOCKS_PUB = RELEASE_LOCKS + "Pub";
+    public static final String GET_BY_INDEX_ID = ".getByIndexId";
 
    /**
      * {@inheritDoc}
@@ -147,5 +148,12 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
 	public void releaseLocksPub(Integer domainID) {
     	getSqlSession().update(NS + RELEASE_LOCKS_PUB, domainID);
 	}
+
+    @Transactional(readOnly = true)
+    @ISetDbContext
+    @Override
+    public MpPublication getByIndexId(String indexID) {
+        return (MpPublication) getSqlSession().selectOne(NS + GET_BY_INDEX_ID, indexID);
+    }
 
 }

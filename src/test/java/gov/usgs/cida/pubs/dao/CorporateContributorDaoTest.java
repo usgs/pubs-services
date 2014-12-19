@@ -96,4 +96,9 @@ public class CorporateContributorDaoTest extends BaseSpringDaoTest {
         }
     }
 
+    public static CorporateContributor buildACorp(final Integer corpId) {
+    	CorporateContributor newCorp = new CorporateContributor();
+    	newCorp.setId(corpId);
+    	return newCorp;
+    }
 }

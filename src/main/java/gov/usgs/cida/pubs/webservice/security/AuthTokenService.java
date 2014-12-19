@@ -32,7 +32,7 @@ public class AuthTokenService {
 	@Autowired
 	public AuthTokenService(final AuthenticationService authenticationService,
 			@Qualifier("mpPublicationBusService")
-	final IMpPublicationBusService busService) {
+			final IMpPublicationBusService busService) {
 		this.authenticationService = authenticationService;
 		this.busService = busService;
 	}

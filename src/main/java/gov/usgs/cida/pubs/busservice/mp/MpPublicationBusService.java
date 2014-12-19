@@ -415,4 +415,9 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 	public void releaseLocksPub(Integer publicationId) {
 		MpPublication.getDao().releaseLocksPub(publicationId);
 	}
+
+	@Override
+	public MpPublication getByIndexId(String indexId) {
+		return MpPublication.getDao().getByIndexId(indexId);
+	}
 }

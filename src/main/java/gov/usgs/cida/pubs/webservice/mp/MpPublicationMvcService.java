@@ -46,7 +46,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     private final IMpPublicationBusService busService;
 
     @Autowired
-    MpPublicationMvcService(@Qualifier("publicationBusService")
+	public MpPublicationMvcService(@Qualifier("publicationBusService")
     		final IBusService<Publication<?>> pubBusService,
     		@Qualifier("mpPublicationBusService")
     		final IMpPublicationBusService busService) {
@@ -125,9 +125,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         MpPublication rtn = new MpPublication();
         ValidatorResult locked = busService.checkAvailability(id);
         if (null == locked) {
-	        if (validateParametersSetHeaders(request, response)) {
-	            rtn = busService.getObject(id);
-	        }
+        	rtn = busService.getObject(id);
 	        if (null == rtn) {
 	        	response.setStatus(HttpStatus.NOT_FOUND.value());
 	        }
@@ -145,7 +143,11 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
                 @PathVariable("indexId") String indexId) {
         LOG.debug("getMpPublication");
         setHeaders(response);
-        return busService.getObject(PubsUtilities.parseInteger(indexId));
+        MpPublication rtn = busService.getByIndexId(indexId);
+        if (null == rtn) {
+        	response.setStatus(HttpStatus.NOT_FOUND.value());
+        }
+        return rtn;
     }
 
     @RequestMapping(method = RequestMethod.POST)

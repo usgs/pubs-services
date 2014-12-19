@@ -28,4 +28,11 @@ public interface IMpPublicationDao extends IMpDao<MpPublication> {
      */
     void releaseLocksPub(Integer domainId);
 
+    /** 
+     * Get an mpPublication by it's index id.
+     * @param indexId - index id of the object to retrieve. 
+     * @return the domain object.
+     */
+	MpPublication getByIndexId(String indexId);
+
 }

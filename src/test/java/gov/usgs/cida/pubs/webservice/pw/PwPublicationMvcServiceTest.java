@@ -12,7 +12,6 @@ import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
-import gov.usgs.cida.pubs.domain.pw.PwPublication;
 
 import java.util.Arrays;
 
@@ -66,7 +65,7 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 	@Test
     public void getPubsTest() throws Exception {
     	//Happy Path
-        when(busService.getObjects(anyMap())).thenReturn(Arrays.asList(buildAPub(1)));
+        when(busService.getObjects(anyMap())).thenReturn(Arrays.asList(PwPublicationDaoTest.buildAPub(1)));
         when(busService.getObjectCount(anyMap())).thenReturn(Integer.valueOf(12));
     	
         MvcResult rtn = mockMvc.perform(get("/publication?mimetype=json").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
@@ -92,7 +91,7 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
     @Test
     public void getByIndexIdTest() throws Exception {
     	//Happy Path
-        when(busService.getByIndexId("1")).thenReturn(buildAPub(1));
+        when(busService.getByIndexId("1")).thenReturn(PwPublicationDaoTest.buildAPub(1));
         MvcResult rtn = mockMvc.perform(get("/publication/1?mimetype=json").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
@@ -110,9 +109,4 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
         assertEquals(0, rtn.getResponse().getContentAsString().length());
     }
     
-    public PwPublication buildAPub(Integer id) {
-    	PwPublication pub = PwPublicationDaoTest.buildAPub(id);
-    	return pub;
-    }
-
 }

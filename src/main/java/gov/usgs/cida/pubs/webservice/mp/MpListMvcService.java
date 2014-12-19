@@ -30,7 +30,7 @@ public class MpListMvcService extends MvcService<MpList> {
 	private final IBusService<MpList> busService;
 
     @Autowired
-    MpListMvcService(@Qualifier("mpListBusService")
+	public  MpListMvcService(@Qualifier("mpListBusService")
     		final IBusService<MpList> busService) {
     	this.busService = busService;
     }

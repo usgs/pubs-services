@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.dao.mp;
 
 import gov.usgs.cida.pubs.aop.ISetDbContext;
 import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.dao.intfc.IMpListDao;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 
 import java.util.List;
@@ -9,17 +10,11 @@ import java.util.Map;
 
 import org.springframework.transaction.annotation.Transactional;
 
-public class MpListDao extends BaseDao<MpList> {
+public class MpListDao extends BaseDao<MpList> implements IMpListDao {
 
 	private static final String NS = "mpList";
-
-	@Transactional
-	@ISetDbContext
-	@Override
-	public Integer add(MpList domainObject) {
-		getSqlSession().insert(NS + ADD, domainObject);
-		return domainObject.getId();
-	}
+	private static final String GET_BY_IPDS_ID = ".getbyIpdsId";
+	public static final String LIST_TYPE_SEARCH = "listType";
 
 	@Transactional(readOnly = true)
 	@ISetDbContext
@@ -46,24 +41,10 @@ public class MpListDao extends BaseDao<MpList> {
 		return getSqlSession().selectList(NS + GET_BY_MAP, filters);
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	@ISetDbContext
 	@Override
-	public void update(MpList domainObject) {
-		getSqlSession().update(NS + UPDATE, domainObject);
-	}
-
-	@Transactional
-	@ISetDbContext
-	@Override
-	public void delete(MpList domainObject) {
-		deleteById(domainObject.getId());
-	}
-
-	@Transactional
-	@ISetDbContext
-	@Override
-	public void deleteById(Integer domainID) {
-		getSqlSession().delete(NS + DELETE, domainID);
+	public MpList getByIpdsId(Integer ipdsId) {
+		return getSqlSession().selectOne(NS + GET_BY_IPDS_ID, ipdsId);
 	}
 }

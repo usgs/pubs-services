@@ -6,15 +6,19 @@ import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.webservice.security.PubsAuthentication;
+import gov.usgs.cida.pubs.webservice.security.PubsRoles;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
@@ -54,6 +58,39 @@ public final class PubsUtilities {
 			username = ((User) auth.getPrincipal()).getUsername();
 		}
 		return username;
+    }
+    
+    public static boolean isSpnUser() {
+    	boolean rtn = false;
+    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    	if (null != auth && null != auth.getAuthorities() && auth instanceof PubsAuthentication) {
+    		Iterator<? extends GrantedAuthority> i = auth.getAuthorities().iterator();
+    		while (i.hasNext() && !rtn) {
+    			if (i.next().getAuthority().equalsIgnoreCase(PubsRoles.PUBS_SPN_USER.name())) {
+    				rtn = true;
+    			}
+    		}
+    	}
+    	return rtn;
+    }
+    
+    public static boolean isSpnOnly() {
+    	boolean hasSpn = false;
+    	boolean hasOther = false;
+    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    	if (null != auth && null != auth.getAuthorities() && auth instanceof PubsAuthentication) {
+    		Iterator<? extends GrantedAuthority> i = auth.getAuthorities().iterator();
+    		while (i.hasNext()) {
+    			GrantedAuthority gAuth = i.next();
+    			if (gAuth.getAuthority().equalsIgnoreCase(PubsRoles.PUBS_SPN_USER.name())) {
+    				hasSpn = true;
+    			} else if (gAuth.getAuthority().equalsIgnoreCase(PubsRoles.PUBS_ADMIN.name())
+    					|| gAuth.getAuthority().equalsIgnoreCase(PubsRoles.PUBS_CATALOGER_USER.name())) {
+    				hasOther = true;
+    			}
+    		}
+    	}
+    	return hasSpn && !hasOther;
     }
 
     public static Integer parseInteger(final String intString) {

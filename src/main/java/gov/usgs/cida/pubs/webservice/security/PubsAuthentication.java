@@ -16,14 +16,6 @@ public class PubsAuthentication implements Authentication {
 	private static final Logger LOG = LoggerFactory.getLogger(PubsAuthentication.class);
 	private static final long serialVersionUID = 1L;
 
-	public static final String ROLE_PREFIX = "ROLE_";
-	public static final String ROLE_PUBS_ADMIN = ROLE_PREFIX + PubsRoles.PUBS_ADMIN.name();
-	public static final String ROLE_PUBS_TAGGING_USER = ROLE_PREFIX + PubsRoles.PUBS_TAGGING_USER.name();
-	public static final String ROLE_PUBS_SPN_USER = ROLE_PREFIX + PubsRoles.PUBS_SPN_USER.name();
-	public static final String ROLE_PUBS_CATALOGER_USER = ROLE_PREFIX + PubsRoles.PUBS_CATALOGER_USER.name();
-	public static final String ROLE_PUBS_SPN_SUPERVISOR = ROLE_PREFIX + PubsRoles.PUBS_SPN_SUPERVISOR.name();
-	public static final String ROLE_PUBS_CATALOGER_SUPERVISOR = ROLE_PREFIX + PubsRoles.PUBS_CATALOGER_SUPERVISOR.name();
-	
 	private Collection<GrantedAuthority> authorities;
 	private User principal;
 	
@@ -32,8 +24,9 @@ public class PubsAuthentication implements Authentication {
 		
 		for(String role : rawRoles) {
 			try {
-				PubsRoles.valueOf(role); //role validation
-				auths.add(new SimpleGrantedAuthority(PubsAuthentication.ROLE_PREFIX + role));
+				//role validation - we only add roles here that are valid for pubs.
+				PubsRoles pubsRole = PubsRoles.valueOf(role);
+				auths.add(new SimpleGrantedAuthority(pubsRole.name()));
 			} catch (Exception e) {
 				LOG.debug(MessageFormat.format("Role {0} ignored.", role), e);
 			}

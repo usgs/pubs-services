@@ -9,6 +9,7 @@ import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.webservice.security.PubsRoles;
 
 import java.util.Arrays;
 
@@ -106,6 +107,67 @@ public class PubsUtilitiesTest extends BaseSpringTest {
     			StringUtils.join(PubsUtilities.removeStopWords("a1~b`c!dd@e#f$g%h^ii&j*k(l)m_n+o{p}q|r:ss\"tt<u>v?w`x-y=z[1]2\\3;4'5,6.7/8"), " and "));
     	assertEquals("new and analysis and mars and  and special and regions and  and  and findings and second and mepag and special and regions and science and analysis and group and  and sr and sag2", 
     			StringUtils.join(PubsUtilities.removeStopWords("A new analysis of Mars \"Special Regions\": findings of the Second MEPAG Special Regions Science Analysis Group (SR-SAG2)"), " and "));
+    }
+
+    @Test
+    public void isSpnUserTest() {
+    	assertFalse(PubsUtilities.isSpnUser());
+    	
+        PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_SPN_USER.name()));
+        assertTrue(PubsUtilities.isSpnUser());
+        
+        PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_SPN_USER.name(),
+        		PubsRoles.PUBS_ADMIN.name()));
+        assertTrue(PubsUtilities.isSpnUser());
+        
+        PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_SPN_USER.name(),
+        		PubsRoles.PUBS_CATALOGER_USER.name()));
+        assertTrue(PubsUtilities.isSpnUser());
+        
+        PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_SPN_USER.name(),
+        		PubsRoles.PUBS_ADMIN.name(), PubsRoles.PUBS_CATALOGER_USER.name()));
+        assertTrue(PubsUtilities.isSpnUser());
+        
+        PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_ADMIN.name(),
+        		PubsRoles.PUBS_CATALOGER_USER.name()));
+    	assertFalse(PubsUtilities.isSpnUser());
+        
+        PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_ADMIN.name()));
+    	assertFalse(PubsUtilities.isSpnUser());
+        
+        PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_CATALOGER_USER.name()));
+    	assertFalse(PubsUtilities.isSpnUser());
+    }
+    
+
+    @Test
+    public void isSpnOnlyTest() {
+    	assertFalse(PubsUtilities.isSpnOnly());
+    	
+        PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_SPN_USER.name()));
+        assertTrue(PubsUtilities.isSpnOnly());
+        
+        PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_SPN_USER.name(),
+        		PubsRoles.PUBS_ADMIN.name()));
+    	assertFalse(PubsUtilities.isSpnOnly());
+        
+        PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_SPN_USER.name(),
+        		PubsRoles.PUBS_CATALOGER_USER.name()));
+    	assertFalse(PubsUtilities.isSpnOnly());
+        
+        PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_SPN_USER.name(),
+        		PubsRoles.PUBS_ADMIN.name(), PubsRoles.PUBS_CATALOGER_USER.name()));
+        assertFalse(PubsUtilities.isSpnOnly());
+        
+        PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_ADMIN.name(),
+        		PubsRoles.PUBS_CATALOGER_USER.name()));
+    	assertFalse(PubsUtilities.isSpnOnly());
+        
+        PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_ADMIN.name()));
+    	assertFalse(PubsUtilities.isSpnOnly());
+        
+        PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_CATALOGER_USER.name()));
+    	assertFalse(PubsUtilities.isSpnOnly());
     }
 
 }

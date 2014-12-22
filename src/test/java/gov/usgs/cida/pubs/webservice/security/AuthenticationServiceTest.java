@@ -45,7 +45,7 @@ public class AuthenticationServiceTest {
 		assertEquals("testyUser", auth.getName());
 		assertFalse(auth.getAuthorities().isEmpty());
 		assertEquals(3, auth.getAuthorities().size());
-		assertEquals(PubsAuthentication.ROLE_PUBS_SPN_USER, auth.getAuthorities().toArray()[0].toString());
+		assertEquals(PubsRoles.PUBS_SPN_USER.name(), auth.getAuthorities().toArray()[0].toString());
 		assertEquals(PubsRoles.PUBS_AUTHORIZED.name(), auth.getAuthorities().toArray()[1].toString());
 		assertEquals(PubsRoles.AD_AUTHENTICATED.name(), auth.getAuthorities().toArray()[2].toString());
 		

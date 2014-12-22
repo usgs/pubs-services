@@ -2,12 +2,13 @@ package gov.usgs.cida.pubs.busservice.mp;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
-import gov.usgs.cida.pubs.dao.mp.MpListDaoTest;
+import gov.usgs.cida.pubs.dao.mp.MpListDao;
 import gov.usgs.cida.pubs.domain.mp.MpList;
-import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.utility.PubsUtilitiesTest;
+import gov.usgs.cida.pubs.webservice.security.PubsRoles;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,65 +40,39 @@ public class MpListBusServiceTest extends BaseSpringDaoTest {
         busService.getObjects(new HashMap<String, Object>());
 
         Map<String, Object> filters = new HashMap<>();
-        filters.put("id", -1);
+        filters.put(MpListDao.ID_SEARCH, -1);
         Collection<MpList> mpLists = busService.getObjects(filters);
         assertNotNull(mpLists);
         assertEquals(0, mpLists.size());
 
-        filters.put("id", 1);
+        filters.put(MpListDao.ID_SEARCH, 1);
         mpLists = busService.getObjects(filters);
         assertNotNull(mpLists);
         assertEquals(1, mpLists.size());
 
         filters.clear();
-        filters.put("text", "ipds");
+        filters.put(MpListDao.TEXT_SEARCH, "ipds");
         mpLists = busService.getObjects(filters);
         assertNotNull(mpLists);
-        assertEquals(5, mpLists.size());
+        assertEquals(6, mpLists.size());
 
-        filters.put("id", 3);
+        filters.put(MpListDao.ID_SEARCH, 3);
         mpLists = busService.getObjects(filters);
         assertNotNull(mpLists);
         assertEquals(1, mpLists.size());
-    }
 
-    @Test
-    public void createObjectTest() {
-        busService.createObject(null);
+        //Get all Lists
+        filters.clear();
+        mpLists = busService.getObjects(filters);
+        assertNotNull(mpLists);
+        assertEquals(31, mpLists.size());
 
-        MpList mpList = busService.createObject(new MpList());
-        assertNotNull(mpList.getId());
-        
-        mpList = busService.createObject(MpListDaoTest.buildMpList(999999999));
-        MpListDaoTest.assertMpList("999999999", mpList);
-    }
+        //Now we want just spn...
+        PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_SPN_USER.name()));
+        mpLists = busService.getObjects(filters);
+        assertNotNull(mpLists);
+        assertEquals(14, mpLists.size());
 
-    @Test
-    public void updateObjectTest() {
-        busService.updateObject(null);
-        busService.updateObject(new MpList());
-
-        MpList mpList = busService.createObject(MpListDaoTest.buildMpList(66));
-        mpList.setText(mpList.getText() + "b");
-        mpList.setDescription(mpList.getDescription() + "b");
-        mpList.setType(mpList.getType() + "b");
-        MpList after = busService.updateObject(mpList);
-        MpListDaoTest.assertMpList("66b", after);
-    }
-
-    @Test
-    public void deleteObjectTest() {
-        busService.deleteObject(null);
-        busService.deleteObject(-1);
-        
-        //Cannot delete this one!
-        ValidationResults res = busService.deleteObject(3);
-        assertEquals(1, res.getValidationErrors().size());
-        assertNotNull(MpList.getDao().getById(3));
-
-        //Can delete this one!
-        busService.deleteObject(281);
-        assertNull(MpList.getDao().getById(281));
     }
 
 }

@@ -8,36 +8,14 @@
 		<result property="text" column="list_name"/>
 		<result property="description" column="list_desc"/>
 		<result property="type" column="list_type"/>
+		<result property="ipdsInternalId" column="ipds_internal_id"/>
 	</resultMap>
 
 	<sql id="cols">
-		mp_list_id, list_name, list_desc, list_type,
+		mp_list_id, list_name, list_desc, list_type, ipds_internal_id,
         <include refid="base.auditCols"/>
 	</sql>
 
-	<sql id="hosts">
-		#{id,jdbcType=NUMERIC},
-		#{text,jdbcType=VARCHAR},
-		#{description,jdbcType=VARCHAR},
-		#{type,jdbcType=VARCHAR},
-        <include refid="base.auditHosts"/>
-	</sql>
-	
-	<sql id="sets">
-		list_name = #{text,jdbcType=VARCHAR},
-		list_desc = #{description,jdbcType=VARCHAR},
-		list_type = #{type,jdbcType=VARCHAR},
-        <include refid="base.auditSets"/>
-	</sql>
-
-	<insert id="add" parameterType="MpList">
-		<selectKey keyProperty="id" resultType="Integer" order="BEFORE">
-			select mp_list_seq.nextval id from dual
-		</selectKey>
-		insert into mp_list (<include refid="cols"/>)
-			values (<include refid="hosts"/>)
-	</insert>
-	
 	<sql id="baseSelect">
 		select <include refid="cols"/>
 		  from mp_list
@@ -50,6 +28,9 @@
             </if>
             <if test="text != null">
                 and upper(list_name) like upper(#{text}) || '%'
+            </if>
+            <if test="listType != null">
+                and list_type = #{listType}
             </if>
 		</where>
 	</sql>
@@ -64,15 +45,9 @@
 		<include refid="filters"/>
 	</select>
 
-	<update id="update" parameterType="MpList">
-		update mp_list
-		   set <include refid="sets"/>
-		 where mp_list_id = #{id,jdbcType=NUMERIC}
-	</update>
-	
-	<delete id="delete" parameterType="Integer">
-		delete from mp_list
-		 where mp_list_id = #{value,jdbcType=NUMERIC}
-	</delete>
-	
+	<select id="getbyIpdsId" parameterType="Integer" resultMap="mpListResult">
+		<include refid="baseSelect"/> 
+		 where ipds_internal_id = #{value,jdbcType=NUMERIC}
+	</select>
+
 </mapper>

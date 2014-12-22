@@ -683,29 +683,4 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	assertTrue(MpListPublication.getDao().getByMap(filters).isEmpty());
     }
 
-    @Test
-    public void isSpnuserTest() {
-    	//Anonymous - no roles
-    	assertFalse(busService.isSpnuser());
-    	
-    	List<String> roles = new ArrayList<>();
-    	roles.add(PubsRoles.PUBS_ADMIN.name());
-    	roles.add(PubsRoles.PUBS_TAGGING_USER.name());
-    	roles.add(PubsRoles.PUBS_CATALOGER_USER.name());
-    	roles.add(PubsRoles.PUBS_SPN_SUPERVISOR.name());
-    	roles.add(PubsRoles.PUBS_CATALOGER_SUPERVISOR.name());
-
-    	//Everything but spn
-    	PubsUtilitiesTest.buildTestAuthentication("dummy", roles);
-    	assertFalse(busService.isSpnuser());
-    	
-    	//Everything
-    	roles.add(PubsRoles.PUBS_SPN_USER.name());
-    	PubsUtilitiesTest.buildTestAuthentication("dummy", roles);
-    	assertTrue(busService.isSpnuser());
-    	
-    	//Just spnuser
-    	PubsUtilitiesTest.buildTestAuthentication("dummy", new ArrayList<>(Arrays.asList(PubsRoles.PUBS_SPN_USER.name())));
-    	assertTrue(busService.isSpnuser());
-    }
 }

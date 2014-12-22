@@ -3,11 +3,12 @@ package gov.usgs.cida.pubs.dao.mp;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.domain.mp.MpList;
+import gov.usgs.cida.pubs.domain.mp.MpList.MpListType;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,14 +18,12 @@ import org.junit.Test;
 
 public class MpListDaoTest extends BaseSpringDaoTest {
 	
-	private static final List<String> IGNORE_PROPERTIES = Arrays.asList("id", "validationErrors");
-
 	@Test
 	public void getbyIdTests() {
 		MpList list = MpList.getDao().getById(1);
 		assertMpList1(list);
-		list = MpList.getDao().getById("2");
-		assertMpList2(list);
+		list = MpList.getDao().getById("10");
+		assertMpList10(list);
 	}
 
 	@Test
@@ -37,56 +36,86 @@ public class MpListDaoTest extends BaseSpringDaoTest {
 		assertMpList1((MpList) mpLists.get(0));
 
 		filters.clear();
-		filters.put("text", "pend");
+		filters.put("text", "ipds");
 		mpLists = MpList.getDao().getByMap(filters);
 		assertNotNull(mpLists);
-		assertEquals(2, mpLists.size());
+		assertEquals(6, mpLists.size());
+
+		filters.clear();
+		filters.put("listType", MpListType.PUBS);
+		mpLists = MpList.getDao().getByMap(filters);
+		assertNotNull(mpLists);
+		assertEquals(17, mpLists.size());
+
+		filters.clear();
+		filters.put("listType", MpListType.SPN);
+		mpLists = MpList.getDao().getByMap(filters);
+		assertNotNull(mpLists);
+		assertEquals(14, mpLists.size());
 	}
 
 	@Test
-	public void addUpdateDeleteTest() {
-		MpList newList = new MpList();
-		newList.setText("test name");
-		newList.setDescription("test description");
-		newList.setType("TEST_TYPE");
-		MpList.getDao().add(newList);
-		
-		MpList persistedA = MpList.getDao().getById(newList.getId());
-		assertNotNull(persistedA);
-		assertNotNull(persistedA.getId());
-		assertDaoTestResults(MpList.class, newList, persistedA, IGNORE_PROPERTIES, true, true);
-
-		persistedA.setText("updatedName");
-		persistedA.setDescription("updated description");
-		persistedA.setType("UPDATED_TYPE");
-		MpList.getDao().update(persistedA);
-
-		MpList persistedC = MpList.getDao().getById(newList.getId());
-		assertNotNull(persistedC);
-		assertNotNull(persistedC.getId());
-		assertDaoTestResults(MpList.class, persistedA, persistedC, IGNORE_PROPERTIES, true, true);
-
-		MpList.getDao().delete(persistedC);
-		assertNull(MpList.getDao().getById(newList.getId()));
-
-		MpList.getDao().deleteById(2);
-		assertNull(MpList.getDao().getById(2));
+	public void getbyIpdsIdTests() {
+		MpList list = MpList.getDao().getByIpdsId(1);
+		assertMpList10(list);
 	}
+
+    @Test
+    public void notImplemented() {
+        try {
+        	MpList.getDao().add(new MpList());
+            fail("Was able to add.");
+        } catch (Exception e) {
+            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+        }
+
+        try {
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("prodId", 1);
+            MpList.getDao().getObjectCount(params);
+            fail("Was able to get count.");
+        } catch (Exception e) {
+            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+        }
+
+        try {
+        	MpList.getDao().update(new MpList());
+            fail("Was able to update.");
+        } catch (Exception e) {
+            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+        }
+
+        try {
+        	MpList.getDao().delete(new MpList());
+            fail("Was able to delete.");
+        } catch (Exception e) {
+            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+        }
+
+        try {
+        	MpList.getDao().deleteById(1);
+            fail("Was able to delete by it.");
+        } catch (Exception e) {
+            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+        }
+    }
 
 	public static void assertMpList1(MpList list) {
 		assertNotNull(list);
 		assertEquals(1, list.getId().intValue());
 		assertEquals("Need Approval", list.getText());
 		assertEquals("Citations that need to be approved", list.getDescription());
-		assertEquals("MP_SHARED_SUPER_NEED_APPROVAL", list.getType());
+		assertEquals(MpListType.PUBS, list.getType());
+		assertNull(list.getIpdsInternalId());
 	}
 
-	public static void assertMpList2(MpList list) {
+	public static void assertMpList10(MpList list) {
 		assertNotNull(list);
-		assertEquals(2, list.getId().intValue());
-		assertEquals("Approved", list.getText());
-		assertEquals("Citations that have been approved, and will be loaded", list.getDescription());
-		assertEquals("MP_SHARED_SUPER_APPROVED", list.getType());
+		assertEquals(10, list.getId().intValue());
+		assertEquals("Sacramento PSC", list.getText());
+		assertEquals("IPDS Records that have entered SPN Production status", list.getDescription());
+		assertEquals(MpListType.SPN, list.getType());
+		assertEquals(1, list.getIpdsInternalId().intValue());
 	}
 
     public static MpList buildMpList(Integer id) {
@@ -94,24 +123,12 @@ public class MpListDaoTest extends BaseSpringDaoTest {
     	mpList.setId(id);
     	mpList.setText("List " + id);
     	mpList.setDescription("Description " + id);
-    	mpList.setType("Type " + id);
+    	mpList.setType(MpListType.SPN);
+    	mpList.setIpdsInternalId(1);
     	mpList.setInsertDate(new LocalDateTime());
     	mpList.setInsertUsername(PubsConstants.ANONYMOUS_USER);
     	mpList.setUpdateDate(new LocalDateTime());
     	mpList.setUpdateUsername(PubsConstants.ANONYMOUS_USER);
     	return mpList;
-    }
-
-    public static void assertMpList(String suffix, MpList mpList) {
-    	assertNotNull(mpList);
-    	//Checking for not null since on insert, the id is really set from the sequence, not the passed object.
-    	assertNotNull(mpList.getId());
-    	assertEquals("List " + suffix, mpList.getText());
-    	assertEquals("Description " + suffix, mpList.getDescription());
-    	assertEquals("Type " + suffix, mpList.getType());
-    	assertNotNull(mpList.getInsertDate());
-    	assertNotNull(mpList.getInsertUsername());
-    	assertNotNull(mpList.getUpdateDate());
-    	assertNotNull(mpList.getUpdateUsername());
     }
 }

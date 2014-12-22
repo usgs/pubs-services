@@ -231,7 +231,6 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
         }
         return rtn;
 	}
-	
 
     @RequestMapping(value = "release", method = RequestMethod.POST)
     @ResponseView(IMpView.class)

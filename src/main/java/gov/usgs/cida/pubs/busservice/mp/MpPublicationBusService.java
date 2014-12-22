@@ -24,10 +24,8 @@ import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
 import gov.usgs.cida.pubs.validation.constraint.PublishChecks;
-import gov.usgs.cida.pubs.webservice.security.PubsAuthentication;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,9 +38,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -286,7 +281,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 		            }
 		            deleteObject(publicationId);
 		            PublicationIndex.getDao().publish(publicationId);
-		            if (isSpnuser()) {
+		            if (PubsUtilities.isSpnUser()) {
 		            	//Pubs published by this role should be put back in MyPubs and in the USGS Series list
 		            	beginPublicationEdit(publicationId);
 		            	setList(MpPublication.getDao().getById(publicationId), MpList.IPDS_USGS_NUMBERED_SERIES);
@@ -300,20 +295,6 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 	        }
     	}
         return validationResults;
-    }
-    
-    protected boolean isSpnuser() {
-    	boolean rtn = false;
-    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    	if (auth instanceof PubsAuthentication) {
-    		Iterator<? extends GrantedAuthority> i = auth.getAuthorities().iterator();
-    		while (i.hasNext() && !rtn) {
-    			if (i.next().getAuthority().equalsIgnoreCase(PubsAuthentication.ROLE_PUBS_SPN_USER)) {
-    				rtn = true;
-    			}
-    		}
-    	}
-    	return rtn;
     }
     
     /**

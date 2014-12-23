@@ -12,6 +12,7 @@ import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 
@@ -207,6 +208,8 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals("Edition X", pub.getEdition());
         assertEquals("just a little comment", pub.getComments());
         assertEquals("tbl contents", pub.getTableOfContents());
+        assertEquals(6, pub.getPublishingServiceCenter().getId().intValue());
+        assertEquals("date 2/2/2", pub.getPublishedDateStatement());
     }
 
     public static void assertMpPub1Children(Publication<?> pub) {
@@ -281,6 +284,10 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertNull(pub.getEdition());
         assertNull(pub.getComments());
         assertNull(pub.getTableOfContents());
+        
+        assertEquals(7, pub.getPublishingServiceCenter().getId().intValue());
+        assertEquals("date 3/3/3", pub.getPublishedDateStatement());
+
     }
 
     public static void assertMpPub2Children(Publication<?> pub) {
@@ -326,7 +333,7 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         newPub.setTemporalEnd(new LocalDate(2012,12,12));
         newPub.setNotes("notes");
         newPub.setIpdsId("ipds_id" + pubId);
-        newPub.setIpdsReviewProcessState(ProcessType.SPN_PRODUCTION.getIpdsValue());
+        newPub.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
         newPub.setIpdsInternalId("12");
         newPub.setId(pubId);
         newPub.setPublicationYear("2001");
@@ -356,6 +363,10 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         newPub.setEdition("Edition X");
         newPub.setComments("just a little comment");
         newPub.setTableOfContents("tbl contents");
+        newPub.setPublishedDateStatement("date 2/2/2");
+        PublishingServiceCenter publishingServiceCenter = new PublishingServiceCenter();
+        publishingServiceCenter.setId(6);
+        newPub.setPublishingServiceCenter(publishingServiceCenter);
         return newPub;
     }
     
@@ -419,6 +430,10 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         updatedPub.setEdition("Edition XU");
         updatedPub.setComments("just a little commentU");
         updatedPub.setTableOfContents("tbl contentsU");
+        updatedPub.setPublishedDateStatement("A different random text with a date August 32, 1854");
+        PublishingServiceCenter publishingServiceCenter = new PublishingServiceCenter();
+        publishingServiceCenter.setId(2);
+        updatedPub.setPublishingServiceCenter(publishingServiceCenter);
         return updatedPub;
     }
 }

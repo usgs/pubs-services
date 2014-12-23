@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.dao;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.domain.ContributorType;
 
@@ -11,7 +12,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-public class ContributorTypeDaoTest extends BaseSpringDaoTest {
+public class ContributorTypeDaoTest extends BaseSpringTest {
 
     public static final int contributorTypeCnt = 3;
 

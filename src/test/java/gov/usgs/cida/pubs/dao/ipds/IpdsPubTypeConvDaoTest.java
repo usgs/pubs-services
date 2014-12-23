@@ -2,12 +2,12 @@ package gov.usgs.cida.pubs.dao.ipds;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
+import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.domain.ipds.IpdsPubTypeConv;
 
 import org.junit.Test;
 
-public class IpdsPubTypeConvDaoTest extends BaseSpringDaoTest {
+public class IpdsPubTypeConvDaoTest extends BaseSpringTest {
 
     @Test
     public void getByIpdsValueTest() {

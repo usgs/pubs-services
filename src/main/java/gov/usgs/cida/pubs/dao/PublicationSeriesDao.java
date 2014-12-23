@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.dao;
 
 import gov.usgs.cida.pubs.aop.ISetDbContext;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class PublicationSeriesDao extends BaseDao<PublicationSeries> {
     @ISetDbContext
     @Override
     public PublicationSeries getById(String domainID) {
-        return getById(Integer.parseInt(domainID));
+        return getById(PubsUtilities.parseInteger(domainID));
     }
 
 

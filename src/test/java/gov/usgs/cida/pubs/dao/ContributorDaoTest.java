@@ -18,9 +18,9 @@ import org.junit.Test;
 
 public class ContributorDaoTest extends BaseSpringDaoTest {
 
-    public static final int contributorCnt = 4;
-	public static final int personContributorCnt = 3;
-	public static final int corporateContributorCnt = 1;
+    public static final int CONTRIBUTOR_CNT = 4;
+	public static final int PERSON_CONTRIBUTOR_CNT = 3;
+	public static final int CORPORATE_CONTRIBUTOR_CNT = 1;
 
     public static final List<String> IGNORE_PROPERTIES_PERSON = Arrays.asList("validationErrors", "valErrors", "organization");
     public static final List<String> IGNORE_PROPERTIES_CORPORATION = Arrays.asList("validationErrors", "valErrors", "family", 
@@ -65,7 +65,7 @@ public class ContributorDaoTest extends BaseSpringDaoTest {
     @Test
     public void getByMap() {
         List<Contributor<?>> contributors = Contributor.getDao().getByMap(null);
-        assertEquals(contributorCnt, contributors.size());
+        assertEquals(CONTRIBUTOR_CNT, contributors.size());
 
         Map<String, Object> filters = new HashMap<>();
         filters.put("id", "1");
@@ -118,7 +118,7 @@ public class ContributorDaoTest extends BaseSpringDaoTest {
         filters.clear();
         filters.put("corporation", false);
         contributors = Contributor.getDao().getByMap(filters);
-        assertEquals(personContributorCnt, contributors.size());
+        assertEquals(PERSON_CONTRIBUTOR_CNT, contributors.size());
         assertEquals(1, contributors.get(0).getId().intValue());
         filters.put("text", "out");
         contributors = Contributor.getDao().getByMap(filters);
@@ -141,7 +141,7 @@ public class ContributorDaoTest extends BaseSpringDaoTest {
         filters.clear();
         filters.put("corporation", true);
         contributors = Contributor.getDao().getByMap(filters);
-        assertEquals(corporateContributorCnt, contributors.size());
+        assertEquals(CORPORATE_CONTRIBUTOR_CNT, contributors.size());
         assertEquals(2, contributors.get(0).getId().intValue());
         filters.put("text", "us");
         contributors = Contributor.getDao().getByMap(filters);

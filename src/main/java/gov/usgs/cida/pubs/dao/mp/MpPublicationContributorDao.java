@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.dao.mp;
 
 import gov.usgs.cida.pubs.aop.ISetDbContext;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,7 @@ public class MpPublicationContributorDao extends MpDao<MpPublicationContributor>
     @ISetDbContext
     @Override
     public MpPublicationContributor getById(String domainID) {
-        return getById(Integer.parseInt(domainID));
+        return getById(PubsUtilities.parseInteger(domainID));
     }
 
     /** 

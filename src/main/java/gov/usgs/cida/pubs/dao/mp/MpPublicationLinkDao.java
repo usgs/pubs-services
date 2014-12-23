@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.dao.mp;
 
 import gov.usgs.cida.pubs.aop.ISetDbContext;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class MpPublicationLinkDao extends MpDao<MpPublicationLink> {
     @ISetDbContext
     @Override
     public MpPublicationLink getById(String domainID) {
-        return getById(Integer.parseInt(domainID));
+        return getById(PubsUtilities.parseInteger(domainID));
     }
 
 	/**

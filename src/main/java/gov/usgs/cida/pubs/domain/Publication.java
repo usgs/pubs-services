@@ -322,6 +322,16 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @Length(min=0, max=4000)
     private String tableOfContents;
 
+    @JsonProperty("publishingServiceCenter")
+    @JsonView(IPwView.class)
+    @Valid
+    private PublishingServiceCenter publishingServiceCenter;
+
+    @JsonProperty("publishedDateStatement")
+    @JsonView(IPwView.class)
+    @Length(min=0, max=4000)
+    private String publishedDateStatement;
+    
     /**
      * @return the indexId
      */
@@ -1003,5 +1013,21 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     public void setUpdateDate(final LocalDateTime inUpdateDate) {
     	super.setUpdateDate(inUpdateDate);
     }
+
+	public PublishingServiceCenter getPublishingServiceCenter() {
+		return publishingServiceCenter;
+	}
+
+	public void setPublishingServiceCenter(final PublishingServiceCenter inPublishingServiceCenter) {
+		publishingServiceCenter = inPublishingServiceCenter;
+	}
+
+	public String getPublishedDateStatement() {
+		return publishedDateStatement;
+	}
+
+	public void setPublishedDateStatement(final String inPublishedDateStatement) {
+		publishedDateStatement = inPublishedDateStatement;
+	}
 
 }

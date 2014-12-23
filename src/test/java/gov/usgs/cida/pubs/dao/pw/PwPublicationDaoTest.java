@@ -9,6 +9,7 @@ import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 
 import java.util.HashMap;
@@ -121,6 +122,8 @@ public class PwPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals("edition4", pub.getEdition());
         assertEquals("comments on this4", pub.getComments());
         assertEquals("contents, table of4", pub.getTableOfContents());
+        assertEquals(5, pub.getPublishingServiceCenter().getId().intValue());
+        assertEquals("date 1/1/1", pub.getPublishedDateStatement());
     }
 
     public static void assertPwPub4Children(Publication<?> pub) {
@@ -166,7 +169,7 @@ public class PwPublicationDaoTest extends BaseSpringDaoTest {
         newPub.setTemporalEnd(new LocalDate(2012,12,12));
         newPub.setNotes("notes");
         newPub.setIpdsId("ipds_id" + pubId);
-        newPub.setIpdsReviewProcessState(ProcessType.SPN_PRODUCTION.getIpdsValue());
+        newPub.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
         newPub.setIpdsInternalId("12");
         newPub.setId(pubId);
         newPub.setPublicationYear("2001");
@@ -195,6 +198,10 @@ public class PwPublicationDaoTest extends BaseSpringDaoTest {
         newPub.setEdition("Edition X");
         newPub.setComments("just a little comment");
         newPub.setTableOfContents("tbl contents");
+        PublishingServiceCenter publishingServiceCenter = new PublishingServiceCenter();
+        publishingServiceCenter.setId(6);
+        newPub.setPublishingServiceCenter(publishingServiceCenter);
+        newPub.setPublishedDateStatement("date 2/2/2");
 
         return newPub;
     }

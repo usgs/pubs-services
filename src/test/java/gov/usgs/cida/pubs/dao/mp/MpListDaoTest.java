@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
+import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 import gov.usgs.cida.pubs.domain.mp.MpList.MpListType;
 
@@ -16,7 +16,7 @@ import java.util.Map;
 import org.joda.time.LocalDateTime;
 import org.junit.Test;
 
-public class MpListDaoTest extends BaseSpringDaoTest {
+public class MpListDaoTest extends BaseSpringTest {
 	
 	@Test
 	public void getbyIdTests() {
@@ -55,7 +55,7 @@ public class MpListDaoTest extends BaseSpringDaoTest {
 	}
 
 	@Test
-	public void getbyIpdsIdTests() {
+	public void getbyPscIdTests() {
 		MpList list = MpList.getDao().getByIpdsId(1);
 		assertMpList10(list);
 	}

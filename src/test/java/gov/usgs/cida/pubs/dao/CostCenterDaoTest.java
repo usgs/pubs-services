@@ -19,7 +19,7 @@ import org.junit.Test;
  */
 public class CostCenterDaoTest extends BaseSpringDaoTest {
 
-    public static final int costCenterCnt = 4;
+    public static final int COST_CENTER_CNT = 4;
 
     public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors");
 
@@ -38,43 +38,43 @@ public class CostCenterDaoTest extends BaseSpringDaoTest {
     @Test
     public void getByMap() {
         List<Affiliation<?>> costCenters = CostCenter.getDao().getByMap(null);
-        assertEquals(costCenterCnt, costCenters.size());
+        assertEquals(COST_CENTER_CNT, costCenters.size());
 
         Map<String, Object> filters = new HashMap<>();
-        filters.put("id", "1");
+        filters.put(CostCenterDao.ID_SEARCH, "1");
         costCenters = CostCenter.getDao().getByMap(filters);
         assertEquals(1, costCenters.size());
         AffiliationDaoTest.assertAffiliation1(costCenters.get(0));
 
         filters.clear();
-        filters.put("name", "affil");
+        filters.put(CostCenterDao.TEXT_SEARCH, "affil");
         costCenters = CostCenter.getDao().getByMap(filters);
-        assertEquals(4, costCenters.size());
+        assertEquals(2, costCenters.size());
 
         filters.clear();
-        filters.put("active", false);
+        filters.put(CostCenterDao.ACTIVE_SEARCH, false);
         costCenters = CostCenter.getDao().getByMap(filters);
         assertEquals(1, costCenters.size());
 
         filters.clear();
-        filters.put("active", true);
+        filters.put(CostCenterDao.ACTIVE_SEARCH, true);
         costCenters = CostCenter.getDao().getByMap(filters);
         assertEquals(3, costCenters.size());
 
         filters.clear();
-        filters.put("usgs", false);
+        filters.put(CostCenterDao.USGS_SEARCH, false);
         costCenters = CostCenter.getDao().getByMap(filters);
         assertEquals(0, costCenters.size());
 
         filters.clear();
-        filters.put("usgs", true);
+        filters.put(CostCenterDao.USGS_SEARCH, true);
         costCenters = CostCenter.getDao().getByMap(filters);
         assertEquals(4, costCenters.size());
 
-        filters.put("id", "1");
-        filters.put("name", "affil");
-        filters.put("active", true);
-        filters.put("ipdsId", "4");
+        filters.put(CostCenterDao.ID_SEARCH, "1");
+        filters.put(CostCenterDao.TEXT_SEARCH, "affil");
+        filters.put(CostCenterDao.ACTIVE_SEARCH, true);
+        filters.put(CostCenterDao.IPDSID_SEARCH, "4");
         costCenters = CostCenter.getDao().getByMap(filters);
         assertEquals(1, costCenters.size());
     }

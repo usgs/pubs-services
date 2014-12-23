@@ -1,7 +1,17 @@
 package gov.usgs.cida.pubs.webservice;
 
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.dao.ContributorTypeDao;
+import gov.usgs.cida.pubs.dao.CorporateContributorDao;
+import gov.usgs.cida.pubs.dao.CostCenterDao;
+import gov.usgs.cida.pubs.dao.LinkFileTypeDao;
+import gov.usgs.cida.pubs.dao.LinkTypeDao;
+import gov.usgs.cida.pubs.dao.OutsideAffiliationDao;
+import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
+import gov.usgs.cida.pubs.dao.PublicationSubtypeDao;
+import gov.usgs.cida.pubs.dao.PublicationTypeDao;
+import gov.usgs.cida.pubs.dao.PublishingServiceCenterDao;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.ContributorType;
@@ -14,6 +24,7 @@ import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
 import gov.usgs.cida.pubs.json.ResponseView;
 import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
 
@@ -39,22 +50,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class LookupMvcService extends MvcService<PublicationType> {
     private static final Logger LOG = LoggerFactory.getLogger(LookupMvcService.class);
 
-//    @Autowired
-//    protected PersonContributorBusService personContributorBusService;
-//
-//    @Autowired
-//    protected CorporateContributorBusService corporateContributorBusService;
-
     @RequestMapping("publicationtypes")
     @ResponseView(ILookupView.class)
     public @ResponseBody Collection<PublicationType> getPublicationTypes(HttpServletRequest request, HttpServletResponse response,
-                @RequestParam(value="text", required=false) String[] text) {
+                @RequestParam(value=TEXT_SEARCH, required=false) String[] text) {
         LOG.debug("publicationType");
         Collection<PublicationType> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
-                filters.put("text", text[0]);
+                filters.put(PublicationTypeDao.TEXT_SEARCH, text[0]);
             }
             rtn = PublicationType.getDao().getByMap(filters);
         }
@@ -64,7 +69,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
     @RequestMapping("publicationtype/{publicationTypeId}/publicationsubtypes")
     @ResponseView(ILookupView.class)
     public @ResponseBody Collection<PublicationSubtype> getPublicationSubypesREST(HttpServletRequest request, HttpServletResponse response,
-                @RequestParam(value="text", required=false) String[] text,
+                @RequestParam(value=TEXT_SEARCH, required=false) String[] text,
                 @PathVariable("publicationTypeId") String publicationTypeId) {
         LOG.debug("publicationSubtype");
         Collection<PublicationSubtype> rtn = new ArrayList<>();
@@ -72,7 +77,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
             Map<String, Object> filters = new HashMap<>();
             filters.put("publicationTypeId", publicationTypeId);
             if (null != text && 0 < text.length) {
-                filters.put("text", text[0]);
+                filters.put(PublicationSubtypeDao.TEXT_SEARCH, text[0]);
             }
             rtn = PublicationSubtype.getDao().getByMap(filters);
         }
@@ -82,7 +87,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
     @RequestMapping("publicationsubtypes")
     @ResponseView(ILookupView.class)
     public @ResponseBody Collection<PublicationSubtype> getPublicationSubypesQuery(HttpServletRequest request, HttpServletResponse response,
-                @RequestParam(value="text", required=false) String[] text,
+                @RequestParam(value=TEXT_SEARCH, required=false) String[] text,
                 @RequestParam(value="publicationtypeid", required=false) String[] publicationTypeId) {
         LOG.debug("publicationSubtype");
         Collection<PublicationSubtype> rtn = new ArrayList<>();
@@ -92,7 +97,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
                 filters.put("publicationTypeId", publicationTypeId[0]);
             }
             if (null != text && 0 < text.length) {
-                filters.put("text", text[0]);
+                filters.put(PublicationSubtypeDao.TEXT_SEARCH, text[0]);
             }
             rtn = PublicationSubtype.getDao().getByMap(filters);
             }
@@ -103,9 +108,9 @@ public class LookupMvcService extends MvcService<PublicationType> {
     @ResponseView(ILookupView.class)
     public @ResponseBody Collection<PublicationSeries> getPublicationSeriesREST(HttpServletRequest request, HttpServletResponse response,
     		@PathVariable("publicationTypeId") String publicationTypeId,
-    		@PathVariable(PublicationSeriesDao.SUBTYPE_SEARCH) String publicationSubtypeId,
-    		@RequestParam(value=PublicationSeriesDao.TEXT_SEARCH, required=false) String[] text,
-    		@RequestParam(value=PublicationSeriesDao.ACTIVE_SEARCH, required=false) String[] active) {
+    		@PathVariable("publicationSubtypeId") String publicationSubtypeId,
+    		@RequestParam(value=TEXT_SEARCH, required=false) String[] text,
+    		@RequestParam(value=ACTIVE_SEARCH, required=false) String[] active) {
         LOG.debug("publicationSeries");
         Collection<PublicationSeries> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
@@ -125,9 +130,9 @@ public class LookupMvcService extends MvcService<PublicationType> {
     @RequestMapping("publicationseries")
     @ResponseView(ILookupView.class)
     public @ResponseBody Collection<PublicationSeries> getPublicationSeriesQuery(HttpServletRequest request, HttpServletResponse response,
-                @RequestParam(value=PublicationSeriesDao.TEXT_SEARCH, required=false) String[] text,
-                @RequestParam(value=PublicationSeriesDao.SUBTYPE_SEARCH, required=false) String[] publicationSubtypeId,
-                @RequestParam(value=PublicationSeriesDao.ACTIVE_SEARCH, required=false) String[] active) {
+                @RequestParam(value=TEXT_SEARCH, required=false) String[] text,
+                @RequestParam(value="publicationSubtypeId", required=false) String[] publicationSubtypeId,
+                @RequestParam(value=ACTIVE_SEARCH, required=false) String[] active) {
         LOG.debug("publicationSeries");
         Collection<PublicationSeries> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
@@ -149,17 +154,17 @@ public class LookupMvcService extends MvcService<PublicationType> {
     @RequestMapping("costcenters")
     @ResponseView(ILookupView.class)
     public @ResponseBody Collection<Affiliation<?>> getCostCenters(HttpServletRequest request, HttpServletResponse response,
-                @RequestParam(value="text", required=false) String[] text,
-                @RequestParam(value="active", required=false) String[] active) {
+                @RequestParam(value=TEXT_SEARCH, required=false) String[] text,
+                @RequestParam(value=ACTIVE_SEARCH, required=false) String[] active) {
         LOG.debug("CostCenter");
         Collection<Affiliation<?>> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
-                filters.put("text", text[0]);
+                filters.put(CostCenterDao.TEXT_SEARCH, text[0]);
             }
             if (null != active && 0 < active.length) {
-                filters.put("active", active[0].toUpperCase());
+                filters.put(CostCenterDao.ACTIVE_SEARCH, active[0].toUpperCase());
             }
             rtn = CostCenter.getDao().getByMap(filters);
         }
@@ -169,17 +174,17 @@ public class LookupMvcService extends MvcService<PublicationType> {
 	@RequestMapping("outsideaffiliates")
     @ResponseView(ILookupView.class)
     public @ResponseBody Collection<Affiliation<?>> getOutsideAffiliates(HttpServletRequest request, HttpServletResponse response,
-                @RequestParam(value="text", required=false) String[] text,
-                @RequestParam(value="active", required=false) String[] active) {
+                @RequestParam(value=TEXT_SEARCH, required=false) String[] text,
+                @RequestParam(value=ACTIVE_SEARCH, required=false) String[] active) {
         LOG.debug("OutsideAffiliate");
         Collection<Affiliation<?>> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
-                filters.put("text", text[0]);
+                filters.put(OutsideAffiliationDao.TEXT_SEARCH, text[0]);
             }
             if (null != active && 0 < active.length) {
-                filters.put("active", active[0].toUpperCase());
+                filters.put(OutsideAffiliationDao.ACTIVE_SEARCH, active[0].toUpperCase());
             }
             rtn = OutsideAffiliation.getDao().getByMap(filters);
         }
@@ -189,13 +194,13 @@ public class LookupMvcService extends MvcService<PublicationType> {
     @RequestMapping("contributortypes")
     @ResponseView(ILookupView.class)
     public @ResponseBody Collection<ContributorType> getContributorTypes(HttpServletRequest request, HttpServletResponse response,
-                @RequestParam(value="text", required=false) String[] text) {
+                @RequestParam(value=TEXT_SEARCH, required=false) String[] text) {
         LOG.debug("ContributorType");
         Collection<ContributorType> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
-                filters.put("text", text[0]);
+                filters.put(ContributorTypeDao.TEXT_SEARCH, text[0]);
             }
             rtn = ContributorType.getDao().getByMap(filters);
         }
@@ -205,13 +210,13 @@ public class LookupMvcService extends MvcService<PublicationType> {
     @RequestMapping("linktypes")
     @ResponseView(ILookupView.class)
     public @ResponseBody Collection<LinkType> getLinkTypes(HttpServletRequest request, HttpServletResponse response,
-                @RequestParam(value="text", required=false) String[] text) {
+                @RequestParam(value=TEXT_SEARCH, required=false) String[] text) {
         LOG.debug("LinkType");
         Collection<LinkType> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
-                filters.put("text", text[0]);
+                filters.put(LinkTypeDao.TEXT_SEARCH, text[0]);
             }
             rtn = LinkType.getDao().getByMap(filters);
         }
@@ -221,13 +226,13 @@ public class LookupMvcService extends MvcService<PublicationType> {
     @RequestMapping("linkfiletypes")
     @ResponseView(ILookupView.class)
     public @ResponseBody Collection<LinkFileType> getLinkFileTypes(HttpServletRequest request, HttpServletResponse response,
-                @RequestParam(value="text", required=false) String[] text) {
+                @RequestParam(value=TEXT_SEARCH, required=false) String[] text) {
         LOG.debug("LinkFileType");
         Collection<LinkFileType> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
-                filters.put("text", text[0]);
+                filters.put(LinkFileTypeDao.TEXT_SEARCH, text[0]);
             }
             rtn = LinkFileType.getDao().getByMap(filters);
         }
@@ -237,15 +242,14 @@ public class LookupMvcService extends MvcService<PublicationType> {
     @RequestMapping("people")
     @ResponseView(ILookupView.class)
     public @ResponseBody Collection<Contributor<?>> getContributorsPeople(HttpServletRequest request, HttpServletResponse response,
-                @RequestParam(value="text", required=false) String[] text) {
+                @RequestParam(value=TEXT_SEARCH, required=false) String[] text) {
         LOG.debug("Contributor - People");
         Collection<Contributor<?>> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
-                filters.put("text", text[0]);
+                filters.put(PersonContributorDao.TEXT_SEARCH, text[0]);
             }
-//            rtn = personContributorBusService.getObjects(filters);
             rtn = PersonContributor.getDao().getByMap(filters);
         }
         return rtn;
@@ -254,16 +258,32 @@ public class LookupMvcService extends MvcService<PublicationType> {
     @RequestMapping("corporations")
     @ResponseView(ILookupView.class)
     public @ResponseBody Collection<Contributor<?>> getContributorsCorporations(HttpServletRequest request, HttpServletResponse response,
-                @RequestParam(value="text", required=false) String[] text) {
+                @RequestParam(value=TEXT_SEARCH, required=false) String[] text) {
         LOG.debug("Contributor - Corporations");
         Collection<Contributor<?>> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
             Map<String, Object> filters = new HashMap<>();
             if (null != text && 0 < text.length) {
-                filters.put("text", text[0]);
+                filters.put(CorporateContributorDao.TEXT_SEARCH, text[0]);
             }
-//            rtn = corporateContributorBusService.getObjects(filters);
             rtn = CorporateContributor.getDao().getByMap(filters);
+        }
+        return rtn;
+    }
+
+    @RequestMapping("publishingServiceCenters")
+    @ResponseView(ILookupView.class)
+    public @ResponseBody Collection<PublishingServiceCenter> getPublishingServiceCenters(HttpServletRequest request,
+    		HttpServletResponse response,
+            @RequestParam(value=TEXT_SEARCH, required=false) String[] text) {
+        LOG.debug("publishingServiceCenter");
+        Collection<PublishingServiceCenter> rtn = new ArrayList<>();
+        if (validateParametersSetHeaders(request, response)) {
+            Map<String, Object> filters = new HashMap<>();
+            if (null != text && 0 < text.length) {
+                filters.put(PublishingServiceCenterDao.TEXT_SEARCH, text[0]);
+            }
+            rtn = PublishingServiceCenter.getDao().getByMap(filters);
         }
         return rtn;
     }

@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.dao.mp;
 
 import gov.usgs.cida.pubs.aop.ISetDbContext;
 import gov.usgs.cida.pubs.domain.mp.MpListPublication;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class MpListPublicationDao extends MpDao<MpListPublication> {
     @ISetDbContext
     @Override
     public MpListPublication getById(String domainID) {
-        return getById(Integer.parseInt(domainID));
+        return getById(PubsUtilities.parseInteger(domainID));
     }
 
     @Transactional(readOnly = true)

@@ -36,6 +36,8 @@ import org.springframework.web.context.request.WebRequest;
 public abstract class MvcService<D> {
 
     private static final Logger LOG = LoggerFactory.getLogger(MvcService.class);
+    public static final String TEXT_SEARCH = "text";
+    public static final String ACTIVE_SEARCH = "active";
 
     /**
      * Helper to check if null and add to filters map - will NPE if filters or key are null!

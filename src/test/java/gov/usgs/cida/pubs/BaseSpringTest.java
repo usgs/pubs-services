@@ -34,8 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 
 /**
- * This is the base class used by test classes that need to use the database.
- * All tests that require access to the database should extend this base class.
+ * This is the base test classes that need Spring wiring.
+ * All tests that require Spring wiring should extend this base class.
  * 
  * @author drsteini
  *

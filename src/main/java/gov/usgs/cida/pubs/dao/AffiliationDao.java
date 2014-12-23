@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.dao;
 
 import gov.usgs.cida.pubs.aop.ISetDbContext;
 import gov.usgs.cida.pubs.domain.Affiliation;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class AffiliationDao extends BaseDao<Affiliation<?>> {
 
     protected static final String NS = "affiliation";
+    public static final String ACTIVE_SEARCH = "active";
+    public static final String USGS_SEARCH = "usgs";
+    public static final String IPDSID_SEARCH = "ipdsId";
 
     /** 
      * {@inheritDoc}
@@ -31,7 +35,7 @@ public class AffiliationDao extends BaseDao<Affiliation<?>> {
     @ISetDbContext
     @Override
     public Affiliation<?> getById(String domainID) {
-        return getById(Integer.parseInt(domainID));
+        return getById(PubsUtilities.parseInteger(domainID));
     }
 
     /** 

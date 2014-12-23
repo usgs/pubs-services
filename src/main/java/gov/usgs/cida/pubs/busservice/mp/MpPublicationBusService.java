@@ -327,7 +327,14 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 	        if (PubsUtilities.isPublicationTypeArticle(inPublication.getPublicationType())) {
 	        	listId = MpList.IPDS_JOURNAL_ARTICLES;
 	        } else if (PubsUtilities.isSpnProduction(inPublication.getIpdsReviewProcessState())) {
-            	listId = MpList.PENDING_USGS_SERIES;
+	        	//Default to the old list if we don't have a PSC.
+        		listId = MpList.PENDING_USGS_SERIES;
+        		if (null != inPublication.getPublishingServiceCenter() && null != inPublication.getPublishingServiceCenter().getId()) {
+		        	MpList spnList = MpList.getDao().getByIpdsId(inPublication.getPublishingServiceCenter().getId());
+		        	if (null != spnList && null != spnList.getId()) {
+		        		listId = spnList.getId().toString();
+		        	}
+        		}
             } else if (PubsUtilities.isUsgsNumberedSeries(inPublication.getPublicationSubtype())) {
             	listId = MpList.IPDS_USGS_NUMBERED_SERIES;
 	        }

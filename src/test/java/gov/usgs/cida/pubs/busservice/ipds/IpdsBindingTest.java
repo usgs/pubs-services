@@ -493,7 +493,8 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
         assertEquals("V1", pub.getVolume());
         assertEquals("I1", pub.getIssue());
         assertEquals("E1", pub.getEdition());
-
+        
+        assertEquals(2, pub.getPublishingServiceCenter().getId().intValue());
     }
 
     protected void assertPub2(MpPublication pub) {
@@ -530,6 +531,8 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
         assertEquals("V2", pub.getVolume());
         assertEquals("I2", pub.getIssue());
         assertEquals("E2", pub.getEdition());
+
+        assertEquals(3, pub.getPublishingServiceCenter().getId().intValue());
     }
 
     protected void assertPub3(MpPublication pub) {
@@ -566,6 +569,8 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
         assertEquals("V3", pub.getVolume());
         assertEquals("I3", pub.getIssue());
         assertEquals("E3", pub.getEdition());
+
+        assertEquals(4, pub.getPublishingServiceCenter().getId().intValue());
     }
 
     protected void assertPub4(MpPublication pub) {
@@ -602,6 +607,8 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
         assertEquals("V4", pub.getVolume());
         assertEquals("I4", pub.getIssue());
         assertEquals("E4", pub.getEdition());
+
+        assertEquals(5, pub.getPublishingServiceCenter().getId().intValue());
     }
 
     protected void assertPubCommon(MpPublication pub) {

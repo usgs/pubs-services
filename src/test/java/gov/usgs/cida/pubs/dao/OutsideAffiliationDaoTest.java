@@ -19,7 +19,7 @@ import org.junit.Test;
  */
 public class OutsideAffiliationDaoTest extends BaseSpringDaoTest {
 
-    public static final int outsideAffiliationCnt = 3;
+    public static final int OUTSIDE_AFFILIATES_CNT = 3;
 
     public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "ipdsId");
 
@@ -38,42 +38,42 @@ public class OutsideAffiliationDaoTest extends BaseSpringDaoTest {
     @Test
     public void getByMap() {
         List<Affiliation<?>> outsideAffiliations = OutsideAffiliation.getDao().getByMap(null);
-        assertEquals(outsideAffiliationCnt, outsideAffiliations.size());
+        assertEquals(OUTSIDE_AFFILIATES_CNT, outsideAffiliations.size());
 
         Map<String, Object> filters = new HashMap<>();
-        filters.put("id", "5");
+        filters.put(OutsideAffiliationDao.ID_SEARCH, "5");
         outsideAffiliations = OutsideAffiliation.getDao().getByMap(filters);
         assertEquals(1, outsideAffiliations.size());
         AffiliationDaoTest.assertAffiliation5(outsideAffiliations.get(0));
 
         filters.clear();
-        filters.put("text", "out");
-        outsideAffiliations = OutsideAffiliation.getDao().getByMap(filters);
-        assertEquals(3, outsideAffiliations.size());
-
-        filters.clear();
-        filters.put("active", false);
-        outsideAffiliations = OutsideAffiliation.getDao().getByMap(filters);
-        assertEquals(1, outsideAffiliations.size());
-
-        filters.clear();
-        filters.put("active", true);
+        filters.put(OutsideAffiliationDao.TEXT_SEARCH, "out");
         outsideAffiliations = OutsideAffiliation.getDao().getByMap(filters);
         assertEquals(2, outsideAffiliations.size());
 
         filters.clear();
-        filters.put("usgs", true);
+        filters.put(OutsideAffiliationDao.ACTIVE_SEARCH, false);
+        outsideAffiliations = OutsideAffiliation.getDao().getByMap(filters);
+        assertEquals(1, outsideAffiliations.size());
+
+        filters.clear();
+        filters.put(OutsideAffiliationDao.ACTIVE_SEARCH, true);
+        outsideAffiliations = OutsideAffiliation.getDao().getByMap(filters);
+        assertEquals(2, outsideAffiliations.size());
+
+        filters.clear();
+        filters.put(OutsideAffiliationDao.USGS_SEARCH, true);
         outsideAffiliations = OutsideAffiliation.getDao().getByMap(filters);
         assertEquals(0, outsideAffiliations.size());
 
         filters.clear();
-        filters.put("usgs", false);
+        filters.put(OutsideAffiliationDao.USGS_SEARCH, false);
         outsideAffiliations = OutsideAffiliation.getDao().getByMap(filters);
         assertEquals(3, outsideAffiliations.size());
 
-        filters.put("id", "5");
-        filters.put("text", "out");
-        filters.put("active", true);
+        filters.put(OutsideAffiliationDao.ID_SEARCH, "5");
+        filters.put(OutsideAffiliationDao.TEXT_SEARCH, "out");
+        filters.put(OutsideAffiliationDao.ACTIVE_SEARCH, true);
         outsideAffiliations = OutsideAffiliation.getDao().getByMap(filters);
         assertEquals(1, outsideAffiliations.size());
     }

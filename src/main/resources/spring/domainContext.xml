@@ -26,6 +26,7 @@
     <bean id="publicationType" class="gov.usgs.cida.pubs.domain.PublicationType" autowire="byName"/>
     <bean id="publicationSubtype" class="gov.usgs.cida.pubs.domain.PublicationSubtype" autowire="byName"/>
     <bean id="publicationSeries" class="gov.usgs.cida.pubs.domain.PublicationSeries" autowire="byName"/>
+    <bean id="publishingServiceCenter" class="gov.usgs.cida.pubs.domain.PublishingServiceCenter" autowire="byName"/>
 
     <bean id="pwPublication" class="gov.usgs.cida.pubs.domain.pw.PwPublication" autowire="byName"/>
 

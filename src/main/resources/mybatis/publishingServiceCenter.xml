@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="publishingServiceCenter">
+
+    <resultMap id="result" type="PublishingServiceCenter" extends="base.result">
+        <id property="id" column="publishing_service_center_id"/>
+        <result property="text" column="name"/>
+    </resultMap>
+
+    <sql id="cols">
+        publishing_service_center_id, name,
+        <include refid="base.auditCols"/>
+    </sql>
+
+    <sql id="filters">
+        <where>
+            <if test="id != null">
+                and publishing_service_center_id = #{id}
+            </if>
+            <if test="text != null">
+                and upper(name) like upper(#{text}) || '%'
+            </if>
+        </where>
+    </sql>
+
+    <sql id="baseSelect">
+        select <include refid="cols"/>
+          from publishing_service_center
+    </sql>
+
+    <select id="getById" parameterType="Integer" resultMap="result">
+        <include refid="baseSelect"/>
+         where publishing_service_center_id = #{value,jdbcType=NUMERIC}
+    </select>
+
+    <select id="getByIpdsId" parameterType="Integer" resultMap="result">
+        <include refid="baseSelect"/>
+         where ipds_internal_id = #{value,jdbcType=NUMERIC}
+    </select>
+
+    <select id="getByMap" resultMap="result">
+        <include refid="baseSelect"/>
+        <include refid="filters"/>
+    </select>
+
+</mapper>

@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.dao;
 
 import gov.usgs.cida.pubs.aop.ISetDbContext;
 import gov.usgs.cida.pubs.domain.Contributor;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class ContributorDao extends BaseDao<Contributor<?>> {
     @ISetDbContext
     @Override
     public Contributor<?> getById(String domainID) {
-        return getById(Integer.parseInt(domainID));
+        return getById(PubsUtilities.parseInteger(domainID));
     }
 
     /** 

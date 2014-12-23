@@ -4,6 +4,7 @@ import gov.usgs.cida.pubs.aop.ISetDbContext;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.intfc.IMpListDao;
 import gov.usgs.cida.pubs.domain.mp.MpList;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MpListDao extends BaseDao<MpList> implements IMpListDao {
 
 	private static final String NS = "mpList";
-	private static final String GET_BY_IPDS_ID = ".getbyIpdsId";
+	private static final String GET_BY_IPDS_ID = ".getByIpdsId";
 	public static final String LIST_TYPE_SEARCH = "listType";
 
 	@Transactional(readOnly = true)
@@ -31,7 +32,7 @@ public class MpListDao extends BaseDao<MpList> implements IMpListDao {
     @ISetDbContext
     @Override
     public MpList getById(String domainID) {
-        return getById(Integer.parseInt(domainID));
+        return getById(PubsUtilities.parseInteger(domainID));
     }
 
 	@Transactional(readOnly = true)

@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.dao;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 
@@ -15,7 +16,7 @@ import org.junit.Test;
  * @author drsteini
  *
  */
-public class PublicationSubtypeDaoTest extends BaseSpringDaoTest {
+public class PublicationSubtypeDaoTest extends BaseSpringTest {
 
     public static final int pubSubTypeCnt = 29;
 

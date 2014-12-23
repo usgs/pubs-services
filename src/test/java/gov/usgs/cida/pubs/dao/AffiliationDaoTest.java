@@ -48,40 +48,40 @@ public class AffiliationDaoTest extends BaseSpringDaoTest {
         assertEquals(affiliationCnt, affiliations.size());
 
         Map<String, Object> filters = new HashMap<>();
-        filters.put("id", "5");
+        filters.put(AffiliationDao.ID_SEARCH, "5");
         affiliations = Affiliation.getDao().getByMap(filters);
         assertEquals(1, affiliations.size());
         assertAffiliation5(affiliations.get(0));
 
         filters.clear();
-        filters.put("text", "out");
-        affiliations = Affiliation.getDao().getByMap(filters);
-        assertEquals(3, affiliations.size());
-
-        filters.clear();
-        filters.put("active", false);
+        filters.put(AffiliationDao.TEXT_SEARCH, "out");
         affiliations = Affiliation.getDao().getByMap(filters);
         assertEquals(2, affiliations.size());
 
         filters.clear();
-        filters.put("active", true);
+        filters.put(AffiliationDao.ACTIVE_SEARCH, false);
+        affiliations = Affiliation.getDao().getByMap(filters);
+        assertEquals(2, affiliations.size());
+
+        filters.clear();
+        filters.put(AffiliationDao.ACTIVE_SEARCH, true);
         affiliations = Affiliation.getDao().getByMap(filters);
         assertEquals(5, affiliations.size());
 
         filters.clear();
-        filters.put("usgs", false);
+        filters.put(AffiliationDao.USGS_SEARCH, false);
         affiliations = Affiliation.getDao().getByMap(filters);
         assertEquals(3, affiliations.size());
 
         filters.clear();
-        filters.put("usgs", true);
+        filters.put(AffiliationDao.USGS_SEARCH, true);
         affiliations = Affiliation.getDao().getByMap(filters);
         assertEquals(4, affiliations.size());
 
-        filters.put("id", "4");
-        filters.put("text", "affil");
-        filters.put("active", true);
-        filters.put("ipdsId", "1");
+        filters.put(AffiliationDao.ID_SEARCH, "4");
+        filters.put(AffiliationDao.TEXT_SEARCH, "xaffil");
+        filters.put(AffiliationDao.ACTIVE_SEARCH, true);
+        filters.put(AffiliationDao.IPDSID_SEARCH, "1");
         affiliations = Affiliation.getDao().getByMap(filters);
         assertEquals(1, affiliations.size());
     }

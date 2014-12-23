@@ -25,6 +25,7 @@ import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 import gov.usgs.cida.pubs.domain.mp.MpListPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
@@ -498,34 +499,49 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	filters.put("publicationId", mpPub.getId());
     	List<MpListPublication> lists = MpListPublication.getDao().getByMap(filters);
     	assertEquals(1, lists.size());
-    	testLists(lists, false, false, true, false);
-    	
-    	mpPub.setIpdsReviewProcessState(null);
-    	busService.setList(mpPub);
-    	lists = MpListPublication.getDao().getByMap(filters);
-    	assertEquals(2, lists.size());
-    	testLists(lists, false, false, true, true);
+    	testLists(lists, false, false, false, true);
 
     	PublicationType pubType = new PublicationType();
     	pubType.setId(PublicationType.ARTICLE);
     	mpPub.setPublicationType(pubType);
     	busService.setList(mpPub);
     	lists = MpListPublication.getDao().getByMap(filters);
-    	assertEquals(3, lists.size());
-    	testLists(lists, true, false, true, true);
+    	assertEquals(2, lists.size());
+    	testLists(lists, true, false, false, true);
 
     	pubType.setId(4);
     	mpPub.setPublicationSubtype(null);
     	busService.setList(mpPub);
     	lists = MpListPublication.getDao().getByMap(filters);
-    	assertEquals(4, lists.size());
-    	testLists(lists, true, true, true, true);
+    	assertEquals(3, lists.size());
+    	testLists(lists, true, true, false, true);
 
     	mpPub.setIpdsReviewProcessState(ProcessType.SPN_PRODUCTION.getIpdsValue());
+    	mpPub.setPublishingServiceCenter(new PublishingServiceCenter());
     	busService.setList(mpPub);
     	lists = MpListPublication.getDao().getByMap(filters);
     	assertEquals(4, lists.size());
     	testLists(lists, true, true, true, true);
+    	
+    	mpPub = MpPublicationDaoTest.addAPub(MpPublication.getDao().getNewProdId());
+    	mpPub.setIpdsReviewProcessState(ProcessType.SPN_PRODUCTION.getIpdsValue());
+    	PublishingServiceCenter psc = new PublishingServiceCenter();
+    	psc.setId(6);
+    	mpPub.setPublishingServiceCenter(psc);
+    	busService.setList(mpPub);
+    	filters.put("publicationId", mpPub.getId());
+    	lists = MpListPublication.getDao().getByMap(filters);
+    	assertEquals(1, lists.size());
+    	assertEquals(15, lists.get(0).getMpList().getId().intValue());
+
+    	//This one should avoid all list logic since it is in the warehouse
+    	mpPub = MpPublicationDaoTest.addAPub(4);
+    	mpPub.setIpdsReviewProcessState(ProcessType.SPN_PRODUCTION.getIpdsValue());
+    	mpPub.setPublishingServiceCenter(psc);
+    	busService.setList(mpPub);
+    	filters.put("publicationId", mpPub.getId());
+    	lists = MpListPublication.getDao().getByMap(filters);
+    	assertEquals(0, lists.size());
 	}
 	
 	@Test
@@ -639,7 +655,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	assertEquals(1, pub.getCostCenters().size());
     	PublicationIndex pi = PublicationIndex.getDao().getById(2);
     	assertNotNull(pi);
-    	assertEquals("title the abstract subseries title series number 2 ipdsid Report USGS Numbered Series Professional Paper ConFamily, ConGiven, ConSuffix US Geological Survey Ice Survey Team Affiliation Cost Center 4", pi.getQ());
+    	assertEquals("title the abstract subseries title series number 2 ipdsid Report USGS Numbered Series Professional Paper ConFamily, ConGiven, ConSuffix US Geological Survey Ice Survey Team xAffiliation Cost Center 4", pi.getQ());
 
     	assertMpPublicationDeleted(2);
     }
@@ -658,7 +674,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	assertEquals(1, pub.getCostCenters().size());
     	PublicationIndex pi = PublicationIndex.getDao().getById(2);
     	assertNotNull(pi);
-    	assertEquals("title the abstract subseries title series number 2 ipdsid Report USGS Numbered Series Professional Paper ConFamily, ConGiven, ConSuffix US Geological Survey Ice Survey Team Affiliation Cost Center 4", pi.getQ());
+    	assertEquals("title the abstract subseries title series number 2 ipdsid Report USGS Numbered Series Professional Paper ConFamily, ConGiven, ConSuffix US Geological Survey Ice Survey Team xAffiliation Cost Center 4", pi.getQ());
 
     	//Still in MP
     	MpPublication mpPub = MpPublication.getDao().getById(2);

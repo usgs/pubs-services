@@ -69,7 +69,7 @@
                USGSSeriesValue,         BindingTypeValue,           SPNEditorId,                    Influential_OMB_FlagValue,
                HVisible_FlagValue,      Sensitive_Policy_FlagValue, JournalTitle,                   PUBS_Response,
                PUBS_Status,             ipds_internal_id,           ContentType,                    Owshiddenversion,
-               Version,                 Path
+               Version,                 Path,						PublishingServiceCenterId
           from (select * from ipds_message_log iml,
                xmltable(xmlnamespaces('http://schemas.microsoft.com/ado/2007/08/dataservices' as "d",
                                       'http://schemas.microsoft.com/ado/2007/08/dataservices/metadata' as "m",

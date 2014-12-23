@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 
@@ -19,7 +20,7 @@ import org.junit.Test;
  * @author drsteini
  *
  */
-public class PublicationSeriesDaoTest extends BaseSpringDaoTest {
+public class PublicationSeriesDaoTest extends BaseSpringTest {
 
     public static final int pubSeriesCnt = 3737;
     public static final int activePubSeriesCnt = 3242;

@@ -53,11 +53,13 @@
         <result property="comments" column="public_comments"/>
         <result property="contact" column="contact_info"/>
         <result property="tableOfContents" column="table_of_contents"/>
+        <result property="publishedDateStatement" column="published_date_statement"/>
         <association property="publicationType" column="publication_type_id" select="publicationType.getById"/>
         <association property="publicationSubtype" column="publication_subtype_id" select="publicationSubtype.getById"/>
         <association property="largerWorkType" column="larger_work_type_id" select="publicationType.getById"/>
         <association property="largerWorkSubtype" column="larger_work_subtype_id" select="publicationSubtype.getById"/>
         <association property="seriesTitle" column="publication_series_id" select="publicationSeries.getById"/>
+        <association property="publishingServiceCenter" column="publishing_service_center_id" select="publishingServiceCenter.getById"/>
     </resultMap>
 
     <resultMap id="genericResult" type="Publication" extends="result">
@@ -134,6 +136,8 @@
         public_comments,
         contact_info,
         table_of_contents,
+        publishing_service_center_id,
+        published_date_statement,
         <include refid="base.auditCols"/>
     </sql>
 
@@ -192,6 +196,8 @@
         #{comments,jdbcType=VARCHAR},
         #{contact,jdbcType=VARCHAR},
         #{tableOfContents,jdbcType=VARCHAR},
+        #{publishingServiceCenter.id,jdbcType=NUMERIC},
+        #{publishedDateStatement,jdbcType=VARCHAR},
         <include refid="base.auditHosts"/>
     </sql>
 
@@ -249,6 +255,8 @@
         public_comments = #{comments,jdbcType=VARCHAR},
         contact_info = #{contact,jdbcType=VARCHAR},
         table_of_contents = #{tableOfContents,jdbcType=VARCHAR},
+        publishing_service_center_id = #{publishingServiceCenter.id,jdbcType=NUMERIC},
+        published_date_statement = #{publishedDateStatement,jdbcType=VARCHAR},
         <include refid="base.auditSets"/>
     </sql>
     

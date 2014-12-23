@@ -10,7 +10,7 @@ import java.util.Collection;
  * @author drsteini
  *
  */
-public class PublicationType extends BaseDomain<PublicationType> implements ILookup, Serializable{
+public class PublicationType extends BaseDomain<PublicationType> implements ILookup, Serializable {
 
 	private static final long serialVersionUID = 6859787295076399446L;
 

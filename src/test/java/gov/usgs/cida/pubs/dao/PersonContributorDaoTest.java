@@ -44,7 +44,7 @@ public class PersonContributorDaoTest extends BaseSpringDaoTest {
     @Test
     public void getByMap() {
         List<Contributor<?>> contributors = PersonContributor.getDao().getByMap(null);
-        assertEquals(ContributorDaoTest.personContributorCnt, contributors.size());
+        assertEquals(ContributorDaoTest.PERSON_CONTRIBUTOR_CNT, contributors.size());
 
         Map<String, Object> filters = new HashMap<>();
         filters.put("id", "1");

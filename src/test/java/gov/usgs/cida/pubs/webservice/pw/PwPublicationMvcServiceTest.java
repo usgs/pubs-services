@@ -51,7 +51,7 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
     	mvcService = new PwPublicationMvcService(busService);
     	mockMvc = MockMvcBuilders.standaloneSetup(mvcService).build();
     	
-    	expectedGetPwPub1 = expectedGetMpPub1.replace(",\"validationErrors\":[]", "");
+    	expectedGetPwPub1 = expectedGetMpPub1.replace("\"validationErrors\": [],", "");
     	
     	StringBuilder temp = new StringBuilder("{\"pageSize\":\"15\",\"pageRowStart\":\"0\",");
     	temp.append("\"pageNumber\":null,\"recordCount\":12,\"records\":[");

@@ -48,6 +48,7 @@
         <typeAlias alias="publicationSeries" type="gov.usgs.cida.pubs.domain.PublicationSeries"/>
         <typeAlias alias="publicationSubtype" type="gov.usgs.cida.pubs.domain.PublicationSubtype"/>
         <typeAlias alias="publicationType" type="gov.usgs.cida.pubs.domain.PublicationType"/>
+        <typeAlias alias="publishingServiceCenter" type="gov.usgs.cida.pubs.domain.PublishingServiceCenter"/>
         <typeAlias alias="usgsContributor" type="gov.usgs.cida.pubs.domain.UsgsContributor"/>
 
         <typeAlias alias="ipdsMessageLog" type="gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog"/>
@@ -93,6 +94,7 @@
          <mapper resource="mybatis/publicationSeries.xml"/>
          <mapper resource="mybatis/publicationSubtype.xml"/>
          <mapper resource="mybatis/publicationType.xml"/>
+         <mapper resource="mybatis/publishingServiceCenter.xml"/>
 
          <mapper resource="mybatis/ipds/ipdsMessageLog.xml"/>
          <mapper resource="mybatis/ipds/ipdsProcessLog.xml"/>

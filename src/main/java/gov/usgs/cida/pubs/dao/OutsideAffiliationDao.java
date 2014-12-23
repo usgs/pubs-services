@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.dao;
 import gov.usgs.cida.pubs.aop.ISetDbContext;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import java.util.List;
 import java.util.Map;
@@ -44,7 +45,7 @@ public class OutsideAffiliationDao extends AffiliationDao {
     @ISetDbContext
     @Override
     public OutsideAffiliation getById(String domainID) {
-        return getById(Integer.parseInt(domainID));
+        return getById(PubsUtilities.parseInteger(domainID));
     }
 
     /** 

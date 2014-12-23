@@ -15,6 +15,7 @@ import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
+import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
 import gov.usgs.cida.pubs.domain.ipds.IpdsPubTypeConv;
@@ -412,6 +413,10 @@ public class IpdsBinding {
             //Not from IPDS - pub.setComments();
             //Not from IPDS - pub.setContact();
             //Not from IPDS - pub.setTableOfContents();
+            PublishingServiceCenter psc = PublishingServiceCenter.getDao().getByIpdsId(
+            		PubsUtilities.parseInteger(getStringValue(inPub, IpdsMessageLog.PUBLISHINGSERVICECENTERID)));
+            pub.setPublishingServiceCenter(psc);
+            //Not from IPDS - pub.setPublishedDateStatement();
             return pub;
         }
         return null;

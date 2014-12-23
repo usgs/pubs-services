@@ -23,6 +23,9 @@ import org.junit.Ignore;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 
 /**
+ * This is the base class used by test classes that need to add data to the database.
+ * All tests that require data added to the database should extend this base class.
+ *
  * @author drsteini
  *
  */

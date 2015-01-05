@@ -71,6 +71,7 @@ public class MpPublicationLinkDaoTest extends BaseSpringDaoTest {
 		newLink.setText("newlink text");
 		newLink.setSize("15 bytes");
 		newLink.setDescription("my link description");
+		newLink.setHelpText("some help stuff");
 		LinkFileType linkFileType = new LinkFileType();
 		linkFileType.setId(4);
 		newLink.setLinkFileType(linkFileType);
@@ -89,6 +90,7 @@ public class MpPublicationLinkDaoTest extends BaseSpringDaoTest {
 		persistedA.setText("updated text");
 		persistedA.setSize("86 TB");
 		newLink.setDescription("my new link description");
+		newLink.setHelpText("my new help text");
 		LinkFileType newLinkFileType = new LinkFileType();
 		newLinkFileType.setId(3);
 		persistedA.setLinkFileType(newLinkFileType);
@@ -180,6 +182,7 @@ public class MpPublicationLinkDaoTest extends BaseSpringDaoTest {
 		assertEquals("12 GB", link.getSize());
 		assertEquals(2, link.getLinkFileType().getId().intValue());
 		assertEquals("This description is wow!", link.getDescription());
+		assertEquals("some help you are", link.getHelpText());
 	}
 
 	public static void assertPwLink2(PublicationLink<?> link) {
@@ -203,6 +206,7 @@ public class MpPublicationLinkDaoTest extends BaseSpringDaoTest {
 		assertEquals("1 TB", link.getSize());
 		assertEquals(3, link.getLinkFileType().getId().intValue());
 		assertEquals("I'm at the end", link.getDescription());
+		assertEquals("I am lotsa help", link.getHelpText());
 	}
 
 	public static void assertPwLink10(PublicationLink<?> link) {
@@ -225,5 +229,6 @@ public class MpPublicationLinkDaoTest extends BaseSpringDaoTest {
 		assertEquals("12 GB", link.getSize());
 		assertEquals(1, link.getLinkFileType().getId().intValue());
 		assertEquals("just a normal description", link.getDescription());
+		assertEquals("Super Help", link.getHelpText());
 	}
 }

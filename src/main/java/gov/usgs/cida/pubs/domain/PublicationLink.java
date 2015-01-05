@@ -58,6 +58,11 @@ public class PublicationLink<D> extends BaseDomain<D> implements Serializable {
 	@Length(min = 0, max = 4000)
     private String description;
 
+    @JsonProperty("linkHelpText")
+    @JsonView(IPwView.class)
+	@Length(min = 0, max = 4000)
+    private String helpText;
+
     public Integer getPublicationId() {
         return publicationId;
     }
@@ -121,5 +126,13 @@ public class PublicationLink<D> extends BaseDomain<D> implements Serializable {
     public void setDescription(final String inDescription) {
         description = inDescription;
     }
+
+	public String getHelpText() {
+		return helpText;
+	}
+
+	public void setHelpText(final String inHelpText) {
+		helpText = inHelpText;
+	}
 
 }

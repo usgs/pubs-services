@@ -26,6 +26,7 @@ public class MpPublicationLink extends PublicationLink<MpPublicationLink> {
 		this.setLinkFileType(pubLink.getLinkFileType());
 		this.setDescription(pubLink.getDescription());
 		this.setPublicationId(pubLink.getPublicationId());
+		this.setHelpText(pubLink.getHelpText());
 	}
 
     public static IMpDao<MpPublicationLink> getDao() {

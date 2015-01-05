@@ -52,6 +52,7 @@
 		select publication_link_id, 	publication_id, 	rank, 
 			   url,						text,		      	object_size,
 			   link_file_type_id,		link_type_id,		description,
+			   help_text,
 			   insert_date, 			insert_username, 	sysdate, 		audit_trail_util.get_username
 		  from mp_publication_link
            where publication_id = #{value,jdbcType=NUMERIC}

@@ -11,12 +11,14 @@
         <result property="text" column="text"/>
         <result property="size" column="object_size"/>
         <result property="description" column="description"/>
+        <result property="helpText" column="help_text"/>
         <association property="linkType" column="link_type_id" select="linkType.getById"/>
         <association property="linkFileType" column="link_file_type_id" select="linkFileType.getById"/>
     </resultMap>
 
     <sql id="cols">
         publication_link_id, publication_id, rank, url, text, object_size, link_file_type_id, link_type_id, description,
+        help_text,
         <include refid="base.auditCols"/>
     </sql>
 
@@ -30,6 +32,7 @@
         #{linkFileType.id,jdbcType=NUMERIC},
         #{linkType.id,jdbcType=NUMERIC},
         #{description,jdbcType=VARCHAR},
+        #{helpText,jdbcType=VARCHAR},
         <include refid="base.auditHosts"/>
     </sql>
 
@@ -42,6 +45,7 @@
         link_file_type_id = #{linkFileType.id,jdbcType=NUMERIC},
         link_type_id = #{linkType.id,jdbcType=NUMERIC},
         description = #{description,jdbcType=VARCHAR},
+        help_text = #{helpText,jdbcType=VARCHAR},
         <include refid="base.auditSets"/>
     </sql>
 

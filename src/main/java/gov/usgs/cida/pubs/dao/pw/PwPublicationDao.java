@@ -55,7 +55,7 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 
     /** 
      * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.BaseDao#getByIndexId(java.lang.String)
+     * @see gov.usgs.cida.pubs.core.dao.intfc.IPwPublicationDao#getByIndexId(java.lang.String)
      */
     @Transactional(readOnly = true)
     @ISetDbContext

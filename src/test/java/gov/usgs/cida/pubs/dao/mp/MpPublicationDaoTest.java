@@ -50,6 +50,8 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         params.put("id", new int[] { pubId });
         List<MpPublication> pubs = MpPublication.getDao().getByMap(params);
         assertTrue(pubs.size() > 0);
+        Integer cnt = MpPublication.getDao().getObjectCount(params);
+        assertEquals(cnt.intValue(), pubs.size());
         MpPublication persistedB = pubs.get(0);
         assertNotNull(persistedB);
         assertNotNull(persistedB.getId());
@@ -287,6 +289,8 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         
         assertEquals(7, pub.getPublishingServiceCenter().getId().intValue());
         assertEquals("date 3/3/3", pub.getPublishedDateStatement());
+        assertEquals(4, pub.getIsPartOf().getId().intValue());
+        assertEquals(6, pub.getSupersededBy().getId().intValue());
 
     }
 
@@ -367,6 +371,12 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         PublishingServiceCenter publishingServiceCenter = new PublishingServiceCenter();
         publishingServiceCenter.setId(6);
         newPub.setPublishingServiceCenter(publishingServiceCenter);
+        Publication<?> po = new MpPublication();
+        po.setId(1);
+        newPub.setIsPartOf(po);
+        Publication<?> sb = new MpPublication();
+        sb.setId(2);
+        newPub.setSupersededBy(sb);
         return newPub;
     }
     
@@ -434,6 +444,12 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         PublishingServiceCenter publishingServiceCenter = new PublishingServiceCenter();
         publishingServiceCenter.setId(2);
         updatedPub.setPublishingServiceCenter(publishingServiceCenter);
+        Publication<?> po = new MpPublication();
+        po.setId(2);
+        updatedPub.setIsPartOf(po);
+        Publication<?> sb = new MpPublication();
+        sb.setId(1);
+        updatedPub.setSupersededBy(sb);
         return updatedPub;
     }
 }

@@ -1,6 +1,8 @@
 package gov.usgs.cida.pubs.dao;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
 import gov.usgs.cida.pubs.domain.Publication;
@@ -8,6 +10,7 @@ import gov.usgs.cida.pubs.domain.Publication;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -70,7 +73,7 @@ public class PublicationDaoTest extends BaseSpringDaoTest {
     public void getObjectCountTest() {
         Map<String, Object> filters = new HashMap<>();
         Integer cnt = Publication.getPublicationDao().getObjectCount(null);
-        assertEquals(5, cnt.intValue());
+        assertEquals(6, cnt.intValue());
 
         filters.put("ipdsId", new String[] { "ipds_id" });
         cnt = Publication.getPublicationDao().getObjectCount(filters);
@@ -104,6 +107,25 @@ public class PublicationDaoTest extends BaseSpringDaoTest {
     	rtn.put("modDateHigh", "2012-12-12");
     	
     	return rtn;
+    }
+
+    @Test
+    public void filterByIndexIdTest() {
+        List<Publication<?>> pubs = Publication.getPublicationDao().filterByIndexId("sir");
+        assertEquals(2, pubs.size());
+        boolean got1 = false;
+        boolean got6 = false;
+        for (Publication<?> pub : pubs) {
+        	if (1 == pub.getId()) {
+        		got1 = true;
+        	} else if (6 == pub.getId()) {
+        		got6 = true;
+        	} else {
+        		fail("unexpected pub:" + pub.getId());
+        	}
+        }
+        assertTrue(got1);
+        assertTrue(got6);
     }
 
 }

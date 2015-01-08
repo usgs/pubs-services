@@ -24,6 +24,8 @@ public class PublicationSubtype extends BaseDomain<PublicationSubtype> implement
 
     public static final Integer USGS_UNNUMBERED_SERIES = 6;
 
+    public static final Integer USGS_DATA_WEBSITE = 7;
+
     private PublicationType publicationType;
 
     private String text;

@@ -23,6 +23,8 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		PublicationSubtype pubSubtype = new PublicationSubtype();
 		PublicationSeries pubSeries = new PublicationSeries();
 		PublicationType largerWorkType = new PublicationType();
+		Publication<?> po = new MpPublication();
+		Publication<?> sb = new MpPublication();
 
 		assertTrue(validator.isValid(null, null));
 		assertTrue(validator.isValid(null, context));
@@ -40,6 +42,12 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		assertTrue(validator.isValid(mpPub, context));
 		
 		mpPub.setLargerWorkType(largerWorkType);
+		assertTrue(validator.isValid(mpPub, context));
+		
+		mpPub.setIsPartOf(po);
+		assertTrue(validator.isValid(mpPub, context));
+		
+		mpPub.setSupersededBy(sb);
 		assertTrue(validator.isValid(mpPub, context));
 		
 		pubType.setId(2);
@@ -69,9 +77,26 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		largerWorkType.setId(-1);
 		assertFalse(validator.isValid(mpPub, context));
 
+		largerWorkType.setId("");
+		po.setId(1);
+		assertTrue(validator.isValid(mpPub, context));
+
+		po.setId(-1);
+		assertFalse(validator.isValid(mpPub, context));
+
+		po.setId("");
+		sb.setId(2);
+		assertTrue(validator.isValid(mpPub, context));
+
+		sb.setId(-1);
+		assertFalse(validator.isValid(mpPub, context));
+
 		pubType.setId(-1);
 		pubSubtype.setId(-1);
 		pubSeries.setId(-1);
+		largerWorkType.setId(-1);
+		po.setId(-1);
+		sb.setId(-1);
 		assertFalse(validator.isValid(mpPub, context));
 	}
 

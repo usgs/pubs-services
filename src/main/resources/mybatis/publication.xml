@@ -60,6 +60,8 @@
         <association property="largerWorkSubtype" column="larger_work_subtype_id" select="publicationSubtype.getById"/>
         <association property="seriesTitle" column="publication_series_id" select="publicationSeries.getById"/>
         <association property="publishingServiceCenter" column="publishing_service_center_id" select="publishingServiceCenter.getById"/>
+        <association property="isPartOf" column="is_part_of_id" select="publication.getLookupById"/>
+        <association property="supersededBy" column="superseded_by_id" select="publication.getLookupById"/>
     </resultMap>
 
     <resultMap id="genericResult" type="Publication" extends="result">
@@ -73,6 +75,7 @@
         <collection property="costCenters" column="publication_id" select="mpPublicationCostCenter.getByPublication"/>
         <collection property="contributors" column="publication_id" select="mpPublicationContributor.getByPublication"/>
         <collection property="links" column="publication_id" select="mpPublicationLink.getByPublication"/>
+<!--         <collection property="interactions" column="publication_id" select="mpPublicationInteraction.getByPublication"/> -->
     </resultMap>
 	
     <resultMap id="pwResult" type="Publication" extends="genericResult">
@@ -80,6 +83,13 @@
         <collection property="contributors" column="publication_id" select="pwPublicationContributor.getByPublication"/>
         <collection property="links" column="publication_id" select="pwPublicationLink.getByPublication"/>
     </resultMap>
+
+    <resultMap id="lookupResult" type="Publication">
+        <id property="id" column="publication_id"/>
+        <result property="indexId" column="index_id"/>
+        <result property="publicationYear" column="publication_year"/>
+        <result property="title" column="title"/>
+	</resultMap>
 
     <sql id="cols">
         publication_id,
@@ -138,6 +148,8 @@
         table_of_contents,
         publishing_service_center_id,
         published_date_statement,
+        is_part_of_id,
+        superseded_by_id,
         <include refid="base.auditCols"/>
     </sql>
 
@@ -198,6 +210,8 @@
         #{tableOfContents,jdbcType=VARCHAR},
         #{publishingServiceCenter.id,jdbcType=NUMERIC},
         #{publishedDateStatement,jdbcType=VARCHAR},
+        #{isPartOf.id,jdbcType=NUMERIC},
+        #{supersededBy.id,jdbcType=NUMERIC},
         <include refid="base.auditHosts"/>
     </sql>
 
@@ -257,6 +271,8 @@
         table_of_contents = #{tableOfContents,jdbcType=VARCHAR},
         publishing_service_center_id = #{publishingServiceCenter.id,jdbcType=NUMERIC},
         published_date_statement = #{publishedDateStatement,jdbcType=VARCHAR},
+        is_part_of_id = #{isPartOf.id,jdbcType=NUMERIC},
+        superseded_by_id = #{supersededBy.id,jdbcType=NUMERIC},
         <include refid="base.auditSets"/>
     </sql>
     
@@ -439,6 +455,25 @@
                                           select publication_id from mp_publication)
                  <include refid="pwPublication.filters"/>
                )
+    </select>
+    
+    <sql id="baseLookupSelect">
+    	select publication_id,
+               index_id,
+               publication_year,
+               title
+          from all_publication_lookup
+    </sql>
+
+    <select id="getLookupById" parameterType="Integer" resultMap="lookupResult">
+        <include refid="baseLookupSelect"/>
+           where publication_id = #{value,jdbcType=VARCHAR}
+    </select>
+
+    <select id="filterLookupByIndexId" parameterType="String" resultMap="lookupResult">
+        <include refid="baseLookupSelect"/>
+           where upper(index_id) like upper(#{value,jdbcType=VARCHAR}) || '%' and
+                 rownum &lt; 31
     </select>
 
 </mapper>

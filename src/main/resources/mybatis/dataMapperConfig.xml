@@ -44,6 +44,7 @@
         <typeAlias alias="publicationContributor" type="gov.usgs.cida.pubs.domain.PublicationContributor"/>
         <typeAlias alias="publicationCostCenter" type="gov.usgs.cida.pubs.domain.PublicationCostCenter"/>
         <typeAlias alias="publicationIndex" type="gov.usgs.cida.pubs.domain.PublicationIndex"/>
+<!--         <typeAlias alias="publicationInteraction" type="gov.usgs.cida.pubs.domain.PublicationInteraction"/> -->
         <typeAlias alias="publicationLink" type="gov.usgs.cida.pubs.domain.PublicationLink"/>
         <typeAlias alias="publicationSeries" type="gov.usgs.cida.pubs.domain.PublicationSeries"/>
         <typeAlias alias="publicationSubtype" type="gov.usgs.cida.pubs.domain.PublicationSubtype"/>
@@ -62,6 +63,7 @@
         <typeHandler javaType="org.joda.time.LocalDateTime" handler="gov.usgs.cida.pubs.dao.typehandler.LocalDateTimeTypeHandler"/>
         <typeHandler javaType="java.lang.Boolean" handler="gov.usgs.cida.pubs.dao.typehandler.StringBooleanTypeHandler"/>
         <typeHandler javaType="PubMap" handler="gov.usgs.cida.pubs.dao.typehandler.PubMapTypeHandler"/>
+<!--         <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="gov.usgs.cida.pubs.domain.Predicate"/> -->
     </typeHandlers>
 
     <mappers>
@@ -74,6 +76,7 @@
          <mapper resource="mybatis/mp/mpPublicationContributor.xml"/>
          <mapper resource="mybatis/mp/mpPublicationCostCenter.xml"/>
          <mapper resource="mybatis/mp/mpPublicationLink.xml"/>
+<!--          <mapper resource="mybatis/mp/mpPublicationInteraction.xml"/> -->
 
          <mapper resource="mybatis/pw/pwPublication.xml"/>
          <mapper resource="mybatis/pw/pwPublicationContributor.xml"/>

@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 /**
- * These tests require the database to be populated.  Note that I have no yet figured out how to get the
+ * These tests require the database to be populated.  Note that I have not yet figured out how to get the
  * tests to respect the ILookupView annotation.
  * @author drsteini
  *
@@ -122,4 +122,26 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringDaoTest {
                 		+ "\"corporation\":true,\"organization\":\"US Geological Survey Ice Survey Team\",\"usgs\":false}]")));
     }
     
+    @Test
+    public void getPublications() throws Exception {
+        MvcResult rtn = mockLookup.perform(get("/lookup/publications?mimetype=json").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+        .andReturn();
+
+        assertEquals(6, new JSONArray(rtn.getResponse().getContentAsString()).length());
+
+        rtn = mockLookup.perform(get("/lookup/publications?text=9").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+        .andReturn();
+
+        assertEquals(1, new JSONArray(rtn.getResponse().getContentAsString()).length());
+
+        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
+                sameJSONArrayAs(new JSONArray("[{\"id\":5,\"text\":\"9 - null -  future title\",\"indexId\":\"9\",\"title\":\" future title\"}]")));
+    }
+
 }

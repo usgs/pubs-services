@@ -1,11 +1,13 @@
 package gov.usgs.cida.pubs.domain;
 
 import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
+import gov.usgs.cida.pubs.domain.intfc.ILookup;
 import gov.usgs.cida.pubs.json.PubsJsonLocalDateDeSerializer;
 import gov.usgs.cida.pubs.json.PubsJsonLocalDateSerializer;
 import gov.usgs.cida.pubs.json.PubsJsonLocalDateTimeDeSerializer;
 import gov.usgs.cida.pubs.json.PubsJsonLocalDateTimeSerializer;
+import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
 import gov.usgs.cida.pubs.json.view.intfc.IMpView;
 import gov.usgs.cida.pubs.json.view.intfc.IPwView;
 import gov.usgs.cida.pubs.validation.constraint.CrossProperty;
@@ -42,11 +44,11 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @UniqueKey(message = "{publication.indexid.duplicate}")
 @ParentExists
 @CrossProperty
-public class Publication<D> extends BaseDomain<D> implements Serializable {
+public class Publication<D> extends BaseDomain<D> implements ILookup, Serializable {
 
     private static final long serialVersionUID = -9013357854464855631L;
 
-    private static IDao<Publication<?>> publicationDao;
+    private static IPublicationDao publicationDao;
 
     @JsonProperty("indexId")
     @JsonView(IPwView.class)
@@ -331,6 +333,15 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     @JsonView(IPwView.class)
     @Length(min=0, max=4000)
     private String publishedDateStatement;
+    
+//    @JsonIgnore
+//    private Collection<PublicationInteraction<?>> interactions;
+    
+    @JsonView(IPwView.class)
+    private Publication<?> isPartOf;
+    
+    @JsonView(IPwView.class)
+    private Publication<?> supersededBy;
     
     /**
      * @return the indexId
@@ -811,7 +822,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
     /**
      * @return the publicationDao
      */
-    public static IDao<Publication<?>> getPublicationDao() {
+    public static IPublicationDao getPublicationDao() {
         return publicationDao;
     }
 
@@ -820,7 +831,7 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
      * 
      * @param inPublicationDao the publicationDao to set
      */
-    public void setPublicationDao(final IDao<Publication<?>> inPublicationDao) {
+    public void setPublicationDao(final IPublicationDao inPublicationDao) {
         publicationDao = inPublicationDao;
     }
 
@@ -1030,4 +1041,36 @@ public class Publication<D> extends BaseDomain<D> implements Serializable {
 		publishedDateStatement = inPublishedDateStatement;
 	}
 
+//    @JsonView(IPwView.class)
+//	public Collection<PublicationInteraction<?>> getInteractions() {
+//		return interactions;
+//	}
+//
+//	@JsonIgnore
+//	public void setInteractions(final Collection<PublicationInteraction<?>> inInteractions) {
+//		interactions = inInteractions;
+//	}
+
+	public Publication<?> getIsPartOf() {
+		return isPartOf;
+	}
+
+	public void setIsPartOf(final Publication<?> inIsPartOf) {
+		isPartOf = inIsPartOf;
+	}
+
+	public Publication<?> getSupersededBy() {
+		return supersededBy;
+	}
+
+	public void setSupersededBy(final Publication<?> inSupersededBy) {
+		supersededBy = inSupersededBy;
+	}
+	
+	@JsonView(ILookupView.class)
+    @Override
+    public String getText() {
+        return indexId + " - " + publicationYear + " - " + title;
+    }
+    
 }

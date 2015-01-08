@@ -124,6 +124,8 @@ public class PwPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals("contents, table of4", pub.getTableOfContents());
         assertEquals(5, pub.getPublishingServiceCenter().getId().intValue());
         assertEquals("date 1/1/1", pub.getPublishedDateStatement());
+        assertEquals(5, pub.getIsPartOf().getId().intValue());
+        assertEquals(6, pub.getSupersededBy().getId().intValue());
     }
 
     public static void assertPwPub4Children(Publication<?> pub) {
@@ -202,6 +204,12 @@ public class PwPublicationDaoTest extends BaseSpringDaoTest {
         publishingServiceCenter.setId(6);
         newPub.setPublishingServiceCenter(publishingServiceCenter);
         newPub.setPublishedDateStatement("date 2/2/2");
+        Publication<?> po = new PwPublication();
+        po.setId(1);
+        newPub.setIsPartOf(po);
+        Publication<?> sb = new PwPublication();
+        sb.setId(2);
+        newPub.setSupersededBy(sb);
 
         return newPub;
     }

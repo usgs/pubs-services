@@ -499,7 +499,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	filters.put("publicationId", mpPub.getId());
     	List<MpListPublication> lists = MpListPublication.getDao().getByMap(filters);
     	assertEquals(1, lists.size());
-    	testLists(lists, false, false, false, true);
+    	testLists(lists, false, false, false, true, false);
 
     	PublicationType pubType = new PublicationType();
     	pubType.setId(PublicationType.ARTICLE);
@@ -507,22 +507,31 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	busService.setList(mpPub);
     	lists = MpListPublication.getDao().getByMap(filters);
     	assertEquals(2, lists.size());
-    	testLists(lists, true, false, false, true);
+    	testLists(lists, true, false, false, true, false);
 
     	pubType.setId(4);
     	mpPub.setPublicationSubtype(null);
     	busService.setList(mpPub);
     	lists = MpListPublication.getDao().getByMap(filters);
     	assertEquals(3, lists.size());
-    	testLists(lists, true, true, false, true);
+    	testLists(lists, true, true, false, true, false);
 
     	mpPub.setIpdsReviewProcessState(ProcessType.SPN_PRODUCTION.getIpdsValue());
     	mpPub.setPublishingServiceCenter(new PublishingServiceCenter());
     	busService.setList(mpPub);
     	lists = MpListPublication.getDao().getByMap(filters);
     	assertEquals(4, lists.size());
-    	testLists(lists, true, true, true, true);
+    	testLists(lists, true, true, true, true, false);
     	
+    	PublicationSubtype pubSubtype = new PublicationSubtype();
+    	pubSubtype.setId(PublicationSubtype.USGS_DATA_WEBSITE);
+    	mpPub.setPublicationSubtype(pubSubtype);
+    	mpPub.setIpdsReviewProcessState(null);
+    	busService.setList(mpPub);
+    	lists = MpListPublication.getDao().getByMap(filters);
+    	assertEquals(5, lists.size());
+    	testLists(lists, true, true, true, true, true);
+
     	mpPub = MpPublicationDaoTest.addAPub(MpPublication.getDao().getNewProdId());
     	mpPub.setIpdsReviewProcessState(ProcessType.SPN_PRODUCTION.getIpdsValue());
     	PublishingServiceCenter psc = new PublishingServiceCenter();
@@ -561,27 +570,28 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	filters.put("publicationId", mpPub.getId());
     	List<MpListPublication> lists = MpListPublication.getDao().getByMap(filters);
     	assertEquals(1, lists.size());
-    	testLists(lists, false, true, false, false);
+    	testLists(lists, false, true, false, false, false);
     	
     	//Add List
     	busService.setList(mpPub, MpList.IPDS_USGS_NUMBERED_SERIES);
     	lists = MpListPublication.getDao().getByMap(filters);
     	assertEquals(2, lists.size());
-    	testLists(lists, false, true, false, true);
+    	testLists(lists, false, true, false, true, false);
 
     	//Update List
     	busService.setList(mpPub, MpList.IPDS_OTHER_PUBS);
     	lists = MpListPublication.getDao().getByMap(filters);
     	assertEquals(2, lists.size());
-    	testLists(lists, false, true, false, true);
+    	testLists(lists, false, true, false, true, false);
 	}
 	
 	public void testLists(List<MpListPublication> lists, boolean expect_journal, boolean expect_other,
-			boolean expect_pending, boolean expect_numbered) {
-		boolean got_journal = false;  //IPDS_JOURNAL_ARTICLES = "3";
-		boolean got_other = false;    //IPDS_OTHER_PUBS = "4";
-		boolean got_pending = false;  // PENDING_USGS_SERIES = "9";
-		boolean got_numbered = false; // IPDS_USGS_NUMBERED_SERIES = "275";
+			boolean expect_pending, boolean expect_numbered, boolean expect_website) {
+		boolean got_journal = false;
+		boolean got_other = false;
+		boolean got_pending = false;
+		boolean got_numbered = false;
+		boolean got_website = false;
 
     	for (MpListPublication list : lists) {
     		if (MpList.IPDS_JOURNAL_ARTICLES.contentEquals(list.getMpList().getId().toString())) {
@@ -592,12 +602,15 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     			got_pending = true;
     		} else 	if (MpList.IPDS_USGS_NUMBERED_SERIES.contentEquals(list.getMpList().getId().toString())) {
     			got_numbered = true;
+    		} else 	if (MpList.USGS_DATA_WEBSITES.contentEquals(list.getMpList().getId().toString())) {
+    			got_website = true;
     		}
     	}
 		assertEquals(expect_journal, got_journal);
 		assertEquals(expect_other, got_other);
 		assertEquals(expect_pending, got_pending);
 		assertEquals(expect_numbered, got_numbered);
+		assertEquals(expect_website, got_website);
 	}
 
     @Test
@@ -686,7 +699,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	filters.put("mpListId", MpList.IPDS_USGS_NUMBERED_SERIES);
     	List<MpListPublication> lists = MpListPublication.getDao().getByMap(filters);
     	assertEquals(1, lists.size());
-    	testLists(lists, false, false, false, true);
+    	testLists(lists, false, false, false, true, false);
     }
     
     public void assertMpPublicationDeleted(Integer id) {

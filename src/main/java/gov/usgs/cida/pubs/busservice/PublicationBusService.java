@@ -8,11 +8,6 @@ import java.util.Map;
 public class PublicationBusService extends BusService<Publication<?>> {
 
 	@Override
-	public Publication<?> getObject(Integer domainID) {
-		return Publication.getPublicationDao().getById(domainID);
-	}
-	
-	@Override
     public List<Publication<?>> getObjects(Map<String, Object> filters) {
         return Publication.getPublicationDao().getByMap(filters);
     }

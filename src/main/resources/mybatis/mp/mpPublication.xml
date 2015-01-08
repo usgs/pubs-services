@@ -5,7 +5,6 @@
 
     <resultMap id="result" type="MpPublication" extends="publication.mpResult">
         <result property="lockUsername" column="lock_username"/>
-        <collection property="links" column="publication_id" select="mpPublicationLink.getByPublication"/>
     </resultMap>
 
     <sql id="cols">
@@ -232,6 +231,8 @@
                       pw.table_of_contents            = mp.table_of_contents,
                       pw.publishing_service_center_id = mp.publishing_service_center_id,
                       pw.published_date_statement     = mp.published_date_statement,
+                      pw.is_part_of_id                = mp.is_part_of_id,
+                      pw.superseded_by_id             = mp.superseded_by_id,
                       pw.insert_date                  = mp.insert_date,
                       pw.insert_username              = mp.insert_username,
                       pw.update_date                  = sysdate,
@@ -251,6 +252,7 @@
                           mp.county,					mp.city,						mp.other_geospatial,				mp.geographic_extents,
                           mp.volume,					mp.issue,        				mp.edition,							mp.public_comments,
                           mp.contact_info,				mp.table_of_contents,           mp.publishing_service_center_id,	mp.published_date_statement,
+                          mp.is_part_of_id,				mp.superseded_by_id,
                           mp.insert_date, 				mp.insert_username, 			sysdate, 							audit_trail_util.get_username)
     </update>
 

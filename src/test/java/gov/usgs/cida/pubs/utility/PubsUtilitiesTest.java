@@ -69,6 +69,19 @@ public class PubsUtilitiesTest extends BaseSpringTest {
     }
 
     @Test
+    public void isPublicationTypeWebsiteTest() {
+        assertFalse(PubsUtilities.isPublicationTypeUSGSWebsite(null));
+        PublicationSubtype pubSubtype = new PublicationSubtype();
+        assertFalse(PubsUtilities.isPublicationTypeUSGSWebsite(pubSubtype));
+        pubSubtype.setId(1);
+        assertFalse(PubsUtilities.isPublicationTypeUSGSWebsite(pubSubtype));
+        pubSubtype.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
+        assertFalse(PubsUtilities.isPublicationTypeUSGSWebsite(pubSubtype));
+        pubSubtype.setId(PublicationSubtype.USGS_DATA_WEBSITE);
+        assertTrue(PubsUtilities.isPublicationTypeUSGSWebsite(pubSubtype));
+    }
+
+    @Test
     public void getUsernameTest() {
     	assertEquals("Not Authenticated", PubsConstants.ANONYMOUS_USER, PubsUtilities.getUsername());
     	

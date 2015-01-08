@@ -55,6 +55,20 @@ public class ParentExistsValidatorForMpPublication implements ConstraintValidato
 	            context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
 	                .addPropertyNode("largerWorkType").addConstraintViolation();
 	        }
+	        if (null != value.getIsPartOf() && null != value.getIsPartOf().getId()
+	        		&& null == Publication.getPublicationDao().getById(value.getIsPartOf().getId())) {
+	            rtn = false;
+	            context.disableDefaultConstraintViolation();
+	            context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
+	                .addPropertyNode("isPartOf").addConstraintViolation();
+	        }
+	        if (null != value.getSupersededBy() && null != value.getSupersededBy().getId()
+	        		&& null == Publication.getPublicationDao().getById(value.getSupersededBy().getId())) {
+	            rtn = false;
+	            context.disableDefaultConstraintViolation();
+	            context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
+	                .addPropertyNode("SupersededBy").addConstraintViolation();
+	        }
         }
 
         return rtn;

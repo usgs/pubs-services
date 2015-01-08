@@ -244,7 +244,6 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 
         	setList(inPublication);
         	contributorBusService.merge(inPublication.getId(), inPublication.getContributors());
-
             costCenterBusService.merge(inPublication.getId(), inPublication.getCostCenters());
             linkBusService.merge(inPublication.getId(), inPublication.getLinks());
 
@@ -337,6 +336,8 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
         		}
             } else if (PubsUtilities.isUsgsNumberedSeries(inPublication.getPublicationSubtype())) {
             	listId = MpList.IPDS_USGS_NUMBERED_SERIES;
+	        } else if (PubsUtilities.isPublicationTypeUSGSWebsite(inPublication.getPublicationSubtype())) {
+            	listId = MpList.USGS_DATA_WEBSITES;
 	        }
 	        setList(inPublication, listId);
 	    }
@@ -361,7 +362,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 	    }
     }
 
-	@Override
+    @Override
 	public ValidatorResult checkAvailability(Integer publicationId) {
 		boolean available = false;
     	LocalDateTime now = new LocalDateTime();

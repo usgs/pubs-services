@@ -42,7 +42,7 @@ public class PwPublicationBusServiceTest extends BaseSpringDaoTest {
         busService.getObjects(null);
         busService.getObjects(filters);
 
-    	filters.put("searchTerms", new String[]{"title"});
+    	filters.put("q", "title");
         List<PwPublication> pubs = busService.getObjects(filters);
         assertNotNull(pubs);
         assertEquals(1, pubs.size());
@@ -57,7 +57,7 @@ public class PwPublicationBusServiceTest extends BaseSpringDaoTest {
         busService.getObjects(null);
         busService.getObjects(filters);
 
-        filters.put("searchTerms", new String[]{"title"});
+        filters.put("q", "title");
         Integer cnt = busService.getObjectCount(filters);
         assertEquals(1, cnt.intValue());
         

@@ -21,6 +21,7 @@ import gov.usgs.cida.pubs.domain.LinkFileType;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
 import gov.usgs.cida.pubs.domain.PersonContributor;
+import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
@@ -284,6 +285,22 @@ public class LookupMvcService extends MvcService<PublicationType> {
                 filters.put(PublishingServiceCenterDao.TEXT_SEARCH, text[0]);
             }
             rtn = PublishingServiceCenter.getDao().getByMap(filters);
+        }
+        return rtn;
+    }
+
+    @RequestMapping("publications")
+    @ResponseView(ILookupView.class)
+    public @ResponseBody Collection<Publication<?>> getPublications(HttpServletRequest request, HttpServletResponse response,
+                @RequestParam(value=TEXT_SEARCH, required=false) String[] text) {
+        LOG.debug("publication");
+        Collection<Publication<?>> rtn = new ArrayList<>();
+        if (validateParametersSetHeaders(request, response)) {
+            String filters = null;
+            if (null != text && 0 < text.length) {
+                filters = text[0];
+            }
+            rtn = Publication.getPublicationDao().filterByIndexId(filters);
         }
         return rtn;
     }

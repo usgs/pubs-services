@@ -26,6 +26,8 @@ public class MpList extends BaseDomain<MpList>  implements Serializable {
 
 	public static final String IPDS_OTHER_PUBS = "4";
 	
+	public static final String USGS_DATA_WEBSITES = "6";
+	
 	public static final String PENDING_USGS_SERIES = "9";
 
 	public static final String IPDS_USGS_NUMBERED_SERIES = "275";

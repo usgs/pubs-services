@@ -148,6 +148,15 @@ public final class PubsUtilities {
         return rtn;
     }
     
+    public static boolean isPublicationTypeUSGSWebsite(final PublicationSubtype pubSubtype) {
+        boolean rtn = false;
+        if (null != pubSubtype
+                && PublicationSubtype.USGS_DATA_WEBSITE.equals(pubSubtype.getId())) {
+            rtn = true;
+        }
+        return rtn;
+    }
+    
     public static boolean isSpnProduction(final String ipdsReviewProcessState) {
         boolean rtn = false;
         if (StringUtils.isNotBlank(ipdsReviewProcessState)

@@ -32,7 +32,7 @@ import org.junit.Test;
 public class MpPublicationDaoTest extends BaseSpringDaoTest {
 
     //TODO contributors, links, & CostCenters in test.
-    public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "contributors", "contributorsToMap", "links");
+    public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "contributors", "contributorsToMap", "links", "interactions");
 
     public static final String MPPUB1_INDEXID = "sir20145083";
     public static final String MPPUB1_LOCKEDBY = "drsteini";

@@ -55,7 +55,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
 
     public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "contributors", "contributorsToMap", "links",
-            "doi", "indexId");
+            "doi", "indexId", "interactions");
 
 	public Integer lockTimeoutHours = 1;
 

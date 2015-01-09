@@ -75,13 +75,14 @@
         <collection property="costCenters" column="publication_id" select="mpPublicationCostCenter.getByPublication"/>
         <collection property="contributors" column="publication_id" select="mpPublicationContributor.getByPublication"/>
         <collection property="links" column="publication_id" select="mpPublicationLink.getByPublication"/>
-<!--         <collection property="interactions" column="publication_id" select="mpPublicationInteraction.getByPublication"/> -->
+        <collection property="interactions" column="publication_id" select="publicationInteraction.getByMpPublication"/>
     </resultMap>
 	
     <resultMap id="pwResult" type="Publication" extends="genericResult">
         <collection property="costCenters" column="publication_id" select="pwPublicationCostCenter.getByPublication"/>
         <collection property="contributors" column="publication_id" select="pwPublicationContributor.getByPublication"/>
         <collection property="links" column="publication_id" select="pwPublicationLink.getByPublication"/>
+        <collection property="interactions" column="publication_id" select="publicationInteraction.getByPwPublication"/>
     </resultMap>
 
     <resultMap id="lookupResult" type="Publication">

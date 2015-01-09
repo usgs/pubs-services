@@ -334,8 +334,8 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
     @Length(min=0, max=4000)
     private String publishedDateStatement;
     
-//    @JsonIgnore
-//    private Collection<PublicationInteraction<?>> interactions;
+    @JsonIgnore
+    private Collection<PublicationInteraction> interactions;
     
     @JsonView(IPwView.class)
     private Publication<?> isPartOf;
@@ -1041,15 +1041,15 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 		publishedDateStatement = inPublishedDateStatement;
 	}
 
-//    @JsonView(IPwView.class)
-//	public Collection<PublicationInteraction<?>> getInteractions() {
-//		return interactions;
-//	}
-//
-//	@JsonIgnore
-//	public void setInteractions(final Collection<PublicationInteraction<?>> inInteractions) {
-//		interactions = inInteractions;
-//	}
+    @JsonView(IPwView.class)
+	public Collection<PublicationInteraction> getInteractions() {
+		return interactions;
+	}
+
+	@JsonIgnore
+	public void setInteractions(final Collection<PublicationInteraction> inInteractions) {
+		interactions = inInteractions;
+	}
 
 	public Publication<?> getIsPartOf() {
 		return isPartOf;
@@ -1067,7 +1067,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 		supersededBy = inSupersededBy;
 	}
 	
-	@JsonView(ILookupView.class)
+	@JsonView({ILookupView.class, IPwView.class})
     @Override
     public String getText() {
         return indexId + " - " + publicationYear + " - " + title;

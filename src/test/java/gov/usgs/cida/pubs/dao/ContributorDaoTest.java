@@ -74,7 +74,7 @@ public class ContributorDaoTest extends BaseSpringDaoTest {
         assertEquals(1, contributors.get(0).getId().intValue());
 
         filters.clear();
-        filters.put("text", "con");
+        filters.put("text", new String[]{"con"});
         contributors = Contributor.getDao().getByMap(filters);
         assertEquals(2, contributors.size());
         boolean got1 = false;
@@ -92,7 +92,7 @@ public class ContributorDaoTest extends BaseSpringDaoTest {
         assertTrue("Got 4", got4);
 
         filters.clear();
-        filters.put("text", "us");
+        filters.put("text", new String[]{"us"});
         contributors = Contributor.getDao().getByMap(filters);
         assertEquals(1, contributors.size());
         assertEquals(2, contributors.get(0).getId().intValue());
@@ -120,7 +120,7 @@ public class ContributorDaoTest extends BaseSpringDaoTest {
         contributors = Contributor.getDao().getByMap(filters);
         assertEquals(PERSON_CONTRIBUTOR_CNT, contributors.size());
         assertEquals(1, contributors.get(0).getId().intValue());
-        filters.put("text", "out");
+        filters.put("text", new String[]{"out"});
         contributors = Contributor.getDao().getByMap(filters);
         assertEquals(1, contributors.size());
         assertEquals(3, contributors.get(0).getId().intValue());
@@ -143,7 +143,7 @@ public class ContributorDaoTest extends BaseSpringDaoTest {
         contributors = Contributor.getDao().getByMap(filters);
         assertEquals(CORPORATE_CONTRIBUTOR_CNT, contributors.size());
         assertEquals(2, contributors.get(0).getId().intValue());
-        filters.put("text", "us");
+        filters.put("text", new String[]{"us"});
         contributors = Contributor.getDao().getByMap(filters);
         assertEquals(1, contributors.size());
         assertEquals(2, contributors.get(0).getId().intValue());

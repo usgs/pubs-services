@@ -100,12 +100,16 @@
         <if test="ipdsContributorId != null">
             and ipds_contributor_id = #{ipdsContributorId}
         </if>
-        <if test="text != null">
-            and (upper(family) like upper(#{text}) || '%'
-              or upper(given) like upper(#{text}) || '%'
-              or upper(suffix) like upper(#{text}) || '%'
-              or upper(email) like upper(#{text}) || '%'
-              or upper(literal) like upper(#{text}) || '%')
+       	<if test="text != null and text.length > 0">
+       		and 
+			<foreach item="t" collection="text" open="("
+					 separator="and" close=")"> 
+                (upper(family) like upper(#{t}) || '%'
+              or upper(given) like upper(#{t}) || '%'
+              or upper(suffix) like upper(#{t}) || '%'
+              or upper(email) like upper(#{t}) || '%'
+              or upper(literal) like upper(#{t}) || '%')
+        	</foreach>
         </if>
         <if test="given != null">
             and upper(given) like upper(#{given}) || '%'

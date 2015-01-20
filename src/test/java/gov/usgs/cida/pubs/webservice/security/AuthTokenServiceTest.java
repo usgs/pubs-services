@@ -22,6 +22,7 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -44,6 +45,7 @@ public class AuthTokenServiceTest {
 	
 	@Test 
 	public void logoutTestSuccess() {
+		SecurityContextHolder.clearContext();
 		HttpServletRequest mockRequest = mock(HttpServletRequest.class);
 		when(mockRequest.getHeader(TokenSecurityFilter.AUTHORIZATION_HEADER)).thenReturn("Bearer a-token-string");
 		
@@ -57,6 +59,7 @@ public class AuthTokenServiceTest {
 
 	@Test 
 	public void logoutTestFail() {
+		SecurityContextHolder.clearContext();
 		HttpServletRequest mockRequest = mock(HttpServletRequest.class);
 		when(mockRequest.getHeader(TokenSecurityFilter.AUTHORIZATION_HEADER)).thenReturn("Bearer a-token-string");
 		
@@ -70,6 +73,7 @@ public class AuthTokenServiceTest {
 	
 	@Test
 	public void logoutTest() throws Exception {
+		SecurityContextHolder.clearContext();
     	mockMvc = MockMvcBuilders.standaloneSetup(testService).build();
 		when(mockAuthService.invalidateToken("a-token-string")).thenReturn(true);
 

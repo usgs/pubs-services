@@ -2,12 +2,10 @@ package gov.usgs.cida.pubs.webservice;
 
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.dao.ContributorTypeDao;
-import gov.usgs.cida.pubs.dao.CorporateContributorDao;
 import gov.usgs.cida.pubs.dao.CostCenterDao;
 import gov.usgs.cida.pubs.dao.LinkFileTypeDao;
 import gov.usgs.cida.pubs.dao.LinkTypeDao;
 import gov.usgs.cida.pubs.dao.OutsideAffiliationDao;
-import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
 import gov.usgs.cida.pubs.dao.PublicationSubtypeDao;
 import gov.usgs.cida.pubs.dao.PublicationTypeDao;
@@ -247,11 +245,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
         LOG.debug("Contributor - People");
         Collection<Contributor<?>> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
-            Map<String, Object> filters = new HashMap<>();
-            if (null != text && 0 < text.length) {
-                filters.put(PersonContributorDao.TEXT_SEARCH, text[0]);
-            }
-            rtn = PersonContributor.getDao().getByMap(filters);
+            rtn = PersonContributor.getDao().getByMap(configureContributorFilter(text));
         }
         return rtn;
     }
@@ -263,11 +257,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
         LOG.debug("Contributor - Corporations");
         Collection<Contributor<?>> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
-            Map<String, Object> filters = new HashMap<>();
-            if (null != text && 0 < text.length) {
-                filters.put(CorporateContributorDao.TEXT_SEARCH, text[0]);
-            }
-            rtn = CorporateContributor.getDao().getByMap(filters);
+        	rtn = CorporateContributor.getDao().getByMap(configureContributorFilter(text));
         }
         return rtn;
     }

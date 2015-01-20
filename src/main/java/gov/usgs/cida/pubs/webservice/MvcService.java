@@ -109,6 +109,25 @@ public abstract class MvcService<D> {
         return StringUtils.join(newList, " and ");
     }
     
+    protected Map<String, Object> configureContributorFilter(String[] text) {
+    	//This is overly complicated because any comma that the user enters in the search box is interpreted as an
+    	//addition parameter, rather than as a comma - for instance "carvin, rebecca" ends up as {"carvin", " rebecca"} 
+        Map<String, Object> filters = new HashMap<>();
+        List<String> values = new ArrayList<String>();
+        if (null != text && 0 < text.length) {
+    		//Arrays.asList returns a fixed size java.util.Arrays$ArrayList, so we actually need to create a real list to 
+    		//be able to add entries to it.
+        	List<String> textList = new LinkedList<>(Arrays.asList(text));
+        	for (String temp : textList) {
+        		values.addAll(Arrays.asList(temp.trim().toLowerCase().split(" ")));
+        	}
+        	if (!values.isEmpty()) {
+        		addToFiltersIfNotNull(filters, "text", values);
+        	}
+        }
+    	return filters;
+    }
+
     protected String buildOrderBy(String orderBy) {
     	StringBuilder rtn = new StringBuilder("publication_year desc nulls last, display_to_public_date desc"); 
     	if (StringUtils.isNotBlank(orderBy)) {

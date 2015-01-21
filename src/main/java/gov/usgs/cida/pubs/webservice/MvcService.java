@@ -119,10 +119,19 @@ public abstract class MvcService<D> {
     		//be able to add entries to it.
         	List<String> textList = new LinkedList<>(Arrays.asList(text));
         	for (String temp : textList) {
-        		values.addAll(Arrays.asList(temp.trim().toLowerCase().split(" ")));
+        		List<String> splitTerms = Arrays.asList(temp.trim().toLowerCase().split(" "));
+        		if (!splitTerms.isEmpty()) {
+        	    	Iterator<String> i = splitTerms.iterator(); 
+        	        while (i.hasNext()) {
+        	        	String term = i.next();
+        	        	if (StringUtils.isNotBlank(term)) {
+        	        		values.add(term + "%");
+        	        	}
+        	        }        			
+        		}
         	}
         	if (!values.isEmpty()) {
-        		addToFiltersIfNotNull(filters, "text", values);
+        		addToFiltersIfNotNull(filters, "text", StringUtils.join(values, " and "));
         	}
         }
     	return filters;

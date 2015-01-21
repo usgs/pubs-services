@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.dao;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
@@ -16,7 +17,15 @@ import java.util.Map;
 
 import org.junit.Test;
 
-public class ContributorDaoTest extends BaseSpringDaoTest {
+/** 
+ * Note that to test the text index we needed to pre-populate the database with the contributor data
+ * This includes affiliations 1, 2, 5 & 7...
+ * The liqubase scripts contain this data. The loading from the dataset.xml will override it on tests that extend BaseSpringDaoTest
+ * 
+ * @author drsteini
+ *
+ */
+public class ContributorDaoTest extends BaseSpringTest {
 
     public static final int CONTRIBUTOR_CNT = 4;
 	public static final int PERSON_CONTRIBUTOR_CNT = 3;
@@ -74,7 +83,7 @@ public class ContributorDaoTest extends BaseSpringDaoTest {
         assertEquals(1, contributors.get(0).getId().intValue());
 
         filters.clear();
-        filters.put("text", new String[]{"con"});
+        filters.put("text", "con%");
         contributors = Contributor.getDao().getByMap(filters);
         assertEquals(2, contributors.size());
         boolean got1 = false;
@@ -92,7 +101,7 @@ public class ContributorDaoTest extends BaseSpringDaoTest {
         assertTrue("Got 4", got4);
 
         filters.clear();
-        filters.put("text", new String[]{"us"});
+        filters.put("text", "us% and ge%");
         contributors = Contributor.getDao().getByMap(filters);
         assertEquals(1, contributors.size());
         assertEquals(2, contributors.get(0).getId().intValue());
@@ -120,7 +129,7 @@ public class ContributorDaoTest extends BaseSpringDaoTest {
         contributors = Contributor.getDao().getByMap(filters);
         assertEquals(PERSON_CONTRIBUTOR_CNT, contributors.size());
         assertEquals(1, contributors.get(0).getId().intValue());
-        filters.put("text", new String[]{"out"});
+        filters.put("text", "out%");
         contributors = Contributor.getDao().getByMap(filters);
         assertEquals(1, contributors.size());
         assertEquals(3, contributors.get(0).getId().intValue());
@@ -143,7 +152,7 @@ public class ContributorDaoTest extends BaseSpringDaoTest {
         contributors = Contributor.getDao().getByMap(filters);
         assertEquals(CORPORATE_CONTRIBUTOR_CNT, contributors.size());
         assertEquals(2, contributors.get(0).getId().intValue());
-        filters.put("text", new String[]{"us"});
+        filters.put("text", "us%");
         contributors = Contributor.getDao().getByMap(filters);
         assertEquals(1, contributors.size());
         assertEquals(2, contributors.get(0).getId().intValue());

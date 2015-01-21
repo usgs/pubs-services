@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONArrayAs;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.dao.ContributorDaoTest;
 import gov.usgs.cida.pubs.dao.ContributorTypeDaoTest;
 import gov.usgs.cida.pubs.dao.LinkFileTypeDaoTest;
 import gov.usgs.cida.pubs.dao.LinkTypeDaoTest;
@@ -23,7 +24,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 /**
- * These tests can use the liquibase loaded db data.  Note that I have no yet figured out how to get the
+ * These tests can use the liquibase loaded db data.  Note that I have not yet figured out how to get the
  * tests to respect the ILookupView annotation.
  * @author drsteini
  *
@@ -192,4 +193,51 @@ public class LookupMvcServiceTest extends BaseSpringTest {
                 sameJSONArrayAs(new JSONArray("[{\"id\":4,\"text\":\"shapefile\"}]")));
     }
 
+    @Test
+    public void getPeople() throws Exception {
+        MvcResult rtn = mockLookup.perform(get("/lookup/people?mimetype=json").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+        .andReturn();
+
+        assertEquals(ContributorDaoTest.PERSON_CONTRIBUTOR_CNT, new JSONArray(rtn.getResponse().getContentAsString()).length());
+
+        rtn = mockLookup.perform(get("/lookup/people?text=out").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+        .andReturn();
+
+        assertEquals(1, new JSONArray(rtn.getResponse().getContentAsString()).length());
+
+        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
+                sameJSONArrayAs(new JSONArray("[{\"id\":3,\"text\":\"outerfamily, outerGiven outerSuffix outer@gmail.com\","
+                		+ "\"affiliation\":{\"id\":5,\"text\":\"Outside Affiliation 1\",\"active\":true,\"usgs\":false}, \"contributorId\":3,\"corporation\":false,\"email\":\"outer@gmail.com\",\"family\":\"outerfamily\","
+                		+ "\"given\":\"outerGiven\",\"suffix\":\"outerSuffix\",\"usgs\":false}]")));
+    }
+
+    @Test
+    public void getCorporations() throws Exception {
+        MvcResult rtn = mockLookup.perform(get("/lookup/corporations?mimetype=json").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+        .andReturn();
+
+        assertEquals(ContributorDaoTest.CORPORATE_CONTRIBUTOR_CNT, new JSONArray(rtn.getResponse().getContentAsString()).length());
+
+        rtn = mockLookup.perform(get("/lookup/corporations?text=us geo").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+        .andReturn();
+
+        assertEquals(1, new JSONArray(rtn.getResponse().getContentAsString()).length());
+
+        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
+                sameJSONArrayAs(new JSONArray("[{\"id\":2,\"text\":\"US Geological Survey Ice Survey Team\",\"contributorId\":2,"
+                		+ "\"corporation\":true,\"organization\":\"US Geological Survey Ice Survey Team\",\"usgs\":false}]")));
+    }
+    
 }

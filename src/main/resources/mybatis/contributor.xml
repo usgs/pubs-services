@@ -100,16 +100,8 @@
         <if test="ipdsContributorId != null">
             and ipds_contributor_id = #{ipdsContributorId}
         </if>
-       	<if test="text != null and text.length > 0">
-       		and 
-			<foreach item="t" collection="text" open="("
-					 separator="and" close=")"> 
-                (upper(family) like upper(#{t}) || '%'
-              or upper(given) like upper(#{t}) || '%'
-              or upper(suffix) like upper(#{t}) || '%'
-              or upper(email) like upper(#{t}) || '%'
-              or upper(literal) like upper(#{t}) || '%')
-        	</foreach>
+       	<if test="text != null">
+       		and contains(text, #{text}) > 0
         </if>
         <if test="given != null">
             and upper(given) like upper(#{given}) || '%'
@@ -170,8 +162,10 @@
             select contributor_seq.nextval id from dual
         </selectKey>
         insert into contributor (<include refid="baseCols"/>,
-                                 <include refid="personCols"/>)
-             values (<include refid="personHosts"/>)
+                                 <include refid="personCols"/>,
+                                 text)
+             values (<include refid="personHosts"/>,
+                     #{text,jdbcType=VARCHAR})
     </insert>
 
     <insert id="addCorporateContributor" parameterType="CorporateContributor">
@@ -179,19 +173,23 @@
             select contributor_seq.nextval id from dual
         </selectKey>
         insert into contributor (<include refid="baseCols"/>,
-                                 <include refid="corpCols"/>)
-             values (<include refid="corpHosts"/>)
+                                 <include refid="corpCols"/>,
+                                 text)
+             values (<include refid="corpHosts"/>,
+                     #{text,jdbcType=VARCHAR})
     </insert>
 
     <update id="updatePersonContributor" parameterType="PersonContributor">
         update contributor
-           set <include refid="personSets"/>
+           set <include refid="personSets"/>,
+               text = #{text,jdbcType=VARCHAR}
            where contributor_id = #{id,jdbcType=NUMERIC}
     </update>
 
     <update id="updateCorporateContributor" parameterType="CorporateContributor">
         update contributor
-           set <include refid="corpSets"/>
+           set <include refid="corpSets"/>,
+               text = #{text,jdbcType=VARCHAR}
            where contributor_id = #{id,jdbcType=NUMERIC}
     </update>
 

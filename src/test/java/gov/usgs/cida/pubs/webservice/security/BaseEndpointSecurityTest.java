@@ -188,21 +188,21 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 
     public void pubsAuthorizedTestGetsDeletes(HttpHeaders httpHeaders, ResultMatcher expectedStatus, boolean fudge) throws Exception {
     	//Contributor
-    	mockContrib.perform(get("/corporation/1").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+    	mockContrib.perform(get("/corporation/-1").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
     		.andExpect(expectedStatus);
     	
     	//These two endpoints are hard to mock, so we'll fudge it for now...
     	if (fudge) {
-        	mockContrib.perform(get("/contributor/1").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        	mockContrib.perform(get("/contributor/-1").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
     			.andExpect(status().isNotFound());
 	
-        	mockContrib.perform(get("/person/1").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        	mockContrib.perform(get("/person/-1").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
     			.andExpect(status().isNotFound());
     	} else {
-        	mockContrib.perform(get("/contributor/1").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        	mockContrib.perform(get("/contributor/-1").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
     			.andExpect(expectedStatus);
 	
-        	mockContrib.perform(get("/person/1").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        	mockContrib.perform(get("/person/-1").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
     			.andExpect(expectedStatus);
     	}
 

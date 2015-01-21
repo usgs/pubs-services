@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
@@ -14,7 +15,15 @@ import java.util.Map;
 
 import org.junit.Test;
 
-public class CorporateContributorDaoTest extends BaseSpringDaoTest {
+/** 
+ * Note that to test the text index we needed to pre-populate the database with the contributor data
+ * This includes affiliations 1, 2, 5 & 7...
+ * The liqubase scripts contain this data. The loading from the dataset.xml will override it on tests that extend BaseSpringDaoTest
+ * 
+ * @author drsteini
+ *
+ */
+public class CorporateContributorDaoTest extends BaseSpringTest {
 
     @Test
     public void getByIdInteger() {
@@ -46,7 +55,7 @@ public class CorporateContributorDaoTest extends BaseSpringDaoTest {
         assertEquals(2, contributors.get(0).getId().intValue());
 
         filters.clear();
-        filters.put("text", new String[]{"us"});
+        filters.put("text", "us%");
         contributors = CorporateContributor.getDao().getByMap(filters);
         assertEquals(1, contributors.size());
         assertEquals(2, contributors.get(0).getId().intValue());
@@ -58,7 +67,7 @@ public class CorporateContributorDaoTest extends BaseSpringDaoTest {
 
         filters.clear();
         filters.put("id", "2");
-        filters.put("text", new String[]{"us"});
+        filters.put("text", "us%");
         contributors = CorporateContributor.getDao().getByMap(filters);
         assertEquals(1, contributors.size());
         assertEquals(2, contributors.get(0).getId().intValue());

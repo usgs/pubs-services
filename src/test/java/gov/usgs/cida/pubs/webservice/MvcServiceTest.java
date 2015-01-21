@@ -124,22 +124,17 @@ public class MvcServiceTest extends BaseSpringTest {
 		assertEquals(0, filters.keySet().size());
 		filters = testMvcService.configureContributorFilter(new String[]{"   .  "});
 		assertTrue(filters.containsKey("text"));
-		Object[] searchTerms = (Object[]) filters.get("text");
-		assertEquals(1, searchTerms.length);
-		assertEquals(".", searchTerms[0].toString());
+		String searchTerms = (String) filters.get("text");
+		assertEquals(".%", searchTerms);
 
-		filters = testMvcService.configureContributorFilter(new String[]{"Rebecca Carvin"});
+		filters = testMvcService.configureContributorFilter(new String[]{"Rebecca B. Carvin"});
 		assertTrue(filters.containsKey("text"));
-		searchTerms = (Object[]) filters.get("text");
-		assertEquals(2, searchTerms.length);
-		assertEquals("rebecca", searchTerms[0].toString());
-		assertEquals("carvin", searchTerms[1].toString());
+		searchTerms = (String) filters.get("text");
+		assertEquals("rebecca% and b.% and carvin%", searchTerms);
 		
-		filters = testMvcService.configureContributorFilter(new String[]{"Carvin", " Rebecca"});
+		filters = testMvcService.configureContributorFilter(new String[]{"Carvin", " Rebecca B."});
 		assertTrue(filters.containsKey("text"));
-		searchTerms = (Object[]) filters.get("text");
-		assertEquals(2, searchTerms.length);
-		assertEquals("carvin", searchTerms[0].toString());
-		assertEquals("rebecca", searchTerms[1].toString());
+		searchTerms = (String) filters.get("text");
+		assertEquals("carvin% and rebecca% and b.%", searchTerms);
 	}
 }

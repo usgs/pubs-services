@@ -46,17 +46,13 @@
 			and trunc(display_to_public_date) &lt;= to_date(#{modDateHigh}, <include refid="base.dateFormat"/>)
 		</if>		
 		
-        <if test="contributor != null and contributor.length > 0">
+        <if test="contributor != null">
         	and exists (select null
                	          from publication_contributor
                	               join contributor
                	                 on publication_contributor.contributor_id = contributor.contributor_id 
                          where publication.publication_id = publication_contributor.publication_id and
-              				   <foreach item="a" collection="contributor" open="(" separator="or" close=")"> 
-	                			   upper(family) like '%' || upper(#{a}) || '%' or
-		                		   upper(given) like '%' || upper(#{a}) || '%' or
-		                		   upper(literal) like '%' || upper(#{a}) || '%'
-	                		   </foreach>
+              				   contains(text, #{contributor}) > 0
 	                   )
         </if>
            

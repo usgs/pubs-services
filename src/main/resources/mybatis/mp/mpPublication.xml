@@ -71,17 +71,13 @@
 				</if>
 			</if>
 
-            <if test="contributor != null and contributor.length > 0">
+            <if test="contributor != null">
                 and exists (select null
                    	          from mp_pub_contributor
                    	               join contributor
                    	                 on mp_pub_contributor.contributor_id = contributor.contributor_id 
                	             where mp_publication.publication_id = mp_pub_contributor.publication_id and
-                				   <foreach item="a" collection="contributor" open="(" separator="or" close=")"> 
-		                			   upper(family) like '%' || upper(#{a}) || '%' or
-		                			   upper(given) like '%' || upper(#{a}) || '%' or
-		                			   upper(literal) like '%' || upper(#{a}) || '%'
-		                		   </foreach>
+                				   contains(text, #{contributor}) > 0
 		                   )
             </if>
             

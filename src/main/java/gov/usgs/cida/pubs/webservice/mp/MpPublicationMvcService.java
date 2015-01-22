@@ -85,7 +85,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 
     	addToFiltersIfNotNull(filters, "title", title);
     	addToFiltersIfNotNull(filters, "abstract", pubAbstract);
-    	addToFiltersIfNotNull(filters, "contributor", contributor);
+    	filters.putAll(configureContributorFilter("contributor", contributor));
     	addToFiltersIfNotNull(filters, "id", prodId);
     	addToFiltersIfNotNull(filters, "indexId", indexId);
     	addToFiltersIfNotNull(filters, "ipdsId", ipdsId);

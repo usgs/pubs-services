@@ -116,23 +116,23 @@ public class MvcServiceTest extends BaseSpringTest {
 		Map<String, Object> filters = new HashMap<>();
 
 		//A null value should not add to the map
-		filters = testMvcService.configureContributorFilter(null);
+		filters = testMvcService.configureContributorFilter(null, null);
 		assertEquals(0, filters.keySet().size());
 		
 		//An empty value should not add to the map
-		filters = testMvcService.configureContributorFilter(new String[]{""});
+		filters = testMvcService.configureContributorFilter("text", new String[]{""});
 		assertEquals(0, filters.keySet().size());
-		filters = testMvcService.configureContributorFilter(new String[]{"   .  "});
+		filters = testMvcService.configureContributorFilter("text", new String[]{"   .  "});
 		assertTrue(filters.containsKey("text"));
 		String searchTerms = (String) filters.get("text");
 		assertEquals(".%", searchTerms);
 
-		filters = testMvcService.configureContributorFilter(new String[]{"Rebecca B. Carvin"});
+		filters = testMvcService.configureContributorFilter("text", new String[]{"Rebecca B. Carvin"});
 		assertTrue(filters.containsKey("text"));
 		searchTerms = (String) filters.get("text");
 		assertEquals("rebecca% and b.% and carvin%", searchTerms);
 		
-		filters = testMvcService.configureContributorFilter(new String[]{"Carvin", " Rebecca B."});
+		filters = testMvcService.configureContributorFilter("text", new String[]{"Carvin", " Rebecca B."});
 		assertTrue(filters.containsKey("text"));
 		searchTerms = (String) filters.get("text");
 		assertEquals("carvin% and rebecca% and b.%", searchTerms);

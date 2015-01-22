@@ -245,7 +245,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
         LOG.debug("Contributor - People");
         Collection<Contributor<?>> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
-            rtn = PersonContributor.getDao().getByMap(configureContributorFilter(text));
+            rtn = PersonContributor.getDao().getByMap(configureContributorFilter("text", text));
         }
         return rtn;
     }
@@ -257,7 +257,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
         LOG.debug("Contributor - Corporations");
         Collection<Contributor<?>> rtn = new ArrayList<>();
         if (validateParametersSetHeaders(request, response)) {
-        	rtn = CorporateContributor.getDao().getByMap(configureContributorFilter(text));
+        	rtn = CorporateContributor.getDao().getByMap(configureContributorFilter("text", text));
         }
         return rtn;
     }

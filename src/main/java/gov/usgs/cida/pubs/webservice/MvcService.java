@@ -109,12 +109,12 @@ public abstract class MvcService<D> {
         return StringUtils.join(newList, " and ");
     }
     
-    protected Map<String, Object> configureContributorFilter(String[] text) {
+    protected Map<String, Object> configureContributorFilter(String parameterName, String[] text) {
     	//This is overly complicated because any comma that the user enters in the search box is interpreted as an
     	//addition parameter, rather than as a comma - for instance "carvin, rebecca" ends up as {"carvin", " rebecca"} 
         Map<String, Object> filters = new HashMap<>();
         List<String> values = new ArrayList<String>();
-        if (null != text && 0 < text.length) {
+        if (null != parameterName && null != text && 0 < text.length) {
     		//Arrays.asList returns a fixed size java.util.Arrays$ArrayList, so we actually need to create a real list to 
     		//be able to add entries to it.
         	List<String> textList = new LinkedList<>(Arrays.asList(text));
@@ -131,7 +131,7 @@ public abstract class MvcService<D> {
         		}
         	}
         	if (!values.isEmpty()) {
-        		addToFiltersIfNotNull(filters, "text", StringUtils.join(values, " and "));
+        		addToFiltersIfNotNull(filters, parameterName, StringUtils.join(values, " and "));
         	}
         }
     	return filters;

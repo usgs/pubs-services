@@ -92,7 +92,7 @@ public class PublicationDaoTest extends BaseSpringDaoTest {
     	rtn.put("reportNumber", new String[]{"reportNumber1", "reportNumber2"});
     	rtn.put("searchTerms", new String[]{"searchTerms1", "searchTerms2"});
     	rtn.put("listId", new String[]{"listId1", "listId2"});
-    	rtn.put("contributor", new String[]{"contributor1", "contributor2"});
+    	rtn.put("contributor", "contributor1% and contributor2%");
     	rtn.put("contributingOffice", new String[]{"contributingOffice1", "contributingOffice2"});
     	
     	rtn.put("yearStart", "yearStart");

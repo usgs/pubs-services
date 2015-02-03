@@ -211,7 +211,8 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals("just a little comment", pub.getComments());
         assertEquals("tbl contents", pub.getTableOfContents());
         assertEquals(6, pub.getPublishingServiceCenter().getId().intValue());
-        assertEquals("date 2/2/2", pub.getPublishedDateStatement());
+        assertEquals("2002-02-02", pub.getPublishedDate());
+        assertEquals("2003-03-03", pub.getRevisedDate());
     }
 
     public static void assertMpPub1Children(Publication<?> pub) {
@@ -288,7 +289,7 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         assertNull(pub.getTableOfContents());
         
         assertEquals(7, pub.getPublishingServiceCenter().getId().intValue());
-        assertEquals("date 3/3/3", pub.getPublishedDateStatement());
+        assertEquals("2003-03-03", pub.getPublishedDate());
         assertEquals(4, pub.getIsPartOf().getId().intValue());
         assertEquals(6, pub.getSupersededBy().getId().intValue());
 
@@ -367,7 +368,7 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         newPub.setEdition("Edition X");
         newPub.setComments("just a little comment");
         newPub.setTableOfContents("tbl contents");
-        newPub.setPublishedDateStatement("date 2/2/2");
+        newPub.setPublishedDate(new LocalDate(2002,02,02));
         PublishingServiceCenter publishingServiceCenter = new PublishingServiceCenter();
         publishingServiceCenter.setId(6);
         newPub.setPublishingServiceCenter(publishingServiceCenter);
@@ -377,6 +378,7 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         Publication<?> sb = new MpPublication();
         sb.setId(2);
         newPub.setSupersededBy(sb);
+        newPub.setRevisedDate(new LocalDate(2006,6,6));
         return newPub;
     }
     
@@ -440,7 +442,7 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         updatedPub.setEdition("Edition XU");
         updatedPub.setComments("just a little commentU");
         updatedPub.setTableOfContents("tbl contentsU");
-        updatedPub.setPublishedDateStatement("A different random text with a date August 32, 1854");
+        updatedPub.setPublishedDate(new LocalDate(2010,10,11));
         PublishingServiceCenter publishingServiceCenter = new PublishingServiceCenter();
         publishingServiceCenter.setId(2);
         updatedPub.setPublishingServiceCenter(publishingServiceCenter);
@@ -450,6 +452,7 @@ public class MpPublicationDaoTest extends BaseSpringDaoTest {
         Publication<?> sb = new MpPublication();
         sb.setId(1);
         updatedPub.setSupersededBy(sb);
+        updatedPub.setRevisedDate(new LocalDate(2007,7,7));
         return updatedPub;
     }
 }

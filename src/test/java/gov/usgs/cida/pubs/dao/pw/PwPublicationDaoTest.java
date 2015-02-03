@@ -123,9 +123,10 @@ public class PwPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals("comments on this4", pub.getComments());
         assertEquals("contents, table of4", pub.getTableOfContents());
         assertEquals(5, pub.getPublishingServiceCenter().getId().intValue());
-        assertEquals("date 1/1/1", pub.getPublishedDateStatement());
+        assertEquals("date 1/1/1", pub.getPublishedDate());
         assertEquals(5, pub.getIsPartOf().getId().intValue());
         assertEquals(6, pub.getSupersededBy().getId().intValue());
+        assertEquals("date 4/4/4", pub.getRevisedDate());
     }
 
     public static void assertPwPub4Children(Publication<?> pub) {
@@ -203,13 +204,14 @@ public class PwPublicationDaoTest extends BaseSpringDaoTest {
         PublishingServiceCenter publishingServiceCenter = new PublishingServiceCenter();
         publishingServiceCenter.setId(6);
         newPub.setPublishingServiceCenter(publishingServiceCenter);
-        newPub.setPublishedDateStatement("date 2/2/2");
+        newPub.setPublishedDate(new LocalDate(2002,2,2));
         Publication<?> po = new PwPublication();
         po.setId(1);
         newPub.setIsPartOf(po);
         Publication<?> sb = new PwPublication();
         sb.setId(2);
         newPub.setSupersededBy(sb);
+        newPub.setRevisedDate(new LocalDate(2012,12,12));
 
         return newPub;
     }

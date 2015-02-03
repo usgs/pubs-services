@@ -329,10 +329,17 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
     @Valid
     private PublishingServiceCenter publishingServiceCenter;
 
-    @JsonProperty("publishedDateStatement")
+    @JsonProperty("publishedDate")
     @JsonView(IPwView.class)
-    @Length(min=0, max=4000)
-    private String publishedDateStatement;
+    @JsonSerialize(using=PubsJsonLocalDateSerializer.class)
+    @JsonDeserialize(using=PubsJsonLocalDateDeSerializer.class)
+    private LocalDate publishedDate;
+    
+    @JsonProperty("revisedDate")
+    @JsonView(IPwView.class)
+    @JsonSerialize(using=PubsJsonLocalDateSerializer.class)
+    @JsonDeserialize(using=PubsJsonLocalDateDeSerializer.class)
+    private LocalDate revisedDate;
     
     @JsonIgnore
     private Collection<PublicationInteraction> interactions;
@@ -1033,12 +1040,20 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 		publishingServiceCenter = inPublishingServiceCenter;
 	}
 
-	public String getPublishedDateStatement() {
-		return publishedDateStatement;
+	public LocalDate getPublishedDate() {
+		return publishedDate;
 	}
 
-	public void setPublishedDateStatement(final String inPublishedDateStatement) {
-		publishedDateStatement = inPublishedDateStatement;
+	public void setPublishedDate(final LocalDate inPublishedDate) {
+		publishedDate = inPublishedDate;
+	}
+
+	public LocalDate getRevisedDate() {
+		return revisedDate;
+	}
+
+	public void setRevisedDate(final LocalDate inRevisedDate) {
+		revisedDate = inRevisedDate;
 	}
 
     @JsonView(IPwView.class)

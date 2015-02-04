@@ -42,8 +42,8 @@
     "numberOfPages": "5",
     "onlineOnly": "O",
     "additionalOnlineFiles": "A",
-    "temporalStart": "2010-10-10T12:00:00",
-    "temporalEnd": "2012-12-12T12:00:00",
+    "temporalStart": "2010-10-10",
+    "temporalEnd": "2012-12-12",
     "notes": "notes",
     "ipdsReviewProcessState": "Dissemination",
     "ipdsInternalId": "12",
@@ -67,15 +67,14 @@
     "publishingServiceCenter": {
         "id": 6
     },
-    "publishedDateStatement": "date 2/2/2",
+    "publishedDate": "2002-02-02",
+    "revisedDate": "2003-03-03",
     "isPartOf": {
     	"id": 1,
-        "validationErrors": [],
         "text": "null - null - null"
     },
     "supersededBy": {
     	"id": 2,
-        "validationErrors": [],
         "text": "null - null - null"
     },
     "text": "indexid1 - 2001 - Title"

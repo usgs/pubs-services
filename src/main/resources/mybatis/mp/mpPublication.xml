@@ -226,9 +226,10 @@
         		      pw.contact_info                 = mp.contact_info,
                       pw.table_of_contents            = mp.table_of_contents,
                       pw.publishing_service_center_id = mp.publishing_service_center_id,
-                      pw.published_date_statement     = mp.published_date_statement,
+                      pw.published_date               = mp.published_date,
                       pw.is_part_of_id                = mp.is_part_of_id,
                       pw.superseded_by_id             = mp.superseded_by_id,
+                      pw.revised_date                 = mp.revised_date,
                       pw.insert_date                  = mp.insert_date,
                       pw.insert_username              = mp.insert_username,
                       pw.update_date                  = sysdate,
@@ -247,8 +248,8 @@
                           mp.projection,				mp.datum,						mp.country,							mp.state,
                           mp.county,					mp.city,						mp.other_geospatial,				mp.geographic_extents,
                           mp.volume,					mp.issue,        				mp.edition,							mp.public_comments,
-                          mp.contact_info,				mp.table_of_contents,           mp.publishing_service_center_id,	mp.published_date_statement,
-                          mp.is_part_of_id,				mp.superseded_by_id,
+                          mp.contact_info,				mp.table_of_contents,           mp.publishing_service_center_id,	mp.published_date,
+                          mp.is_part_of_id,				mp.superseded_by_id,			mp.revised_date,
                           mp.insert_date, 				mp.insert_username, 			sysdate, 							audit_trail_util.get_username)
     </update>
 

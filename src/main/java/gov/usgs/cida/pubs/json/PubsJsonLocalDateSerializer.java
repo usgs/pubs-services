@@ -16,7 +16,7 @@ public class PubsJsonLocalDateSerializer extends JsonSerializer<LocalDate> {
  
     @Override
     public void serialize(LocalDate date, JsonGenerator gen, SerializerProvider provider) throws IOException {
-        gen.writeString(date.toString()+"T12:00:00");
+        gen.writeString(date.toString());
     }
 
 }

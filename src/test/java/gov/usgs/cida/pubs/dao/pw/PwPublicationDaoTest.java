@@ -4,20 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
-import gov.usgs.cida.pubs.domain.ProcessType;
+import gov.usgs.cida.pubs.dao.PublicationDaoTest;
 import gov.usgs.cida.pubs.domain.Publication;
-import gov.usgs.cida.pubs.domain.PublicationSeries;
-import gov.usgs.cida.pubs.domain.PublicationSubtype;
-import gov.usgs.cida.pubs.domain.PublicationType;
-import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.junit.Test;
 
 public class PwPublicationDaoTest extends BaseSpringDaoTest {
@@ -123,10 +117,10 @@ public class PwPublicationDaoTest extends BaseSpringDaoTest {
         assertEquals("comments on this4", pub.getComments());
         assertEquals("contents, table of4", pub.getTableOfContents());
         assertEquals(5, pub.getPublishingServiceCenter().getId().intValue());
-        assertEquals("date 1/1/1", pub.getPublishedDate());
+        assertEquals("2001-01-01", pub.getPublishedDate().toString());
         assertEquals(5, pub.getIsPartOf().getId().intValue());
         assertEquals(6, pub.getSupersededBy().getId().intValue());
-        assertEquals("date 4/4/4", pub.getRevisedDate());
+        assertEquals("2004-04-04", pub.getRevisedDate().toString());
     }
 
     public static void assertPwPub4Children(Publication<?> pub) {
@@ -136,84 +130,7 @@ public class PwPublicationDaoTest extends BaseSpringDaoTest {
     }
 
     public static PwPublication buildAPub(final Integer pubId) {
-    	PwPublication newPub = new PwPublication();
-        newPub.setIndexId("indexid" + pubId);
-        newPub.setDisplayToPublicDate(new LocalDateTime(2012, 8, 23, 0, 0, 0));
-        PublicationType pubType = new PublicationType();
-        pubType.setId(PublicationType.REPORT);
-        newPub.setPublicationType(pubType);
-        PublicationSubtype pubSubtype = new PublicationSubtype();
-        pubSubtype.setId(5);
-        newPub.setPublicationSubtype(pubSubtype);
-        PublicationSeries pubSeries = new PublicationSeries();
-        pubSeries.setId(PublicationSeries.SIR);
-        newPub.setSeriesTitle(pubSeries);
-        newPub.setSeriesNumber("Series Number");
-        newPub.setSubseriesTitle("subseries");
-        newPub.setChapter("chapter");
-        newPub.setSubchapterNumber("subchapter");
-        newPub.setTitle("Title");
-        newPub.setDocAbstract("Abstract Text");
-        newPub.setLanguage("Language");
-        newPub.setPublisher("Publisher");
-        newPub.setPublisherLocation("Publisher Location");
-        newPub.setDoi("doiname");
-        newPub.setIssn("inIssn");
-        newPub.setIsbn("inIsbn");
-        newPub.setCollaboration("collaboration");
-        newPub.setUsgsCitation("usgscitation");
-        newPub.setProductDescription("Prod Description");
-        newPub.setStartPage("inStartPage");
-        newPub.setEndPage("inEndPage");
-        newPub.setNumberOfPages("5");
-        newPub.setOnlineOnly("O");
-        newPub.setAdditionalOnlineFiles("A");
-        newPub.setTemporalStart(new LocalDate(2010,10,10));
-        newPub.setTemporalEnd(new LocalDate(2012,12,12));
-        newPub.setNotes("notes");
-        newPub.setIpdsId("ipds_id" + pubId);
-        newPub.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
-        newPub.setIpdsInternalId("12");
-        newPub.setId(pubId);
-        newPub.setPublicationYear("2001");
-        newPub.setLargerWorkTitle("Larger Work Title");
-        PublicationType largerWorkType = new PublicationType();
-        largerWorkType.setId(PublicationType.ARTICLE);
-        newPub.setLargerWorkType(largerWorkType);
-        newPub.setConferenceDate("a new free form date");
-        newPub.setConferenceTitle("A title");
-        newPub.setConferenceLocation("a conference location");
-        PublicationSubtype largerWorkSubype = new PublicationSubtype();
-        largerWorkSubype.setId(23);
-        newPub.setLargerWorkSubtype(largerWorkSubype);
-        newPub.setScale("100");
-        newPub.setProjection("EPSG:3857");
-        newPub.setDatum("NAD83");
-        newPub.setCountry("USA");
-        newPub.setState("WI");
-        newPub.setCounty("DANE");
-        newPub.setCity("MIDDLETON");
-        newPub.setOtherGeospatial("On the moon");
-        newPub.setGeographicExtents("{ \"json\": \"extents\" }");
-        newPub.setVolume("VOL12");
-        newPub.setIssue("ISIV");
-        newPub.setContact("My Contact Info");
-        newPub.setEdition("Edition X");
-        newPub.setComments("just a little comment");
-        newPub.setTableOfContents("tbl contents");
-        PublishingServiceCenter publishingServiceCenter = new PublishingServiceCenter();
-        publishingServiceCenter.setId(6);
-        newPub.setPublishingServiceCenter(publishingServiceCenter);
-        newPub.setPublishedDate(new LocalDate(2002,2,2));
-        Publication<?> po = new PwPublication();
-        po.setId(1);
-        newPub.setIsPartOf(po);
-        Publication<?> sb = new PwPublication();
-        sb.setId(2);
-        newPub.setSupersededBy(sb);
-        newPub.setRevisedDate(new LocalDate(2012,12,12));
-
-        return newPub;
+    	return (PwPublication) PublicationDaoTest.buildAPub(new PwPublication(), pubId);
     }
     
 }

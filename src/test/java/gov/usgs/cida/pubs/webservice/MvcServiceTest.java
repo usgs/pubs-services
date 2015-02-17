@@ -1,6 +1,7 @@
 package gov.usgs.cida.pubs.webservice;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.BaseSpringTest;
@@ -137,4 +138,28 @@ public class MvcServiceTest extends BaseSpringTest {
 		searchTerms = (String) filters.get("text");
 		assertEquals("carvin% and rebecca% and b.%", searchTerms);
 	}
+	
+	@Test
+	public void configureGeospatialFilter() {
+		Map<String, Object> filters = new HashMap<>();
+
+		//A null value should not add to the map
+		assertNull(testMvcService.configureGeospatialFilter(null, null));
+		
+		//An empty value should not add to the map
+		filters = testMvcService.configureGeospatialFilter(filters, "");
+		assertEquals(0, filters.keySet().size());
+
+		filters = testMvcService.configureGeospatialFilter(filters, "polygon((-122.3876953125,37.80869897600677,-122.3876953125,36.75979104322286,-123.55224609375,36.75979104322286," +
+	                                                                "-123.55224609375,37.80869897600677,-122.3876953125,37.80869897600677))");
+		
+		
+        String[] polygon = {"-122.3876953125","37.80869897600677","-122.3876953125","36.75979104322286","-123.55224609375","36.75979104322286",
+	            "-123.55224609375","37.80869897600677","-122.3876953125","37.80869897600677"};
+
+		assertTrue(filters.containsKey("g"));
+		String[] searchTerms = (String[]) filters.get("g");
+		assertArrayEquals(polygon, searchTerms);
+	}
+
 }

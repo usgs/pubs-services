@@ -14,6 +14,20 @@
     			       )
        	</if>
 
+		<if test="null != g &amp;&amp; g.length > 0">
+       		and exists (select null
+       		              from publication_geom
+       		             where publication.publication_id = publication_geom.publication_id and
+				               sdo_relate(geom,
+                                          sdo_geometry(2003, 8307, NULL,
+                                                       sdo_elem_info_array(1,1003,1),
+                                                       sdo_ordinate_array(
+			<foreach item="i" collection="g" separator=",">#{i}</foreach>
+			                                                             )
+			                                          ),
+                                          'mask=anyinteract') = 'TRUE')
+        </if>
+        
     	<include refid="publication.filters"/>
 
 		<if test="null != listId">

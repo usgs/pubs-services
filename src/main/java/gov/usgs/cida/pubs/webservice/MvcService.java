@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,6 +39,7 @@ public abstract class MvcService<D> {
     private static final Logger LOG = LoggerFactory.getLogger(MvcService.class);
     public static final String TEXT_SEARCH = "text";
     public static final String ACTIVE_SEARCH = "active";
+    private static final Pattern gPattern = Pattern.compile("^polygon\\(\\((-?\\d+\\.?\\d*)(,(-?\\d+\\.?\\d*))*\\)\\)$");
 
     /**
      * Helper to check if null and add to filters map - will NPE if filters or key are null!
@@ -216,4 +218,13 @@ public abstract class MvcService<D> {
     protected void setHeaders(HttpServletResponse response) {
         response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
     }
+    
+    protected Map<String, Object> configureGeospatialFilter(Map<String, Object> filters, String geospatial) {
+		if (null != filters && null != geospatial && gPattern.matcher(geospatial.toLowerCase()).matches()) {
+			String[] lessPolygon = geospatial.toLowerCase().replace("polygon((", "").replace("))", "").split(",");
+			filters.put("g", lessPolygon);
+		}
+		return filters;
+	}
+
 }

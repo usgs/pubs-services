@@ -39,6 +39,12 @@ public class PwPublicationDaoTest extends BaseSpringDaoTest {
         assertPwPub4(pubs.get(0));
         assertPwPub4Children(pubs.get(0));
         
+        String[] polygon = {"-122.3876953125","37.80869897600677","-122.3876953125","36.75979104322286","-123.55224609375","36.75979104322286",
+        		            "-123.55224609375","37.80869897600677","-122.3876953125","37.80869897600677"};
+    	filters.put("g", polygon);
+        pubs = PwPublication.getDao().getByMap(filters);
+        
+        
         //TODO add in real filter tests
     }
 

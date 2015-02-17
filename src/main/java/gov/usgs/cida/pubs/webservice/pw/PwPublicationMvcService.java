@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping(value = "publication", produces="application/json")
-public class PwPublicationMvcService  extends MvcService<PwPublication> {
+public class PwPublicationMvcService extends MvcService<PwPublication> {
 
     private final IPwPublicationBusService busService;
 
@@ -40,6 +40,7 @@ public class PwPublicationMvcService  extends MvcService<PwPublication> {
     @ResponseView(IPwView.class)
     public @ResponseBody SearchResults getPubs(
     		@RequestParam(value="q", required=false) String searchTerms, //single string search
+    		@RequestParam(value="g", required=false) String geospatial,
             @RequestParam(value="title", required=false) String[] title,
             @RequestParam(value="abstract", required=false) String[] pubAbstract,
             @RequestParam(value="contributor", required=false) String[] contributor,
@@ -71,6 +72,8 @@ public class PwPublicationMvcService  extends MvcService<PwPublication> {
         Map<String, Object> filters = new HashMap<>();
 
     	configureSingleSearchFilters(filters, searchTerms);
+    	
+    	configureGeospatialFilter(filters, geospatial);
 
     	addToFiltersIfNotNull(filters, "title", title);
     	addToFiltersIfNotNull(filters, "abstract", pubAbstract);
@@ -111,7 +114,7 @@ public class PwPublicationMvcService  extends MvcService<PwPublication> {
         return results;
     }
 
-    @RequestMapping(value="{indexId}", method=RequestMethod.GET)
+	@RequestMapping(value="{indexId}", method=RequestMethod.GET)
     @ResponseView(IPwView.class)
     public @ResponseBody PwPublication getPwPublication(HttpServletRequest request, HttpServletResponse response,
                 @PathVariable("indexId") String indexId) {

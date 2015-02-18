@@ -150,8 +150,8 @@ public class MvcServiceTest extends BaseSpringTest {
 		filters = testMvcService.configureGeospatialFilter(filters, "");
 		assertEquals(0, filters.keySet().size());
 
-		filters = testMvcService.configureGeospatialFilter(filters, "polygon((-122.3876953125,37.80869897600677,-122.3876953125,36.75979104322286,-123.55224609375,36.75979104322286," +
-	                                                                "-123.55224609375,37.80869897600677,-122.3876953125,37.80869897600677))");
+		filters = testMvcService.configureGeospatialFilter(filters, "polygon((-122.3876953125 37.80869897600677,-122.3876953125 36.75979104322286,-123.55224609375 36.75979104322286," +
+	                                                                "-123.55224609375 37.80869897600677,-122.3876953125 37.80869897600677))");
 		
 		
         String[] polygon = {"-122.3876953125","37.80869897600677","-122.3876953125","36.75979104322286","-123.55224609375","36.75979104322286",

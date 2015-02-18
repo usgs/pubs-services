@@ -39,7 +39,7 @@ public abstract class MvcService<D> {
     private static final Logger LOG = LoggerFactory.getLogger(MvcService.class);
     public static final String TEXT_SEARCH = "text";
     public static final String ACTIVE_SEARCH = "active";
-    private static final Pattern gPattern = Pattern.compile("^polygon\\(\\((-?\\d+\\.?\\d*)(,(-?\\d+\\.?\\d*))*\\)\\)$");
+    private static final Pattern gPattern = Pattern.compile("^polygon\\(\\((-?\\d+\\.?\\d* -?\\d+\\.?\\d*,){3,}-?\\d+\\.?\\d* -?\\d+\\.?\\d*\\)\\)$");
 
     /**
      * Helper to check if null and add to filters map - will NPE if filters or key are null!
@@ -221,7 +221,7 @@ public abstract class MvcService<D> {
     
     protected Map<String, Object> configureGeospatialFilter(Map<String, Object> filters, String geospatial) {
 		if (null != filters && null != geospatial && gPattern.matcher(geospatial.toLowerCase()).matches()) {
-			String[] lessPolygon = geospatial.toLowerCase().replace("polygon((", "").replace("))", "").split(",");
+			String[] lessPolygon = geospatial.toLowerCase().replace("polygon((", "").replace("))", "").split("[, ]");
 			filters.put("g", lessPolygon);
 		}
 		return filters;

@@ -56,6 +56,7 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
     @ResponseBody
     public void getRSS(
     		@RequestParam(value="q", required=false) String searchTerms, //single string search
+    		@RequestParam(value="g", required=false) String geospatial,
             @RequestParam(value="title", required=false) String[] title,
             @RequestParam(value="abstract", required=false) String[] pubAbstract,
             @RequestParam(value="contributor", required=false) String[] contributor,
@@ -93,6 +94,8 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
         }
     	
     	configureSingleSearchFilters(filters, searchTerms);
+
+    	configureGeospatialFilter(filters, geospatial);
 
     	addToFiltersIfNotNull(filters, "title", title);
     	addToFiltersIfNotNull(filters, "abstract", pubAbstract);

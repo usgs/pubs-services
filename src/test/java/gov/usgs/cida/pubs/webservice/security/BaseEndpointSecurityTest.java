@@ -41,6 +41,8 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 
     @Autowired
 	protected FilterChainProxy springSecurityFilter;
+	@Autowired
+    public String warehouseEndpoint;
 
     @Mock
     protected IAuthClient mockAuthClient;
@@ -97,7 +99,7 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 
     	pwPubMvc = new PwPublicationMvcService(pwPubBusService);
     	mockPwPub = MockMvcBuilders.standaloneSetup(pwPubMvc).addFilters(springSecurityFilter).build();
-    	pwPubRssMvc = new PwPublicationRssMvcService(pwPubBusService);
+    	pwPubRssMvc = new PwPublicationRssMvcService(pwPubBusService, warehouseEndpoint);
     	mockPwPubRss = MockMvcBuilders.standaloneSetup(pwPubRssMvc).addFilters(springSecurityFilter).build();
     	
     	contribMvc = new ContributorMvcService(corpBusService, personBusService);

@@ -43,6 +43,9 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	private String testUnNumberedSeriesXml;
 
 	@Autowired
+    public String warehouseEndpoint;
+
+	@Autowired
     protected String crossRefProtocol;
 	@Autowired
     protected String crossRefHost;
@@ -82,7 +85,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
         MockitoAnnotations.initMocks(this);
         busService = new CrossRefBusService(crossRefProtocol, crossRefHost, crossRefUrl, crossRefPort, crossRefUser,
         		crossRefPwd, numberedSeriesXml, unNumberedSeriesXml, organizationNameXml, personNameXml,
-        		pagesXml, depositorEmail, pubsEMailer);
+        		pagesXml, depositorEmail, pubsEMailer, warehouseEndpoint);
     }
 
     @Test
@@ -139,7 +142,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	public void buildBaseXmlEscapeTest() {
 	    CrossRefBusService busService2 = new CrossRefBusService(crossRefProtocol, crossRefHost, crossRefUrl, crossRefPort, crossRefUser,
 	    		crossRefPwd, numberedSeriesXml, unNumberedSeriesXml, organizationNameXml, personNameXml,
-	    		pagesXml, "drsteini@usgs.gov<>", pubsEMailer);
+	    		pagesXml, "drsteini@usgs.gov<>", pubsEMailer, warehouseEndpoint);
 	    String templateXml = "<root><de>" + CrossRefBusService.DEPOSITOR_EMAIL_REPLACE + "</de><yr>"
 		    	+ CrossRefBusService.DISSEMINATION_YEAR_REPLACE + "</yr><ti>"
 		    	+ CrossRefBusService.TITLE_REPLACE + "</ti><doi>"
@@ -356,21 +359,25 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		MpPublication pub = new MpPublication();
 		assertEquals("", busService.getIndexPage(pub));
 		
+		pub.setIndexId("abcdef123");
+		String newUrl = warehouseEndpoint+"/publication/abcdef123";
+		assertEquals(newUrl, busService.getIndexPage(pub));
+		
 		Collection<PublicationLink<?>> links = new ArrayList<>();
 		pub.setLinks(links);
-		assertEquals("", busService.getIndexPage(pub));
+		assertEquals(newUrl, busService.getIndexPage(pub));
 
 		PublicationLink<?> link = new MpPublicationLink();
 		links.add(link);
-		assertEquals("", busService.getIndexPage(pub));
+		assertEquals(newUrl, busService.getIndexPage(pub));
 
 		link.setUrl("xyz");
-		assertEquals("", busService.getIndexPage(pub));
+		assertEquals(newUrl, busService.getIndexPage(pub));
 
 		LinkType linkType = new LinkType();
 		linkType.setId(LinkType.THUMBNAIL);
 		link.setLinkType(linkType);;
-		assertEquals("", busService.getIndexPage(pub));
+		assertEquals(newUrl, busService.getIndexPage(pub));
 
 		PublicationLink<?> link2 = new MpPublicationLink();
 		LinkType linkType2 = new LinkType();

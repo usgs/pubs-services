@@ -74,13 +74,16 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     @Autowired
     public IListBusService<PublicationContributor<MpPublicationContributor>> contributorBusService;
 
-    private MpPublicationBusService busService;
+	@Autowired
+    public String warehouseEndpoint;
+
+	private MpPublicationBusService busService;
 
     @Before
     public void initTest() throws Exception {
         super.setUp();
         MockitoAnnotations.initMocks(this);
-        busService = new MpPublicationBusService(validator, lockTimeoutHours, crossRefBusService, ccBusService, linkBusService, contributorBusService);
+        busService = new MpPublicationBusService(validator, lockTimeoutHours, crossRefBusService, ccBusService, linkBusService, contributorBusService, warehouseEndpoint);
     }
 
     @Test
@@ -627,7 +630,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	assertEquals(1, links.size());
     	MpPublicationLink link = links.get(0);
     	assertEquals(LinkType.THUMBNAIL, link.getLinkType().getId());
-    	assertEquals(MpPublicationLink.USGS_THUMBNAIL, link.getUrl());
+    	assertEquals(warehouseEndpoint + MpPublicationLink.USGS_THUMBNAIL, link.getUrl());
     	
     	mpPub = MpPublicationDaoTest.addAPub(MpPublication.getDao().getNewProdId());
     	PublicationSubtype pubSubtype = new PublicationSubtype();
@@ -640,7 +643,7 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
     	assertEquals(1, links.size());
     	link = links.get(0);
     	assertEquals(LinkType.THUMBNAIL, link.getLinkType().getId());
-    	assertEquals(MpPublicationLink.EXTERNAL_THUMBNAIL, link.getUrl());
+    	assertEquals(warehouseEndpoint + MpPublicationLink.EXTERNAL_THUMBNAIL, link.getUrl());
     	
     	link.setUrl("something else");
     	MpPublicationLink.getDao().update(link);

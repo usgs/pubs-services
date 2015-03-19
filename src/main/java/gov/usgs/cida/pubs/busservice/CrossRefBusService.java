@@ -79,6 +79,7 @@ public class CrossRefBusService implements ICrossRefBusService {
     protected final String pagesXml;
     protected final String depositorEmail;
     protected final PubsEMailer pubsEMailer;
+    protected final String warehouseEndpoint;
 
     @Autowired
     public CrossRefBusService(
@@ -106,7 +107,9 @@ public class CrossRefBusService implements ICrossRefBusService {
     		final String pagesXml,
     		@Qualifier("crossRefDepositorEmail")
     		final String depositorEmail,
-    		final PubsEMailer pubsEMailer) {
+    		final PubsEMailer pubsEMailer,
+    	    @Qualifier("warehouseEndpoint")
+    	    final String warehouseEndpoint) {
     	this.crossRefProtocol = crossRefProtocol;
     	this.crossRefHost = crossRefHost;
     	this.crossRefUrl = crossRefUrl;
@@ -120,6 +123,7 @@ public class CrossRefBusService implements ICrossRefBusService {
     	this.pagesXml = pagesXml;
     	this.depositorEmail = depositorEmail;
     	this.pubsEMailer = pubsEMailer;
+    	this.warehouseEndpoint = warehouseEndpoint;
     }
 
     @Override
@@ -335,16 +339,21 @@ public class CrossRefBusService implements ICrossRefBusService {
 
     protected String getIndexPage(MpPublication pub) {
         String rtn = "";
-        if (null != pub && null != pub.getLinks()) {
-        	Collection<PublicationLink<?>> links = pub.getLinks();
-        	for (Iterator<PublicationLink<?>> linksIter = links.iterator(); linksIter.hasNext();) {
-	        	PublicationLink<?> link = linksIter.next();
-	        	if (null != link.getLinkType() && LinkType.INDEX_PAGE.equals(link.getLinkType().getId())) {
-	        		rtn = link.getUrl();
+        if (null != pub) {
+        	if (null != pub.getLinks()) {
+	        	Collection<PublicationLink<?>> links = pub.getLinks();
+	        	for (Iterator<PublicationLink<?>> linksIter = links.iterator(); linksIter.hasNext();) {
+		        	PublicationLink<?> link = linksIter.next();
+		        	if (null != link.getLinkType() && LinkType.INDEX_PAGE.equals(link.getLinkType().getId())) {
+		        		rtn = link.getUrl();
+		        	}
 	        	}
         	}
+	        if (rtn.isEmpty() && null != pub.getIndexId()) {
+	        	rtn = warehouseEndpoint + "/publication/" + pub.getIndexId();
+	        }
         }
-        return StringEscapeUtils.escapeXml10(rtn);
+       return StringEscapeUtils.escapeXml10(rtn);
     }
 
 }

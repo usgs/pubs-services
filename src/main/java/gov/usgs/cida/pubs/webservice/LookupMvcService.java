@@ -130,7 +130,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
     @ResponseView(ILookupView.class)
     public @ResponseBody Collection<PublicationSeries> getPublicationSeriesQuery(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(value=TEXT_SEARCH, required=false) String[] text,
-                @RequestParam(value="publicationSubtypeId", required=false) String[] publicationSubtypeId,
+                @RequestParam(value="publicationsubtypeid", required=false) String[] publicationSubtypeId,
                 @RequestParam(value=ACTIVE_SEARCH, required=false) String[] active) {
         LOG.debug("publicationSeries");
         Collection<PublicationSeries> rtn = new ArrayList<>();

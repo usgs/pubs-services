@@ -19,8 +19,8 @@ public class PublicationLink<D> extends BaseDomain<D> implements Serializable {
 
 	private static final long serialVersionUID = 5845209857599494487L;
 
-	public static final String USGS_THUMBNAIL = "http://pubs.er.usgs.gov/thumbnails/usgs_thumb.jpg";
-	public static final String EXTERNAL_THUMBNAIL = "http://pubs.er.usgs.gov/thumbnails/outside_thumb.jpg";
+	public static final String USGS_THUMBNAIL = "/thumbnails/usgs_thumb.jpg";
+	public static final String EXTERNAL_THUMBNAIL = "/thumbnails/outside_thumb.jpg";
 
 	@JsonIgnore
     private Integer publicationId;

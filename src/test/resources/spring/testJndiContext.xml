@@ -79,4 +79,8 @@
         <constructor-arg value="drsteini@usgs.gov"/>
     </bean>
 
+    <bean id="warehouseEndpoint" class="java.lang.String">
+        <constructor-arg value="http://pubs.er.usgs.gov"/>
+    </bean>
+
 </beans>

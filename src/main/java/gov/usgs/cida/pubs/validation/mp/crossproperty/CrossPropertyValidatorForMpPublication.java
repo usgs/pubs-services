@@ -1,10 +1,10 @@
 package gov.usgs.cida.pubs.validation.mp.crossproperty;
 
-import java.util.Arrays;
-
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.validation.constraint.CrossProperty;
+
+import java.util.Arrays;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

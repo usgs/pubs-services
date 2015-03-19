@@ -19,6 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -31,7 +32,10 @@ public class PwPublicationRssMvcServiceTest extends BaseSpringTest {
     @Resource(name="expectedGetRssPub")
     public String expectedGetRssPub;
     
-    public String expectedGetPwRssTitle;
+	@Autowired
+    public String warehouseEndpoint;
+
+	public String expectedGetPwRssTitle;
     public String expectedGetPwRssItemTitle;
     public String expectedGetPwRssItemDescription;
 
@@ -42,7 +46,7 @@ public class PwPublicationRssMvcServiceTest extends BaseSpringTest {
     @Before
     public void setup() {
     	MockitoAnnotations.initMocks(this);
-    	mvcRssService = new PwPublicationRssMvcService(busService);
+    	mvcRssService = new PwPublicationRssMvcService(busService, warehouseEndpoint);
     	mockMvc = MockMvcBuilders.standaloneSetup(mvcRssService).build();
     	
     	int titleStart = expectedGetRssPub.indexOf("<title>") + "<title>".length();

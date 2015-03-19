@@ -15,18 +15,22 @@ public class ApplicationVersion implements ServletContextAware {
     private static ServletContext servletContext;
 
     public static String getVersion() {
-        String currentVersion = "";
+        StringBuilder currentVersion = new StringBuilder("Application Version: ");
         try {
             String name = "/META-INF/MANIFEST.MF";
             Properties props = new Properties();
             props.load(servletContext.getResourceAsStream(name));
             String projectVersion = (String) props.get("Project-Version");
-            currentVersion = projectVersion + (projectVersion.endsWith("-SNAPSHOT") ? "-" + (String) props.get("BuildTime") : "");
+            currentVersion.append(projectVersion);
+            if (projectVersion.endsWith("-SNAPSHOT")) {
+            	currentVersion.append(" Built at: " + (String) props.get("BuildTime"));
+            	currentVersion.append(" From commit: " + (String) props.get("Implementation-Build"));
+            }
         } catch (Exception e) {
-            currentVersion = "Unable to get application version.";
-            LOG.info(currentVersion, e);
+            LOG.info("unable to get application version", e);
+            currentVersion.append("Unavailable");
         }
-        return currentVersion;
+        return currentVersion.toString();
     }
 
     public void setServletContext(final ServletContext inServletContext) {

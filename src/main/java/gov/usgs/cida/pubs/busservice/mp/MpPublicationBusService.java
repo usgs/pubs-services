@@ -57,6 +57,8 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 
     protected final IListBusService<PublicationContributor<MpPublicationContributor>> contributorBusService;
 
+    protected final String warehouseEndpoint;
+    
     @Autowired
     MpPublicationBusService(final Validator validator,
     		final Integer lockTimeoutHours,
@@ -66,13 +68,16 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
             @Qualifier("mpPublicationLinkBusService")
             IListBusService<PublicationLink<MpPublicationLink>> linkBusService,
             @Qualifier("mpPublicationContributorBusService")
-            IListBusService<PublicationContributor<MpPublicationContributor>> contributorBusService) {
+            IListBusService<PublicationContributor<MpPublicationContributor>> contributorBusService,
+    	    @Qualifier("warehouseEndpoint")
+    		final String warehouseEndpoint) {
     	this.lockTimeoutHours = lockTimeoutHours;
         this.validator = validator;
         this.crossRefBusService = crossRefBusService;
         this.costCenterBusService = costCenterBusService;
         this.linkBusService = linkBusService;
         this.contributorBusService = contributorBusService;
+    	this.warehouseEndpoint = warehouseEndpoint;
     }
 
     /** {@inheritDoc}
@@ -311,9 +316,9 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 	            thumbnail.setLinkType(LinkType.getDao().getById(LinkType.THUMBNAIL.toString()));
 	            if (PubsUtilities.isUsgsNumberedSeries(mpPub.getPublicationSubtype())
 	            		|| PubsUtilities.isUsgsUnnumberedSeries(mpPub.getPublicationSubtype())) {
-	                thumbnail.setUrl(MpPublicationLink.USGS_THUMBNAIL);
+	                thumbnail.setUrl(warehouseEndpoint + MpPublicationLink.USGS_THUMBNAIL);
 	            } else {
-	                thumbnail.setUrl(MpPublicationLink.EXTERNAL_THUMBNAIL);
+	                thumbnail.setUrl(warehouseEndpoint + MpPublicationLink.EXTERNAL_THUMBNAIL);
 	            }
 	            MpPublicationLink.getDao().add(thumbnail);
 	        }

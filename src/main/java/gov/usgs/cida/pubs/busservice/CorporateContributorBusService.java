@@ -1,9 +1,9 @@
 package gov.usgs.cida.pubs.busservice;
 
 import gov.usgs.cida.pubs.domain.Contributor;
-import javax.validation.Validator;
-
 import gov.usgs.cida.pubs.domain.CorporateContributor;
+
+import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;

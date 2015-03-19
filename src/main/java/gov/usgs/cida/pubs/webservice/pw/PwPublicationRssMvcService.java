@@ -45,11 +45,15 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 	private static final Logger LOG = LoggerFactory.getLogger(PwPublicationRssMvcService.class);
 
     private final IPwPublicationBusService busService;
+    private final String warehouseEndpoint;
 
     @Autowired
     public PwPublicationRssMvcService(@Qualifier("pwPublicationBusService")
-    		final IPwPublicationBusService busService) {
+    		final IPwPublicationBusService busService,
+    	    @Qualifier("warehouseEndpoint")
+    	    final String warehouseEndpoint) {
     	this.busService = busService;
+    	this.warehouseEndpoint = warehouseEndpoint;
     }
     
     @RequestMapping(method = RequestMethod.GET)
@@ -174,11 +178,11 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
     	rssResults.append("<rss version=\"2.0\">\n");
     	rssResults.append("\t<channel>\n");
     	rssResults.append("\t\t<title>USGS Publications Warehouse</title>\n");
-    	rssResults.append("\t\t<link>http://pubs.er.usgs.gov</link>\n");
+    	rssResults.append("\t\t<link>" + warehouseEndpoint + "</link>\n");
     	rssResults.append("\t\t<description>New publications of the USGS.</description>\n");
     	rssResults.append("\t\t<language>en-us</language>\n");
     	rssResults.append("\t\t<lastBuildDate>" + todayDate + "</lastBuildDate>\n");
-    	rssResults.append("\t\t<webmaster>http://pubs.er.usgs.gov/feedback</webmaster>\n");
+    	rssResults.append("\t\t<webmaster>" + warehouseEndpoint + "/feedback</webmaster>\n");
     	rssResults.append("\t\t<pubDate>" + todayDate + "</pubDate>\n");
     	
     	/**
@@ -274,7 +278,7 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 	    		rssResults.append("\t\t\t<link>");
 	    		String pubId = publication.getIndexId();
 	    		if(pubId != null) {
-		    		rssResults.append("http://pubs.er.usgs.gov/publication/" + pubId.trim());
+		    		rssResults.append(warehouseEndpoint + "/publication/" + pubId.trim());
 	    		}
 	    		rssResults.append("</link>\n");
 	    		

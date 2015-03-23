@@ -47,6 +47,9 @@ public class SpnProductionMessageServiceTest extends BaseSpringTest {
     @Resource(name="feedXml")
     public String feedXml;
 
+    @Resource(name="badXml")
+    public String badXml;
+
     @Before
     public void setUp() throws Exception {
        MockitoAnnotations.initMocks(this);
@@ -118,4 +121,11 @@ public class SpnProductionMessageServiceTest extends BaseSpringTest {
             fail(e.getMessage());
         }
     }
+
+    @Test
+    public void quickAndDirty() throws Exception {
+      when(requester.getSpnProduction(anyString())).thenReturn(badXml);
+      service.processIpdsMessage(null);    	
+    }
+
 }

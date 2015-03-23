@@ -40,6 +40,9 @@ public class IpdsStringMessageServiceTest extends BaseSpringTest {
     @Resource(name="feedXml")
     public String feedXml;
 
+    @Resource(name="badXml")
+    public String badXml;
+
     @Before
     public void setUp() throws Exception {
        MockitoAnnotations.initMocks(this);
@@ -54,6 +57,12 @@ public class IpdsStringMessageServiceTest extends BaseSpringTest {
        service = new IpdsStringMessageService(ipdsProcess, requester);
     }
 
+    @Test
+    public void quickAndDirty() throws Exception {
+      when(requester.getIpdsProductXml(anyString())).thenReturn(badXml);
+      service.processIpdsMessage(null);    	
+    }
+    
     @Test
     public void testNoDate() throws Exception {
         try {

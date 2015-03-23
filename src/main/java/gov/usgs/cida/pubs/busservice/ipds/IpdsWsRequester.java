@@ -4,6 +4,7 @@ import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.ipds.IpdsProcessLog;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
+import gov.usgs.cida.pubs.utility.PubsEscapeXML10;
 
 import java.io.IOException;
 
@@ -120,14 +121,12 @@ public class IpdsWsRequester {
             pubsEMailer.sendMail("Unexpected error in mypubsJMS.getIpdsXml", e.getMessage());
         }
 
-        //TODO cleanse xml of bad stuff
-
         LOG.debug(xml);
 
         if (null != ipdsId) {
             IpdsProcessLog log = new IpdsProcessLog();
             log.setIpdsNumber(ipdsId);
-            log.setMessage(xml);
+            log.setMessage(PubsEscapeXML10.ESCAPE_XML10.translate(xml));
             log.setUri(url);
             IpdsProcessLog.getDao().add(log);
         }

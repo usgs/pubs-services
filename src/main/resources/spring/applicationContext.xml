@@ -18,7 +18,7 @@
 
     <tx:annotation-driven/>
 
-    <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager">
+    <mvc:annotation-driven conversion-service="conversionService" content-negotiation-manager="contentNegotiationManager">
         <mvc:message-converters>
             <bean class="gov.usgs.cida.pubs.json.ViewAwareJsonMessageConverter" />
         </mvc:message-converters>
@@ -30,6 +30,14 @@
     <context:component-scan base-package="gov.usgs.cida.pubs.webservice"/>
 
     <context:annotation-config />
+    
+	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+	    <property name="converters">
+	        <list>
+	            <bean class="gov.usgs.cida.pubs.utility.CustomStringToArrayConverter" />
+	        </list>
+	    </property>
+	</bean>
     
     <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
         <property name="favorPathExtension" value="false" />

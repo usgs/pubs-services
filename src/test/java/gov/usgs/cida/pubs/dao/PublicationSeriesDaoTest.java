@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 
@@ -15,15 +16,22 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-/**
- * @author drsteini
- *
- */
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseSetups;
+
+@Category(IntegrationTest.class)
+@DatabaseSetups({
+	@DatabaseSetup("classpath:/testData/clearAll.xml"),
+	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+	@DatabaseSetup("classpath:/testData/publicationSeries.xml")
+})
 public class PublicationSeriesDaoTest extends BaseSpringTest {
 
-    public static final int pubSeriesCnt = 3783;
-    public static final int activePubSeriesCnt = 3288;
+    public static final int pubSeriesCnt = 14;
+    public static final int activePubSeriesCnt = 8;
 
     @Test
     public void getByIdInteger() {
@@ -80,12 +88,12 @@ public class PublicationSeriesDaoTest extends BaseSpringTest {
         assertFalse(pubSeries.get(0).isActive());
 
         filters.clear();
-        filters.put(PublicationSeriesDao.SUBTYPE_SEARCH, 6);
+        filters.put(PublicationSeriesDao.SUBTYPE_SEARCH, 5);
         pubSeries = PublicationSeries.getDao().getByMap(filters);
         assertNotNull(pubSeries);
-        assertEquals(50, pubSeries.size());
+        assertEquals(8, pubSeries.size());
 
-        filters.put("text", "to");
+        filters.put("text", "sc");
         pubSeries = PublicationSeries.getDao().getByMap(filters);
         assertEquals(2, pubSeries.size());
 

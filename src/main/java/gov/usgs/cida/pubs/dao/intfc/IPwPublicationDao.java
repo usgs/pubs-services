@@ -2,7 +2,7 @@ package gov.usgs.cida.pubs.dao.intfc;
 
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 
-public interface IPwPublicationDao extends IDao<PwPublication> {
+public interface IPwPublicationDao extends IDao<PwPublication>, IStreamingDao {
 
     /** 
      * Get a publication by it's index id.

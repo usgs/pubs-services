@@ -1,12 +1,20 @@
 package gov.usgs.cida.pubs.webservice.pw;
 
+import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
+import gov.usgs.cida.pubs.dao.resulthandler.StreamingResultHandler;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.json.ResponseView;
 import gov.usgs.cida.pubs.json.view.intfc.IPwView;
+import gov.usgs.cida.pubs.transform.DelimitedTransformer;
+import gov.usgs.cida.pubs.transform.PublicationColumns;
+import gov.usgs.cida.pubs.transform.XlsxTransformer;
+import gov.usgs.cida.pubs.transform.intfc.ITransformer;
 import gov.usgs.cida.pubs.webservice.MvcService;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,9 +22,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.entity.mime.MIME;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,18 +35,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping(value = "publication", produces="application/json")
+@RequestMapping(value="publication", method=RequestMethod.GET)
 public class PwPublicationMvcService extends MvcService<PwPublication> {
 
     private final IPwPublicationBusService busService;
+    private final String warehouseEndpoint;
 
     @Autowired
     public PwPublicationMvcService(@Qualifier("pwPublicationBusService")
-    		final IPwPublicationBusService busService) {
+    		final IPwPublicationBusService busService,
+    		@Qualifier("warehouseEndpoint")
+    		final String warehouseEndpoint) {
     	this.busService = busService;
+    	this.warehouseEndpoint = warehouseEndpoint;
     }
     
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(produces={MediaType.APPLICATION_JSON_VALUE,
+    		PubsConstants.MEDIA_TYPE_XLSX_VALUE, PubsConstants.MEDIA_TYPE_CSV_VALUE, PubsConstants.MEDIA_TYPE_TSV_VALUE})
     @ResponseView(IPwView.class)
     public @ResponseBody SearchResults getPubs(
     		@RequestParam(value="q", required=false) String searchTerms, //single string search
@@ -65,7 +80,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
             @RequestParam(value="mod_date_low", required=false) String modDateLow,
             @RequestParam(value="mod_date_high", required=false) String modDateHigh,
             @RequestParam(value="orderBy", required=false) String orderBy,
-			HttpServletResponse response) {
+			HttpServletResponse response, HttpServletRequest request) {
 
         setHeaders(response);
 
@@ -96,10 +111,22 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
     	addToFiltersIfNotNull(filters, "modDateLow", modDateLow);
     	addToFiltersIfNotNull(filters, "modDateHigh", modDateHigh);
     	
-    	filters.put("orderby", buildOrderBy(orderBy));
+    	filters.put("orderBy", buildOrderBy(orderBy));
 
-    	filters.putAll(buildPaging(pageRowStart, pageSize, pageNumber));
+    	filters.put("url", warehouseEndpoint + "/publication/");
+
+        SearchResults results = null;
+        String mimeType = request.getParameter(PubsConstants.CONTENT_PARAMETER_NAME);
+    	if (null == mimeType || PubsConstants.MEDIA_TYPE_JSON_EXTENSION.equalsIgnoreCase(mimeType)) {
+        	filters.putAll(buildPaging(pageRowStart, pageSize, pageNumber));
+    		results = getResults(filters);
+    	} else {
+    		streamResults(filters, mimeType, response);
+    	}
+        return results;
+    }
     	
+    protected SearchResults getResults(Map<String, Object> filters) {
         List<PwPublication> pubs = busService.getObjects(filters);
         Integer totalPubsCount = busService.getObjectCount(filters);
         SearchResults results = new SearchResults();
@@ -110,11 +137,47 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
         }
         results.setRecords(pubs);
         results.setRecordCount(totalPubsCount);
-
         return results;
     }
 
-	@RequestMapping(value="{indexId}", method=RequestMethod.GET)
+    protected void streamResults(Map<String, Object> filters, String mimeType, HttpServletResponse response) {
+        response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
+		response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + mimeType);
+   	
+    	try {
+			ITransformer transformer;
+			switch (mimeType) {
+			case PubsConstants.MEDIA_TYPE_TSV_EXTENSION:
+				transformer = new DelimitedTransformer(response.getOutputStream(), PublicationColumns.getMappings(), "\t");
+		    	response.setContentType(PubsConstants.MEDIA_TYPE_TSV_VALUE);
+				break;
+			case PubsConstants.MEDIA_TYPE_XLSX_EXTENSION:
+				transformer = new XlsxTransformer(response.getOutputStream(), PublicationColumns.getMappings());
+		    	response.setContentType(PubsConstants.MEDIA_TYPE_XLSX_VALUE);
+				break;
+			default:
+				//Let csv be the default
+				transformer = new DelimitedTransformer(response.getOutputStream(), PublicationColumns.getMappings(), ",");
+		    	response.setContentType(PubsConstants.MEDIA_TYPE_CSV_VALUE);
+				break;
+			}
+				
+			PwPublication.getDao().stream(filters, new StreamingResultHandler(transformer));
+			
+			if (transformer instanceof XlsxTransformer) {
+				((XlsxTransformer) transformer).finishWorkbook();
+			} else {
+				((OutputStream) transformer).flush();
+			}
+		
+    	} catch(IOException e) {
+    		throw new RuntimeException(e);
+    	}
+    	
+    	response.setStatus(HttpStatus.OK.value());
+    }
+    
+	@RequestMapping(value="{indexId}", produces=MediaType.APPLICATION_JSON_VALUE)
     @ResponseView(IPwView.class)
     public @ResponseBody PwPublication getPwPublication(HttpServletRequest request, HttpServletResponse response,
                 @PathVariable("indexId") String indexId) {

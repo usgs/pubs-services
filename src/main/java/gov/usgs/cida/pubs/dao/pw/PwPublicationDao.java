@@ -8,6 +8,7 @@ import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.session.ResultHandler;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -62,6 +63,11 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	@Override
 	public PwPublication getByIndexId(String indexId) {
         return (PwPublication) getSqlSession().selectOne(NS + GET_BY_INDEX_ID, indexId);
+	}
+
+	@Override
+	public void stream(Map<String, Object> filters, ResultHandler handler) {
+		getSqlSession().select(NS + GET_STREAM_BY_MAP, filters, handler);
 	}
 
 }

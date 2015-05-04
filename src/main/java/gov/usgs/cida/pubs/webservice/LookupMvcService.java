@@ -1,6 +1,5 @@
 package gov.usgs.cida.pubs.webservice;
 
-import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.dao.ContributorTypeDao;
 import gov.usgs.cida.pubs.dao.CostCenterDao;
 import gov.usgs.cida.pubs.dao.LinkFileTypeDao;
@@ -37,6 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,7 +45,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping(value="lookup", method=RequestMethod.GET, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
+@RequestMapping(value="lookup", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
 public class LookupMvcService extends MvcService<PublicationType> {
     private static final Logger LOG = LoggerFactory.getLogger(LookupMvcService.class);
 

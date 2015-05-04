@@ -61,6 +61,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     
     @Autowired
     MpPublicationBusService(final Validator validator,
+    		@Qualifier("lockTimeoutHours")
     		final Integer lockTimeoutHours,
             final ICrossRefBusService crossRefBusService,
             @Qualifier("mpPublicationCostCenterBusService")

@@ -46,9 +46,9 @@ public class MpListMvcServiceTest extends BaseSpringTest {
 	@Test
     public void getListsTest() throws Exception {
         when(busService.getObjects(anyMap())).thenReturn(getListOfMpList());
-        MvcResult rtn = mockMvc.perform(get("/lists?mimetype=json").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        MvcResult rtn = mockMvc.perform(get("/lists?mimetype=json").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 

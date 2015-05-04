@@ -1,8 +1,11 @@
 package gov.usgs.cida.pubs.utility;
 
 import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
 
+import org.junit.Test;
+import org.springframework.stereotype.Component;
+
+@Component
 public class CustomStringToArrayConverterTest {
 
 	CustomStringToArrayConverter conv = new CustomStringToArrayConverter();

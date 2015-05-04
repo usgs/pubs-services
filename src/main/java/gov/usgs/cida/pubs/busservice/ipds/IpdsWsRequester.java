@@ -26,6 +26,7 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 
 public class IpdsWsRequester {
 
@@ -191,7 +192,7 @@ public class IpdsWsRequester {
 
                         HttpPut httpPut = new HttpPut(url.toString());
                         httpPut.addHeader("If-Match", etag);
-                        httpPut.addHeader("Content-Type", "text/xml");
+                        httpPut.addHeader("Content-Type", MediaType.TEXT_XML_VALUE);
                         httpPut.setEntity(httpEntity);
                         HttpClient httpclient = getHttpClient();
 

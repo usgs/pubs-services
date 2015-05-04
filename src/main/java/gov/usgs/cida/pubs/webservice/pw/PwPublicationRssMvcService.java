@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping(value = "publication/rss", produces="text/xml")
+@RequestMapping(value = "publication/rss", produces=PubsConstants.MEDIA_TYPE_RSS_VALUE)
 public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 	private static final int DEFAULT_RECORDS = 30;
 	
@@ -121,14 +121,14 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
     	addToFiltersIfNotNull(filters, "modXDays", modXDays);
     	addToFiltersIfNotNull(filters, "modDateLow", modDateLow);
     	addToFiltersIfNotNull(filters, "modDateHigh", modDateHigh);    	
-    	filters.put("orderby", buildOrderBy(orderBy));
+    	filters.put("orderBy", buildOrderBy(orderBy));
     	
         List<PwPublication> pubs = busService.getObjects(filters);
 
         String rssResults = getSearchResultsAsRSS(pubs);
         
         response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
-    	response.setContentType(PubsConstants.MIME_TYPE_APPLICATION_RSS);
+    	response.setContentType(PubsConstants.MEDIA_TYPE_RSS_VALUE);
     	try {
 			response.setContentLength(rssResults.getBytes(PubsConstants.DEFAULT_ENCODING).length);
 		} catch (UnsupportedEncodingException e) {

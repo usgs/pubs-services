@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONArrayAs;
 import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.dao.ContributorDaoTest;
 import gov.usgs.cida.pubs.dao.ContributorTypeDaoTest;
@@ -18,17 +19,27 @@ import gov.usgs.cida.pubs.domain.PublicationType;
 import org.json.JSONArray;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseSetups;
+
 /**
- * These tests can use the liquibase loaded db data.  Note that I have not yet figured out how to get the
+ * Note that I have not yet figured out how to get the
  * tests to respect the ILookupView annotation.
  * @author drsteini
  *
  */
+@Category(IntegrationTest.class)
+@DatabaseSetups({
+//	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+//	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+	@DatabaseSetup("classpath:/testData/publicationSeries.xml")
+})
 public class LookupMvcServiceTest extends BaseSpringTest {
 
     private MockMvc mockLookup;
@@ -40,9 +51,9 @@ public class LookupMvcServiceTest extends BaseSpringTest {
 
     @Test
     public void getPublicationType() throws Exception {
-        MvcResult rtn = mockLookup.perform(get("/lookup/publicationtypes?text=b").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        MvcResult rtn = mockLookup.perform(get("/lookup/publicationtypes?text=b").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
@@ -52,9 +63,9 @@ public class LookupMvcServiceTest extends BaseSpringTest {
 
     @Test
     public void getPublicationSubtypeREST() throws Exception {
-        MvcResult rtn = mockLookup.perform(get("/lookup/publicationtype/4/publicationsubtypes?text=b").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        MvcResult rtn = mockLookup.perform(get("/lookup/publicationtype/4/publicationsubtypes?text=b").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
@@ -64,9 +75,9 @@ public class LookupMvcServiceTest extends BaseSpringTest {
 
     @Test
     public void getPublicationSubtypeQuery() throws Exception {
-        MvcResult rtn = mockLookup.perform(get("/lookup/publicationsubtypes?text=b&publicationtypeid=4").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        MvcResult rtn = mockLookup.perform(get("/lookup/publicationsubtypes?text=b&publicationtypeid=4").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
@@ -77,9 +88,9 @@ public class LookupMvcServiceTest extends BaseSpringTest {
     @Test
     public void getPublicationSeriesREST() throws Exception {
         MvcResult rtn = mockLookup.perform(get("/lookup/publicationtype/"
-                + PublicationType.REPORT + "/publicationsubtype/10/publicationseries?text=zeit").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+                + PublicationType.REPORT + "/publicationsubtype/10/publicationseries?text=zeit").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
@@ -91,9 +102,9 @@ public class LookupMvcServiceTest extends BaseSpringTest {
 
     @Test
     public void getPublicationSeriesQuery() throws Exception {
-        MvcResult rtn = mockLookup.perform(get("/lookup/publicationseries?text=zeit&publicationsubtypeid=10").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        MvcResult rtn = mockLookup.perform(get("/lookup/publicationseries?text=zeit&publicationsubtypeid=10").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
@@ -105,17 +116,17 @@ public class LookupMvcServiceTest extends BaseSpringTest {
 
     @Test
     public void getContributorTypes() throws Exception {
-        MvcResult rtn = mockLookup.perform(get("/lookup/contributortypes?mimetype=json").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        MvcResult rtn = mockLookup.perform(get("/lookup/contributortypes?mimetype=json").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
         assertEquals(ContributorTypeDaoTest.contributorTypeCnt, new JSONArray(rtn.getResponse().getContentAsString()).length());
 
-        rtn = mockLookup.perform(get("/lookup/contributortypes?text=au").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        rtn = mockLookup.perform(get("/lookup/contributortypes?text=au").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
@@ -125,17 +136,17 @@ public class LookupMvcServiceTest extends BaseSpringTest {
 
     @Test
     public void getPublishingServiceCenters() throws Exception {
-        MvcResult rtn = mockLookup.perform(get("/lookup/publishingServiceCenters?mimetype=json").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        MvcResult rtn = mockLookup.perform(get("/lookup/publishingServiceCenters?mimetype=json").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
         assertEquals(PublishingServiceCenterDaoTest.PSC_CNT, new JSONArray(rtn.getResponse().getContentAsString()).length());
 
-        rtn = mockLookup.perform(get("/lookup/publishingServiceCenters?text=r").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        rtn = mockLookup.perform(get("/lookup/publishingServiceCenters?text=r").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
@@ -147,17 +158,17 @@ public class LookupMvcServiceTest extends BaseSpringTest {
 
     @Test
     public void getLinkTypes() throws Exception {
-        MvcResult rtn = mockLookup.perform(get("/lookup/linktypes?mimetype=json").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        MvcResult rtn = mockLookup.perform(get("/lookup/linktypes?mimetype=json").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
         assertEquals(LinkTypeDaoTest.LINK_TYPES_CNT, new JSONArray(rtn.getResponse().getContentAsString()).length());
 
-        rtn = mockLookup.perform(get("/lookup/linktypes?text=r").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        rtn = mockLookup.perform(get("/lookup/linktypes?text=r").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
@@ -169,9 +180,9 @@ public class LookupMvcServiceTest extends BaseSpringTest {
 
     @Test
     public void getLinkFileTypes() throws Exception {
-        MvcResult rtn = mockLookup.perform(get("/lookup/linkfiletypes?mimetype=json").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        MvcResult rtn = mockLookup.perform(get("/lookup/linkfiletypes?mimetype=json").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
@@ -181,9 +192,9 @@ public class LookupMvcServiceTest extends BaseSpringTest {
                 sameJSONArrayAs(new JSONArray("[{\"id\":1,\"text\":\"pdf\"},{\"id\":2,\"text\":\"txt\"}," 
                 		+ "{\"id\":3,\"text\":\"xlsx\"},{\"id\":4,\"text\":\"shapefile\"},{\"id\":5,\"text\":\"html\"}]")));
         
-        rtn = mockLookup.perform(get("/lookup/linkfiletypes?text=s").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        rtn = mockLookup.perform(get("/lookup/linkfiletypes?text=s").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
@@ -195,17 +206,17 @@ public class LookupMvcServiceTest extends BaseSpringTest {
 
     @Test
     public void getPeople() throws Exception {
-        MvcResult rtn = mockLookup.perform(get("/lookup/people?mimetype=json").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        MvcResult rtn = mockLookup.perform(get("/lookup/people?mimetype=json").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
         assertEquals(ContributorDaoTest.PERSON_CONTRIBUTOR_CNT, new JSONArray(rtn.getResponse().getContentAsString()).length());
 
-        rtn = mockLookup.perform(get("/lookup/people?text=out").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        rtn = mockLookup.perform(get("/lookup/people?text=out").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
@@ -219,17 +230,17 @@ public class LookupMvcServiceTest extends BaseSpringTest {
 
     @Test
     public void getCorporations() throws Exception {
-        MvcResult rtn = mockLookup.perform(get("/lookup/corporations?mimetype=json").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        MvcResult rtn = mockLookup.perform(get("/lookup/corporations?mimetype=json").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
         assertEquals(ContributorDaoTest.CORPORATE_CONTRIBUTOR_CNT, new JSONArray(rtn.getResponse().getContentAsString()).length());
 
-        rtn = mockLookup.perform(get("/lookup/corporations?text=us geo").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        rtn = mockLookup.perform(get("/lookup/corporations?text=us geo").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 

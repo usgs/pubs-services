@@ -44,9 +44,6 @@ public class SpnProductionMessageServiceTest extends BaseSpringTest {
 
     public SpnProductionMessageService service;
 
-    @Resource(name="feedXml")
-    public String feedXml;
-
     @Resource(name="badXml")
     public String badXml;
 

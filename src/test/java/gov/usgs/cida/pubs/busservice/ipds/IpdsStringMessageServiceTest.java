@@ -37,9 +37,6 @@ public class IpdsStringMessageServiceTest extends BaseSpringTest {
 
     public IpdsStringMessageService service;
 
-    @Resource(name="feedXml")
-    public String feedXml;
-
     @Resource(name="badXml")
     public String badXml;
 

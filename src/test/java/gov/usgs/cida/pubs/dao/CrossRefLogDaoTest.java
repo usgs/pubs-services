@@ -1,13 +1,26 @@
 package gov.usgs.cida.pubs.dao;
 
+import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.domain.CrossRefLog;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseSetups;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
-public class CrossRefLogDaoTest extends BaseSpringDaoTest {
+@Category(IntegrationTest.class)
+@DatabaseSetups({
+	@DatabaseSetup("classpath:/testData/clearAll.xml"),
+	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+	@DatabaseSetup("classpath:/testData/dataset.xml")
+})
+public class CrossRefLogDaoTest extends BaseSpringTest {
 
 	@Test
 	@ExpectedDatabase(assertionMode=DatabaseAssertionMode.NON_STRICT,

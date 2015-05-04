@@ -5,6 +5,7 @@ import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
+import gov.usgs.cida.pubs.utility.PubsEscapeXML10;
 
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +47,7 @@ public class CostCenterMessageService implements IIpdsService {
     public void processIpdsMessage(final String nothing) throws Exception {
         String inMessageText = requester.getIpdsCostCenterXml();
         IpdsMessageLog newMessage = new IpdsMessageLog();
-        newMessage.setMessageText(inMessageText);
+        newMessage.setMessageText(PubsEscapeXML10.ESCAPE_XML10.translate(inMessageText));
         newMessage.setProcessType(ProcessType.COST_CENTER);
         IpdsMessageLog msg = IpdsMessageLog.getDao().getById(IpdsMessageLog.getDao().add(newMessage));
 

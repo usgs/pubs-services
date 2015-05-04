@@ -286,40 +286,40 @@
     </sql>
     
     <sql id="singleSearchTermFilter">
-				   upper(title) <include refid="publication.likeTerm"/>
-				or upper(abstract) <include refid="publication.likeTerm"/>
-				or upper(subseries_title) <include refid="publication.likeTerm"/>
-				or upper(series_number) <include refid="publication.likeTerm"/>
-				or upper(index_id) <include refid="publication.likeTerm"/>
-				or to_char(publication_id) = #{term}
-				or upper(ipds_id) <include refid="publication.likeTerm"/>
-				or upper(publication_year) <include refid="publication.likeTerm"/>
+				   upper(pub.title) <include refid="publication.likeTerm"/>
+				or upper(pub.abstract) <include refid="publication.likeTerm"/>
+				or upper(pub.subseries_title) <include refid="publication.likeTerm"/>
+				or upper(pub.series_number) <include refid="publication.likeTerm"/>
+				or upper(pub.index_id) <include refid="publication.likeTerm"/>
+				or to_char(pub.publication_id) = #{term}
+				or upper(pub.ipds_id) <include refid="publication.likeTerm"/>
+				or upper(pub.publication_year) <include refid="publication.likeTerm"/>
 
 				<!-- publication type name -->
-				or publication_type_id in (select publication_type_id 
-	              		                     from publication_type
-	              		                    where upper(name) <include refid="publication.likeTerm"/>)
+				or pub.publication_type_id in (select publication_type_id 
+	              		                         from publication_type
+	              		                        where upper(name) <include refid="publication.likeTerm"/>)
 
 				<!-- publication subtype name -->
-				or publication_subtype_id in (select publication_subtype_id 
-	              		                        from publication_subtype
-	              		                       where upper(name) <include refid="publication.likeTerm"/>)
+				or pub.publication_subtype_id in (select publication_subtype_id 
+	              		                            from publication_subtype
+	              		                           where upper(name) <include refid="publication.likeTerm"/>)
 				
 				<!-- series name -->
-				or publication_series_id in (select publication_series_id 
-	              		                       from publication_series
-	              		                      where upper(name) <include refid="publication.likeTerm"/>)
+				or pub.publication_series_id in (select publication_series_id 
+	              		                           from publication_series
+	              		                          where upper(name) <include refid="publication.likeTerm"/>)
     </sql>
 
     <sql id="filters">
         	<if test="null != IPDS_ID">
-        		and ipds_id = #{IPDS_ID}
+        		and pub.ipds_id = #{IPDS_ID}
         	</if>
         	
        		<if test="title != null and title.length > 0">
        			and (
 				<foreach item="t" collection="title" open="" separator="or" close=""> 
-                	upper(title) like '%' || upper(#{t}) || '%'
+                	upper(pub.title) like '%' || upper(#{t}) || '%'
                 </foreach>
                 )
             </if>
@@ -327,7 +327,7 @@
             <if test="abstract != null and abstract.length > 0">
        			and (
 				<foreach item="a" collection="abstract" open="" separator="or" close=""> 
-                	upper(abstract) like '%' || upper(#{a}) || '%'
+                	upper(pub.abstract) like '%' || upper(#{a}) || '%'
                 </foreach>
                 )
             </if>
@@ -335,7 +335,7 @@
             <if test="id != null and id.length > 0">
                 and (
                 <foreach item="i" collection="id" open="" separator="or" close=""> 
-                	publication_id = #{i}
+                	pub.publication_id = #{i}
 				</foreach>
                 )
             </if>
@@ -343,7 +343,7 @@
             <if test="indexId != null and indexId.length > 0">
                 and (
                 <foreach item="i" collection="indexId" open="" separator="or" close=""> 
-                	upper(index_id) = upper(#{i})
+                	upper(pub.index_id) = upper(#{i})
                 </foreach>
                 )
             </if>
@@ -351,7 +351,7 @@
             <if test="ipdsId != null and ipdsId.length > 0">
                 and (
                 <foreach item="i" collection="ipdsId" open="" separator="or" close=""> 
-                	ipds_id = #{i}
+                	pub.ipds_id = #{i}
                 </foreach>
                 )
             </if>
@@ -359,23 +359,23 @@
             <if test="year != null and year.length > 0">
             	and (
                 <foreach item="y" collection="year" open="" separator="or" close=""> 
-                	publication_year = #{y}
+                	pub.publication_year = #{y}
                	</foreach>
                 )
             </if>
             
             <if test="yearStart != null">
-            	and publication_year &gt;= #{yearStart}
+            	and pub.publication_year &gt;= #{yearStart}
             </if>
             
             <if test="yearEnd != null">
-            	and publication_year &lt;= #{yearEnd}
+            	and pub.publication_year &lt;= #{yearEnd}
             </if>
             
             <if test="typeName != null and typeName.length > 0">
-                and publication_type_id in (select publication_type_id 
-               		                          from publication_type
-               		                         where
+                and pub.publication_type_id in (select publication_type_id 
+               		                              from publication_type
+               		                             where
                		<foreach item="r" collection="typeName" open="" separator="or" close=""> 
                 	 upper(name) like '%' || upper(#{r}) || '%'
                 	 </foreach>
@@ -383,9 +383,9 @@
             </if>
             
             <if test="subtypeName != null and subtypeName.length > 0">
-                and publication_subtype_id in (select publication_subtype_id 
-               		                             from publication_subtype
-               		                            where
+                and pub.publication_subtype_id in (select publication_subtype_id 
+               		                                 from publication_subtype
+               		                                where
                		<foreach item="r" collection="subtypeName" open="" separator="or" close=""> 
                 	 upper(name) like '%' || upper(#{r}) || '%'
                 	 </foreach>
@@ -393,9 +393,9 @@
             </if>
             
             <if test="reportSeries != null and reportSeries.length > 0">
-                and publication_series_id in (select publication_series_id 
-               		                            from publication_series
-               		                           where
+                and pub.publication_series_id in (select publication_series_id 
+               		                                from publication_series
+               		                               where
                		<foreach item="r" collection="reportSeries" open="" separator="or" close=""> 
                 	 upper(name) like '%' || upper(#{r}) || '%'
                 	 </foreach>
@@ -405,7 +405,7 @@
             <if test="reportNumber != null and reportNumber.length > 0">
             	and (
                 <foreach item="r" collection="reportNumber" open="" separator="or" close=""> 
-                	upper(series_number) like '%' || upper(#{r}) || '%'
+                	upper(pub.series_number) like '%' || upper(#{r}) || '%'
                	</foreach>
                 )
             </if>
@@ -414,11 +414,11 @@
     <sql id="allSelect">
         select *
           from (select <include refid="cols"/>, 'mp_publication' tname
-                  from mp_publication
+                  from mp_publication pub
                  <include refid="mpPublication.filters"/>
                 union all
                 select <include refid="cols"/>, 'publication' tname
-                  from publication
+                  from publication pub
                  where publication_id in (select publication_id from publication
                                           minus
                                           select publication_id from mp_publication)
@@ -450,11 +450,11 @@
     <select id="getCount" parameterType="map" resultType="Integer">
         select count(*)
           from (select publication_id
-                  from mp_publication
+                  from mp_publication pub
                  <include refid="mpPublication.filters"/>
                 union all
                 select publication_id
-                  from publication
+                  from publication pub
                  where publication_id in (select publication_id from publication
                                           minus
                                           select publication_id from mp_publication)

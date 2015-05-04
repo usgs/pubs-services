@@ -1,7 +1,8 @@
 package gov.usgs.cida.pubs.busservice;
 
 import static org.junit.Assert.assertNotNull;
-import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
+import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.dao.ContributorDaoTest;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.Contributor;
@@ -12,10 +13,22 @@ import javax.validation.Validator;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class PersonContributorBusServiceTest extends BaseSpringDaoTest {
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseSetups;
+
+@Category(IntegrationTest.class)
+@DatabaseSetups({
+	@DatabaseSetup("classpath:/testData/clearAll.xml"),
+	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+	@DatabaseSetup("classpath:/testData/dataset.xml")
+})
+public class PersonContributorBusServiceTest extends BaseSpringTest {
 
     @Autowired
     public Validator validator;
@@ -24,7 +37,6 @@ public class PersonContributorBusServiceTest extends BaseSpringDaoTest {
 
     @Before
     public void initTest() throws Exception {
-        super.setUp();
         MockitoAnnotations.initMocks(this);
         busService = new PersonContributorBusService(validator);
     }

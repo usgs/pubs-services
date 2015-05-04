@@ -101,7 +101,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     	addToFiltersIfNotNull(filters, "pageSize", pageSize);
     	addToFiltersIfNotNull(filters, "listId", listId);
     	
-    	filters.put("orderby", buildOrderBy(null));
+    	filters.put("orderBy", buildOrderBy(null));
 
         List<Publication<?>> pubs = pubBusService.getObjects(filters);
         Integer totalPubsCount = pubBusService.getObjectCount(filters);

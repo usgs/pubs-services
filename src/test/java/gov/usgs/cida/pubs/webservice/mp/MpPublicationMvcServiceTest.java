@@ -92,9 +92,9 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
         when(pubBusService.getObjects(anyMap())).thenReturn(buildAPubList());
         when(pubBusService.getObjectCount(anyMap())).thenReturn(Integer.valueOf(12));
     	
-        MvcResult rtn = mockMvc.perform(get("/mppublications?mimetype=json").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        MvcResult rtn = mockMvc.perform(get("/mppublications?mimetype=json").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
@@ -108,9 +108,9 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
         when(busService.getByIndexId(anyString())).thenReturn(buildAPub(1));
     	
         MvcResult rtn = mockMvc.perform(get("/mppublications/" + MpPublicationDaoTest.MPPUB1_INDEXID
-        		+ "/preview").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        		+ "/preview").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
@@ -122,9 +122,9 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
     public void getMpPublicationTest() throws Exception {
     	//Happy Path
         when(busService.getObject(1)).thenReturn(buildAPub(1));
-        MvcResult rtn = mockMvc.perform(get("/mppublications/1?mimetype=json").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        MvcResult rtn = mockMvc.perform(get("/mppublications/1?mimetype=json").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
@@ -132,16 +132,16 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
                 sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
         
         //Not available (locked by somebody)
-        rtn = mockMvc.perform(get("/mppublications/2?mimetype=json").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        rtn = mockMvc.perform(get("/mppublications/2?mimetype=json").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isConflict())
-                .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
                 .andReturn();
         assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
                 sameJSONObjectAs(new JSONObject(LOCK_MSG2)));
         
         //Pub not found
-        rtn = mockMvc.perform(get("/mppublications/3?mimetype=json").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        rtn = mockMvc.perform(get("/mppublications/3?mimetype=json").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
                 .andReturn();
@@ -150,18 +150,18 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 
     //@Test
     public void getPubsTest_singleSearchTerm() throws Exception {
-        MvcResult rtn = mockMvc.perform(get("/mppublication/1?q=1").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        MvcResult rtn = mockMvc.perform(get("/mppublication/1?q=1").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
         assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
                 sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
 
-        MvcResult rtn2 = mockMvc.perform(get("/mppublication/1?q=NoPublicationIsGoingToHaveThisSearchTermZZzzzzZZZZZwhatNO").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        MvcResult rtn2 = mockMvc.perform(get("/mppublication/1?q=NoPublicationIsGoingToHaveThisSearchTermZZzzzzZZZZZwhatNO").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
                 .andReturn();
 
@@ -180,9 +180,9 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
         		+ "\"given\": \"Molina\",\"email\": \"wlmolina@usgs.gov\",\"affiliation\": {\"id\": 84,\"text\": \"Caribbean Water Science Center\""
     			+ "},\"id\": 110,\"rank\": 1}]"
         		+ "}").contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
@@ -198,9 +198,9 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
     public void updateMpPublicationTest() throws Exception {
         MvcResult rtn = mockMvc.perform(put("/mppublication/2").content("{\"id\":2,\"publicationType\":{\"id\":"
                 + PublicationType.REPORT + ",\"text\":\"abc\"},\"indexId\":\"abc\"}").contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
@@ -212,18 +212,18 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
     public void deletePubTest() throws Exception {
     	//Happy Path/Pub not found
         when(busService.deleteObject(1)).thenReturn(new ValidationResults());
-        MvcResult rtn = mockMvc.perform(delete("/mppublications/1").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        MvcResult rtn = mockMvc.perform(delete("/mppublications/1").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
         assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
                 sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
         
         //Not available (locked by somebody)
-        rtn = mockMvc.perform(delete("/mppublications/2").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        rtn = mockMvc.perform(delete("/mppublications/2").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isConflict())
-                .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
                 .andReturn();
         assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
@@ -235,9 +235,9 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
     	//Happy Path
         when(busService.publish(1)).thenReturn(new ValidationResults());
         MvcResult rtn = mockMvc.perform(post("/mppublications/publish").content("{\"id\":1}}").contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
         assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
@@ -245,9 +245,9 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
         
         //Not available (locked by somebody)
         rtn = mockMvc.perform(post("/mppublications/publish").content("{\"id\":2}}").contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isConflict())
-                .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
                 .andReturn();
         assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
@@ -258,7 +258,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
         vr.addValidatorResult(new ValidatorResult("Publication", "Publication does not exist.", SeverityLevel.FATAL, "3"));
         when(busService.publish(3)).thenReturn(vr);
         rtn = mockMvc.perform(post("/mppublications/publish").content("{\"id\":3}}").contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
                 .andReturn();
@@ -271,9 +271,9 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
     public void releasePubTest() throws Exception {
     	//Happy Path/Pub not found
         MvcResult rtn = mockMvc.perform(post("/mppublications/release").content("{\"id\":1}}").contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+                .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
         assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
@@ -282,9 +282,9 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
         
         //Not available (locked by somebody)
         rtn = mockMvc.perform(post("/mppublications/release").content("{\"id\":2}}").contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isConflict())
-                .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
                 .andReturn();
         assertThat(new JSONObject(rtn.getResponse().getContentAsString()),

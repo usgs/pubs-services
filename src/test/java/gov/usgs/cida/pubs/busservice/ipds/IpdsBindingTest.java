@@ -6,10 +6,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
+import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.PubMap;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.dao.AffiliationDaoTest;
-import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.dao.ContributorDaoTest;
 import gov.usgs.cida.pubs.dao.ipds.IpdsMessageLogDaoTest;
 import gov.usgs.cida.pubs.domain.Affiliation;
@@ -42,6 +43,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +52,19 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-public class IpdsBindingTest extends BaseSpringDaoTest {
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseSetups;
+
+@Category(IntegrationTest.class)
+@DatabaseSetups({
+	@DatabaseSetup("classpath:/testData/clearAll.xml"),
+	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+	@DatabaseSetup("classpath:/testData/ipdsPubsTypeConv.xml"),
+	@DatabaseSetup("classpath:/testData/dataset.xml")
+})
+public class IpdsBindingTest extends BaseSpringTest {
 
     @Autowired
     public String contributorsXml;
@@ -81,7 +95,6 @@ public class IpdsBindingTest extends BaseSpringDaoTest {
 
     @Before
     public void setUp() throws Exception {
-        super.setUp();
         MockitoAnnotations.initMocks(this);
         binding = new IpdsBinding(ipdsWsRequester, contributorBusService);
     }

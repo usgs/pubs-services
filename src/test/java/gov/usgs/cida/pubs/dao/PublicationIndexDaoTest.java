@@ -1,12 +1,26 @@
 package gov.usgs.cida.pubs.dao;
 
 import static org.junit.Assert.assertEquals;
+import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.domain.PublicationIndex;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-public class PublicationIndexDaoTest extends BaseSpringDaoTest {
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseSetups;
+
+@Category(IntegrationTest.class)
+@DatabaseSetups({
+	@DatabaseSetup("classpath:/testData/clearAll.xml"),
+	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+	@DatabaseSetup("classpath:/testData/dataset.xml")
+})
+public class PublicationIndexDaoTest extends BaseSpringTest {
 	
     @Test
     public void getByIdTest() {

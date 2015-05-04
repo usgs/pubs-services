@@ -52,9 +52,9 @@ public class MpListPublicationMvcServiceTest extends BaseSpringTest {
     	String[] ids = new String[]{"12"};
         when(busService.addPubToList(66, ids)).thenReturn(buildIt());
         MvcResult rtn = mockMvc.perform(post("/lists/66/pubs?publicationId=12")
-        .accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
@@ -66,9 +66,9 @@ public class MpListPublicationMvcServiceTest extends BaseSpringTest {
     public void removePubFromListTest() throws Exception {
         when(busService.removePubFromList(anyInt(), anyInt())).thenReturn(new ValidationResults());
         MvcResult rtn = mockMvc.perform(delete("/lists/66/pubs/12")
-        .accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
         

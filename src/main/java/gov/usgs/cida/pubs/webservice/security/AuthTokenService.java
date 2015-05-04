@@ -1,7 +1,6 @@
 package gov.usgs.cida.pubs.webservice.security;
 
 import gov.usgs.cida.auth.model.AuthToken;
-import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 
@@ -11,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +37,7 @@ public class AuthTokenService {
 		this.busService = busService;
 	}
 
-	@RequestMapping(value={"/auth/token"}, method=RequestMethod.POST, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
+	@RequestMapping(value={"/auth/token"}, method=RequestMethod.POST, produces=MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(value=HttpStatus.OK)
 	public @ResponseBody ObjectNode getToken(
 			@RequestParam(value="username", required=false) String username, 
@@ -51,7 +51,7 @@ public class AuthTokenService {
 		return node;
 	}
 
-	@RequestMapping(value={"/auth/logout"}, method=RequestMethod.POST, produces=PubsConstants.MIME_TYPE_APPLICATION_JSON)
+	@RequestMapping(value={"/auth/logout"}, method=RequestMethod.POST, produces=MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(value=HttpStatus.OK)
 	public @ResponseBody ObjectNode logout(HttpServletRequest request) {
 		busService.releaseLocksUser(PubsUtilities.getUsername());
@@ -71,4 +71,5 @@ public class AuthTokenService {
 		node.put("reason", ex.getMessage());
 		return node;
 	}
+
 }

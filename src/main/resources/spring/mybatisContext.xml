@@ -5,7 +5,7 @@
 
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="configLocation" value="classpath:/mybatis/dataMapperConfig.xml"/>
-        <property name="dataSource" ref="mypubsDataSource"/>
+        <property name="dataSource" ref="dataSource"/>
     </bean>
 
     <bean id="mpListDao" class="gov.usgs.cida.pubs.dao.mp.MpListDao" autowire="byName"/>

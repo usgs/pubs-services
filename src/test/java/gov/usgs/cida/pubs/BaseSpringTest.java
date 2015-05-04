@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.domain.BaseDomain;
+import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 import gov.usgs.cida.pubs.webservice.security.PubsAuthentication;
 import gov.usgs.cida.pubs.webservice.security.PubsRoles;
 
@@ -11,6 +12,7 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,17 +23,16 @@ import java.util.Random;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
-import org.junit.runner.RunWith;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.util.FileCopyUtils;
 
-import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 
 /**
  * This is the base test classes that need Spring wiring.
@@ -40,12 +41,11 @@ import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
  * @author drsteini
  *
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/spring/testContext.xml" })
-@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
-@Transactional
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class, TransactionDbUnitTestExecutionListener.class })
-public abstract class BaseSpringTest {
+@WebAppConfiguration
+@ContextConfiguration(classes = TestSpringConfig.class)
+@TestExecutionListeners(DbUnitTestExecutionListener.class)
+@DbUnitConfiguration(dataSetLoader = ColumnSensingFlatXMLDataSetLoader.class)
+public abstract class BaseSpringTest extends AbstractTransactionalJUnit4SpringContextTests {
 
     /** random for the class. */
     protected static final Random RANDOM = new Random();
@@ -149,5 +149,9 @@ public abstract class BaseSpringTest {
     	//remove carriage returns, new lines, tabs, spaces between elements, spaces at the start of the string.
         return xmlDoc.replace("\r", "").replace("\n", "").replace("\t", "").replaceAll("> *<", "><").replaceAll("^ *", "");
     }
+
+	public String getCompareFile(String file) throws IOException {
+		return new String(FileCopyUtils.copyToByteArray(new ClassPathResource("testResult/" + file).getInputStream()));
+	}
 
 }

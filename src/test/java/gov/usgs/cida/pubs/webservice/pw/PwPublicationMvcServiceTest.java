@@ -22,12 +22,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 public class PwPublicationMvcServiceTest extends BaseSpringTest {
+
+	@Autowired
+    public String warehouseEndpoint;
 
 	@Mock
     private IPwPublicationBusService busService;
@@ -48,7 +52,7 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
     @Before
     public void setup() {
     	MockitoAnnotations.initMocks(this);
-    	mvcService = new PwPublicationMvcService(busService);
+    	mvcService = new PwPublicationMvcService(busService, warehouseEndpoint);
     	mockMvc = MockMvcBuilders.standaloneSetup(mvcService).build();
     	
     	expectedGetPwPub1 = expectedGetMpPub1.replace("\"validationErrors\": [],", "");
@@ -68,9 +72,9 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
         when(busService.getObjects(anyMap())).thenReturn(Arrays.asList(PwPublicationDaoTest.buildAPub(1)));
         when(busService.getObjectCount(anyMap())).thenReturn(Integer.valueOf(12));
     	
-        MvcResult rtn = mockMvc.perform(get("/publication?mimetype=json").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        MvcResult rtn = mockMvc.perform(get("/publication?mimetype=json").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
@@ -78,9 +82,9 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
                 sameJSONObjectAs(new JSONObject(expectedGetPubsDefault)));
         
         //With page number
-        rtn = mockMvc.perform(get("/publication?mimetype=json&page_number=6").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        rtn = mockMvc.perform(get("/publication?mimetype=json&page_number=6").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
@@ -92,9 +96,9 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
     public void getByIndexIdTest() throws Exception {
     	//Happy Path
         when(busService.getByIndexId("1")).thenReturn(PwPublicationDaoTest.buildAPub(1));
-        MvcResult rtn = mockMvc.perform(get("/publication/1?mimetype=json").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        MvcResult rtn = mockMvc.perform(get("/publication/1?mimetype=json").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
@@ -102,11 +106,11 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
                 sameJSONObjectAs(new JSONObject(expectedGetPwPub1)));
         
         //Pub not found
-        rtn = mockMvc.perform(get("/publication/3?mimetype=json").accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        rtn = mockMvc.perform(get("/publication/3?mimetype=json").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
                 .andReturn();
         assertEquals(0, rtn.getResponse().getContentAsString().length());
     }
-    
+
 }

@@ -3,9 +3,9 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-         <property name="brokerURL" ref="brokerURL"/> 
-    </bean>
+<!--     <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"> -->
+<!--          <property name="brokerURL" ref="brokerURL"/>  -->
+<!--     </bean> -->
 
     <bean id="ipdsMessageListener" class="gov.usgs.cida.pubs.jms.IpdsMessageListener" autowire="byName"/>
     <bean id="mlc" class="org.springframework.jms.listener.DefaultMessageListenerContainer" autowire="byName">

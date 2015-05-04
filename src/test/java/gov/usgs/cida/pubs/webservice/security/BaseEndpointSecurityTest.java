@@ -97,7 +97,7 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
     	mpPubMvc = new MpPublicationMvcService(pubBusService, mpPubBusService);
     	mockMpPub = MockMvcBuilders.standaloneSetup(mpPubMvc).addFilters(springSecurityFilter).build();
 
-    	pwPubMvc = new PwPublicationMvcService(pwPubBusService);
+    	pwPubMvc = new PwPublicationMvcService(pwPubBusService, warehouseEndpoint);
     	mockPwPub = MockMvcBuilders.standaloneSetup(pwPubMvc).addFilters(springSecurityFilter).build();
     	pwPubRssMvc = new PwPublicationRssMvcService(pwPubBusService, warehouseEndpoint);
     	mockPwPubRss = MockMvcBuilders.standaloneSetup(pwPubRssMvc).addFilters(springSecurityFilter).build();
@@ -118,194 +118,194 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 
 	public void publicTest(HttpHeaders httpHeaders, ResultMatcher expectedStatus) throws Exception {
     	//Lookups
-		mockLookup.perform(get("/lookup/publicationtypes?text=b").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+		mockLookup.perform(get("/lookup/publicationtypes?text=b").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
         	.andExpect(expectedStatus);
         
-		mockLookup.perform(get("/lookup/publicationtype/4/publicationsubtypes?text=b").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+		mockLookup.perform(get("/lookup/publicationtype/4/publicationsubtypes?text=b").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
         	.andExpect(expectedStatus);
         
-		mockLookup.perform(get("/lookup/publicationsubtypes?text=b&publicationtypeid=4").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+		mockLookup.perform(get("/lookup/publicationsubtypes?text=b&publicationtypeid=4").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
         	.andExpect(expectedStatus);
         
 		mockLookup.perform(get("/lookup/publicationtype/"
-            + PublicationType.REPORT + "/publicationsubtype/1/publicationseries?text=a").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+            + PublicationType.REPORT + "/publicationsubtype/1/publicationseries?text=a").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
             .andExpect(expectedStatus);
         
-		mockLookup.perform(get("/lookup/publicationseries?text=a&publicationsubtypeid=1").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+		mockLookup.perform(get("/lookup/publicationseries?text=a&publicationsubtypeid=1").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
         	.andExpect(expectedStatus);
         
-		mockLookup.perform(get("/lookup/costcenters?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+		mockLookup.perform(get("/lookup/costcenters?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
         	.andExpect(expectedStatus);
         
-		mockLookup.perform(get("/lookup/outsideaffiliates?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+		mockLookup.perform(get("/lookup/outsideaffiliates?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
         	.andExpect(expectedStatus);
         
-		mockLookup.perform(get("/lookup/contributortypes?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+		mockLookup.perform(get("/lookup/contributortypes?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
         	.andExpect(expectedStatus);
         
-		mockLookup.perform(get("/lookup/linktypes?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+		mockLookup.perform(get("/lookup/linktypes?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
             .andExpect(expectedStatus);
         
-		mockLookup.perform(get("/lookup/linkfiletypes?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+		mockLookup.perform(get("/lookup/linkfiletypes?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
             .andExpect(expectedStatus);
         
-		mockLookup.perform(get("/lookup/people?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+		mockLookup.perform(get("/lookup/people?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
             .andExpect(expectedStatus);
         
-		mockLookup.perform(get("/lookup/corporations?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+		mockLookup.perform(get("/lookup/corporations?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
             .andExpect(expectedStatus);
 		
-		mockLookup.perform(get("/lookup/publishingServiceCenters?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+		mockLookup.perform(get("/lookup/publishingServiceCenters?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
             .andExpect(expectedStatus);
         
         //Version
-        mockVersion.perform(get("/version?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        mockVersion.perform(get("/version?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
         	.andExpect(expectedStatus);
         
         //Auth
-        mockAuth.perform(options("/auth/token").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        mockAuth.perform(options("/auth/token").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
     		.andExpect(expectedStatus);
 
-        mockAuth.perform(post("/auth/token").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        mockAuth.perform(post("/auth/token").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
     		.andExpect(status().isOk());
 
         //Publication
-        mockPwPub.perform(get("/publication?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        mockPwPub.perform(get("/publication?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
         	.andExpect(expectedStatus);
         
-        mockPwPub.perform(get("/publication/1?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        mockPwPub.perform(get("/publication/1?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
         	.andExpect(expectedStatus);
         
-        mockPwPubRss.perform(get("/publication/rss?orderby=dispPubDate").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType("text/xml")))
+        mockPwPubRss.perform(get("/publication/rss?orderby=dispPubDate").secure(true).headers(httpHeaders).accept(PubsConstants.MEDIA_TYPE_RSS))
         	.andExpect(expectedStatus);
     }
     
     public void authenticatedTest(HttpHeaders httpHeaders, ResultMatcher expectedStatus) throws Exception {
     	
     	//Auth
-    	mockAuth.perform(post("/auth/logout").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+    	mockAuth.perform(post("/auth/logout").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
     		.andExpect(expectedStatus);
 
     }
 
     public void pubsAuthorizedTestGetsDeletes(HttpHeaders httpHeaders, ResultMatcher expectedStatus, boolean fudge) throws Exception {
     	//Contributor
-    	mockContrib.perform(get("/corporation/-1").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+    	mockContrib.perform(get("/corporation/-1").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
     		.andExpect(expectedStatus);
     	
     	//These two endpoints are hard to mock, so we'll fudge it for now...
     	if (fudge) {
-        	mockContrib.perform(get("/contributor/-1").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        	mockContrib.perform(get("/contributor/-1").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
     			.andExpect(status().isNotFound());
 	
-        	mockContrib.perform(get("/person/-1").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        	mockContrib.perform(get("/person/-1").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
     			.andExpect(status().isNotFound());
     	} else {
-        	mockContrib.perform(get("/contributor/-1").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        	mockContrib.perform(get("/contributor/-1").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
     			.andExpect(expectedStatus);
 	
-        	mockContrib.perform(get("/person/-1").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        	mockContrib.perform(get("/person/-1").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
     			.andExpect(expectedStatus);
     	}
 
     	//MpList
-    	mockList.perform(get("/lists?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+    	mockList.perform(get("/lists?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
         	.andExpect(expectedStatus);
     	
     	//MpListPublication
     	mockListPub.perform(delete("/lists/66/pubs/12")
-    		.secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+    		.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
     		.andExpect(expectedStatus);
     	
     	//MpPublication
-    	mockMpPub.perform(delete("/mppublications/1").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+    	mockMpPub.perform(delete("/mppublications/1").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
         	.andExpect(expectedStatus);
         
-    	mockMpPub.perform(get("/mppublications/1?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+    	mockMpPub.perform(get("/mppublications/1?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
         	.andExpect(expectedStatus);
     	
-    	mockMpPub.perform(get("/mppublications?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+    	mockMpPub.perform(get("/mppublications?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
     		.andExpect(expectedStatus);
         
     	//These two are posts, but they return the same codes as a get when successful...
     	mockMpPub.perform(post("/mppublications/publish").content("{}").contentType(MediaType.APPLICATION_JSON)
-    		.secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+    		.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
     	    .andExpect(expectedStatus);
     	        
     	mockMpPub.perform(post("/mppublications/release").content("{}").contentType(MediaType.APPLICATION_JSON)
-    		.secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+    		.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
     		.andExpect(expectedStatus);
     }
     
     public void pubsAuthorizedTestPosts(HttpHeaders httpHeaders, ResultMatcher expectedStatus, boolean fudge) throws Exception {
     	//Contributor
     	mockContrib.perform(post("/corporation").content("{}").contentType(MediaType.APPLICATION_JSON)
-    		.secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+    		.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
     		.andExpect(expectedStatus);
     	
     	//These two endpoints are hard to mock, so we'll fudge it for now...
     	if (fudge) {
 	    	mockContrib.perform(post("/outsidecontributor").content("{}").contentType(MediaType.APPLICATION_JSON)
-	    		.secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+	    		.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 	    		.andExpect(status().isBadRequest());
 	    			
 	    	mockContrib.perform(post("/usgscontributor").content("{}").contentType(MediaType.APPLICATION_JSON)
-	    		.secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+	    		.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 	    		.andExpect(status().isBadRequest());
     	} else {
         	mockContrib.perform(post("/outsidecontributor").content("{}").contentType(MediaType.APPLICATION_JSON)
-        		.secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        		.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
             	.andExpect(expectedStatus);
             			
             mockContrib.perform(post("/usgscontributor").content("{}").contentType(MediaType.APPLICATION_JSON)
-            	.secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+            	.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
             	.andExpect(expectedStatus);
     	}
 
     	//MpListPublication
     	mockListPub.perform(post("/lists/66/pubs?publicationId=12")
-    	    .secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+    	    .secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
     	    .andExpect(expectedStatus);
     	
     	//MpPublication
     	mockMpPub.perform(post("/mppublications").content("{}").contentType(MediaType.APPLICATION_JSON)
-        	.secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        	.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
         	.andExpect(expectedStatus);
     }
     
     public void pubsAuthorizedTestPuts(HttpHeaders httpHeaders, ResultMatcher expectedStatus, boolean fudge) throws Exception {
     	//Contributor
     	mockContrib.perform(put("/corporation/1").content("{}").contentType(MediaType.APPLICATION_JSON)
-    		.secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+    		.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
     		.andExpect(expectedStatus);
 
     	//These two endpoints are hard to mock, so we'll fudge it for now...
     	if (fudge) {
 	    	mockContrib.perform(put("/outsidecontributor/1").content("{}").contentType(MediaType.APPLICATION_JSON)
-	    		.secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+	    		.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 	    		.andExpect(status().isBadRequest());
 	
 	    	mockContrib.perform(put("/usgscontributor/1").content("{}").contentType(MediaType.APPLICATION_JSON)
-	    		.secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+	    		.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 	    		.andExpect(status().isBadRequest());
     	} else {
 	    	mockContrib.perform(put("/outsidecontributor/1").content("{}").contentType(MediaType.APPLICATION_JSON)
-	    		.secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+	    		.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 	    		.andExpect(expectedStatus);
 		
 	    	mockContrib.perform(put("/usgscontributor/1").content("{}").contentType(MediaType.APPLICATION_JSON)
-	    		.secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+	    		.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 	    		.andExpect(expectedStatus);
     	}
 
     	//MpPublication
     	mockMpPub.perform(put("/mppublications/2").content("{}").contentType(MediaType.APPLICATION_JSON)
-            .secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+            .secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
             .andExpect(expectedStatus);
     }
     
     public void adAuthenticatedOrPubsAuthorizedTest(HttpHeaders httpHeaders, ResultMatcher expectedStatus) throws Exception {
-    	mockMpPub.perform(get("/mppublications/1/preview").secure(true).headers(httpHeaders).accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+    	mockMpPub.perform(get("/mppublications/1/preview").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
            	.andExpect(expectedStatus);
     }
 

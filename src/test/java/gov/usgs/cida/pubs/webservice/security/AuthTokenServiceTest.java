@@ -78,9 +78,9 @@ public class AuthTokenServiceTest {
 		when(mockAuthService.invalidateToken("a-token-string")).thenReturn(true);
 
         MvcResult rtn = mockMvc.perform(post("/auth/logout").header(TokenSecurityFilter.AUTHORIZATION_HEADER, "Bearer a-token-string")
-        		.accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        		.accept(MediaType.APPLICATION_JSON))
         	.andExpect(status().isOk())
-        	.andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        	.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         	.andReturn();
         assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
                 sameJSONObjectAs(new JSONObject("{\"status\":\"success\"}")));
@@ -98,9 +98,9 @@ public class AuthTokenServiceTest {
 		when(mockAuthService.authenticate("user", "pwd")).thenReturn(testToken);
 
         MvcResult rtn = mockMvc.perform(post("/auth/token").param("username", "user").param("password", "pwd")
-        		.accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        		.accept(MediaType.APPLICATION_JSON))
         	.andExpect(status().isOk())
-        	.andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        	.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         	.andReturn();
         assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
         		sameJSONObjectAs(new JSONObject("{\"token\":\"a-token-string\",\"expires\":\"" + ts.toString() + "\"}")));
@@ -113,9 +113,9 @@ public class AuthTokenServiceTest {
 		when(mockAuthService.authenticate("user", "pwd")).thenThrow(new UnauthorizedException("Invalid username/password"));
 
         MvcResult rtn = mockMvc.perform(post("/auth/token").param("username", "user").param("password", "pwd")
-        		.accept(MediaType.parseMediaType(PubsConstants.MIME_TYPE_APPLICATION_JSON)))
+        		.accept(MediaType.APPLICATION_JSON))
         	.andExpect(status().isUnauthorized())
-        	.andExpect(content().contentType(PubsConstants.MIME_TYPE_APPLICATION_JSON))
+        	.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         	.andReturn();
         assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
         		sameJSONObjectAs(new JSONObject("{\"reason\":\"Invalid username/password\"}")));

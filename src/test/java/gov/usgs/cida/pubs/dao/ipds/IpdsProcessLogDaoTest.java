@@ -3,16 +3,13 @@ package gov.usgs.cida.pubs.dao.ipds;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
+import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.ipds.IpdsProcessLog;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
-//TODO Why am I not rolling back tests?
-@Ignore
-public class IpdsProcessLogDaoTest extends BaseSpringDaoTest {
+public class IpdsProcessLogDaoTest extends BaseSpringTest {
 
     @Test
     public void testDaoNotNull() throws Exception {

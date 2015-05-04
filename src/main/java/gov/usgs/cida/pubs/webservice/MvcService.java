@@ -25,15 +25,9 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 
-/**
- * @author drsteini
- *
- */
-@RequestMapping(produces={PubsConstants.MIME_TYPE_APPLICATION_JSON, PubsConstants.MIME_TYPE_TEXT_PLAIN, PubsConstants.MIME_TYPE_APPLICATION_RSS})
 public abstract class MvcService<D> {
 
     private static final Logger LOG = LoggerFactory.getLogger(MvcService.class);

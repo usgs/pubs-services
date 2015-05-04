@@ -12,6 +12,7 @@ import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
 import gov.usgs.cida.pubs.domain.ipds.PublicationMap;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
+import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import java.util.ArrayList;
@@ -73,20 +74,23 @@ public class IpdsProcess implements IIpdsProcess {
     protected String processPublication(final ProcessType inProcessType, final PubMap inPub) {
         MpPublication pub = binder.bindPublication(inPub);
 
-        //Check for existing data in MyPubs land - use the first hit if any found.
+        //Check for existing data in MyPubs and warehouse lands - use the first hit of each if any found.
+        //IPDS_ID is a alternate key, so there should only be 0 or 1 in each table.
         Map<String, Object> filters = new HashMap<String, Object>();
         filters.put("IPDS_ID", pub.getIpdsId());
-        List<MpPublication> existingPubs = MpPublication.getDao().getByMap(filters);
-        MpPublication existingPub = null == existingPubs ? null : existingPubs.isEmpty() ? null : existingPubs.get(0);
+        List<MpPublication> existingMpPubs = MpPublication.getDao().getByMap(filters);
+        MpPublication existingMpPub = null == existingMpPubs ? null : existingMpPubs.isEmpty() ? null : existingMpPubs.get(0);
+        List<PwPublication> existingPwPubs = PwPublication.getDao().getByMap(filters);
+        PwPublication existingPwPub = null == existingPwPubs ? null : existingPwPubs.isEmpty() ? null : existingPwPubs.get(0);
 
         StringBuilder rtn = new StringBuilder("");
 
-        if (okToProcess(inProcessType, pub, existingPub)) {
+        if (okToProcess(inProcessType, pub, existingMpPub, existingPwPub)) {
             pub.setIpdsReviewProcessState(inProcessType.getIpdsValue());
             //We only keep the prodID from the original MP record. The delete is to make sure we kill all child objects.
-            if (null != existingPub) {
-                pub.setId(existingPub.getId());
-                pubBusService.deleteObject(existingPub.getId());
+            if (null != existingMpPub) {
+                pub.setId(existingMpPub.getId());
+                pubBusService.deleteObject(existingMpPub.getId());
             }
 
             // get contributors from web service
@@ -172,11 +176,11 @@ public class IpdsProcess implements IIpdsProcess {
     }
 
 	protected boolean okToProcess(final ProcessType inProcessType, final MpPublication pub,
-			final MpPublication existingPub) {
+			final MpPublication existingMpPub, final PwPublication existingPwPub) {
 		if (null != inProcessType && null != pub && null != pub.getPublicationType()) {
 			switch (inProcessType) {
 			case DISSEMINATION:
-				return okToProcessDissemination(pub, existingPub);
+				return okToProcessDissemination(pub, existingMpPub, existingPwPub);
 			case SPN_PRODUCTION:
 				return okToProcessSpnProduction(pub);
 			default:
@@ -186,20 +190,21 @@ public class IpdsProcess implements IIpdsProcess {
 		return false;
 	}
 
-	protected boolean okToProcessDissemination(final MpPublication pub, final MpPublication existingPub) {
-		if (null != pub) {
-			if (PubsUtilities.isUsgsNumberedSeries(pub.getPublicationSubtype())
+	protected boolean okToProcessDissemination(final MpPublication pub, final MpPublication existingMpPub,
+			final PwPublication existingPwPub) {
+		boolean rtn = false;
+		if (null != existingPwPub || null == pub) {
+			//Do not proceed if the pub has been published or is null
+		} else	if (PubsUtilities.isUsgsNumberedSeries(pub.getPublicationSubtype())
 				&& null == pub.getSeriesTitle()) {
-				//Do not process USGS numbered series without an actual series.
-				return false;
-			} else if (null == existingPub || null == existingPub.getIpdsReviewProcessState()
-					|| ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(existingPub.getIpdsReviewProcessState())) {
-				//It is ok to process a publication already in our system if has no review state or
-				//was in the SPN Production state. (Or if it is not already in our system).
-				return true;
-			}
+			//Do not process USGS numbered series without an actual series.
+		} else if (null == existingMpPub || null == existingMpPub.getIpdsReviewProcessState()
+				|| ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(existingMpPub.getIpdsReviewProcessState())) {
+			//It is ok to process a publication already in MyPubs if has no review state or
+			//was in the SPN Production state. (Or if it is not already in MyPubs).
+			rtn = true;
 		}
-		return false;
+		return rtn;
 	}
 
 	protected boolean okToProcessSpnProduction(final MpPublication pub) {

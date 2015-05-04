@@ -5,7 +5,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
+import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.domain.mp.MpListPublication;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 
@@ -15,10 +16,22 @@ import javax.validation.Validator;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class MpListPublicationBusServiceTest extends BaseSpringDaoTest {
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseSetups;
+
+@Category(IntegrationTest.class)
+@DatabaseSetups({
+	@DatabaseSetup("classpath:/testData/clearAll.xml"),
+	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+	@DatabaseSetup("classpath:/testData/dataset.xml")
+})
+public class MpListPublicationBusServiceTest extends BaseSpringTest {
 
 	@Autowired
     public Validator validator;
@@ -27,7 +40,6 @@ public class MpListPublicationBusServiceTest extends BaseSpringDaoTest {
 
     @Before
     public void initTest() throws Exception {
-        super.setUp();
         MockitoAnnotations.initMocks(this);
         busService = new MpListPublicationBusService(validator);
     }

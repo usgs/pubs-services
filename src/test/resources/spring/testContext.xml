@@ -3,13 +3,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <import resource="testJndiContext.xml"/>
-    <import resource="applicationContext.xml"/>
-
     <bean id="expectedGetMpPub1" class="java.lang.String">
         <constructor-arg>
             <bean class="org.springframework.util.FileCopyUtils" factory-method="copyToByteArray">
-                <constructor-arg value="classpath:testData/getMpPub1.json" type="java.io.InputStream" />
+                <constructor-arg value="classpath:testResult/getMpPub1.json" type="java.io.InputStream" />
             </bean>
         </constructor-arg>
     </bean>
@@ -17,7 +14,7 @@
     <bean id="expectedGetRssPub" class="java.lang.String">
         <constructor-arg>
             <bean class="org.springframework.util.FileCopyUtils" factory-method="copyToByteArray">
-                <constructor-arg value="classpath:testData/getRssPub.xml" type="java.io.InputStream" />
+                <constructor-arg value="classpath:testResult/getRssPub.xml" type="java.io.InputStream" />
             </bean>
         </constructor-arg>
     </bean>
@@ -89,7 +86,7 @@
     <bean id="ofr20131259Xml" class="java.lang.String">
         <constructor-arg>
             <bean class="org.springframework.util.FileCopyUtils" factory-method="copyToByteArray">
-                <constructor-arg value="classpath:testData/ofr20131259.xml" type="java.io.InputStream" />
+                <constructor-arg value="classpath:testresult/ofr20131259.xml" type="java.io.InputStream" />
             </bean>
         </constructor-arg>
     </bean>
@@ -97,7 +94,7 @@
     <bean id="testUnNumberedSeriesXml" class="java.lang.String">
         <constructor-arg>
             <bean class="org.springframework.util.FileCopyUtils" factory-method="copyToByteArray">
-                <constructor-arg value="classpath:testData/testUnNumberedSeries.xml" type="java.io.InputStream" />
+                <constructor-arg value="classpath:testResult/testUnNumberedSeries.xml" type="java.io.InputStream" />
             </bean>
         </constructor-arg>
     </bean>

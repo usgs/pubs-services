@@ -38,7 +38,7 @@
                  	  	      from mp_pub_cost_center
                   		           join affiliation
                  	        	     on cost_center_id = affiliation_id
-                 	    	 where mp_publication.publication_id = mp_pub_cost_center.publication_id and
+                 	    	 where pub.publication_id = mp_pub_cost_center.publication_id and
              	        	       upper(name) <include refid="publication.likeTerm"/>
                            )
                
@@ -47,7 +47,7 @@
                    	         from mp_pub_contributor
                    	              join contributor
                    	                on mp_pub_contributor.contributor_id = contributor.contributor_id 
-               	            where mp_publication.publication_id = mp_pub_contributor.publication_id and
+               	            where pub.publication_id = mp_pub_contributor.publication_id and
                  	         	  (upper(family) <include refid="publication.likeTerm"/> or
                  	         	   upper(given) <include refid="publication.likeTerm"/> or
                  	         	   upper(literal) <include refid="publication.likeTerm"/>
@@ -76,7 +76,7 @@
                    	          from mp_pub_contributor
                    	               join contributor
                    	                 on mp_pub_contributor.contributor_id = contributor.contributor_id 
-               	             where mp_publication.publication_id = mp_pub_contributor.publication_id and
+               	             where pub.publication_id = mp_pub_contributor.publication_id and
                 				   contains(text, #{contributor}) > 0
 		                   )
             </if>
@@ -86,7 +86,7 @@
                    	          from mp_pub_cost_center
                    	               join affiliation
                    	                 on mp_pub_cost_center.cost_center_id = affiliation.affiliation_id 
-               	             where mp_publication.publication_id = mp_pub_cost_center.publication_id and
+               	             where pub.publication_id = mp_pub_cost_center.publication_id and
                 				   <foreach item="co" collection="contributingOffice" open="(" separator="or" close=")"> 
 		                			   upper(name) like '%' || upper(#{co}) || '%'
 		                		   </foreach>
@@ -109,7 +109,7 @@
 
     <sql id="baseSelect">
         select <include refid="cols"/>
-          from mp_publication
+          from mp_publication pub
     </sql>
 
     <select id="getById" parameterType="Integer" resultMap="result">
@@ -132,7 +132,7 @@
 
     <select id="getCount" parameterType="map" resultType="Integer">
         select count(*)
-          from mp_publication
+          from mp_publication pub
         <include refid="filters"/>
     </select>
 

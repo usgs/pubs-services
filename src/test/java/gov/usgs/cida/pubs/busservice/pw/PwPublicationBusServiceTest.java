@@ -3,7 +3,8 @@ package gov.usgs.cida.pubs.busservice.pw;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
+import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 
@@ -13,15 +14,26 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.MockitoAnnotations;
 
-public class PwPublicationBusServiceTest extends BaseSpringDaoTest {
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseSetups;
+
+@Category(IntegrationTest.class)
+@DatabaseSetups({
+	@DatabaseSetup("classpath:/testData/clearAll.xml"),
+	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+	@DatabaseSetup("classpath:/testData/dataset.xml")
+})
+public class PwPublicationBusServiceTest extends BaseSpringTest {
 
     private PwPublicationBusService busService;
 
     @Before
     public void initTest() throws Exception {
-        super.setUp();
         MockitoAnnotations.initMocks(this);
         busService = new PwPublicationBusService();
     }

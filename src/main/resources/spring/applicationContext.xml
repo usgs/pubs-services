@@ -2,60 +2,43 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:aop="http://www.springframework.org/schema/aop"
-       xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
-                           http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-                           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
                           ">
 
     <import resource="classpath:/spring/mybatisContext.xml"/>
 
     <aop:aspectj-autoproxy/>
 
-    <tx:annotation-driven/>
+<!--     <tx:annotation-driven/> -->
 
-    <mvc:annotation-driven conversion-service="conversionService" content-negotiation-manager="contentNegotiationManager">
-        <mvc:message-converters>
-            <bean class="gov.usgs.cida.pubs.json.ViewAwareJsonMessageConverter" />
-        </mvc:message-converters>
-        <mvc:path-matching suffix-pattern="false"/>
-    </mvc:annotation-driven>
+<!--     <mvc:annotation-driven conversion-service="conversionService" content-negotiation-manager="contentNegotiationManager"> -->
+<!--         <mvc:message-converters> -->
+<!--             <bean class="gov.usgs.cida.pubs.json.ViewAwareJsonMessageConverter" /> -->
+<!--         </mvc:message-converters> -->
+<!--         <mvc:path-matching suffix-pattern="false"/> -->
+<!--     </mvc:annotation-driven> -->
 
-    <mvc:default-servlet-handler/>
+<!--     <mvc:default-servlet-handler/> -->
 
-    <context:component-scan base-package="gov.usgs.cida.pubs.webservice"/>
+<!--     <context:component-scan base-package="gov.usgs.cida.pubs.webservice"/> -->
 
-    <context:annotation-config />
+<!--     <context:annotation-config /> -->
     
-	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
-	    <property name="converters">
-	        <list>
-	            <bean class="gov.usgs.cida.pubs.utility.CustomStringToArrayConverter" />
-	        </list>
-	    </property>
-	</bean>
+<!-- 	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean"> -->
+<!-- 	    <property name="converters"> -->
+<!-- 	        <list> -->
+<!-- 	            <bean class="gov.usgs.cida.pubs.utility.CustomStringToArrayConverter" /> -->
+<!-- 	        </list> -->
+<!-- 	    </property> -->
+<!-- 	</bean> -->
     
-    <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
-        <property name="favorPathExtension" value="false" />
-        <property name="favorParameter" value="true" />
-        <property name="parameterName" value="mimetype" />
-        <property name="defaultContentType" value="application/json" />
-        <property name="mediaTypes" >
-            <map>
-<!--                 <entry key="xml" value="application/xml" /> -->
-                <entry key="json" value="application/json" />
-<!--                 <entry key="csv" value="text/csv" /> -->
-            </map>
-        </property>
-    </bean>
     <bean class="gov.usgs.cida.pubs.json.JsonViewSupportFactoryBean" />
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="mypubsDataSource"/>
-    </bean>
+<!--     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> -->
+<!--         <property name="dataSource" ref="dataSource"/> -->
+<!--     </bean> -->
     <bean id="setDbContextAspect" class="gov.usgs.cida.pubs.aop.SetDbContextAspect" autowire="byName"/>
 
     <bean id="resourceBundleMessageInterpolator" class="org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator"/>
@@ -72,6 +55,6 @@
 
     <import resource="classpath:/spring/ipdsJmsContext.xml"/>
 
-    <import resource="classpath:/spring/securityContext.xml" />
+	<import resource="classpath:/spring/securityContext.xml" />
 
 </beans>

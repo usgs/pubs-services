@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.dao;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.domain.PublicationType;
 
@@ -11,11 +12,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-/**
- * @author drsteini
- *
- */
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseSetups;
+
+@Category(IntegrationTest.class)
+@DatabaseSetups({
+	@DatabaseSetup("classpath:/testData/clearAll.xml"),
+	@DatabaseSetup("classpath:/testData/publicationType.xml")
+})
 public class PublicationTypeDaoTest extends BaseSpringTest {
 
     public static final int pubTypeCnt = 11;

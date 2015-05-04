@@ -64,7 +64,7 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		assertFalse(validator.isValid(mpPub, context));
 
 		pubSubtype.setId("");
-		pubSeries.setId(1);
+		pubSeries.setId(501);
 		assertTrue(validator.isValid(mpPub, context));
 
 		pubSeries.setId(-1);

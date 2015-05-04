@@ -5,10 +5,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
-import gov.usgs.cida.pubs.dao.BaseSpringDaoTest;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationLinkDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
@@ -48,11 +49,23 @@ import javax.validation.Validator;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseSetups;
+
+@Category(IntegrationTest.class)
+@DatabaseSetups({
+	@DatabaseSetup("classpath:/testData/clearAll.xml"),
+	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+	@DatabaseSetup("classpath:/testData/dataset.xml")
+})
+public class MpPublicationBusServiceTest extends BaseSpringTest {
 
     public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "contributors", "contributorsToMap", "links",
             "doi", "indexId", "interactions");
@@ -81,7 +94,6 @@ public class MpPublicationBusServiceTest extends BaseSpringDaoTest {
 
     @Before
     public void initTest() throws Exception {
-        super.setUp();
         MockitoAnnotations.initMocks(this);
         busService = new MpPublicationBusService(validator, lockTimeoutHours, crossRefBusService, ccBusService, linkBusService, contributorBusService, warehouseEndpoint);
     }

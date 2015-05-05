@@ -11,9 +11,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.spring.ActiveMQConnectionFactory;
-import org.apache.activemq.usage.SystemUsage;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -194,17 +192,17 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
     	return amqFactory;
     }
 
-    @Bean
-    public BrokerService broker() throws NamingException, Exception {
-    	//This will prevent the never ending logs from the BrokerService saying there is not enough Temporary Store space...
-    	BrokerService broker = new BrokerService();
-	    broker.addConnector(brokerURL());
-	    broker.setPersistent(false);
-	    SystemUsage systemUsage = broker.getSystemUsage();
-	    systemUsage.getStoreUsage().setLimit(1024 * 1024 * 8);
-	    systemUsage.getTempUsage().setLimit(1024 * 1024 * 8);
-	    broker.start();
-	    return broker;
-    }
+//    @Bean
+//    public BrokerService broker() throws NamingException, Exception {
+//    	//This will prevent the never ending logs from the BrokerService saying there is not enough Temporary Store space...
+//    	BrokerService broker = new BrokerService();
+//	    broker.addConnector(brokerURL());
+//	    broker.setPersistent(false);
+//	    SystemUsage systemUsage = broker.getSystemUsage();
+//	    systemUsage.getStoreUsage().setLimit(1024 * 1024 * 8);
+//	    systemUsage.getTempUsage().setLimit(1024 * 1024 * 8);
+//	    broker.start();
+//	    return broker;
+//    }
 
 }

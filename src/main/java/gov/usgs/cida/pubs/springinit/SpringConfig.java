@@ -166,11 +166,6 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
 	}
 
 	@Bean
-	public String authService() throws NamingException {
-		return (String) ctx.lookup("java:comp/env/cida/authService");
-	}
-
-	@Bean
 	public Integer lockTimeoutHours() throws NamingException {
 		return (Integer) ctx.lookup("java:comp/env/pubs/lockTimeoutHours");
 	}

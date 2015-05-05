@@ -11,7 +11,9 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.spring.ActiveMQConnectionFactory;
+import org.apache.activemq.usage.SystemUsage;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +26,6 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
@@ -36,7 +37,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @ComponentScan(basePackages="gov.usgs.cida.pubs")
 @ImportResource("classpath:spring/applicationContext.xml")
 @EnableWebMvc
-@EnableWebSecurity
 @EnableTransactionManagement
 public class SpringConfig extends WebMvcConfigurerAdapter {
 	
@@ -61,7 +61,7 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
         	.favorPathExtension(false)
         	.favorParameter(true)
         	.parameterName(PubsConstants.CONTENT_PARAMETER_NAME)
-        	.defaultContentType(MediaType.APPLICATION_XML)
+        	.defaultContentType(MediaType.APPLICATION_JSON)
         	.mediaType(PubsConstants.MEDIA_TYPE_CSV_EXTENSION, PubsConstants.MEDIA_TYPE_CSV)
         	.mediaType(PubsConstants.MEDIA_TYPE_TSV_EXTENSION, PubsConstants.MEDIA_TYPE_TSV)
          	.mediaType(PubsConstants.MEDIA_TYPE_XML_EXTENSION, MediaType.APPLICATION_XML)
@@ -194,17 +194,17 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
     	return amqFactory;
     }
 
-//    @Bean
-//    public BrokerService broker() throws NamingException, Exception {
-//    	//This will prevent the never ending logs from the BrokerService saying there is not enough Temporary Store space...
-//    	BrokerService broker = new BrokerService();
-//	    broker.addConnector(brokerURL());
-//	    broker.setPersistent(false);
-//	    SystemUsage systemUsage = broker.getSystemUsage();
-//	    systemUsage.getStoreUsage().setLimit(1024 * 1024 * 8);
-//	    systemUsage.getTempUsage().setLimit(1024 * 1024 * 8);
-//	    broker.start();
-//	    return broker;
-//    }
+    @Bean
+    public BrokerService broker() throws NamingException, Exception {
+    	//This will prevent the never ending logs from the BrokerService saying there is not enough Temporary Store space...
+    	BrokerService broker = new BrokerService();
+	    broker.addConnector(brokerURL());
+	    broker.setPersistent(false);
+	    SystemUsage systemUsage = broker.getSystemUsage();
+	    systemUsage.getStoreUsage().setLimit(1024 * 1024 * 8);
+	    systemUsage.getTempUsage().setLimit(1024 * 1024 * 8);
+	    broker.start();
+	    return broker;
+    }
 
 }

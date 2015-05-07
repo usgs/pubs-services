@@ -57,6 +57,7 @@ public class PublicationColumns {
         mappings.put("SCALE", "Scale");
         mappings.put("ONLINE_ONLY", "Online Only (Y/N)");
         mappings.put("ADDITIONAL_ONLINE_FILES", "Additional Online Files(Y/N)");
+        mappings.put("NUMBER_OF_LINKS", "Number of Links");
 	}
 	
 	public static Map<String, String> getMappings() {

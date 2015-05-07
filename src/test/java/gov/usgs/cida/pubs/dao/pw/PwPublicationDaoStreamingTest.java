@@ -107,7 +107,8 @@ public class PwPublicationDaoStreamingTest extends BaseSpringTest {
         assertEquals("ConFamily, ConGiven ConSuffix con@usgs.gov; US Geological Survey Ice Survey Team; outerfamily, outerGiven outerSuffix outer@gmail.com", pub.get("AUTHORS"));
         assertEquals("outerfamily, outerGiven outerSuffix outer@gmail.com; US Geological Survey Ice Survey Team; ConFamily, ConGiven ConSuffix con@usgs.gov", pub.get("EDITORS"));
         assertEquals("outerfamily, outerGiven outerSuffix outer@gmail.com; ConFamily, ConGiven ConSuffix con@usgs.gov; US Geological Survey Ice Survey Team", pub.get("COMPILERS"));
-	}
+        assertEquals(BigDecimal.valueOf(2), pub.get("NUMBER_OF_LINKS"));
+    }
 	
     @Test
     public void getStreamByMapSyntaxTest() {

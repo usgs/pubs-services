@@ -171,7 +171,8 @@
                pub.additional_online_files,
                pub_author.authors,
                pub_editor.editors,
-               pub_compiler.compilers
+               pub_compiler.compilers,
+               pub_link.number_of_links
           from public_publication pub
                left join publication_type
                  on pub.publication_type_id = publication_type.publication_type_id
@@ -210,6 +211,11 @@
                            where publication_contributor.contributor_type_id = 3
                               group by publication_id) pub_compiler
                  on pub.publication_id = pub_compiler.publication_id
+               left join (select publication_id, count(*) number_of_links
+                            from publication_link
+                           where link_type_id != 24
+                              group by publication_id) pub_link
+                 on pub.publication_id = pub_link.publication_id
         <where>
         	<include refid="filters"/>
         </where>

@@ -20,7 +20,7 @@
     </appender>
 
     <category name="org.springframework.web">
-        <level value="DEBUG"/>
+        <level value="INFO"/>
     </category>
 
     <category name="org.springframework.security">

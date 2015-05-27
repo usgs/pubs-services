@@ -21,8 +21,6 @@
     <bean id="spnProductionMessageService" class="gov.usgs.cida.pubs.busservice.ipds.SpnProductionMessageService" autowire="byName"/>
     <bean id="costCenterMessageService" class="gov.usgs.cida.pubs.busservice.ipds.CostCenterMessageService" autowire="byName"/>
 
-    <bean id="pwPublicationBusService" class="gov.usgs.cida.pubs.busservice.pw.PwPublicationBusService" autowire="byName"/>
-
     <bean id="numberedSeriesXml" class="java.lang.String" autowire="byName">
         <constructor-arg>
             <bean class="org.springframework.util.FileCopyUtils" factory-method="copyToByteArray">

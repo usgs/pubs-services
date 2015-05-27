@@ -11,6 +11,7 @@ import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.dao.CostCenterDaoTest;
 import gov.usgs.cida.pubs.dao.OutsideAffiliationDaoTest;
+import gov.usgs.cida.pubs.domain.PublicationType;
 
 import org.json.JSONArray;
 import org.junit.Before;
@@ -24,12 +25,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
 
-/**
- * Note that I have not yet figured out how to get the
- * tests to respect the ILookupView annotation.
- * @author drsteini
- *
- */
 @Category(IntegrationTest.class)
 @DatabaseSetups({
 	@DatabaseSetup("classpath:/testData/clearAll.xml"),
@@ -44,7 +39,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 
     @Before
     public void setup() {
-    	mockLookup = MockMvcBuilders.standaloneSetup(new LookupMvcService()).build();
+    	mockLookup = MockMvcBuilders.webAppContextSetup(wac).build();
     }
 
     @Test
@@ -64,7 +59,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
         .andReturn();
 
         assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"id\":3,\"text\":\"xAffiliation Cost Center 3\",\"active\":false,\"usgs\":true},{\"id\":4,\"text\":\"xAffiliation Cost Center 4\",\"active\":true,\"usgs\":true}]")));
+                sameJSONArrayAs(new JSONArray("[{\"id\":3,\"text\":\"xAffiliation Cost Center 3\"},{\"id\":4,\"text\":\"xAffiliation Cost Center 4\"}]")));
     }
 
     @Test
@@ -84,7 +79,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
         .andReturn();
 
         assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"id\":6,\"text\":\"xOutside Affiliation 2\",\"active\":false,\"usgs\":false}]")));
+                sameJSONArrayAs(new JSONArray("[{\"id\":6,\"text\":\"xOutside Affiliation 2\"}]")));
     }
 
     @Test
@@ -106,7 +101,36 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
         assertEquals(1, new JSONArray(rtn.getResponse().getContentAsString()).length());
 
         assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"id\":5,\"text\":\"9 - null -  future title\",\"indexId\":\"9\",\"title\":\" future title\"}]")));
+                sameJSONArrayAs(new JSONArray("[{\"id\":5,\"text\":\"9 - null -  future title\"}]")));
+    }
+
+    @Test
+    public void getPublicationSeriesQuery() throws Exception {
+        MvcResult rtn = mockLookup.perform(get("/lookup/publicationseries?text=zeit&publicationsubtypeid=10").accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+        .andReturn();
+
+        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
+                sameJSONArrayAs(new JSONArray("[{\"id\":3803,\"text\":\"Zeitschrift fur Geomorphologie\"},"
+                		+ "{\"id\":3804,\"text\":\"Zeitschrift fur Geomorphologie, Supplementband\"},"
+                		+ "{\"id\":3805,\"text\":\"Zeitschrift fur Tierpsychologie\"}]")));
+    }
+
+    @Test
+    public void getPublicationSeriesREST() throws Exception {
+        MvcResult rtn = mockLookup.perform(get("/lookup/publicationtype/"
+                + PublicationType.REPORT + "/publicationsubtype/10/publicationseries?text=zeit").accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+        .andReturn();
+
+        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
+                sameJSONArrayAs(new JSONArray("[{\"id\":3803,\"text\":\"Zeitschrift fur Geomorphologie\"},"
+                		+ "{\"id\":3804,\"text\":\"Zeitschrift fur Geomorphologie, Supplementband\"},"
+                		+ "{\"id\":3805,\"text\":\"Zeitschrift fur Tierpsychologie\"}]")));
     }
 
 }

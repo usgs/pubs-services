@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.domain.BaseDomain;
+import gov.usgs.cida.pubs.springinit.TestBusServiceConfig;
 import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 import gov.usgs.cida.pubs.webservice.security.PubsAuthentication;
 import gov.usgs.cida.pubs.webservice.security.PubsRoles;
@@ -23,6 +24,7 @@ import java.util.Random;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
@@ -30,6 +32,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
@@ -42,10 +45,13 @@ import com.github.springtestdbunit.annotation.DbUnitConfiguration;
  *
  */
 @WebAppConfiguration
-@ContextConfiguration(classes = TestSpringConfig.class)
+@ContextConfiguration(classes = {TestSpringConfig.class, TestBusServiceConfig.class})
 @TestExecutionListeners(DbUnitTestExecutionListener.class)
 @DbUnitConfiguration(dataSetLoader = ColumnSensingFlatXMLDataSetLoader.class)
 public abstract class BaseSpringTest extends AbstractTransactionalJUnit4SpringContextTests {
+
+    @Autowired
+	protected WebApplicationContext wac;
 
     /** random for the class. */
     protected static final Random RANDOM = new Random();

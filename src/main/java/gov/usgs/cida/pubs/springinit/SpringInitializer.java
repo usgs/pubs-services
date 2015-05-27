@@ -18,7 +18,7 @@ public class SpringInitializer implements WebApplicationInitializer {
 	 */
 	public void onStartup(ServletContext servletContext) throws ServletException {		
 		AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
-		ctx.register(SpringConfig.class);
+		ctx.register(SpringConfig.class, BusServiceConfig.class);
 		
 		FilterRegistration corsFilter = servletContext.addFilter("corsFilter", CORSFilter.class);
 		corsFilter.addMappingForUrlPatterns(null, true, "/*");

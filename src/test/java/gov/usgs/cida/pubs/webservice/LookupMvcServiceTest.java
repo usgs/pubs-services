@@ -7,46 +7,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONArrayAs;
 import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.dao.ContributorDaoTest;
 import gov.usgs.cida.pubs.dao.ContributorTypeDaoTest;
 import gov.usgs.cida.pubs.dao.LinkFileTypeDaoTest;
 import gov.usgs.cida.pubs.dao.LinkTypeDaoTest;
 import gov.usgs.cida.pubs.dao.PublishingServiceCenterDaoTest;
-import gov.usgs.cida.pubs.domain.PublicationType;
 
 import org.json.JSONArray;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseSetups;
-
-/**
- * Note that I have not yet figured out how to get the
- * tests to respect the ILookupView annotation.
- * @author drsteini
- *
- */
-@Category(IntegrationTest.class)
-@DatabaseSetups({
-//	@DatabaseSetup("classpath:/testData/publicationType.xml"),
-//	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSeries.xml")
-})
 public class LookupMvcServiceTest extends BaseSpringTest {
 
     private MockMvc mockLookup;
 
     @Before
     public void setup() {
-    	mockLookup = MockMvcBuilders.standaloneSetup(new LookupMvcService()).build();
+    	mockLookup = MockMvcBuilders.webAppContextSetup(wac).build();
     }
 
     @Test
@@ -70,7 +52,7 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andReturn();
 
         assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"id\":11,\"text\":\"Bibliography\",\"publicationType\":{\"id\":4}}]")));
+                sameJSONArrayAs(new JSONArray("[{\"id\":11,\"text\":\"Bibliography\"}]")));
     }
 
     @Test
@@ -82,36 +64,7 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andReturn();
 
         assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"id\":11,\"text\":\"Bibliography\",\"publicationType\":{\"id\":4}}]")));
-    }
-
-    @Test
-    public void getPublicationSeriesREST() throws Exception {
-        MvcResult rtn = mockLookup.perform(get("/lookup/publicationtype/"
-                + PublicationType.REPORT + "/publicationsubtype/10/publicationseries?text=zeit").accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-        .andReturn();
-
-        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"id\":3803,\"text\":\"Zeitschrift fur Geomorphologie\",\"publicationSubtype\":{\"id\":10}},"
-                		+ "{\"id\":3804,\"text\":\"Zeitschrift fur Geomorphologie, Supplementband\",\"publicationSubtype\":{\"id\":10}},"
-                		+ "{\"id\":3805,\"text\":\"Zeitschrift fur Tierpsychologie\",\"publicationSubtype\":{\"id\":10}}]")));
-    }
-
-    @Test
-    public void getPublicationSeriesQuery() throws Exception {
-        MvcResult rtn = mockLookup.perform(get("/lookup/publicationseries?text=zeit&publicationsubtypeid=10").accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-        .andReturn();
-
-        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"id\":3803,\"text\":\"Zeitschrift fur Geomorphologie\",\"publicationSubtype\":{\"id\":10}},"
-                		+ "{\"id\":3804,\"text\":\"Zeitschrift fur Geomorphologie, Supplementband\",\"publicationSubtype\":{\"id\":10}},"
-                		+ "{\"id\":3805,\"text\":\"Zeitschrift fur Tierpsychologie\",\"publicationSubtype\":{\"id\":10}}]")));
+                sameJSONArrayAs(new JSONArray("[{\"id\":11,\"text\":\"Bibliography\"}]")));
     }
 
     @Test
@@ -223,9 +176,7 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         assertEquals(1, new JSONArray(rtn.getResponse().getContentAsString()).length());
 
         assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"id\":3,\"text\":\"outerfamily, outerGiven outerSuffix outer@gmail.com\","
-                		+ "\"affiliation\":{\"id\":5,\"text\":\"Outside Affiliation 1\",\"active\":true,\"usgs\":false}, \"contributorId\":3,\"corporation\":false,\"email\":\"outer@gmail.com\",\"family\":\"outerfamily\","
-                		+ "\"given\":\"outerGiven\",\"suffix\":\"outerSuffix\",\"usgs\":false}]")));
+                sameJSONArrayAs(new JSONArray("[{\"id\":3,\"text\":\"outerfamily, outerGiven outerSuffix outer@gmail.com\"}]")));
     }
 
     @Test
@@ -247,8 +198,7 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         assertEquals(1, new JSONArray(rtn.getResponse().getContentAsString()).length());
 
         assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"id\":2,\"text\":\"US Geological Survey Ice Survey Team\",\"contributorId\":2,"
-                		+ "\"corporation\":true,\"organization\":\"US Geological Survey Ice Survey Team\",\"usgs\":false}]")));
+                sameJSONArrayAs(new JSONArray("[{\"id\":2,\"text\":\"US Geological Survey Ice Survey Team\"}]")));
     }
     
 }

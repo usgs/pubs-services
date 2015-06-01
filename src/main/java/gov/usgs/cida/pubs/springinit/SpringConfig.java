@@ -60,7 +60,7 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
         	.favorPathExtension(false)
         	.favorParameter(true)
         	.parameterName(PubsConstants.CONTENT_PARAMETER_NAME)
-        	.defaultContentType(MediaType.APPLICATION_JSON)
+        	.defaultContentType(PubsConstants.MEDIA_TYPE_CSV)
         	.mediaType(PubsConstants.MEDIA_TYPE_CSV_EXTENSION, PubsConstants.MEDIA_TYPE_CSV)
         	.mediaType(PubsConstants.MEDIA_TYPE_TSV_EXTENSION, PubsConstants.MEDIA_TYPE_TSV)
          	.mediaType(PubsConstants.MEDIA_TYPE_XML_EXTENSION, MediaType.APPLICATION_XML)

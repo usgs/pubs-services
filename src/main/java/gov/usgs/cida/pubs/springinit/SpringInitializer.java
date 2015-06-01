@@ -1,8 +1,5 @@
 package gov.usgs.cida.pubs.springinit;
 
-import gov.usgs.cida.pubs.filter.CORSFilter;
-
-import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration.Dynamic;
@@ -19,13 +16,10 @@ public class SpringInitializer implements WebApplicationInitializer {
 	public void onStartup(ServletContext servletContext) throws ServletException {		
 		AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
 		ctx.register(SpringConfig.class, BusServiceConfig.class);
-		
-		FilterRegistration corsFilter = servletContext.addFilter("corsFilter", CORSFilter.class);
-		corsFilter.addMappingForUrlPatterns(null, true, "/*");
 
 		Dynamic servlet = servletContext.addServlet("springDispatcher", new DispatcherServlet(ctx));
 		servlet.addMapping("/");
-		servlet.setAsyncSupported(true);
+		servlet.setAsyncSupported(false);
 		servlet.setLoadOnStartup(1);
 	}
 	

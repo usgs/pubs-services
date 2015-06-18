@@ -123,6 +123,16 @@ public class PubsUtilitiesTest extends BaseSpringTest {
     }
 
     @Test
+    public void escapeReservedWordTest() {
+    	assertNull(PubsUtilities.escapeReservedWord(null));
+    	assertEquals("", PubsUtilities.escapeReservedWord(""));
+    	assertEquals("   ", PubsUtilities.escapeReservedWord("   "));
+    	assertEquals("red", PubsUtilities.escapeReservedWord("red"));
+    	assertEquals("{within}", PubsUtilities.escapeReservedWord("within"));
+    	assertEquals("{\\}", PubsUtilities.escapeReservedWord("\\"));
+    }
+
+    @Test
     public void isSpnUserTest() {
     	assertFalse(PubsUtilities.isSpnUser());
     	

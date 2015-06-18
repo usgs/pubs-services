@@ -99,7 +99,7 @@ public abstract class MvcService<D> {
         while (i.hasNext()) {
         	String term = i.next();
         	if (StringUtils.isNotBlank(term)) {
-        		newList.add("$" + term);
+        		newList.add("$" + PubsUtilities.escapeReservedWord(term));
         	}
         }
         return StringUtils.join(newList, " and ");

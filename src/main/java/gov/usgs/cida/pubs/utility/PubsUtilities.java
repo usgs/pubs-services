@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.utility;
 
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.StopWords;
+import gov.usgs.cida.pubs.TextReservedWords;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
@@ -175,6 +176,14 @@ public final class PubsUtilities {
     		cleanList.removeAll(StopWords.STOP_WORD_LIST);
     	}
     	return cleanList;
+    }
+
+    public static String escapeReservedWord(final String q) {
+    	if (null != q && TextReservedWords.WORDLIST.contains(q)) {
+    		return "{" + q + "}";
+    	} else {
+    		return q;
+    	}
     }
 
     public static String getAuthorKey() {

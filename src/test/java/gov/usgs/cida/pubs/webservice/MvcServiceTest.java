@@ -108,7 +108,8 @@ public class MvcServiceTest extends BaseSpringTest {
 		list.add("");
 		list.add(null);
 		list.add("loggerhead");
-		assertEquals("$test and $turtles and $loggerhead",  testMvcService.buildQ(list));
+		list.add("within");
+		assertEquals("$test and $turtles and $loggerhead and ${within}",  testMvcService.buildQ(list));
 
 	}
 	

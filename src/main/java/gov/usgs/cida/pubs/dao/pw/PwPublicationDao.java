@@ -21,6 +21,7 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 
     private static final String NS = "pwPublication";
     private static final String GET_BY_INDEX_ID = ".getByIndexId";
+    private static final String GET_BY_IPDS_ID = ".getByIpdsId";
 
     /** 
      * {@inheritDoc}
@@ -33,6 +34,17 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
         return (PwPublication) getSqlSession().selectOne(NS + GET_BY_ID, domainID);
     }
 
+    /**
+     * {@inheritDoc}
+     * @see gov.usgs.cida.pubs.dao.BaseDao#getByMap(java.util.Map)
+     */
+    @Transactional(readOnly = true)
+    @ISetDbContext
+    @Override
+    public PwPublication getByIpdsId(String ipdsId) {
+        return getSqlSession().selectOne(NS + GET_BY_IPDS_ID, ipdsId);
+    }
+    
     /**
      * {@inheritDoc}
      * @see gov.usgs.cida.pubs.dao.BaseDao#getByMap(java.util.Map)

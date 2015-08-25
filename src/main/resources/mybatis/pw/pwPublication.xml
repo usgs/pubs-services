@@ -83,13 +83,18 @@
         </if>
     </sql>
 
-	<!-- NOTE - this query DOES NOT use the VPD -->
+	<!-- NOTE - these queries DO NOT use the VPD -->
     <select id="getById" parameterType="Integer" resultMap="result">
         select <include refid="publication.cols"/>
           from publication
          where publication_id = #{value,jdbcType=VARCHAR}
     </select>
-	<!-- END_NOTE - this query DOES NOT use the VPD -->
+    <select id="getByIpdsId" parameterType="String" resultMap="result">
+        select <include refid="publication.cols"/>
+          from publication
+         where ipds_id = #{value,jdbcType=VARCHAR}
+    </select>
+	<!-- END_NOTE - these queries DO NOT use the VPD -->
 
 
 

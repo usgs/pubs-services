@@ -38,6 +38,14 @@ public class PwPublicationDaoTest extends BaseSpringTest {
     }
 
     @Test
+    public void getByIpdsIdTest() {
+        PwPublication pub = PwPublication.getDao().getByIpdsId("ipds_id");
+        assertNotNull(pub);
+        assertPwPub4(pub);
+        assertPwPub4Children(pub);
+    }
+
+    @Test
     public void getByMapTest() {
     	//This test uses the VPD. If it fails because record counts are off:
     	// - No rows returned probably means the publication_index_00 table does not have the correct data in it.

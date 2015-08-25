@@ -11,4 +11,11 @@ public interface IPwPublicationDao extends IDao<PwPublication>, IStreamingDao {
      */
 	PwPublication getByIndexId(String indexId);
 
+    /** 
+     * Get a publication by it's ipds id.
+     * @param ipdsId - ipds id of the object to retrieve. 
+     * @return the domain object.
+     */
+	PwPublication getByIpdsId(String ipdsId);
+
 }

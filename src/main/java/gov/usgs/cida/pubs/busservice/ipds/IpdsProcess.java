@@ -80,8 +80,7 @@ public class IpdsProcess implements IIpdsProcess {
         filters.put("IPDS_ID", pub.getIpdsId());
         List<MpPublication> existingMpPubs = MpPublication.getDao().getByMap(filters);
         MpPublication existingMpPub = null == existingMpPubs ? null : existingMpPubs.isEmpty() ? null : existingMpPubs.get(0);
-        List<PwPublication> existingPwPubs = PwPublication.getDao().getByMap(filters);
-        PwPublication existingPwPub = null == existingPwPubs ? null : existingPwPubs.isEmpty() ? null : existingPwPubs.get(0);
+        PwPublication existingPwPub = PwPublication.getDao().getByIpdsId(pub.getIpdsId());
 
         StringBuilder rtn = new StringBuilder("");
 

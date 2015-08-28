@@ -11,6 +11,7 @@
 		<cida.maven.url>http://internal.cida.usgs.gov/maven</cida.maven.url>
 		<maven-compiler-plugin-version>3.2</maven-compiler-plugin-version>
 		<maven-exec-plugin-version>1.2</maven-exec-plugin-version>
+		<additionalparam>-Xdoclint:none</additionalparam>
 
 		<activemq-version>5.7.0</activemq-version>
 		<commons-lang3-version>3.3.2</commons-lang3-version>

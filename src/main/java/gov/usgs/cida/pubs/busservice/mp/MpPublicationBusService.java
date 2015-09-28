@@ -114,6 +114,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
             pub.setValidationErrors(validator.validate(pub));
             if (pub.getValidationErrors().isEmpty()) {
                 MpPublication.getDao().add(pub);
+               	MpPublication.getDao().lockPub(pub.getId());
                 pub = publicationPostProcessing(pub);
             }
             return pub;

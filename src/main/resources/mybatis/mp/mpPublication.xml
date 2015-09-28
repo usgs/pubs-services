@@ -8,18 +8,15 @@
     </resultMap>
 
     <sql id="cols">
-        <include refid="publication.cols"/>,
-        lock_username
+        <include refid="publication.cols"/>
     </sql>
 
     <sql id="hosts">
-        <include refid="publication.hosts"/>,
-        #{lockUsername,jdbcType=VARCHAR}
+        <include refid="publication.hosts"/>
     </sql>
 
     <sql id="sets">
-        <include refid="publication.sets"/>,
-        lock_username = #{lockUsername,jdbcType=VARCHAR}
+        <include refid="publication.sets"/>
     </sql>
 
     <select id="getNewProdId" resultType="Integer">

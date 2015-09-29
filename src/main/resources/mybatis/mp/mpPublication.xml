@@ -105,7 +105,8 @@
     </insert>
 
     <sql id="baseSelect">
-        select <include refid="cols"/>
+        select <include refid="cols"/>,
+               lock_username
           from mp_publication pub
     </sql>
 

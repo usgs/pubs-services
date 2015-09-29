@@ -320,6 +320,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
     public static MpPublication addAPub(final Integer pubId) {
         MpPublication newPub = buildAPub(pubId);
         MpPublication.getDao().add(newPub);
+    	MpPublication.getDao().lockPub(newPub.getId());
         return newPub;
     }
 
@@ -370,7 +371,6 @@ public class MpPublicationDaoTest extends BaseSpringTest {
         updatedPub.setConferenceDate("a new free form date");
         updatedPub.setConferenceTitle("A new title");
         updatedPub.setConferenceLocation("a new conference location");
-        updatedPub.setLockUsername("newUser");
         updatedPub.setVolume("VOL13");
         updatedPub.setIssue("ISIX");
         updatedPub.setContact("My Contact InfoU");

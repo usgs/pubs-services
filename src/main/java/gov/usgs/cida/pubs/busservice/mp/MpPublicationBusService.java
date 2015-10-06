@@ -379,7 +379,8 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 			available = true;
 		} else {
 			//We found it, so check if it is already locked.
-			if (StringUtils.isNotBlank(mpPub.getLockUsername())) {
+			if (StringUtils.isNotBlank(mpPub.getLockUsername()) 
+					&& !PubsConstants.ANONYMOUS_USER.contentEquals(mpPub.getLockUsername())) {
 				//Now, was it locked by the current user.
 				if (PubsUtilities.getUsername().equalsIgnoreCase(mpPub.getLockUsername())) {
 					//Yes, this user locked it so we are ok to edit.

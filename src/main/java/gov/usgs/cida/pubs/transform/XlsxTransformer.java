@@ -132,8 +132,11 @@ public class XlsxTransformer extends Transformer {
 	 */
 	public void finishWorkbook() {
 		try {
-			endSheet();
-			zos.finish();
+			//zos will be null if we did not process any data - in which case we do not need to close the sheet or zos.
+			if (null != zos) {
+				endSheet();
+				zos.finish();
+			}
 		} catch (Exception e) {
 			log.error("Problem encountered finishing the workbook.", e);
 			throw new RuntimeException(e);

@@ -1,6 +1,6 @@
 package gov.usgs.cida.pubs.domain;
 
-import gov.usgs.cida.pubs.json.view.intfc.IPwView;
+import gov.usgs.cida.pubs.json.View;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,23 +16,23 @@ public class SearchResults implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@JsonProperty("pageSize")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
 	private String pageSize;
     
     @JsonProperty("pageRowStart")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
 	private String pageRowStart;
     
     @JsonProperty("pageNumber")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
 	private String pageNumber;
     
     @JsonProperty("recordCount")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
 	private Integer recordCount;
 
 	@JsonProperty("records")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
 	private List<? extends BaseDomain<?>> records;
 	
 	public String getPageSize() {

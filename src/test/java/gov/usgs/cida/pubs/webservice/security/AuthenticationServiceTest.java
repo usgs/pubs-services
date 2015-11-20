@@ -45,9 +45,9 @@ public class AuthenticationServiceTest {
 		assertEquals("testyUser", auth.getName());
 		assertFalse(auth.getAuthorities().isEmpty());
 		assertEquals(3, auth.getAuthorities().size());
-		assertEquals(PubsRoles.PUBS_SPN_USER.name(), auth.getAuthorities().toArray()[0].toString());
-		assertEquals(PubsRoles.PUBS_AUTHORIZED.name(), auth.getAuthorities().toArray()[1].toString());
-		assertEquals(PubsRoles.AD_AUTHENTICATED.name(), auth.getAuthorities().toArray()[2].toString());
+		assertEquals(PubsRoles.PUBS_SPN_USER.getSpringRole(), auth.getAuthorities().toArray()[0].toString());
+		assertEquals(PubsRoles.PUBS_AUTHORIZED.getSpringRole(), auth.getAuthorities().toArray()[1].toString());
+		assertEquals(PubsRoles.AD_AUTHENTICATED.getSpringRole(), auth.getAuthorities().toArray()[2].toString());
 		
 		AuthToken response = testService.authenticate("username", "password");
 		assertEquals(testToken, response);
@@ -73,28 +73,28 @@ public class AuthenticationServiceTest {
 		assertEquals("testyUser", auth.getName());
 		assertFalse(auth.getAuthorities().isEmpty());
 		assertEquals(1, auth.getAuthorities().size());
-		assertEquals(PubsRoles.AD_AUTHENTICATED.name(), auth.getAuthorities().toArray()[0].toString());
+		assertEquals(PubsRoles.AD_AUTHENTICATED.getSpringRole(), auth.getAuthorities().toArray()[0].toString());
 		
 		testService.authenticate("username", "password");
 		auth = SecurityContextHolder.getContext().getAuthentication();
 		assertEquals("testyUser", auth.getName());
 		assertFalse(auth.getAuthorities().isEmpty());
 		assertEquals(1, auth.getAuthorities().size());
-		assertEquals(PubsRoles.AD_AUTHENTICATED.name(), auth.getAuthorities().toArray()[0].toString());
+		assertEquals(PubsRoles.AD_AUTHENTICATED.getSpringRole(), auth.getAuthorities().toArray()[0].toString());
 		
 		testService.checkToken("a-token-string");
 		auth = SecurityContextHolder.getContext().getAuthentication();
 		assertEquals("testyUser", auth.getName());
 		assertFalse(auth.getAuthorities().isEmpty());
 		assertEquals(1, auth.getAuthorities().size());
-		assertEquals(PubsRoles.AD_AUTHENTICATED.name(), auth.getAuthorities().toArray()[0].toString());
+		assertEquals(PubsRoles.AD_AUTHENTICATED.getSpringRole(), auth.getAuthorities().toArray()[0].toString());
 
 		testService.checkToken("b-token-string");
 		auth = SecurityContextHolder.getContext().getAuthentication();
 		assertEquals("testyUser", auth.getName());
 		assertFalse(auth.getAuthorities().isEmpty());
 		assertEquals(1, auth.getAuthorities().size());
-		assertEquals(PubsRoles.AD_AUTHENTICATED.name(), auth.getAuthorities().toArray()[0].toString());
+		assertEquals(PubsRoles.AD_AUTHENTICATED.getSpringRole(), auth.getAuthorities().toArray()[0].toString());
 	}
 	
 	@Test

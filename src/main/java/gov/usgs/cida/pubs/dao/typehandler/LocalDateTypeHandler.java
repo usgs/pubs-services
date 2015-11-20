@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 /**
  * @author drsteini
@@ -25,7 +25,7 @@ public class LocalDateTypeHandler implements TypeHandler<LocalDate> {
             final LocalDate parameter, final JdbcType jdbcType) throws SQLException {
         Date date = null; 
         if (parameter != null) { 
-            date = new Date(parameter.toDateTimeAtStartOfDay().toDate().getTime());
+        	date = Date.valueOf(parameter);
         } 
         ps.setDate(i, date);
     }
@@ -34,45 +34,36 @@ public class LocalDateTypeHandler implements TypeHandler<LocalDate> {
      * @see org.apache.ibatis.type.TypeHandler#getResult(java.sql.ResultSet, java.lang.String)
      */
     @Override
-    public LocalDate getResult(final ResultSet rs, final String columnName)
-            throws SQLException {
-        Date date = rs.getDate(columnName);
-        LocalDate ldt = null;
-        if (date != null) { 
-            try {
-                ldt = LocalDate.fromDateFields(date);
-            } catch (IllegalArgumentException e) {
-                throw new SQLException("illegal value for a LocalDate : " + date, e);
-            }
-        }
-        return ldt; 
+    public LocalDate getResult(final ResultSet rs, final String columnName) throws SQLException {
+		Date date = rs.getDate(columnName);
+		LocalDate ldt = null;
+		if (date != null) {
+			ldt = date.toLocalDate();
+		}
+		return ldt; 
     }
 
     /** {@inheritDoc}
      * @see org.apache.ibatis.type.TypeHandler#getResult(java.sql.CallableStatement, int)
      */
     @Override
-    public LocalDate getResult(final CallableStatement cs, final int columnIndex)
-            throws SQLException {
-        Date date = cs.getDate(columnIndex);
-        LocalDate ldt = null;
-        if (date != null) { 
-            try {
-                ldt = LocalDate.fromDateFields(date);
-            } catch (IllegalArgumentException e) {
-                throw new SQLException("illegal value for a LocalDate : " + date, e);
-            }
-        }
-        return ldt; 
+    public LocalDate getResult(final CallableStatement cs, final int columnIndex) throws SQLException {
+		Date date = cs.getDate(columnIndex);
+		LocalDate ldt = null;
+		if (date != null) {
+			ldt = date.toLocalDate();
+		}
+		return ldt; 
     }
 
-    /** {@inheritDoc}
-     * @see org.apache.ibatis.type.TypeHandler#getResult(java.sql.ResultSet, int)
-     */
-    @Override
-    public LocalDate getResult(ResultSet arg0, int arg1) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+	@Override
+	public LocalDate getResult(ResultSet rs, int columnIndex) throws SQLException {
+		Date date = rs.getDate(columnIndex);
+		LocalDate ldt = null;
+		if (date != null) {
+			ldt = date.toLocalDate();
+		}
+		return ldt; 
     }
 
 }

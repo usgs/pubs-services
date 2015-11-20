@@ -1,20 +1,11 @@
 package gov.usgs.cida.pubs.domain;
 
-import gov.usgs.cida.pubs.SeverityLevel;
-import gov.usgs.cida.pubs.json.view.intfc.IBaseView;
-import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
-import gov.usgs.cida.pubs.json.view.intfc.IPwView;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
-import gov.usgs.cida.pubs.validation.ValidationResults;
-import gov.usgs.cida.pubs.validation.ValidatorResult;
-
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
-
-import org.joda.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -23,6 +14,12 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 
+import gov.usgs.cida.pubs.SeverityLevel;
+import gov.usgs.cida.pubs.json.View;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
+
 /**
  * All Domain Objects extend this base class.
  * @author drsteini
@@ -30,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonView;
  */
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public abstract class BaseDomain<D> implements IBaseView {
+public abstract class BaseDomain<D> {
 
     /** The ID of this domain object. */
     protected Integer id;
@@ -72,7 +69,7 @@ public abstract class BaseDomain<D> implements IBaseView {
      * @param inId the id to set
      */
     @JsonProperty("id")
-    @JsonView({IPwView.class, ILookupView.class})
+    @JsonView(View.Base.class)
     public void setId(final String inId) {
         id = PubsUtilities.parseInteger(inId);
     }

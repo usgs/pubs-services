@@ -11,6 +11,7 @@
 	<sec:global-method-security	secured-annotations="enabled" proxy-target-class="true" />
 
 	<sec:http auto-config="false" create-session="stateless" entry-point-ref="unauthorizedEntryPoint" use-expressions="true">
+		<sec:csrf disabled="true"/>
 		<sec:custom-filter ref="tokenSecurityFilter" position="FORM_LOGIN_FILTER"/>
 		<sec:intercept-url pattern="/**" method="OPTIONS" access="permitAll" requires-channel="https"/>
 		<sec:intercept-url pattern="/auth/token" access="permitAll" requires-channel="https" />

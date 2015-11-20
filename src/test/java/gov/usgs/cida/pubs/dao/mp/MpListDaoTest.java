@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
 import org.junit.Test;
 
 public class MpListDaoTest extends BaseSpringTest {
@@ -45,7 +45,7 @@ public class MpListDaoTest extends BaseSpringTest {
 		filters.put("listType", MpListType.PUBS);
 		mpLists = MpList.getDao().getByMap(filters);
 		assertNotNull(mpLists);
-		assertEquals(17, mpLists.size());
+		assertEquals(18, mpLists.size());
 
 		filters.clear();
 		filters.put("listType", MpListType.SPN);
@@ -125,9 +125,9 @@ public class MpListDaoTest extends BaseSpringTest {
     	mpList.setDescription("Description " + id);
     	mpList.setType(MpListType.SPN);
     	mpList.setIpdsInternalId(1);
-    	mpList.setInsertDate(new LocalDateTime());
+    	mpList.setInsertDate(LocalDateTime.now());
     	mpList.setInsertUsername(PubsConstants.ANONYMOUS_USER);
-    	mpList.setUpdateDate(new LocalDateTime());
+    	mpList.setUpdateDate(LocalDateTime.now());
     	mpList.setUpdateUsername(PubsConstants.ANONYMOUS_USER);
     	return mpList;
     }

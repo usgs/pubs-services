@@ -6,6 +6,11 @@ import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+
+import org.springframework.http.HttpHeaders;
+
 import gov.usgs.cida.auth.model.AuthToken;
 import gov.usgs.cida.pubs.dao.CorporateContributorDaoTest;
 import gov.usgs.cida.pubs.dao.mp.MpListDaoTest;
@@ -16,10 +21,6 @@ import gov.usgs.cida.pubs.domain.mp.MpList;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.webservice.mp.MpListMvcServiceTest;
-
-import java.util.Arrays;
-
-import org.springframework.http.HttpHeaders;
 
 public abstract class EndpointSecurityAuthTest extends BaseEndpointSecurityTest {
 
@@ -42,7 +43,11 @@ public abstract class EndpointSecurityAuthTest extends BaseEndpointSecurityTest 
     	//This is relying on that filter being in the position hard-coded below...
     	authService = new AuthenticationService(mockAuthClient);
     	testFilter = new TestTokenSecurityFilter(authService);
-    	springSecurityFilter.getFilterChains().get(0).getFilters().set(3, testFilter);
+    	for (int i=0; i<springSecurityFilter.getFilterChains().get(0).getFilters().size(); i++) {
+    		if (springSecurityFilter.getFilterChains().get(0).getFilters().get(i) instanceof TokenSecurityFilter) {
+    			springSecurityFilter.getFilterChains().get(0).getFilters().set(i, testFilter);
+    		}
+    	}
     	
     	postSetup();
     }

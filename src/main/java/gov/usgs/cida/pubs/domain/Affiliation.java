@@ -21,11 +21,11 @@ public class Affiliation<D> extends BaseDomain<Affiliation<D>> implements ILooku
 
     @JsonProperty("active")
     @NotNull
-    protected boolean active;
+    protected Boolean active;
 
     @JsonProperty("usgs")
     @NotNull
-    protected boolean usgs;
+    protected Boolean usgs;
 
     @Override
     public String getText() {
@@ -36,11 +36,11 @@ public class Affiliation<D> extends BaseDomain<Affiliation<D>> implements ILooku
         text = inText;
     }
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return active;
     }
 
-    public boolean isUsgs() {
+    public Boolean isUsgs() {
         return usgs;
     }
 

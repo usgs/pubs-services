@@ -1,7 +1,7 @@
 package gov.usgs.cida.pubs.validation;
 
 import gov.usgs.cida.pubs.SeverityLevel;
-import gov.usgs.cida.pubs.json.view.intfc.IPwView;
+import gov.usgs.cida.pubs.json.View;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -11,13 +11,13 @@ import com.fasterxml.jackson.annotation.JsonView;
  */
 public class ValidatorResult {
 
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     private String field;
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     private String message;
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     private SeverityLevel level;
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     private String value;
 
     public ValidatorResult (final String inField, final String inMessage, final SeverityLevel inLevel, final String inValue) {

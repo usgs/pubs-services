@@ -98,7 +98,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONObject(rtn),
                 sameJSONObjectAs(new JSONObject(expectedGetPubsDefault)));
     }
     
@@ -114,7 +114,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONObject(rtn),
                 sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
     }
 
@@ -128,7 +128,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONObject(rtn),
                 sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
         
         //Not available (locked by somebody)
@@ -137,7 +137,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
                 .andReturn();
-        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONObject(rtn),
                 sameJSONObjectAs(new JSONObject(LOCK_MSG2)));
         
         //Pub not found
@@ -156,7 +156,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONObject(rtn),
                 sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
 
         MvcResult rtn2 = mockMvc.perform(get("/mppublication/1?q=NoPublicationIsGoingToHaveThisSearchTermZZzzzzZZZZZwhatNO").accept(MediaType.APPLICATION_JSON))
@@ -165,7 +165,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
                 .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
                 .andReturn();
 
-        assertThat(new JSONObject(rtn2.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONObject(rtn2),
                 sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
     }
 
@@ -204,7 +204,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONObject(rtn),
                 sameJSONObjectAs(new JSONObject("{\"value\":\"4\",\"text\":\"Book\"}")));
     }
 
@@ -217,7 +217,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
-        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONObject(rtn),
                 sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
         
         //Not available (locked by somebody)
@@ -226,7 +226,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
                 .andReturn();
-        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONObject(rtn),
                 sameJSONObjectAs(new JSONObject(LOCK_MSG)));
     }
     
@@ -240,7 +240,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
-        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONObject(rtn),
                 sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
         
         //Not available (locked by somebody)
@@ -250,7 +250,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
                 .andReturn();
-        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONObject(rtn),
                 sameJSONObjectAs(new JSONObject(LOCK_MSG)));
         
         //Pub not found
@@ -262,7 +262,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
                 .andReturn();
-        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONObject(rtn),
                 sameJSONObjectAs(new JSONObject("{\"validationErrors\":[{\"field\":\"Publication\",\"message\":\"Publication does not exist.\",\"level\":\"FATAL\",\"value\":\"3\"}]}")));
         
     }
@@ -276,7 +276,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
-        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONObject(rtn),
                 sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
         verify(busService, times(1)).releaseLocksPub(anyInt());
         
@@ -287,7 +287,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
                 .andReturn();
-        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONObject(rtn),
                 sameJSONObjectAs(new JSONObject(LOCK_MSG)));
         //We executed the releaseLocksPub above - this would be 2 if we also hit it in the locked test.
         verify(busService, times(1)).releaseLocksPub(anyInt());

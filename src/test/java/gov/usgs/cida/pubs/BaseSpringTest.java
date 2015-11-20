@@ -3,11 +3,6 @@ package gov.usgs.cida.pubs;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import gov.usgs.cida.pubs.domain.BaseDomain;
-import gov.usgs.cida.pubs.springinit.TestBusServiceConfig;
-import gov.usgs.cida.pubs.springinit.TestSpringConfig;
-import gov.usgs.cida.pubs.webservice.security.PubsAuthentication;
-import gov.usgs.cida.pubs.webservice.security.PubsRoles;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -23,19 +18,34 @@ import java.util.Random;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dbunit.dataset.ReplacementDataSet;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Before;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
+import com.github.springtestdbunit.dataset.ReplacementDataSetModifier;
+
+import gov.usgs.cida.pubs.domain.BaseDomain;
+import gov.usgs.cida.pubs.springinit.SpringConfig;
+import gov.usgs.cida.pubs.springinit.TestBusServiceConfig;
+import gov.usgs.cida.pubs.springinit.TestSecurityConfig;
+import gov.usgs.cida.pubs.springinit.TestSpringConfig;
+import gov.usgs.cida.pubs.webservice.security.PubsAuthentication;
+import gov.usgs.cida.pubs.webservice.security.PubsRoles;
 
 /**
  * This is the base test classes that need Spring wiring.
@@ -44,11 +54,14 @@ import com.github.springtestdbunit.annotation.DbUnitConfiguration;
  * @author drsteini
  *
  */
+@RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = {TestSpringConfig.class, TestBusServiceConfig.class})
-@TestExecutionListeners(DbUnitTestExecutionListener.class)
+@ContextConfiguration(classes = {SpringConfig.class, TestSpringConfig.class, TestBusServiceConfig.class, TestSecurityConfig.class})
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, 
+	TransactionDbUnitTestExecutionListener.class
+	})
 @DbUnitConfiguration(dataSetLoader = ColumnSensingFlatXMLDataSetLoader.class)
-public abstract class BaseSpringTest extends AbstractTransactionalJUnit4SpringContextTests {
+public abstract class BaseSpringTest {
 
     @Autowired
 	protected WebApplicationContext wac;
@@ -63,6 +76,8 @@ public abstract class BaseSpringTest extends AbstractTransactionalJUnit4SpringCo
         return RANDOM.nextInt(999999999) + 1;
     }
 
+    protected Integer id;
+    
     /** Log for errors etc. */
     public static final Log LOG = LogFactory.getLog(BaseSpringTest.class);
 
@@ -158,6 +173,23 @@ public abstract class BaseSpringTest extends AbstractTransactionalJUnit4SpringCo
 
 	public String getCompareFile(String file) throws IOException {
 		return new String(FileCopyUtils.copyToByteArray(new ClassPathResource("testResult/" + file).getInputStream()));
+	}
+	
+	public JSONObject getRtnAsJSONObject(MvcResult rtn) throws Exception {
+		return new JSONObject(rtn.getResponse().getContentAsString());		
+	}
+
+	public JSONArray getRtnAsJSONArray(MvcResult rtn) throws Exception {
+		return new JSONArray(rtn.getResponse().getContentAsString());		
+	}
+
+	protected class IdModifier extends ReplacementDataSetModifier {
+
+		@Override
+		protected void addReplacements(ReplacementDataSet dataSet) {
+			dataSet.addReplacementSubstring("[id]", id.toString());
+		}
+
 	}
 
 }

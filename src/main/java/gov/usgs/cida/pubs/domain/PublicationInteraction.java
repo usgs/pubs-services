@@ -1,6 +1,6 @@
 package gov.usgs.cida.pubs.domain;
 
-import gov.usgs.cida.pubs.json.view.intfc.IPwView;
+import gov.usgs.cida.pubs.json.View;
 
 import java.io.Serializable;
 
@@ -10,13 +10,13 @@ public class PublicationInteraction extends BaseDomain<PublicationInteraction> i
 
 	private static final long serialVersionUID = -3684046139875959389L;
 
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
 	private Publication<?> subject;
 	
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
 	private Predicate predicate;
 	
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
 	private Publication<?> object;
 
 	public Publication<?> getSubject() {

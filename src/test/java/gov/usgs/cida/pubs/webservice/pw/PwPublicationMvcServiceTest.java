@@ -81,7 +81,7 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONObject(rtn),
                 sameJSONObjectAs(new JSONObject(expectedGetPubsDefault)));
         
         //With page number
@@ -91,7 +91,7 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONObject(rtn),
                 sameJSONObjectAs(new JSONObject(expectedGetPubsPageNumber)));
     }
     
@@ -105,7 +105,7 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONObject(rtn),
                 sameJSONObjectAs(new JSONObject(expectedGetPwPub1)));
         
         //Pub not found
@@ -128,7 +128,7 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONObject(rtn),
                 sameJSONObjectAs(new JSONObject("{\"text\":\"1.1 - null - null\",\"indexId\":\"1.1\"}")));
     }
 

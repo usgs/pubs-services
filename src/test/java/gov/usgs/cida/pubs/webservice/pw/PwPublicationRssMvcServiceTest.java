@@ -6,10 +6,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
-import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
 
 import java.util.Arrays;
 
@@ -20,10 +16,14 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
+import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
 
 public class PwPublicationRssMvcServiceTest extends BaseSpringTest {
 	@Mock

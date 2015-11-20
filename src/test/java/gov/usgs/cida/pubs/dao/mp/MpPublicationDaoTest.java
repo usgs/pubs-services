@@ -23,8 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -33,7 +33,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 @Category(IntegrationTest.class)
 @DatabaseSetups({
-	@DatabaseSetup("classpath:/testData/clearAll.xml"),
+	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 	@DatabaseSetup("classpath:/testData/publicationType.xml"),
 	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
@@ -168,7 +168,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
     public static void assertPub1(Publication<?> pub) {
     	assertEquals(1, pub.getId().intValue());
         assertEquals("sir20145083", pub.getIndexId());
-        assertEquals("2014-07-14T17:27:36.000", pub.getDisplayToPublicDate().toString());
+        assertEquals("2014-07-14T17:27:36", pub.getDisplayToPublicDate().toString());
         assertEquals(18, pub.getPublicationType().getId().intValue());
         assertEquals(5, pub.getPublicationSubtype().getId().intValue());
         assertEquals(334, pub.getSeriesTitle().getId().intValue());
@@ -245,7 +245,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
     public static void assertPub2(Publication<?> pub) {
         assertEquals(2, pub.getId().intValue());
         assertEquals("2", pub.getIndexId());
-        assertEquals("2014-07-22T20:06:10.000", pub.getDisplayToPublicDate().toString());
+        assertEquals("2014-07-22T20:06:10", pub.getDisplayToPublicDate().toString());
         assertEquals(18, pub.getPublicationType().getId().intValue());
         assertEquals(5, pub.getPublicationSubtype().getId().intValue());
         assertEquals(331, pub.getSeriesTitle().getId().intValue());
@@ -327,7 +327,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
     public static MpPublication updatePubProperties(final MpPublication pubToUpdate) {
         MpPublication updatedPub = pubToUpdate;
         updatedPub.setIndexId("indexid2" + updatedPub.getId());
-        updatedPub.setDisplayToPublicDate(new LocalDateTime(2012, 8, 23, 0, 0, 0));
+        updatedPub.setDisplayToPublicDate(LocalDateTime.of(2012, 8, 23, 0, 0, 0));
         PublicationType pubType = new PublicationType();
         pubType.setId(23);
         updatedPub.setPublicationType(pubType);
@@ -357,8 +357,8 @@ public class MpPublicationDaoTest extends BaseSpringTest {
         updatedPub.setNumberOfPages("6");
         updatedPub.setOnlineOnly("2");
         updatedPub.setAdditionalOnlineFiles("2");
-        updatedPub.setTemporalStart(new LocalDate(2010,10,10));
-        updatedPub.setTemporalEnd(new LocalDate(2012,12,12));
+        updatedPub.setTemporalStart(LocalDate.of(2010,10,10));
+        updatedPub.setTemporalEnd(LocalDate.of(2012,12,12));
         updatedPub.setNotes("notes2");
         updatedPub.setIpdsId("ipds_i2" + updatedPub.getId());
         updatedPub.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
@@ -377,7 +377,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
         updatedPub.setEdition("Edition XU");
         updatedPub.setComments("just a little commentU");
         updatedPub.setTableOfContents("tbl contentsU");
-        updatedPub.setPublishedDate(new LocalDate(2010,10,11));
+        updatedPub.setPublishedDate(LocalDate.of(2010,10,11));
         PublishingServiceCenter publishingServiceCenter = new PublishingServiceCenter();
         publishingServiceCenter.setId(2);
         updatedPub.setPublishingServiceCenter(publishingServiceCenter);
@@ -387,7 +387,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
         Publication<?> sb = new MpPublication();
         sb.setId(1);
         updatedPub.setSupersededBy(sb);
-        updatedPub.setRevisedDate(new LocalDate(2007,7,7));
+        updatedPub.setRevisedDate(LocalDate.of(2007,7,7));
         return updatedPub;
     }
 }

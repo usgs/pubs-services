@@ -27,7 +27,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 @Category(IntegrationTest.class)
 @DatabaseSetups({
-	@DatabaseSetup("classpath:/testData/clearAll.xml"),
+	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 	@DatabaseSetup("classpath:/testData/publicationType.xml"),
 	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
@@ -39,6 +39,8 @@ public class MpListBusServiceTest extends BaseSpringTest {
     public Validator validator;
 
     private MpListBusService busService;
+
+    public static final int MP_LIST_CNT = 32;
 
     @Before
     public void initTest() throws Exception {
@@ -77,7 +79,7 @@ public class MpListBusServiceTest extends BaseSpringTest {
         filters.clear();
         mpLists = busService.getObjects(filters);
         assertNotNull(mpLists);
-        assertEquals(31, mpLists.size());
+        assertEquals(MP_LIST_CNT, mpLists.size());
 
         //Now we want just spn...
         PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_SPN_USER.name()));

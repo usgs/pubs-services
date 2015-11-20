@@ -4,7 +4,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseSetups;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
+
 import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.Contributor;
@@ -12,20 +25,13 @@ import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Test;
-
-/** 
- * Note that to test the text index we needed to pre-populate the database with the contributor data
- * This includes affiliations 1, 2, 5 & 7...
- * The liqubase scripts contain this data. The loading from the dataset.xml will override it on tests that extend BaseSpringDaoTest
- * 
- * @author drsteini
- *
- */
+@Category(IntegrationTest.class)
+@DatabaseSetups({
+	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
+	@DatabaseSetup("classpath:/testData/affiliation.xml"),
+	@DatabaseSetup("classpath:/testData/contributor.xml")
+})
+@DatabaseTearDown("classpath:/testCleanup/clearAll.xml")
 public class PersonContributorDaoTest extends BaseSpringTest {
 
     @Test

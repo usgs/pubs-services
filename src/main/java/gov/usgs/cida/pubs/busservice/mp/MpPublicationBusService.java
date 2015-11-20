@@ -35,7 +35,7 @@ import javax.validation.Validator;
 import javax.validation.groups.Default;
 
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
@@ -372,7 +372,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
     @Override
 	public ValidatorResult checkAvailability(Integer publicationId) {
 		boolean available = false;
-    	LocalDateTime now = new LocalDateTime();
+    	LocalDateTime now = LocalDateTime.now();
     	MpPublication mpPub = MpPublication.getDao().getById(publicationId);
 		if (null == mpPub) {
 			//Not in MpPublication, so available (ok to edit)

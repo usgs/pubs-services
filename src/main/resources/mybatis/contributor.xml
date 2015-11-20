@@ -120,6 +120,10 @@
                <include refid="corpCols"/>
           from contributor
     </sql>
+    
+    <sql id="defaultOrderBy">
+    	order by text
+    </sql>
 
     <select id="getById" parameterType="Integer" resultMap="result">
         <include refid="baseSelect"/>
@@ -143,18 +147,21 @@
         <where>
             <include refid="filters"/>
         </where>
+        <include refid="defaultOrderBy"/>
     </select>
 
     <select id="getByMapPersonContributor" resultMap="result">
         <include refid="baseSelect"/>
         where is_corporation = 'N'
         <include refid="filters"/>
+        <include refid="defaultOrderBy"/>
     </select>
 
     <select id="getByMapCorporateContributor" resultMap="result">
         <include refid="baseSelect"/>
         where is_corporation = 'Y'
         <include refid="filters"/>
+        <include refid="defaultOrderBy"/>
     </select>
 
     <insert id="addPersonContributor" parameterType="PersonContributor">

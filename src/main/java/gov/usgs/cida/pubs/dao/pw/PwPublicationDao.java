@@ -78,7 +78,7 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	}
 
 	@Override
-	public void stream(Map<String, Object> filters, ResultHandler handler) {
+	public void stream(Map<String, Object> filters, ResultHandler<PwPublication> handler) {
 		getSqlSession().select(NS + GET_STREAM_BY_MAP, filters, handler);
 	}
 

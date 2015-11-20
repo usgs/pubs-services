@@ -7,8 +7,9 @@ import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
 import gov.usgs.cida.pubs.utility.PubsEscapeXML10;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author drsteini
@@ -36,8 +37,9 @@ public class SpnProductionMessageService implements IIpdsService {
      * @see gov.usgs.cida.mypubsJMS.service.intfc.IService#processIpdsMessage(java.lang.Object)
      */
     @Override
+    @Transactional
     public void processIpdsMessage(final String targetDate) throws Exception {
-        LocalDate asOf = (null == targetDate || 0 == targetDate.length()) ? new LocalDate() : new LocalDate(targetDate);
+        LocalDate asOf = (null == targetDate || 0 == targetDate.length()) ? LocalDate.now() : LocalDate.parse(targetDate);
         String atomFeed = requester.getSpnProduction(asOf.toString());
         IpdsMessageLog newMessage = new IpdsMessageLog();
         newMessage.setMessageText(PubsEscapeXML10.ESCAPE_XML10.translate(atomFeed));

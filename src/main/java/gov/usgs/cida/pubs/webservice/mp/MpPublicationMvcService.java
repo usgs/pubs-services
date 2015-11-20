@@ -1,17 +1,5 @@
 package gov.usgs.cida.pubs.webservice.mp;
 
-import gov.usgs.cida.pubs.busservice.intfc.IBusService;
-import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
-import gov.usgs.cida.pubs.domain.Publication;
-import gov.usgs.cida.pubs.domain.SearchResults;
-import gov.usgs.cida.pubs.domain.mp.MpPublication;
-import gov.usgs.cida.pubs.json.ResponseView;
-import gov.usgs.cida.pubs.json.view.intfc.IMpView;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
-import gov.usgs.cida.pubs.validation.ValidationResults;
-import gov.usgs.cida.pubs.validation.ValidatorResult;
-import gov.usgs.cida.pubs.webservice.MvcService;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +20,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.fasterxml.jackson.annotation.JsonView;
+
+import gov.usgs.cida.pubs.busservice.intfc.IBusService;
+import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.SearchResults;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.json.View;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
+import gov.usgs.cida.pubs.webservice.MvcService;
 
 /**
  * @author drsteini
@@ -55,7 +56,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     }
     
     @RequestMapping(method = RequestMethod.GET)
-    @ResponseView(IMpView.class)
+    @JsonView(View.MP.class)
     public @ResponseBody SearchResults getPubs(
     		@RequestParam(value="q", required=false) String searchTerms, //single string search
             @RequestParam(value="title", required=false) String[] title,
@@ -115,7 +116,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     }
 
     @RequestMapping(value="{publicationId}", method=RequestMethod.GET)
-    @ResponseView(IMpView.class)
+    @JsonView(View.MP.class)
     @Transactional
     public @ResponseBody MpPublication getMpPublication(HttpServletRequest request, HttpServletResponse response,
                 @PathVariable("publicationId") String publicationId) {
@@ -137,7 +138,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     }
 
     @RequestMapping(value="{indexId}/preview", method=RequestMethod.GET)
-    @ResponseView(IMpView.class)
+    @JsonView(View.MP.class)
     @Transactional(readOnly = true)
     public @ResponseBody MpPublication getMpPublicationPreview(HttpServletRequest request, HttpServletResponse response,
                 @PathVariable("indexId") String indexId) {
@@ -151,7 +152,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    @ResponseView(IMpView.class)
+    @JsonView(View.MP.class)
     @Transactional
     public @ResponseBody MpPublication createPub(@RequestBody MpPublication pub, HttpServletResponse response) {
         setHeaders(response);
@@ -165,7 +166,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     }
 
     @RequestMapping(value = "{publicationId}", method = RequestMethod.PUT)
-    @ResponseView(IMpView.class)
+    @JsonView(View.MP.class)
     @Transactional
     public @ResponseBody MpPublication updateMpPublication(@RequestBody MpPublication pub, @PathVariable String publicationId,
     		HttpServletResponse response) {
@@ -188,7 +189,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     }
 
     @RequestMapping(value = "{publicationId}", method = RequestMethod.DELETE)
-    @ResponseView(IMpView.class)
+    @JsonView(View.MP.class)
     @Transactional
     public @ResponseBody ValidationResults deletePub(@PathVariable String publicationId, HttpServletResponse response) {
         setHeaders(response);
@@ -210,7 +211,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     }
 
     @RequestMapping(value = "publish", method = RequestMethod.POST)
-    @ResponseView(IMpView.class)
+    @JsonView(View.MP.class)
 	@Transactional
 	public @ResponseBody ValidationResults publishPub(@RequestBody MpPublication pub, HttpServletResponse response) {
         setHeaders(response);
@@ -233,7 +234,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 	}
 
     @RequestMapping(value = "release", method = RequestMethod.POST)
-    @ResponseView(IMpView.class)
+    @JsonView(View.MP.class)
 	@Transactional
 	public @ResponseBody ValidationResults releasePub(@RequestBody MpPublication pub, HttpServletResponse response) {
         setHeaders(response);

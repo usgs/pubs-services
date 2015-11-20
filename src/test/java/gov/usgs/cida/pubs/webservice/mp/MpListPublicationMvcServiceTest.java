@@ -58,7 +58,7 @@ public class MpListPublicationMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONArray(rtn),
                 sameJSONArrayAs(new JSONArray("[{\"mpList\":{\"id\":66,\"text\":\"List 66\",\"description\":\"Description 66\",\"type\":\"SPN\"},\"mpPublication\":{\"id\":12,\"validationErrors\":[],\"text\":\"null - null - null\"}}]")));
     }
 
@@ -72,7 +72,7 @@ public class MpListPublicationMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
         
-        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONObject(rtn),
                 sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
     }
 

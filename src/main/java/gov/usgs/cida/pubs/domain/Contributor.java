@@ -1,55 +1,54 @@
 package gov.usgs.cida.pubs.domain;
 
-import gov.usgs.cida.pubs.dao.intfc.IDao;
-import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
-import gov.usgs.cida.pubs.json.view.intfc.IPwView;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
-
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+
+import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.json.View;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 public class Contributor<D> extends BaseDomain<Contributor<D>> {
 
     private static IDao<Contributor<?>> contributorDao;
 
     @JsonProperty("corporation")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @NotNull
     //TODO cross-field validations
-    protected boolean corporation;
+    protected Boolean corporation;
 
     @JsonProperty("usgs")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @NotNull
     //TODO cross-field validations
-    protected boolean usgs;
+    protected Boolean usgs;
 
-    public boolean isCorporation() {
+    public Boolean isCorporation() {
         return corporation;
     }
 
-    public boolean isUsgs() {
+    public Boolean isUsgs() {
         return usgs;
     }
 
     @Override
     @JsonProperty("contributorId")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     public Integer getId() {
         return id;
     }
 
     @Override
     @JsonProperty("contributorId")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     public void setId(final String inId) {
         id = PubsUtilities.parseInteger(inId);
     }
 
     @JsonProperty("id")
-    @JsonView(ILookupView.class)
+	@JsonView(View.Lookup.class)
     public Integer getLookupId() {
         return id;
     }

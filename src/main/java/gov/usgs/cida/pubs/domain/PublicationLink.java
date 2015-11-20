@@ -1,6 +1,6 @@
 package gov.usgs.cida.pubs.domain;
 
-import gov.usgs.cida.pubs.json.view.intfc.IPwView;
+import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 
 import java.io.Serializable;
@@ -26,40 +26,40 @@ public class PublicationLink<D> extends BaseDomain<D> implements Serializable {
     private Integer publicationId;
 
     @JsonProperty("rank")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     private Integer rank;
 
     @JsonProperty("type")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @NotNull
     private LinkType linkType;
 
     @JsonProperty("url")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @URL
     private String url;
 
     @JsonProperty("text")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
 	@Length(min = 0, max = 4000)
     private String text;
 
     @JsonProperty("size")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
 	@Length(min = 0, max = 100)
     private String size;
 
     @JsonProperty("linkFileType")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     private LinkFileType linkFileType;
 
     @JsonProperty("description")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
 	@Length(min = 0, max = 4000)
     private String description;
 
     @JsonProperty("linkHelpText")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
 	@Length(min = 0, max = 4000)
     private String helpText;
 

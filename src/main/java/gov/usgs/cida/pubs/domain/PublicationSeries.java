@@ -2,7 +2,7 @@ package gov.usgs.cida.pubs.domain;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
-import gov.usgs.cida.pubs.json.view.intfc.IPwView;
+import gov.usgs.cida.pubs.json.View;
 
 import java.io.Serializable;
 
@@ -33,14 +33,14 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
 
     private String seriesDoiName;
 
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     private String onlineIssn;
 
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     private String printIssn;
 
     @JsonIgnore
-    private boolean active;
+    private Boolean active;
 
     /**
      * @return the publicationSubtype
@@ -97,11 +97,11 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
         printIssn = inPrintIssn;
     }
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return active;
     }
 
-    public void setActive(final boolean inActive) {
+    public void setActive(final Boolean inActive) {
         active = inActive;
     }
 

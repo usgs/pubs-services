@@ -2,14 +2,23 @@ package gov.usgs.cida.pubs.dao.ipds;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.domain.ipds.IpdsPubTypeConv;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
+
+import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.IntegrationTest;
+import gov.usgs.cida.pubs.domain.ipds.IpdsPubTypeConv;
+
+@Category(IntegrationTest.class)
+@DatabaseTearDown("classpath:/testCleanup/clearAll.xml")
 public class IpdsPubTypeConvDaoTest extends BaseSpringTest {
 
     @Test
+	@DatabaseSetup("classpath:/testData/ipdsPubsTypeConv.xml")
     public void getByIpdsValueTest() {
         assertNull(IpdsPubTypeConv.getDao().getByIpdsValue(null));
 

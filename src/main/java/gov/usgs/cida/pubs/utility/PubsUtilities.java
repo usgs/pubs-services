@@ -67,7 +67,7 @@ public final class PubsUtilities {
     	if (null != auth && null != auth.getAuthorities() && auth instanceof PubsAuthentication) {
     		Iterator<? extends GrantedAuthority> i = auth.getAuthorities().iterator();
     		while (i.hasNext() && !rtn) {
-    			if (i.next().getAuthority().equalsIgnoreCase(PubsRoles.PUBS_SPN_USER.name())) {
+    			if (i.next().getAuthority().equalsIgnoreCase(PubsRoles.PUBS_SPN_USER.getSpringRole())) {
     				rtn = true;
     			}
     		}
@@ -83,10 +83,10 @@ public final class PubsUtilities {
     		Iterator<? extends GrantedAuthority> i = auth.getAuthorities().iterator();
     		while (i.hasNext()) {
     			GrantedAuthority gAuth = i.next();
-    			if (gAuth.getAuthority().equalsIgnoreCase(PubsRoles.PUBS_SPN_USER.name())) {
+    			if (gAuth.getAuthority().equalsIgnoreCase(PubsRoles.PUBS_SPN_USER.getSpringRole())) {
     				hasSpn = true;
-    			} else if (gAuth.getAuthority().equalsIgnoreCase(PubsRoles.PUBS_ADMIN.name())
-    					|| gAuth.getAuthority().equalsIgnoreCase(PubsRoles.PUBS_CATALOGER_USER.name())) {
+    			} else if (gAuth.getAuthority().equalsIgnoreCase(PubsRoles.PUBS_ADMIN.getSpringRole())
+    					|| gAuth.getAuthority().equalsIgnoreCase(PubsRoles.PUBS_CATALOGER_USER.getSpringRole())) {
     				hasOther = true;
     			}
     		}

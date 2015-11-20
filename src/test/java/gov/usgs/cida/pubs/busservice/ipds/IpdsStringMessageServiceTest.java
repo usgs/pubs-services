@@ -7,6 +7,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
 
@@ -14,19 +15,23 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+
 /**
  * @author drsteini
  *
  */
-
+@Category(IntegrationTest.class)
+@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
 public class IpdsStringMessageServiceTest extends BaseSpringTest {
 
     @Mock
@@ -67,7 +72,7 @@ public class IpdsStringMessageServiceTest extends BaseSpringTest {
             List<IpdsMessageLog> logs = IpdsMessageLog.getDao().getByMap(null);
             assertNotNull(logs);
             assertEquals(1, logs.size());
-            assertEquals("<root>" + new LocalDate() + "</root>", logs.get(0).getMessageText());
+            assertEquals("<root>" + LocalDate.now() + "</root>", logs.get(0).getMessageText());
             assertEquals("Did Processing", logs.get(0).getProcessingDetails());
         } catch (Exception e) {
             fail(e.getMessage());
@@ -81,7 +86,7 @@ public class IpdsStringMessageServiceTest extends BaseSpringTest {
             List<IpdsMessageLog> logs = IpdsMessageLog.getDao().getByMap(null);
             assertNotNull(logs);
             assertEquals(1, logs.size());
-            assertEquals("<root>" + new LocalDate() + "</root>", logs.get(0).getMessageText());
+            assertEquals("<root>" + LocalDate.now() + "</root>", logs.get(0).getMessageText());
             assertEquals("Did Processing", logs.get(0).getProcessingDetails());
         } catch (Exception e) {
             fail(e.getMessage());

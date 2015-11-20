@@ -12,8 +12,6 @@
 
     <aop:aspectj-autoproxy/>
 
-    <bean class="gov.usgs.cida.pubs.json.JsonViewSupportFactoryBean" />
-
     <bean id="setDbContextAspect" class="gov.usgs.cida.pubs.aop.SetDbContextAspect" autowire="byName"/>
 
     <bean id="resourceBundleMessageInterpolator" class="org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator"/>

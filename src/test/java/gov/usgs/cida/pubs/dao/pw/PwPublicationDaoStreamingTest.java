@@ -24,18 +24,18 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 @Category(IntegrationTest.class)
 @DatabaseSetups({
-	@DatabaseSetup("classpath:/testData/clearAll.xml"),
+	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 	@DatabaseSetup("classpath:/testData/publicationType.xml"),
 	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 	@DatabaseSetup("classpath:/testData/publicationStream.xml")
 })
 public class PwPublicationDaoStreamingTest extends BaseSpringTest {
 
-	private class TestResultHandler implements ResultHandler {
+	private class TestResultHandler<T> implements ResultHandler<T> {
 		public ArrayList<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
 		@Override
 		@SuppressWarnings("unchecked")
-		public void handleResult(ResultContext context) {
+		public void handleResult(ResultContext<? extends T> context) {
 			results.add((Map<String, Object>) context.getResultObject());
 		}
 	}
@@ -47,7 +47,7 @@ public class PwPublicationDaoStreamingTest extends BaseSpringTest {
     	//   see the <changeSet author="drsteini" id="testPublicationIndex" context="citrans" runOnChange="true"> in schema-pubs
     	// - Too many rows returned probably means the VPD got hosed.
     	//   see the changeLogVpd.xml file in schema-pubs
-		TestResultHandler handler = new TestResultHandler();
+		TestResultHandler<PwPublication> handler = new TestResultHandler<>();
     	Map<String, Object> filters = new HashMap<>();
     	filters.put("orderBy", "publication_year");
     	PwPublication.getDao().stream(filters, handler);
@@ -116,7 +116,7 @@ public class PwPublicationDaoStreamingTest extends BaseSpringTest {
 	
     @Test
     public void getStreamByMapSyntaxTest() {
-		TestResultHandler handler = new TestResultHandler();
+		TestResultHandler<PwPublication> handler = new TestResultHandler<>();
     	PwPublication.getDao().stream(buildAllFilters(), handler);
     	//TODO real filter testing, not just parsing 
     }

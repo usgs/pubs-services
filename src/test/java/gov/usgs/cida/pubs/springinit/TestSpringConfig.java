@@ -1,40 +1,26 @@
 package gov.usgs.cida.pubs.springinit;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 
-import javax.naming.NamingException;
-
-import oracle.jdbc.pool.OracleDataSource;
-
+import org.apache.commons.io.IOUtils;
 import org.dbunit.ext.oracle.OracleDataTypeFactory;
-import org.mybatis.spring.SqlSessionFactoryBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.transaction.PlatformTransactionManager;
 
 import com.github.springtestdbunit.bean.DatabaseConfigBean;
 import com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean;
 
-@Configuration
-@ImportResource("classpath:spring/testContext.xml")
+import oracle.jdbc.pool.OracleDataSource;
+
 @PropertySource(value = "classpath:test.properties")
-public class TestSpringConfig extends SpringConfig {
-
-	public TestSpringConfig() throws NamingException {
-		super();
-	}
-
-	private final Logger log = LoggerFactory.getLogger(getClass());
+public class TestSpringConfig {
 
 	@Autowired
 	private Environment env;
@@ -45,20 +31,6 @@ public class TestSpringConfig extends SpringConfig {
 	}
 
 	@Bean
-	public SqlSessionFactoryBean sqlSessionFactory() {
-		SqlSessionFactoryBean mybatis = new SqlSessionFactoryBean();
-		Resource mybatisConfig = new ClassPathResource("mybatis/dataMapperConfig.xml");
-		mybatis.setConfigLocation(mybatisConfig);
-		try {
-			mybatis.setDataSource(dataSource());
-		} catch (SQLException e) {
-			log.info("Issue creating testDataSource" + e.getLocalizedMessage());
-			throw new RuntimeException(e);
-		}
-		return mybatis;
-	}
-
-	@Bean
 	public OracleDataSource dataSource() throws SQLException {
 		OracleDataSource ds = new OracleDataSource();
 		ds.setURL(env.getProperty("jdbc.mypubs.url"));
@@ -66,13 +38,6 @@ public class TestSpringConfig extends SpringConfig {
 		ds.setPassword(env.getProperty("jdbc.mypubs.password"));
 		return ds;
 	}
-
-  @Bean
-  public PlatformTransactionManager transactionManager() throws Exception {
-  	DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
-  	transactionManager.setDataSource(dataSource());
-  	return transactionManager;
-  }
 
 	//Beans to support DBunit for unit testing with Oracle.
 	@Bean
@@ -93,7 +58,6 @@ public class TestSpringConfig extends SpringConfig {
 		return dbUnitDatabaseConnection;
 	}
 
-	
 	@Bean
 	public String ipdsPubsWsPwd() {
 		return env.getProperty("pubs.ipdsPubsWsPwd");
@@ -106,7 +70,7 @@ public class TestSpringConfig extends SpringConfig {
 
 	@Bean
 	public String brokerURL() {
-		return "tcp://localhost:61616";
+		return "vm://localhost?broker.persistent=false";
 	}
 
 	@Bean
@@ -165,11 +129,6 @@ public class TestSpringConfig extends SpringConfig {
 	}
 
 	@Bean
-	public String authService() {
-		return "localhost";
-	}
-
-	@Bean
 	public Integer lockTimeoutHours() {
 		return 3;
 	}
@@ -182,6 +141,114 @@ public class TestSpringConfig extends SpringConfig {
 	@Bean
 	public String warehouseEndpoint() {
 		return "http://pubs.er.usgs.gov";
+	}
+
+	@Value("classpath:testResult/getMpPub1.json")
+	private Resource mpPub1;
+	@Bean
+    public String expectedGetMpPub1() throws IOException {
+		try (InputStream is = mpPub1.getInputStream()) {
+			return IOUtils.toString(is);
+		}
+	}
+
+	@Value("classpath:testResult/getRssPub.xml")
+	private Resource rssPub;
+	@Bean
+	public String expectedGetRssPub() throws IOException {
+		try (InputStream is = rssPub.getInputStream()) {
+			return IOUtils.toString(is);
+		}
+	}
+
+	@Value("classpath:testData/contributors.xml")
+	private Resource contributors;
+	@Bean
+	public String contributorsXml() throws IOException {
+		try (InputStream is = contributors.getInputStream()) {
+			return IOUtils.toString(is);
+		}
+	}
+
+	@Value("classpath:testData/usgsContributor.xml")
+	private Resource usgsContributor;
+	@Bean
+	public String usgsContributorXml() throws IOException {
+		try (InputStream is = usgsContributor.getInputStream()) {
+			return IOUtils.toString(is);
+		}
+	}
+
+	@Value("classpath:testData/newOutsideContributor.xml")
+	private Resource newOutsideContributor;
+	@Bean
+	public String newOutsideContributorXml() throws IOException {
+		try (InputStream is = newOutsideContributor.getInputStream()) {
+			return IOUtils.toString(is);
+		}
+	}
+	
+	@Value("classpath:testData/existingOutsideContributor.xml")
+	private Resource existingOutsideContributor;
+	@Bean
+	public String existingOutsideContributorXml() throws IOException {
+		try (InputStream is = existingOutsideContributor.getInputStream()) {
+			return IOUtils.toString(is);
+		}
+	}
+
+	@Value("classpath:testData/costCenter.xml")
+	private Resource costCenter;
+	@Bean
+	public String costCenterXml() throws IOException {
+		try (InputStream is = costCenter.getInputStream()) {
+			return IOUtils.toString(is);
+		}
+	}
+
+	@Value("classpath:testData/feed.xml")
+	private Resource feed;
+	@Bean
+	public String feedXml() throws IOException {
+		try (InputStream is = feed.getInputStream()) {
+			return IOUtils.toString(is);
+		}
+	}
+
+	@Value("classpath:testData/bad.xml")
+	private Resource bad;
+	@Bean
+	public String badXml() throws IOException {
+		try (InputStream is = bad.getInputStream()) {
+			return IOUtils.toString(is);
+		}
+	}
+
+	@Value("classpath:testData/notes.xml")
+	private Resource notes;
+	@Bean
+	public String notesXml() throws IOException {
+		try (InputStream is = notes.getInputStream()) {
+			return IOUtils.toString(is);
+		}
+	}
+
+	@Value("classpath:testResult/ofr20131259.xml")
+	private Resource ofr20131259;
+	@Bean
+	public String ofr20131259Xml() throws IOException {
+		try (InputStream is = ofr20131259.getInputStream()) {
+			return IOUtils.toString(is);
+		}
+	}
+
+	@Value("classpath:testResult/testUnNumberedSeries.xml")
+	private Resource testUnNumberedSeries;
+	@Bean
+	public String testUnNumberedSeriesXml() throws IOException {
+		try (InputStream is = testUnNumberedSeries.getInputStream()) {
+			return IOUtils.toString(is);
+		}
 	}
 
 }

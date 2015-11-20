@@ -6,13 +6,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONArrayAs;
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.dao.ContributorDaoTest;
-import gov.usgs.cida.pubs.dao.ContributorTypeDaoTest;
-import gov.usgs.cida.pubs.dao.LinkFileTypeDaoTest;
-import gov.usgs.cida.pubs.dao.LinkTypeDaoTest;
-import gov.usgs.cida.pubs.dao.PublishingServiceCenterDaoTest;
 
 import org.json.JSONArray;
 import org.junit.Before;
@@ -21,6 +14,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.dao.ContributorDaoTest;
+import gov.usgs.cida.pubs.dao.ContributorTypeDaoTest;
+import gov.usgs.cida.pubs.dao.LinkFileTypeDaoTest;
+import gov.usgs.cida.pubs.dao.LinkTypeDaoTest;
+import gov.usgs.cida.pubs.dao.PublishingServiceCenterDaoTest;
 
 public class LookupMvcServiceTest extends BaseSpringTest {
 
@@ -39,8 +40,9 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"id\":4,\"text\":\"Book\"},{\"id\":5,\"text\":\"Book chapter\"}]")));
+		assertThat(getRtnAsJSONArray(rtn),
+				sameJSONArrayAs(new JSONArray("[{\"id\":4,\"text\":\"Book\"},{\"id\":5,\"text\":\"Book chapter\"}]"))
+						.allowingAnyArrayOrdering());
     }
 
     @Test
@@ -51,8 +53,8 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"id\":11,\"text\":\"Bibliography\"}]")));
+		assertThat(getRtnAsJSONArray(rtn),
+				sameJSONArrayAs(new JSONArray("[{\"id\":11,\"text\":\"Bibliography\"}]")).allowingAnyArrayOrdering());
     }
 
     @Test
@@ -63,8 +65,8 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"id\":11,\"text\":\"Bibliography\"}]")));
+		assertThat(getRtnAsJSONArray(rtn),
+				sameJSONArrayAs(new JSONArray("[{\"id\":11,\"text\":\"Bibliography\"}]")).allowingAnyArrayOrdering());
     }
 
     @Test
@@ -75,7 +77,7 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertEquals(ContributorTypeDaoTest.contributorTypeCnt, new JSONArray(rtn.getResponse().getContentAsString()).length());
+        assertEquals(ContributorTypeDaoTest.contributorTypeCnt, getRtnAsJSONArray(rtn).length());
 
         rtn = mockLookup.perform(get("/lookup/contributortypes?text=au").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -83,8 +85,8 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"id\":1,\"text\":\"Authors\"}]")));
+		assertThat(getRtnAsJSONArray(rtn),
+				sameJSONArrayAs(new JSONArray("[{\"id\":1,\"text\":\"Authors\"}]")).allowingAnyArrayOrdering());
     }
 
     @Test
@@ -95,7 +97,7 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertEquals(PublishingServiceCenterDaoTest.PSC_CNT, new JSONArray(rtn.getResponse().getContentAsString()).length());
+        assertEquals(PublishingServiceCenterDaoTest.PSC_CNT, getRtnAsJSONArray(rtn).length());
 
         rtn = mockLookup.perform(get("/lookup/publishingServiceCenters?text=r").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -103,10 +105,14 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertEquals(PublishingServiceCenterDaoTest.PSC_R_CNT, new JSONArray(rtn.getResponse().getContentAsString()).length());
+        JSONArray rtnAsJSONArray = getRtnAsJSONArray(rtn);
+        
+        assertEquals(PublishingServiceCenterDaoTest.PSC_R_CNT, rtnAsJSONArray.length());
 
-        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"id\":4,\"text\":\"Rolla PSC\"},{\"id\":8,\"text\":\"Raleigh PSC\"},{\"id\":9,\"text\":\"Reston PSC\"}]")));
+		assertThat(rtnAsJSONArray,
+				sameJSONArrayAs(new JSONArray(
+						"[{\"id\":4,\"text\":\"Rolla PSC\"},{\"id\":8,\"text\":\"Raleigh PSC\"},{\"id\":9,\"text\":\"Reston PSC\"}]"))
+								.allowingAnyArrayOrdering());
     }
 
     @Test
@@ -117,7 +123,7 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertEquals(LinkTypeDaoTest.LINK_TYPES_CNT, new JSONArray(rtn.getResponse().getContentAsString()).length());
+        assertEquals(LinkTypeDaoTest.LINK_TYPES_CNT, getRtnAsJSONArray(rtn).length());
 
         rtn = mockLookup.perform(get("/lookup/linktypes?text=r").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -125,10 +131,14 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertEquals(LinkTypeDaoTest.LINK_TYPES_R_CNT, new JSONArray(rtn.getResponse().getContentAsString()).length());
+        JSONArray rtnAsJSONArray = getRtnAsJSONArray(rtn);
+        
+        assertEquals(LinkTypeDaoTest.LINK_TYPES_R_CNT, rtnAsJSONArray.length());
 
-        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"id\":19,\"text\":\"Raw Data\"},{\"id\":20,\"text\":\"Read Me\"},{\"id\":21,\"text\":\"Referenced Work\"},{\"id\":22,\"text\":\"Related Work\"}]")));
+		assertThat(rtnAsJSONArray,
+				sameJSONArrayAs(new JSONArray(
+						"[{\"id\":19,\"text\":\"Raw Data\"},{\"id\":20,\"text\":\"Read Me\"},{\"id\":21,\"text\":\"Referenced Work\"},{\"id\":22,\"text\":\"Related Work\"}]"))
+								.allowingAnyArrayOrdering());
     }
 
     @Test
@@ -139,11 +149,14 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertEquals(LinkFileTypeDaoTest.LINK_FILE_TYPES_CNT, new JSONArray(rtn.getResponse().getContentAsString()).length());
+        JSONArray rtnAsJSONArray = getRtnAsJSONArray(rtn);
+        
+        assertEquals(LinkFileTypeDaoTest.LINK_FILE_TYPES_CNT, getRtnAsJSONArray(rtn).length());
 
-        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"id\":1,\"text\":\"pdf\"},{\"id\":2,\"text\":\"txt\"}," 
-                		+ "{\"id\":3,\"text\":\"xlsx\"},{\"id\":4,\"text\":\"shapefile\"},{\"id\":5,\"text\":\"html\"}]")));
+		assertThat(rtnAsJSONArray,
+				sameJSONArrayAs(new JSONArray("[{\"id\":1,\"text\":\"pdf\"},{\"id\":2,\"text\":\"txt\"},"
+						+ "{\"id\":3,\"text\":\"xlsx\"},{\"id\":4,\"text\":\"shapefile\"},{\"id\":5,\"text\":\"html\"}"
+						+ ",{\"id\":6,\"text\":\"zip\"},{\"id\":7,\"text\":\"csv\"}]")).allowingAnyArrayOrdering());
         
         rtn = mockLookup.perform(get("/lookup/linkfiletypes?text=s").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -151,10 +164,12 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertEquals(LinkFileTypeDaoTest.LINK_FILE_TYPES_S_CNT, new JSONArray(rtn.getResponse().getContentAsString()).length());
+        rtnAsJSONArray = getRtnAsJSONArray(rtn);
+        
+        assertEquals(LinkFileTypeDaoTest.LINK_FILE_TYPES_S_CNT, rtnAsJSONArray.length());
 
-        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"id\":4,\"text\":\"shapefile\"}]")));
+		assertThat(rtnAsJSONArray,
+				sameJSONArrayAs(new JSONArray("[{\"id\":4,\"text\":\"shapefile\"}]")).allowingAnyArrayOrdering());
     }
 
     @Test
@@ -165,7 +180,7 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertEquals(ContributorDaoTest.PERSON_CONTRIBUTOR_CNT, new JSONArray(rtn.getResponse().getContentAsString()).length());
+        assertEquals(ContributorDaoTest.PERSON_CONTRIBUTOR_CNT, getRtnAsJSONArray(rtn).length());
 
         rtn = mockLookup.perform(get("/lookup/people?text=out").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -173,10 +188,14 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertEquals(1, new JSONArray(rtn.getResponse().getContentAsString()).length());
+        JSONArray rtnAsJSONArray = getRtnAsJSONArray(rtn);
+        
+        assertEquals(1, rtnAsJSONArray.length());
 
-        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"id\":3,\"text\":\"outerfamily, outerGiven outerSuffix outer@gmail.com\"}]")));
+		assertThat(rtnAsJSONArray,
+				sameJSONArrayAs(
+						new JSONArray("[{\"id\":3,\"text\":\"outerfamily, outerGiven outerSuffix outer@gmail.com\"}]"))
+								.allowingAnyArrayOrdering());
     }
 
     @Test
@@ -187,7 +206,7 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertEquals(ContributorDaoTest.CORPORATE_CONTRIBUTOR_CNT, new JSONArray(rtn.getResponse().getContentAsString()).length());
+        assertEquals(ContributorDaoTest.CORPORATE_CONTRIBUTOR_CNT, getRtnAsJSONArray(rtn).length());
 
         rtn = mockLookup.perform(get("/lookup/corporations?text=us geo").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -195,10 +214,13 @@ public class LookupMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertEquals(1, new JSONArray(rtn.getResponse().getContentAsString()).length());
+        JSONArray rtnAsJSONArray = getRtnAsJSONArray(rtn);
+        
+        assertEquals(1, rtnAsJSONArray.length());
 
-        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
-                sameJSONArrayAs(new JSONArray("[{\"id\":2,\"text\":\"US Geological Survey Ice Survey Team\"}]")));
+		assertThat(rtnAsJSONArray,
+				sameJSONArrayAs(new JSONArray("[{\"id\":2,\"text\":\"US Geological Survey Ice Survey Team\"}]"))
+						.allowingAnyArrayOrdering());
     }
     
 }

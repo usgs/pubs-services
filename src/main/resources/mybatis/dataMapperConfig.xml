@@ -60,11 +60,11 @@
     </typeAliases>
 
     <typeHandlers>
-        <typeHandler javaType="org.joda.time.LocalDate" handler="gov.usgs.cida.pubs.dao.typehandler.LocalDateTypeHandler"/>
-        <typeHandler javaType="org.joda.time.LocalDateTime" handler="gov.usgs.cida.pubs.dao.typehandler.LocalDateTimeTypeHandler"/>
+        <typeHandler javaType="java.time.LocalDate" handler="gov.usgs.cida.pubs.dao.typehandler.LocalDateTypeHandler"/>
+        <typeHandler javaType="java.time.LocalDateTime" handler="gov.usgs.cida.pubs.dao.typehandler.LocalDateTimeTypeHandler"/>
         <typeHandler javaType="java.lang.Boolean" handler="gov.usgs.cida.pubs.dao.typehandler.StringBooleanTypeHandler"/>
         <typeHandler javaType="PubMap" handler="gov.usgs.cida.pubs.dao.typehandler.PubMapTypeHandler"/>
-        <typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="gov.usgs.cida.pubs.domain.Predicate"/>
+        <typeHandler javaType="gov.usgs.cida.pubs.domain.Predicate" handler="org.apache.ibatis.type.EnumOrdinalTypeHandler"/>
     </typeHandlers>
 
     <mappers>

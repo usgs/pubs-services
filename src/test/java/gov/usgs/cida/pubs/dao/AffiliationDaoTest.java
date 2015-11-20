@@ -24,7 +24,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 @Category(IntegrationTest.class)
 @DatabaseSetups({
-	@DatabaseSetup("classpath:/testData/clearAll.xml"),
+	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 	@DatabaseSetup("classpath:/testData/publicationType.xml"),
 	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),

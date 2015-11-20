@@ -19,6 +19,30 @@
         <include refid="base.auditCols"/>
     </sql>
 
+	<sql id="hosts">
+		#{id,jdbcType=NUMERIC},
+		#{publicationSubtype.id,jdbcType=NUMERIC},
+		#{text,jdbcType=VARCHAR},
+		#{code,jdbcType=VARCHAR},
+		#{seriesDoiName,jdbcType=VARCHAR},
+		#{printIssn,jdbcType=VARCHAR},
+		#{onlineIssn,jdbcType=VARCHAR},
+		#{active,jdbcType=VARCHAR},
+        <include refid="base.auditHosts"/>
+	</sql>
+
+	<sql id="sets">
+		publication_series_id = #{id,jdbcType=NUMERIC},
+		publication_subtype_id = #{publicationSubtype.id,jdbcType=NUMERIC},
+		name = #{text,jdbcType=VARCHAR},
+		code = #{code,jdbcType=VARCHAR},
+		doi_name = #{seriesDoiName,jdbcType=VARCHAR},
+		print_issn = #{printIssn,jdbcType=VARCHAR},
+		online_issn = #{onlineIssn,jdbcType=VARCHAR},
+		is_active = #{active,jdbcType=VARCHAR},
+        <include refid="base.auditSets"/>
+	</sql>
+
     <sql id="filters">
         <where>
             <if test="id != null">
@@ -52,6 +76,38 @@
     <select id="getByMap" parameterType="map" resultMap="result">
         <include refid="baseSelect"/>
         <include refid="filters"/>
+        order by name
+        <include refid="base.paging"/>
     </select>
+
+    <select id="getCount" parameterType="map" resultType="Integer">
+        select count(*)
+          from publication_series
+        <include refid="filters"/>
+    </select>
+
+	<insert id="add" parameterType="mpListPublication">
+		<selectKey keyProperty="id" resultType="Integer" order="BEFORE">
+			select publication_series_seq.nextval id from dual
+		</selectKey>
+		insert into publication_series (<include refid="cols"/>)
+			values (<include refid="hosts"/>)
+	</insert>
+
+	<update id="update" parameterType="mpListPublication">
+		update publication_series
+		   set <include refid="sets"/>
+		 where publication_series_id = #{id,jdbcType=NUMERIC}
+	</update>
+	
+	<delete id="delete" parameterType="Integer">
+		delete from publication_series
+		 where publication_series_id = #{value,jdbcType=NUMERIC}
+	</delete>
+
+	<delete id="deleteByParent" parameterType="Integer">
+		delete from publication_series
+		 where publication_subtype_id = #{value,jdbcType=NUMERIC}
+	</delete>
 
 </mapper>

@@ -21,7 +21,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 @Category(IntegrationTest.class)
 @DatabaseSetups({
-	@DatabaseSetup("classpath:/testData/clearAll.xml"),
+	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 	@DatabaseSetup("classpath:/testData/publicationType.xml"),
 	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
@@ -102,7 +102,7 @@ public class PwPublicationDaoTest extends BaseSpringTest {
     public static void assertPwPub4(Publication<?> pub) {
         assertEquals(4, pub.getId().intValue());
         assertEquals("4", pub.getIndexId());
-        assertEquals("2014-07-22T17:09:24.000", pub.getDisplayToPublicDate().toString());
+        assertEquals("2014-07-22T17:09:24", pub.getDisplayToPublicDate().toString());
         assertEquals(5, pub.getPublicationType().getId().intValue());
         assertEquals(18, pub.getPublicationSubtype().getId().intValue());
         assertEquals(332, pub.getSeriesTitle().getId().intValue());

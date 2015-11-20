@@ -18,9 +18,11 @@ import org.mockito.MockitoAnnotations;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
 
+import org.hibernate.validator.internal.engine.time.DefaultTimeProvider;
+
 @Category(IntegrationTest.class)
 @DatabaseSetups({
-	@DatabaseSetup("classpath:/testData/clearAll.xml"),
+	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 	@DatabaseSetup("classpath:/testData/publicationType.xml"),
 	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
@@ -38,7 +40,7 @@ public abstract class BaseValidatorTest extends BaseSpringTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        context = new ConstraintValidatorContextImpl(methodParameterNames, propertyPath, constraintDescriptor);
+        context = new ConstraintValidatorContextImpl(methodParameterNames, DefaultTimeProvider.getInstance(), propertyPath, constraintDescriptor);
     }
 
 }

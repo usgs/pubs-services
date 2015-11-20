@@ -59,5 +59,18 @@
             where rn &gt; #{pageRowStart}
         </if>
     </sql>
+    
+    <sql id="paging">
+    	<if test="pageSize != null &amp;&amp; pageRowStart != null">
+	    	<choose>
+	    		<when test="pageRowStart > 0">
+	    			offset #{pageRowStart} rows fetch next #{pageSize} rows only
+	    		</when>
+	    		<otherwise>
+	    			fetch first #{pageSize} rows only
+	    		</otherwise>
+	    	</choose>
+    	</if>
+    </sql>
 
 </mapper>

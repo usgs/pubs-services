@@ -13,6 +13,7 @@
 	<bean id="corporateContributorBusService" class="gov.usgs.cida.pubs.busservice.CorporateContributorBusService" autowire="byName"/>
     <bean id="personContributorBusService" class="gov.usgs.cida.pubs.busservice.PersonContributorBusService" autowire="byName"/>
     <bean id="publicationBusService" class="gov.usgs.cida.pubs.busservice.PublicationBusService" autowire="byName"/>
+    <bean id="publicationSeriesBusService" class="gov.usgs.cida.pubs.busservice.PublicationSeriesBusService" autowire="byName"/>
 
     <bean id="ipdsBinding" class="gov.usgs.cida.pubs.busservice.ipds.IpdsBinding" autowire="byName"/>
     <bean id="ipdsProcess" class="gov.usgs.cida.pubs.busservice.ipds.IpdsProcess" autowire="byName"/>

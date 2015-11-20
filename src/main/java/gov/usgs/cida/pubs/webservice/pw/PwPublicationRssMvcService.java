@@ -26,7 +26,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.HttpStatus;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -171,7 +173,7 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
     	 */
     	StringBuffer rssResults = new StringBuffer("<?xml version='1.0' encoding='UTF-8'?>\n");
     	
-    	// Date in the form of "Sat, 29 Nov 2014 10:38 -0600"
+    	//Date in the form of "Sat, 29 Nov 2014 10:38 -0600"
     	SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
     	String todayDate = sdf.format(new Date());
     	
@@ -295,8 +297,8 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 	    		rssResults.append("\t\t\t<pubDate>");
 	    		LocalDateTime pubLocalDateTime = publication.getUpdateDate();
 	    		if(pubLocalDateTime != null) {
-		    		Date pubDateTime = pubLocalDateTime.toDate();
-		    		String pubDate = sdf.format(pubDateTime);
+	    	    	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("EEE, d MMM yyyy HH:mm:ss Z");
+	    			String pubDate = pubLocalDateTime.format(dtf);
 		    		rssResults.append(pubDate);
 	    		}
 	    		rssResults.append("</pubDate>\n");

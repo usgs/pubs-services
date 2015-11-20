@@ -1,6 +1,6 @@
 package gov.usgs.cida.pubs.validation;
 
-import gov.usgs.cida.pubs.json.view.intfc.IPwView;
+import gov.usgs.cida.pubs.json.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 public class ValidationResults {
 
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @JsonProperty("validationErrors")
     private List<ValidatorResult> validationErrors = new ArrayList<ValidatorResult>();
 

@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.apache.ibatis.session.ResultHandler;
 
-public interface IStreamingDao {
+public interface IStreamingDao<T> {
 
     static final String GET_STREAM_BY_MAP = ".getStreamByMap";
 
@@ -13,6 +13,6 @@ public interface IStreamingDao {
 	 * @param parameterMap - the map of query parameters from the http request
 	 * @param handler - the row handler to use for streaming data
 	 */
-	void stream(Map<String, Object> parameterMap, ResultHandler handler);
+	void stream(Map<String, Object> parameterMap, ResultHandler<T> handler);
 
 }

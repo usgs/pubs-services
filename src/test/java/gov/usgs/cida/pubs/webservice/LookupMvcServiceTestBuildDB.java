@@ -27,7 +27,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 @Category(IntegrationTest.class)
 @DatabaseSetups({
-	@DatabaseSetup("classpath:/testData/clearAll.xml"),
+	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 	@DatabaseSetup("classpath:/testData/publicationType.xml"),
 	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
@@ -50,7 +50,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertEquals(CostCenterDaoTest.COST_CENTER_CNT, new JSONArray(rtn.getResponse().getContentAsString()).length());
+        assertEquals(CostCenterDaoTest.COST_CENTER_CNT, getRtnAsJSONArray(rtn).length());
 
         rtn = mockLookup.perform(get("/lookup/costcenters?text=xa").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -58,7 +58,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONArray(rtn),
                 sameJSONArrayAs(new JSONArray("[{\"id\":3,\"text\":\"xAffiliation Cost Center 3\"},{\"id\":4,\"text\":\"xAffiliation Cost Center 4\"}]")));
     }
 
@@ -70,7 +70,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertEquals(OutsideAffiliationDaoTest.OUTSIDE_AFFILIATES_CNT, new JSONArray(rtn.getResponse().getContentAsString()).length());
+        assertEquals(OutsideAffiliationDaoTest.OUTSIDE_AFFILIATES_CNT, getRtnAsJSONArray(rtn).length());
 
         rtn = mockLookup.perform(get("/lookup/outsideaffiliates?text=xo").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -78,7 +78,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONArray(rtn),
                 sameJSONArrayAs(new JSONArray("[{\"id\":6,\"text\":\"xOutside Affiliation 2\"}]")));
     }
 
@@ -90,7 +90,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertEquals(6, new JSONArray(rtn.getResponse().getContentAsString()).length());
+        assertEquals(6, getRtnAsJSONArray(rtn).length());
 
         rtn = mockLookup.perform(get("/lookup/publications?text=9").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -98,9 +98,9 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertEquals(1, new JSONArray(rtn.getResponse().getContentAsString()).length());
+        assertEquals(1, getRtnAsJSONArray(rtn).length());
 
-        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONArray(rtn),
                 sameJSONArrayAs(new JSONArray("[{\"id\":5,\"text\":\"9 - null -  future title\"}]")));
     }
 
@@ -112,7 +112,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONArray(rtn),
                 sameJSONArrayAs(new JSONArray("[{\"id\":3803,\"text\":\"Zeitschrift fur Geomorphologie\"},"
                 		+ "{\"id\":3804,\"text\":\"Zeitschrift fur Geomorphologie, Supplementband\"},"
                 		+ "{\"id\":3805,\"text\":\"Zeitschrift fur Tierpsychologie\"}]")));
@@ -127,7 +127,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONArray(rtn),
                 sameJSONArrayAs(new JSONArray("[{\"id\":3803,\"text\":\"Zeitschrift fur Geomorphologie\"},"
                 		+ "{\"id\":3804,\"text\":\"Zeitschrift fur Geomorphologie, Supplementband\"},"
                 		+ "{\"id\":3805,\"text\":\"Zeitschrift fur Tierpsychologie\"}]")));

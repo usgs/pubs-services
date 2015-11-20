@@ -1,18 +1,5 @@
 package gov.usgs.cida.pubs.webservice.pw;
 
-import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
-import gov.usgs.cida.pubs.dao.resulthandler.StreamingResultHandler;
-import gov.usgs.cida.pubs.domain.SearchResults;
-import gov.usgs.cida.pubs.domain.pw.PwPublication;
-import gov.usgs.cida.pubs.json.ResponseView;
-import gov.usgs.cida.pubs.json.view.intfc.IPwView;
-import gov.usgs.cida.pubs.transform.DelimitedTransformer;
-import gov.usgs.cida.pubs.transform.PublicationColumns;
-import gov.usgs.cida.pubs.transform.XlsxTransformer;
-import gov.usgs.cida.pubs.transform.intfc.ITransformer;
-import gov.usgs.cida.pubs.webservice.MvcService;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -34,6 +21,20 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
+import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
+import gov.usgs.cida.pubs.dao.resulthandler.StreamingResultHandler;
+import gov.usgs.cida.pubs.domain.SearchResults;
+import gov.usgs.cida.pubs.domain.pw.PwPublication;
+import gov.usgs.cida.pubs.json.View;
+import gov.usgs.cida.pubs.transform.DelimitedTransformer;
+import gov.usgs.cida.pubs.transform.PublicationColumns;
+import gov.usgs.cida.pubs.transform.XlsxTransformer;
+import gov.usgs.cida.pubs.transform.intfc.ITransformer;
+import gov.usgs.cida.pubs.webservice.MvcService;
+
 @Controller
 @RequestMapping(value="publication", method=RequestMethod.GET)
 public class PwPublicationMvcService extends MvcService<PwPublication> {
@@ -52,7 +53,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
     
     @RequestMapping(produces={MediaType.APPLICATION_JSON_VALUE,
     		PubsConstants.MEDIA_TYPE_XLSX_VALUE, PubsConstants.MEDIA_TYPE_CSV_VALUE, PubsConstants.MEDIA_TYPE_TSV_VALUE})
-    @ResponseView(IPwView.class)
+    @JsonView(View.PW.class)
     public @ResponseBody SearchResults getPubs(
     		@RequestParam(value="q", required=false) String searchTerms, //single string search
     		@RequestParam(value="g", required=false) String geospatial,
@@ -162,7 +163,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 				break;
 			}
 				
-			PwPublication.getDao().stream(filters, new StreamingResultHandler(transformer));
+			PwPublication.getDao().stream(filters, new StreamingResultHandler<PwPublication>(transformer));
 			
 			if (transformer instanceof XlsxTransformer) {
 				((XlsxTransformer) transformer).finishWorkbook();
@@ -178,7 +179,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
     }
     
 	@RequestMapping(value="{indexId}", produces=MediaType.APPLICATION_JSON_VALUE)
-    @ResponseView(IPwView.class)
+	@JsonView(View.PW.class)
     public @ResponseBody PwPublication getPwPublication(HttpServletRequest request, HttpServletResponse response,
                 @PathVariable("indexId") String indexId) {
         setHeaders(response);

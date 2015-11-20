@@ -1,6 +1,6 @@
 package gov.usgs.cida.pubs.domain;
 
-import gov.usgs.cida.pubs.json.view.intfc.IPwView;
+import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
 
@@ -22,15 +22,15 @@ public class PublicationContributor<D> extends BaseDomain<D> implements Serializ
 	private Integer publicationId;
 
     @JsonProperty("contributorType")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
   //TODO Activate this once we can populate from front-end    @NotNull
     private ContributorType contributorType;
 
     @JsonProperty("rank")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     private Integer rank;
 
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @JsonUnwrapped
     @NotNull
     @Valid

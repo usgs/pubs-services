@@ -1,5 +1,25 @@
 package gov.usgs.cida.pubs.webservice;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.fasterxml.jackson.annotation.JsonView;
+
 import gov.usgs.cida.pubs.dao.ContributorTypeDao;
 import gov.usgs.cida.pubs.dao.CostCenterDao;
 import gov.usgs.cida.pubs.dao.LinkFileTypeDao;
@@ -23,26 +43,7 @@ import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
-import gov.usgs.cida.pubs.json.ResponseView;
-import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import gov.usgs.cida.pubs.json.View;
 
 @Controller
 @RequestMapping(value="lookup", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
@@ -50,7 +51,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
     private static final Logger LOG = LoggerFactory.getLogger(LookupMvcService.class);
 
     @RequestMapping("publicationtypes")
-    @ResponseView(ILookupView.class)
+    @JsonView(View.Lookup.class)
     public @ResponseBody Collection<PublicationType> getPublicationTypes(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(value=TEXT_SEARCH, required=false) String[] text) {
         LOG.debug("publicationType");
@@ -66,8 +67,8 @@ public class LookupMvcService extends MvcService<PublicationType> {
     }
 
     @RequestMapping("publicationtype/{publicationTypeId}/publicationsubtypes")
-    @ResponseView(ILookupView.class)
-    public @ResponseBody Collection<PublicationSubtype> getPublicationSubypesREST(HttpServletRequest request, HttpServletResponse response,
+    @JsonView(View.Lookup.class)
+    public @ResponseBody Collection<PublicationSubtype> getPublicationSubtypesREST(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(value=TEXT_SEARCH, required=false) String[] text,
                 @PathVariable("publicationTypeId") String publicationTypeId) {
         LOG.debug("publicationSubtype");
@@ -84,8 +85,8 @@ public class LookupMvcService extends MvcService<PublicationType> {
     }
 
     @RequestMapping("publicationsubtypes")
-    @ResponseView(ILookupView.class)
-    public @ResponseBody Collection<PublicationSubtype> getPublicationSubypesQuery(HttpServletRequest request, HttpServletResponse response,
+    @JsonView(View.Lookup.class)
+    public @ResponseBody Collection<PublicationSubtype> getPublicationSubtypesQuery(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(value=TEXT_SEARCH, required=false) String[] text,
                 @RequestParam(value="publicationtypeid", required=false) String[] publicationTypeId) {
         LOG.debug("publicationSubtype");
@@ -104,7 +105,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
     }
 
     @RequestMapping("publicationtype/{publicationTypeId}/publicationsubtype/{publicationSubtypeId}/publicationseries")
-    @ResponseView(ILookupView.class)
+    @JsonView(View.Lookup.class)
     public @ResponseBody Collection<PublicationSeries> getPublicationSeriesREST(HttpServletRequest request, HttpServletResponse response,
     		@PathVariable("publicationTypeId") String publicationTypeId,
     		@PathVariable("publicationSubtypeId") String publicationSubtypeId,
@@ -127,7 +128,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
     }
 
     @RequestMapping("publicationseries")
-    @ResponseView(ILookupView.class)
+    @JsonView(View.Lookup.class)
     public @ResponseBody Collection<PublicationSeries> getPublicationSeriesQuery(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(value=TEXT_SEARCH, required=false) String[] text,
                 @RequestParam(value="publicationsubtypeid", required=false) String[] publicationSubtypeId,
@@ -151,7 +152,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
     }
 
     @RequestMapping("costcenters")
-    @ResponseView(ILookupView.class)
+    @JsonView(View.Lookup.class)
     public @ResponseBody Collection<Affiliation<?>> getCostCenters(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(value=TEXT_SEARCH, required=false) String[] text,
                 @RequestParam(value=ACTIVE_SEARCH, required=false) String[] active) {
@@ -171,7 +172,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
     }
 	
 	@RequestMapping("outsideaffiliates")
-    @ResponseView(ILookupView.class)
+	@JsonView(View.Lookup.class)
     public @ResponseBody Collection<Affiliation<?>> getOutsideAffiliates(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(value=TEXT_SEARCH, required=false) String[] text,
                 @RequestParam(value=ACTIVE_SEARCH, required=false) String[] active) {
@@ -191,7 +192,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
     }
 
     @RequestMapping("contributortypes")
-    @ResponseView(ILookupView.class)
+    @JsonView(View.Lookup.class)
     public @ResponseBody Collection<ContributorType> getContributorTypes(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(value=TEXT_SEARCH, required=false) String[] text) {
         LOG.debug("ContributorType");
@@ -207,7 +208,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
     }
 
     @RequestMapping("linktypes")
-    @ResponseView(ILookupView.class)
+    @JsonView(View.Lookup.class)
     public @ResponseBody Collection<LinkType> getLinkTypes(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(value=TEXT_SEARCH, required=false) String[] text) {
         LOG.debug("LinkType");
@@ -223,7 +224,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
     }
 
     @RequestMapping("linkfiletypes")
-    @ResponseView(ILookupView.class)
+    @JsonView(View.Lookup.class)
     public @ResponseBody Collection<LinkFileType> getLinkFileTypes(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(value=TEXT_SEARCH, required=false) String[] text) {
         LOG.debug("LinkFileType");
@@ -239,7 +240,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
     }
 
     @RequestMapping("people")
-    @ResponseView(ILookupView.class)
+    @JsonView(View.Lookup.class)
     public @ResponseBody Collection<Contributor<?>> getContributorsPeople(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(value=TEXT_SEARCH, required=false) String[] text) {
         LOG.debug("Contributor - People");
@@ -251,7 +252,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
     }
 
     @RequestMapping("corporations")
-    @ResponseView(ILookupView.class)
+    @JsonView(View.Lookup.class)
     public @ResponseBody Collection<Contributor<?>> getContributorsCorporations(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(value=TEXT_SEARCH, required=false) String[] text) {
         LOG.debug("Contributor - Corporations");
@@ -263,7 +264,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
     }
 
     @RequestMapping("publishingServiceCenters")
-    @ResponseView(ILookupView.class)
+    @JsonView(View.Lookup.class)
     public @ResponseBody Collection<PublishingServiceCenter> getPublishingServiceCenters(HttpServletRequest request,
     		HttpServletResponse response,
             @RequestParam(value=TEXT_SEARCH, required=false) String[] text) {
@@ -280,7 +281,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
     }
 
     @RequestMapping("publications")
-    @ResponseView(ILookupView.class)
+    @JsonView(View.Lookup.class)
     public @ResponseBody Collection<Publication<?>> getPublications(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(value=TEXT_SEARCH, required=false) String[] text) {
         LOG.debug("publication");

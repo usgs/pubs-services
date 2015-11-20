@@ -52,7 +52,7 @@ public class MpListMvcServiceTest extends BaseSpringTest {
         .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
         .andReturn();
 
-        assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
+        assertThat(getRtnAsJSONArray(rtn),
                 sameJSONArrayAs(new JSONArray("[{\"id\":1,\"text\":\"List 1\",\"description\":\"Description 1\",\"type\":\"SPN\"},"
                 		+ "{\"id\":2,\"text\":\"List 2\",\"description\":\"Description 2\",\"type\":\"SPN\"}]")));
     }

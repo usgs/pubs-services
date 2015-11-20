@@ -5,11 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.IntegrationTest;
-import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.domain.PublicationSeries;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,20 +15,29 @@ import org.junit.experimental.categories.Category;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
+
+import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.IntegrationTest;
+import gov.usgs.cida.pubs.domain.PublicationSeries;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
 
 @Category(IntegrationTest.class)
-@DatabaseSetups({
-	@DatabaseSetup("classpath:/testData/clearAll.xml"),
-	@DatabaseSetup("classpath:/testData/publicationType.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSeries.xml")
-})
+@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
+@DatabaseTearDown("classpath:/testCleanup/clearAll.xml")
 public class PublicationSeriesDaoTest extends BaseSpringTest {
 
     public static final int pubSeriesCnt = 14;
     public static final int activePubSeriesCnt = 8;
 
     @Test
+    @DatabaseSetups({
+    	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSeries.xml")
+    })
     public void getByIdInteger() {
         PublicationSeries pubSeries = PublicationSeries.getDao().getById(330);
         assertNotNull(pubSeries);
@@ -57,20 +61,23 @@ public class PublicationSeriesDaoTest extends BaseSpringTest {
     }
 
     @Test
+    @DatabaseSetups({
+    	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSeries.xml")
+    })
     public void getByIdString() {
         PublicationSeries pubSeries = PublicationSeries.getDao().getById("1");
-        assertNotNull(pubSeries);
-        assertEquals(1, pubSeries.getId().intValue());
-        assertEquals("Administrative Report", pubSeries.getText());
-        assertNull(pubSeries.getCode());
-        assertNull(pubSeries.getSeriesDoiName());
-        assertNull(pubSeries.getPrintIssn());
-        assertNull(pubSeries.getOnlineIssn());
-        assertFalse(pubSeries.isActive());
+        assertPubSeries1(pubSeries);
     }
 
     @Test
-    public void getByMap() {
+    @DatabaseSetups({
+    	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSeries.xml")
+    })
+    public void getByMapAndCount() {
         List<PublicationSeries> pubSeries = PublicationSeries.getDao().getByMap(null);
         assertEquals(pubSeriesCnt, pubSeries.size());
 
@@ -86,16 +93,19 @@ public class PublicationSeriesDaoTest extends BaseSpringTest {
         assertNull(pubSeries.get(0).getPrintIssn());
         assertNull(pubSeries.get(0).getOnlineIssn());
         assertFalse(pubSeries.get(0).isActive());
+        assertEquals(1, PublicationSeries.getDao().getObjectCount(filters).intValue());
 
         filters.clear();
         filters.put(PublicationSeriesDao.SUBTYPE_SEARCH, 5);
         pubSeries = PublicationSeries.getDao().getByMap(filters);
         assertNotNull(pubSeries);
         assertEquals(8, pubSeries.size());
+        assertEquals(8, PublicationSeries.getDao().getObjectCount(filters).intValue());
 
         filters.put("text", "sc");
         pubSeries = PublicationSeries.getDao().getByMap(filters);
         assertEquals(2, pubSeries.size());
+        assertEquals(2, PublicationSeries.getDao().getObjectCount(filters).intValue());
 
         filters.clear();
         filters.put("code", "MINERAL");
@@ -108,52 +118,93 @@ public class PublicationSeriesDaoTest extends BaseSpringTest {
         assertEquals("0076-8952", pubSeries.get(0).getPrintIssn());
         assertNull(pubSeries.get(0).getOnlineIssn());
         assertTrue(pubSeries.get(0).isActive());
+        assertEquals(1, PublicationSeries.getDao().getObjectCount(filters).intValue());
 
         filters.clear();
         filters.put("active", "Y");
         pubSeries = PublicationSeries.getDao().getByMap(filters);
         assertEquals(activePubSeriesCnt, pubSeries.size());
+        assertEquals(activePubSeriesCnt, PublicationSeries.getDao().getObjectCount(filters).intValue());
 
     }
 
     @Test
-    public void notImplemented() {
-        try {
-            PublicationSeries.getDao().add(new PublicationSeries());
-            fail("Was able to add.");
-        } catch (Exception e) {
-            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
-        }
-
-        try {
-            Map<String, Object> params = new HashMap<String, Object>();
-            params.put("prodId", 1);
-            PublicationSeries.getDao().getObjectCount(params);
-            fail("Was able to get count.");
-        } catch (Exception e) {
-            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
-        }
-
-        try {
-            PublicationSeries.getDao().update(new PublicationSeries());
-            fail("Was able to update.");
-        } catch (Exception e) {
-            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
-        }
-
-        try {
-            PublicationSeries.getDao().delete(new PublicationSeries());
-            fail("Was able to delete.");
-        } catch (Exception e) {
-            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
-        }
-
-        try {
-            PublicationSeries.getDao().deleteById(1);
-            fail("Was able to delete by it.");
-        } catch (Exception e) {
-            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
-        }
+    @DatabaseSetups({
+    	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSeries.xml")
+    })
+	@ExpectedDatabase(value = "classpath:/testResult/publicationSeries/delete.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
+    public void deleteTest() {
+       PublicationSeries.getDao().delete(new PublicationSeries());
+       PublicationSeries one = new PublicationSeries();
+       one.setId(1);
+       PublicationSeries.getDao().delete(one);
+       PublicationSeries.getDao().deleteById(333);
+       PublicationSeries.getDao().deleteByParent(10);
     }
 
+    @Test
+    @DatabaseSetups({
+    	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSubtype.xml")
+    })
+	@ExpectedDatabase(value = "classpath:/testResult/publicationSeries/add.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, modifiers = IdModifier.class)
+    public void addTest() {
+    	PublicationSeries publicationSeries = buildAPubSeries(null);
+        id = PublicationSeries.getDao().add(publicationSeries);
+    }
+    
+    @Test
+    @DatabaseSetups({
+    	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSeries.xml")
+    })
+	@ExpectedDatabase(value = "classpath:/testResult/publicationSeries/update.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
+    public void updateTest() {
+    	PublicationSeries publicationSeries = update330Properties();
+    	PublicationSeries.getDao().update(publicationSeries);
+    }
+    
+    public static void assertPubSeries1(PublicationSeries pubSeries) {
+        assertNotNull(pubSeries);
+        assertEquals(1, pubSeries.getId().intValue());
+        assertEquals("Administrative Report", pubSeries.getText());
+        assertNull(pubSeries.getCode());
+        assertNull(pubSeries.getSeriesDoiName());
+        assertNull(pubSeries.getPrintIssn());
+        assertNull(pubSeries.getOnlineIssn());
+        assertFalse(pubSeries.isActive());
+    }
+
+    public static PublicationSeries buildAPubSeries(Integer id) {
+    	PublicationSeries pubSeries = new PublicationSeries();
+    	pubSeries.setId(id);
+     	PublicationSubtype publicationSubtype = new PublicationSubtype();
+     	publicationSubtype.setId(29);
+     	pubSeries.setPublicationSubtype(publicationSubtype);
+     	pubSeries.setText("New Video");
+ 		pubSeries.setCode("XYZ");
+ 		pubSeries.setSeriesDoiName("doiname is here");
+ 		pubSeries.setPrintIssn("1234-4321");
+ 		pubSeries.setOnlineIssn("5678-8765");
+ 		pubSeries.setActive(true);
+     	return pubSeries;
+    }
+    
+    public static PublicationSeries update330Properties() {
+    	PublicationSeries pubSeries = new PublicationSeries();
+    	pubSeries.setId(330);
+    	PublicationSubtype publicationSubtype = new PublicationSubtype();
+    	publicationSubtype.setId(29);
+    	pubSeries.setPublicationSubtype(publicationSubtype);
+		pubSeries.setText("New Video");
+		pubSeries.setCode("XYZ");
+		pubSeries.setSeriesDoiName("doiname is here");
+		pubSeries.setPrintIssn("1234-4321");
+		pubSeries.setOnlineIssn("5678-8765");
+    	pubSeries.setActive(false);
+    	return pubSeries;
+    }
 }

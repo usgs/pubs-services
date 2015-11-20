@@ -1,21 +1,8 @@
 package gov.usgs.cida.pubs.domain;
 
-import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
-import gov.usgs.cida.pubs.domain.intfc.ILookup;
-import gov.usgs.cida.pubs.json.PubsJsonLocalDateDeSerializer;
-import gov.usgs.cida.pubs.json.PubsJsonLocalDateSerializer;
-import gov.usgs.cida.pubs.json.PubsJsonLocalDateTimeDeSerializer;
-import gov.usgs.cida.pubs.json.PubsJsonLocalDateTimeSerializer;
-import gov.usgs.cida.pubs.json.view.intfc.ILookupView;
-import gov.usgs.cida.pubs.json.view.intfc.IMpView;
-import gov.usgs.cida.pubs.json.view.intfc.IPwView;
-import gov.usgs.cida.pubs.validation.constraint.CrossProperty;
-import gov.usgs.cida.pubs.validation.constraint.ParentExists;
-import gov.usgs.cida.pubs.validation.constraint.PublishChecks;
-import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
-
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,14 +15,20 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Length;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
+import gov.usgs.cida.pubs.domain.intfc.ILookup;
+import gov.usgs.cida.pubs.json.View;
+import gov.usgs.cida.pubs.validation.constraint.CrossProperty;
+import gov.usgs.cida.pubs.validation.constraint.ParentExists;
+import gov.usgs.cida.pubs.validation.constraint.PublishChecks;
+import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
 
 /**
  * @author drsteini
@@ -51,188 +44,187 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
     private static IPublicationDao publicationDao;
 
     @JsonProperty("indexId")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=1, max=100)
     private String indexId;
 
     @JsonProperty("displayToPublicDate")
-    @JsonView(IPwView.class)
-    @JsonDeserialize(using=PubsJsonLocalDateTimeDeSerializer.class)
-    @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
+    @JsonView(View.PW.class)
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS")
     @NotNull(groups = PublishChecks.class)
     private LocalDateTime displayToPublicDate;
 
     @JsonProperty("publicationYear")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Pattern(regexp=PubsConstants.FOUR_DIGIT_REGEX, message="Publication Year must be a four digit year.")
     private String publicationYear;
 
     @JsonProperty("publicationType")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @NotNull
     private PublicationType publicationType;
 
     @JsonProperty("publicationSubtype")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     private PublicationSubtype publicationSubtype;
 
     @JsonProperty("seriesTitle")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     private PublicationSeries seriesTitle;
 
     @JsonProperty("seriesNumber")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=100)
     private String seriesNumber;
 
     @JsonProperty("subseriesTitle")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=255)
     private String subseriesTitle;
 
     @JsonProperty("chapter")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=255)
     private String chapter;
 
     @JsonProperty("subchapterNumber")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=255)
     private String subchapterNumber;
 
     @JsonProperty("title")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=1, max=2000)
     private String title;
 
     @JsonProperty("docAbstract")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     private String docAbstract;
 
     @JsonProperty("largerWorkType")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     private PublicationType largerWorkType;
 
     @JsonProperty("largerWorkTitle")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=2000)
     private String largerWorkTitle;
     
     @JsonProperty("largerWorkSubtype")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     private PublicationSubtype largerWorkSubtype;
 
     @JsonProperty("conferenceTitle")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=2000)
     private String conferenceTitle;
 
     @JsonProperty("conferenceDate")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=255)
     private String conferenceDate;
 
     @JsonProperty("conferenceLocation")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=255)
     private String conferenceLocation;
 
     @JsonProperty("language")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=70)
     private String language;
 
     @JsonProperty("publisher")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=255)
     private String publisher;
 
     @JsonProperty("publisherLocation")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=255)
     private String publisherLocation;
 
     @JsonProperty("doi")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=2000)
     private String doi;
 
     @JsonProperty("issn")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=20)
     private String issn;
 
     @JsonProperty("isbn")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=30)
     private String isbn;
 
     @JsonProperty("collaboration")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=4000)
     private String collaboration;
 
     @JsonProperty("usgsCitation")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=4000)
     private String usgsCitation;
 
     @JsonProperty("productDescription")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=4000)
     private String productDescription;
 
     @JsonProperty("startPage")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=20)
     private String startPage;
 
     @JsonProperty("endPage")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=20)
     private String endPage;
 
     @JsonProperty("numberOfPages")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Pattern(regexp=PubsConstants.SPACES_OR_NUMBER_REGEX)
     private String numberOfPages;
 
     @JsonProperty("onlineOnly")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Pattern(regexp="[YN]")
     private String onlineOnly;
 
     @JsonProperty("additionalOnlineFiles")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Pattern(regexp="[YN]")
     private String additionalOnlineFiles;
 
     @JsonProperty("temporalStart")
-    @JsonView(IPwView.class)
-    @JsonSerialize(using=PubsJsonLocalDateSerializer.class)
-    @JsonDeserialize(using=PubsJsonLocalDateDeSerializer.class)
+    @JsonView(View.PW.class)
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private LocalDate temporalStart;
 
     @JsonProperty("temporalEnd")
-    @JsonView(IPwView.class)
-    @JsonSerialize(using=PubsJsonLocalDateSerializer.class)
-    @JsonDeserialize(using=PubsJsonLocalDateDeSerializer.class)
+    @JsonView(View.PW.class)
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private LocalDate temporalEnd;
 
     @JsonProperty("notes")
-    @JsonView(IMpView.class)
+    @JsonView(View.MP.class)
     private String notes;
 
     @JsonProperty("ipdsId")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=15)
     private String ipdsId;
 
 	@JsonProperty("ipdsReviewProcessState")
+    @JsonView(View.MP.class)
 	@Length(min = 0, max = 400)
 	protected String ipdsReviewProcessState;
 
 	@JsonProperty("ipdsInternalId")
+    @JsonView(View.MP.class)
     @Pattern(regexp=PubsConstants.SPACES_OR_NUMBER_REGEX)
 	protected String ipdsInternalId;
 
@@ -241,113 +233,111 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	protected Collection<PublicationContributor<?>> contributors;
 
     @JsonProperty("costCenters")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Valid
     private Collection<PublicationCostCenter<?>> costCenters;
 
     @JsonProperty("links")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Valid
     private Collection<PublicationLink<?>> links;
     
     @JsonProperty("scale")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Pattern(regexp=PubsConstants.SPACES_OR_NUMBER_REGEX)
     private String scale;
     
     @JsonProperty("projection")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=500)
     private String projection;
     
     @JsonProperty("datum")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=500)
     private String datum;
     
     @JsonProperty("country")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=500)
     private String country;
     
     @JsonProperty("state")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=500)
     private String state;
     
     @JsonProperty("county")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=500)
     private String county;
     
     @JsonProperty("city")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=500)
     private String city;
     
     @JsonProperty("otherGeospatial")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=500)
     private String otherGeospatial;
     
     @JsonProperty("geographicExtents")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     private String geographicExtents;
 
     @JsonProperty("volume")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=50)
     private String volume;
 
     @JsonProperty("issue")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=20)
     private String issue;
 
     @JsonProperty("edition")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=4000)
     private String edition;
 
     @JsonProperty("publicComments")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=4000)
     private String comments;
 
     @JsonProperty("contact")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=4000)
     private String contact;
 
     @JsonProperty("tableOfContents")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=0, max=4000)
     private String tableOfContents;
 
     @JsonProperty("publishingServiceCenter")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Valid
     private PublishingServiceCenter publishingServiceCenter;
 
     @JsonProperty("publishedDate")
-    @JsonView(IPwView.class)
-    @JsonSerialize(using=PubsJsonLocalDateSerializer.class)
-    @JsonDeserialize(using=PubsJsonLocalDateDeSerializer.class)
+    @JsonView(View.PW.class)
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private LocalDate publishedDate;
     
     @JsonProperty("revisedDate")
-    @JsonView(IPwView.class)
-    @JsonSerialize(using=PubsJsonLocalDateSerializer.class)
-    @JsonDeserialize(using=PubsJsonLocalDateDeSerializer.class)
+    @JsonView(View.PW.class)
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private LocalDate revisedDate;
     
     @JsonIgnore
     private Collection<PublicationInteraction> interactions;
     
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     private Publication<?> isPartOf;
     
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     private Publication<?> supersededBy;
     
     /**
@@ -772,7 +762,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
     }
 
     @JsonProperty("contributors")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     public Map<String, Collection<PublicationContributor<?>>> getContributorsToMap() {
     	if (null != contributors && !contributors.isEmpty()) {
     		Map<String, Collection<PublicationContributor<?>>> rtn = new HashMap<>();
@@ -1019,8 +1009,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	}
 
 	@JsonProperty("lastModifiedDate")
-    @JsonView(IPwView.class)
-    @JsonSerialize(using=PubsJsonLocalDateTimeSerializer.class)
+    @JsonView(View.PW.class)
     @Override
 	public LocalDateTime getUpdateDate() {
 		return super.getUpdateDate();
@@ -1056,7 +1045,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 		revisedDate = inRevisedDate;
 	}
 
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
 	public Collection<PublicationInteraction> getInteractions() {
 		return interactions;
 	}
@@ -1082,7 +1071,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 		supersededBy = inSupersededBy;
 	}
 	
-	@JsonView({ILookupView.class, IPwView.class})
+	@JsonView(View.Lookup.class)
     @Override
     public String getText() {
         return indexId + " - " + publicationYear + " - " + title;

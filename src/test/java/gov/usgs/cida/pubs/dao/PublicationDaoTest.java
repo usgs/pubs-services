@@ -21,8 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -31,7 +31,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 @Category(IntegrationTest.class)
 @DatabaseSetups({
-	@DatabaseSetup("classpath:/testData/clearAll.xml"),
+	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 	@DatabaseSetup("classpath:/testData/publicationType.xml"),
 	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
@@ -148,7 +148,7 @@ public class PublicationDaoTest extends BaseSpringTest {
 
     public static Publication<?> buildAPub(Publication<?> newPub, final Integer pubId) {
     	newPub.setIndexId("indexid" + pubId);
-        newPub.setDisplayToPublicDate(new LocalDateTime(2012, 8, 23, 0, 0, 0));
+        newPub.setDisplayToPublicDate(LocalDateTime.of(2012, 8, 23, 0, 0, 0));
         PublicationType pubType = new PublicationType();
         pubType.setId(PublicationType.REPORT);
         newPub.setPublicationType(pubType);
@@ -178,8 +178,8 @@ public class PublicationDaoTest extends BaseSpringTest {
         newPub.setNumberOfPages("5");
         newPub.setOnlineOnly("O");
         newPub.setAdditionalOnlineFiles("A");
-        newPub.setTemporalStart(new LocalDate(2010,10,10));
-        newPub.setTemporalEnd(new LocalDate(2012,12,12));
+        newPub.setTemporalStart(LocalDate.of(2010,10,10));
+        newPub.setTemporalEnd(LocalDate.of(2012,12,12));
         newPub.setNotes("notes");
         newPub.setIpdsId("ipds_id" + pubId);
         newPub.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
@@ -214,14 +214,14 @@ public class PublicationDaoTest extends BaseSpringTest {
         PublishingServiceCenter publishingServiceCenter = new PublishingServiceCenter();
         publishingServiceCenter.setId(6);
         newPub.setPublishingServiceCenter(publishingServiceCenter);
-        newPub.setPublishedDate(new LocalDate(2002,2,2));
+        newPub.setPublishedDate(LocalDate.of(2002,2,2));
         Publication<?> po = new PwPublication();
         po.setId(1);
         newPub.setIsPartOf(po);
         Publication<?> sb = new PwPublication();
         sb.setId(2);
         newPub.setSupersededBy(sb);
-        newPub.setRevisedDate(new LocalDate(2003,3,3));
+        newPub.setRevisedDate(LocalDate.of(2003,3,3));
 
         return newPub;
     }

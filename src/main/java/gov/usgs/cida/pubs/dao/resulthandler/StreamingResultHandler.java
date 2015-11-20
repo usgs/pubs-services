@@ -6,7 +6,7 @@ import org.apache.ibatis.session.ResultHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StreamingResultHandler implements ResultHandler {
+public class StreamingResultHandler<T> implements ResultHandler<T> {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	private final ITransformer transformer;
@@ -16,7 +16,7 @@ public class StreamingResultHandler implements ResultHandler {
 	}
 	
 	@Override
-	public void handleResult(ResultContext context) {
+	public void handleResult(ResultContext<? extends T> context) {
 		log.trace("streaming handle result : {}", (context==null ?"null" :"context"));
 		try {
 			transformer.write(context.getResultObject());
@@ -25,5 +25,4 @@ public class StreamingResultHandler implements ResultHandler {
 			throw new RuntimeException("Error MapResultHandler", e);
 		}
 	}
-	
 }

@@ -2,7 +2,7 @@ package gov.usgs.cida.pubs.domain.mp;
 
 import gov.usgs.cida.pubs.dao.intfc.IMpPublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
-import gov.usgs.cida.pubs.json.view.intfc.IPwView;
+import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -42,7 +42,7 @@ public class MpPublication extends Publication<MpPublication> {
 	}
 
 	@JsonProperty("validationErrors")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @JsonUnwrapped
     @Override
     public ValidationResults getValidationErrors() {

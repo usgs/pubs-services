@@ -1,6 +1,6 @@
 package gov.usgs.cida.pubs.domain;
 
-import gov.usgs.cida.pubs.json.view.intfc.IPwView;
+import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
@@ -19,7 +19,7 @@ public class PublicationCostCenter<D> extends BaseDomain<D> {
     @JsonIgnore
     private Integer publicationId;
 
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @JsonUnwrapped
     @NotNull
     @Valid

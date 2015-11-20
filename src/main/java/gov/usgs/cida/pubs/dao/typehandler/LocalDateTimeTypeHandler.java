@@ -5,10 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
-import org.joda.time.LocalDateTime;
 
 /**
  * @author drsteini
@@ -25,8 +25,7 @@ public class LocalDateTimeTypeHandler implements TypeHandler<LocalDateTime> {
             final LocalDateTime parameter, final JdbcType jdbcType) throws SQLException {
         Timestamp date = null;
         if (parameter != null) {
-            LocalDateTime ldt = (LocalDateTime) parameter;
-            date = new Timestamp(ldt.toDateTime().getMillis());
+            date = Timestamp.valueOf(parameter);
         }
         ps.setTimestamp(i, date);
     }
@@ -35,16 +34,11 @@ public class LocalDateTimeTypeHandler implements TypeHandler<LocalDateTime> {
      * @see org.apache.ibatis.type.TypeHandler#getResult(java.sql.ResultSet, java.lang.String)
      */
     @Override
-    public LocalDateTime getResult(final ResultSet rs, final String columnName)
-            throws SQLException {
+    public LocalDateTime getResult(final ResultSet rs, final String columnName) throws SQLException {
         Timestamp date = rs.getTimestamp(columnName);
         LocalDateTime ldt = null;
         if (date != null) {
-            try {
-                ldt = LocalDateTime.fromDateFields(date);
-            } catch (IllegalArgumentException e) {
-                throw new SQLException("illegal value for a LocalDateTime : " + date, e);
-            }
+        	ldt = date.toLocalDateTime();
         }
         return ldt; 
     }
@@ -53,16 +47,11 @@ public class LocalDateTimeTypeHandler implements TypeHandler<LocalDateTime> {
      * @see org.apache.ibatis.type.TypeHandler#getResult(java.sql.CallableStatement, int)
      */
     @Override
-    public LocalDateTime getResult(final CallableStatement cs, final int columnIndex)
-            throws SQLException {
+    public LocalDateTime getResult(final CallableStatement cs, final int columnIndex) throws SQLException {
         Timestamp date = cs.getTimestamp(columnIndex);
         LocalDateTime ldt = null;
         if (date != null) {
-            try {
-                ldt = LocalDateTime.fromDateFields(date);
-            } catch (IllegalArgumentException e) {
-                throw new SQLException("illegal value for a LocalDateTime : " + date, e);
-            }
+        	ldt = date.toLocalDateTime();
         }
         return ldt; 
     }
@@ -71,10 +60,13 @@ public class LocalDateTimeTypeHandler implements TypeHandler<LocalDateTime> {
      * @see org.apache.ibatis.type.TypeHandler#getResult(java.sql.ResultSet, int)
      */
     @Override
-    public LocalDateTime getResult(ResultSet arg0, int arg1)
-            throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    public LocalDateTime getResult(ResultSet rs, int columnIndex) throws SQLException {
+    	Timestamp date = rs.getTimestamp(columnIndex);
+    	LocalDateTime ldt = null;
+		if (date != null) {
+			ldt = date.toLocalDateTime();
+		}
+		return ldt; 
     }
 
 }

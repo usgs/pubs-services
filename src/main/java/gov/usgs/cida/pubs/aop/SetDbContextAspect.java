@@ -7,7 +7,6 @@ import java.sql.SQLException;
 
 import oracle.jdbc.OracleConnection;
 
-import org.apache.tomcat.dbcp.dbcp.PoolableConnection;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -42,19 +41,32 @@ public class SetDbContextAspect extends SqlSessionDaoSupport {
             metrics[OracleConnection.END_TO_END_MODULE_INDEX]   = "z";
 
             Connection conn = getSqlSession().getConnection().getMetaData().getConnection();
-            if (conn instanceof PoolableConnection) {
-                conn = ((PoolableConnection) conn).getInnermostDelegate();
-            }
-            if (conn instanceof org.apache.commons.dbcp.PoolableConnection) {
-                conn = ((org.apache.commons.dbcp.PoolableConnection) conn).getInnermostDelegate();
-            }
-
-            OracleConnection oracleConn = (OracleConnection) conn;
+            OracleConnection oracleConn = getAsOracleConnection(conn);
             oracleConn.setEndToEndMetrics(metrics, (short) 0);
 
         } catch (SQLException e) {
             throw new RuntimeException("Problem setting client ID", e);
         }
     }
+
+	/**
+	 * Attempts to get the underlying instance of OracleConnection.
+	 * @param conn the current connection object
+	 * @return the OracleConnection implementation
+	 * @throws SQLException
+	 */
+	private OracleConnection getAsOracleConnection(final Connection conn) throws SQLException {
+		OracleConnection c = null;
+		if (OracleConnection.class.isAssignableFrom(conn.getClass())) {
+			c = (OracleConnection)conn;
+		} else if (conn.isWrapperFor(OracleConnection.class)) {
+			// Apache Commons DBCP 1.4, when used directly (which we do for unit tests) returns the connection
+			// wrapped in a PoolableConnection, which needs to be unwrapped
+			c = conn.unwrap(OracleConnection.class);
+		} else {
+			throw new RuntimeException("Unknown connection class returned from pool: " + conn.getClass());
+		}
+		return c;
+	}
 
 }

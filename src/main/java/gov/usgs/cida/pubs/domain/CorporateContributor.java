@@ -1,13 +1,13 @@
 package gov.usgs.cida.pubs.domain;
 
-import gov.usgs.cida.pubs.dao.intfc.IDao;
-import gov.usgs.cida.pubs.domain.intfc.ILookup;
-import gov.usgs.cida.pubs.json.view.intfc.IPwView;
-
 import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+
+import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.domain.intfc.ILookup;
+import gov.usgs.cida.pubs.json.View;
 
 public class CorporateContributor extends Contributor<CorporateContributor> implements ILookup {
 
@@ -19,7 +19,7 @@ public class CorporateContributor extends Contributor<CorporateContributor> impl
     }
 
     @JsonProperty("organization")
-    @JsonView(IPwView.class)
+    @JsonView(View.PW.class)
     @Length(min=1, max=400)
     private String organization;
 

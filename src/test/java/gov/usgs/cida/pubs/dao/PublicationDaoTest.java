@@ -148,7 +148,7 @@ public class PublicationDaoTest extends BaseSpringTest {
 
     public static Publication<?> buildAPub(Publication<?> newPub, final Integer pubId) {
     	newPub.setIndexId("indexid" + pubId);
-        newPub.setDisplayToPublicDate(LocalDateTime.of(2012, 8, 23, 0, 0, 0));
+        newPub.setDisplayToPublicDate(LocalDateTime.of(2012, 8, 23, 11, 29, 46));
         PublicationType pubType = new PublicationType();
         pubType.setId(PublicationType.REPORT);
         newPub.setPublicationType(pubType);

@@ -58,7 +58,7 @@ public class TestSpringConfig {
 		return dbUnitDatabaseConnection;
 	}
 
-	@Bean
+    @Bean
 	public String ipdsPubsWsPwd() {
 		return env.getProperty("pubs.ipdsPubsWsPwd");
 	}

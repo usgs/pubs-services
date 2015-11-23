@@ -6,7 +6,7 @@ public class View {
 
 	public interface Lookup extends Base {}
 	
-	public interface PW extends Lookup {}
+	public interface PW extends Base {}
 	
 	public interface MP extends PW {}
 

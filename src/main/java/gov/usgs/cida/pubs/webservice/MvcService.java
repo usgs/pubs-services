@@ -184,8 +184,12 @@ public abstract class MvcService<D> {
             return ex.getLocalizedMessage();
         } else if (ex instanceof HttpMessageNotReadableException) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            //This exception's message contains implementation details after the new line, so only take up to that.
-            return ex.getLocalizedMessage().substring(0, ex.getLocalizedMessage().indexOf("\n"));
+            if (ex.getLocalizedMessage().contains("\n")) {
+	            //This exception's message contains implementation details after the new line, so only take up to that.
+	            return ex.getLocalizedMessage().substring(0, ex.getLocalizedMessage().indexOf("\n"));
+            } else {
+            	return ex.getLocalizedMessage().replaceAll("([a-zA-Z]+\\.)+","");
+            }
         } else {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             int hashValue = response.hashCode();
@@ -197,7 +201,7 @@ public abstract class MvcService<D> {
         }
     }
 
-    //This check is meant to slow any denial-of-service attacks against unsecure ("permitAll") endpoints (see the securityContext.xml).
+    //This check is meant to slow any denial-of-service attacks against insecure ("permitAll") endpoints (see the securityContext.xml).
     //It should not be necessary to use it on any other endpoints. 
     protected boolean validateParametersSetHeaders(HttpServletRequest request, HttpServletResponse response) {
         boolean rtn = true;

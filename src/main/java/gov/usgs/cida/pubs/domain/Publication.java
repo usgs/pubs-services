@@ -16,7 +16,6 @@ import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Length;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -50,13 +49,11 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 
     @JsonProperty("displayToPublicDate")
     @JsonView(View.PW.class)
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS")
     @NotNull(groups = PublishChecks.class)
     private LocalDateTime displayToPublicDate;
 
     @JsonProperty("publicationYear")
     @JsonView(View.PW.class)
-    @Pattern(regexp=PubsConstants.FOUR_DIGIT_REGEX, message="Publication Year must be a four digit year.")
     private String publicationYear;
 
     @JsonProperty("publicationType")
@@ -201,12 +198,10 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 
     @JsonProperty("temporalStart")
     @JsonView(View.PW.class)
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private LocalDate temporalStart;
 
     @JsonProperty("temporalEnd")
     @JsonView(View.PW.class)
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private LocalDate temporalEnd;
 
     @JsonProperty("notes")
@@ -323,12 +318,10 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 
     @JsonProperty("publishedDate")
     @JsonView(View.PW.class)
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private LocalDate publishedDate;
     
     @JsonProperty("revisedDate")
     @JsonView(View.PW.class)
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private LocalDate revisedDate;
     
     @JsonIgnore
@@ -1071,7 +1064,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 		supersededBy = inSupersededBy;
 	}
 	
-	@JsonView(View.Lookup.class)
+	@JsonView({View.Lookup.class, View.PW.class})
     @Override
     public String getText() {
         return indexId + " - " + publicationYear + " - " + title;

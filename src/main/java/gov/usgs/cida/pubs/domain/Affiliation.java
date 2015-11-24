@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.domain;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
+import gov.usgs.cida.pubs.json.View;
 
 import javax.validation.constraints.NotNull;
 
@@ -9,6 +10,7 @@ import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonView;
 
 @JsonPropertyOrder({"id", "text", "active", "usgs"})
 public class Affiliation<D> extends BaseDomain<Affiliation<D>> implements ILookup {
@@ -28,6 +30,7 @@ public class Affiliation<D> extends BaseDomain<Affiliation<D>> implements ILooku
     protected Boolean usgs;
 
     @Override
+    @JsonView({View.Lookup.class, View.PW.class})
     public String getText() {
         return text;
     }

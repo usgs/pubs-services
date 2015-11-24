@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -65,7 +66,10 @@ public abstract class BaseSpringTest {
 
     @Autowired
 	protected WebApplicationContext wac;
-
+    
+    @Autowired
+    protected MappingJackson2HttpMessageConverter jackson2HttpMessageConverter;
+    
     /** random for the class. */
     protected static final Random RANDOM = new Random();
 

@@ -18,6 +18,22 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.SeverityLevel;
@@ -31,23 +47,6 @@ import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
 public class MpPublicationMvcServiceTest extends BaseSpringTest {
 
     public static final String LOCK_MSG = "{\"validationErrors\":[{\"field\":\"Publication\",\"message\":\"This Publication is being edited by somebody\",\"level\":\"FATAL\",\"value\":\"somebody\"}]}\"";
@@ -56,9 +55,6 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
     public static final ValidatorResult VR_LOCKED = new ValidatorResult("Publication", "This Publication is being edited by somebody", SeverityLevel.FATAL, "somebody");
     public static final ValidatorResult VR_NOT_LOCKED = null;
 
-    @Autowired
-    private MappingJackson2HttpMessageConverter jackson2HttpMessageConverter;
-    
     @Mock
     private IBusService<Publication<?>> pubBusService;
 	@Mock

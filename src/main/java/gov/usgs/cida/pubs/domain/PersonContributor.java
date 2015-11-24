@@ -95,6 +95,7 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
     }
 
     @Override
+    @JsonView({View.Lookup.class, View.PW.class})
     public String getText() {
     	StringBuilder text = new StringBuilder();
     	if (StringUtils.isNotBlank(family)) {

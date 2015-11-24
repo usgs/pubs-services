@@ -41,7 +41,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -54,7 +56,10 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
     public static final ValidatorResult VR_LOCKED = new ValidatorResult("Publication", "This Publication is being edited by somebody", SeverityLevel.FATAL, "somebody");
     public static final ValidatorResult VR_NOT_LOCKED = null;
 
-	@Mock
+    @Autowired
+    private MappingJackson2HttpMessageConverter jackson2HttpMessageConverter;
+    
+    @Mock
     private IBusService<Publication<?>> pubBusService;
 	@Mock
     private IMpPublicationBusService busService;
@@ -72,7 +77,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
     public void setup() {
     	MockitoAnnotations.initMocks(this);
     	mvcService = new MpPublicationMvcService(pubBusService, busService);
-    	mockMvc = MockMvcBuilders.standaloneSetup(mvcService).build();
+    	mockMvc = MockMvcBuilders.standaloneSetup(mvcService).setMessageConverters(jackson2HttpMessageConverter).build();
 
         when(busService.checkAvailability(1)).thenReturn(VR_NOT_LOCKED);
         when(busService.checkAvailability(2)).thenReturn(VR_LOCKED);

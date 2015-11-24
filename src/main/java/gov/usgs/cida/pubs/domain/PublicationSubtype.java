@@ -46,7 +46,7 @@ public class PublicationSubtype extends BaseDomain<PublicationSubtype> implement
     }
 
     @Override
-    @JsonView(View.Lookup.class)
+    @JsonView({View.Lookup.class, View.PW.class})
     public String getText() {
         return text;
     }

@@ -25,8 +25,8 @@ public class CrossRefLogDaoTest extends BaseSpringTest {
 	@Test
 	@ExpectedDatabase(assertionMode=DatabaseAssertionMode.NON_STRICT,
 		table="CROSS_REF_LOG",
-		query="select batch_id,prod_id,xmlserialize(content cross_ref_xml no indent) cross_ref_xml from cross_ref_log",
-		value="classpath:/testData/expectedXrefLog.xml")
+		query="select batch_id,prod_id,xmlserialize(content cross_ref_xml no indent) cross_ref_xml from cross_ref_log order by 1",
+		value="classpath:/testResult/xrefLog.xml")
 	public void testCreate() {
 		CrossRefLog log = new CrossRefLog();
 		log.setBatchId("123");

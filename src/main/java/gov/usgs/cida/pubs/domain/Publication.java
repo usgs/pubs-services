@@ -1064,7 +1064,6 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 		supersededBy = inSupersededBy;
 	}
 	
-	@JsonView({View.Lookup.class, View.PW.class})
     @Override
     public String getText() {
         return indexId + " - " + publicationYear + " - " + title;

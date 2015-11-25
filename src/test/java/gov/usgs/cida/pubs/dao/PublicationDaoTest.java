@@ -7,14 +7,17 @@ import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
+import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.PublicationCostCenter;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -149,15 +152,32 @@ public class PublicationDaoTest extends BaseSpringTest {
     public static Publication<?> buildAPub(Publication<?> newPub, final Integer pubId) {
     	newPub.setIndexId("indexid" + pubId);
         newPub.setDisplayToPublicDate(LocalDateTime.of(2012, 8, 23, 11, 29, 46));
+        
+        CostCenter costCenter = new CostCenter();
+        costCenter.setId(2);
+        costCenter.setText("Affiliation Cost Center 2");
+        PublicationCostCenter<?> pcc = new PublicationCostCenter<>();
+        pcc.setId(1);
+        pcc.setCostCenter(costCenter);
+        Collection<PublicationCostCenter<?>> costCenters = new ArrayList<>();
+        costCenters.add(pcc);
+        newPub.setCostCenters(costCenters);
+        
         PublicationType pubType = new PublicationType();
         pubType.setId(PublicationType.REPORT);
+        pubType.setText("Report");
         newPub.setPublicationType(pubType);
+        
         PublicationSubtype pubSubtype = new PublicationSubtype();
         pubSubtype.setId(5);
+        pubSubtype.setText("USGS Numbered Series");
         newPub.setPublicationSubtype(pubSubtype);
+        
         PublicationSeries pubSeries = new PublicationSeries();
         pubSeries.setId(PublicationSeries.SIR);
+        pubSeries.setText("Scientific Investigations Report");
         newPub.setSeriesTitle(pubSeries);
+        
         newPub.setSeriesNumber("Series Number");
         newPub.setSubseriesTitle("subseries");
         newPub.setChapter("chapter");
@@ -187,15 +207,21 @@ public class PublicationDaoTest extends BaseSpringTest {
         newPub.setId(pubId);
         newPub.setPublicationYear("2001");
         newPub.setLargerWorkTitle("Larger Work Title");
+        
         PublicationType largerWorkType = new PublicationType();
         largerWorkType.setId(PublicationType.ARTICLE);
+        largerWorkType.setText("Article");
         newPub.setLargerWorkType(largerWorkType);
+        
         newPub.setConferenceDate("a new free form date");
         newPub.setConferenceTitle("A title");
         newPub.setConferenceLocation("a conference location");
+        
         PublicationSubtype largerWorkSubype = new PublicationSubtype();
         largerWorkSubype.setId(23);
+        largerWorkSubype.setText("Database-spatial");
         newPub.setLargerWorkSubtype(largerWorkSubype);
+        
         newPub.setScale("100");
         newPub.setProjection("EPSG:3857");
         newPub.setDatum("NAD83");

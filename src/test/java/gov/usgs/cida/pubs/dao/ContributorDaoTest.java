@@ -26,6 +26,7 @@ import gov.usgs.cida.pubs.domain.UsgsContributor;
 
 @Category(IntegrationTest.class)
 @DatabaseSetups({
+	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 	@DatabaseSetup("classpath:/testData/affiliation.xml"),
 	@DatabaseSetup("classpath:/testData/contributor.xml")
 })

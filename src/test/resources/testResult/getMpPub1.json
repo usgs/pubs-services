@@ -2,20 +2,25 @@
     "id": 1,
     "displayToPublicDate": "2012-08-23T11:29:46",
     "publicationType": {
-        "id": 18
+        "id": 18,
+        "text": "Report"
     },
     "publicationSubtype": {
-        "id": 5
+        "id": 5,
+        "text": "USGS Numbered Series"
     },
     "largerWorkType": {
-        "id": 2
+        "id": 2,
+        "text": "Article"
     },
     "largerWorkTitle": "Larger Work Title",
     "largerWorkSubtype": {
-        "id": 23
+        "id": 23,
+        "text": "Database-spatial"
     },
     "seriesTitle": {
-        "id": 334
+        "id": 334,
+        "text": "Scientific Investigations Report"
     },
     "subseriesTitle": "subseries",
     "seriesNumber": "Series Number",
@@ -47,6 +52,7 @@
     "notes": "notes",
     "ipdsReviewProcessState": "Dissemination",
     "ipdsInternalId": "12",
+    "costCenters": [{id: 2, text: "Affiliation Cost Center 2"}],
     "scale": "100",
     "projection": "EPSG:3857",
     "datum": "NAD83",

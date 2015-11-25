@@ -32,7 +32,6 @@ public class CorporateContributor extends Contributor<CorporateContributor> impl
     }
 
     @Override
-    @JsonView({View.Lookup.class, View.PW.class})
     public String getText() {
         return organization;
     }

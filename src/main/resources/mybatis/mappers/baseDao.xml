@@ -46,7 +46,7 @@
     			pub.title asc,
     		</when>
     		<when test="orderBy == 'mpNewest'">
-    			case when pub.insert_date = pub.updata_date then 1 else 2 end,
+    			case when pub.insert_date = pub.update_date then 1 else 2 end,
     			pub.update_date desc,
     		</when>
     	</choose>

@@ -3,6 +3,9 @@ package gov.usgs.cida.pubs.domain;
 import java.io.Serializable;
 import java.util.Collection;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
 
@@ -76,6 +79,8 @@ public class PublicationSubtype extends BaseDomain<PublicationSubtype> implement
      * The setter for publicationSubtypeDao.
      * @param inPublicationSubtypeDao the publicationSubtypeDao to set
      */
+    @Autowired
+    @Qualifier("publicationSubtypeDao")
     public void setPublicationSubtypeDao(final IDao<PublicationSubtype> inPublicationSubtypeDao) {
         publicationSubtypeDao = inPublicationSubtypeDao;
     }

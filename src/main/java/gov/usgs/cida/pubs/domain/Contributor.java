@@ -2,6 +2,9 @@ package gov.usgs.cida.pubs.domain;
 
 import javax.validation.constraints.NotNull;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -64,6 +67,8 @@ public class Contributor<D> extends BaseDomain<Contributor<D>> {
      * The setter for contributorDao.
      * @param inContributorDao the contributorDao to set
      */
+    @Autowired
+    @Qualifier("contributorDao")
     public void setContributorDao(final IDao<Contributor<?>> inContributorDao) {
         contributorDao = inContributorDao;
     }

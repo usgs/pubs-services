@@ -5,6 +5,9 @@ import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import java.io.Serializable;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class CostCenter extends Affiliation<CostCenter> implements Serializable {
@@ -44,6 +47,8 @@ public class CostCenter extends Affiliation<CostCenter> implements Serializable 
      * The setter for costCenterDao.
      * @param inCostCenterDao the costCenterDao to set
      */
+    @Autowired
+    @Qualifier("costCenterDao")
     public void setCostCenterDao(final IDao<Affiliation<?>> inCostCenterDao) {
         costCenterDao = inCostCenterDao;
     }

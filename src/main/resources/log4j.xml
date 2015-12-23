@@ -28,7 +28,7 @@
     </category>
 
     <category name="org.springframework.jdbc">
-        <level value="INFO"/>
+        <level value="DEBUG"/>
     </category>
 
     <category name="org.springframework.jms">
@@ -44,7 +44,7 @@
     </category>
 
     <category name="org.mybatis">
-        <level value="INFO"/>
+        <level value="DEBUG"/>
     </category>
 
     <category name="org.apache.activemq">
@@ -52,7 +52,7 @@
     </category>
 
     <category name="org.apache.ibatis">
-        <level value="INFO"/>
+        <level value="DEBUG"/>
     </category>
 
     <category name="java.sql">
@@ -60,7 +60,7 @@
     </category>
 
     <root>
-        <level value="INFO"/>
+        <level value="DEBUG"/>
         <appender-ref ref="myconsole" />
         <appender-ref ref="appLog" />
     </root>

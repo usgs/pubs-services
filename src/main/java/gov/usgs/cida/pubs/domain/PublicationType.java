@@ -6,10 +6,14 @@ import gov.usgs.cida.pubs.domain.intfc.ILookup;
 import java.io.Serializable;
 import java.util.Collection;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 /**
  * @author drsteini
  *
  */
+@Component
 public class PublicationType extends BaseDomain<PublicationType> implements ILookup, Serializable {
 
 	private static final long serialVersionUID = 6859787295076399446L;
@@ -58,6 +62,7 @@ public class PublicationType extends BaseDomain<PublicationType> implements ILoo
      * The setter for publicationTypeDao.
      * @param inPublicationTypeDao the publicationTypeDao to set
      */
+    @Autowired
     public void setPublicationTypeDao(final IDao<PublicationType> inPublicationTypeDao) {
         publicationTypeDao = inPublicationTypeDao;
     }

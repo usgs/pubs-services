@@ -8,8 +8,6 @@
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
                           ">
 
-    <import resource="classpath:/spring/mybatisContext.xml"/>
-
     <aop:aspectj-autoproxy/>
 
     <bean id="setDbContextAspect" class="gov.usgs.cida.pubs.aop.SetDbContextAspect" autowire="byName"/>
@@ -25,7 +23,5 @@
     <import resource="classpath:/spring/busServiceContext.xml"/>
 
     <import resource="classpath:/spring/domainContext.xml"/>
-
-    <import resource="classpath:/spring/ipdsJmsContext.xml"/>
 
 </beans>

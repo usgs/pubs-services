@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.ResultHandler;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -17,9 +20,15 @@ import org.springframework.transaction.annotation.Transactional;
  * NOTE: all of the other methods use the VIEW so that the VPD will not show publications before the displayToPublicDate - they should be 
  *       used when dealing with the warehouse.
  */
+@Repository
 public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPublicationDao {
 
-    private static final String NS = "pwPublication";
+	@Autowired
+    public PwPublicationDao(SqlSessionFactory sqlSessionFactory) {
+		super(sqlSessionFactory);
+	}
+
+	private static final String NS = "pwPublication";
     private static final String GET_BY_INDEX_ID = ".getByIndexId";
     private static final String GET_BY_IPDS_ID = ".getByIpdsId";
 

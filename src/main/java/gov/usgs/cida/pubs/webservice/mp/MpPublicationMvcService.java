@@ -76,6 +76,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
             @RequestParam(value="page_row_start", required=false, defaultValue = "0") String pageRowStart,
             @RequestParam(value="page_size", required=false, defaultValue = "25") String pageSize,
             @RequestParam(value="listId", required=false) String[] listId,
+            @RequestParam(value="global", required=false, defaultValue="true") String globalSearch,
 			HttpServletResponse response) {
 
         setHeaders(response);
@@ -102,8 +103,9 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
     	addToFiltersIfNotNull(filters, "pageSize", pageSize);
     	addToFiltersIfNotNull(filters, "listId", listId);
     	
-    	filters.put("orderBy", buildOrderBy(null));
-
+    	filters.put("globalSearch", globalSearch);
+    	filters.put("orderBy", "mpNewest");
+    	
         List<Publication<?>> pubs = pubBusService.getObjects(filters);
         Integer totalPubsCount = pubBusService.getObjectCount(filters);
         SearchResults results = new SearchResults();

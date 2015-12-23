@@ -9,15 +9,24 @@ import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author drsteini
  *
  */
+@Repository
 public class IpdsMessageLogDao extends BaseDao <IpdsMessageLog> implements IIpdsMessageLogDao {
 
-    private static final String NS = "ipdsMessageLog";
+	@Autowired
+    public IpdsMessageLogDao(SqlSessionFactory sqlSessionFactory) {
+		super(sqlSessionFactory);
+	}
+
+	private static final String NS = "ipdsMessageLog";
 
     /** {@inheritDoc}
      * @see gov.usgs.cida.mypubsJMS.dao.intfc.IDao#add(java.lang.Object)

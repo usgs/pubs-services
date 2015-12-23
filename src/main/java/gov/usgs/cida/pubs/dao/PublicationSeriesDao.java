@@ -3,6 +3,9 @@ package gov.usgs.cida.pubs.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import gov.usgs.cida.pubs.aop.ISetDbContext;
@@ -13,9 +16,15 @@ import gov.usgs.cida.pubs.utility.PubsUtilities;
  * @author drsteini
  *
  */
+@Repository
 public class PublicationSeriesDao extends BaseDao<PublicationSeries> {
 
-    private static final String NS = "publicationSeries";
+	@Autowired
+   public PublicationSeriesDao(SqlSessionFactory sqlSessionFactory) {
+		super(sqlSessionFactory);
+	}
+
+	private static final String NS = "publicationSeries";
     
     public static final String ACTIVE_SEARCH = "active";
     public static final String SUBTYPE_SEARCH = "publicationSubtypeId";

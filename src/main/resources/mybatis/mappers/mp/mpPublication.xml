@@ -98,15 +98,17 @@
     </insert>
 
     <insert id="copyMpFromPw" parameterType="Integer">
-        insert into mp_publication (<include refid="publication.cols"/>)
-            (select <include refid="publication.cols"/>
+        insert into mp_publication (<include refid="publication.cols"/>, published)
+            (select <include refid="publication.cols"/>, 'Y'
                from publication
               where publication_id = #{value,jdbcType=NUMERIC})
     </insert>
 
     <sql id="baseSelect">
         select <include refid="cols"/>,
-               lock_username
+               lock_username,
+               published,
+               'mypubs' sourceDatabase
           from mp_publication pub
     </sql>
 
@@ -121,11 +123,10 @@
     </select>
 
     <select id="getByMap" parameterType="map" resultMap="result">
-        <include refid="base.pagingTop"/>
         <include refid="baseSelect"/>
         <include refid="filters"/>
         <include refid="base.orderBy"/>
-        <include refid="base.pagingBottom"/>
+        <include refid="base.pagingRowLimit"/>
     </select>
 
     <select id="getCount" parameterType="map" resultType="Integer">

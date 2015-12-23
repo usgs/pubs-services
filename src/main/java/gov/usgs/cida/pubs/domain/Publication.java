@@ -333,6 +333,14 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
     @JsonView(View.PW.class)
     private Publication<?> supersededBy;
     
+    @JsonProperty("sourceDatabase")
+    @JsonView(View.MP.class)
+    private String sourceDatabase;
+    
+    @JsonProperty("published")
+    @JsonView(View.MP.class)
+    private Boolean published;
+
     /**
      * @return the indexId
      */
@@ -1069,4 +1077,20 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
         return indexId + " - " + publicationYear + " - " + title;
     }
     
+    public String getSourceDatabase() {
+		return sourceDatabase;
+	}
+
+	public void setSourceDatabase(final String inSourceDatabase) {
+		sourceDatabase = inSourceDatabase;
+	}
+
+	public Boolean isPublished() {
+		return published;
+	}
+
+	public void setPublished(final Boolean inPublished) {
+		published = inPublished;
+	}
+
 }

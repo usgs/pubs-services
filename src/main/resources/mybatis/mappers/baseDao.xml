@@ -40,23 +40,38 @@
     </sql>
 
     <sql id="orderBy">
-        <if test="orderBy != null">
-            order by ${orderBy} <!-- Java code must construct the "orderby orderdir" strings -->
-        </if>
-      </sql>
+    	order by
+    	<choose>
+    		<when test="orderBy == 'title'">
+    			pub.title asc,
+    		</when>
+    		<when test="orderBy == 'mpNewest'">
+    			case when pub.insert_date = pub.updata_date then 1 else 2 end,
+    			pub.update_date desc,
+    		</when>
+    	</choose>
+    	pub.publication_year desc nulls last,
+    	pub.display_to_public_date desc,
+        pub.publication_id desc
+	</sql>
 
-    <sql id="pagingTop">
+	<sql id="pagingHint">
         <if test="pageSize != null">
-            select /*+ first_rows(${pageSize}) */ *
-              from (select a.*, rownum rn
-                      from (
+            /*+ first_rows(${pageSize}) */
         </if>
     </sql>
 
-    <sql id="pagingBottom">
+    <sql id="pagingRowLimit">
         <if test="pageSize != null">
-                  ) a where rownum &lt;= (#{pageRowStart} + #{pageSize}) )
-            where rn &gt; #{pageRowStart}
+        	<choose>
+        		<when test="pageRowStart != null">
+        			offset #{pageRowStart} rows fetch next
+        		</when>
+        		<otherwise>
+        			fetch first
+        		</otherwise>
+        	</choose>
+        	#{pageSize} rows only
         </if>
     </sql>
     

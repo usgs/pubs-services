@@ -9,11 +9,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+@Component
 public class CostCenterMessageListener implements MessageListener {
 
-    private static final Log LOG = LogFactory.getLog(IpdsMessageListener.class);
+    private static final Log LOG = LogFactory.getLog(CostCenterMessageListener.class);
 
     protected final IIpdsService costCenterMessageService;
 

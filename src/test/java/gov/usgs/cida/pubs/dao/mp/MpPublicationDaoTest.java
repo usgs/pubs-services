@@ -42,7 +42,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 public class MpPublicationDaoTest extends BaseSpringTest {
 
     //TODO contributors, links, & CostCenters in test.
-    public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "contributors", "contributorsToMap", "links", "interactions");
+    public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "contributors", "contributorsToMap", "links", "interactions", "sourceDatabase", "published");
 
     public static final String MPPUB1_INDEXID = "sir20145083";
     public static final String MPPUB1_LOCKEDBY = "drsteini";
@@ -84,6 +84,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
         MpPublication.getDao().copyFromPw(4);
         Publication<MpPublication> mpPub = MpPublication.getDao().getById(4);
         PwPublicationDaoTest.assertPwPub4(mpPub);
+        assertTrue(((MpPublication) mpPub).isPublished());
     }
 
     @Test

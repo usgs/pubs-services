@@ -133,19 +133,6 @@ public abstract class MvcService<D> {
     	return filters;
     }
 
-    protected String buildOrderBy(String orderBy) {
-    	StringBuilder rtn = new StringBuilder("publication_year desc nulls last, display_to_public_date desc"); 
-    	if (StringUtils.isNotBlank(orderBy)) {
-    		if ("date".equalsIgnoreCase(orderBy)) {
-    			//Nothing to see here, this is the default sort
-    		} else if ("title".equalsIgnoreCase(orderBy)) {
-    			rtn.insert(0, "title asc, ");
-    		}
-    	}
-
-    	return rtn.toString();
-    }
-
     protected Map<String, Object> buildPaging (String inPageRowStart, String inPageSize, String inPageNumber) {
     	Integer pageRowStart = PubsUtilities.parseInteger(inPageRowStart);
     	Integer pageSize = PubsUtilities.parseInteger(inPageSize);

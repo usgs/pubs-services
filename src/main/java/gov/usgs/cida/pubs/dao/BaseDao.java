@@ -8,6 +8,7 @@ import gov.usgs.cida.pubs.dao.intfc.IDao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,10 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
     public static final String ID_SEARCH = "id";
     public static final String TEXT_SEARCH = "text";
 
+    public BaseDao(SqlSessionFactory sqlSessionFactory) {
+		setSqlSessionFactory(sqlSessionFactory);
+	}
+    
     /**
      * {@inheritDoc}
      * 

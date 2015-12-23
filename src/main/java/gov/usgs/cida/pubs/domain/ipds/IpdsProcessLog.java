@@ -1,5 +1,8 @@
 package gov.usgs.cida.pubs.domain.ipds;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.BaseDomain;
 
@@ -46,6 +49,8 @@ public class IpdsProcessLog extends BaseDomain<IpdsProcessLog> {
         return ipdsProcessLogDao;
     }
 
+    @Autowired
+    @Qualifier("IpdsProcessLog")
     public void setIpdsProcessLogDao(final IDao<IpdsProcessLog> ipdsProcessLogDao) {
         IpdsProcessLog.ipdsProcessLogDao = ipdsProcessLogDao;
     }

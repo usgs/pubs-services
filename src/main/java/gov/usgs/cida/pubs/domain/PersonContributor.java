@@ -3,6 +3,8 @@ package gov.usgs.cida.pubs.domain;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -119,6 +121,8 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
         return personContributorDao;
     }
 
+    @Autowired
+    @Qualifier("personContributorDao")
     public void setPersonContributorDao(final IDao<Contributor<?>> inPersonContributorDao) {
         personContributorDao = inPersonContributorDao;
     }

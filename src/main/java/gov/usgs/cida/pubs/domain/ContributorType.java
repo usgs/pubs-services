@@ -1,5 +1,8 @@
 package gov.usgs.cida.pubs.domain;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
 
@@ -32,6 +35,8 @@ public class ContributorType extends BaseDomain<ContributorType> implements ILoo
      * The setter for contributorTypeDao.
      * @param inContributorTypeDao the contributorTypeDao to set
      */
+    @Autowired
+    @Qualifier("contributorTypeDao")
     public void setContributorTypeDao(final IDao<ContributorType> inContributorTypeDao) {
         contributorTypeDao = inContributorTypeDao;
     }

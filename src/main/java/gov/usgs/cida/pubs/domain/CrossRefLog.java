@@ -1,5 +1,8 @@
 package gov.usgs.cida.pubs.domain;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 
 public class CrossRefLog extends BaseDomain<CrossRefLog> {
@@ -43,6 +46,9 @@ public class CrossRefLog extends BaseDomain<CrossRefLog> {
     public static IDao<CrossRefLog> getDao() {
         return crossRefLogDao;
     }
+
+    @Autowired
+    @Qualifier("crossRefLogDao")
     public static void setCrossRefLogDao(final IDao<CrossRefLog> inCrossRefLogDao) {
         crossRefLogDao = inCrossRefLogDao;
     }

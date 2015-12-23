@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
@@ -63,6 +64,7 @@ public class PublicationType extends BaseDomain<PublicationType> implements ILoo
      * @param inPublicationTypeDao the publicationTypeDao to set
      */
     @Autowired
+    @Qualifier("publicationTypeDao")
     public void setPublicationTypeDao(final IDao<PublicationType> inPublicationTypeDao) {
         publicationTypeDao = inPublicationTypeDao;
     }

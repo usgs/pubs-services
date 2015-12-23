@@ -3,6 +3,8 @@ package gov.usgs.cida.pubs.domain;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -48,6 +50,8 @@ public class Affiliation<D> extends BaseDomain<Affiliation<D>> implements ILooku
         return affiliationDao;
     }
 
+    @Autowired
+    @Qualifier("affiliationDao")
     public void setAffiliationDao(final IDao<Affiliation<?>> inAffiliationDao) {
         affiliationDao = inAffiliationDao;
     }

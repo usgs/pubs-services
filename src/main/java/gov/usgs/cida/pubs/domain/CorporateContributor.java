@@ -1,6 +1,8 @@
 package gov.usgs.cida.pubs.domain;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -40,6 +42,8 @@ public class CorporateContributor extends Contributor<CorporateContributor> impl
         return corporateContributorDao;
     }
 
+    @Autowired
+    @Qualifier("corporateContributorDao")
     public void setCorporateContributorDao(final IDao<Contributor<?>> inCorporateContributorDao) {
         corporateContributorDao = inCorporateContributorDao;
     }

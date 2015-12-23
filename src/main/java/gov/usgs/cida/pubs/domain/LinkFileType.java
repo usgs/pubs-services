@@ -1,5 +1,8 @@
 package gov.usgs.cida.pubs.domain;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
 
@@ -23,6 +26,8 @@ public class LinkFileType extends BaseDomain<LinkFileType> implements ILookup {
         return linkFileTypeDao;
     }
 
+    @Autowired
+    @Qualifier("linkFileTypeDao")
     public void setLinkFileTypeDao(final IDao<LinkFileType> inLinkFileTypeDao) {
         linkFileTypeDao = inLinkFileTypeDao;
     }

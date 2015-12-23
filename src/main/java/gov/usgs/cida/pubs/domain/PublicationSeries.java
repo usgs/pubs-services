@@ -6,6 +6,9 @@ import gov.usgs.cida.pubs.json.View;
 
 import java.io.Serializable;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -113,7 +116,9 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
      * The setter for publicationSeriesDao.
      * @param inPublicationSeriesDao the publicationSeriesDao to set
      */
-    public void setPublicationSeriesDao(final IDao<PublicationSeries> inPublicationSeriesDao) {
+   @Autowired
+   @Qualifier("publicationSeriesDao")
+   public void setPublicationSeriesDao(final IDao<PublicationSeries> inPublicationSeriesDao) {
         publicationSeriesDao = inPublicationSeriesDao;
     }
 

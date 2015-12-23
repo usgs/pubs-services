@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.utility.PubsEMailer;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -13,11 +11,17 @@ import org.apache.http.HttpResponse;
 import org.apache.http.auth.NTCredentials;
 import org.apache.http.util.EntityUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.utility.PubsEMailer;
+
+//TODO
+@Ignore
 public class IpdsWsRequesterTest extends BaseSpringTest {
 
     @Autowired

@@ -7,15 +7,24 @@ import gov.usgs.cida.pubs.domain.Publication;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author drsteini
  *
  */
+@Repository
 public class PublicationDao extends BaseDao<Publication<?>> implements IPublicationDao {
 
-    private static final String NS = "publication";
+	@Autowired
+    public PublicationDao(SqlSessionFactory sqlSessionFactory) {
+		super(sqlSessionFactory);
+	}
+
+	private static final String NS = "publication";
     private static final String FILTER_BY_INDEX_ID = ".filterLookupByIndexId";
 
 	/** {@inheritDoc}

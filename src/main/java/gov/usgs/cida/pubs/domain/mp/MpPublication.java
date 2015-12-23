@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 	"temporalEnd", "notes", "ipdsReviewProcessState", "ipdsInternalId", "lockUsername","contributors", "links", 
 	"scale", "projection", "datum", "country", "state", "county","city", "otherGeospatial", "geographicExtents", "volume", "issue",
 	"edition", "comments", "contact", "tableOfContents", "publishedDateStatement", "publishingServiceCenter", "contact",
-    "isPartOf", "supersededBy", "validationErrors"})
+    "isPartOf", "supersededBy", "sourceDatabase", "published", "validationErrors"})
 public class MpPublication extends Publication<MpPublication> {
 
     private static final long serialVersionUID = 8072814759958143994L;
@@ -49,7 +49,7 @@ public class MpPublication extends Publication<MpPublication> {
     	return super.getValidationErrors();
     }
 
-    /**
+	/**
      * @return the mpPublicationDao
      */
     public static IMpPublicationDao getDao() {

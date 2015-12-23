@@ -23,7 +23,7 @@ public class JmsConfig {
 	@Autowired
 	String costCenterQueueName;
 	@Autowired
-	@Qualifier("costCenterListener")
+	@Qualifier("costCenterMessageListener")
 	MessageListener costCenterListener;
 
     @Bean

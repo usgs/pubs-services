@@ -58,7 +58,9 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
     	expectedGetPwPub1 = expectedGetMpPub1.replace("\"validationErrors\": [],", "")
     			.replace("\"notes\": \"notes\",", "")
     			.replace("\"ipdsReviewProcessState\": \"Dissemination\",", "")
-    			.replace("\"ipdsInternalId\": \"12\",", "");
+    			.replace("\"ipdsInternalId\": \"12\",", "")
+    			.replace("\"published\": true,", "")
+    			.replace("\"sourceDatabase\": \"mypubs\"", "");
     	
     	StringBuilder temp = new StringBuilder("{\"pageSize\":\"15\",\"pageRowStart\":\"0\",");
     	temp.append("\"pageNumber\":null,\"recordCount\":12,\"records\":[");

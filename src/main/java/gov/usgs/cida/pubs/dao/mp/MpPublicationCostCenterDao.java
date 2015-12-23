@@ -6,11 +6,20 @@ import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+@Repository
 public class MpPublicationCostCenterDao extends MpDao<MpPublicationCostCenter> {
 
-    private static final String NS = "mpPublicationCostCenter";
+	@Autowired
+    public MpPublicationCostCenterDao(SqlSessionFactory sqlSessionFactory) {
+		super(sqlSessionFactory);
+	}
+
+	private static final String NS = "mpPublicationCostCenter";
 
     /**
      * {@inheritDoc}

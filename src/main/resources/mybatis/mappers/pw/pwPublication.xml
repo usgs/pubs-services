@@ -111,13 +111,12 @@
     </select>
 
     <select id="getByMap" parameterType="map" resultMap="result">
-        <include refid="base.pagingTop"/>
         <include refid="baseSelectPublic"/>
         <where>
         	<include refid="filters"/>
         </where>
         <include refid="base.orderBy"/>
-        <include refid="base.pagingBottom"/>
+        <include refid="base.pagingRowLimit"/>
     </select>
 
     <select id="getCount" parameterType="map" resultType="Integer">
@@ -129,8 +128,8 @@
     </select>
 
 	<select id="getStreamByMap" parameterType="map" resultType="java.util.LinkedHashMap" fetchSize="100">
-        <include refid="base.pagingTop"/>
-        select #{url,jdbcType=VARCHAR} || pub.index_id warehouse_url,
+        select <include refid="base.pagingHint"/> 
+        	   #{url,jdbcType=VARCHAR} || pub.index_id warehouse_url,
                publication_type.name publication_type,
                publication_subtype.name publication_subtype,
                pub.title,
@@ -225,7 +224,7 @@
         	<include refid="filters"/>
         </where>
         <include refid="base.orderBy"/>
-        <include refid="base.pagingBottom"/>
+        <include refid="base.pagingRowLimit"/>
 	</select>
 
 </mapper>

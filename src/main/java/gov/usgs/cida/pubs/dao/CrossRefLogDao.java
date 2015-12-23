@@ -3,9 +3,18 @@ package gov.usgs.cida.pubs.dao;
 import gov.usgs.cida.pubs.aop.ISetDbContext;
 import gov.usgs.cida.pubs.domain.CrossRefLog;
 
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+@Repository
 public class CrossRefLogDao extends BaseDao<CrossRefLog> {
+
+	@Autowired
+	public CrossRefLogDao(SqlSessionFactory sqlSessionFactory) {
+		super(sqlSessionFactory);
+	}
 
 	private static final String NS = "crossRefLog" ;
 	

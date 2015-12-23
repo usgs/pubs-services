@@ -67,42 +67,4 @@
         <typeHandler javaType="gov.usgs.cida.pubs.domain.Predicate" handler="org.apache.ibatis.type.EnumOrdinalTypeHandler"/>
     </typeHandlers>
 
-    <mappers>
-        <!-- Individual sql map file resources. Each one has its own namespace and sql. -->
-         <mapper resource="mybatis/baseDao.xml"/>
-
-         <mapper resource="mybatis/mp/mpList.xml"/>
-         <mapper resource="mybatis/mp/mpListPublication.xml"/>
-         <mapper resource="mybatis/mp/mpPublication.xml"/>
-         <mapper resource="mybatis/mp/mpPublicationContributor.xml"/>
-         <mapper resource="mybatis/mp/mpPublicationCostCenter.xml"/>
-         <mapper resource="mybatis/mp/mpPublicationLink.xml"/>
-
-         <mapper resource="mybatis/pw/pwPublication.xml"/>
-         <mapper resource="mybatis/pw/pwPublicationContributor.xml"/>
-         <mapper resource="mybatis/pw/pwPublicationCostCenter.xml"/>
-         <mapper resource="mybatis/pw/pwPublicationLink.xml"/>
-
-         <mapper resource="mybatis/affiliation.xml"/>
-         <mapper resource="mybatis/contributor.xml"/>
-         <mapper resource="mybatis/contributorType.xml"/>
-         <mapper resource="mybatis/crossRefLog.xml"/>
-         <mapper resource="mybatis/linkFileType.xml"/>
-         <mapper resource="mybatis/linkType.xml"/>
-         <mapper resource="mybatis/publication.xml"/>
-         <mapper resource="mybatis/publicationContributor.xml"/>
-         <mapper resource="mybatis/publicationCostCenter.xml"/>
-         <mapper resource="mybatis/publicationIndex.xml"/>
-         <mapper resource="mybatis/publicationInteraction.xml"/>
-         <mapper resource="mybatis/publicationLink.xml"/>
-         <mapper resource="mybatis/publicationSeries.xml"/>
-         <mapper resource="mybatis/publicationSubtype.xml"/>
-         <mapper resource="mybatis/publicationType.xml"/>
-         <mapper resource="mybatis/publishingServiceCenter.xml"/>
-
-         <mapper resource="mybatis/ipds/ipdsMessageLog.xml"/>
-         <mapper resource="mybatis/ipds/ipdsProcessLog.xml"/>
-         <mapper resource="mybatis/ipds/ipdsPubTypeConv.xml"/>
-    </mappers>
-
 </configuration>

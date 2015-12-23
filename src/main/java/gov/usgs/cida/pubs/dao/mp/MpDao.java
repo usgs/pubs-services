@@ -4,11 +4,18 @@ import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.intfc.IMpDao;
 
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 public abstract class MpDao<D> extends BaseDao<D> implements IMpDao<D> {
 
-    public static final String COPY_FROM_PW = ".copyMpFromPw";
+	@Autowired
+    public MpDao(SqlSessionFactory sqlSessionFactory) {
+		super(sqlSessionFactory);
+	}
+
+	public static final String COPY_FROM_PW = ".copyMpFromPw";
     public static final String PUBLISH = ".publish";
     public static final String PUBLISH_DELETE = ".publishDelete";
 

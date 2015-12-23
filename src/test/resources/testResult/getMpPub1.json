@@ -83,5 +83,7 @@
     	"id": 2,
         "text": "null - null - null"
     },
-    "text": "indexid1 - 2001 - Title"
+    "text": "indexid1 - 2001 - Title",
+    "published": true,
+    "sourceDatabase": "mypubs"
 }

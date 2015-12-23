@@ -123,7 +123,7 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
     	addToFiltersIfNotNull(filters, "modXDays", modXDays);
     	addToFiltersIfNotNull(filters, "modDateLow", modDateLow);
     	addToFiltersIfNotNull(filters, "modDateHigh", modDateHigh);    	
-    	filters.put("orderBy", buildOrderBy(orderBy));
+    	addToFiltersIfNotNull(filters, "orderBy",orderBy);
     	
         List<PwPublication> pubs = busService.getObjects(filters);
 

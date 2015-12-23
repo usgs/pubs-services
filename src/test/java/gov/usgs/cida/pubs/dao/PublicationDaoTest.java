@@ -64,8 +64,7 @@ public class PublicationDaoTest extends BaseSpringTest {
         filters.clear();
         filters.put("indexId", new int[] { 4 });
         pubs = Publication.getPublicationDao().getByMap(filters);
-        assertEquals(1, pubs.size());
-        assertEquals(4, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
+        assertEquals(0, pubs.size());
 
         filters.clear();
         filters.put("ipdsId", new String[] {"IP-056327"});
@@ -78,14 +77,47 @@ public class PublicationDaoTest extends BaseSpringTest {
         filters.put("indexId", new int[] { 4 });
         filters.put("ipdsId", new String[] {"ipds_id"});
         pubs = Publication.getPublicationDao().getByMap(filters);
-        assertEquals(1, pubs.size());
-        assertEquals(4, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
+        assertEquals(0, pubs.size());
         
         filters.clear();
         filters.put("searchTerms", Arrays.asList("a").toArray());
         pubs = Publication.getPublicationDao().getByMap(filters);
-        //TODO asserts
+
         
+        filters.put("globalSearch", "true");
+        filters.put("id", new int[] { 2 });
+        pubs = Publication.getPublicationDao().getByMap(filters);
+        assertEquals(1, pubs.size());
+        assertEquals(2, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
+
+        filters.clear();
+        filters.put("globalSearch", "true");
+        filters.put("indexId", new int[] { 4 });
+        pubs = Publication.getPublicationDao().getByMap(filters);
+        assertEquals(1, pubs.size());
+        assertEquals(4, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
+
+        filters.clear();
+        filters.put("globalSearch", "true");
+        filters.put("ipdsId", new String[] {"IP-056327"});
+        pubs = Publication.getPublicationDao().getByMap(filters);
+        assertEquals(1, pubs.size());
+        assertEquals(3, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
+
+        filters.clear();
+        filters.put("globalSearch", "true");
+        filters.put("id", new int[] { 4 });
+        filters.put("indexId", new int[] { 4 });
+        filters.put("ipdsId", new String[] {"ipds_id"});
+        pubs = Publication.getPublicationDao().getByMap(filters);
+        assertEquals(1, pubs.size());
+        assertEquals(4, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
+        
+        filters.clear();
+        filters.put("globalSearch", "true");
+        filters.put("searchTerms", Arrays.asList("a").toArray());
+        pubs = Publication.getPublicationDao().getByMap(filters);
+
         //This only checks that the final query is syntactically correct, not that it is logically correct!
     	pubs = Publication.getPublicationDao().getByMap(buildAllParms());
     }
@@ -94,6 +126,14 @@ public class PublicationDaoTest extends BaseSpringTest {
     public void getObjectCountTest() {
         Map<String, Object> filters = new HashMap<>();
         Integer cnt = Publication.getPublicationDao().getObjectCount(null);
+        assertEquals(3, cnt.intValue());
+
+        filters.put("globalSearch", "false");
+        cnt = Publication.getPublicationDao().getObjectCount(filters);
+        assertEquals(3, cnt.intValue());
+
+        filters.put("globalSearch", "true");
+        cnt = Publication.getPublicationDao().getObjectCount(filters);
         assertEquals(6, cnt.intValue());
 
         filters.put("ipdsId", new String[] { "ipds_id" });
@@ -248,6 +288,8 @@ public class PublicationDaoTest extends BaseSpringTest {
         sb.setId(2);
         newPub.setSupersededBy(sb);
         newPub.setRevisedDate(LocalDate.of(2003,3,3));
+        newPub.setPublished(true);
+        newPub.setSourceDatabase("mypubs");
 
         return newPub;
     }

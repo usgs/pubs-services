@@ -68,7 +68,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 public class MpPublicationBusServiceTest extends BaseSpringTest {
 
     public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "contributors", "contributorsToMap", "links",
-            "doi", "indexId", "interactions");
+            "doi", "indexId", "interactions", "sourceDatabase", "published");
 
 	public Integer lockTimeoutHours = 1;
 

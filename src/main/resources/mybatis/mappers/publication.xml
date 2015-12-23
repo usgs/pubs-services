@@ -55,6 +55,8 @@
         <result property="tableOfContents" column="table_of_contents"/>
         <result property="publishedDate" column="published_date"/>
         <result property="revisedDate" column="revised_date"/>
+        <result property="sourceDatabase" column="sourceDatabase"/>
+        <result property="published" column="published"/>
         <association property="publicationType" column="publication_type_id" select="publicationType.getById"/>
         <association property="publicationSubtype" column="publication_subtype_id" select="publicationSubtype.getById"/>
         <association property="largerWorkType" column="larger_work_type_id" select="publicationType.getById"/>
@@ -66,9 +68,9 @@
     </resultMap>
 
     <resultMap id="genericResult" type="Publication" extends="result">
-        <discriminator javaType="String" column="tname">
-            <case value="mp_publication" resultMap="mpResult"/>
-            <case value="publication" resultMap="pwResult"/>
+        <discriminator javaType="String" column="sourceDatabase">
+            <case value="mypubs" resultMap="mpResult"/>
+            <case value="pubs warehouse" resultMap="pwResult"/>
         </discriminator>
 	</resultMap>
 	
@@ -412,26 +414,28 @@
     </sql>
 
     <sql id="allSelect">
-        select *
-          from (select <include refid="cols"/>, 'mp_publication' tname
+        select <include refid="base.pagingHint"/> *
+          from (select <include refid="cols"/>, 'mypubs' sourceDatabase, published
                   from mp_publication pub
                  <include refid="mpPublication.filters"/>
-                union all
-                select <include refid="cols"/>, 'publication' tname
-                  from publication pub
-                 where publication_id in (select publication_id from publication
-                                          minus
-                                          select publication_id from mp_publication)
-                 <include refid="pwPublication.filters"/>
-               )
+                <if test="globalSearch &amp;&amp; globalSearch=='true'">
+	                union all
+	                select <include refid="cols"/>, 'pubs warehouse' sourceDatabase, 'Y' published
+	                  from publication pub
+	                 where publication_id in (select publication_id from publication
+	                                          minus
+	                                          select publication_id from mp_publication)
+	                 <include refid="pwPublication.filters"/>
+                </if>
+               ) pub
     </sql>
 
     <select id="getById" parameterType="Integer" resultMap="genericResult">
         select *
-          from (select <include refid="cols"/>, 'mp_publication' tname
+          from (select <include refid="cols"/>, 'mypubs' sourceDatabase, published
                   from mp_publication
                 union all
-                select <include refid="cols"/>, 'publication' tname
+                select <include refid="cols"/>, 'pubs warehouse' sourceDatabase, 'Y' published
                   from publication
                  where publication_id in (select publication_id from publication
                                           minus
@@ -441,25 +445,14 @@
     </select>
 
     <select id="getByMap" parameterType="map" resultMap="genericResult">
-        <include refid="base.pagingTop"/>
         <include refid="allSelect"/>
         <include refid="base.orderBy"/>
-        <include refid="base.pagingBottom"/>
+        <include refid="base.pagingRowLimit"/>
     </select>
 
     <select id="getCount" parameterType="map" resultType="Integer">
         select count(*)
-          from (select publication_id
-                  from mp_publication pub
-                 <include refid="mpPublication.filters"/>
-                union all
-                select publication_id
-                  from publication pub
-                 where publication_id in (select publication_id from publication
-                                          minus
-                                          select publication_id from mp_publication)
-                 <include refid="pwPublication.filters"/>
-               )
+          from (<include refid="allSelect"/>)
     </select>
     
     <sql id="baseLookupSelect">

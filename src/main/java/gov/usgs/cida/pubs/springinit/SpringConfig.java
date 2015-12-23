@@ -4,8 +4,10 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.apache.http.auth.NTCredentials;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -32,7 +35,8 @@ import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.utility.CustomStringToArrayConverter;
 
 @Configuration
-@ComponentScan(basePackages={"gov.usgs.cida.pubs.webservice", "gov.usgs.cida.pubs.utility"})
+@ComponentScan(basePackages={"gov.usgs.cida.pubs.webservice", "gov.usgs.cida.pubs.utility", "gov.usgs.cida.pubs.dao",
+		"gov.usgs.cida.pubs.jms", "gov.usgs.cida.pubs.domain"})
 @ImportResource("classpath:spring/applicationContext.xml")
 @EnableWebMvc
 @EnableTransactionManagement
@@ -44,6 +48,14 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
 	
 	@Autowired
 	DataSource dataSource;
+	
+	@Autowired
+	@Qualifier("ipdsPubsWsUser")
+	String ipdsPubsWsUser;
+	
+	@Autowired
+	@Qualifier("ipdsPubsWsPwd")
+	String ipdsPubsWsPwd;
 	
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
@@ -85,9 +97,11 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
     @Bean
 	public SqlSessionFactoryBean sqlSessionFactory() throws Exception {
 		SqlSessionFactoryBean sqlSessionFactory = new SqlSessionFactoryBean();
-		Resource mybatisConfig = new ClassPathResource("mybatis/mybatisConfig.xml");
+		Resource mybatisConfig = new ClassPathResource("mybatis/dataMapperConfig.xml");
 		sqlSessionFactory.setConfigLocation(mybatisConfig);
 		sqlSessionFactory.setDataSource(dataSource);
+		Resource[] mappers = new PathMatchingResourcePatternResolver().getResources("mybatis/mappers/**/*.xml");
+		sqlSessionFactory.setMapperLocations(mappers);
 		return sqlSessionFactory;
 	}
 
@@ -96,6 +110,11 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
     	DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
     	transactionManager.setDataSource(dataSource);
     	return transactionManager;
+    }
+
+    @Bean
+    public NTCredentials nTCredentials() {
+    	return new NTCredentials(ipdsPubsWsUser, ipdsPubsWsPwd, "", "GS");
     }
 
 }

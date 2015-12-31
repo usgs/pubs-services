@@ -115,7 +115,7 @@
         <where>
         	<include refid="filters"/>
         </where>
-        <include refid="base.orderBy"/>
+        <include refid="publication.orderBy"/>
         <include refid="base.pagingRowLimit"/>
     </select>
 
@@ -158,8 +158,8 @@
                pub.end_page,
                pub.number_of_pages,
                pub.public_comments,
-               to_char(pub.temporal_start, 'yyyy-mm-dd') temporal_start,
-               to_char(pub.temporal_end, 'yyyy-mm-dd') temporal_end,
+               to_char(pub.temporal_start, <include refid="base.dateFormat"/>) temporal_start,
+               to_char(pub.temporal_end, <include refid="base.dateFormat"/>) temporal_end,
                pub.conference_title,
                pub.conference_location,
                pub.conference_date,
@@ -223,7 +223,7 @@
         <where>
         	<include refid="filters"/>
         </where>
-        <include refid="base.orderBy"/>
+        <include refid="publication.orderBy"/>
         <include refid="base.pagingRowLimit"/>
 	</select>
 

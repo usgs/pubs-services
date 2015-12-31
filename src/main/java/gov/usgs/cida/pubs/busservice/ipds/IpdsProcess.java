@@ -78,7 +78,7 @@ public class IpdsProcess implements IIpdsProcess {
         //IPDS_ID is a alternate key, so there should only be 0 or 1 in each table.
         Map<String, Object> filters = new HashMap<String, Object>();
         filters.put("IPDS_ID", pub.getIpdsId());
-        List<MpPublication> existingMpPubs = MpPublication.getDao().getByMap(filters);
+        List<MpPublication> existingMpPubs = pubBusService.getObjects(filters);
         MpPublication existingMpPub = null == existingMpPubs ? null : existingMpPubs.isEmpty() ? null : existingMpPubs.get(0);
         PwPublication existingPwPub = PwPublication.getDao().getByIpdsId(pub.getIpdsId());
 

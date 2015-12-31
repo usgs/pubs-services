@@ -1,6 +1,7 @@
 package gov.usgs.cida.pubs.dao;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import gov.usgs.cida.pubs.BaseSpringTest;
@@ -33,16 +34,16 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 @Category(IntegrationTest.class)
-@DatabaseSetups({
-	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-	@DatabaseSetup("classpath:/testData/publicationType.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-	@DatabaseSetup("classpath:/testData/dataset.xml")
-})
+@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
 public class PublicationDaoTest extends BaseSpringTest {
 
     @Test
+    @DatabaseSetups({
+    	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+    	@DatabaseSetup("classpath:/testData/dataset.xml")
+    })
     public void getByIdTest() {
         //From warehouse
         Publication<?> pub4 = Publication.getPublicationDao().getById(4);
@@ -54,6 +55,12 @@ public class PublicationDaoTest extends BaseSpringTest {
     }
 
     @Test
+    @DatabaseSetups({
+    	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+    	@DatabaseSetup("classpath:/testData/dataset.xml")
+    })
     public void getByMapTest() {
         Map<String, Object> filters = new HashMap<>();
         filters.put("id", new int[] { 2 });
@@ -123,6 +130,196 @@ public class PublicationDaoTest extends BaseSpringTest {
     }
 
     @Test
+    @DatabaseSetups({
+    	@DatabaseSetup("classpath:/testData/publicationOrderBy.xml"),
+    	@DatabaseSetup("classpath:/testData/mpPublicationOrderBy.xml")
+    })
+    public void getByMapOrderByTest() {
+    	Map<String, Object> filters = new HashMap<>();
+    	filters.put("globalSearch", "true");
+    	List<Publication<?>> pubs = Publication.getPublicationDao().getByMap(filters);
+        assertEquals(36, pubs.size());
+        assertEquals(830, pubs.get(0).getId().intValue());
+        assertEquals(810, pubs.get(1).getId().intValue());
+        assertEquals(790, pubs.get(2).getId().intValue());
+        assertEquals(770, pubs.get(3).getId().intValue());
+        assertEquals(750, pubs.get(4).getId().intValue());
+        assertEquals(730, pubs.get(5).getId().intValue());
+        assertEquals(710, pubs.get(6).getId().intValue());
+        assertEquals(690, pubs.get(7).getId().intValue());
+        assertEquals(670, pubs.get(8).getId().intValue());
+        assertEquals(650, pubs.get(9).getId().intValue());
+        assertEquals(630, pubs.get(10).getId().intValue());
+        assertEquals(610, pubs.get(11).getId().intValue());
+        assertEquals(340, pubs.get(12).getId().intValue());
+        assertEquals(100, pubs.get(13).getId().intValue());
+        assertEquals(360, pubs.get(14).getId().intValue());
+        assertEquals(120, pubs.get(15).getId().intValue());
+        assertEquals(380, pubs.get(16).getId().intValue());
+        assertEquals(140, pubs.get(17).getId().intValue());
+        assertEquals(400, pubs.get(18).getId().intValue());
+        assertEquals(160, pubs.get(19).getId().intValue());
+        assertEquals(420, pubs.get(20).getId().intValue());
+        assertEquals(180, pubs.get(21).getId().intValue());
+        assertEquals(440, pubs.get(22).getId().intValue());
+        assertEquals(200, pubs.get(23).getId().intValue());
+        assertEquals(460, pubs.get(24).getId().intValue());
+        assertEquals(220, pubs.get(25).getId().intValue());
+        assertEquals(480, pubs.get(26).getId().intValue());
+        assertEquals(240, pubs.get(27).getId().intValue());
+        assertEquals(500, pubs.get(28).getId().intValue());
+        assertEquals(260, pubs.get(29).getId().intValue());
+        assertEquals(520, pubs.get(30).getId().intValue());
+        assertEquals(280, pubs.get(31).getId().intValue());
+        assertEquals(540, pubs.get(32).getId().intValue());
+        assertEquals(300, pubs.get(33).getId().intValue());
+        assertEquals(560, pubs.get(34).getId().intValue());
+        assertEquals(320, pubs.get(35).getId().intValue());
+
+    	filters.put("orderBy", "mpNewest");
+    	pubs = Publication.getPublicationDao().getByMap(filters);
+        assertEquals(36, pubs.size());
+        assertEquals(770, pubs.get(0).getId().intValue());
+        assertEquals(750, pubs.get(1).getId().intValue());
+        assertEquals(730, pubs.get(2).getId().intValue());
+        assertEquals(650, pubs.get(3).getId().intValue());
+        assertEquals(630, pubs.get(4).getId().intValue());
+        assertEquals(610, pubs.get(5).getId().intValue());
+        assertEquals(830, pubs.get(6).getId().intValue());
+        assertEquals(810, pubs.get(7).getId().intValue());
+        assertEquals(790, pubs.get(8).getId().intValue());
+        assertEquals(710, pubs.get(9).getId().intValue());
+        assertEquals(690, pubs.get(10).getId().intValue());
+        assertEquals(670, pubs.get(11).getId().intValue());
+        assertEquals(100, pubs.get(12).getId().intValue());
+        assertEquals(420, pubs.get(13).getId().intValue());
+        assertEquals(260, pubs.get(14).getId().intValue());
+        assertEquals(140, pubs.get(15).getId().intValue());
+        assertEquals(460, pubs.get(16).getId().intValue());
+        assertEquals(300, pubs.get(17).getId().intValue());
+        assertEquals(340, pubs.get(18).getId().intValue());
+        assertEquals(180, pubs.get(19).getId().intValue());
+        assertEquals(500, pubs.get(20).getId().intValue());
+        assertEquals(360, pubs.get(21).getId().intValue());
+        assertEquals(120, pubs.get(22).getId().intValue());
+        assertEquals(380, pubs.get(23).getId().intValue());
+        assertEquals(400, pubs.get(24).getId().intValue());
+        assertEquals(160, pubs.get(25).getId().intValue());
+        assertEquals(440, pubs.get(26).getId().intValue());
+        assertEquals(200, pubs.get(27).getId().intValue());
+        assertEquals(220, pubs.get(28).getId().intValue());
+        assertEquals(480, pubs.get(29).getId().intValue());
+        assertEquals(240, pubs.get(30).getId().intValue());
+        assertEquals(520, pubs.get(31).getId().intValue());
+        assertEquals(280, pubs.get(32).getId().intValue());
+        assertEquals(540, pubs.get(33).getId().intValue());
+        assertEquals(560, pubs.get(34).getId().intValue());
+        assertEquals(320, pubs.get(35).getId().intValue());
+        
+        filters.put("orderBy", "title");
+        pubs = Publication.getPublicationDao().getByMap(filters);
+        assertEquals(36, pubs.size());
+        assertEquals(100, pubs.get(0).getId().intValue());
+        assertEquals(610, pubs.get(1).getId().intValue());
+        assertEquals(650, pubs.get(2).getId().intValue());
+        assertEquals(690, pubs.get(3).getId().intValue());
+        assertEquals(730, pubs.get(4).getId().intValue());
+        assertEquals(770, pubs.get(5).getId().intValue());
+        assertEquals(810, pubs.get(6).getId().intValue());
+        assertEquals(830, pubs.get(7).getId().intValue());
+        assertEquals(790, pubs.get(8).getId().intValue());
+        assertEquals(750, pubs.get(9).getId().intValue());
+        assertEquals(710, pubs.get(10).getId().intValue());
+        assertEquals(670, pubs.get(11).getId().intValue());
+        assertEquals(630, pubs.get(12).getId().intValue());
+        assertEquals(140, pubs.get(13).getId().intValue());
+        assertEquals(180, pubs.get(14).getId().intValue());
+        assertEquals(220, pubs.get(15).getId().intValue());
+        assertEquals(260, pubs.get(16).getId().intValue());
+        assertEquals(300, pubs.get(17).getId().intValue());
+        assertEquals(340, pubs.get(18).getId().intValue());
+        assertEquals(380, pubs.get(19).getId().intValue());
+        assertEquals(420, pubs.get(20).getId().intValue());
+        assertEquals(460, pubs.get(21).getId().intValue());
+        assertEquals(500, pubs.get(22).getId().intValue());
+        assertEquals(540, pubs.get(23).getId().intValue());
+        assertEquals(560, pubs.get(24).getId().intValue());
+        assertEquals(520, pubs.get(25).getId().intValue());
+        assertEquals(480, pubs.get(26).getId().intValue());
+        assertEquals(440, pubs.get(27).getId().intValue());
+        assertEquals(400, pubs.get(28).getId().intValue());
+        assertEquals(360, pubs.get(29).getId().intValue());
+        assertEquals(320, pubs.get(30).getId().intValue());
+        assertEquals(280, pubs.get(31).getId().intValue());
+        assertEquals(240, pubs.get(32).getId().intValue());
+        assertEquals(200, pubs.get(33).getId().intValue());
+        assertEquals(160, pubs.get(34).getId().intValue());
+        assertEquals(120, pubs.get(35).getId().intValue());
+    }
+
+    @Test
+    @DatabaseSetups({
+    	@DatabaseSetup("classpath:/testData/publicationOrigin.xml"),
+    	@DatabaseSetup("classpath:/testData/mpPublicationOrigin.xml")
+    })
+    public void getByMapOriginTest() {
+    	Map<String, Object> filters = new HashMap<>();
+    	//mypubs only
+    	List<Publication<?>> pubs = Publication.getPublicationDao().getByMap(filters);
+        assertEquals(4, pubs.size());
+
+        assertEquals(130, pubs.get(0).getId().intValue());
+        assertEquals("mypubs", pubs.get(0).getSourceDatabase());
+        assertFalse(pubs.get(0).isPublished());
+
+        assertEquals(110, pubs.get(1).getId().intValue());
+        assertEquals("mypubs", pubs.get(1).getSourceDatabase());
+        assertFalse(pubs.get(1).isPublished());
+
+        assertEquals(100, pubs.get(2).getId().intValue());
+        assertEquals("mypubs", pubs.get(2).getSourceDatabase());
+        assertTrue(pubs.get(2).isPublished());
+
+        assertEquals(140, pubs.get(3).getId().intValue());
+        assertEquals("mypubs", pubs.get(3).getSourceDatabase());
+        assertTrue(pubs.get(3).isPublished());
+
+    	filters.put("globalSearch", "true");
+    	pubs = Publication.getPublicationDao().getByMap(filters);
+        assertEquals(6, pubs.size());
+
+        assertEquals(130, pubs.get(0).getId().intValue());
+        assertEquals("mypubs", pubs.get(0).getSourceDatabase());
+        assertFalse(pubs.get(0).isPublished());
+
+        assertEquals(110, pubs.get(1).getId().intValue());
+        assertEquals("mypubs", pubs.get(1).getSourceDatabase());
+        assertFalse(pubs.get(1).isPublished());
+
+        assertEquals(100, pubs.get(2).getId().intValue());
+        assertEquals("mypubs", pubs.get(2).getSourceDatabase());
+        assertTrue(pubs.get(2).isPublished());
+
+        assertEquals(120, pubs.get(3).getId().intValue());
+        assertEquals("pubs warehouse", pubs.get(3).getSourceDatabase());
+        assertTrue(pubs.get(3).isPublished());
+
+        assertEquals(140, pubs.get(4).getId().intValue());
+        assertEquals("mypubs", pubs.get(4).getSourceDatabase());
+        assertTrue(pubs.get(4).isPublished());
+
+        assertEquals(160, pubs.get(5).getId().intValue());
+        assertEquals("pubs warehouse", pubs.get(5).getSourceDatabase());
+        assertTrue(pubs.get(5).isPublished());
+    }
+
+    @Test
+    @DatabaseSetups({
+    	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+    	@DatabaseSetup("classpath:/testData/dataset.xml")
+    })
     public void getObjectCountTest() {
         Map<String, Object> filters = new HashMap<>();
         Integer cnt = Publication.getPublicationDao().getObjectCount(null);
@@ -171,6 +368,12 @@ public class PublicationDaoTest extends BaseSpringTest {
     }
 
     @Test
+    @DatabaseSetups({
+    	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+    	@DatabaseSetup("classpath:/testData/dataset.xml")
+    })
     public void filterByIndexIdTest() {
         List<Publication<?>> pubs = Publication.getPublicationDao().filterByIndexId("sir");
         assertEquals(2, pubs.size());

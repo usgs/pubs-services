@@ -4,6 +4,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseSetups;
+
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.PubsConstants;
@@ -18,27 +32,8 @@ import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseSetups;
-
 @Category(IntegrationTest.class)
-@DatabaseSetups({
-	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-	@DatabaseSetup("classpath:/testData/publicationType.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-	@DatabaseSetup("classpath:/testData/dataset.xml")
-})
+@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
 public class MpPublicationDaoTest extends BaseSpringTest {
 
     //TODO contributors, links, & CostCenters in test.
@@ -48,6 +43,12 @@ public class MpPublicationDaoTest extends BaseSpringTest {
     public static final String MPPUB1_LOCKEDBY = "drsteini";
     
     @Test
+    @DatabaseSetups({
+    	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+    	@DatabaseSetup("classpath:/testData/dataset.xml")
+    })
     public void addAndGetByIds() {
         Integer pubId = MpPublication.getDao().getNewProdId();
         MpPublication newpubA = addAPub(pubId);
@@ -80,6 +81,72 @@ public class MpPublicationDaoTest extends BaseSpringTest {
     }
 
     @Test
+   	@DatabaseSetup("classpath:/testData/mpPublicationOrderBy.xml")
+    public void getByMapTest() {
+    	Map<String, Object> filters = new HashMap<>();
+        List<MpPublication> pubs = MpPublication.getDao().getByMap(filters);
+        assertEquals(24, pubs.size());
+        assertEquals(830, pubs.get(0).getId().intValue());
+        assertEquals(810, pubs.get(1).getId().intValue());
+        assertEquals(790, pubs.get(2).getId().intValue());
+        assertEquals(770, pubs.get(3).getId().intValue());
+        assertEquals(750, pubs.get(4).getId().intValue());
+        assertEquals(730, pubs.get(5).getId().intValue());
+        assertEquals(710, pubs.get(6).getId().intValue());
+        assertEquals(690, pubs.get(7).getId().intValue());
+        assertEquals(670, pubs.get(8).getId().intValue());
+        assertEquals(650, pubs.get(9).getId().intValue());
+        assertEquals(630, pubs.get(10).getId().intValue());
+        assertEquals(610, pubs.get(11).getId().intValue());
+        assertEquals(340, pubs.get(12).getId().intValue());
+        assertEquals(100, pubs.get(13).getId().intValue());
+        assertEquals(380, pubs.get(14).getId().intValue());
+        assertEquals(140, pubs.get(15).getId().intValue());
+        assertEquals(420, pubs.get(16).getId().intValue());
+        assertEquals(180, pubs.get(17).getId().intValue());
+        assertEquals(460, pubs.get(18).getId().intValue());
+        assertEquals(220, pubs.get(19).getId().intValue());
+        assertEquals(500, pubs.get(20).getId().intValue());
+        assertEquals(260, pubs.get(21).getId().intValue());
+        assertEquals(540, pubs.get(22).getId().intValue());
+        assertEquals(300, pubs.get(23).getId().intValue());
+
+        filters.put("orderBy", "title");
+        pubs = MpPublication.getDao().getByMap(filters);
+        assertEquals(24, pubs.size());
+        assertEquals(100, pubs.get(0).getId().intValue());
+        assertEquals(610, pubs.get(1).getId().intValue());
+        assertEquals(650, pubs.get(2).getId().intValue());
+        assertEquals(690, pubs.get(3).getId().intValue());
+        assertEquals(730, pubs.get(4).getId().intValue());
+        assertEquals(770, pubs.get(5).getId().intValue());
+        assertEquals(810, pubs.get(6).getId().intValue());
+        assertEquals(830, pubs.get(7).getId().intValue());
+        assertEquals(790, pubs.get(8).getId().intValue());
+        assertEquals(750, pubs.get(9).getId().intValue());
+        assertEquals(710, pubs.get(10).getId().intValue());
+        assertEquals(670, pubs.get(11).getId().intValue());
+        assertEquals(630, pubs.get(12).getId().intValue());
+        assertEquals(140, pubs.get(13).getId().intValue());
+        assertEquals(180, pubs.get(14).getId().intValue());
+        assertEquals(220, pubs.get(15).getId().intValue());
+        assertEquals(260, pubs.get(16).getId().intValue());
+        assertEquals(300, pubs.get(17).getId().intValue());
+        assertEquals(340, pubs.get(18).getId().intValue());
+        assertEquals(380, pubs.get(19).getId().intValue());
+        assertEquals(420, pubs.get(20).getId().intValue());
+        assertEquals(460, pubs.get(21).getId().intValue());
+        assertEquals(500, pubs.get(22).getId().intValue());
+        assertEquals(540, pubs.get(23).getId().intValue());
+    }
+    
+    @Test
+    @DatabaseSetups({
+    	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+    	@DatabaseSetup("classpath:/testData/dataset.xml")
+    })
     public void copyFromPwTest() {
         MpPublication.getDao().copyFromPw(4);
         Publication<MpPublication> mpPub = MpPublication.getDao().getById(4);
@@ -88,6 +155,12 @@ public class MpPublicationDaoTest extends BaseSpringTest {
     }
 
     @Test
+    @DatabaseSetups({
+    	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+    	@DatabaseSetup("classpath:/testData/dataset.xml")
+    })
     public void lockPubTest() {
     	MpPublication.getDao().lockPub(3);
     	MpPublication mpPub = MpPublication.getDao().getById(3);
@@ -95,6 +168,12 @@ public class MpPublicationDaoTest extends BaseSpringTest {
     }
     
     @Test
+    @DatabaseSetups({
+    	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+    	@DatabaseSetup("classpath:/testData/dataset.xml")
+    })
     public void releaseLocksUserTest() {
     	MpPublication mpPub = addAPub(MpPublication.getDao().getNewProdId());
     	MpPublication.getDao().releaseLocksUser(PubsConstants.ANONYMOUS_USER);
@@ -115,6 +194,12 @@ public class MpPublicationDaoTest extends BaseSpringTest {
     }
     
     @Test
+    @DatabaseSetups({
+    	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+    	@DatabaseSetup("classpath:/testData/dataset.xml")
+    })
     public void releaseLocksPubTest() {
     	MpPublication mpPub = addAPub(MpPublication.getDao().getNewProdId());
     	MpPublication.getDao().releaseLocksPub(mpPub.getId());
@@ -133,6 +218,12 @@ public class MpPublicationDaoTest extends BaseSpringTest {
     }
     
     @Test
+    @DatabaseSetups({
+    	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+    	@DatabaseSetup("classpath:/testData/dataset.xml")
+    })
     public void publishToPwTest() {
     	MpPublication.getDao().publishToPw(null);
     	MpPublication.getDao().publishToPw(-1);
@@ -147,6 +238,12 @@ public class MpPublicationDaoTest extends BaseSpringTest {
     }
     
     @Test
+    @DatabaseSetups({
+    	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+    	@DatabaseSetup("classpath:/testData/dataset.xml")
+    })
     public void getByIndexIdTest() {
     	MpPublication pub = MpPublication.getDao().getByIndexId(MPPUB1_INDEXID);
     	assertMpPub1(pub, MPPUB1_LOCKEDBY);

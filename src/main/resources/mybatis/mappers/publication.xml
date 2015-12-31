@@ -413,6 +413,22 @@
             </if>
     </sql>
 
+    <sql id="orderBy">
+    	order by
+    	<choose>
+    		<when test="orderBy == 'title'">
+    			pub.title asc,
+    		</when>
+    		<when test="orderBy == 'mpNewest'">
+    			case when pub.insert_date = pub.update_date then 1 else 2 end,
+    			pub.update_date desc,
+    		</when>
+    	</choose>
+    	replace(pub.publication_year, 'noyr', '0000') desc nulls last,
+    	pub.display_to_public_date desc,
+        pub.publication_id desc
+	</sql>
+
     <sql id="allSelect">
         select <include refid="base.pagingHint"/> *
           from (select <include refid="cols"/>, 'mypubs' sourceDatabase, published
@@ -446,7 +462,7 @@
 
     <select id="getByMap" parameterType="map" resultMap="genericResult">
         <include refid="allSelect"/>
-        <include refid="base.orderBy"/>
+        <include refid="orderBy"/>
         <include refid="base.pagingRowLimit"/>
     </select>
 

@@ -93,4 +93,5 @@ public class PwPublicationRssMvcServiceTest extends BaseSpringTest {
     	String resultingPwRssItemDescription = response.substring(itemDescStart, itemDescEnd);
     	assertTrue(resultingPwRssItemDescription.equals(expectedGetPwRssItemDescription));
     }
+
 }

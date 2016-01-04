@@ -4,6 +4,7 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -12,6 +13,7 @@ import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 
+@Component
 public class Contributor<D> extends BaseDomain<Contributor<D>> {
 
     private static IDao<Contributor<?>> contributorDao;

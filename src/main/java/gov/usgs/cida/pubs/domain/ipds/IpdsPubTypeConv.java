@@ -1,10 +1,14 @@
 package gov.usgs.cida.pubs.domain.ipds;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import gov.usgs.cida.pubs.dao.intfc.IIpdsPubTypeConvDao;
 import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
 
+@Component
 public class IpdsPubTypeConv extends BaseDomain <IpdsPubTypeConv> {
 
     private static IIpdsPubTypeConvDao ipdsPubTypeConvDao;
@@ -45,6 +49,7 @@ public class IpdsPubTypeConv extends BaseDomain <IpdsPubTypeConv> {
         return ipdsPubTypeConvDao;
     }
 
+    @Autowired
     public void setIpdsPubTypeConvDao(final IIpdsPubTypeConvDao inIpdsPubTypeConvDao) {
         ipdsPubTypeConvDao = inIpdsPubTypeConvDao;
     }

@@ -1,8 +1,13 @@
 package gov.usgs.cida.pubs.domain.mp;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
 import gov.usgs.cida.pubs.dao.intfc.IMpDao;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
 
+@Component
 public class MpPublicationCostCenter extends PublicationCostCenter<MpPublicationCostCenter>{
 
     private static IMpDao<MpPublicationCostCenter> mpPublicationCostCenterDao;
@@ -18,6 +23,8 @@ public class MpPublicationCostCenter extends PublicationCostCenter<MpPublication
      * The setter for mpPublicationCostCenterDao.
      * @param inMpPublicationCostCenterDao the mpPublicationCostCenterDao to set
      */
+    @Autowired
+    @Qualifier("mpPublicationCostCenterDao")
     public void setMpPublicationCostCenterDao(final IMpDao<MpPublicationCostCenter> inMpPublicationCostCenterDao) {
         mpPublicationCostCenterDao = inMpPublicationCostCenterDao;
     }

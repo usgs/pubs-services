@@ -8,11 +8,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 /**
  * An object for logging the messages received from IPDS.
  * @author drsteini
  *
  */
+@Component
 public class IpdsMessageLog extends BaseDomain <IpdsMessageLog> {
 
     private static IIpdsMessageLogDao ipdsMessageLogDao;
@@ -137,6 +141,7 @@ public class IpdsMessageLog extends BaseDomain <IpdsMessageLog> {
      * The setter for ipdsMessageLogDao.
      * @param inIpdsMessageLogDao the IpdsMessageLogDao to set
      */
+    @Autowired
     public void setIpdsMessageLogDao(final IIpdsMessageLogDao inIpdsMessageLogDao) {
         ipdsMessageLogDao = inIpdsMessageLogDao;
     }

@@ -4,6 +4,10 @@ import gov.usgs.cida.pubs.dao.intfc.IPublicationIndexDao;
 
 import java.io.Serializable;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public class PublicationIndex extends BaseDomain<PublicationIndex> implements Serializable {
 	
 	private static final long serialVersionUID = -3070732718809243589L;
@@ -24,6 +28,7 @@ public class PublicationIndex extends BaseDomain<PublicationIndex> implements Se
         return publicationIndexDao;
     }
 
+    @Autowired
     public void setPublicationIndexDao(final IPublicationIndexDao inPublicationIndexDao) {
         publicationIndexDao = inPublicationIndexDao;
     }

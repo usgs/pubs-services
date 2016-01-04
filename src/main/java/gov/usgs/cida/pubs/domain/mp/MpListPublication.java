@@ -1,6 +1,10 @@
 package gov.usgs.cida.pubs.domain.mp;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
 import gov.usgs.cida.pubs.dao.intfc.IMpDao;
 import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
@@ -10,6 +14,7 @@ import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
  * @author drsteini
  *
  */
+@Component
 @ParentExists
 @UniqueKey
 public class MpListPublication extends BaseDomain<MpListPublication> {
@@ -40,6 +45,8 @@ public class MpListPublication extends BaseDomain<MpListPublication> {
 		return mpListPublicationDao;
 	}
 
+    @Autowired
+    @Qualifier("mpListPublicationDao")
 	public void setMpListPublicationDao(final IMpDao<MpListPublication> inMpListPublicationDao) {
 		mpListPublicationDao = inMpListPublicationDao;
 	}

@@ -2,10 +2,12 @@ package gov.usgs.cida.pubs.domain;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
 
+@Component
 public class ContributorType extends BaseDomain<ContributorType> implements ILookup {
 
     public static final Integer AUTHORS = 1;

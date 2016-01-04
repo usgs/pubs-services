@@ -2,9 +2,11 @@ package gov.usgs.cida.pubs.domain;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 
+@Component
 public class CrossRefLog extends BaseDomain<CrossRefLog> {
 
     private static IDao<CrossRefLog> crossRefLogDao;
@@ -49,7 +51,7 @@ public class CrossRefLog extends BaseDomain<CrossRefLog> {
 
     @Autowired
     @Qualifier("crossRefLogDao")
-    public static void setCrossRefLogDao(final IDao<CrossRefLog> inCrossRefLogDao) {
+    public void setCrossRefLogDao(final IDao<CrossRefLog> inCrossRefLogDao) {
         crossRefLogDao = inCrossRefLogDao;
     }
 

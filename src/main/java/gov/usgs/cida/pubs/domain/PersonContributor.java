@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,6 +16,7 @@ import gov.usgs.cida.pubs.domain.intfc.ILookup;
 import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 
+@Component
 @ParentExists
 public class PersonContributor<D> extends Contributor<PersonContributor<D>> implements ILookup {
 

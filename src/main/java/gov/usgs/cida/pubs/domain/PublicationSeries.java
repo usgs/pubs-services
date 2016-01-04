@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -17,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonView;
  * @author drsteini
  *
  */
+@Component
 @JsonPropertyOrder({"id", "text", "code", "seriesDoiName", "onlineIssn", "printIssn", "active"})
 public class PublicationSeries extends BaseDomain<PublicationSeries> implements ILookup, Serializable {
 

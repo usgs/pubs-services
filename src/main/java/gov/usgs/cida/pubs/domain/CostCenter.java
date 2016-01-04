@@ -7,9 +7,11 @@ import java.io.Serializable;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+@Component
 public class CostCenter extends Affiliation<CostCenter> implements Serializable {
 
 	private static final long serialVersionUID = -7804226743028056085L;

@@ -491,6 +491,10 @@ public class PublicationDaoTest extends BaseSpringTest {
         sb.setId(2);
         newPub.setSupersededBy(sb);
         newPub.setRevisedDate(LocalDate.of(2003,3,3));
+        newPub.setInsertDate(LocalDateTime.of(2015, 12, 31, 12, 1, 1));
+        newPub.setInsertUsername("inInsertUsername");
+        newPub.setUpdateDate(LocalDateTime.of(2015, 12, 31, 12, 1, 2));
+        newPub.setUpdateUsername("inUpdateUsername");
         newPub.setPublished(true);
         newPub.setSourceDatabase("mypubs");
 

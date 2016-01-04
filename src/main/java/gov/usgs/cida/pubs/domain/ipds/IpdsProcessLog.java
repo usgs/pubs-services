@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.domain.ipds;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.BaseDomain;
@@ -11,6 +12,7 @@ import gov.usgs.cida.pubs.domain.BaseDomain;
  * @author duselman
  *
  */
+@Component
 public class IpdsProcessLog extends BaseDomain<IpdsProcessLog> {
 
     private static IDao<IpdsProcessLog> ipdsProcessLogDao;
@@ -50,7 +52,7 @@ public class IpdsProcessLog extends BaseDomain<IpdsProcessLog> {
     }
 
     @Autowired
-    @Qualifier("IpdsProcessLog")
+    @Qualifier("ipdsProcessLogDao")
     public void setIpdsProcessLogDao(final IDao<IpdsProcessLog> ipdsProcessLogDao) {
         IpdsProcessLog.ipdsProcessLogDao = ipdsProcessLogDao;
     }

@@ -3,8 +3,13 @@ package gov.usgs.cida.pubs.domain.mp;
 import gov.usgs.cida.pubs.dao.intfc.IMpDao;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+@Component
 @JsonPropertyOrder({"id", "rank", "type", "url", "text", "description", "size", "linkFileType"})
 public class MpPublicationLink extends PublicationLink<MpPublicationLink> {
 
@@ -33,6 +38,8 @@ public class MpPublicationLink extends PublicationLink<MpPublicationLink> {
         return mpPublicationLinkDao;
     }
 
+    @Autowired
+    @Qualifier("mpPublicationLinkDao")
     public void setMpPublicationLinkDao(final IMpDao<MpPublicationLink> inMpPublicationLinkDao) {
         mpPublicationLinkDao = inMpPublicationLinkDao;
     }

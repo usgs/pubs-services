@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
@@ -13,6 +14,7 @@ import gov.usgs.cida.pubs.domain.intfc.ILookup;
  * @author drsteini
  *
  */
+@Component
 public class PublicationSubtype extends BaseDomain<PublicationSubtype> implements ILookup, Serializable {
 
 	private static final long serialVersionUID = 122305624975493957L;

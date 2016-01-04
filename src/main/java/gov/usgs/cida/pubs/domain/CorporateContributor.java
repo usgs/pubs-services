@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.domain;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -11,6 +12,7 @@ import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
 import gov.usgs.cida.pubs.json.View;
 
+@Component
 public class CorporateContributor extends Contributor<CorporateContributor> implements ILookup {
 
     private static IDao<Contributor<?>> corporateContributorDao;

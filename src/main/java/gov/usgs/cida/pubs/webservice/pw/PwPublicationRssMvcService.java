@@ -296,8 +296,8 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 	    		// ==== PUBLICATION DATE
 	    		rssResults.append("\t\t\t<pubDate>");
 	    		LocalDateTime pubLocalDateTime = publication.getUpdateDate();
-	    		if(pubLocalDateTime != null) {
-	    	    	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("EEE, d MMM yyyy HH:mm:ss Z");
+	    		if (pubLocalDateTime != null) {
+	    	    	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("EEE, d MMM yyyy HH:mm:ss");
 	    			String pubDate = pubLocalDateTime.format(dtf);
 		    		rssResults.append(pubDate);
 	    		}

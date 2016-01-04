@@ -111,7 +111,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
     	addToFiltersIfNotNull(filters, "modXDays", modXDays);
     	addToFiltersIfNotNull(filters, "modDateLow", modDateLow);
     	addToFiltersIfNotNull(filters, "modDateHigh", modDateHigh);
-    	addToFiltersIfNotNull(filters, "orderBy",orderBy);
+    	addToFiltersIfNotNull(filters, "orderBy", orderBy);
 
     	filters.put("url", warehouseEndpoint + "/publication/");
 

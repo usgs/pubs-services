@@ -23,12 +23,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 @Category(IntegrationTest.class)
-@DatabaseSetups({
-	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-	@DatabaseSetup("classpath:/testData/publicationType.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-	@DatabaseSetup("classpath:/testData/publicationStream.xml")
-})
+@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
 public class PwPublicationDaoStreamingTest extends BaseSpringTest {
 
 	private class TestResultHandler<T> implements ResultHandler<T> {
@@ -41,6 +36,11 @@ public class PwPublicationDaoStreamingTest extends BaseSpringTest {
 	}
 	
     @Test
+    @DatabaseSetups({
+    	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationStream.xml")
+    })
     public void getStreamByMapTest() {
     	//This test uses the VPD. If it fails because record counts are off:
     	// - No rows returned probably means the publication_index_00 table does not have the correct data in it.
@@ -115,12 +115,52 @@ public class PwPublicationDaoStreamingTest extends BaseSpringTest {
     }
 	
     @Test
+    @DatabaseSetups({
+    	@DatabaseSetup("classpath:/testData/publicationType.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+    	@DatabaseSetup("classpath:/testData/publicationStream.xml")
+    })
     public void getStreamByMapSyntaxTest() {
 		TestResultHandler<PwPublication> handler = new TestResultHandler<>();
     	PwPublication.getDao().stream(buildAllFilters(), handler);
     	//TODO real filter testing, not just parsing 
     }
     
+    @Test
+    @DatabaseSetups({
+    	@DatabaseSetup("classpath:/testData/publicationOrderBy.xml")
+    })
+   public void streamOrderByTest() {
+		TestResultHandler<PwPublication> handler = new TestResultHandler<>();
+		PwPublication.getDao().stream(new HashMap<>(), handler);
+	    List<Map<String, Object>> pubs = handler.results;
+	    assertEquals(24, pubs.size());
+	    assertEquals("340", pubs.get(0).get("WAREHOUSE_URL"));
+	    assertEquals("100", pubs.get(1).get("WAREHOUSE_URL"));
+	    assertEquals("360", pubs.get(2).get("WAREHOUSE_URL"));
+	    assertEquals("120", pubs.get(3).get("WAREHOUSE_URL"));
+	    assertEquals("380", pubs.get(4).get("WAREHOUSE_URL"));
+	    assertEquals("140", pubs.get(5).get("WAREHOUSE_URL"));
+	    assertEquals("400", pubs.get(6).get("WAREHOUSE_URL"));
+	    assertEquals("160", pubs.get(7).get("WAREHOUSE_URL"));
+	    assertEquals("420", pubs.get(8).get("WAREHOUSE_URL"));
+	    assertEquals("180", pubs.get(9).get("WAREHOUSE_URL"));
+	    assertEquals("440", pubs.get(10).get("WAREHOUSE_URL"));
+	    assertEquals("200", pubs.get(11).get("WAREHOUSE_URL"));
+	    assertEquals("460", pubs.get(12).get("WAREHOUSE_URL"));
+	    assertEquals("220", pubs.get(13).get("WAREHOUSE_URL"));
+	    assertEquals("480", pubs.get(14).get("WAREHOUSE_URL"));
+	    assertEquals("240", pubs.get(15).get("WAREHOUSE_URL"));
+	    assertEquals("500", pubs.get(16).get("WAREHOUSE_URL"));
+	    assertEquals("260", pubs.get(17).get("WAREHOUSE_URL"));
+	    assertEquals("520", pubs.get(18).get("WAREHOUSE_URL"));
+	    assertEquals("280", pubs.get(19).get("WAREHOUSE_URL"));
+	    assertEquals("540", pubs.get(20).get("WAREHOUSE_URL"));
+	    assertEquals("300", pubs.get(21).get("WAREHOUSE_URL"));
+	    assertEquals("560", pubs.get(22).get("WAREHOUSE_URL"));
+	    assertEquals("320", pubs.get(23).get("WAREHOUSE_URL"));
+    }
+
     public Map<String, Object> buildAllFilters() {
     	Map<String, Object> filters = new HashMap<>();
     	filters.put("q", "test");

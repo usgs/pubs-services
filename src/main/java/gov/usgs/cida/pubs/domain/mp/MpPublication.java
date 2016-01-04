@@ -5,6 +5,9 @@ import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -15,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonView;
  * @author drsteini
  *
  */
+@Component
 @JsonPropertyOrder({"id", "indexId", "displayToPublicDate", "lastModifiedDate", "publicationType", "publicationSubtype",
 	"largerWorkType", "largerWorkTitle", "largerWorkSubtype", "seriesTitle", "costCenters", "subseriesTitle", "seriesNumber", "chapter",
 	"subchapterNumber", "title", "docAbstract", "usgsCitation", "collaboration", "language", "publisher", "publisherLocation",
@@ -60,6 +64,7 @@ public class MpPublication extends Publication<MpPublication> {
      * The setter for mpPublicationDao.
      * @param inMpPublicationDao the MpPublicationDao to set
      */
+    @Autowired
     public void setMpPublicationDao(final IMpPublicationDao inMpPublicationDao) {
         mpPublicationDao = inMpPublicationDao;
     }

@@ -1,4 +1,4 @@
-package gov.usgs.cida.pubs;
+package gov.usgs.cida.pubs.domain;
 
 import java.util.Properties;
 
@@ -6,8 +6,10 @@ import javax.servlet.ServletContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.ServletContextAware;
 
+@Component
 public class ApplicationVersion implements ServletContextAware {
 
     private static final Logger LOG = LoggerFactory.getLogger(ApplicationVersion.class);

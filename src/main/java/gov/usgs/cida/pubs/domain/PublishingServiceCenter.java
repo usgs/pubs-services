@@ -1,10 +1,14 @@
 package gov.usgs.cida.pubs.domain;
 
+import java.io.Serializable;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import gov.usgs.cida.pubs.dao.intfc.IPublishingServiceCenterDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
 
-import java.io.Serializable;
-
+@Component
 public class PublishingServiceCenter extends BaseDomain<PublishingServiceCenter> implements ILookup, Serializable {
 
 	private static final long serialVersionUID = -281712263572997816L;
@@ -30,6 +34,7 @@ public class PublishingServiceCenter extends BaseDomain<PublishingServiceCenter>
         return pscDao;
     }
 
+    @Autowired
     public void setPublishingServiceCenterDao(final IPublishingServiceCenterDao inPscDao) {
     	pscDao = inPscDao;
     }

@@ -9,11 +9,14 @@ import gov.usgs.cida.pubs.validation.constraint.NoChildren;
 import java.io.Serializable;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+@Component
 @NoChildren(groups = DeleteChecks.class)
 @JsonPropertyOrder({"id", "text", "description", "type"})
 public class MpList extends BaseDomain<MpList>  implements Serializable {
@@ -88,6 +91,7 @@ public class MpList extends BaseDomain<MpList>  implements Serializable {
 		return mpListDao;
 	}
 
+    @Autowired
 	public void setMpListDao(final IMpListDao inMpListDao) {
 		mpListDao = inMpListDao;
 	}

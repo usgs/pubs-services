@@ -3,8 +3,13 @@ package gov.usgs.cida.pubs.domain.mp;
 import gov.usgs.cida.pubs.dao.intfc.IMpDao;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+@Component
 @JsonPropertyOrder({"id", "corporation", "usgs", "contributorType", "rank", "family", "given", "suffix",
 	"email", "organization", "affiliation"})
 public class MpPublicationContributor extends PublicationContributor<MpPublicationContributor> {
@@ -36,6 +41,8 @@ public class MpPublicationContributor extends PublicationContributor<MpPublicati
      * The setter for mpPublicationContributorDao.
      * @param inMpPublicationContributorDao the mpPublicationContributorDao to set
      */
+    @Autowired
+    @Qualifier("mpPublicationContributorDao")
     public void setMpPublicationContributorDao(final IMpDao<MpPublicationContributor> inMpPublicationContributorDao) {
         mpPublicationContributorDao = inMpPublicationContributorDao;
     }

@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
 
+@Component
 @JsonPropertyOrder({"id", "text", "active", "usgs"})
 public class Affiliation<D> extends BaseDomain<Affiliation<D>> implements ILookup {
 

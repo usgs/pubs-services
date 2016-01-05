@@ -76,6 +76,9 @@ public class IpdsBindingTest extends BaseSpringTest {
     public String newOutsideContributorXml;
 
     @Autowired
+    public String newOutsideContributorUsgsAffiliationXml;
+    
+    @Autowired
     public String existingOutsideContributorXml;
 
     @Autowired
@@ -245,17 +248,34 @@ public class IpdsBindingTest extends BaseSpringTest {
         assertTrue(contributor instanceof OutsideContributor);
         assertNotNull(contributor.getId());
         assertNewOutsideContributorXml((OutsideContributor) contributor);
+        
+        
+        d = binding.makeDocument(newOutsideContributorUsgsAffiliationXml);
+        contributor = binding.getOrCreateNonUsgsContributor(d.getDocumentElement());
+        assertNotNull(contributor);
+        assertTrue(contributor instanceof OutsideContributor);
+        assertNotNull(contributor.getId());
+        assertNewOutsideContributorUsgsAffiliationXml((OutsideContributor) contributor);
+        
     }
 
     @Test
     public void getOrCreateNonUsgsAffiliationTest() {
-        //Get
+        //Get single
         Affiliation<?> affiliation = binding.getOrCreateNonUsgsAffiliation("Outside Affiliation 1");
         AffiliationDaoTest.assertAffiliation5(affiliation);
 
         //New
         affiliation = binding.getOrCreateNonUsgsAffiliation("Outside Test");
         assertNewOutside(affiliation);
+        
+        //USGS
+        affiliation = binding.getOrCreateNonUsgsAffiliation("Affiliation Cost Center 1");
+        assertNull(affiliation);
+
+        //multiple&Mixed
+        affiliation = binding.getOrCreateNonUsgsAffiliation("Outside Affiliation");
+        AffiliationDaoTest.assertAffiliation5(affiliation);
     }
 
     @Test
@@ -472,7 +492,14 @@ public class IpdsBindingTest extends BaseSpringTest {
         assertEquals("7", contributor.getAffiliation().getId().toString());
     }
 
-    protected void assertPub1(MpPublication pub) {
+    protected void assertNewOutsideContributorUsgsAffiliationXml(OutsideContributor contributor) {
+        assertEquals("ODoul", contributor.getFamily());
+        assertEquals("Jane", contributor.getGiven());
+        assertNull(contributor.getEmail());
+        assertNull(contributor.getAffiliation());
+    }
+
+   protected void assertPub1(MpPublication pub) {
         assertPubCommon(pub);
 
         assertEquals(18, pub.getPublicationType().getId().intValue());

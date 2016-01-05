@@ -196,15 +196,20 @@ public class IpdsBinding {
     }
 
     protected Affiliation<?> getOrCreateNonUsgsAffiliation(final String name) {
-        Affiliation<?> affiliation;
+        Affiliation<?> affiliation = null;
         Map<String, Object> filters = new HashMap<>();
         filters.put("text", name);
-        List<Affiliation<?>> affiliations = OutsideAffiliation.getDao().getByMap(filters);
-        //TODO what if we get more than one?
+        List<Affiliation<?>> affiliations = Affiliation.getDao().getByMap(filters);
         if (affiliations.isEmpty()) {
             affiliation = createNonUsgsAffiliation(name);
         } else {
-            affiliation = (OutsideAffiliation) affiliations.get(0);
+        	for (Affiliation<?> a : affiliations) {
+        		//There should really only be one, only use it if it is an outside affiliation.
+        		if (!a.isUsgs()) {
+        			affiliation = (OutsideAffiliation) a;
+        			break;
+        		}
+        	}
         }
         return affiliation;
     }

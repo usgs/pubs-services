@@ -101,6 +101,7 @@
         <where>
             <include refid="filters"/>
         </where>
+        order by affiliation_id
     </select>
 
     <select id="getByMapCostCenter" resultMap="costCenterResult">

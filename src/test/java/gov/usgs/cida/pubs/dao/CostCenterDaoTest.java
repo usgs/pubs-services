@@ -29,7 +29,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 })
 public class CostCenterDaoTest extends BaseSpringTest {
 
-    public static final int COST_CENTER_CNT = 4;
+    public static final int COST_CENTER_CNT = 5;
 
     public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors");
 
@@ -69,7 +69,7 @@ public class CostCenterDaoTest extends BaseSpringTest {
         filters.clear();
         filters.put(CostCenterDao.ACTIVE_SEARCH, true);
         costCenters = CostCenter.getDao().getByMap(filters);
-        assertEquals(3, costCenters.size());
+        assertEquals(4, costCenters.size());
 
         filters.clear();
         filters.put(CostCenterDao.USGS_SEARCH, false);
@@ -79,7 +79,7 @@ public class CostCenterDaoTest extends BaseSpringTest {
         filters.clear();
         filters.put(CostCenterDao.USGS_SEARCH, true);
         costCenters = CostCenter.getDao().getByMap(filters);
-        assertEquals(4, costCenters.size());
+        assertEquals(5, costCenters.size());
 
         filters.put(CostCenterDao.ID_SEARCH, "1");
         filters.put(CostCenterDao.TEXT_SEARCH, "affil");

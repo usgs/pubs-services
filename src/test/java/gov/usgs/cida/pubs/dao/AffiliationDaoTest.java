@@ -32,7 +32,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 })
 public class AffiliationDaoTest extends BaseSpringTest {
 
-    public static final int affiliationCnt = 7;
+    public static final int affiliationCnt = 8;
 
     @Test
     public void getByIdInteger() {
@@ -66,7 +66,7 @@ public class AffiliationDaoTest extends BaseSpringTest {
         filters.clear();
         filters.put(AffiliationDao.TEXT_SEARCH, "out");
         affiliations = Affiliation.getDao().getByMap(filters);
-        assertEquals(2, affiliations.size());
+        assertEquals(3, affiliations.size());
 
         filters.clear();
         filters.put(AffiliationDao.ACTIVE_SEARCH, false);
@@ -76,7 +76,7 @@ public class AffiliationDaoTest extends BaseSpringTest {
         filters.clear();
         filters.put(AffiliationDao.ACTIVE_SEARCH, true);
         affiliations = Affiliation.getDao().getByMap(filters);
-        assertEquals(5, affiliations.size());
+        assertEquals(6, affiliations.size());
 
         filters.clear();
         filters.put(AffiliationDao.USGS_SEARCH, false);
@@ -86,7 +86,7 @@ public class AffiliationDaoTest extends BaseSpringTest {
         filters.clear();
         filters.put(AffiliationDao.USGS_SEARCH, true);
         affiliations = Affiliation.getDao().getByMap(filters);
-        assertEquals(4, affiliations.size());
+        assertEquals(5, affiliations.size());
 
         filters.put(AffiliationDao.ID_SEARCH, "4");
         filters.put(AffiliationDao.TEXT_SEARCH, "xaffil");
@@ -148,6 +148,14 @@ public class AffiliationDaoTest extends BaseSpringTest {
     public static void assertAffiliation5(Affiliation<?> affiliation) {
         assertEquals(5, affiliation.getId().intValue());
         assertEquals("Outside Affiliation 1", affiliation.getText());
+        assertTrue(affiliation.isActive());
+        assertFalse(affiliation.isUsgs());
+        assertTrue(affiliation instanceof OutsideAffiliation);
+    }
+
+    public static void assertAffiliation7(Affiliation<?> affiliation) {
+        assertEquals(7, affiliation.getId().intValue());
+        assertEquals("Outside Affiliation 3", affiliation.getText());
         assertTrue(affiliation.isActive());
         assertFalse(affiliation.isUsgs());
         assertTrue(affiliation instanceof OutsideAffiliation);

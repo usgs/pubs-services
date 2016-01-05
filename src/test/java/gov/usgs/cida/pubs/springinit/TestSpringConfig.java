@@ -188,6 +188,15 @@ public class TestSpringConfig {
 		}
 	}
 	
+	@Value("classpath:testData/newOutsideContributorUsgsAffiliation.xml")
+	private Resource newOutsideContributorUsgsAffiliation;
+	@Bean
+	public String newOutsideContributorUsgsAffiliationXml() throws IOException {
+		try (InputStream is = newOutsideContributorUsgsAffiliation.getInputStream()) {
+			return IOUtils.toString(is);
+		}
+	}
+	
 	@Value("classpath:testData/existingOutsideContributor.xml")
 	private Resource existingOutsideContributor;
 	@Bean

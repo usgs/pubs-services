@@ -1,18 +1,17 @@
 package gov.usgs.cida.pubs.domain;
 
-import gov.usgs.cida.pubs.dao.intfc.IDao;
-import gov.usgs.cida.pubs.domain.intfc.ILookup;
-import gov.usgs.cida.pubs.json.View;
-
 import java.io.Serializable;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonView;
+
+import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.domain.intfc.ILookup;
+import gov.usgs.cida.pubs.json.View;
 
 /**
  * @author drsteini
@@ -30,12 +29,16 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
 
     public static final Integer SIR = 334;
 
+    @JsonView(View.PW.class)
     private PublicationSubtype publicationSubtype;
 
+    @JsonView(View.PW.class)
     private String text;
 
+    @JsonView(View.PW.class)
     private String code;
 
+    @JsonView(View.PW.class)
     private String seriesDoiName;
 
     @JsonView(View.PW.class)
@@ -44,7 +47,7 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
     @JsonView(View.PW.class)
     private String printIssn;
 
-    @JsonIgnore
+    @JsonView(View.PW.class)
     private Boolean active;
 
     /**

@@ -22,6 +22,7 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
+import gov.usgs.cida.pubs.domain.PublicationSeriesTest;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 
 @Category(IntegrationTest.class)
@@ -151,7 +152,7 @@ public class PublicationSeriesDaoTest extends BaseSpringTest {
     })
 	@ExpectedDatabase(value = "classpath:/testResult/publicationSeries/add.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, modifiers = IdModifier.class)
     public void addTest() {
-    	PublicationSeries publicationSeries = buildAPubSeries(null);
+    	PublicationSeries publicationSeries = PublicationSeriesTest.buildAPubSeries(null);
         id = PublicationSeries.getDao().add(publicationSeries);
     }
     
@@ -178,21 +179,6 @@ public class PublicationSeriesDaoTest extends BaseSpringTest {
         assertFalse(pubSeries.isActive());
     }
 
-    public static PublicationSeries buildAPubSeries(Integer id) {
-    	PublicationSeries pubSeries = new PublicationSeries();
-    	pubSeries.setId(id);
-     	PublicationSubtype publicationSubtype = new PublicationSubtype();
-     	publicationSubtype.setId(29);
-     	pubSeries.setPublicationSubtype(publicationSubtype);
-     	pubSeries.setText("New Video");
- 		pubSeries.setCode("XYZ");
- 		pubSeries.setSeriesDoiName("doiname is here");
- 		pubSeries.setPrintIssn("1234-4321");
- 		pubSeries.setOnlineIssn("5678-8765");
- 		pubSeries.setActive(true);
-     	return pubSeries;
-    }
-    
     public static PublicationSeries update330Properties() {
     	PublicationSeries pubSeries = new PublicationSeries();
     	pubSeries.setId(330);

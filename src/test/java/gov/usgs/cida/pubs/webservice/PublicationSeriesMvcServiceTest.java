@@ -29,8 +29,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.PublicationSeriesBusService;
-import gov.usgs.cida.pubs.dao.PublicationSeriesDaoTest;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
+import gov.usgs.cida.pubs.domain.PublicationSeriesTest;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 
 public class PublicationSeriesMvcServiceTest extends BaseSpringTest {
@@ -42,9 +42,6 @@ public class PublicationSeriesMvcServiceTest extends BaseSpringTest {
 
     private PublicationSeriesMvcService mvcService;
     
-    public static String defaultPubSeriesJSON = "{\"id\":13,\"text\":\"New Video\",\"code\":\"XYZ\",\"seriesDoiName\":\"doiname is here\","
-    		+ "\"onlineIssn\":\"5678-8765\",\"printIssn\":\"1234-4321\",\"publicationSubtype\":{\"id\":29}}";
- 
     @Before
     public void setup() {
     	MockitoAnnotations.initMocks(this);
@@ -67,14 +64,14 @@ public class PublicationSeriesMvcServiceTest extends BaseSpringTest {
 
         assertThat(getRtnAsJSONObject(rtn),
                 sameJSONObjectAs(new JSONObject("{\"pageSize\":\"25\",\"pageRowStart\":\"0\",\"pageNumber\":null,\"recordCount\":12,\"records\":["
-                		+ defaultPubSeriesJSON + "]}")));
+                		+ PublicationSeriesTest.defaultPubSeriesJSON + "]}")));
     }
 
 
     @Test
     public void getTest() throws Exception {
     	//Happy Path
-        when(busService.getObject(1)).thenReturn(PublicationSeriesDaoTest.buildAPubSeries(13));
+        when(busService.getObject(1)).thenReturn(PublicationSeriesTest.buildAPubSeries(13));
         MvcResult rtn = mockMvc.perform(get("/publicationSeries/1?mimetype=json").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -82,7 +79,7 @@ public class PublicationSeriesMvcServiceTest extends BaseSpringTest {
         .andReturn();
 
         assertThat(getRtnAsJSONObject(rtn),
-                sameJSONObjectAs(new JSONObject(defaultPubSeriesJSON)));
+                sameJSONObjectAs(new JSONObject(PublicationSeriesTest.defaultPubSeriesJSON)));
         
         //PublicationSeries not found
         rtn = mockMvc.perform(get("/publicationSeries/3?mimetype=json").accept(MediaType.APPLICATION_JSON))
@@ -94,8 +91,8 @@ public class PublicationSeriesMvcServiceTest extends BaseSpringTest {
 
     @Test
     public void createTest() throws Exception {
-        when(busService.createObject(any(PublicationSeries.class))).thenReturn(PublicationSeriesDaoTest.buildAPubSeries(13));
-        MvcResult rtn = mockMvc.perform(post("/publicationSeries").content(defaultPubSeriesJSON).contentType(MediaType.APPLICATION_JSON)
+        when(busService.createObject(any(PublicationSeries.class))).thenReturn(PublicationSeriesTest.buildAPubSeries(13));
+        MvcResult rtn = mockMvc.perform(post("/publicationSeries").content(PublicationSeriesTest.defaultPubSeriesJSON).contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -103,13 +100,13 @@ public class PublicationSeriesMvcServiceTest extends BaseSpringTest {
         .andReturn();
 
         assertThat(getRtnAsJSONObject(rtn),
-                sameJSONObjectAs(new JSONObject(defaultPubSeriesJSON)));
+                sameJSONObjectAs(new JSONObject(PublicationSeriesTest.defaultPubSeriesJSON)));
     }
     
     @Test
     public void updateTest() throws Exception {
-        when(busService.updateObject(any(PublicationSeries.class))).thenReturn(PublicationSeriesDaoTest.buildAPubSeries(13));
-        MvcResult rtn = mockMvc.perform(put("/publicationSeries/330").content(defaultPubSeriesJSON).contentType(MediaType.APPLICATION_JSON)
+        when(busService.updateObject(any(PublicationSeries.class))).thenReturn(PublicationSeriesTest.buildAPubSeries(13));
+        MvcResult rtn = mockMvc.perform(put("/publicationSeries/330").content(PublicationSeriesTest.defaultPubSeriesJSON).contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -117,7 +114,7 @@ public class PublicationSeriesMvcServiceTest extends BaseSpringTest {
         .andReturn();
 
         assertThat(getRtnAsJSONObject(rtn),
-                sameJSONObjectAs(new JSONObject(defaultPubSeriesJSON)));
+                sameJSONObjectAs(new JSONObject(PublicationSeriesTest.defaultPubSeriesJSON)));
     }
 
     @Test
@@ -135,7 +132,7 @@ public class PublicationSeriesMvcServiceTest extends BaseSpringTest {
     
     public List<PublicationSeries> buildAPublicationSeriesList() {
     	List<PublicationSeries> rtn = new ArrayList<>();
-    	PublicationSeries pubSeries = PublicationSeriesDaoTest.buildAPubSeries(13);
+    	PublicationSeries pubSeries = PublicationSeriesTest.buildAPubSeries(13);
     	rtn.add(pubSeries);
     	return rtn;
     }

@@ -27,6 +27,7 @@ import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
 import gov.usgs.cida.pubs.dao.PublicationSeriesDaoTest;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
+import gov.usgs.cida.pubs.domain.PublicationSeriesTest;
 
 @Category(IntegrationTest.class)
 @DatabaseSetup("classpath:/testCleanup/clearAll.xml")
@@ -93,7 +94,7 @@ public class PublicationSeriesBusServiceTest extends BaseSpringTest {
         //public MpPublication createObject(MpPublication object)
         busService.createObject(null);
 
-        PublicationSeries pubSeries = busService.createObject(PublicationSeriesDaoTest.buildAPubSeries(null));
+        PublicationSeries pubSeries = busService.createObject(PublicationSeriesTest.buildAPubSeries(null));
         id = pubSeries.getId();
     }
 

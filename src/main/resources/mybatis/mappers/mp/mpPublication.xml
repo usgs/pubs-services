@@ -182,7 +182,6 @@
 					  pw.chapter                      = mp.chapter,
 					  pw.subchapter                   = mp.subchapter,
 					  pw.title                        = mp.title,
-					  pw.abstract                     = mp.abstract,
 					  pw.larger_work_type_id          = mp.larger_work_type_id,
 					  pw.larger_work_title            = mp.larger_work_title,
 					  pw.larger_work_subtype_id       = mp.larger_work_subtype_id,
@@ -205,7 +204,6 @@
 					  pw.additional_online_files      = mp.additional_online_files,
 					  pw.temporal_start               = mp.temporal_start,
 					  pw.temporal_end                 = mp.temporal_end,
-					  pw.notes                        = mp.notes,
 					  pw.ipds_id                      = mp.ipds_id,
 					  pw.ipds_review_process_state    = mp.ipds_review_process_state,
 					  pw.ipds_internal_id             = mp.ipds_internal_id,
@@ -217,7 +215,6 @@
 					  pw.county                       = mp.county,
 					  pw.city                         = mp.city,
 					  pw.other_geospatial             = mp.other_geospatial,
-					  pw.geographic_extents           = mp.geographic_extents,
 					  pw.volume                       = mp.volume,
 					  pw.issue                        = mp.issue,
         			  pw.edition                      = mp.edition,
@@ -232,24 +229,28 @@
                       pw.insert_date                  = mp.insert_date,
                       pw.insert_username              = mp.insert_username,
                       pw.update_date                  = sysdate,
-                      pw.update_username              = audit_trail_util.get_username
+                      pw.update_username              = audit_trail_util.get_username,
+					  pw.abstract                     = mp.abstract,
+					  pw.notes                        = mp.notes,
+					  pw.geographic_extents           = mp.geographic_extents
              when not matched then insert (<include refid="publication.cols"/>)
                   values (mp.publication_id,	 		mp.index_id,					mp.display_to_public_date,			mp.publication_year,
                           mp.publication_type_id,		mp.publication_subtype_id,		mp.publication_series_id,			mp.series_number,
                           mp.subseries_title,			mp.chapter,						mp.subchapter,						mp.title,
-                          mp.abstract,					mp.larger_work_type_id,			mp.larger_work_title,				mp.larger_work_subtype_id,
+                          mp.larger_work_type_id,		mp.larger_work_title,			mp.larger_work_subtype_id,
                           mp.conference_title,			mp.conference_date,				mp.conference_location,				mp.language,
                           mp.publisher,					mp.publisher_location,			mp.doi_name,						mp.issn,
                           mp.isbn,						mp.collaboration,				mp.usgs_citation,					mp.product_description,
                           mp.start_page,				mp.end_page,					mp.number_of_pages,					mp.online_only,
-                          mp.additional_online_files,	mp.temporal_start,				mp.temporal_end,					mp.notes,
+                          mp.additional_online_files,	mp.temporal_start,				mp.temporal_end,					
                           mp.ipds_id,					mp.ipds_review_process_state,	mp.ipds_internal_id,				mp.scale,
                           mp.projection,				mp.datum,						mp.country,							mp.state,
-                          mp.county,					mp.city,						mp.other_geospatial,				mp.geographic_extents,
+                          mp.county,					mp.city,						mp.other_geospatial,				
                           mp.volume,					mp.issue,        				mp.edition,							mp.public_comments,
                           mp.contact_info,				mp.table_of_contents,           mp.publishing_service_center_id,	mp.published_date,
                           mp.is_part_of_id,				mp.superseded_by_id,			mp.revised_date,
-                          mp.insert_date, 				mp.insert_username, 			sysdate, 							audit_trail_util.get_username)
+                          mp.insert_date, 				mp.insert_username, 			sysdate, 							audit_trail_util.get_username,
+                          mp.abstract,					mp.notes,						mp.geographic_extents)
     </update>
 
     <delete id="delete" parameterType="Integer">

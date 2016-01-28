@@ -108,7 +108,6 @@
         chapter,
         subchapter,
         title,
-        abstract,
         larger_work_type_id,
         larger_work_title,
         larger_work_subtype_id,
@@ -131,7 +130,6 @@
         additional_online_files,
         temporal_start,
         temporal_end,
-        notes,
         ipds_id,
         ipds_review_process_state,
         ipds_internal_id,
@@ -143,7 +141,6 @@
         county,
         city,
         other_geospatial,
-        geographic_extents,
         volume,
         issue,
         edition,
@@ -155,7 +152,10 @@
         is_part_of_id,
         superseded_by_id,
         revised_date,
-        <include refid="base.auditCols"/>
+        <include refid="base.auditCols"/>,
+        abstract,
+        notes,
+        geographic_extents
     </sql>
 
     <sql id="hosts">
@@ -171,7 +171,6 @@
         #{chapter,jdbcType=VARCHAR},
         #{subchapterNumber,jdbcType=VARCHAR},
         #{title,jdbcType=VARCHAR},
-        #{docAbstract,jdbcType=CLOB},
         #{largerWorkType.id,jdbcType=NUMERIC},
         #{largerWorkTitle,jdbcType=VARCHAR},
         #{largerWorkSubtype.id,jdbcType=NUMERIC},
@@ -194,7 +193,6 @@
         #{additionalOnlineFiles,jdbcType=VARCHAR},
         #{temporalStart,jdbcType=DATE},
         #{temporalEnd,jdbcType=DATE},
-        #{notes,jdbcType=VARCHAR},
         #{ipdsId,jdbcType=VARCHAR},
         #{ipdsReviewProcessState,jdbcType=VARCHAR},
         #{ipdsInternalId,jdbcType=NUMERIC},
@@ -206,7 +204,6 @@
         #{county,jdbcType=VARCHAR},
         #{city,jdbcType=VARCHAR},
         #{otherGeospatial,jdbcType=VARCHAR},
-        #{geographicExtents,jdbcType=VARCHAR},
         #{volume,jdbcType=VARCHAR},
         #{issue,jdbcType=VARCHAR},
         #{edition,jdbcType=VARCHAR},
@@ -218,7 +215,10 @@
         #{isPartOf.id,jdbcType=NUMERIC},
         #{supersededBy.id,jdbcType=NUMERIC},
         #{revisedDate,jdbcType=VARCHAR},
-        <include refid="base.auditHosts"/>
+        <include refid="base.auditHosts"/>,
+        #{docAbstract,jdbcType=CLOB},
+        #{notes,jdbcType=VARCHAR},
+        #{geographicExtents,jdbcType=VARCHAR}
     </sql>
 
     <sql id="sets">
@@ -233,7 +233,6 @@
         chapter = #{chapter,jdbcType=VARCHAR},
         subchapter = #{subchapterNumber,jdbcType=VARCHAR},
         title = #{title,jdbcType=VARCHAR},
-        abstract = #{docAbstract,jdbcType=CLOB},
         larger_work_type_id = #{largerWorkType.id,jdbcType=NUMERIC},
         larger_work_title = #{largerWorkTitle,jdbcType=VARCHAR},
         larger_work_subtype_id = #{largerWorkSubtype.id,jdbcType=NUMERIC},
@@ -256,7 +255,6 @@
         additional_online_files = #{additionalOnlineFiles,jdbcType=VARCHAR},
         temporal_start = #{temporalStart,jdbcType=DATE},
         temporal_end = #{temporalEnd,jdbcType=DATE},
-        notes = #{notes,jdbcType=VARCHAR},
         ipds_id = #{ipdsId,jdbcType=VARCHAR},
         ipds_review_process_state = #{ipdsReviewProcessState,jdbcType=VARCHAR},
         ipds_internal_id = #{ipdsInternalId,jdbcType=NUMERIC},
@@ -268,7 +266,6 @@
         county = #{county,jdbcType=VARCHAR},
         city = #{city,jdbcType=VARCHAR},
         other_geospatial = #{otherGeospatial,jdbcType=VARCHAR},
-        geographic_extents = #{geographicExtents,jdbcType=CLOB},
         volume = #{volume,jdbcType=VARCHAR},
         issue = #{issue,jdbcType=VARCHAR},
         edition = #{edition,jdbcType=VARCHAR},
@@ -280,7 +277,10 @@
         is_part_of_id = #{isPartOf.id,jdbcType=NUMERIC},
         superseded_by_id = #{supersededBy.id,jdbcType=NUMERIC},
         revised_date = #{revisedDate,jdbcType=VARCHAR},
-        <include refid="base.auditSets"/>
+        <include refid="base.auditSets"/>,
+        abstract = #{docAbstract,jdbcType=CLOB},
+        notes = #{notes,jdbcType=VARCHAR},
+        geographic_extents = #{geographicExtents,jdbcType=CLOB}
     </sql>
     
     <sql id="likeTerm">

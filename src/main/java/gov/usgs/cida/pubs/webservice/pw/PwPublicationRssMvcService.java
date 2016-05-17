@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.HttpStatus;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -33,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,7 +42,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping(value = "publication/rss", produces=PubsConstants.MEDIA_TYPE_RSS_VALUE)
+@RequestMapping(value = "publication/rss", produces={PubsConstants.MEDIA_TYPE_RSS_VALUE, MediaType.APPLICATION_JSON_VALUE})
 public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 	private static final int DEFAULT_RECORDS = 30;
 	

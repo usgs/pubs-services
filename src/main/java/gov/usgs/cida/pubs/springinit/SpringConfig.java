@@ -75,7 +75,6 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
          	.mediaType(PubsConstants.MEDIA_TYPE_XML_EXTENSION, MediaType.APPLICATION_XML)
         	.mediaType(PubsConstants.MEDIA_TYPE_JSON_EXTENSION, MediaType.APPLICATION_JSON)
         	.mediaType(PubsConstants.MEDIA_TYPE_XLSX_EXTENSION, PubsConstants.MEDIA_TYPE_XLSX)
-        	.mediaType(PubsConstants.MEDIA_TYPE_RSS_EXTENSION, PubsConstants.MEDIA_TYPE_RSS)
         	;
     }
 

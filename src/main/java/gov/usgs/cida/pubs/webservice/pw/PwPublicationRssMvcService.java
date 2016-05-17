@@ -17,6 +17,8 @@ import gov.usgs.cida.pubs.webservice.MvcService;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -26,22 +28,22 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.HttpStatus;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+/**
+ * Note: This service doesn't actually produce JSON, it directly writes XML to the output stream and
+ * sets the content type appropriately. It is annotated to produce JSON because the app default is JSON and
+ * Spring throws a 404 if this endpoint gets hit with no headers because it doesn't find a method to render the response.
+ */
+@RestController
 @RequestMapping(value = "publication/rss", produces={PubsConstants.MEDIA_TYPE_RSS_VALUE, MediaType.APPLICATION_JSON_VALUE})
 public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 	private static final int DEFAULT_RECORDS = 30;
@@ -61,7 +63,6 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
     }
     
     @RequestMapping(method = RequestMethod.GET)
-    @ResponseBody
     public void getRSS(
     		@RequestParam(value="q", required=false) String searchTerms, //single string search
     		@RequestParam(value="g", required=false) String geospatial,

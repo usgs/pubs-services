@@ -33,12 +33,14 @@ import gov.usgs.cida.pubs.transform.DelimitedTransformer;
 import gov.usgs.cida.pubs.transform.PublicationColumns;
 import gov.usgs.cida.pubs.transform.XlsxTransformer;
 import gov.usgs.cida.pubs.transform.intfc.ITransformer;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.webservice.MvcService;
 
 @Controller
 @RequestMapping(value="publication", method=RequestMethod.GET)
 public class PwPublicationMvcService extends MvcService<PwPublication> {
-
+	
+	private static final int MAX_PAGE_SIZE = 5000;
     private final IPwPublicationBusService busService;
     private final String warehouseEndpoint;
 
@@ -118,8 +120,13 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
         SearchResults results = null;
         String mimeType = request.getParameter(PubsConstants.CONTENT_PARAMETER_NAME);
     	if (null == mimeType || PubsConstants.MEDIA_TYPE_JSON_EXTENSION.equalsIgnoreCase(mimeType)) {
-        	filters.putAll(buildPaging(pageRowStart, pageSize, pageNumber));
-    		results = getResults(filters);
+        	Integer pageSizeInt = PubsUtilities.parseInteger(pageSize);
+    		if (null != pageSizeInt && pageSizeInt > MAX_PAGE_SIZE) {
+    			response.setStatus(HttpStatus.PAYLOAD_TOO_LARGE.value());
+    		} else {
+    			filters.putAll(buildPaging(pageRowStart, pageSize, pageNumber));
+    			results = getResults(filters);
+    		}
     	} else {
     		streamResults(filters, mimeType, response);
     	}

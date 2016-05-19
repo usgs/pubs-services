@@ -1,7 +1,22 @@
 package gov.usgs.cida.pubs.webservice.pw;
 
+import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
+import gov.usgs.cida.pubs.dao.resulthandler.StreamingResultHandler;
+import gov.usgs.cida.pubs.domain.Message;
+import gov.usgs.cida.pubs.domain.SearchResults;
+import gov.usgs.cida.pubs.domain.pw.PwPublication;
+import gov.usgs.cida.pubs.json.View;
+import gov.usgs.cida.pubs.transform.DelimitedTransformer;
+import gov.usgs.cida.pubs.transform.PublicationColumns;
+import gov.usgs.cida.pubs.transform.XlsxTransformer;
+import gov.usgs.cida.pubs.transform.intfc.ITransformer;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.webservice.MvcService;
+
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,19 +37,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.annotation.JsonView;
-
-import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
-import gov.usgs.cida.pubs.dao.resulthandler.StreamingResultHandler;
-import gov.usgs.cida.pubs.domain.SearchResults;
-import gov.usgs.cida.pubs.domain.pw.PwPublication;
-import gov.usgs.cida.pubs.json.View;
-import gov.usgs.cida.pubs.transform.DelimitedTransformer;
-import gov.usgs.cida.pubs.transform.PublicationColumns;
-import gov.usgs.cida.pubs.transform.XlsxTransformer;
-import gov.usgs.cida.pubs.transform.intfc.ITransformer;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
-import gov.usgs.cida.pubs.webservice.MvcService;
 
 @Controller
 @RequestMapping(value="publication", method=RequestMethod.GET)
@@ -120,29 +122,35 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
         SearchResults results = null;
         String mimeType = request.getParameter(PubsConstants.CONTENT_PARAMETER_NAME);
     	if (null == mimeType || PubsConstants.MEDIA_TYPE_JSON_EXTENSION.equalsIgnoreCase(mimeType)) {
-        	Integer pageSizeInt = PubsUtilities.parseInteger(pageSize);
-    		if (null != pageSizeInt && pageSizeInt > MAX_PAGE_SIZE) {
-    			response.setStatus(HttpStatus.PAYLOAD_TOO_LARGE.value());
-    		} else {
-    			filters.putAll(buildPaging(pageRowStart, pageSize, pageNumber));
-    			results = getResults(filters);
-    		}
+   			filters.putAll(buildPaging(pageRowStart, pageSize, pageNumber));
+   			results = getResults(filters, response);
     	} else {
     		streamResults(filters, mimeType, response);
     	}
         return results;
     }
     	
-    protected SearchResults getResults(Map<String, Object> filters) {
-        List<PwPublication> pubs = busService.getObjects(filters);
-        Integer totalPubsCount = busService.getObjectCount(filters);
-        SearchResults results = new SearchResults();
-        results.setPageSize(filters.get("pageSize").toString());
+    protected SearchResults getResults(Map<String, Object> filters, HttpServletResponse response) {
+    	SearchResults results = new SearchResults();
+    	String pageSize = filters.get("pageSize").toString();
+    	Integer pageSizeInt = PubsUtilities.parseInteger(pageSize);
+    	Integer totalPubsCount = null;
+
+    	if (null != pageSizeInt && pageSizeInt > MAX_PAGE_SIZE) {
+    		List<Message> pubs = new ArrayList<>();
+    		pubs.add(new Message("Max pageSize is " + MAX_PAGE_SIZE));
+    		results.setRecords(pubs);
+			response.setStatus(HttpStatus.PAYLOAD_TOO_LARGE.value());
+		} else {
+			List<PwPublication> pubs = busService.getObjects(filters);
+			totalPubsCount = busService.getObjectCount(filters);
+			results.setRecords(pubs);
+		}
+		results.setPageSize(pageSize);
         results.setPageRowStart(filters.get("pageRowStart").toString());
         if (null != filters.get("pageNumber")) {
         	results.setPageNumber(filters.get("pageNumber").toString());
         }
-        results.setRecords(pubs);
         results.setRecordCount(totalPubsCount);
         return results;
     }

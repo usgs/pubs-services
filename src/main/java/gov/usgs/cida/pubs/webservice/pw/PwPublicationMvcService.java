@@ -16,7 +16,6 @@ import gov.usgs.cida.pubs.webservice.MvcService;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -134,24 +133,20 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
     	SearchResults results = new SearchResults();
     	String pageSize = filters.get("pageSize").toString();
     	Integer pageSizeInt = PubsUtilities.parseInteger(pageSize);
-    	Integer totalPubsCount = null;
-
     	if (null != pageSizeInt && pageSizeInt > MAX_PAGE_SIZE) {
-    		List<Message> pubs = new ArrayList<>();
-    		pubs.add(new Message("Max pageSize is " + MAX_PAGE_SIZE));
-    		results.setRecords(pubs);
 			response.setStatus(HttpStatus.PAYLOAD_TOO_LARGE.value());
+			results = new Message("Max pageSize is " + MAX_PAGE_SIZE);
 		} else {
 			List<PwPublication> pubs = busService.getObjects(filters);
-			totalPubsCount = busService.getObjectCount(filters);
+			Integer totalPubsCount = busService.getObjectCount(filters);
 			results.setRecords(pubs);
+			results.setPageSize(pageSize);
+			results.setPageRowStart(filters.get("pageRowStart").toString());
+			if (null != filters.get("pageNumber")) {
+				results.setPageNumber(filters.get("pageNumber").toString());
+			}
+			results.setRecordCount(totalPubsCount);
 		}
-		results.setPageSize(pageSize);
-        results.setPageRowStart(filters.get("pageRowStart").toString());
-        if (null != filters.get("pageNumber")) {
-        	results.setPageNumber(filters.get("pageNumber").toString());
-        }
-        results.setRecordCount(totalPubsCount);
         return results;
     }
 

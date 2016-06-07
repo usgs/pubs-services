@@ -1,10 +1,8 @@
 package gov.usgs.cida.pubs.springinit;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 
-import org.apache.commons.io.IOUtils;
 import org.dbunit.ext.oracle.OracleDataTypeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +11,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
+import org.springframework.util.FileCopyUtils;
 
 import com.github.springtestdbunit.bean.DatabaseConfigBean;
 import com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean;
@@ -24,7 +23,7 @@ public class TestSpringConfig {
 
 	@Autowired
 	private Environment env;
-	
+
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
 		return new PropertySourcesPlaceholderConfigurer();
@@ -48,7 +47,7 @@ public class TestSpringConfig {
 		dbUnitDbConfig.setQualifiedTableNames(false);
 		return dbUnitDbConfig;
 	}
-	
+
 	@Bean
 	public DatabaseDataSourceConnectionFactoryBean dbUnitDatabaseConnection() throws SQLException {
 		DatabaseDataSourceConnectionFactoryBean dbUnitDatabaseConnection = new DatabaseDataSourceConnectionFactoryBean();
@@ -58,11 +57,11 @@ public class TestSpringConfig {
 		return dbUnitDatabaseConnection;
 	}
 
-    @Bean
+	@Bean
 	public String ipdsPubsWsPwd() {
 		return env.getProperty("pubs.ipdsPubsWsPwd");
 	}
-	
+
 	@Bean
 	public String ipdsPubsWsUser() {
 		return env.getProperty("pubs.ipdsPubsWsUser");
@@ -112,12 +111,12 @@ public class TestSpringConfig {
 	public String crossRefUser() {
 		return env.getProperty("crossref.username");
 	}
-	
+
 	@Bean
 	public String crossRefPwd() {
 		return env.getProperty("crossref.password");
 	}
-	
+
 	@Bean
 	public String pubsEmailList() {
 		return "drsteini@usgs.gov";
@@ -146,118 +145,92 @@ public class TestSpringConfig {
 	@Value("classpath:testResult/getMpPub1.json")
 	private Resource mpPub1;
 	@Bean
-    public String expectedGetMpPub1() throws IOException {
-		try (InputStream is = mpPub1.getInputStream()) {
-			return IOUtils.toString(is);
-		}
+	public String expectedGetMpPub1() throws IOException {
+		return new String(FileCopyUtils.copyToByteArray(mpPub1.getInputStream()));
 	}
 
 	@Value("classpath:testResult/getRssPub.xml")
 	private Resource rssPub;
 	@Bean
 	public String expectedGetRssPub() throws IOException {
-		try (InputStream is = rssPub.getInputStream()) {
-			return IOUtils.toString(is);
-		}
+		return new String(FileCopyUtils.copyToByteArray(rssPub.getInputStream()));
 	}
 
 	@Value("classpath:testData/contributors.xml")
 	private Resource contributors;
 	@Bean
 	public String contributorsXml() throws IOException {
-		try (InputStream is = contributors.getInputStream()) {
-			return IOUtils.toString(is);
-		}
+		return new String(FileCopyUtils.copyToByteArray(contributors.getInputStream()));
 	}
 
 	@Value("classpath:testData/usgsContributor.xml")
 	private Resource usgsContributor;
 	@Bean
 	public String usgsContributorXml() throws IOException {
-		try (InputStream is = usgsContributor.getInputStream()) {
-			return IOUtils.toString(is);
-		}
+		return new String(FileCopyUtils.copyToByteArray(usgsContributor.getInputStream()));
 	}
 
 	@Value("classpath:testData/newOutsideContributor.xml")
 	private Resource newOutsideContributor;
 	@Bean
 	public String newOutsideContributorXml() throws IOException {
-		try (InputStream is = newOutsideContributor.getInputStream()) {
-			return IOUtils.toString(is);
-		}
+		return new String(FileCopyUtils.copyToByteArray(newOutsideContributor.getInputStream()));
 	}
-	
+
 	@Value("classpath:testData/newOutsideContributorUsgsAffiliation.xml")
 	private Resource newOutsideContributorUsgsAffiliation;
 	@Bean
 	public String newOutsideContributorUsgsAffiliationXml() throws IOException {
-		try (InputStream is = newOutsideContributorUsgsAffiliation.getInputStream()) {
-			return IOUtils.toString(is);
-		}
+		return new String(FileCopyUtils.copyToByteArray(newOutsideContributorUsgsAffiliation.getInputStream()));
 	}
-	
+
 	@Value("classpath:testData/existingOutsideContributor.xml")
 	private Resource existingOutsideContributor;
 	@Bean
 	public String existingOutsideContributorXml() throws IOException {
-		try (InputStream is = existingOutsideContributor.getInputStream()) {
-			return IOUtils.toString(is);
-		}
+		return new String(FileCopyUtils.copyToByteArray(existingOutsideContributor.getInputStream()));
 	}
 
 	@Value("classpath:testData/costCenter.xml")
 	private Resource costCenter;
 	@Bean
 	public String costCenterXml() throws IOException {
-		try (InputStream is = costCenter.getInputStream()) {
-			return IOUtils.toString(is);
-		}
+		return new String(FileCopyUtils.copyToByteArray(costCenter.getInputStream()));
 	}
 
 	@Value("classpath:testData/feed.xml")
 	private Resource feed;
 	@Bean
 	public String feedXml() throws IOException {
-		try (InputStream is = feed.getInputStream()) {
-			return IOUtils.toString(is);
-		}
+		return new String(FileCopyUtils.copyToByteArray(feed.getInputStream()));
 	}
 
 	@Value("classpath:testData/bad.xml")
 	private Resource bad;
 	@Bean
 	public String badXml() throws IOException {
-		try (InputStream is = bad.getInputStream()) {
-			return IOUtils.toString(is);
-		}
+		return new String(FileCopyUtils.copyToByteArray(bad.getInputStream()));
 	}
 
 	@Value("classpath:testData/notes.xml")
 	private Resource notes;
 	@Bean
 	public String notesXml() throws IOException {
-		try (InputStream is = notes.getInputStream()) {
-			return IOUtils.toString(is);
-		}
+		return new String(FileCopyUtils.copyToByteArray(notes.getInputStream()));
 	}
 
 	@Value("classpath:testResult/ofr20131259.xml")
 	private Resource ofr20131259;
 	@Bean
 	public String ofr20131259Xml() throws IOException {
-		try (InputStream is = ofr20131259.getInputStream()) {
-			return IOUtils.toString(is);
-		}
+		return new String(FileCopyUtils.copyToByteArray(ofr20131259.getInputStream()));
 	}
 
 	@Value("classpath:testResult/testUnNumberedSeries.xml")
 	private Resource testUnNumberedSeries;
 	@Bean
 	public String testUnNumberedSeriesXml() throws IOException {
-		try (InputStream is = testUnNumberedSeries.getInputStream()) {
-			return IOUtils.toString(is);
-		}
+		return new String(FileCopyUtils.copyToByteArray(testUnNumberedSeries.getInputStream()));
 	}
 
 }

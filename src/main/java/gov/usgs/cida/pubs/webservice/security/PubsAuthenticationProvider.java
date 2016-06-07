@@ -3,12 +3,14 @@ package gov.usgs.cida.pubs.webservice.security;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.stereotype.Component;
 
 /** 
  * Dummy class to stub out the Spring Security AuthenticationProvider.
  * @author drsteini
  *
  */
+@Component
 public class PubsAuthenticationProvider implements AuthenticationProvider {
 
 	@Override

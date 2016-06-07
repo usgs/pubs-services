@@ -11,17 +11,23 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
-public class TokenSecurityFilter extends GenericFilterBean  {
+@Component
+public class TokenSecurityFilter extends GenericFilterBean {
 	private static final Logger LOG = LoggerFactory.getLogger(TokenSecurityFilter.class);
 
 	public static final String AUTHORIZATION_HEADER = "Authorization";
 	public static final String AUTH_BEARER_STRING = "Bearer";
 	
+	protected final AuthenticationService authenticationService;
+
 	@Autowired
-	protected AuthenticationService authenticationService;
-	
+	public TokenSecurityFilter(AuthenticationService authenticationService) {
+		this.authenticationService = authenticationService;
+	}
+
 	/**
 	 * Filter checks for a valid authentication token in the "Authorization" HTTP header. The token
 	 * should be of format "Bearer the-auth-token-string" which follows a pattern set by OAUTH2.

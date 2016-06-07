@@ -8,19 +8,21 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
 
+@Service
 public class PublicationSeriesBusService extends BusService<PublicationSeries> {
 
 	@Autowired
 	PublicationSeriesBusService(final Validator validator) {
 		this.validator = validator;
 	}
-	
+
 	/** {@inheritDoc}
 	 * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#getObject(java.lang.Integer) 
 	 */
@@ -33,15 +35,15 @@ public class PublicationSeriesBusService extends BusService<PublicationSeries> {
 		return result;
 	}
 
-    @Override
-    public List<PublicationSeries> getObjects(Map<String, Object> filters) {
-        return PublicationSeries.getDao().getByMap(filters);
-    }
+	@Override
+	public List<PublicationSeries> getObjects(Map<String, Object> filters) {
+		return PublicationSeries.getDao().getByMap(filters);
+	}
 
-    @Override
-    public Integer getObjectCount(Map<String, Object> filters) {
-    	return PublicationSeries.getDao().getObjectCount(filters);
-    }
+	@Override
+	public Integer getObjectCount(Map<String, Object> filters) {
+		return PublicationSeries.getDao().getObjectCount(filters);
+	}
 
 	@Override
 	@Transactional
@@ -49,7 +51,7 @@ public class PublicationSeriesBusService extends BusService<PublicationSeries> {
 		PublicationSeries result = null;
 		if (null != object && null != object.getId()) {
 			Integer id = object.getId();
-            object.setValidationErrors(validator.validate(object));
+			object.setValidationErrors(validator.validate(object));
 			if (object.getValidationErrors().isEmpty()) {
 				PublicationSeries.getDao().update(object);
 				result = PublicationSeries.getDao().getById(id);
@@ -57,45 +59,45 @@ public class PublicationSeriesBusService extends BusService<PublicationSeries> {
 		}
 		return result;
 	}
-	
-    /** {@inheritDoc}
-     * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#createObject(java.lang.Object)
-     */
-    @Override
-    @Transactional
-    public PublicationSeries createObject(PublicationSeries object) {
-        if (null != object) {
-        	object.setValidationErrors(validator.validate(object));
-            if (object.getValidationErrors().isEmpty()) {
-                Integer id = PublicationSeries.getDao().add(object);
-                object = PublicationSeries.getDao().getById(id);
-            }
-        }
-        return object;
-    }
 
-    /** {@inheritDoc}
-     * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#deleteObject(Integer)
-     */
-    @Override
-    @Transactional
-    public ValidationResults deleteObject(Integer objectId) {
-        if (null != objectId) {
-        	PublicationSeries publicationSeries = PublicationSeries.getDao().getById(objectId);
-            if (null == publicationSeries) {
-            	publicationSeries = new PublicationSeries();
-            } else {
-                //only delete if we found it...
-                Set<ConstraintViolation<PublicationSeries>> validations = validator.validate(publicationSeries, DeleteChecks.class);
-                if (!validations.isEmpty()) {
-                	publicationSeries.setValidationErrors(validations);
-                } else {
-                	PublicationSeries.getDao().delete(publicationSeries);
-                }
-            }
-            return publicationSeries.getValidationErrors();
-        }
-        return null;
-    }
+	/** {@inheritDoc}
+	 * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#createObject(java.lang.Object)
+	 */
+	@Override
+	@Transactional
+	public PublicationSeries createObject(PublicationSeries object) {
+		if (null != object) {
+			object.setValidationErrors(validator.validate(object));
+			if (object.getValidationErrors().isEmpty()) {
+				Integer id = PublicationSeries.getDao().add(object);
+				object = PublicationSeries.getDao().getById(id);
+			}
+		}
+		return object;
+	}
+
+	/** {@inheritDoc}
+	 * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#deleteObject(Integer)
+	 */
+	@Override
+	@Transactional
+	public ValidationResults deleteObject(Integer objectId) {
+		if (null != objectId) {
+			PublicationSeries publicationSeries = PublicationSeries.getDao().getById(objectId);
+			if (null == publicationSeries) {
+				publicationSeries = new PublicationSeries();
+			} else {
+				//only delete if we found it...
+				Set<ConstraintViolation<PublicationSeries>> validations = validator.validate(publicationSeries, DeleteChecks.class);
+				if (!validations.isEmpty()) {
+					publicationSeries.setValidationErrors(validations);
+				} else {
+					PublicationSeries.getDao().delete(publicationSeries);
+				}
+			}
+			return publicationSeries.getValidationErrors();
+		}
+		return null;
+	}
 
 }

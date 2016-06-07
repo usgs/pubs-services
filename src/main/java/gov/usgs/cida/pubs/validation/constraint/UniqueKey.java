@@ -20,18 +20,18 @@ import javax.validation.Constraint;
 @Target(TYPE)
 @Retention(RUNTIME)
 @Constraint(validatedBy={
-        UniqueKeyValidatorForMpListPublication.class,
-        UniqueKeyValidatorForMpPublication.class,
-        UniqueKeyValidatorForMpPublicationContributor.class,
-        UniqueKeyValidatorForMpPublicationCostCenter.class
+		UniqueKeyValidatorForMpListPublication.class,
+		UniqueKeyValidatorForMpPublication.class,
+		UniqueKeyValidatorForMpPublicationContributor.class,
+		UniqueKeyValidatorForMpPublicationCostCenter.class
 })
 @Documented
 public @interface UniqueKey {
 
-  String message() default "Duplicates found";
-  Class<?>[] groups() default {};
-  public abstract Class<?>[] payload() default {};
+	String message() default "Duplicates found";
+	Class<?>[] groups() default {};
+	public abstract Class<?>[] payload() default {};
 
-  String[] propertyName() default {};
+	String[] propertyName() default {};
 
 }

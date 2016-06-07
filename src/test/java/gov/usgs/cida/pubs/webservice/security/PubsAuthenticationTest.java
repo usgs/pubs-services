@@ -18,15 +18,16 @@ public class PubsAuthenticationTest {
 		assertTrue("getPrinciple returns User object", auth1.getPrincipal() instanceof User);
 		assertEquals("getPrinciple returns User object with correct username", "username", ((User) auth1.getPrincipal()).getUsername());
 		assertEquals("getPrinciple returns User object with password stripped", "******", ((User) auth1.getPrincipal()).getPassword());
-		
+
 		for(PubsRoles r : PubsRoles.values()) {
 			ArrayList<String> rawRoleList = new ArrayList<>();
 			rawRoleList.add(r.name());
 			assertTrue("If role " + r.name() + " found, is authenticated", new PubsAuthentication("username", rawRoleList).isAuthenticated());
 		}
-		
+
 		ArrayList<String> rawRoleList = new ArrayList<>();
 		rawRoleList.add("RANDOM_ROLE");
 		assertFalse("Having only RANDOM_ROLE not authenticated", new PubsAuthentication("username", rawRoleList).isAuthenticated());
 	}
+
 }

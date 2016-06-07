@@ -18,20 +18,20 @@ import javax.validation.Constraint;
 @Target(TYPE)
 @Retention(RUNTIME)
 @Constraint(validatedBy={
-        ParentExistsValidatorForMpListPublication.class,
-        ParentExistsValidatorForMpPublication.class,
-        ParentExistsValidatorForMpPublicationContributor.class,
-        ParentExistsValidatorForMpPublicationCostCenter.class,
-        ParentExistsValidatorForMpPublicationLink.class,
-        ParentExistsValidatorForPersonContributor.class
+	ParentExistsValidatorForMpListPublication.class,
+	ParentExistsValidatorForMpPublication.class,
+	ParentExistsValidatorForMpPublicationContributor.class,
+	ParentExistsValidatorForMpPublicationCostCenter.class,
+	ParentExistsValidatorForMpPublicationLink.class,
+	ParentExistsValidatorForPersonContributor.class
 })
 @Documented
 public @interface ParentExists {
 
-  String message() default "{pubs.noparent.exists}";
-  Class<?>[] groups() default {};
-  public abstract Class<?>[] payload() default {};
+	String message() default "{pubs.noparent.exists}";
+	Class<?>[] groups() default {};
+	public abstract Class<?>[] payload() default {};
 
-  String[] propertyName() default {};
+	String[] propertyName() default {};
 
 }

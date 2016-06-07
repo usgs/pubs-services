@@ -20,14 +20,16 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Service
 public class MpListPublicationBusService extends MpBusService<MpListPublication> implements IMpListPublicationBusService {
 
-    @Autowired
-    MpListPublicationBusService(final Validator validator) {
-    	this.validator = validator;
-    }
+	@Autowired
+	MpListPublicationBusService(final Validator validator) {
+		this.validator = validator;
+	}
 
 	@Override
 	@Transactional
@@ -60,9 +62,9 @@ public class MpListPublicationBusService extends MpBusService<MpListPublication>
 	public ValidationResults removePubFromList(Integer listId, Integer publicationId) {
 		ValidationResults rtn = new ValidationResults();
 		if (null != listId && null != publicationId) {
-	        Map<String, Object> filters = new HashMap<>();
-	        filters.put("mpListId", listId);
-	        filters.put("publicationId", publicationId);
+			Map<String, Object> filters = new HashMap<>();
+			filters.put("mpListId", listId);
+			filters.put("publicationId", publicationId);
 			for (MpListPublication mpListPublication : MpListPublication.getDao().getByMap(filters)) {
 				MpListPublication.getDao().deleteById(mpListPublication.getId());
 			}

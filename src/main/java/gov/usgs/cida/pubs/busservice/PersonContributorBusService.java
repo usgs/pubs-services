@@ -8,15 +8,17 @@ import gov.usgs.cida.pubs.domain.UsgsContributor;
 import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Service
 public class PersonContributorBusService extends BusService<PersonContributor<?>> {
 
 	@Autowired
 	PersonContributorBusService(final Validator validator) {
 		this.validator = validator;
 	}
-	
+
 	/** {@inheritDoc}
 	 * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#getObject(java.lang.Integer) 
 	 */
@@ -36,12 +38,12 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 		if (null != object && null != object.getId()) {
 			Integer id = object.getId();
 			if (object instanceof OutsideContributor) {
-                Contributor<PersonContributor<OutsideContributor>> oc = (OutsideContributor) object;
-                oc.setValidationErrors(validator.validate(oc));
-            } else {
-                Contributor<PersonContributor<UsgsContributor>> uc = (UsgsContributor) object;
-                uc.setValidationErrors(validator.validate(uc));
-            }
+				Contributor<PersonContributor<OutsideContributor>> oc = (OutsideContributor) object;
+				oc.setValidationErrors(validator.validate(oc));
+			} else {
+				Contributor<PersonContributor<UsgsContributor>> uc = (UsgsContributor) object;
+				uc.setValidationErrors(validator.validate(uc));
+			}
 			if (object.getValidationErrors().isEmpty()) {
 				PersonContributor.getDao().update(object);
 				result = (PersonContributor<?>) PersonContributor.getDao().getById(id);
@@ -49,27 +51,27 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 		}
 		return result;
 	}
-	
-    /** {@inheritDoc}
-     * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#createObject(java.lang.Object)
-     */
-    @Override
-    @Transactional
-    public PersonContributor<?> createObject(PersonContributor<?> object) {
-        if (null != object) {
-            if (object instanceof OutsideContributor) {
-                Contributor<PersonContributor<OutsideContributor>> oc = (OutsideContributor) object;
-                oc.setValidationErrors(validator.validate(oc));
-            } else {
-                Contributor<PersonContributor<UsgsContributor>> uc = (UsgsContributor) object;
-                uc.setValidationErrors(validator.validate(uc));
-            }
-            if (object.getValidationErrors().isEmpty()) {
-                Integer id = PersonContributor.getDao().add(object);
-                object = (PersonContributor<?>) PersonContributor.getDao().getById(id);
-            }
-        }
-        return object;
-    }
+
+	/** {@inheritDoc}
+	 * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#createObject(java.lang.Object)
+	 */
+	@Override
+	@Transactional
+	public PersonContributor<?> createObject(PersonContributor<?> object) {
+		if (null != object) {
+			if (object instanceof OutsideContributor) {
+				Contributor<PersonContributor<OutsideContributor>> oc = (OutsideContributor) object;
+				oc.setValidationErrors(validator.validate(oc));
+			} else {
+				Contributor<PersonContributor<UsgsContributor>> uc = (UsgsContributor) object;
+				uc.setValidationErrors(validator.validate(uc));
+			}
+			if (object.getValidationErrors().isEmpty()) {
+				Integer id = PersonContributor.getDao().add(object);
+				object = (PersonContributor<?>) PersonContributor.getDao().getById(id);
+			}
+		}
+		return object;
+	}
 
 }

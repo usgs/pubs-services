@@ -9,14 +9,14 @@ public enum PubsRoles {
 	PUBS_CATALOGER_SUPERVISOR ("ROLE_PUBS_CATALOGER_SUPERVISOR"),
 	AD_AUTHENTICATED ("ROLE_AD_AUTHENTICATED"),
 	PUBS_AUTHORIZED ("ROLE_PUBS_AUTHORIZED");
-	
-    private String springRole;
 
-    PubsRoles(String inSpringRole) {
-    	springRole = inSpringRole;
-    }
+	private String springRole;
 
-    public String getSpringRole() {
-    	return springRole;
-    }
+	PubsRoles(String inSpringRole) {
+		springRole = inSpringRole;
+	}
+
+	public String getSpringRole() {
+		return springRole;
+	}
 }

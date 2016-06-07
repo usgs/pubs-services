@@ -6,8 +6,10 @@ import gov.usgs.cida.pubs.domain.CorporateContributor;
 import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Service
 public class CorporateContributorBusService extends BusService<CorporateContributor> {
 
 	@Autowired
@@ -39,20 +41,20 @@ public class CorporateContributorBusService extends BusService<CorporateContribu
 		}
 		return result;
 	}
-	
-    @Override
-    @Transactional
-    public CorporateContributor createObject(final CorporateContributor object) {
+
+	@Override
+	@Transactional
+	public CorporateContributor createObject(final CorporateContributor object) {
 		CorporateContributor result = object;
-        if (null != object) {
+		if (null != object) {
 			Contributor<CorporateContributor> castObject = object;
-            castObject.setValidationErrors(validator.validate(castObject));
-            if (castObject.getValidationErrors().isEmpty()) {
-                Integer id = CorporateContributor.getDao().add(castObject);
-                result = (CorporateContributor) CorporateContributor.getDao().getById(id);
-            }
-        }
-        return result;
-    }
+			castObject.setValidationErrors(validator.validate(castObject));
+			if (castObject.getValidationErrors().isEmpty()) {
+				Integer id = CorporateContributor.getDao().add(castObject);
+				result = (CorporateContributor) CorporateContributor.getDao().getById(id);
+			}
+		}
+		return result;
+	}
 
 }

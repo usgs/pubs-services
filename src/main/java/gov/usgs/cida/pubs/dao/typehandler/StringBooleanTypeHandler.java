@@ -10,8 +10,8 @@ import org.apache.ibatis.type.TypeHandler;
 
 public class StringBooleanTypeHandler implements TypeHandler<Boolean> {
 
-	private static final String TRUE = "Y";
-	private static final String FALSE = "N";
+	public static final String TRUE = "Y";
+	public static final String FALSE = "N";
 
     @Override
     public Boolean getResult(ResultSet arg0, String arg1) throws SQLException {

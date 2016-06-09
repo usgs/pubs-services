@@ -2,13 +2,14 @@ package gov.usgs.cida.pubs.validation.mp.crossproperty;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
-
-import org.junit.Test;
 
 public class CrossPropertyValidatorForMpPublicationTest extends BaseValidatorTest {
 

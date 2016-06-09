@@ -8,11 +8,7 @@ import javax.servlet.ServletContext;
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 
 public class SpringSecurityInitializer extends AbstractSecurityWebApplicationInitializer {
-	
-	public SpringSecurityInitializer() {
-		super(SecurityConfig.class);
-	}
-	
+
 	@Override
 	public void beforeSpringSecurityFilterChain(ServletContext servletContext) {		
 		FilterRegistration corsFilter = servletContext.addFilter("corsFilter", CORSFilter.class);

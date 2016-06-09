@@ -2,7 +2,6 @@ package gov.usgs.cida.pubs.validation.constraint;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import gov.usgs.cida.pubs.validation.NoChildrenValidator;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -10,9 +9,15 @@ import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 
+import gov.usgs.cida.pubs.validation.NoChildrenValidator;
+import gov.usgs.cida.pubs.validation.nochildren.NoChildrenValidatorForPublicationSeries;
+
 @Target(TYPE)
 @Retention(RUNTIME)
-@Constraint(validatedBy=NoChildrenValidator.class)
+@Constraint(validatedBy={
+		NoChildrenValidator.class,
+		NoChildrenValidatorForPublicationSeries.class
+})
 @Documented
 public @interface NoChildren {
 

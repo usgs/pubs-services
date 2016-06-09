@@ -48,7 +48,7 @@ public class PublicationSeriesBusService extends BusService<PublicationSeries> {
 	@Override
 	@Transactional
 	public PublicationSeries updateObject(PublicationSeries object) {
-		PublicationSeries result = null;
+		PublicationSeries result = object;
 		if (null != object && null != object.getId()) {
 			Integer id = object.getId();
 			object.setValidationErrors(validator.validate(object));

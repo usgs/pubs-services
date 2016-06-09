@@ -27,6 +27,8 @@ public class PublicationDao extends BaseDao<Publication<?>> implements IPublicat
 	private static final String NS = "publication";
 	private static final String FILTER_BY_INDEX_ID = ".filterLookupByIndexId";
 
+	public static final String SERIES_ID_SEARCH = "publicationSeriesId";
+
 	/** {@inheritDoc}
 	 * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getById(java.lang.Integer)
 	 */

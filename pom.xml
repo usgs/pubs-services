@@ -24,7 +24,6 @@
 		<slf4j-version>1.7.21</slf4j-version>
 		<spring-security-version>4.1.0.RELEASE</spring-security-version>
 		<spring-version>4.2.6.RELEASE</spring-version>
-
 	</properties>
 
 	<scm>

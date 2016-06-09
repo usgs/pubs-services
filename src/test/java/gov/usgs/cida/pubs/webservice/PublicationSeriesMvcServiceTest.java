@@ -36,105 +36,118 @@ import gov.usgs.cida.pubs.validation.ValidationResults;
 public class PublicationSeriesMvcServiceTest extends BaseSpringTest {
 
 	@Mock
-    private PublicationSeriesBusService busService;
+	private PublicationSeriesBusService busService;
 
-    private MockMvc mockMvc;
+	private MockMvc mockMvc;
 
-    private PublicationSeriesMvcService mvcService;
-    
-    @Before
-    public void setup() {
-    	MockitoAnnotations.initMocks(this);
-    	mvcService = new PublicationSeriesMvcService(busService);
-    	mockMvc = MockMvcBuilders.standaloneSetup(mvcService).build();
-    }
+	private PublicationSeriesMvcService mvcService;
+
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
+		mvcService = new PublicationSeriesMvcService(busService);
+		mockMvc = MockMvcBuilders.standaloneSetup(mvcService).build();
+	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-    public void getListTest() throws Exception {
-    	//Happy Path
-        when(busService.getObjects(anyMap())).thenReturn(buildAPublicationSeriesList());
-        when(busService.getObjectCount(anyMap())).thenReturn(Integer.valueOf(12));
-    	
-        MvcResult rtn = mockMvc.perform(get("/publicationSeries?mimetype=json").accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-        .andReturn();
+	public void getListTest() throws Exception {
+		//Happy Path
+		when(busService.getObjects(anyMap())).thenReturn(buildAPublicationSeriesList());
+		when(busService.getObjectCount(anyMap())).thenReturn(Integer.valueOf(12));
+		
+		MvcResult rtn = mockMvc.perform(get("/publicationSeries?mimetype=json").accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andReturn();
 
-        assertThat(getRtnAsJSONObject(rtn),
-                sameJSONObjectAs(new JSONObject("{\"pageSize\":\"25\",\"pageRowStart\":\"0\",\"pageNumber\":null,\"recordCount\":12,\"records\":["
-                		+ PublicationSeriesTest.defaultPubSeriesJSON + "]}")));
-    }
+		assertThat(getRtnAsJSONObject(rtn),
+				sameJSONObjectAs(new JSONObject("{\"pageSize\":\"25\",\"pageRowStart\":\"0\",\"pageNumber\":null,\"recordCount\":12,\"records\":["
+						+ PublicationSeriesTest.DEFAULT_AS_JSON + "]}")));
+	}
 
+	@Test
+	public void getTest() throws Exception {
+		//Happy Path
+		when(busService.getObject(1)).thenReturn(PublicationSeriesTest.buildAPubSeries(13));
+		MvcResult rtn = mockMvc.perform(get("/publicationSeries/1?mimetype=json").accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andReturn();
 
-    @Test
-    public void getTest() throws Exception {
-    	//Happy Path
-        when(busService.getObject(1)).thenReturn(PublicationSeriesTest.buildAPubSeries(13));
-        MvcResult rtn = mockMvc.perform(get("/publicationSeries/1?mimetype=json").accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-        .andReturn();
+		assertThat(getRtnAsJSONObject(rtn),
+				sameJSONObjectAs(new JSONObject(PublicationSeriesTest.DEFAULT_AS_JSON)));
 
-        assertThat(getRtnAsJSONObject(rtn),
-                sameJSONObjectAs(new JSONObject(PublicationSeriesTest.defaultPubSeriesJSON)));
-        
-        //PublicationSeries not found
-        rtn = mockMvc.perform(get("/publicationSeries/3?mimetype=json").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound())
-                .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-                .andReturn();
-        assertEquals(0, rtn.getResponse().getContentAsString().length());
-    }
+		//PublicationSeries not found
+		rtn = mockMvc.perform(get("/publicationSeries/3?mimetype=json").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound())
+				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+				.andReturn();
+		assertEquals(0, rtn.getResponse().getContentAsString().length());
+	}
 
-    @Test
-    public void createTest() throws Exception {
-        when(busService.createObject(any(PublicationSeries.class))).thenReturn(PublicationSeriesTest.buildAPubSeries(13));
-        MvcResult rtn = mockMvc.perform(post("/publicationSeries").content(PublicationSeriesTest.defaultPubSeriesJSON).contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isCreated())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-        .andReturn();
+	@Test
+	public void createTest() throws Exception {
+		when(busService.createObject(any(PublicationSeries.class))).thenReturn(PublicationSeriesTest.buildAPubSeries(13));
+		MvcResult rtn = mockMvc.perform(post("/publicationSeries").content(PublicationSeriesTest.DEFAULT_AS_JSON).contentType(MediaType.APPLICATION_JSON)
+		.accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isCreated())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andReturn();
 
-        assertThat(getRtnAsJSONObject(rtn),
-                sameJSONObjectAs(new JSONObject(PublicationSeriesTest.defaultPubSeriesJSON)));
-    }
-    
-    @Test
-    public void updateTest() throws Exception {
-        when(busService.updateObject(any(PublicationSeries.class))).thenReturn(PublicationSeriesTest.buildAPubSeries(13));
-        MvcResult rtn = mockMvc.perform(put("/publicationSeries/330").content(PublicationSeriesTest.defaultPubSeriesJSON).contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-        .andReturn();
+		assertThat(getRtnAsJSONObject(rtn),
+				sameJSONObjectAs(new JSONObject(PublicationSeriesTest.DEFAULT_MAINT_AS_JSON)));
+	}
 
-        assertThat(getRtnAsJSONObject(rtn),
-                sameJSONObjectAs(new JSONObject(PublicationSeriesTest.defaultPubSeriesJSON)));
-    }
+	@Test
+	public void createErrorsTest() throws Exception {
+		when(busService.createObject(any(PublicationSeries.class))).thenReturn(PublicationSeriesTest.BuildAPubSeriesWithErrors(13));
+		MvcResult rtn = mockMvc.perform(post("/publicationSeries").content(PublicationSeriesTest.DEFAULT_AS_JSON).contentType(MediaType.APPLICATION_JSON)
+		.accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isBadRequest())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andReturn();
 
-    @Test
-    public void deleteTest() throws Exception {
-    	//Happy Path/PublicationSeries not found
-        when(busService.deleteObject(1)).thenReturn(new ValidationResults());
-        MvcResult rtn = mockMvc.perform(delete("/publicationSeries/1").accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-        .andReturn();
-        assertThat(getRtnAsJSONObject(rtn),
-                sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
-    }
-    
-    public List<PublicationSeries> buildAPublicationSeriesList() {
-    	List<PublicationSeries> rtn = new ArrayList<>();
-    	PublicationSeries pubSeries = PublicationSeriesTest.buildAPubSeries(13);
-    	rtn.add(pubSeries);
-    	return rtn;
-    }
+		assertThat(getRtnAsJSONObject(rtn),
+				sameJSONObjectAs(new JSONObject(PublicationSeriesTest.DEFAULT_WITH_ERRORS_AS_JSON)));
+	}
+
+	@Test
+	public void updateTest() throws Exception {
+		when(busService.updateObject(any(PublicationSeries.class))).thenReturn(PublicationSeriesTest.buildAPubSeries(13));
+		MvcResult rtn = mockMvc.perform(put("/publicationSeries/330").content(PublicationSeriesTest.DEFAULT_AS_JSON).contentType(MediaType.APPLICATION_JSON)
+		.accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andReturn();
+
+		assertThat(getRtnAsJSONObject(rtn),
+				sameJSONObjectAs(new JSONObject(PublicationSeriesTest.DEFAULT_MAINT_AS_JSON)));
+	}
+
+	@Test
+	public void deleteTest() throws Exception {
+		//Happy Path/PublicationSeries not found
+		when(busService.deleteObject(1)).thenReturn(new ValidationResults());
+		MvcResult rtn = mockMvc.perform(delete("/publicationSeries/1").accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andReturn();
+		assertThat(getRtnAsJSONObject(rtn),
+				sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
+	}
+
+	public List<PublicationSeries> buildAPublicationSeriesList() {
+		List<PublicationSeries> rtn = new ArrayList<>();
+		PublicationSeries pubSeries = PublicationSeriesTest.buildAPubSeries(13);
+		rtn.add(pubSeries);
+		return rtn;
+	}
 
 }

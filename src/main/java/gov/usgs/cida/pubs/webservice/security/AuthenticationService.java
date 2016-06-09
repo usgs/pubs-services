@@ -1,11 +1,13 @@
 package gov.usgs.cida.pubs.webservice.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
 import gov.usgs.cida.auth.client.IAuthClient;
 import gov.usgs.cida.auth.model.AuthToken;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-
+@Service
 public class AuthenticationService {
 
 	protected IAuthClient authClient;
@@ -14,7 +16,7 @@ public class AuthenticationService {
 	public AuthenticationService(final IAuthClient authClient) {
 		this.authClient = authClient;
 	}
-	
+
 	/**
 	 * Authenticates and Authorizes the user and returns valid token. If anything fails, {@code null} is returned instead.
 	 * Prepares {@link org.springframework.security.core.context.SecurityContext} if authentication/authorization succeeded.
@@ -40,7 +42,7 @@ public class AuthenticationService {
 	boolean checkToken(String token) throws UnauthorizedException {
 		boolean isValid = authClient.isValidToken(token);
 		if (isValid) {
-	        authorizeToken(token);
+			authorizeToken(token);
 		};
 		return isValid;
 	};

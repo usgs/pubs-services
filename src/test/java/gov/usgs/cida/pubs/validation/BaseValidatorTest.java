@@ -1,8 +1,5 @@
 package gov.usgs.cida.pubs.validation;
 
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.IntegrationTest;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,24 +7,13 @@ import javax.validation.metadata.ConstraintDescriptor;
 
 import org.hibernate.validator.internal.engine.constraintvalidation.ConstraintValidatorContextImpl;
 import org.hibernate.validator.internal.engine.path.PathImpl;
+import org.hibernate.validator.internal.engine.time.DefaultTimeProvider;
 import org.junit.Before;
-import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseSetups;
+import gov.usgs.cida.pubs.BaseSpringTest;
 
-import org.hibernate.validator.internal.engine.time.DefaultTimeProvider;
-
-@Category(IntegrationTest.class)
-@DatabaseSetups({
-	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-	@DatabaseSetup("classpath:/testData/publicationType.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-	@DatabaseSetup("classpath:/testData/dataset.xml")
-})
 public abstract class BaseValidatorTest extends BaseSpringTest {
 
 	protected ConstraintValidatorContextImpl context;
@@ -37,10 +23,10 @@ public abstract class BaseValidatorTest extends BaseSpringTest {
 	@Mock
 	protected ConstraintDescriptor<?> constraintDescriptor;
 	
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        context = new ConstraintValidatorContextImpl(methodParameterNames, DefaultTimeProvider.getInstance(), propertyPath, constraintDescriptor);
-    }
+	@Before
+	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		context = new ConstraintValidatorContextImpl(methodParameterNames, DefaultTimeProvider.getInstance(), propertyPath, constraintDescriptor);
+	}
 
 }

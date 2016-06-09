@@ -1,53 +1,61 @@
 package gov.usgs.cida.pubs.aop;
 
-import gov.usgs.cida.pubs.utility.PubsUtilities;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import oracle.jdbc.OracleConnection;
-
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import gov.usgs.cida.pubs.utility.PubsUtilities;
+import oracle.jdbc.OracleConnection;
 
 /**
  * @author drsteini
  *
  */
 @Aspect
+@Component
 public class SetDbContextAspect extends SqlSessionDaoSupport {
 
-    /** The clientId/username. */
-    private String clientId;
+	/** The clientId/username. */
+	private String clientId;
 
-    @Pointcut("@annotation(gov.usgs.cida.pubs.aop.ISetDbContext)")
-    private void dbAccess() {
-    }
+	@Pointcut("@annotation(gov.usgs.cida.pubs.aop.ISetDbContext)")
+	private void dbAccess() {
+	}
 
-    /** Set the client ID in the database. */
-    @Before(value="dbAccess()")
-    @Transactional(readOnly = true)
-    protected void registerContextValues() {
-        try {
-            clientId = PubsUtilities.getUsername();
+	@Autowired
+	public SetDbContextAspect(SqlSessionFactory sqlSessionFactory) {
+		setSqlSessionFactory(sqlSessionFactory);
+	}
 
-            String[] metrics = new String[OracleConnection.END_TO_END_STATE_INDEX_MAX];
-            metrics[OracleConnection.END_TO_END_CLIENTID_INDEX] = clientId;
-            metrics[OracleConnection.END_TO_END_ACTION_INDEX]   = "x";
-            metrics[OracleConnection.END_TO_END_ECID_INDEX]     = "y";
-            metrics[OracleConnection.END_TO_END_MODULE_INDEX]   = "z";
+	/** Set the client ID in the database. */
+	@Before(value="dbAccess()")
+	@Transactional(readOnly = true)
+	protected void registerContextValues() {
+		try {
+			clientId = PubsUtilities.getUsername();
 
-            Connection conn = getSqlSession().getConnection().getMetaData().getConnection();
-            OracleConnection oracleConn = getAsOracleConnection(conn);
-            oracleConn.setEndToEndMetrics(metrics, (short) 0);
+			String[] metrics = new String[OracleConnection.END_TO_END_STATE_INDEX_MAX];
+			metrics[OracleConnection.END_TO_END_CLIENTID_INDEX] = clientId;
+			metrics[OracleConnection.END_TO_END_ACTION_INDEX]   = "x";
+			metrics[OracleConnection.END_TO_END_ECID_INDEX]     = "y";
+			metrics[OracleConnection.END_TO_END_MODULE_INDEX]   = "z";
 
-        } catch (SQLException e) {
-            throw new RuntimeException("Problem setting client ID", e);
-        }
-    }
+			Connection conn = getSqlSession().getConnection().getMetaData().getConnection();
+			OracleConnection oracleConn = getAsOracleConnection(conn);
+			oracleConn.setEndToEndMetrics(metrics, (short) 0);
+
+		} catch (SQLException e) {
+			throw new RuntimeException("Problem setting client ID", e);
+		}
+	}
 
 	/**
 	 * Attempts to get the underlying instance of OracleConnection.

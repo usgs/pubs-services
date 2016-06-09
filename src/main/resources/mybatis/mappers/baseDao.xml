@@ -3,12 +3,12 @@
 
 <mapper namespace="base">
 
-    <resultMap type="BaseDomain" id="result">
-        <result property="insertDate" column="insert_date"/>
-        <result property="insertUsername" column="insert_username"/>
-        <result property="updateDate" column="update_date"/>
-        <result property="updateUsername" column="update_username"/>
-    </resultMap>
+	<resultMap type="BaseDomain" id="result">
+		<result property="insertDate" column="insert_date"/>
+		<result property="insertUsername" column="insert_username"/>
+		<result property="updateDate" column="update_date"/>
+		<result property="updateUsername" column="update_username"/>
+	</resultMap>
 
 	<sql id="dateFormat">
 		'YYYY-MM-DD'
@@ -18,58 +18,58 @@
 		sys_context( 'userenv', 'client_identifier')
 	</sql>
 	
-    <select id="getClientId" resultType="String" useCache="false" >
-        select <include refid="clientId"/>
-          from dual
-    </select>
+	<select id="getClientId" resultType="String" useCache="false" >
+		select <include refid="clientId"/>
+		  from dual
+	</select>
 
-    <sql id="auditCols">
-        insert_date, insert_username, update_date, update_username
-    </sql>
+	<sql id="auditCols">
+		insert_date, insert_username, update_date, update_username
+	</sql>
 
-    <sql id="auditHosts">
-        sysdate,
-        audit_trail_util.get_username,
-        sysdate,
-        audit_trail_util.get_username
-    </sql>
+	<sql id="auditHosts">
+		sysdate,
+		audit_trail_util.get_username,
+		sysdate,
+		audit_trail_util.get_username
+	</sql>
 
-    <sql id="auditSets">
-        update_date = sysdate,
-        update_username = audit_trail_util.get_username
-    </sql>
+	<sql id="auditSets">
+		update_date = sysdate,
+		update_username = audit_trail_util.get_username
+	</sql>
 
 	<sql id="pagingHint">
-        <if test="pageSize != null">
-            /*+ first_rows(${pageSize}) */
-        </if>
-    </sql>
+		<if test="pageSize != null">
+			/*+ first_rows(${pageSize}) */
+		</if>
+	</sql>
 
-    <sql id="pagingRowLimit">
-        <if test="pageSize != null">
-        	<choose>
-        		<when test="pageRowStart != null">
-        			offset #{pageRowStart} rows fetch next
-        		</when>
-        		<otherwise>
-        			fetch first
-        		</otherwise>
-        	</choose>
-        	#{pageSize} rows only
-        </if>
-    </sql>
-    
-    <sql id="paging">
-    	<if test="pageSize != null &amp;&amp; pageRowStart != null">
-	    	<choose>
-	    		<when test="pageRowStart > 0">
-	    			offset #{pageRowStart} rows fetch next #{pageSize} rows only
-	    		</when>
-	    		<otherwise>
-	    			fetch first #{pageSize} rows only
-	    		</otherwise>
-	    	</choose>
-    	</if>
-    </sql>
+	<sql id="pagingRowLimit">
+		<if test="pageSize != null">
+			<choose>
+				<when test="pageRowStart != null">
+					offset #{pageRowStart} rows fetch next
+				</when>
+				<otherwise>
+					fetch first
+				</otherwise>
+			</choose>
+			#{pageSize} rows only
+		</if>
+	</sql>
+
+	<sql id="paging">
+		<if test="pageSize != null and pageRowStart != null">
+			<choose>
+				<when test="pageRowStart > 0">
+					offset #{pageRowStart} rows fetch next #{pageSize} rows only
+				</when>
+				<otherwise>
+					fetch first #{pageSize} rows only
+				</otherwise>
+			</choose>
+		</if>
+	</sql>
 
 </mapper>

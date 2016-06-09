@@ -20,12 +20,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class PublicationDao extends BaseDao<Publication<?>> implements IPublicationDao {
 
 	@Autowired
-    public PublicationDao(SqlSessionFactory sqlSessionFactory) {
+	public PublicationDao(SqlSessionFactory sqlSessionFactory) {
 		super(sqlSessionFactory);
 	}
 
 	private static final String NS = "publication";
-    private static final String FILTER_BY_INDEX_ID = ".filterLookupByIndexId";
+	private static final String FILTER_BY_INDEX_ID = ".filterLookupByIndexId";
+
+	public static final String SERIES_ID_SEARCH = "publicationSeriesId";
 
 	/** {@inheritDoc}
 	 * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getById(java.lang.Integer)
@@ -36,7 +38,7 @@ public class PublicationDao extends BaseDao<Publication<?>> implements IPublicat
 	public Publication<?> getById(Integer domainID) {
 		return getSqlSession().selectOne(NS + GET_BY_ID, domainID);
 	}
-	
+
 	/** {@inheritDoc}
 	 * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getByMap(java.util.Map)
 	 */
@@ -57,15 +59,15 @@ public class PublicationDao extends BaseDao<Publication<?>> implements IPublicat
 		return getSqlSession().selectOne(NS + GET_COUNT, filters);
 	}
 
-    /** 
-     * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.core.dao.intfc.IPublicationDao#filterByIndexId(java.lang.String)
-     */
-    @Transactional(readOnly = true)
-    @ISetDbContext
+	/** 
+	 * {@inheritDoc}
+	 * @see gov.usgs.cida.pubs.core.dao.intfc.IPublicationDao#filterByIndexId(java.lang.String)
+	 */
+	@Transactional(readOnly = true)
+	@ISetDbContext
 	@Override
 	public List<Publication<?>> filterByIndexId(String indexId) {
-        return  getSqlSession().selectList(NS + FILTER_BY_INDEX_ID, indexId);
+		return  getSqlSession().selectList(NS + FILTER_BY_INDEX_ID, indexId);
 	}
 
 }

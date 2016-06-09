@@ -18,10 +18,10 @@ public class PubsAuthentication implements Authentication {
 
 	private Collection<GrantedAuthority> authorities;
 	private User principal;
-	
+
 	public PubsAuthentication(String username, List<String> rawRoles) {
 		Collection<GrantedAuthority> auths = new ArrayList<>();
-		
+
 		for(String role : rawRoles) {
 			try {
 				//role validation - we only add roles here that are valid for pubs.
@@ -34,7 +34,7 @@ public class PubsAuthentication implements Authentication {
 		authorities = auths;
 		principal = new User(username, "******", authorities);
 	}
-	
+
 	@Override
 	public String getName() {
 		return principal.getUsername();

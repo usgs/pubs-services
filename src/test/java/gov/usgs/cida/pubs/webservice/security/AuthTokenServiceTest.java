@@ -33,22 +33,21 @@ public class AuthTokenServiceTest {
 	AuthTokenService testService;
 	AuthenticationService mockAuthService;
 	IMpPublicationBusService mockBusService;
-    private MockMvc mockMvc;
+	private MockMvc mockMvc;
 
-	
 	@Before
 	public void setup() {
 		mockAuthService = mock(AuthenticationService.class);
 		mockBusService = mock(IMpPublicationBusService.class);
 		testService = new AuthTokenService(mockAuthService, mockBusService);
 	}
-	
+
 	@Test 
 	public void logoutTestSuccess() {
 		SecurityContextHolder.clearContext();
 		HttpServletRequest mockRequest = mock(HttpServletRequest.class);
 		when(mockRequest.getHeader(TokenSecurityFilter.AUTHORIZATION_HEADER)).thenReturn("Bearer a-token-string");
-		
+
 		when(mockAuthService.invalidateToken("a-token-string")).thenReturn(true);
 
 		ObjectNode response = testService.logout(mockRequest);
@@ -62,7 +61,7 @@ public class AuthTokenServiceTest {
 		SecurityContextHolder.clearContext();
 		HttpServletRequest mockRequest = mock(HttpServletRequest.class);
 		when(mockRequest.getHeader(TokenSecurityFilter.AUTHORIZATION_HEADER)).thenReturn("Bearer a-token-string");
-		
+
 		when(mockAuthService.invalidateToken("a-token-string")).thenReturn(false);
 
 		ObjectNode response = testService.logout(mockRequest);
@@ -70,20 +69,20 @@ public class AuthTokenServiceTest {
 		verify(mockAuthService, times(1)).invalidateToken("a-token-string");
 		verify(mockBusService, times(1)).releaseLocksUser(PubsConstants.ANONYMOUS_USER);
 	}
-	
+
 	@Test
 	public void logoutTest() throws Exception {
 		SecurityContextHolder.clearContext();
-    	mockMvc = MockMvcBuilders.standaloneSetup(testService).build();
+		mockMvc = MockMvcBuilders.standaloneSetup(testService).build();
 		when(mockAuthService.invalidateToken("a-token-string")).thenReturn(true);
 
-        MvcResult rtn = mockMvc.perform(post("/auth/logout").header(TokenSecurityFilter.AUTHORIZATION_HEADER, "Bearer a-token-string")
-        		.accept(MediaType.APPLICATION_JSON))
-        	.andExpect(status().isOk())
-        	.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        	.andReturn();
-        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-                sameJSONObjectAs(new JSONObject("{\"status\":\"success\"}")));
+		MvcResult rtn = mockMvc.perform(post("/auth/logout").header(TokenSecurityFilter.AUTHORIZATION_HEADER, "Bearer a-token-string")
+				.accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+			.andReturn();
+		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+				sameJSONObjectAs(new JSONObject("{\"status\":\"success\"}")));
 		verify(mockAuthService, times(1)).invalidateToken("a-token-string");
 		verify(mockBusService, times(1)).releaseLocksUser(PubsConstants.ANONYMOUS_USER);
 	}
@@ -91,34 +90,35 @@ public class AuthTokenServiceTest {
 	@Test
 	public void getTokenTest() throws Exception {
 		Timestamp ts = new Timestamp(0);
-    	mockMvc = MockMvcBuilders.standaloneSetup(testService).build();
+		mockMvc = MockMvcBuilders.standaloneSetup(testService).build();
 		AuthToken testToken = new AuthToken();
 		testToken.setTokenId("a-token-string");
 		testToken.setExpires(ts);
 		when(mockAuthService.authenticate("user", "pwd")).thenReturn(testToken);
 
-        MvcResult rtn = mockMvc.perform(post("/auth/token").param("username", "user").param("password", "pwd")
-        		.accept(MediaType.APPLICATION_JSON))
-        	.andExpect(status().isOk())
-        	.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        	.andReturn();
-        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-        		sameJSONObjectAs(new JSONObject("{\"token\":\"a-token-string\",\"expires\":\"" + ts.toString() + "\"}")));
-        verify(mockAuthService, times(1)).authenticate("user", "pwd");
+		MvcResult rtn = mockMvc.perform(post("/auth/token").param("username", "user").param("password", "pwd")
+				.accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+			.andReturn();
+		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+				sameJSONObjectAs(new JSONObject("{\"token\":\"a-token-string\",\"expires\":\"" + ts.toString() + "\"}")));
+		verify(mockAuthService, times(1)).authenticate("user", "pwd");
 	}
-	
+
 	@Test
 	public void getTokenFailTest() throws Exception {
-    	mockMvc = MockMvcBuilders.standaloneSetup(testService).build();
+		mockMvc = MockMvcBuilders.standaloneSetup(testService).build();
 		when(mockAuthService.authenticate("user", "pwd")).thenThrow(new UnauthorizedException("Invalid username/password"));
 
-        MvcResult rtn = mockMvc.perform(post("/auth/token").param("username", "user").param("password", "pwd")
-        		.accept(MediaType.APPLICATION_JSON))
-        	.andExpect(status().isUnauthorized())
-        	.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        	.andReturn();
-        assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
-        		sameJSONObjectAs(new JSONObject("{\"reason\":\"Invalid username/password\"}")));
-        verify(mockAuthService, times(1)).authenticate("user", "pwd");
+		MvcResult rtn = mockMvc.perform(post("/auth/token").param("username", "user").param("password", "pwd")
+				.accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isUnauthorized())
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+			.andReturn();
+		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
+				sameJSONObjectAs(new JSONObject("{\"reason\":\"Invalid username/password\"}")));
+		verify(mockAuthService, times(1)).authenticate("user", "pwd");
 	}
+
 }

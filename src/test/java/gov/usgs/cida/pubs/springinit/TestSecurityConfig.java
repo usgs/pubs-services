@@ -3,12 +3,12 @@ package gov.usgs.cida.pubs.springinit;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.Import;
 
 import gov.usgs.cida.pubs.webservice.security.AuthenticationService;
 
 @Configuration
-@ImportResource("classpath:spring/securityContext.xml")
+@Import(SecurityConfig.class)
 public class TestSecurityConfig {
 
 	@Bean

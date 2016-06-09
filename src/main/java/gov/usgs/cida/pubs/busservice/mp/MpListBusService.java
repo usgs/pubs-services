@@ -12,19 +12,21 @@ import java.util.Map;
 import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class MpListBusService extends BusService<MpList> {
 
-    @Autowired
-    MpListBusService(final Validator validator) {
-    	this.validator = validator;
-    }
+	@Autowired
+	MpListBusService(final Validator validator) {
+		this.validator = validator;
+	}
 
-    @Override
+	@Override
 	public List<MpList> getObjects(final Map<String, Object> filters) {
-    	if (PubsUtilities.isSpnOnly()) {
-    		filters.put(MpListDao.LIST_TYPE_SEARCH, MpListType.SPN);
-    	}
+		if (PubsUtilities.isSpnOnly()) {
+			filters.put(MpListDao.LIST_TYPE_SEARCH, MpListType.SPN);
+		}
 		return MpList.getDao().getByMap(filters);
 	}
 

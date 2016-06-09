@@ -2,6 +2,21 @@ package gov.usgs.cida.pubs.validation.mp.parent;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
+
+import gov.usgs.cida.pubs.dao.PublicationDao;
+import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
+import gov.usgs.cida.pubs.dao.PublicationSubtypeDao;
+import gov.usgs.cida.pubs.dao.PublicationTypeDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
@@ -9,23 +24,48 @@ import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 
-import org.junit.Test;
-
+//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
+//for each reference. This does mean that we nned to let Spring know that the context is now dirty...
+@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
 public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest {
 
-	ParentExistsValidatorForMpPublication validator;
+	protected ParentExistsValidatorForMpPublication validator;
+	protected Publication<?> mpPub;
+	protected PublicationType pubType;
+	protected PublicationSubtype pubSubtype;
+	protected PublicationSeries pubSeries;
+	protected PublicationType largerWorkType;
+	protected Publication<?> po;
+	protected Publication<?> sb;
+
+	@Mock
+	protected PublicationTypeDao publicationTypeDao;
+	@Mock
+	protected PublicationSubtypeDao publicationSubtypeDao;
+	@Mock
+	protected PublicationSeriesDao publicationSeriesDao;
+	@Mock
+	protected PublicationDao publicationDao;
+
+	@Before
+	public void setUp() throws Exception {
+		super.setUp();
+		validator = new ParentExistsValidatorForMpPublication();
+		mpPub = new MpPublication();
+		mpPub.setPublicationDao(publicationDao);
+		pubType = new PublicationType();
+		pubType.setPublicationTypeDao(publicationTypeDao);
+		pubSubtype = new PublicationSubtype();
+		pubSubtype.setPublicationSubtypeDao(publicationSubtypeDao);
+		pubSeries = new PublicationSeries();
+		pubSeries.setPublicationSeriesDao(publicationSeriesDao);
+		largerWorkType = new PublicationType();
+		po = new MpPublication();
+		sb = new MpPublication();
+	}
 
 	@Test
-	public void isValidTest() {
-		validator = new ParentExistsValidatorForMpPublication();
-		Publication<MpPublication> mpPub = new MpPublication();
-		PublicationType pubType = new PublicationType();
-		PublicationSubtype pubSubtype = new PublicationSubtype();
-		PublicationSeries pubSeries = new PublicationSeries();
-		PublicationType largerWorkType = new PublicationType();
-		Publication<?> po = new MpPublication();
-		Publication<?> sb = new MpPublication();
-
+	public void isValidNPETest() {
 		assertTrue(validator.isValid(null, null));
 		assertTrue(validator.isValid(null, context));
 		assertTrue(validator.isValid(mpPub, null));
@@ -49,55 +89,214 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		
 		mpPub.setSupersededBy(sb);
 		assertTrue(validator.isValid(mpPub, context));
-		
-		pubType.setId(2);
+	}
+
+	@Test
+	public void isValidTrueTest() {
+		when(publicationDao.getById(any(Integer.class))).thenReturn(new Publication<>());
+		when(publicationTypeDao.getById(any(Integer.class))).thenReturn(new PublicationType());
+		when(publicationSubtypeDao.getById(any(Integer.class))).thenReturn(new PublicationSubtype());
+		when(publicationSeriesDao.getById(any(Integer.class))).thenReturn(new PublicationSeries());
+
+		mpPub.setPublicationType(pubType);
+		mpPub.setPublicationSubtype(pubSubtype);
+		mpPub.setSeriesTitle(pubSeries);
+		mpPub.setLargerWorkType(largerWorkType);
+		mpPub.setIsPartOf(po);
+		mpPub.setSupersededBy(sb);
+
+		//Works with all set
+		pubType.setId(1);
+		pubSubtype.setId(1);
+		pubSeries.setId(1);
+		largerWorkType.setId(1);
+		po.setId(1);
+		sb.setId(1);
 		assertTrue(validator.isValid(mpPub, context));
 
-		pubType.setId(-1);
-		assertFalse(validator.isValid(mpPub, context));
-		
+		//Works with pubType set
+		pubType.setId(1);
+		pubSubtype.setId("");
+		pubSeries.setId("");
+		largerWorkType.setId("");
+		po.setId("");
+		sb.setId("");
+		assertTrue(validator.isValid(mpPub, context));
+		verify(publicationDao, times(2)).getById(any(Integer.class));
+		verify(publicationTypeDao, times(3)).getById(any(Integer.class));
+		verify(publicationSubtypeDao).getById(any(Integer.class));
+		verify(publicationSeriesDao).getById(any(Integer.class));
+
+		//Works with pubSubtype set
 		pubType.setId("");
 		pubSubtype.setId(1);
-		assertTrue(validator.isValid(mpPub, context));
-		
-		pubSubtype.setId(-1);
-		assertFalse(validator.isValid(mpPub, context));
-
-		pubSubtype.setId("");
-		pubSeries.setId(501);
-		assertTrue(validator.isValid(mpPub, context));
-
-		pubSeries.setId(-1);
-		assertFalse(validator.isValid(mpPub, context));
-
 		pubSeries.setId("");
-		largerWorkType.setId(2);
+		largerWorkType.setId("");
+		po.setId("");
+		sb.setId("");
 		assertTrue(validator.isValid(mpPub, context));
+		verify(publicationDao, times(2)).getById(any(Integer.class));
+		verify(publicationTypeDao, times(3)).getById(any(Integer.class));
+		verify(publicationSubtypeDao, times(2)).getById(any(Integer.class));
+		verify(publicationSeriesDao).getById(any(Integer.class));
 
-		largerWorkType.setId(-1);
-		assertFalse(validator.isValid(mpPub, context));
+		//Works with pubSeries set
+		pubType.setId("");
+		pubSubtype.setId("");
+		pubSeries.setId(1);
+		largerWorkType.setId("");
+		po.setId("");
+		sb.setId("");
+		assertTrue(validator.isValid(mpPub, context));
+		verify(publicationDao, times(2)).getById(any(Integer.class));
+		verify(publicationTypeDao, times(3)).getById(any(Integer.class));
+		verify(publicationSubtypeDao, times(2)).getById(any(Integer.class));
+		verify(publicationSeriesDao, times(2)).getById(any(Integer.class));
 
+		//Works with largerWorkType set
+		pubType.setId("");
+		pubSubtype.setId("");
+		pubSeries.setId("");
+		largerWorkType.setId(1);
+		po.setId("");
+		sb.setId("");
+		assertTrue(validator.isValid(mpPub, context));
+		verify(publicationDao, times(2)).getById(any(Integer.class));
+		verify(publicationTypeDao, times(4)).getById(any(Integer.class));
+		verify(publicationSubtypeDao, times(2)).getById(any(Integer.class));
+		verify(publicationSeriesDao, times(2)).getById(any(Integer.class));
+
+		//Works with partOf set
+		pubType.setId("");
+		pubSubtype.setId("");
+		pubSeries.setId("");
 		largerWorkType.setId("");
 		po.setId(1);
+		sb.setId("");
 		assertTrue(validator.isValid(mpPub, context));
+		verify(publicationDao, times(3)).getById(any(Integer.class));
+		verify(publicationTypeDao, times(4)).getById(any(Integer.class));
+		verify(publicationSubtypeDao, times(2)).getById(any(Integer.class));
+		verify(publicationSeriesDao, times(2)).getById(any(Integer.class));
 
-		po.setId(-1);
-		assertFalse(validator.isValid(mpPub, context));
-
+		//Works with supercededBy set
+		pubType.setId("");
+		pubSubtype.setId("");
+		pubSeries.setId("");
+		largerWorkType.setId("");
 		po.setId("");
-		sb.setId(2);
+		sb.setId(1);
 		assertTrue(validator.isValid(mpPub, context));
+		verify(publicationDao, times(4)).getById(any(Integer.class));
+		verify(publicationTypeDao, times(4)).getById(any(Integer.class));
+		verify(publicationSubtypeDao, times(2)).getById(any(Integer.class));
+		verify(publicationSeriesDao, times(2)).getById(any(Integer.class));
+	}
 
-		sb.setId(-1);
-		assertFalse(validator.isValid(mpPub, context));
+	@Test
+	public void isValidFalseTest() {
+		when(publicationDao.getById(any(Integer.class))).thenReturn(null);
+		when(publicationTypeDao.getById(any(Integer.class))).thenReturn(null);
+		when(publicationSubtypeDao.getById(any(Integer.class))).thenReturn(null);
+		when(publicationSeriesDao.getById(any(Integer.class))).thenReturn(null);
 
-		pubType.setId(-1);
-		pubSubtype.setId(-1);
-		pubSeries.setId(-1);
-		largerWorkType.setId(-1);
-		po.setId(-1);
-		sb.setId(-1);
+		mpPub.setPublicationType(pubType);
+		mpPub.setPublicationSubtype(pubSubtype);
+		mpPub.setSeriesTitle(pubSeries);
+		mpPub.setLargerWorkType(largerWorkType);
+		mpPub.setIsPartOf(po);
+		mpPub.setSupersededBy(sb);
+
+		//Works with all set
+		pubType.setId(1);
+		pubSubtype.setId(1);
+		pubSeries.setId(1);
+		largerWorkType.setId(1);
+		po.setId(1);
+		sb.setId(1);
 		assertFalse(validator.isValid(mpPub, context));
+		verify(publicationDao, times(2)).getById(any(Integer.class));
+		verify(publicationTypeDao, times(2)).getById(any(Integer.class));
+		verify(publicationSubtypeDao).getById(any(Integer.class));
+		verify(publicationSeriesDao).getById(any(Integer.class));
+
+		//Works with pubType set
+		pubType.setId(1);
+		pubSubtype.setId("");
+		pubSeries.setId("");
+		largerWorkType.setId("");
+		po.setId("");
+		sb.setId("");
+		assertFalse(validator.isValid(mpPub, context));
+		verify(publicationDao, times(2)).getById(any(Integer.class));
+		verify(publicationTypeDao, times(3)).getById(any(Integer.class));
+		verify(publicationSubtypeDao).getById(any(Integer.class));
+		verify(publicationSeriesDao).getById(any(Integer.class));
+
+		//Works with pubSubtype set
+		pubType.setId("");
+		pubSubtype.setId(1);
+		pubSeries.setId("");
+		largerWorkType.setId("");
+		po.setId("");
+		sb.setId("");
+		assertFalse(validator.isValid(mpPub, context));
+		verify(publicationDao, times(2)).getById(any(Integer.class));
+		verify(publicationTypeDao, times(3)).getById(any(Integer.class));
+		verify(publicationSubtypeDao, times(2)).getById(any(Integer.class));
+		verify(publicationSeriesDao).getById(any(Integer.class));
+
+		//Works with pubSeries set
+		pubType.setId("");
+		pubSubtype.setId("");
+		pubSeries.setId(1);
+		largerWorkType.setId("");
+		po.setId("");
+		sb.setId("");
+		assertFalse(validator.isValid(mpPub, context));
+		verify(publicationDao, times(2)).getById(any(Integer.class));
+		verify(publicationTypeDao, times(3)).getById(any(Integer.class));
+		verify(publicationSubtypeDao, times(2)).getById(any(Integer.class));
+		verify(publicationSeriesDao, times(2)).getById(any(Integer.class));
+
+		//Works with largerWorkType set
+		pubType.setId("");
+		pubSubtype.setId("");
+		pubSeries.setId("");
+		largerWorkType.setId(1);
+		po.setId("");
+		sb.setId("");
+		assertFalse(validator.isValid(mpPub, context));
+		verify(publicationDao, times(2)).getById(any(Integer.class));
+		verify(publicationTypeDao, times(4)).getById(any(Integer.class));
+		verify(publicationSubtypeDao, times(2)).getById(any(Integer.class));
+		verify(publicationSeriesDao, times(2)).getById(any(Integer.class));
+
+		//Works with partOf set
+		pubType.setId("");
+		pubSubtype.setId("");
+		pubSeries.setId("");
+		largerWorkType.setId("");
+		po.setId(1);
+		sb.setId("");
+		assertFalse(validator.isValid(mpPub, context));
+		verify(publicationDao, times(3)).getById(any(Integer.class));
+		verify(publicationTypeDao, times(4)).getById(any(Integer.class));
+		verify(publicationSubtypeDao, times(2)).getById(any(Integer.class));
+		verify(publicationSeriesDao, times(2)).getById(any(Integer.class));
+
+		//Works with supercededBy set
+		pubType.setId("");
+		pubSubtype.setId("");
+		pubSeries.setId("");
+		largerWorkType.setId("");
+		po.setId("");
+		sb.setId(1);
+		assertFalse(validator.isValid(mpPub, context));
+		verify(publicationDao, times(4)).getById(any(Integer.class));
+		verify(publicationTypeDao, times(4)).getById(any(Integer.class));
+		verify(publicationSubtypeDao, times(2)).getById(any(Integer.class));
+		verify(publicationSeriesDao, times(2)).getById(any(Integer.class));
 	}
 
 }

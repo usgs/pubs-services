@@ -10,4 +10,5 @@ public class View {
 	
 	public interface MP extends PW {}
 
+	public interface LookupMaint extends MP {}
 }

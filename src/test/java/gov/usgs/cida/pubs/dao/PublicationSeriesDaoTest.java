@@ -33,7 +33,7 @@ import gov.usgs.cida.pubs.validation.unique.UniqueKeyValidatorForPublicationSeri
 @DatabaseTearDown("classpath:/testCleanup/clearAll.xml")
 public class PublicationSeriesDaoTest extends BaseSpringTest {
 
-	public static final int pubSeriesCnt = 14;
+	public static final int pubSeriesCnt = 15;
 	public static final int activePubSeriesCnt = 8;
 
 	@Test
@@ -103,8 +103,8 @@ public class PublicationSeriesDaoTest extends BaseSpringTest {
 		filters.put(PublicationSeriesDao.SUBTYPE_SEARCH, 5);
 		pubSeries = PublicationSeries.getDao().getByMap(filters);
 		assertNotNull(pubSeries);
-		assertEquals(8, pubSeries.size());
-		assertEquals(8, PublicationSeries.getDao().getObjectCount(filters).intValue());
+		assertEquals(9, pubSeries.size());
+		assertEquals(9, PublicationSeries.getDao().getObjectCount(filters).intValue());
 
 		filters.put("text", "sc");
 		pubSeries = PublicationSeries.getDao().getByMap(filters);
@@ -179,6 +179,9 @@ public class PublicationSeriesDaoTest extends BaseSpringTest {
 	})
 	public void uniqueCheckOnAddTest() {
 		PublicationSeries publicationSeries = new PublicationSeries();
+		PublicationSubtype st = new PublicationSubtype();
+		st.setId(2);
+		publicationSeries.setPublicationSubtype(st);
 		publicationSeries.setText("report");
 		publicationSeries.setCode("ofr");
 		publicationSeries.setPrintIssn("2328-031x");
@@ -225,6 +228,9 @@ public class PublicationSeriesDaoTest extends BaseSpringTest {
 	public void uniqueCheckOnUpdateTest() {
 		PublicationSeries publicationSeries = new PublicationSeries();
 		publicationSeries.setId(330);
+		PublicationSubtype st = new PublicationSubtype();
+		st.setId(2);
+		publicationSeries.setPublicationSubtype(st);
 		publicationSeries.setText("report");
 		publicationSeries.setCode("ofr");
 		publicationSeries.setPrintIssn("2328-031x");

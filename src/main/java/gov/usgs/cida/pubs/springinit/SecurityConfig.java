@@ -59,6 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					.antMatchers("/auth/logout").authenticated()
 					.antMatchers("/mppublications/*/preview*").hasAnyRole("AD_AUTHENTICATED", "PUBS_AUTHORIZED")
 					.antMatchers("/auth/token", "/lookup/**", "/publication/**", "/version").permitAll()
+					.antMatchers("/swagger-ui.html", "/webjars/**", "/swagger-resources/**", "/v2/api-docs").permitAll()
 					.antMatchers("/**").hasRole("PUBS_AUTHORIZED")
 			.and()
 				.requiresChannel().anyRequest().requiresSecure()

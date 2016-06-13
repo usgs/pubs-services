@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import org.springframework.util.StringUtils;
+
 import gov.usgs.cida.pubs.dao.typehandler.StringBooleanTypeHandler;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
@@ -31,7 +33,14 @@ public class UniqueKeyValidatorForPublicationSeries implements ConstraintValidat
 	public boolean isValid(PublicationSeries value, ConstraintValidatorContext context) {
 		boolean rtn = true;
 
-		if (null != value && null != context) {
+		if (null != value && null != context &&
+				(StringUtils.hasText(value.getText()) ||
+						StringUtils.hasText(value.getCode()) ||
+						StringUtils.hasText(value.getSeriesDoiName()) ||
+						StringUtils.hasText(value.getPrintIssn()) ||
+						StringUtils.hasText(value.getOnlineIssn())
+				)
+			) {
 			Map<BigDecimal, Map<String, Object>> dups = PublicationSeries.getDao().uniqueCheck(value);
 				//The dao will always return an object, so dups will never be null, it could be empty, but never null.
 				for (Map<String, Object> series : dups.values()) {

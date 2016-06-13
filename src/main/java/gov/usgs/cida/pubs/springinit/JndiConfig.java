@@ -8,20 +8,23 @@ import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
 @Configuration
+@EnableSwagger2
 public class JndiConfig {
 	
 	private final Context ctx;
 	
 	public JndiConfig() throws NamingException {
-        ctx = new InitialContext();
+		ctx = new InitialContext();
 	}
 	
-    @Bean
-    public DataSource dataSource() throws Exception {
-        return (DataSource) ctx.lookup("java:comp/env/jdbc/mypubsDS");
-    }
-    
+	@Bean
+	public DataSource dataSource() throws Exception {
+		return (DataSource) ctx.lookup("java:comp/env/jdbc/mypubsDS");
+	}
+	
 	@Bean
 	public String ipdsPubsWsPwd() throws NamingException {
 		return (String) ctx.lookup("java:comp/env/pubs/ipds/pubsWsPwd");

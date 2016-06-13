@@ -112,7 +112,8 @@
 
 	<select id="uniqueCheck" resultType="HashMap">
 		select publication_series_id id,
-		       case when upper(name) = upper(#{text,jdbcType=VARCHAR}) then 'Y' else 'N' end name_match,
+		       case when upper(name) = upper(#{text,jdbcType=VARCHAR}) and
+		                 publication_subtype_id = #{publicationSubtype.id,jdbcType=NUMERIC} then 'Y' else 'N' end name_match,
 		       case when upper(code) = upper(#{code,jdbcType=VARCHAR}) then 'Y' else 'N' end code_match,
 		       case when upper(doi_name) = upper(#{seriesDoiName,jdbcType=VARCHAR}) then 'Y' else 'N' end doi_name_match,
 		       case when upper(print_issn) = upper(#{printIssn,jdbcType=VARCHAR}) then 'Y' else 'N' end print_issn_match,
@@ -123,8 +124,9 @@
 				publication_series_id != #{id} and (
 			</if>
 			<trim prefix="" prefixOverrides="or">
-				<if test="text != null">
-					or upper(name) = upper(#{text})
+				<if test="text != null and publicationSubtype != null">
+					or (upper(name) = upper(#{text}) and
+					    publication_subtype_id = #{publicationSubtype.id,jdbcType=NUMERIC})
 				</if>
 				<if test="code != null">
 					or upper(code) = upper(#{code})

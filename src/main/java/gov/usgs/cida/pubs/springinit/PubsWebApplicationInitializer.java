@@ -18,7 +18,7 @@ public class PubsWebApplicationInitializer implements WebApplicationInitializer 
 		ctx.register(SpringConfig.class, JndiConfig.class, JmsConfig.class);
 
 		Dynamic servlet = servletContext.addServlet("springDispatcher", new DispatcherServlet(ctx));
-		servlet.addMapping("/");
+		servlet.addMapping("/*");
 		servlet.setAsyncSupported(false);
 		servlet.setLoadOnStartup(1);
 	}

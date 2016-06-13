@@ -48,6 +48,7 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
 
 	@JsonView(View.PW.class)
 	@Length(min=1, max=250)
+	@NotNull
 	private String text;
 
 	@JsonView(View.PW.class)

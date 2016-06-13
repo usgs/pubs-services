@@ -78,7 +78,7 @@ public class PublicationSeriesBusIntTest extends BaseSpringTest {
 		filters.put(PublicationSeriesDao.SUBTYPE_SEARCH, 5);
 		pubSeries = busService.getObjects(filters);
 		assertNotNull(pubSeries);
-		assertEquals(8, pubSeries.size());
+		assertEquals(9, pubSeries.size());
 	}
 
 	@Test

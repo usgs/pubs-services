@@ -18,6 +18,7 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
 import gov.usgs.cida.pubs.dao.typehandler.StringBooleanTypeHandler;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 
 //The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
@@ -27,6 +28,7 @@ public class UniqueKeyValidatorForPublicationSeriesTest extends BaseValidatorTes
 
 	protected UniqueKeyValidatorForPublicationSeries validator;
 	protected PublicationSeries series;
+	protected PublicationSubtype st;
 
 	@Mock
 	protected PublicationSeriesDao publicationSeriesDao;
@@ -37,6 +39,14 @@ public class UniqueKeyValidatorForPublicationSeriesTest extends BaseValidatorTes
 		validator = new UniqueKeyValidatorForPublicationSeries();
 		series = new PublicationSeries();
 		series.setPublicationSeriesDao(publicationSeriesDao);
+		series.setText("test");
+		series.setCode("tst");
+		series.setSeriesDoiName("doi");
+		series.setPrintIssn("print");
+		series.setOnlineIssn("online");
+		st = new PublicationSubtype();
+		st.setId(1);
+		series.setPublicationSubtype(st);
 	}
 
 	@Test

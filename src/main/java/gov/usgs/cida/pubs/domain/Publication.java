@@ -311,7 +311,6 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 
     @JsonProperty("tableOfContents")
     @JsonView(View.PW.class)
-    @Length(min=0, max=4000)
     private String tableOfContents;
 
     @JsonProperty("publishingServiceCenter")

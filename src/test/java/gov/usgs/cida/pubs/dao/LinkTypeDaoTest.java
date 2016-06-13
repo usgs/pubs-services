@@ -15,7 +15,7 @@ import org.junit.Test;
 
 public class LinkTypeDaoTest extends BaseSpringTest {
 
-    public static final int LINK_TYPES_CNT = 29;
+    public static final int LINK_TYPES_CNT = 30;
     public static final int LINK_TYPES_R_CNT = 4;
 
     @Test

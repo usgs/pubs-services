@@ -60,7 +60,6 @@ public class PublicationLink<D> extends BaseDomain<D> implements Serializable {
 
     @JsonProperty("linkHelpText")
     @JsonView(View.PW.class)
-	@Length(min = 0, max = 4000)
     private String helpText;
 
     public Integer getPublicationId() {

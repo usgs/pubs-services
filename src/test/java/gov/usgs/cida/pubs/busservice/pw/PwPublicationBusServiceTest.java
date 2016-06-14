@@ -1,97 +1,70 @@
 package gov.usgs.cida.pubs.busservice.pw;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.IntegrationTest;
-import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
-import gov.usgs.cida.pubs.domain.pw.PwPublication;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyMapOf;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseSetups;
+import gov.usgs.cida.pubs.dao.intfc.IPwPublicationDao;
+import gov.usgs.cida.pubs.domain.pw.PwPublication;
+import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 
-@Category(IntegrationTest.class)
-@DatabaseSetups({
-	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-	@DatabaseSetup("classpath:/testData/publicationType.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-	@DatabaseSetup("classpath:/testData/dataset.xml")
-})
-public class PwPublicationBusServiceTest extends BaseSpringTest {
+public class PwPublicationBusServiceTest {
 
-    private PwPublicationBusService busService;
+	private PwPublicationBusService service;
+	protected PwPublication pub;
 
-    @Before
-    public void initTest() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        busService = new PwPublicationBusService();
-    }
+	@Mock
+	protected IPwPublicationDao pwPubDao;
 
-    @Test
-    public void getObjectTest() {
-        busService.getObject(null);
-        assertNull(busService.getObject(-1));
-        PwPublication pub = busService.getObject(4);
-        assertNotNull(pub);
-        PwPublicationDaoTest.assertPwPub4(pub);
-        PwPublicationDaoTest.assertPwPub4Children(pub);
-    }
+	@Before
+	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		service = new PwPublicationBusService();
+		pub = PwPublicationTest.buildAPub(1);
+		pub.setPwPublicationDao(pwPubDao);
+	}
 
-    @Test
-    public void getObjectsTest() {
-    	Map<String, Object> filters = new HashMap<>();
-        busService.getObjects(null);
-        busService.getObjects(filters);
 
-    	filters.put("q", "title");
-        List<PwPublication> pubs = busService.getObjects(filters);
-        assertNotNull(pubs);
-        assertEquals(1, pubs.size());
-        PwPublicationDaoTest.assertPwPub4(pubs.get(0));
-        PwPublicationDaoTest.assertPwPub4Children(pubs.get(0));
-    }
+	@Test
+	public void getObjectTest() {
+		when(pwPubDao.getById(any(Integer.class))).thenReturn(pub);
+		PwPublication pubTest = service.getObject(5);
+		assertEquals(pub, pubTest);
+		verify(pwPubDao).getById(5);
+	}
 
-    
-    @Test
-    public void getObjectCountTest() {
-    	Map<String, Object> filters = new HashMap<>();
-        busService.getObjects(null);
-        busService.getObjects(filters);
+	@Test
+	public void getObjectsTest() {
+		when(pwPubDao.getByMap(anyMapOf(String.class, Object.class))).thenReturn(Arrays.asList(pub));
+		List<PwPublication> pubs = service.getObjects(null);
+		assertEquals(1, pubs.size());
+		assertEquals(pub, pubs.get(0));
+		verify(pwPubDao).getByMap(anyMapOf(String.class, Object.class));
+	}
 
-        filters.put("q", "title");
-        Integer cnt = busService.getObjectCount(filters);
-        assertEquals(1, cnt.intValue());
-        
-        //TODO add in real filter tests
-    }
+	@Test
+	public void getObjectCountTest() {
+		when(pwPubDao.getObjectCount(anyMapOf(String.class, Object.class))).thenReturn(15);
+		assertEquals(15, service.getObjectCount(null).intValue());
+		verify(pwPubDao).getObjectCount(anyMapOf(String.class, Object.class));
+	}
 
-    @Test
-    public void getByIndexIdTest() {
-        busService.getObject(null);
-        assertNull(busService.getByIndexId("-1"));
-
-        //We can get 4
-        PwPublication pub = busService.getByIndexId("4");
-        assertNotNull(pub);
-        PwPublicationDaoTest.assertPwPub4(pub);
-        PwPublicationDaoTest.assertPwPub4Children(pub);
-        
-        //5 is not ready to display
-        pub = busService.getByIndexId("9");
-        assertNull(pub);
-        //but it really does exist
-        assertNotNull(busService.getObject(5));
-    }
+	@Test
+	public void getByIndexIdTest() {
+		when(pwPubDao.getByIndexId(any(String.class))).thenReturn(pub);
+		PwPublication pubTest = service.getByIndexId("ab123");
+		assertEquals(pub, pubTest);
+		verify(pwPubDao).getByIndexId("ab123");
+	}
 
 }

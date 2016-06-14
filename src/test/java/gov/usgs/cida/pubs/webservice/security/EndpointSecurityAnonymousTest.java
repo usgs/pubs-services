@@ -5,7 +5,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import gov.usgs.cida.auth.model.AuthToken;
-import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
+import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 
 import java.util.Arrays;
 
@@ -27,8 +27,8 @@ public class EndpointSecurityAnonymousTest extends BaseEndpointSecurityTest {
 	@Test
     public void anonymousTest() throws Exception {
         when(authenticationService.authenticate(anyString(), anyString())).thenReturn(new AuthToken());
-        when(pwPubBusService.getObjects(anyMap())).thenReturn(Arrays.asList(PwPublicationDaoTest.buildAPub(1)));
-        when(pwPubBusService.getByIndexId(anyString())).thenReturn(PwPublicationDaoTest.buildAPub(1));
+        when(pwPubBusService.getObjects(anyMap())).thenReturn(Arrays.asList(PwPublicationTest.buildAPub(1)));
+        when(pwPubBusService.getByIndexId(anyString())).thenReturn(PwPublicationTest.buildAPub(1));
     	
     	httpHeaders = new HttpHeaders();
     	publicTest(httpHeaders, status().isOk());

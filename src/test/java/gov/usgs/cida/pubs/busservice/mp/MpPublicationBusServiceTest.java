@@ -12,7 +12,6 @@ import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationLinkDao;
-import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CostCenter;
@@ -34,6 +33,7 @@ import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
+import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 import gov.usgs.cida.pubs.utility.PubsUtilitiesTest;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.webservice.security.PubsRoles;
@@ -433,8 +433,8 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
         assertNull(mpPub4before);
         busService.beginPublicationEdit(4);
         MpPublication mpPub4after = MpPublication.getDao().getById(4);
-        PwPublicationDaoTest.assertPwPub4(mpPub4after);
-        PwPublicationDaoTest.assertPwPub4Children(mpPub4after);
+        PwPublicationTest.assertPwPub4(mpPub4after);
+        PwPublicationTest.assertPwPub4Children(mpPub4after);
         assertEquals(PubsConstants.ANONYMOUS_USER, mpPub4after.getLockUsername());
     }
 

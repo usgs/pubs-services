@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
-import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
+import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 
 public class PwPublicationRssMvcServiceTest extends BaseSpringTest {
 	@Mock
@@ -66,7 +66,7 @@ public class PwPublicationRssMvcServiceTest extends BaseSpringTest {
 	@Test
     public void getRssPubsTest() throws Exception {
     	//Happy Path
-        when(busService.getObjects(anyMap())).thenReturn(Arrays.asList(PwPublicationDaoTest.buildAPub(1)));
+        when(busService.getObjects(anyMap())).thenReturn(Arrays.asList(PwPublicationTest.buildAPub(1)));
     	
         MvcResult rtn = mockMvc.perform(get("/publication/rss?orderby=dispPubDate").accept(PubsConstants.MEDIA_TYPE_RSS))
         .andExpect(status().isOk())

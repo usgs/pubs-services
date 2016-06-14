@@ -15,10 +15,10 @@ import gov.usgs.cida.auth.model.AuthToken;
 import gov.usgs.cida.pubs.dao.CorporateContributorDaoTest;
 import gov.usgs.cida.pubs.dao.mp.MpListDaoTest;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
-import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.webservice.mp.MpListMvcServiceTest;
 
@@ -51,8 +51,8 @@ public abstract class EndpointSecurityAuthTest extends BaseEndpointSecurityTest 
 		testToken.setTokenId("a-token-string");
 		testToken.setUsername("testyUser");
 
-		when(pwPubBusService.getObjects(anyMap())).thenReturn(Arrays.asList(PwPublicationDaoTest.buildAPub(1)));
-		when(pwPubBusService.getByIndexId(anyString())).thenReturn(PwPublicationDaoTest.buildAPub(1));
+		when(pwPubBusService.getObjects(anyMap())).thenReturn(Arrays.asList(PwPublicationTest.buildAPub(1)));
+		when(pwPubBusService.getByIndexId(anyString())).thenReturn(PwPublicationTest.buildAPub(1));
 
 		when(mpPubBusService.getObject(anyInt())).thenReturn(MpPublicationDaoTest.buildAPub(1));
 		when(mpPubBusService.checkAvailability(anyInt())).thenReturn(null);

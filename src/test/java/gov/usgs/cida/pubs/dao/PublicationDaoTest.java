@@ -7,26 +7,15 @@ import static org.junit.Assert.fail;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
-import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
-import gov.usgs.cida.pubs.domain.CostCenter;
-import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.Publication;
-import gov.usgs.cida.pubs.domain.PublicationCostCenter;
-import gov.usgs.cida.pubs.domain.PublicationSeries;
-import gov.usgs.cida.pubs.domain.PublicationSubtype;
-import gov.usgs.cida.pubs.domain.PublicationType;
-import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
-import gov.usgs.cida.pubs.domain.pw.PwPublication;
+import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -47,7 +36,7 @@ public class PublicationDaoTest extends BaseSpringTest {
 	public void getByIdTest() {
 		//From warehouse
 		Publication<?> pub4 = Publication.getPublicationDao().getById(4);
-		PwPublicationDaoTest.assertPwPub4(pub4);
+		PwPublicationTest.assertPwPub4(pub4);
 
 		//From mypubs
 		Publication<?> pub2 = Publication.getPublicationDao().getById(2);
@@ -402,114 +391,5 @@ public class PublicationDaoTest extends BaseSpringTest {
 		}
 		assertTrue(got1);
 		assertTrue(got6);
-	}
-
-	public static Publication<?> buildAPub(Publication<?> newPub, final Integer pubId) {
-		newPub.setIndexId("indexid" + pubId);
-		newPub.setDisplayToPublicDate(LocalDateTime.of(2012, 8, 23, 11, 29, 46));
-
-		CostCenter costCenter = new CostCenter();
-		costCenter.setId(2);
-		costCenter.setText("Affiliation Cost Center 2");
-		PublicationCostCenter<?> pcc = new PublicationCostCenter<>();
-		pcc.setId(1);
-		pcc.setCostCenter(costCenter);
-		Collection<PublicationCostCenter<?>> costCenters = new ArrayList<>();
-		costCenters.add(pcc);
-		newPub.setCostCenters(costCenters);
-
-		PublicationType pubType = new PublicationType();
-		pubType.setId(PublicationType.REPORT);
-		pubType.setText("Report");
-		newPub.setPublicationType(pubType);
-
-		PublicationSubtype pubSubtype = new PublicationSubtype();
-		pubSubtype.setId(5);
-		pubSubtype.setText("USGS Numbered Series");
-		newPub.setPublicationSubtype(pubSubtype);
-
-		PublicationSeries pubSeries = new PublicationSeries();
-		pubSeries.setId(PublicationSeries.SIR);
-		pubSeries.setText("Scientific Investigations Report");
-		newPub.setSeriesTitle(pubSeries);
-
-		newPub.setSeriesNumber("Series Number");
-		newPub.setSubseriesTitle("subseries");
-		newPub.setChapter("chapter");
-		newPub.setSubchapterNumber("subchapter");
-		newPub.setTitle("Title");
-		newPub.setDocAbstract("Abstract Text");
-		newPub.setLanguage("Language");
-		newPub.setPublisher("Publisher");
-		newPub.setPublisherLocation("Publisher Location");
-		newPub.setDoi("doiname");
-		newPub.setIssn("inIssn");
-		newPub.setIsbn("inIsbn");
-		newPub.setCollaboration("collaboration");
-		newPub.setUsgsCitation("usgscitation");
-		newPub.setProductDescription("Prod Description");
-		newPub.setStartPage("inStartPage");
-		newPub.setEndPage("inEndPage");
-		newPub.setNumberOfPages("5");
-		newPub.setOnlineOnly("O");
-		newPub.setAdditionalOnlineFiles("A");
-		newPub.setTemporalStart(LocalDate.of(2010,10,10));
-		newPub.setTemporalEnd(LocalDate.of(2012,12,12));
-		newPub.setNotes("notes");
-		newPub.setIpdsId("ipds_id" + pubId);
-		newPub.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
-		newPub.setIpdsInternalId("12");
-		newPub.setId(pubId);
-		newPub.setPublicationYear("2001");
-		newPub.setLargerWorkTitle("Larger Work Title");
-
-		PublicationType largerWorkType = new PublicationType();
-		largerWorkType.setId(PublicationType.ARTICLE);
-		largerWorkType.setText("Article");
-		newPub.setLargerWorkType(largerWorkType);
-
-		newPub.setConferenceDate("a new free form date");
-		newPub.setConferenceTitle("A title");
-		newPub.setConferenceLocation("a conference location");
-
-		PublicationSubtype largerWorkSubype = new PublicationSubtype();
-		largerWorkSubype.setId(23);
-		largerWorkSubype.setText("Database-spatial");
-		newPub.setLargerWorkSubtype(largerWorkSubype);
-
-		newPub.setScale("100");
-		newPub.setProjection("EPSG:3857");
-		newPub.setDatum("NAD83");
-		newPub.setCountry("USA");
-		newPub.setState("WI");
-		newPub.setCounty("DANE");
-		newPub.setCity("MIDDLETON");
-		newPub.setOtherGeospatial("On the moon");
-		newPub.setGeographicExtents("{ \"json\": \"extents\" }");
-		newPub.setVolume("VOL12");
-		newPub.setIssue("ISIV");
-		newPub.setContact("My Contact Info");
-		newPub.setEdition("Edition X");
-		newPub.setComments("just a little comment");
-		newPub.setTableOfContents("tbl contents");
-		PublishingServiceCenter publishingServiceCenter = new PublishingServiceCenter();
-		publishingServiceCenter.setId(6);
-		newPub.setPublishingServiceCenter(publishingServiceCenter);
-		newPub.setPublishedDate(LocalDate.of(2002,2,2));
-		Publication<?> po = new PwPublication();
-		po.setId(1);
-		newPub.setIsPartOf(po);
-		Publication<?> sb = new PwPublication();
-		sb.setId(2);
-		newPub.setSupersededBy(sb);
-		newPub.setRevisedDate(LocalDate.of(2003,3,3));
-		newPub.setInsertDate(LocalDateTime.of(2015, 12, 31, 12, 1, 1));
-		newPub.setInsertUsername("inInsertUsername");
-		newPub.setUpdateDate(LocalDateTime.of(2015, 12, 31, 12, 1, 2));
-		newPub.setUpdateUsername("inUpdateUsername");
-		newPub.setPublished(true);
-		newPub.setSourceDatabase("mypubs");
-
-		return newPub;
 	}
 }

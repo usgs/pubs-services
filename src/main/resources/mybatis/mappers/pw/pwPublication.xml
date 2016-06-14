@@ -3,7 +3,30 @@
 
 <mapper namespace="pwPublication">
 
-	<resultMap id="result" type="PwPublication" extends="publication.pwResult"/>
+	<resultMap id="result" type="PwPublication" extends="publication.pwResult">
+		<result property="scienceBaseUri" column="sciencebase_uri"/>
+		<result property="chorus.doi" column="chrs_doi"/>
+		<result property="chorus.url" column="chrs_url"/>
+		<result property="chorus.publisher" column="chrs_publisher"/>
+		<result property="chorus.authors" column="chrs_authors"/>
+		<result property="chorus.journalName" column="chrs_journal_name"/>
+		<result property="chorus.publicationDate" column="chrs_publication_date"/>
+		<result property="chorus.auditedOn" column="chrs_audited_on"/>
+		<result property="chorus.pblcllyAccessDate" column="chrs_pblclly_access_date"/>
+	</resultMap>
+
+	<sql id="cols">
+		<include refid="publication.cols"/>,
+		sciencebase_uri,
+		chrs_doi,
+		chrs_url,
+		chrs_publisher,
+		chrs_authors,
+		chrs_journal_name,
+		chrs_publication_date,
+		chrs_audited_on,
+		chrs_pblclly_access_date
+	</sql>
 
 	<sql id="filters">
 		<if test="null != q">
@@ -85,12 +108,13 @@
 
 	<!-- NOTE - these queries DO NOT use the VPD -->
 	<select id="getById" parameterType="Integer" resultMap="result">
-		select <include refid="publication.cols"/>
+		select <include refid="pwPublication.cols"/>
 		  from publication
 		 where publication_id = #{value,jdbcType=VARCHAR}
 	</select>
+
 	<select id="getByIpdsId" parameterType="String" resultMap="result">
-		select <include refid="publication.cols"/>
+		select <include refid="pwPublication.cols"/>
 		  from publication
 		 where ipds_id = #{value,jdbcType=VARCHAR}
 	</select>
@@ -100,7 +124,7 @@
 
 	<!-- NOTE - the remaining queries DO use the VPD -->
 	<sql id="baseSelectPublic">
-		select <include refid="publication.cols"/>
+		select <include refid="pwPublication.cols"/>
 		  from public_publication pub
 	</sql>
 
@@ -176,7 +200,16 @@
 		       pub_author.authors,
 		       pub_editor.editors,
 		       pub_compiler.compilers,
-		       nvl(pub_link.number_of_links, 0) number_of_links
+		       nvl(pub_link.number_of_links, 0) number_of_links,
+		       pub.sciencebase_uri,
+		       pub.chrs_doi,
+		       pub.chrs_url,
+		       pub.chrs_publisher,
+		       pub.chrs_authors,
+		       pub.chrs_journal_name,
+		       pub.chrs_publication_date,
+		       pub.chrs_audited_on,
+		       pub.chrs_pblclly_access_date
 		  from public_publication pub
 		       left join publication_type
 		         on pub.publication_type_id = publication_type.publication_type_id

@@ -21,16 +21,16 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.dao.PublicationDaoTest;
-import gov.usgs.cida.pubs.dao.pw.PwPublicationDaoTest;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
+import gov.usgs.cida.pubs.domain.PublicationTest;
 import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
+import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 
 @Category(IntegrationTest.class)
 @DatabaseSetup("classpath:/testCleanup/clearAll.xml")
@@ -150,7 +150,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
     public void copyFromPwTest() {
         MpPublication.getDao().copyFromPw(4);
         Publication<MpPublication> mpPub = MpPublication.getDao().getById(4);
-        PwPublicationDaoTest.assertPwPub4(mpPub);
+        PwPublicationTest.assertPwPub4(mpPub);
         assertTrue(((MpPublication) mpPub).isPublished());
     }
 
@@ -234,7 +234,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 
     	//this one should be a merge.
     	MpPublication.getDao().publishToPw(4);
-    	PwPublicationDaoTest.assertPwPub4(PwPublication.getDao().getById(4));
+    	PwPublicationTest.assertPwPub4(PwPublication.getDao().getById(4));
     }
     
     @Test
@@ -410,7 +410,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
     }
 
     public static MpPublication buildAPub(final Integer pubId) {
-        MpPublication newPub = (MpPublication) PublicationDaoTest.buildAPub(new MpPublication(), pubId);
+        MpPublication newPub = (MpPublication) PublicationTest.buildAPub(new MpPublication(), pubId);
         newPub.setLockUsername(PubsConstants.ANONYMOUS_USER);
         return newPub;
     }

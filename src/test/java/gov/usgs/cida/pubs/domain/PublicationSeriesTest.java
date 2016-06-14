@@ -45,9 +45,7 @@ public class PublicationSeriesTest {
 	public void serializePWTest() {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			String result = mapper.writerWithView(View.PW.class)
-								  .writeValueAsString(buildAPubSeries(13));
-
+			String result = mapper.writerWithView(View.PW.class).writeValueAsString(buildAPubSeries(13));
 			assertThat(new JSONObject(DEFAULT_AS_JSON),
 					sameJSONObjectAs(new JSONObject(result)));
 		} catch (Exception e) {
@@ -59,8 +57,7 @@ public class PublicationSeriesTest {
 	public void serializeMaintTest() {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			String result = mapper.writerWithView(View.LookupMaint.class)
-								  .writeValueAsString(buildAPubSeries(13));
+			String result = mapper.writerWithView(View.LookupMaint.class).writeValueAsString(buildAPubSeries(13));
 
 			assertThat(new JSONObject(DEFAULT_MAINT_AS_JSON),
 					sameJSONObjectAs(new JSONObject(result)));

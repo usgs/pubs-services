@@ -59,7 +59,7 @@ public class MpListPublicationMvcServiceTest extends BaseSpringTest {
         .andReturn();
 
         assertThat(getRtnAsJSONArray(rtn),
-                sameJSONArrayAs(new JSONArray("[{\"mpList\":{\"id\":66,\"text\":\"List 66\",\"description\":\"Description 66\",\"type\":\"SPN\"},\"mpPublication\":{\"id\":12,\"validationErrors\":[],\"text\":\"null - null - null\"}}]")));
+                sameJSONArrayAs(new JSONArray("[{\"mpList\":{\"id\":66,\"text\":\"List 66\",\"description\":\"Description 66\",\"type\":\"SPN\"},\"mpPublication\":{\"id\":12,\"validationErrors\":[],\"text\":\"null - null - null\",\"noYear\":false}}]")));
     }
 
     @Test

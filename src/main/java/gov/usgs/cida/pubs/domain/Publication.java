@@ -59,6 +59,10 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
     @JsonView(View.PW.class)
     private String publicationYear;
 
+    @JsonProperty("noYear")
+    @JsonView(View.PW.class)
+    private Boolean noYear;
+
     @JsonProperty("publicationType")
     @JsonView(View.PW.class)
     @NotNull
@@ -827,6 +831,14 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 		this.publicationYear = publicationYear;
 	}
 
+	public Boolean isNoYear() {
+		return null == noYear ? false : noYear;
+	}
+
+	public void setNoYear(Boolean noYear) {
+		this.noYear = noYear;
+	}
+
 	public PublicationType getLargerWorkType() {
 		return largerWorkType;
 	}
@@ -1060,7 +1072,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	
     @Override
     public String getText() {
-        return indexId + " - " + publicationYear + " - " + title;
+        return indexId + " - " + (isNoYear() ? "No Year" : publicationYear) + " - " + title;
     }
     
     public String getSourceDatabase() {

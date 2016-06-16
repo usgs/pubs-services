@@ -154,7 +154,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 		assertEquals(1, getRtnAsJSONArray(rtn).length());
 
 		assertThat(getRtnAsJSONArray(rtn),
-				sameJSONArrayAs(new JSONArray("[{\"id\":5,\"text\":\"9 - null -  future title\"}]")));
+				sameJSONArrayAs(new JSONArray("[{\"id\":5,\"text\":\"9 - No Year -  future title\"}]")));
 	}
 
 	@Test

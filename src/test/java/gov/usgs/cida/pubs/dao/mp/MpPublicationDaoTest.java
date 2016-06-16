@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -297,6 +298,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
         assertNull(pub.getIpdsReviewProcessState());
         assertNull(pub.getIpdsInternalId());
         assertEquals("2014", pub.getPublicationYear());
+        assertFalse(pub.isNoYear());
         assertEquals("Some Journal", pub.getLargerWorkTitle());
         assertEquals(23, pub.getLargerWorkType().getId().intValue());
         assertEquals("Conference Title", pub.getConferenceTitle());
@@ -375,6 +377,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
         assertEquals("123", pub.getIpdsInternalId());
 
         assertNull(pub.getPublicationYear());
+        assertTrue(pub.isNoYear());
         assertNull(pub.getLargerWorkTitle());
         assertNull(pub.getLargerWorkType());
         assertNull(pub.getConferenceTitle());
@@ -462,6 +465,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
         updatedPub.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
         updatedPub.setIpdsInternalId("122");
         updatedPub.setPublicationYear("2001");
+        updatedPub.setNoYear(true);
         updatedPub.setLargerWorkTitle("Larger Work Title");
         PublicationType largerWorkType = new PublicationType();
         largerWorkType.setId(PublicationType.ARTICLE);

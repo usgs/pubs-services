@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.domain.pw;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
 
@@ -88,6 +89,8 @@ public class PwPublicationTest extends BaseSpringTest {
 		assertEquals("Y", pub.getAdditionalOnlineFiles());
 		assertEquals("2014-07-22", pub.getTemporalStart().toString());
 		assertEquals("2014-07-23", pub.getTemporalEnd().toString());
+		assertEquals("2014", pub.getPublicationYear());
+		assertFalse(pub.isNoYear());
 		assertEquals("notes", pub.getNotes());
 		assertEquals("ipds_id", pub.getIpdsId());
 		assertEquals("100", pub.getScale());

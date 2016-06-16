@@ -160,7 +160,7 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
         mid.setIpdsId("12345678901234567890");
         after = busService.updateObject(mid);
         assertDaoTestResults(MpPublication.class, pub, after, IGNORE_PROPERTIES, true, true);
-        assertEquals(3, after.getValidationErrors().getValidationErrors().size());
+        assertEquals(4, after.getValidationErrors().getValidationErrors().size());
     }
 
     @Test

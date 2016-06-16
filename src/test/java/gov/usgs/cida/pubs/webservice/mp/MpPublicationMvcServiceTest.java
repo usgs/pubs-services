@@ -50,7 +50,7 @@ import gov.usgs.cida.pubs.validation.ValidatorResult;
 public class MpPublicationMvcServiceTest extends BaseSpringTest {
 
     public static final String LOCK_MSG = "{\"validationErrors\":[{\"field\":\"Publication\",\"message\":\"This Publication is being edited by somebody\",\"level\":\"FATAL\",\"value\":\"somebody\"}]}\"";
-    public static final String LOCK_MSG2 = LOCK_MSG.replace("}]}", "}],\"text\":\"null - null - null\"}");
+    public static final String LOCK_MSG2 = LOCK_MSG.replace("}]}", "}],\"text\":\"null - null - null\",\"noYear\":false}");
 
     public static final ValidatorResult VR_LOCKED = new ValidatorResult("Publication", "This Publication is being edited by somebody", SeverityLevel.FATAL, "somebody");
     public static final ValidatorResult VR_NOT_LOCKED = null;

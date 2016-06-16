@@ -30,6 +30,7 @@ public class PublicationColumns {
 		mappings.put("VOLUME", "Volume");
 		mappings.put("ISSUE", "Issue");
 		mappings.put("PUBLICATION_YEAR", "Year Published");
+		mappings.put("NO_YEAR", "No Year Published");
 		mappings.put("LANGUAGE", "Language");
 		mappings.put("PUBLISHER", "Publisher");
 		mappings.put("PUBLISHER_LOCATION", "Publisher location");

@@ -1,27 +1,27 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-	<publication publication_id="100" index_id="100" display_to_public_date="2015-12-31 08:10:15" publication_year="2015" 	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="a" />
-	<publication publication_id="120" index_id="120" display_to_public_date="2015-06-01 08:10:15" publication_year="2015" 	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="z" />
-	<publication publication_id="140" index_id="140" display_to_public_date="2014-01-15 08:10:15" publication_year="2015" 	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="b" />
-	<publication publication_id="160" index_id="160" display_to_public_date="2015-12-31 08:10:15" publication_year="2010" 	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="y" />
-	<publication publication_id="180" index_id="180" display_to_public_date="2015-06-01 08:10:15" publication_year="2010" 	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="c" />
-	<publication publication_id="200" index_id="200" display_to_public_date="2014-01-15 08:10:15" publication_year="2010" 	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="x" />
-	<publication publication_id="220" index_id="220" display_to_public_date="2015-12-31 08:10:15" publication_year="noyr" 	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="d" />
-	<publication publication_id="240" index_id="240" display_to_public_date="2015-06-01 08:10:15" publication_year="noyr" 	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="w" />
-	<publication publication_id="260" index_id="260" display_to_public_date="2014-01-15 08:10:15" publication_year="noyr" 	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="e" />
-	<publication publication_id="280" index_id="280" display_to_public_date="2015-12-31 08:10:15" 							insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="v" />
-	<publication publication_id="300" index_id="300" display_to_public_date="2015-06-01 08:10:15"							insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="f" />
-	<publication publication_id="320" index_id="320" display_to_public_date="2014-01-15 08:10:15"							insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="u" />
-	<publication publication_id="340" index_id="340" display_to_public_date="2015-12-31 08:10:15" publication_year="2015" 	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="g" />
-	<publication publication_id="360" index_id="360" display_to_public_date="2015-06-01 08:10:15" publication_year="2015" 	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="t" />
-	<publication publication_id="380" index_id="380" display_to_public_date="2014-01-15 08:10:15" publication_year="2015" 	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="h" />
-	<publication publication_id="400" index_id="400" display_to_public_date="2015-12-31 08:10:15" publication_year="2010" 	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="s" />
-	<publication publication_id="420" index_id="420" display_to_public_date="2015-06-01 08:10:15" publication_year="2010" 	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="i" />
-	<publication publication_id="440" index_id="440" display_to_public_date="2014-01-15 08:10:15" publication_year="2010" 	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="r" />
-	<publication publication_id="460" index_id="460" display_to_public_date="2015-12-31 08:10:15" publication_year="noyr" 	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="j" />
-	<publication publication_id="480" index_id="480" display_to_public_date="2015-06-01 08:10:15" publication_year="noyr" 	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="q" />
-	<publication publication_id="500" index_id="500" display_to_public_date="2014-01-15 08:10:15" publication_year="noyr" 	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="k" />
-	<publication publication_id="520" index_id="520" display_to_public_date="2015-12-31 08:10:15" 							insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="p" />
-	<publication publication_id="540" index_id="540" display_to_public_date="2015-06-01 08:10:15"							insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="l" />
-	<publication publication_id="560" index_id="560" display_to_public_date="2014-01-15 08:10:15"							insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="o" />
+	<publication publication_id="100" index_id="100" display_to_public_date="2015-12-31 08:10:15" publication_year="2015"	NO_YEAR="N"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="a" />
+	<publication publication_id="120" index_id="120" display_to_public_date="2015-06-01 08:10:15" publication_year="2015"	NO_YEAR="N"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="z" />
+	<publication publication_id="140" index_id="140" display_to_public_date="2014-01-15 08:10:15" publication_year="2015"	NO_YEAR="N"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="b" />
+	<publication publication_id="160" index_id="160" display_to_public_date="2015-12-31 08:10:15" publication_year="2010"	NO_YEAR="N"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="y" />
+	<publication publication_id="180" index_id="180" display_to_public_date="2015-06-01 08:10:15" publication_year="2010"	NO_YEAR="N"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="c" />
+	<publication publication_id="200" index_id="200" display_to_public_date="2014-01-15 08:10:15" publication_year="2010"	NO_YEAR="N"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="x" />
+	<publication publication_id="220" index_id="220" display_to_public_date="2015-12-31 08:10:15" 							NO_YEAR="N"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="d" />
+	<publication publication_id="240" index_id="240" display_to_public_date="2015-06-01 08:10:15" 							NO_YEAR="N"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="w" />
+	<publication publication_id="260" index_id="260" display_to_public_date="2014-01-15 08:10:15" 							NO_YEAR="N"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="e" />
+	<publication publication_id="280" index_id="280" display_to_public_date="2015-12-31 08:10:15" 							NO_YEAR="Y"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="v" />
+	<publication publication_id="300" index_id="300" display_to_public_date="2015-06-01 08:10:15"							NO_YEAR="Y"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="f" />
+	<publication publication_id="320" index_id="320" display_to_public_date="2014-01-15 08:10:15"							NO_YEAR="Y"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="u" />
+	<publication publication_id="340" index_id="340" display_to_public_date="2015-12-31 08:10:15" publication_year="2015"	NO_YEAR="N"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="g" />
+	<publication publication_id="360" index_id="360" display_to_public_date="2015-06-01 08:10:15" publication_year="2015"	NO_YEAR="N"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="t" />
+	<publication publication_id="380" index_id="380" display_to_public_date="2014-01-15 08:10:15" publication_year="2015"	NO_YEAR="N"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="h" />
+	<publication publication_id="400" index_id="400" display_to_public_date="2015-12-31 08:10:15" publication_year="2010"	NO_YEAR="N"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="s" />
+	<publication publication_id="420" index_id="420" display_to_public_date="2015-06-01 08:10:15" publication_year="2010"	NO_YEAR="N"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="i" />
+	<publication publication_id="440" index_id="440" display_to_public_date="2014-01-15 08:10:15" publication_year="2010"	NO_YEAR="N"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="r" />
+	<publication publication_id="460" index_id="460" display_to_public_date="2015-12-31 08:10:15" 							NO_YEAR="N"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="j" />
+	<publication publication_id="480" index_id="480" display_to_public_date="2015-06-01 08:10:15" 							NO_YEAR="N"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="q" />
+	<publication publication_id="500" index_id="500" display_to_public_date="2014-01-15 08:10:15" 							NO_YEAR="N"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="k" />
+	<publication publication_id="520" index_id="520" display_to_public_date="2015-12-31 08:10:15" 							NO_YEAR="Y"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="p" />
+	<publication publication_id="540" index_id="540" display_to_public_date="2015-06-01 08:10:15"							NO_YEAR="Y"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="l" />
+	<publication publication_id="560" index_id="560" display_to_public_date="2014-01-15 08:10:15"							NO_YEAR="Y"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="o" />
 </dataset>

@@ -147,6 +147,7 @@ public class PublicationTest extends BaseSpringTest {
 		newPub.setIpdsInternalId("12");
 		newPub.setId(pubId);
 		newPub.setPublicationYear("2001");
+		newPub.setNoYear(false);
 		newPub.setLargerWorkTitle("Larger Work Title");
 
 		PublicationType largerWorkType = new PublicationType();
@@ -184,9 +185,17 @@ public class PublicationTest extends BaseSpringTest {
 		newPub.setPublishedDate(LocalDate.of(2002,2,2));
 		Publication<?> po = new PwPublication();
 		po.setId(1);
+		po.setIndexId("ABC1");
+		po.setPublicationYear("2015");
+		po.setNoYear(false);
+		po.setTitle("A Master Title");
 		newPub.setIsPartOf(po);
 		Publication<?> sb = new PwPublication();
 		sb.setId(2);
+		sb.setIndexId("XYZ2");
+		sb.setPublicationYear(null);
+		sb.setNoYear(true);
+		sb.setTitle("A Super Title");
 		newPub.setSupersededBy(sb);
 		newPub.setRevisedDate(LocalDate.of(2003,3,3));
 		newPub.setInsertDate(LocalDateTime.of(2015, 12, 31, 12, 1, 1));

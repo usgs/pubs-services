@@ -125,7 +125,7 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 		.andReturn();
 
 		assertThat(getRtnAsJSONObject(rtn),
-				sameJSONObjectAs(new JSONObject("{\"text\":\"1.1 - null - null\",\"indexId\":\"1.1\"}")));
+				sameJSONObjectAs(new JSONObject("{\"text\":\"1.1 - null - null\",\"indexId\":\"1.1\", \"noYear\":false}")));
 	}
 
 }

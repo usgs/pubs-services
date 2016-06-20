@@ -3,16 +3,24 @@
 	"text": "indexid1 - 2001 - Title",
 	"isPartOf": {
 		"id": 1,
-		"text": "null - null - null"
+		"indexId": "ABC1",
+		"publicationYear": "2015",
+		"noYear": false,
+		"text": "ABC1 - 2015 - A Master Title",
+		"title": "A Master Title"
 	},
 	"supersededBy": {
 		"id": 2,
-		"text": "null - null - null"
+		"indexId": "XYZ2",
+		"noYear": true,
+		"text": "XYZ2 - No Year - A Super Title",
+		"title": "A Super Title"
 	},
 	"lastModifiedDate": "2015-12-31T12:01:02",
 	"indexId": "indexid1",
 	"displayToPublicDate": "2012-08-23T11:29:46",
 	"publicationYear": "2001",
+	"noYear": false,
 	"publicationType": {
 		"id": 18,
 		"text": "Report"

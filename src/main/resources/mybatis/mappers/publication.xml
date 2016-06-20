@@ -8,6 +8,7 @@
 		<result property="indexId" column="index_id"/>
 		<result property="displayToPublicDate" column="display_to_public_date"/>
 		<result property="publicationYear" column="publication_year"/>
+		<result property="noYear" column="no_year"/>
 		<result property="seriesNumber" column="series_number"/>
 		<result property="subseriesTitle" column="subseries_title"/>
 		<result property="chapter" column="chapter"/>
@@ -100,6 +101,7 @@
 		index_id,
 		display_to_public_date,
 		publication_year,
+		no_year,
 		publication_type_id,
 		publication_subtype_id,
 		publication_series_id,
@@ -163,6 +165,7 @@
 		nvl(#{indexId,jdbcType=VARCHAR},#{id,jdbcType=NUMERIC}),
 		#{displayToPublicDate,jdbcType=DATE},
 		#{publicationYear,jdbcType=VARCHAR},
+		#{noYear,jdbcType=VARCHAR},
 		#{publicationType.id,jdbcType=NUMERIC},
 		#{publicationSubtype.id,jdbcType=NUMERIC},
 		#{seriesTitle.id,jdbcType=NUMERIC},
@@ -225,6 +228,7 @@
 		index_id = nvl(#{indexId,jdbcType=VARCHAR},#{id,jdbcType=NUMERIC}),
 		display_to_public_date = #{displayToPublicDate,jdbcType=DATE},
 		publication_year = #{publicationYear,jdbcType=VARCHAR},
+		no_year = #{noYear,jdbcType=VARCHAR},
 		publication_type_id = #{publicationType.id,jdbcType=NUMERIC},
 		publication_subtype_id = #{publicationSubtype.id,jdbcType=NUMERIC},
 		publication_series_id = #{seriesTitle.id,jdbcType=NUMERIC},
@@ -429,6 +433,7 @@
 			</when>
 		</choose>
 		replace(pub.publication_year, 'noyr', '0000') desc nulls last,
+		pub.no_year,
 		pub.display_to_public_date desc,
 		pub.publication_id desc
 	</sql>
@@ -479,6 +484,7 @@
 		select publication_id,
 		       index_id,
 		       publication_year,
+		       no_year,
 		       title
 		  from all_publication_lookup
 	</sql>

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 import gov.usgs.cida.pubs.domain.mp.MpList.MpListType;
 
@@ -71,7 +72,7 @@ public class MpListDaoTest extends BaseSpringTest {
 
         try {
             Map<String, Object> params = new HashMap<String, Object>();
-            params.put("prodId", 1);
+            params.put(PublicationDao.PROD_ID, 1);
             MpList.getDao().getObjectCount(params);
             fail("Was able to get count.");
         } catch (Exception e) {

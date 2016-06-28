@@ -79,7 +79,7 @@ public class AuthTokenServiceTest {
 		MvcResult rtn = mockMvc.perform(post("/auth/logout").header(TokenSecurityFilter.AUTHORIZATION_HEADER, "Bearer a-token-string")
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 			.andReturn();
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
 				sameJSONObjectAs(new JSONObject("{\"status\":\"success\"}")));
@@ -99,7 +99,7 @@ public class AuthTokenServiceTest {
 		MvcResult rtn = mockMvc.perform(post("/auth/token").param("username", "user").param("password", "pwd")
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 			.andReturn();
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
 				sameJSONObjectAs(new JSONObject("{\"token\":\"a-token-string\",\"expires\":\"" + ts.toString() + "\"}")));
@@ -114,7 +114,7 @@ public class AuthTokenServiceTest {
 		MvcResult rtn = mockMvc.perform(post("/auth/token").param("username", "user").param("password", "pwd")
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isUnauthorized())
-			.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 			.andReturn();
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
 				sameJSONObjectAs(new JSONObject("{\"reason\":\"Invalid username/password\"}")));

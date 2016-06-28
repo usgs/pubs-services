@@ -169,7 +169,7 @@ public class PersonContributorDaoTest extends BaseSpringTest {
     public void notImplemented() {
         try {
             Map<String, Object> params = new HashMap<String, Object>();
-            params.put("prodId", 1);
+            params.put(PublicationDao.PROD_ID, 1);
             PersonContributor.getDao().getObjectCount(params);
             fail("Was able to get count.");
         } catch (Exception e) {

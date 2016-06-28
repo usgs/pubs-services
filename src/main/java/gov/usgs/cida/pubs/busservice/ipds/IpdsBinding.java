@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.busservice.ipds;
 
 import gov.usgs.cida.pubs.PubMap;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
+import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.Contributor;
@@ -200,7 +201,7 @@ public class IpdsBinding {
 	protected Affiliation<?> getOrCreateNonUsgsAffiliation(final String name) {
 		Affiliation<?> affiliation = null;
 		Map<String, Object> filters = new HashMap<>();
-		filters.put("text", name);
+		filters.put(BaseDao.TEXT_SEARCH, name);
 		List<Affiliation<?>> affiliations = Affiliation.getDao().getByMap(filters);
 		if (affiliations.isEmpty()) {
 			affiliation = createNonUsgsAffiliation(name);
@@ -390,7 +391,7 @@ public class IpdsBinding {
 			if (StringUtils.isNotBlank(largerWorkTitle)) {
 				if (PubsUtilities.isPublicationTypeArticle(pub.getPublicationType())
 						&& null != pub.getPublicationSubtype()) {
-		   			pub.setSeriesTitle(getSeriesTitle(pub.getPublicationSubtype(), largerWorkTitle));
+					pub.setSeriesTitle(getSeriesTitle(pub.getPublicationSubtype(), largerWorkTitle));
 				} else {
 					pub.setLargerWorkTitle(getStringValue(inPub, IpdsMessageLog.JOURNALTITLE));
 				}

@@ -106,7 +106,7 @@ public class OutsideAffiliationDaoTest extends BaseSpringTest {
     public void notImplemented() {
         try {
             Map<String, Object> params = new HashMap<String, Object>();
-            params.put("prodId", 1);
+            params.put(PublicationDao.PROD_ID, 1);
             OutsideAffiliation.getDao().getObjectCount(params);
             fail("Was able to get count.");
         } catch (Exception e) {

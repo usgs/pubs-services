@@ -73,7 +73,7 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 
 		MvcResult rtn = mockMvc.perform(get("/publication?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -83,7 +83,7 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 		//With page number
 		rtn = mockMvc.perform(get("/publication?mimetype=json&page_number=6").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -92,12 +92,12 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 	}
 
 	@Test
-	public void getByIndexIdTest() throws Exception {
+	public void getPwPublicationTest() throws Exception {
 		//Happy Path
 		when(busService.getByIndexId("1")).thenReturn(PwPublicationTest.buildAPub(1));
 		MvcResult rtn = mockMvc.perform(get("/publication/1?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -113,14 +113,14 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 	}
 
 	@Test
-	public void getByIndexIdPeriodTest() throws Exception {
+	public void getPwPublicationPeriodTest() throws Exception {
 		//dot in index
 		PwPublication pub1_1 = new PwPublication();
 		pub1_1.setIndexId("1.1");
 		when(busService.getByIndexId("1.1")).thenReturn(pub1_1);
 		MvcResult rtn = mockMvc.perform(get("/publication/1.1?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 

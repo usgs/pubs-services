@@ -28,6 +28,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
 import gov.usgs.cida.pubs.utility.CustomStringToArrayConverter;
 
 @Configuration
@@ -43,6 +44,9 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
 	CustomStringToArrayConverter customStringToArrayConverter;
 
 	@Autowired
+	StringArrayCleansingConverter customStringListToArrayConverter;
+
+	@Autowired
 	@Qualifier("ipdsPubsWsUser")
 	String ipdsPubsWsUser;
 
@@ -53,12 +57,12 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
 		registry.addConverter(customStringToArrayConverter);
+		registry.addConverter(customStringListToArrayConverter);
 	}
 
 	@Override
 	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
 		configurer
-			.favorPathExtension(false)
 			.favorParameter(true)
 			.parameterName(PubsConstants.CONTENT_PARAMETER_NAME)
 			.defaultContentType(MediaType.APPLICATION_JSON)

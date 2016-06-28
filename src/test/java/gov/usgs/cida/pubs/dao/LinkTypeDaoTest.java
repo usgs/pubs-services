@@ -64,7 +64,7 @@ public class LinkTypeDaoTest extends BaseSpringTest {
 
         try {
             Map<String, Object> params = new HashMap<String, Object>();
-            params.put("prodId", 1);
+            params.put(PublicationDao.PROD_ID, 1);
             LinkType.getDao().getObjectCount(params);
             fail("Was able to get count.");
         } catch (Exception e) {

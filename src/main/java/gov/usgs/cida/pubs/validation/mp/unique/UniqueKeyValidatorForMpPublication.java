@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.validation.mp.unique;
 
+import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
@@ -37,7 +38,7 @@ public class UniqueKeyValidatorForMpPublication implements ConstraintValidator<U
 
 	        if (null != value.getIndexId()) {
 	            Map<String, Object> filters = new HashMap<String,Object>();
-	            filters.put("indexId", new String[] { ((Publication<?>) value).getIndexId() });
+	            filters.put(PublicationDao.INDEX_ID, new String[] { ((Publication<?>) value).getIndexId() });
 	            List<Publication<?>> pubs = Publication.getPublicationDao().getByMap(filters);
 	            for (Publication<?> pub : pubs) {
 	                if (null == value.getId() || 0 != pub.getId().compareTo(value.getId())) {
@@ -45,14 +46,14 @@ public class UniqueKeyValidatorForMpPublication implements ConstraintValidator<U
 	                    Object[] messageArguments = Arrays.asList(new String[]{"indexId " + value.getIndexId(), pub.getId().toString()}).toArray();
 	                    String errorMsg = PubsUtilities.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
 	                    context.disableDefaultConstraintViolation();
-	                    context.buildConstraintViolationWithTemplate(errorMsg).addPropertyNode("indexId").addConstraintViolation();
+	                    context.buildConstraintViolationWithTemplate(errorMsg).addPropertyNode(PublicationDao.INDEX_ID).addConstraintViolation();
 	                }
 	            }
 	        }
 	
 	        if (null != value.getIpdsId()) {
 	            Map<String, Object> filters = new HashMap<String,Object>();
-	            filters.put("ipdsId", new String[] { ((Publication<?>) value).getIpdsId() });
+	            filters.put(PublicationDao.IPDS_ID, new String[] { ((Publication<?>) value).getIpdsId() });
 	            List<Publication<?>> pubs = Publication.getPublicationDao().getByMap(filters);
 	            for (Publication<?> pub : pubs) {
 	                if (null == value.getId() || 0 != pub.getId().compareTo(value.getId())) {
@@ -60,7 +61,7 @@ public class UniqueKeyValidatorForMpPublication implements ConstraintValidator<U
 	                    Object[] messageArguments = Arrays.asList(new String[]{"ipdsId " + value.getIpdsId(), pub.getId().toString()}).toArray();
 	                    String errorMsg = PubsUtilities.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
 	                    context.disableDefaultConstraintViolation();
-	                    context.buildConstraintViolationWithTemplate(errorMsg).addPropertyNode("ipdsId").addConstraintViolation();
+	                    context.buildConstraintViolationWithTemplate(errorMsg).addPropertyNode(PublicationDao.IPDS_ID).addConstraintViolation();
 	                }
 	            }
 	        }

@@ -22,6 +22,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
@@ -59,7 +60,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
         assertDaoTestResults(MpPublication.class, newpubA, persistedA, IGNORE_PROPERTIES, true, true);
 
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("id", new int[] { pubId });
+        params.put(PublicationDao.PROD_ID, new int[] { pubId });
         List<MpPublication> pubs = MpPublication.getDao().getByMap(params);
         assertTrue(pubs.size() > 0);
         Integer cnt = MpPublication.getDao().getObjectCount(params);
@@ -112,7 +113,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
         assertEquals(540, pubs.get(22).getId().intValue());
         assertEquals(300, pubs.get(23).getId().intValue());
 
-        filters.put("orderBy", "title");
+        filters.put(PublicationDao.ORDER_BY, "title");
         pubs = MpPublication.getDao().getByMap(filters);
         assertEquals(24, pubs.size());
         assertEquals(100, pubs.get(0).getId().intValue());

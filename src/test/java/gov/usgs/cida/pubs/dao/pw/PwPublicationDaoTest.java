@@ -16,6 +16,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
+import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 
@@ -65,7 +66,7 @@ public class PwPublicationDaoTest extends BaseSpringTest {
     	// - Too many rows returned probably means the VPD got hosed.
     	//   see the changeLogVpd.xml file in schema-pubs
     	Map<String, Object> filters = new HashMap<>();
-    	filters.put("q", "title");
+    	filters.put(PublicationDao.Q, "title");
         List<PwPublication> pubs = PwPublication.getDao().getByMap(filters);
         assertNotNull(pubs);
         assertEquals(1, pubs.size());
@@ -74,7 +75,7 @@ public class PwPublicationDaoTest extends BaseSpringTest {
         
         String[] polygon = {"-122.3876953125","37.80869897600677","-122.3876953125","36.75979104322286","-123.55224609375","36.75979104322286",
         		            "-123.55224609375","37.80869897600677","-122.3876953125","37.80869897600677"};
-    	filters.put("g", polygon);
+    	filters.put(PwPublicationDao.G, polygon);
         pubs = PwPublication.getDao().getByMap(filters);
         
         
@@ -112,7 +113,7 @@ public class PwPublicationDaoTest extends BaseSpringTest {
         assertEquals(560, pubs.get(22).getId().intValue());
         assertEquals(320, pubs.get(23).getId().intValue());
         
-        filters.put("orderBy", "title");
+        filters.put(PublicationDao.ORDER_BY, "title");
         pubs = PwPublication.getDao().getByMap(filters);
         assertEquals(24, pubs.size());
         assertEquals(100, pubs.get(0).getId().intValue());
@@ -150,7 +151,7 @@ public class PwPublicationDaoTest extends BaseSpringTest {
     })
     public void getObjectCountTest() {
     	Map<String, Object> filters = new HashMap<>();
-    	filters.put("q", "title");
+    	filters.put(PublicationDao.Q, "title");
         Integer cnt = PwPublication.getDao().getObjectCount(filters);
         assertEquals(1, cnt.intValue());
         

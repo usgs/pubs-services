@@ -58,7 +58,7 @@ public class PublicationSeriesMvcServiceTest extends BaseSpringTest {
 		
 		MvcResult rtn = mockMvc.perform(get("/publicationSeries?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -73,7 +73,7 @@ public class PublicationSeriesMvcServiceTest extends BaseSpringTest {
 		when(busService.getObject(1)).thenReturn(PublicationSeriesTest.buildAPubSeries(13));
 		MvcResult rtn = mockMvc.perform(get("/publicationSeries/1?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -94,7 +94,7 @@ public class PublicationSeriesMvcServiceTest extends BaseSpringTest {
 		MvcResult rtn = mockMvc.perform(post("/publicationSeries").content(PublicationSeriesTest.DEFAULT_AS_JSON).contentType(MediaType.APPLICATION_JSON)
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isCreated())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -108,7 +108,7 @@ public class PublicationSeriesMvcServiceTest extends BaseSpringTest {
 		MvcResult rtn = mockMvc.perform(post("/publicationSeries").content(PublicationSeriesTest.DEFAULT_AS_JSON).contentType(MediaType.APPLICATION_JSON)
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isBadRequest())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -122,7 +122,7 @@ public class PublicationSeriesMvcServiceTest extends BaseSpringTest {
 		MvcResult rtn = mockMvc.perform(put("/publicationSeries/330").content(PublicationSeriesTest.DEFAULT_AS_JSON).contentType(MediaType.APPLICATION_JSON)
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -136,7 +136,7 @@ public class PublicationSeriesMvcServiceTest extends BaseSpringTest {
 		when(busService.deleteObject(1)).thenReturn(new ValidationResults());
 		MvcResult rtn = mockMvc.perform(delete("/publicationSeries/1").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 		assertThat(getRtnAsJSONObject(rtn),

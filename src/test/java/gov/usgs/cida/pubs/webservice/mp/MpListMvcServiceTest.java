@@ -31,37 +31,37 @@ public class MpListMvcServiceTest extends BaseSpringTest {
 	@Mock
 	private IBusService<MpList> busService;
 
-    private MockMvc mockMvc;
+	private MockMvc mockMvc;
 
-    private MpListMvcService mvcService;
-    
-    @Before
-    public void setup() {
-    	MockitoAnnotations.initMocks(this);
-    	mvcService = new MpListMvcService(busService);
-    	mockMvc = MockMvcBuilders.standaloneSetup(mvcService).build();
-    }
+	private MpListMvcService mvcService;
+	
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
+		mvcService = new MpListMvcService(busService);
+		mockMvc = MockMvcBuilders.standaloneSetup(mvcService).build();
+	}
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	@Test
-    public void getListsTest() throws Exception {
-        when(busService.getObjects(anyMap())).thenReturn(getListOfMpList());
-        MvcResult rtn = mockMvc.perform(get("/lists?mimetype=json").accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-        .andReturn();
+	public void getListsTest() throws Exception {
+		when(busService.getObjects(anyMap())).thenReturn(getListOfMpList());
+		MvcResult rtn = mockMvc.perform(get("/lists?mimetype=json").accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andReturn();
 
-        assertThat(getRtnAsJSONArray(rtn),
-                sameJSONArrayAs(new JSONArray("[{\"id\":1,\"text\":\"List 1\",\"description\":\"Description 1\",\"type\":\"SPN\"},"
-                		+ "{\"id\":2,\"text\":\"List 2\",\"description\":\"Description 2\",\"type\":\"SPN\"}]")));
-    }
+		assertThat(getRtnAsJSONArray(rtn),
+				sameJSONArrayAs(new JSONArray("[{\"id\":1,\"text\":\"List 1\",\"description\":\"Description 1\",\"type\":\"SPN\"},"
+						+ "{\"id\":2,\"text\":\"List 2\",\"description\":\"Description 2\",\"type\":\"SPN\"}]")));
+	}
 
-    public static List<MpList> getListOfMpList() {
-    	List<MpList> rtn = new ArrayList<>();
-    	rtn.add(MpListDaoTest.buildMpList(1));
-    	rtn.add(MpListDaoTest.buildMpList(2));
-    	return rtn;
-    }
-    
+	public static List<MpList> getListOfMpList() {
+		List<MpList> rtn = new ArrayList<>();
+		rtn.add(MpListDaoTest.buildMpList(1));
+		rtn.add(MpListDaoTest.buildMpList(2));
+		return rtn;
+	}
+	
 }

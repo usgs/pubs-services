@@ -4,6 +4,7 @@ import gov.usgs.cida.pubs.PubMap;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IIpdsProcess;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.ProcessType;
@@ -79,7 +80,7 @@ public class IpdsProcess implements IIpdsProcess {
 		//Check for existing data in MyPubs and warehouse lands - use the first hit of each if any found.
 		//IPDS_ID is a alternate key, so there should only be 0 or 1 in each table.
 		Map<String, Object> filters = new HashMap<String, Object>();
-		filters.put("IPDS_ID", pub.getIpdsId());
+		filters.put(PublicationDao.IPDS_ID, new String[]{pub.getIpdsId()});
 		List<MpPublication> existingMpPubs = pubBusService.getObjects(filters);
 		MpPublication existingMpPub = null == existingMpPubs ? null : existingMpPubs.isEmpty() ? null : existingMpPubs.get(0);
 		PwPublication existingPwPub = PwPublication.getDao().getByIpdsId(pub.getIpdsId());

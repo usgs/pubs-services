@@ -29,6 +29,23 @@ public class PublicationDao extends BaseDao<Publication<?>> implements IPublicat
 
 	public static final String SERIES_ID_SEARCH = "publicationSeriesId";
 
+	public static final String PUB_ABSTRACT = "abstract";
+	public static final String CONTRIBUTING_OFFICE = "contributingOffice";
+	public static final String CONTRIBUTOR = "contributor";
+	public static final String END_YEAR = "endYear";
+	public static final String INDEX_ID = "indexId";
+	public static final String IPDS_ID = "ipdsId";
+	public static final String ORDER_BY = "orderBy";
+	public static final String PROD_ID = "prodId";
+	public static final String Q = "q";
+	public static final String REPORT_NUMBER = "reportNumber";
+	public static final String SERIES_NAME = "seriesName";
+	public static final String START_YEAR = "startYear";
+	public static final String SUBTYPE_NAME = "subtypeName";
+	public static final String TITLE = "title";
+	public static final String TYPE_NAME = "typeName";
+	public static final String YEAR = "year";
+
 	/** {@inheritDoc}
 	 * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getById(java.lang.Integer)
 	 */

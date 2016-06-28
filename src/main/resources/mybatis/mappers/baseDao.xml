@@ -40,33 +40,33 @@
 	</sql>
 
 	<sql id="pagingHint">
-		<if test="pageSize != null">
-			/*+ first_rows(${pageSize}) */
+		<if test="page_size != null">
+			/*+ first_rows(${page_size}) */
 		</if>
 	</sql>
 
 	<sql id="pagingRowLimit">
-		<if test="pageSize != null">
+		<if test="page_size != null">
 			<choose>
-				<when test="pageRowStart != null">
-					offset #{pageRowStart} rows fetch next
+				<when test="page_row_start != null">
+					offset #{page_row_start} rows fetch next
 				</when>
 				<otherwise>
 					fetch first
 				</otherwise>
 			</choose>
-			#{pageSize} rows only
+			#{page_size} rows only
 		</if>
 	</sql>
 
 	<sql id="paging">
-		<if test="pageSize != null and pageRowStart != null">
+		<if test="page_size != null and page_row_start != null">
 			<choose>
-				<when test="pageRowStart > 0">
-					offset #{pageRowStart} rows fetch next #{pageSize} rows only
+				<when test="page_row_start > 0">
+					offset #{page_row_start} rows fetch next #{page_size} rows only
 				</when>
 				<otherwise>
-					fetch first #{pageSize} rows only
+					fetch first #{page_size} rows only
 				</otherwise>
 			</choose>
 		</if>

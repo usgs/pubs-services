@@ -1,11 +1,10 @@
 package gov.usgs.cida.pubs.utility;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
-import org.springframework.stereotype.Component;
 
-@Component
 public class CustomStringToArrayConverterTest {
 
 	CustomStringToArrayConverter conv = new CustomStringToArrayConverter();
@@ -13,10 +12,10 @@ public class CustomStringToArrayConverterTest {
 	@Test
 	public void convertTest() {
 		//NPE
-		assertArrayEquals(new String[1],conv.convert(null));
+		assertNull(conv.convert(null));
 		
 		//Happy paths
-		assertArrayEquals(new String[]{""}, conv.convert(""));
+		assertNull(conv.convert(""));
 		
 		assertArrayEquals(new String[]{"abc"}, conv.convert("abc"));
 

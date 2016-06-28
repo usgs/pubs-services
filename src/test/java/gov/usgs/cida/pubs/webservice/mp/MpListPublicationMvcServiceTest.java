@@ -36,54 +36,54 @@ public class MpListPublicationMvcServiceTest extends BaseSpringTest {
 	@Mock
 	private IMpListPublicationBusService busService;
 
-    private MockMvc mockMvc;
+	private MockMvc mockMvc;
 
-    private MpListPublicationMvcService mvcService;
-    
-    @Before
-    public void setup() {
-    	MockitoAnnotations.initMocks(this);
-    	mvcService = new MpListPublicationMvcService(busService);
-    	mockMvc = MockMvcBuilders.standaloneSetup(mvcService).build();
-    }
+	private MpListPublicationMvcService mvcService;
+	
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
+		mvcService = new MpListPublicationMvcService(busService);
+		mockMvc = MockMvcBuilders.standaloneSetup(mvcService).build();
+	}
 
-    @Test
-    public void addPubToListTest() throws Exception {
-    	String[] ids = new String[]{"12"};
-        when(busService.addPubToList(66, ids)).thenReturn(buildIt());
-        MvcResult rtn = mockMvc.perform(post("/lists/66/pubs?publicationId=12")
-        .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isCreated())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-        .andReturn();
+	@Test
+	public void addPubToListTest() throws Exception {
+		String[] ids = new String[]{"12"};
+		when(busService.addPubToList(66, ids)).thenReturn(buildIt());
+		MvcResult rtn = mockMvc.perform(post("/lists/66/pubs?publicationId=12")
+		.accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isCreated())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andReturn();
 
-        assertThat(getRtnAsJSONArray(rtn),
-                sameJSONArrayAs(new JSONArray("[{\"mpList\":{\"id\":66,\"text\":\"List 66\",\"description\":\"Description 66\",\"type\":\"SPN\"},\"mpPublication\":{\"id\":12,\"validationErrors\":[],\"text\":\"null - null - null\",\"noYear\":false}}]")));
-    }
+		assertThat(getRtnAsJSONArray(rtn),
+				sameJSONArrayAs(new JSONArray("[{\"mpList\":{\"id\":66,\"text\":\"List 66\",\"description\":\"Description 66\",\"type\":\"SPN\"},\"mpPublication\":{\"id\":12,\"validationErrors\":[],\"text\":\"null - null - null\",\"noYear\":false}}]")));
+	}
 
-    @Test
-    public void removePubFromListTest() throws Exception {
-        when(busService.removePubFromList(anyInt(), anyInt())).thenReturn(new ValidationResults());
-        MvcResult rtn = mockMvc.perform(delete("/lists/66/pubs/12")
-        .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-        .andReturn();
-        
-        assertThat(getRtnAsJSONObject(rtn),
-                sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
-    }
+	@Test
+	public void removePubFromListTest() throws Exception {
+		when(busService.removePubFromList(anyInt(), anyInt())).thenReturn(new ValidationResults());
+		MvcResult rtn = mockMvc.perform(delete("/lists/66/pubs/12")
+		.accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andReturn();
+		
+		assertThat(getRtnAsJSONObject(rtn),
+				sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
+	}
 
-    private List<MpListPublication> buildIt() {
-    	MpListPublication it = new MpListPublication();
-    	it.setMpList(MpListDaoTest.buildMpList(66));
-    	MpPublication mpPub = new MpPublication();
-    	mpPub.setId(12);
-    	it.setMpPublication(mpPub);
-    	List<MpListPublication> list = new ArrayList<>();
-    	list.add(it);
-    	return list;
-    }
+	private List<MpListPublication> buildIt() {
+		MpListPublication it = new MpListPublication();
+		it.setMpList(MpListDaoTest.buildMpList(66));
+		MpPublication mpPub = new MpPublication();
+		mpPub.setId(12);
+		it.setMpPublication(mpPub);
+		List<MpListPublication> list = new ArrayList<>();
+		list.add(it);
+		return list;
+	}
 }

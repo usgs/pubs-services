@@ -48,7 +48,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 	public void getCorporations() throws Exception {
 		MvcResult rtn = mockLookup.perform(get("/lookup/corporations?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -56,7 +56,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 
 		rtn = mockLookup.perform(get("/lookup/corporations?text=us geo").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -73,7 +73,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 	public void getPeople() throws Exception {
 		MvcResult rtn = mockLookup.perform(get("/lookup/people?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -81,7 +81,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 
 		rtn = mockLookup.perform(get("/lookup/people?text=out").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -99,7 +99,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 	public void getCostCenters() throws Exception {
 		MvcResult rtn = mockLookup.perform(get("/lookup/costcenters?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -107,7 +107,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 
 		rtn = mockLookup.perform(get("/lookup/costcenters?text=xa").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -119,7 +119,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 	public void getOutsideAffiliates() throws Exception {
 		MvcResult rtn = mockLookup.perform(get("/lookup/outsideaffiliates?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -127,7 +127,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 
 		rtn = mockLookup.perform(get("/lookup/outsideaffiliates?text=xo").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -139,7 +139,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 	public void getPublications() throws Exception {
 		MvcResult rtn = mockLookup.perform(get("/lookup/publications?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -147,7 +147,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 
 		rtn = mockLookup.perform(get("/lookup/publications?text=9").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -161,7 +161,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 	public void getPublicationSeriesQuery() throws Exception {
 		MvcResult rtn = mockLookup.perform(get("/lookup/publicationseries?text=zeit&publicationsubtypeid=10").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -176,7 +176,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 		MvcResult rtn = mockLookup.perform(get("/lookup/publicationtype/"
 				+ PublicationType.REPORT + "/publicationsubtype/10/publicationseries?text=zeit").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -190,7 +190,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 	public void getPublicationSubtypeQuery() throws Exception {
 		MvcResult rtn = mockLookup.perform(get("/lookup/publicationsubtypes?text=b&publicationtypeid=4").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -202,7 +202,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 	public void getPublicationSubtypeREST() throws Exception {
 		MvcResult rtn = mockLookup.perform(get("/lookup/publicationtype/4/publicationsubtypes?text=b").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -214,7 +214,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 	public void getPublicationType() throws Exception {
 		MvcResult rtn = mockLookup.perform(get("/lookup/publicationtypes?text=b").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -227,7 +227,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 	public void getPublishingServiceCenters() throws Exception {
 		MvcResult rtn = mockLookup.perform(get("/lookup/publishingServiceCenters?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -235,7 +235,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 
 		rtn = mockLookup.perform(get("/lookup/publishingServiceCenters?text=r").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 

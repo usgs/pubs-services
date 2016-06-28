@@ -59,28 +59,28 @@
 			</if>
 		</if>
 
-		<if test="null != pubXDays">
-			and trunc(display_to_public_date) &gt;= trunc(sysdate - #{pubXDays})
+		<if test="null != pub_x_days">
+			and trunc(display_to_public_date) &gt;= trunc(sysdate - #{pub_x_days})
 		</if>
 
-		<if test="null != pubDateLow">
-			and trunc(pub.display_to_public_date) &gt;= to_date(#{pubDateLow}, <include refid="base.dateFormat"/>)
+		<if test="null != pub_date_low">
+			and trunc(pub.display_to_public_date) &gt;= to_date(#{pub_date_low}, <include refid="base.dateFormat"/>)
 		</if>		
 		
-		<if test="null != pubDateHigh">
-			and trunc(pub.display_to_public_date) &lt;= to_date(#{pubDateHigh}, <include refid="base.dateFormat"/>)
+		<if test="null != pub_date_high">
+			and trunc(pub.display_to_public_date) &lt;= to_date(#{pub_date_high}, <include refid="base.dateFormat"/>)
 		</if>		
 		
-		<if test="null != modXDays">
-			and trunc(pub.update_date) &gt;= trunc(sysdate - #{modXDays})
+		<if test="null != mod_x_days">
+			and trunc(pub.update_date) &gt;= trunc(sysdate - #{mod_x_days})
 		</if>
 
-		<if test="null != modDateLow">
-			and trunc(pub.update_date) &gt;= to_date(#{modDateLow}, <include refid="base.dateFormat"/>)
+		<if test="null != mod_date_low">
+			and trunc(pub.update_date) &gt;= to_date(#{mod_date_low}, <include refid="base.dateFormat"/>)
 		</if>
 		
-		<if test="null != modDateHigh">
-			and trunc(pub.update_date) &lt;= to_date(#{modDateHigh}, <include refid="base.dateFormat"/>)
+		<if test="null != mod_date_high">
+			and trunc(pub.update_date) &lt;= to_date(#{mod_date_high}, <include refid="base.dateFormat"/>)
 		</if>
 		
 		<if test="contributor != null">
@@ -103,6 +103,17 @@
 			                       upper(name) like '%' || upper(#{co}) || '%'
 			                   </foreach>
 			           )
+		</if>
+		
+		<if test="null != chorus">
+			<choose>
+				<when test="chorus">
+					and chrs_url is not null
+				</when>
+				<otherwise>
+					and chrs_url is null
+				</otherwise>
+			</choose>
 		</if>
 	</sql>
 

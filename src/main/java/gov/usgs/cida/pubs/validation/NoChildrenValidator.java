@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.validation;
 
+import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
 import gov.usgs.cida.pubs.domain.BaseDomain;
 //import gov.usgs.cida.pubs.domain.MpListPubsRel;
 import gov.usgs.cida.pubs.validation.constraint.NoChildren;
@@ -28,7 +29,7 @@ public class NoChildrenValidator implements ConstraintValidator<NoChildren, Base
     public boolean isValid(BaseDomain<?> value, ConstraintValidatorContext context) {
         boolean rtn = true;
         Map<String, Object> filters = new HashMap<String,Object>();
-        filters.put("listId", value.getId());
+        filters.put(MpPublicationDao.LIST_ID, value.getId());
 
         //TODO put back when lists are implemented.
 //        if (value.getClass().isAssignableFrom(MpListPubsRel.class)) {

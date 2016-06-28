@@ -5,6 +5,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
+import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.transform.PublicationColumns;
 
@@ -49,7 +51,7 @@ public class PwPublicationDaoStreamingTest extends BaseSpringTest {
 		//   see the changeLogVpd.xml file in schema-pubs
 		TestResultHandler<PwPublication> handler = new TestResultHandler<>();
 		Map<String, Object> filters = new HashMap<>();
-		filters.put("orderBy", "publication_year");
+		filters.put(PublicationDao.ORDER_BY, "publication_year");
 		PwPublication.getDao().stream(filters, handler);
 		List<Map<String, Object>> pubs = handler.results;
 		assertNotNull(pubs);
@@ -172,34 +174,35 @@ public class PwPublicationDaoStreamingTest extends BaseSpringTest {
 
 	public Map<String, Object> buildAllFilters() {
 		Map<String, Object> filters = new HashMap<>();
-		filters.put("q", "test");
+		filters.put(PublicationDao.Q, "test");
 		String[] polygon = {"-122.3876953125","37.80869897600677","-122.3876953125","36.75979104322286","-123.55224609375","36.75979104322286",
 				"-123.55224609375","37.80869897600677","-122.3876953125","37.80869897600677"};
-		filters.put("g", polygon);
-		filters.put("title", new String[] {"test","this","is"});
-		filters.put("abstract", new String[] {"test","this","is"});
-		filters.put("contributor", "test");
-		filters.put("prodId", new String[] {"1","2","3"});
-		filters.put("indexId", new String[] {"test","this","is"});
-		filters.put("ipdsId", new String[] {"test","this","is"});
-		filters.put("year", new String[] {"test","this","is"});
-		filters.put("startYear", "test");
-		filters.put("endYear", "test");
-		filters.put("contributingOffice", new String[] {"test","this","is"});
-		filters.put("typeName", new String[] {"test","this","is"});
-		filters.put("subtypeName", new String[] {"test","this","is"});
-		filters.put("seriesName", new String[] {"test","this","is"});
-		filters.put("reportNumber", new String[] {"test","this","is"});
-		filters.put("pageRowStart", "1");
-		filters.put("pageNumber", "1");
-		filters.put("pageSize", "1");
-		filters.put("pubXDays", "1");
-		filters.put("pubDateLow", "2001-01-01");
-		filters.put("pubDateHigh", "2001-01-01");
-		filters.put("modXDays", "1");
-		filters.put("modDateLow", "2001-01-01");
-		filters.put("modDateHigh", "2001-01-01");
-		filters.put("orderBy", "publication_year");
+		filters.put(PwPublicationDao.G, polygon);
+		filters.put(PublicationDao.TITLE, new String[] {"test","this","is"});
+		filters.put(PublicationDao.PUB_ABSTRACT, new String[] {"test","this","is"});
+		filters.put(PublicationDao.CONTRIBUTOR, "test");
+		filters.put(PublicationDao.PROD_ID, new String[] {"1","2","3"});
+		filters.put(PublicationDao.INDEX_ID, new String[] {"test","this","is"});
+		filters.put(PublicationDao.IPDS_ID, new String[] {"test","this","is"});
+		filters.put(PublicationDao.YEAR, new String[] {"test","this","is"});
+		filters.put(PublicationDao.START_YEAR, "test");
+		filters.put(PublicationDao.END_YEAR, "test");
+		filters.put(PublicationDao.CONTRIBUTING_OFFICE, new String[] {"test","this","is"});
+		filters.put(PublicationDao.TYPE_NAME, new String[] {"test","this","is"});
+		filters.put(PublicationDao.SUBTYPE_NAME, new String[] {"test","this","is"});
+		filters.put(PublicationDao.SERIES_NAME, new String[] {"test","this","is"});
+		filters.put(PublicationDao.REPORT_NUMBER, new String[] {"test","this","is"});
+		filters.put(BaseDao.PAGE_ROW_START, "1");
+		filters.put(BaseDao.PAGE_NUMBER, "1");
+		filters.put(BaseDao.PAGE_SIZE, "1");
+		filters.put(PwPublicationDao.PUB_X_DAYS, "1");
+		filters.put(PwPublicationDao.PUB_DATE_LOW, "2001-01-01");
+		filters.put(PwPublicationDao.PUB_DATE_HIGH, "2001-01-01");
+		filters.put(PwPublicationDao.MOD_X_DAYS, "1");
+		filters.put(PwPublicationDao.MOD_DATA_LOW, "2001-01-01");
+		filters.put(PwPublicationDao.MOD_DATE_HIGH, "2001-01-01");
+		filters.put(PublicationDao.ORDER_BY, "publication_year");
+		filters.put(PwPublicationDao.CHORUS, true);
 
 		return filters;
 	}

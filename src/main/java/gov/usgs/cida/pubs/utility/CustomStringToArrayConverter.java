@@ -1,4 +1,5 @@
 package gov.usgs.cida.pubs.utility;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,11 @@ import org.springframework.stereotype.Component;
 public class CustomStringToArrayConverter implements Converter<String, String[]>{
 	@Override
 	public String[] convert(String source) {
-		return new String[]{source};
+		if (StringUtils.isNotBlank(source)) {
+			return new String[]{source};
+		} else {
+			return null;
+		}
 	}
 
 }

@@ -10,6 +10,7 @@ import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
+import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationLinkDao;
 import gov.usgs.cida.pubs.domain.Contributor;
@@ -123,12 +124,12 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
         busService.getObjects(new HashMap<String, Object>());
 
         Map<String, Object> filters = new HashMap<>();
-        filters.put("id", new int[] {-1});
+        filters.put(PublicationDao.PROD_ID, new int[] {-1});
         Collection<MpPublication> pubs = busService.getObjects(filters);
         assertNotNull(pubs);
         assertEquals(0, pubs.size());
 
-        filters.put("id", new int[] {1});
+        filters.put(PublicationDao.PROD_ID, new int[] {1});
         pubs = busService.getObjects(filters);
         assertNotNull(pubs);
         assertEquals(1, pubs.size());

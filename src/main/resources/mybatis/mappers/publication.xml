@@ -338,9 +338,9 @@
 				)
 			</if>
 
-			<if test="id != null and id.length > 0">
+			<if test="prodId != null and prodId.length > 0">
 				and (
-				<foreach item="i" collection="id" open="" separator="or" close="">
+				<foreach item="i" collection="prodId" open="" separator="or" close="">
 					pub.publication_id = #{i}
 				</foreach>
 				)
@@ -370,12 +370,12 @@
 				)
 			</if>
 
-			<if test="yearStart != null">
-				and pub.publication_year &gt;= #{yearStart}
+			<if test="startYear != null">
+				and pub.publication_year &gt;= #{startYear}
 			</if>
 
-			<if test="yearEnd != null">
-				and pub.publication_year &lt;= #{yearEnd}
+			<if test="endYear != null">
+				and pub.publication_year &lt;= #{endYear}
 			</if>
 
 			<if test="typeName != null and typeName.length > 0">
@@ -398,11 +398,11 @@
 				    )
 			</if>
 
-			<if test="reportSeries != null and reportSeries.length > 0">
+			<if test="seriesName != null and seriesName.length > 0">
 				and pub.publication_series_id in (select publication_series_id
 				                                    from publication_series
 				                                   where
-					<foreach item="r" collection="reportSeries" open="" separator="or" close="">
+					<foreach item="r" collection="seriesName" open="" separator="or" close="">
 						upper(name) like '%' || upper(#{r}) || '%'
 					</foreach>
 				    )
@@ -443,7 +443,7 @@
 		  from (select <include refid="cols"/>, 'mypubs' sourceDatabase, published
 		          from mp_publication pub
 				<include refid="mpPublication.filters"/>
-				<if test="globalSearch != null and globalSearch == 'true'">
+				<if test="global != null and global == 'true'">
 					union all
 					select <include refid="cols"/>, 'pubs warehouse' sourceDatabase, 'Y' published
 					  from publication pub

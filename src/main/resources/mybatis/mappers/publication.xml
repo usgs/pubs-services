@@ -318,10 +318,6 @@
 	</sql>
 
 	<sql id="filters">
-			<if test="null != IPDS_ID">
-				and pub.ipds_id = #{IPDS_ID}
-			</if>
-
 			<if test="title != null and title.length > 0">
 				and (
 				<foreach item="t" collection="title" open="" separator="or" close="">

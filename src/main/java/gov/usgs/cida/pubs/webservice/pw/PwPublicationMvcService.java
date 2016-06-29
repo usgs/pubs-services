@@ -83,7 +83,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 			@RequestParam(value=PwPublicationDao.PUB_DATE_LOW, required=false) String pubDateLow,
 			@RequestParam(value=PwPublicationDao.PUB_DATE_HIGH, required=false) String pubDateHigh,
 			@RequestParam(value=PwPublicationDao.MOD_X_DAYS, required=false) String modXDays,
-			@RequestParam(value=PwPublicationDao.MOD_DATA_LOW, required=false) String modDateLow,
+			@RequestParam(value=PwPublicationDao.MOD_DATE_LOW, required=false) String modDateLow,
 			@RequestParam(value=PwPublicationDao.MOD_DATE_HIGH, required=false) String modDateHigh,
 			@RequestParam(value=PublicationDao.ORDER_BY, required=false) String orderBy,
 			@RequestParam(value=PwPublicationDao.CHORUS, required=false) Boolean chorus,

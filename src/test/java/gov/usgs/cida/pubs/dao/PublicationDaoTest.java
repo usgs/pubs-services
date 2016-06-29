@@ -357,7 +357,7 @@ public class PublicationDaoTest extends BaseSpringTest {
 
 		filters.put(MpPublicationDao.LIST_ID, new String[]{"listId1", "listId2"});
 		filters.put(PwPublicationDao.MOD_DATE_HIGH, "2012-12-12");
-		filters.put(PwPublicationDao.MOD_DATA_LOW, "2010-10-10");
+		filters.put(PwPublicationDao.MOD_DATE_LOW, "2010-10-10");
 		filters.put(PwPublicationDao.MOD_X_DAYS, "3");
 		filters.put(PublicationDao.ORDER_BY, "title");
 

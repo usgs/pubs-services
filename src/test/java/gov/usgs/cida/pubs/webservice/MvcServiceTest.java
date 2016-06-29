@@ -110,8 +110,8 @@ public class MvcServiceTest {
 		assertEquals(listId, filters.get(MpPublicationDao.LIST_ID));
 		assertTrue(filters.containsKey(PwPublicationDao.MOD_DATE_HIGH));
 		assertEquals(modDateHigh, filters.get(PwPublicationDao.MOD_DATE_HIGH));
-		assertTrue(filters.containsKey(PwPublicationDao.MOD_DATA_LOW));
-		assertEquals(modDateLow, filters.get(PwPublicationDao.MOD_DATA_LOW));
+		assertTrue(filters.containsKey(PwPublicationDao.MOD_DATE_LOW));
+		assertEquals(modDateLow, filters.get(PwPublicationDao.MOD_DATE_LOW));
 		assertTrue(filters.containsKey(PwPublicationDao.MOD_X_DAYS));
 		assertEquals(modXDays, filters.get(PwPublicationDao.MOD_X_DAYS));
 		assertTrue(filters.containsKey(PublicationDao.ORDER_BY));

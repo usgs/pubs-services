@@ -199,7 +199,7 @@ public class PwPublicationDaoStreamingTest extends BaseSpringTest {
 		filters.put(PwPublicationDao.PUB_DATE_LOW, "2001-01-01");
 		filters.put(PwPublicationDao.PUB_DATE_HIGH, "2001-01-01");
 		filters.put(PwPublicationDao.MOD_X_DAYS, "1");
-		filters.put(PwPublicationDao.MOD_DATA_LOW, "2001-01-01");
+		filters.put(PwPublicationDao.MOD_DATE_LOW, "2001-01-01");
 		filters.put(PwPublicationDao.MOD_DATE_HIGH, "2001-01-01");
 		filters.put(PublicationDao.ORDER_BY, "publication_year");
 		filters.put(PwPublicationDao.CHORUS, true);

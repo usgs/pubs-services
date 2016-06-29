@@ -58,7 +58,7 @@ public abstract class MvcService<D> {
 		filters.put(PublicationDao.IPDS_ID, ipdsId);
 		filters.put(MpPublicationDao.LIST_ID, listId);
 		filters.put(PwPublicationDao.MOD_DATE_HIGH, modDateHigh);
-		filters.put(PwPublicationDao.MOD_DATA_LOW, modDateLow);
+		filters.put(PwPublicationDao.MOD_DATE_LOW, modDateLow);
 		filters.put(PwPublicationDao.MOD_X_DAYS, modXDays);
 		filters.put(PublicationDao.ORDER_BY, orderBy);
 		filters.put(BaseDao.PAGE_NUMBER, page_number);

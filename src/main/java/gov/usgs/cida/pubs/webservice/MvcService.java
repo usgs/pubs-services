@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -218,7 +219,8 @@ public abstract class MvcService<D> {
 	protected boolean validateParametersSetHeaders(HttpServletRequest request, HttpServletResponse response) {
 		boolean rtn = true;
 		setHeaders(response);
-		if (request.getParameterMap().isEmpty()) {
+		if (request.getParameterMap().isEmpty()
+				&& ObjectUtils.isEmpty(request.getHeader(PubsConstants.ACCEPT_HEADER))) {
 			rtn = false;
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 		}

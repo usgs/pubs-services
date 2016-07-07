@@ -344,5 +344,16 @@ public class MvcServiceTest {
 		response = new MockHttpServletResponse();
 		assertTrue(testMvcService.validateParametersSetHeaders(request, response));
 		assertFalse(HttpStatus.BAD_REQUEST.value() == response.getStatus());
+
+		request = new MockHttpServletRequest();
+		request.addHeader(PubsConstants.ACCEPT_HEADER, PubsConstants.MEDIA_TYPE_CSV_VALUE);
+		response = new MockHttpServletResponse();
+		assertTrue(testMvcService.validateParametersSetHeaders(request, response));
+		assertFalse(HttpStatus.BAD_REQUEST.value() == response.getStatus());
+
+		request.setParameters(parms);
+		response = new MockHttpServletResponse();
+		assertTrue(testMvcService.validateParametersSetHeaders(request, response));
+		assertFalse(HttpStatus.BAD_REQUEST.value() == response.getStatus());
 	}
 }

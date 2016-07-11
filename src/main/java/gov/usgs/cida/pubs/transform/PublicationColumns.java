@@ -7,6 +7,8 @@ public class PublicationColumns {
 
 	private static Map<String, String> mappings;
 
+	private PublicationColumns() {}
+
 	//TODO - possible dynamic contributors
 	static {
 		mappings = new LinkedHashMap<>();

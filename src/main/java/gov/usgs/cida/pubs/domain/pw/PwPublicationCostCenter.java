@@ -5,21 +5,22 @@ import gov.usgs.cida.pubs.domain.PublicationCostCenter;
 
 public class PwPublicationCostCenter extends PublicationCostCenter<PwPublicationCostCenter>{
 
-    private static IMpDao<PwPublicationCostCenter> pwPublicationCostCenterDao;
+	private static final long serialVersionUID = 7311268641834130461L;
+	private static IMpDao<PwPublicationCostCenter> pwPublicationCostCenterDao;
 
-    /**
-     * @return the pwPublicationCostCenterDao
-     */
-    public static IMpDao<PwPublicationCostCenter> getDao() {
-        return pwPublicationCostCenterDao;
-    }
+	/**
+	 * @return the pwPublicationCostCenterDao
+	 */
+	public static IMpDao<PwPublicationCostCenter> getDao() {
+		return pwPublicationCostCenterDao;
+	}
 
-    /**
-     * The setter for pwPublicationCostCenterDao.
-     * @param inPwPublicationCostCenterDao the pwPublicationCostCenterDao to set
-     */
-    public void setPwPublicationCostCenterDao(final IMpDao<PwPublicationCostCenter> inPwPublicationCostCenterDao) {
-        pwPublicationCostCenterDao = inPwPublicationCostCenterDao;
-    }
+	/**
+	 * The setter for pwPublicationCostCenterDao.
+	 * @param inPwPublicationCostCenterDao the pwPublicationCostCenterDao to set
+	 */
+	public void setPwPublicationCostCenterDao(final IMpDao<PwPublicationCostCenter> inPwPublicationCostCenterDao) {
+		pwPublicationCostCenterDao = inPwPublicationCostCenterDao;
+	}
 
 }

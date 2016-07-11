@@ -100,8 +100,9 @@ public class IpdsProcess implements IIpdsProcess {
 			try {
 				 pub.setContributors(binder.bindContributors(contributorXml));
 			} catch (Exception e) {
-				LOG.info(e.getMessage());
-				rtn.append("\n\tTrouble getting authors/editors: " + e.getMessage());
+				String msg = "Trouble getting authors/editors: ";
+				LOG.info(msg, e);
+				rtn.append("\n\t").append(msg).append(e.getMessage());
 				errors++;
 			}
 
@@ -116,8 +117,9 @@ public class IpdsProcess implements IIpdsProcess {
 					pub.setCostCenters(pccs);
 				}
 			} catch (Exception e) {
-				LOG.info(e.getMessage());
-				rtn.append("\n\tTrouble getting cost center: " + e.getMessage());
+				String msg = "Trouble getting cost center: ";
+				LOG.info(msg, e);
+				rtn.append("\n\t").append(msg).append(e.getMessage());
 				errors++;
 			}
 
@@ -136,8 +138,9 @@ public class IpdsProcess implements IIpdsProcess {
 					}
 				}
 			} catch (Exception e) {
-				LOG.info(e.getMessage());
-				rtn.append("\n\tTrouble getting note comment: " + e.getMessage());
+				String msg = "Trouble getting comment: ";
+				LOG.info(msg, e);
+				rtn.append("\n\t").append(msg).append(e.getMessage());
 				errors++;
 			}
 

@@ -58,6 +58,7 @@
 		<result property="revisedDate" column="revised_date"/>
 		<result property="sourceDatabase" column="sourceDatabase"/>
 		<result property="published" column="published"/>
+		<result property="noUsgsAuthors" column="no_usgs_authors"/>
 		<association property="publicationType" column="publication_type_id" select="publicationType.getById"/>
 		<association property="publicationSubtype" column="publication_subtype_id" select="publicationSubtype.getById"/>
 		<association property="largerWorkType" column="larger_work_type_id" select="publicationType.getById"/>
@@ -157,7 +158,8 @@
 		<include refid="base.auditCols"/>,
 		abstract,
 		notes,
-		geographic_extents
+		geographic_extents,
+		no_usgs_authors
 	</sql>
 
 	<sql id="hosts">
@@ -221,7 +223,8 @@
 		<include refid="base.auditHosts"/>,
 		#{docAbstract,jdbcType=CLOB},
 		#{notes,jdbcType=VARCHAR},
-		#{geographicExtents,jdbcType=VARCHAR}
+		#{geographicExtents,jdbcType=VARCHAR},
+		#{noUsgsAuthors,jdbcType=VARCHAR}
 	</sql>
 
 	<sql id="sets">
@@ -284,7 +287,8 @@
 		<include refid="base.auditSets"/>,
 		abstract = #{docAbstract,jdbcType=CLOB},
 		notes = #{notes,jdbcType=VARCHAR},
-		geographic_extents = #{geographicExtents,jdbcType=CLOB}
+		geographic_extents = #{geographicExtents,jdbcType=CLOB},
+		no_usgs_authors = #{noUsgsAuthors,jdbcType=VARCHAR}
 	</sql>
 
 	<sql id="likeTerm">

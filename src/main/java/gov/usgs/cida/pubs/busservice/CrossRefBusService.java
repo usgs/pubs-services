@@ -153,8 +153,9 @@ public class CrossRefBusService implements ICrossRefBusService {
 					httpPost.setEntity(httpEntity);
 					rtn = httpClient.execute(httpHost, httpPost, new BasicHttpContext());
 				} catch (Exception e) {
-					LOG.info(e.getMessage());
-					pubsEMailer.sendMail("Unexpected error in POST to crossref", e.getMessage());
+					String subject = "Unexpected error in POST to crossref";
+					LOG.info(subject, e);
+					pubsEMailer.sendMail(subject, e.getMessage());
 				}
 			}
 
@@ -189,8 +190,9 @@ public class CrossRefBusService implements ICrossRefBusService {
 			bw.write(xml);
 			bw.close();
 		} catch (IOException e) {
-			LOG.info(e.getMessage());
-			pubsEMailer.sendMail("Unexpected error in building xml for crossref", e.getMessage());
+			String subject = "Unexpected error in building xml for crossref";
+			LOG.info(subject, e);
+			pubsEMailer.sendMail(subject, e.getMessage());
 		}
 		return null == temp ? null : temp.getAbsolutePath();
 	}
@@ -355,7 +357,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 				rtn = warehouseEndpoint + "/publication/" + pub.getIndexId();
 			}
 		}
-	   return StringEscapeUtils.escapeXml10(rtn);
+		return StringEscapeUtils.escapeXml10(rtn);
 	}
 
 }

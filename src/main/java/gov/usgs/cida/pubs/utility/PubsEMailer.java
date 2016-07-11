@@ -47,7 +47,7 @@ public class PubsEMailer {
 
 			Transport.send(message);
 		} catch (Exception e) {
-			LOG.info(e.getMessage());
+			LOG.info("Couldn't send mail:", e);
 		}
 	}
 

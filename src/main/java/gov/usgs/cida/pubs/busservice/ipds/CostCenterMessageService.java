@@ -71,7 +71,7 @@ public class CostCenterMessageService implements IIpdsService {
 			NodeList entries = doc.getElementsByTagName("m:properties");
 			for (int n=0; n<entries.getLength(); n++) {
 				if (entries.item(n).getNodeType() == Node.ELEMENT_NODE) {
-					totalEntries = totalEntries++;
+					totalEntries++;
 					CostCenter costCenter = new CostCenter();
 					//This is really all we should ever get..
 					Element element = (Element) entries.item(n);
@@ -94,8 +94,9 @@ public class CostCenterMessageService implements IIpdsService {
 				}
 			}
 		} catch (Exception e) {
-			LOG.info(e.getMessage());
-			rtn.append("\n\tTrouble getting costCenters: " + e.getMessage());
+			String msg = "Trouble getting costCenters: ";
+			LOG.info(msg, e);
+			rtn.append("\n\t").append(msg).append(e.getMessage());
 			errors++;
 		}
 

@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 public class XlsxTransformer extends Transformer {
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private static final Logger LOG = LoggerFactory.getLogger(XlsxTransformer.class);
 
 	/** The work book to which we will add a sheet for this export. */
 	private XSSFWorkbook workbook = null;
@@ -40,14 +40,14 @@ public class XlsxTransformer extends Transformer {
 
 	/** Zip output stream for the spreadsheet. */
 	private ZipOutputStream zos;
-	
+
 	/** Default output buffer size. */
 	private static final int DEFAULT_BUFFER_SIZE = 1024;
 
 	public XlsxTransformer(OutputStream target, Map<String, String> mapping) {
 		super(target, mapping);
 	}
-	
+
 	/**
 	 * Initialize a workbook if needed, a sheet to work on and write the
 	 * template to the stream.
@@ -91,7 +91,7 @@ public class XlsxTransformer extends Transformer {
 		insertRow();
 		int cellCount = 0;
 		for (Entry<?, ?> entry: result.entrySet()) {
-			
+
 			String value = getMappedName(entry);
 			if (null != value) {
 				createCell(cellCount, value);
@@ -138,7 +138,7 @@ public class XlsxTransformer extends Transformer {
 				zos.finish();
 			}
 		} catch (Exception e) {
-			log.error("Problem encountered finishing the workbook.", e);
+			LOG.error("Problem encountered finishing the workbook.", e);
 			throw new RuntimeException(e);
 		}
 	}

@@ -23,8 +23,8 @@ public class MpListDaoTest extends BaseSpringTest {
 	public void getbyIdTests() {
 		MpList list = MpList.getDao().getById(1);
 		assertMpList1(list);
-		list = MpList.getDao().getById("10");
-		assertMpList10(list);
+		list = MpList.getDao().getById("9");
+		assertMpList9(list);
 	}
 
 	@Test
@@ -40,7 +40,7 @@ public class MpListDaoTest extends BaseSpringTest {
 		filters.put("text", "ipds");
 		mpLists = MpList.getDao().getByMap(filters);
 		assertNotNull(mpLists);
-		assertEquals(6, mpLists.size());
+		assertEquals(7, mpLists.size());
 
 		filters.clear();
 		filters.put("listType", MpListType.PUBS);
@@ -52,54 +52,54 @@ public class MpListDaoTest extends BaseSpringTest {
 		filters.put("listType", MpListType.SPN);
 		mpLists = MpList.getDao().getByMap(filters);
 		assertNotNull(mpLists);
-		assertEquals(14, mpLists.size());
+		assertEquals(1, mpLists.size());
 	}
 
 	@Test
 	public void getbyPscIdTests() {
-		MpList list = MpList.getDao().getByIpdsId(1);
-		assertMpList10(list);
+		//No data for this now.
+		MpList.getDao().getByIpdsId(1);
 	}
 
-    @Test
-    public void notImplemented() {
-        try {
-        	MpList.getDao().add(new MpList());
-            fail("Was able to add.");
-        } catch (Exception e) {
-            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
-        }
+	@Test
+	public void notImplemented() {
+		try {
+			MpList.getDao().add(new MpList());
+			fail("Was able to add.");
+		} catch (Exception e) {
+			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+		}
 
-        try {
-            Map<String, Object> params = new HashMap<String, Object>();
-            params.put(PublicationDao.PROD_ID, 1);
-            MpList.getDao().getObjectCount(params);
-            fail("Was able to get count.");
-        } catch (Exception e) {
-            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
-        }
+		try {
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put(PublicationDao.PROD_ID, 1);
+			MpList.getDao().getObjectCount(params);
+			fail("Was able to get count.");
+		} catch (Exception e) {
+			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+		}
 
-        try {
-        	MpList.getDao().update(new MpList());
-            fail("Was able to update.");
-        } catch (Exception e) {
-            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
-        }
+		try {
+			MpList.getDao().update(new MpList());
+			fail("Was able to update.");
+		} catch (Exception e) {
+			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+		}
 
-        try {
-        	MpList.getDao().delete(new MpList());
-            fail("Was able to delete.");
-        } catch (Exception e) {
-            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
-        }
+		try {
+			MpList.getDao().delete(new MpList());
+			fail("Was able to delete.");
+		} catch (Exception e) {
+			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+		}
 
-        try {
-        	MpList.getDao().deleteById(1);
-            fail("Was able to delete by it.");
-        } catch (Exception e) {
-            assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
-        }
-    }
+		try {
+			MpList.getDao().deleteById(1);
+			fail("Was able to delete by it.");
+		} catch (Exception e) {
+			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+		}
+	}
 
 	public static void assertMpList1(MpList list) {
 		assertNotNull(list);
@@ -110,26 +110,26 @@ public class MpListDaoTest extends BaseSpringTest {
 		assertNull(list.getIpdsInternalId());
 	}
 
-	public static void assertMpList10(MpList list) {
+	public static void assertMpList9(MpList list) {
 		assertNotNull(list);
-		assertEquals(10, list.getId().intValue());
-		assertEquals("Sacramento PSC", list.getText());
+		assertEquals(9, list.getId().intValue());
+		assertEquals("IPDS SPN Production", list.getText());
 		assertEquals("IPDS Records that have entered SPN Production status", list.getDescription());
 		assertEquals(MpListType.SPN, list.getType());
-		assertEquals(1, list.getIpdsInternalId().intValue());
+		assertNull(list.getIpdsInternalId());
 	}
 
-    public static MpList buildMpList(Integer id) {
-    	MpList mpList = new MpList();
-    	mpList.setId(id);
-    	mpList.setText("List " + id);
-    	mpList.setDescription("Description " + id);
-    	mpList.setType(MpListType.SPN);
-    	mpList.setIpdsInternalId(1);
-    	mpList.setInsertDate(LocalDateTime.now());
-    	mpList.setInsertUsername(PubsConstants.ANONYMOUS_USER);
-    	mpList.setUpdateDate(LocalDateTime.now());
-    	mpList.setUpdateUsername(PubsConstants.ANONYMOUS_USER);
-    	return mpList;
-    }
+	public static MpList buildMpList(Integer id) {
+		MpList mpList = new MpList();
+		mpList.setId(id);
+		mpList.setText("List " + id);
+		mpList.setDescription("Description " + id);
+		mpList.setType(MpListType.SPN);
+		mpList.setIpdsInternalId(1);
+		mpList.setInsertDate(LocalDateTime.now());
+		mpList.setInsertUsername(PubsConstants.ANONYMOUS_USER);
+		mpList.setUpdateDate(LocalDateTime.now());
+		mpList.setUpdateUsername(PubsConstants.ANONYMOUS_USER);
+		return mpList;
+	}
 }

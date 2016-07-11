@@ -31,6 +31,7 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	private static final String NS = "pwPublication";
 	private static final String GET_BY_INDEX_ID = ".getByIndexId";
 	private static final String GET_BY_IPDS_ID = ".getByIpdsId";
+	private static final String GET_STREAM_BY_MAP = ".getStreamByMap";
 
 	public static final String CHORUS = "chorus";
 	public static final String G = "g";
@@ -62,7 +63,7 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	public PwPublication getByIpdsId(String ipdsId) {
 		return getSqlSession().selectOne(NS + GET_BY_IPDS_ID, ipdsId);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @see gov.usgs.cida.pubs.dao.BaseDao#getByMap(java.util.Map)
@@ -73,7 +74,7 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	public List<PwPublication> getByMap(Map<String, Object> filters) {
 		return getSqlSession().selectList(NS + GET_BY_MAP, filters);
 	}
-	
+
 	/** {@inheritDoc}
 	 * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getObjectCount(java.util.Map)
 	 */

@@ -45,7 +45,7 @@ public class MpPublicationContributorBusService implements IListBusService<Publi
 			//And do the merge.
 			if (null != collection && !collection.isEmpty()) {
 				for (Object pubObject : collection) {
-					MpPublicationContributor pubContrib = new MpPublicationContributor();
+					MpPublicationContributor pubContrib;
 					//TODO figure out if we can get Jackson to marshall to an Mp...
 					if (pubObject instanceof MpPublicationContributor) {
 						//No need to translate - I am an MpPublicationContributor
@@ -71,8 +71,8 @@ public class MpPublicationContributorBusService implements IListBusService<Publi
 
 			//Delete any left overs (would only apply to applications which are not sending the delete like they should.
 			if (!map.isEmpty()) {
-			   for (MpPublicationContributor pubContrib : map.values()) {
-				   deleteObject(pubContrib);
+				for (MpPublicationContributor pubContrib : map.values()) {
+					deleteObject(pubContrib);
 				}
 			}
 		}

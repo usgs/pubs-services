@@ -36,57 +36,57 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 public class MpListBusServiceTest extends BaseSpringTest {
 
 	@Autowired
-    public Validator validator;
+	public Validator validator;
 
-    private MpListBusService busService;
+	private MpListBusService busService;
 
-    public static final int MP_LIST_CNT = 32;
+	public static final int MP_LIST_CNT = 19;
 
-    @Before
-    public void initTest() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        busService = new MpListBusService(validator);
-    }
+	@Before
+	public void initTest() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		busService = new MpListBusService(validator);
+	}
 
-    @Test
-    public void getObjectsTest() {
-        busService.getObjects(null);
-        busService.getObjects(new HashMap<String, Object>());
+	@Test
+	public void getObjectsTest() {
+		busService.getObjects(null);
+		busService.getObjects(new HashMap<String, Object>());
 
-        Map<String, Object> filters = new HashMap<>();
-        filters.put(MpListDao.ID_SEARCH, -1);
-        Collection<MpList> mpLists = busService.getObjects(filters);
-        assertNotNull(mpLists);
-        assertEquals(0, mpLists.size());
+		Map<String, Object> filters = new HashMap<>();
+		filters.put(MpListDao.ID_SEARCH, -1);
+		Collection<MpList> mpLists = busService.getObjects(filters);
+		assertNotNull(mpLists);
+		assertEquals(0, mpLists.size());
 
-        filters.put(MpListDao.ID_SEARCH, 1);
-        mpLists = busService.getObjects(filters);
-        assertNotNull(mpLists);
-        assertEquals(1, mpLists.size());
+		filters.put(MpListDao.ID_SEARCH, 1);
+		mpLists = busService.getObjects(filters);
+		assertNotNull(mpLists);
+		assertEquals(1, mpLists.size());
 
-        filters.clear();
-        filters.put(MpListDao.TEXT_SEARCH, "ipds");
-        mpLists = busService.getObjects(filters);
-        assertNotNull(mpLists);
-        assertEquals(6, mpLists.size());
+		filters.clear();
+		filters.put(MpListDao.TEXT_SEARCH, "ipds");
+		mpLists = busService.getObjects(filters);
+		assertNotNull(mpLists);
+		assertEquals(7, mpLists.size());
 
-        filters.put(MpListDao.ID_SEARCH, 3);
-        mpLists = busService.getObjects(filters);
-        assertNotNull(mpLists);
-        assertEquals(1, mpLists.size());
+		filters.put(MpListDao.ID_SEARCH, 3);
+		mpLists = busService.getObjects(filters);
+		assertNotNull(mpLists);
+		assertEquals(1, mpLists.size());
 
-        //Get all Lists
-        filters.clear();
-        mpLists = busService.getObjects(filters);
-        assertNotNull(mpLists);
-        assertEquals(MP_LIST_CNT, mpLists.size());
+		//Get all Lists
+		filters.clear();
+		mpLists = busService.getObjects(filters);
+		assertNotNull(mpLists);
+		assertEquals(MP_LIST_CNT, mpLists.size());
 
-        //Now we want just spn...
-        PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_SPN_USER.name()));
-        mpLists = busService.getObjects(filters);
-        assertNotNull(mpLists);
-        assertEquals(14, mpLists.size());
+		//Now we want just spn...
+		PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_SPN_USER.name()));
+		mpLists = busService.getObjects(filters);
+		assertNotNull(mpLists);
+		assertEquals(1, mpLists.size());
 
-    }
+	}
 
 }

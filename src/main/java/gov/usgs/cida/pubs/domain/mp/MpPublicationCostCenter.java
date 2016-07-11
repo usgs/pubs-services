@@ -9,24 +9,24 @@ import gov.usgs.cida.pubs.domain.PublicationCostCenter;
 
 @Component
 public class MpPublicationCostCenter extends PublicationCostCenter<MpPublicationCostCenter>{
+	private static final long serialVersionUID = -7830204904702714942L;
+	private static IMpDao<MpPublicationCostCenter> mpPublicationCostCenterDao;
 
-    private static IMpDao<MpPublicationCostCenter> mpPublicationCostCenterDao;
+	/**
+	 * @return the mpPublicationCostCenterDao
+	 */
+	public static IMpDao<MpPublicationCostCenter> getDao() {
+		return mpPublicationCostCenterDao;
+	}
 
-    /**
-     * @return the mpPublicationCostCenterDao
-     */
-    public static IMpDao<MpPublicationCostCenter> getDao() {
-        return mpPublicationCostCenterDao;
-    }
-
-    /**
-     * The setter for mpPublicationCostCenterDao.
-     * @param inMpPublicationCostCenterDao the mpPublicationCostCenterDao to set
-     */
-    @Autowired
-    @Qualifier("mpPublicationCostCenterDao")
-    public void setMpPublicationCostCenterDao(final IMpDao<MpPublicationCostCenter> inMpPublicationCostCenterDao) {
-        mpPublicationCostCenterDao = inMpPublicationCostCenterDao;
-    }
+	/**
+	 * The setter for mpPublicationCostCenterDao.
+	 * @param inMpPublicationCostCenterDao the mpPublicationCostCenterDao to set
+	 */
+	@Autowired
+	@Qualifier("mpPublicationCostCenterDao")
+	public void setMpPublicationCostCenterDao(final IMpDao<MpPublicationCostCenter> inMpPublicationCostCenterDao) {
+		mpPublicationCostCenterDao = inMpPublicationCostCenterDao;
+	}
 
 }

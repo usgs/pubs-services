@@ -6,8 +6,6 @@ import org.apache.ibatis.session.ResultHandler;
 
 public interface IStreamingDao<T> {
 
-    static final String GET_STREAM_BY_MAP = ".getStreamByMap";
-
 	/** 
 	 * This Dao will stream all of the data for the given type and parameters.
 	 * @param parameterMap - the map of query parameters from the http request

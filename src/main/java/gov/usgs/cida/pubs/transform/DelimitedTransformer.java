@@ -1,8 +1,5 @@
 package gov.usgs.cida.pubs.transform;
 
-
-import gov.usgs.cida.pubs.PubsConstants;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
@@ -11,6 +8,7 @@ import java.util.Map.Entry;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import gov.usgs.cida.pubs.PubsConstants;
 
 public class DelimitedTransformer extends Transformer {
 
@@ -20,7 +18,7 @@ public class DelimitedTransformer extends Transformer {
 	protected static final String SPACE = " ";
 
 	protected String delimiter;
-	
+
 	public DelimitedTransformer(OutputStream target, Map<String, String> mapping, String delimiter) {
 		super(target, mapping);
 		this.delimiter = delimiter;
@@ -47,7 +45,7 @@ public class DelimitedTransformer extends Transformer {
 		}
 		endRow();
 	}
-	
+
 	/**
 	 * Write the data.
 	 * 
@@ -64,7 +62,7 @@ public class DelimitedTransformer extends Transformer {
 				}
 				Object value = entry.getValue();
 				if (null != value) {
-					String stringValue = (delimiter == TAB ? value.toString().replace(LF, SPACE).replace(CR, SPACE).replace(TAB, SPACE) : value.toString());
+					String stringValue = delimiter == TAB ? value.toString().replace(LF, SPACE).replace(CR, SPACE).replace(TAB, SPACE) : value.toString();
 					copyString(StringEscapeUtils.escapeCsv(stringValue));
 				}
 			}

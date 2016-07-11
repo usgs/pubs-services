@@ -28,8 +28,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
 import gov.usgs.cida.pubs.utility.CustomStringToArrayConverter;
+import gov.usgs.cida.pubs.utility.CustomStringToStringConverter;
+import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
 
 @Configuration
 @ComponentScan(basePackages={"gov.usgs.cida.pubs.webservice", "gov.usgs.cida.pubs.utility", "gov.usgs.cida.pubs.dao",
@@ -47,6 +48,9 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
 	StringArrayCleansingConverter customStringListToArrayConverter;
 
 	@Autowired
+	CustomStringToStringConverter customStringToStringConverter;
+
+	@Autowired
 	@Qualifier("ipdsPubsWsUser")
 	String ipdsPubsWsUser;
 
@@ -58,6 +62,7 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
 	public void addFormatters(FormatterRegistry registry) {
 		registry.addConverter(customStringToArrayConverter);
 		registry.addConverter(customStringListToArrayConverter);
+		registry.addConverter(customStringToStringConverter);
 	}
 
 	@Override

@@ -42,6 +42,8 @@ public class IpdsWsRequester {
 	public static final String NULL_DOI = " m:null=\"true\"/>";
 	private static final String IPDS_PROTOCOL = "https";
 	private static final int IPDS_PORT = 443;
+	private static final String ERROR = "ERROR: ";
+
 
 	private final String ipdsEndpoint;
 	private final NTCredentials credentials;
@@ -83,14 +85,12 @@ public class IpdsWsRequester {
 		return getIpdsXml(url.toString(), ipds);
 	}
 
-
 	protected String getCostCenter(final String costCenterId, final String ipds) {
 		StringBuilder url = new StringBuilder(URL_PREFIX)
 		.append("CostCenters(").append(costCenterId).append(")");
 
 		return getIpdsXml(url.toString(), ipds);
 	}
-
 
 	protected String getNotes(final String ipds) {
 		StringBuilder url = new StringBuilder(URL_PREFIX)
@@ -120,8 +120,9 @@ public class IpdsWsRequester {
 			xml = EntityUtils.toString(entity);
 			EntityUtils.consume(response.getEntity());
 		} catch (Exception e) {
-			LOG.info(e.getMessage());
-			pubsEMailer.sendMail("Unexpected error in mypubsJMS.getIpdsXml", e.getMessage());
+			String subject = "Unexpected error in mypubsJMS.getIpdsXml";
+			LOG.info(subject, e);
+			pubsEMailer.sendMail(subject, e.getMessage());
 		}
 
 		LOG.debug(xml);
@@ -144,8 +145,9 @@ public class IpdsWsRequester {
 		try {
 			rtn = httpClient.execute(getHttpHost(), httpGet, httpContext);
 		} catch (Exception e) {
-			LOG.info(e.getMessage());
-			pubsEMailer.sendMail("Unexpected error in mypubsJMS.doGet", e.getMessage());
+			String subject = "Unexpected error in mypubsJMS.doGet";
+			LOG.info(subject, e);
+			pubsEMailer.sendMail(subject, e.getMessage());
 		}
 
 		return rtn;
@@ -186,8 +188,8 @@ public class IpdsWsRequester {
 					try {
 						EntityUtils.consume(getResponse.getEntity());
 					} catch (IOException e) {
-						LOG.info(e.getMessage());
-						rtn.append("\n\tERROR: ").append(e.getMessage());
+						LOG.info(ERROR, e);
+						rtn.append("\n\t").append(ERROR).append(e.getMessage());
 					}
 					try {
 						HttpEntity httpEntity = new StringEntity(content.toString());
@@ -211,12 +213,12 @@ public class IpdsWsRequester {
 								EntityUtils.consume(response.getEntity());
 							}
 						} catch (IOException e) {
-							LOG.info(e.getMessage());
-							rtn.append("\n\tERROR: ").append(e.getMessage());
+							LOG.info(ERROR, e);
+							rtn.append("\n\t").append(ERROR).append(e.getMessage());
 						}
 					} catch (Exception e) {
-						LOG.info(e.getMessage());
-						rtn.append("\n\tERROR: ").append(e.getMessage());
+						LOG.info(ERROR, e);
+						rtn.append("\n\t").append(ERROR).append(e.getMessage());
 					}
 				} else {
 					rtn.append("\n\tERROR: Unable to get Etag for:").append(url.toString()).append(" - Missing Etag header.");
@@ -232,8 +234,8 @@ public class IpdsWsRequester {
 				EntityUtils.consume(getResponse.getEntity());
 			}
 		} catch (IOException e) {
-			LOG.info(e.getMessage());
-			rtn.append("\n\tERROR: ").append(e.getMessage());
+			LOG.info(ERROR, e);
+			rtn.append("\n\t").append(ERROR).append(e.getMessage());
 		}
 		return rtn.toString();
 	}

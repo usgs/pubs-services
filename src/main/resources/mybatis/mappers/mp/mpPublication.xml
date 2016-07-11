@@ -233,7 +233,8 @@
                       pw.update_username              = audit_trail_util.get_username,
 					  pw.abstract                     = mp.abstract,
 					  pw.notes                        = mp.notes,
-					  pw.geographic_extents           = mp.geographic_extents
+					  pw.geographic_extents           = mp.geographic_extents,
+					  pw.no_usgs_authors              = mp.no_usgs_authors
              when not matched then insert (<include refid="publication.cols"/>)
                   values (mp.publication_id,	 		mp.index_id,					mp.display_to_public_date,			mp.publication_year,
                           mp.no_year,					mp.publication_type_id,			mp.publication_subtype_id,			mp.publication_series_id,
@@ -251,7 +252,7 @@
                           mp.contact_info,				mp.table_of_contents,           mp.publishing_service_center_id,	mp.published_date,
                           mp.is_part_of_id,				mp.superseded_by_id,			mp.revised_date,
                           mp.insert_date, 				mp.insert_username, 			sysdate, 							audit_trail_util.get_username,
-                          mp.abstract,					mp.notes,						mp.geographic_extents)
+                          mp.abstract,					mp.notes,						mp.geographic_extents,				mp.no_usgs_authors)
     </update>
 
     <delete id="delete" parameterType="Integer">

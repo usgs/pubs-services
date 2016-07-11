@@ -13,9 +13,9 @@ import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
  */
 public class PubsEscapeXML10 {
 
-	public PubsEscapeXML10() {}
-	
-    public static final CharSequenceTranslator ESCAPE_XML10 =
+	private PubsEscapeXML10() {}
+
+	public static final CharSequenceTranslator ESCAPE_XML10 =
 		new AggregateTranslator(new NumericEntityRemover());
 
 }

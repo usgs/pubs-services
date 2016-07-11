@@ -51,7 +51,7 @@ public class TokenSecurityFilter extends GenericFilterBean {
 			} catch (UnauthorizedException e) {
 				//We do not need to do anything here - the user will not be authenticated here and the remaining filters 
 				//will apply - be they anonymous or a rejection (http status 401)
-				LOG.debug(e.getMessage());
+				LOG.debug("Ignoring this:", e);
 			}
 		}
 				

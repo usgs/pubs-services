@@ -24,14 +24,16 @@ public class MpList extends BaseDomain<MpList>  implements Serializable {
 	private static final long serialVersionUID = 4584540523823086709L;
 
 	private static IMpListDao mpListDao;
-	
+
 	public static final String IPDS_JOURNAL_ARTICLES = "3";
 
 	public static final String IPDS_OTHER_PUBS = "4";
-	
-	public static final String USGS_DATA_WEBSITES = "6";
-	
+
+	public static final String USGS_DATA_RELEASES = "6";
+
 	public static final String PENDING_USGS_SERIES = "9";
+
+	public static final String USGS_WEBSITE = "24";
 
 	public static final String IPDS_USGS_NUMBERED_SERIES = "275";
 
@@ -39,19 +41,19 @@ public class MpList extends BaseDomain<MpList>  implements Serializable {
 		PUBS,
 		SPN;
 	}
-	
+
 	@JsonProperty("text")
-    @Length(min=0, max=500)
+	@Length(min=0, max=500)
 	private String text;
 
 	@JsonProperty("description")
-    @Length(min=0, max=2000)
+	@Length(min=0, max=2000)
 	private String description;
-	
+
 	@JsonProperty("type")
-    @Length(min=0, max=500)
+	@Length(min=0, max=500)
 	private MpListType type;
-	
+
 	@JsonIgnore
 	private Integer ipdsInternalId;
 
@@ -91,7 +93,7 @@ public class MpList extends BaseDomain<MpList>  implements Serializable {
 		return mpListDao;
 	}
 
-    @Autowired
+	@Autowired
 	public void setMpListDao(final IMpListDao inMpListDao) {
 		mpListDao = inMpListDao;
 	}

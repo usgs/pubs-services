@@ -116,7 +116,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 			pub.setValidationErrors(validator.validate(pub));
 			if (pub.getValidationErrors().isEmpty()) {
 				MpPublication.getDao().add(pub);
-			   	MpPublication.getDao().lockPub(pub.getId());
+				MpPublication.getDao().lockPub(pub.getId());
 				pub = publicationPostProcessing(pub);
 			}
 			return pub;
@@ -337,16 +337,12 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 			} else if (PubsUtilities.isSpnProduction(inPublication.getIpdsReviewProcessState())) {
 				//Default to the old list if we don't have a PSC.
 				listId = MpList.PENDING_USGS_SERIES;
-				if (null != inPublication.getPublishingServiceCenter() && null != inPublication.getPublishingServiceCenter().getId()) {
-					MpList spnList = MpList.getDao().getByIpdsId(inPublication.getPublishingServiceCenter().getId());
-					if (null != spnList && null != spnList.getId()) {
-						listId = spnList.getId().toString();
-					}
-				}
 			} else if (PubsUtilities.isUsgsNumberedSeries(inPublication.getPublicationSubtype())) {
 				listId = MpList.IPDS_USGS_NUMBERED_SERIES;
+			} else if (PubsUtilities.isPublicationTypeUSGSDataRelease(inPublication.getPublicationSubtype())) {
+				listId = MpList.USGS_DATA_RELEASES;
 			} else if (PubsUtilities.isPublicationTypeUSGSWebsite(inPublication.getPublicationSubtype())) {
-				listId = MpList.USGS_DATA_WEBSITES;
+				listId = MpList.USGS_WEBSITE;
 			}
 			setList(inPublication, listId);
 		}

@@ -43,7 +43,7 @@ public class AuthenticationService {
 		boolean isValid = authClient.isValidToken(token);
 		if (isValid) {
 			authorizeToken(token);
-		};
+		}
 		return isValid;
 	};
 

@@ -7,21 +7,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class StreamingResultHandler<T> implements ResultHandler<T> {
-
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private static final Logger LOG = LoggerFactory.getLogger(StreamingResultHandler.class);
 	private final ITransformer transformer;
-	
+
 	public StreamingResultHandler(ITransformer transformer) {
 		this.transformer = transformer;
 	}
-	
+
 	@Override
 	public void handleResult(ResultContext<? extends T> context) {
-		log.trace("streaming handle result : {}", (context==null ?"null" :"context"));
+		LOG.trace("streaming handle result : {}", context==null ? "null" :"context");
 		try {
 			transformer.write(context.getResultObject());
 		} catch (Exception e) {
-			log.warn("Error MapResultHandler", e);
+			LOG.warn("Error MapResultHandler", e);
 			throw new RuntimeException("Error MapResultHandler", e);
 		}
 	}

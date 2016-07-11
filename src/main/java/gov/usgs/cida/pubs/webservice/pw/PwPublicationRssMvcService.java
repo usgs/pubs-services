@@ -116,14 +116,14 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 		try {
 			response.setContentLength(rssResults.getBytes(PubsConstants.DEFAULT_ENCODING).length);
 		} catch (UnsupportedEncodingException e) {
-			LOG.error("Unable to set content length of resulting RSS content: " + e.getMessage());
+			LOG.error("Unable to set content length of resulting RSS content: " + e);
 		}
 
 		response.setStatus(HttpStatus.SC_OK);
 		try {
 			response.getWriter().write(rssResults);
 		} catch (IOException e) {
-			LOG.error("Unable to write to response: " + e.getMessage());
+			LOG.error("Unable to write to response: " + e);
 		}
 	}
 
@@ -249,7 +249,7 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 							}
 						}
 					} catch (ClassCastException e) {
-						LOG.error("Error extracting contributor information: " + e.getMessage());
+						LOG.error("Error extracting contributor information: " + e);
 					}
 				}
 				rssResults.append(StringEscapeUtils.escapeXml10(authorship.toString()));

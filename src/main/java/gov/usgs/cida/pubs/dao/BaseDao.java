@@ -30,7 +30,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
 	public static final String ID_SEARCH = "id";
 	public static final String TEXT_SEARCH = "text";
 
-	public static final String PAGE_ROW_START = "pageRowStart";
+	public static final String PAGE_ROW_START = "page_row_start";
 	public static final String PAGE_SIZE = "page_size";
 	public static final String PAGE_NUMBER = "page_number";
 

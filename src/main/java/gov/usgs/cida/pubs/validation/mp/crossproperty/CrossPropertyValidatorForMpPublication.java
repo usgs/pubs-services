@@ -39,21 +39,21 @@ public class CrossPropertyValidatorForMpPublication implements ConstraintValidat
 				context.buildConstraintViolationWithTemplate(errorMsg).addConstraintViolation();
 			}
 
-			if (StringUtils.isNotEmpty(value.getPublicationYear()) && value.isNoYear()) {
-				rtn = false;
-				Object[] messageArguments = Arrays.asList(new String[]{"Publication Year", "No Year=false"}).toArray();
-				String errorMsg = PubsUtilities.buildErrorMsg("{pubs.eitheror.error}", messageArguments); 
-				context.disableDefaultConstraintViolation();
-				context.buildConstraintViolationWithTemplate(errorMsg).addConstraintViolation();
-			}
+//			if (StringUtils.isNotEmpty(value.getPublicationYear()) && value.isNoYear()) {
+//				rtn = false;
+//				Object[] messageArguments = Arrays.asList(new String[]{"Publication Year", "No Year=false"}).toArray();
+//				String errorMsg = PubsUtilities.buildErrorMsg("{pubs.eitheror.error}", messageArguments); 
+//				context.disableDefaultConstraintViolation();
+//				context.buildConstraintViolationWithTemplate(errorMsg).addConstraintViolation();
+//			}
 
-			if (StringUtils.isEmpty(value.getPublicationYear()) && !value.isNoYear()) {
-				rtn = false;
-				Object[] messageArguments = Arrays.asList(new String[]{"Publication Year", "No Year=true"}).toArray();
-				String errorMsg = PubsUtilities.buildErrorMsg("{pubs.eitheror.error}", messageArguments); 
-				context.disableDefaultConstraintViolation();
-				context.buildConstraintViolationWithTemplate(errorMsg).addConstraintViolation();
-			}
+//			if (StringUtils.isEmpty(value.getPublicationYear()) && !value.isNoYear()) {
+//				rtn = false;
+//				Object[] messageArguments = Arrays.asList(new String[]{"Publication Year", "No Year=true"}).toArray();
+//				String errorMsg = PubsUtilities.buildErrorMsg("{pubs.eitheror.error}", messageArguments); 
+//				context.disableDefaultConstraintViolation();
+//				context.buildConstraintViolationWithTemplate(errorMsg).addConstraintViolation();
+//			}
 		}
 
 		return rtn;

@@ -1,30 +1,25 @@
 package gov.usgs.cida.pubs.domain;
 
+import gov.usgs.cida.pubs.dao.OutsideAffiliationDao;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
-import gov.usgs.cida.pubs.dao.intfc.IDao;
 
 
 @Component
 public class OutsideAffiliation extends Affiliation<OutsideAffiliation> {
 
-    private static IDao<Affiliation<?>> outsideAffiliationDao;
+    @Autowired
+    @Qualifier("outsideAffiliationDao")
+    private static OutsideAffiliationDao outsideAffiliationDao;
 
     public OutsideAffiliation() {
         usgs = false;
         active = true;
     }
 
-    public static IDao<Affiliation<?>> getDao() {
+    public static OutsideAffiliationDao getDao() {
         return outsideAffiliationDao;
     }
-
-    @Autowired
-    @Qualifier("outsideAffiliationDao")
-    public void setOutsideAffiliationDao(final IDao<Affiliation<?>> inOutsideAffiliationDao) {
-        outsideAffiliationDao = inOutsideAffiliationDao;
-    }
-
 }

@@ -1,7 +1,7 @@
 package gov.usgs.cida.pubs.domain.mp;
 
 
-import gov.usgs.cida.pubs.dao.intfc.IMpListDao;
+import gov.usgs.cida.pubs.dao.mp.MpListDao;
 import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
 import gov.usgs.cida.pubs.validation.constraint.NoChildren;
@@ -23,7 +23,7 @@ public class MpList extends BaseDomain<MpList>  implements Serializable {
 
 	private static final long serialVersionUID = 4584540523823086709L;
 
-	private static IMpListDao mpListDao;
+	private static MpListDao mpListDao;
 
 	public static final String IPDS_JOURNAL_ARTICLES = "3";
 
@@ -89,12 +89,12 @@ public class MpList extends BaseDomain<MpList>  implements Serializable {
 		ipdsInternalId = inIpdsInternalId;
 	}
 
-	public static IMpListDao getDao() {
+	public static MpListDao getDao() {
 		return mpListDao;
 	}
 
 	@Autowired
-	public void setMpListDao(final IMpListDao inMpListDao) {
+	public void setMpListDao(final MpListDao inMpListDao) {
 		mpListDao = inMpListDao;
 	}
 

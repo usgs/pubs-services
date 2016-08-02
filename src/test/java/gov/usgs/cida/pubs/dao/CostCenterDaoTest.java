@@ -5,7 +5,6 @@ import static org.junit.Assert.fail;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.CostCenter;
 
 import java.util.Arrays;
@@ -35,19 +34,19 @@ public class CostCenterDaoTest extends BaseSpringTest {
 
     @Test
     public void getByIdInteger() {
-        Affiliation<?> costCenter = CostCenter.getDao().getById(1);
+    	CostCenter costCenter = CostCenter.getDao().getById(1);
         AffiliationDaoTest.assertAffiliation1(costCenter);
     }
 
     @Test
     public void getByIdString() {
-        Affiliation<?> costCenter = CostCenter.getDao().getById("1");
+    	CostCenter costCenter = CostCenter.getDao().getById("1");
         AffiliationDaoTest.assertAffiliation1(costCenter);
     }
 
     @Test
     public void getByMap() {
-        List<Affiliation<?>> costCenters = CostCenter.getDao().getByMap(null);
+        List<CostCenter> costCenters = CostCenter.getDao().getByMap(null);
         assertEquals(COST_CENTER_CNT, costCenters.size());
 
         Map<String, Object> filters = new HashMap<>();
@@ -130,5 +129,4 @@ public class CostCenterDaoTest extends BaseSpringTest {
             assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
         }
     }
-
 }

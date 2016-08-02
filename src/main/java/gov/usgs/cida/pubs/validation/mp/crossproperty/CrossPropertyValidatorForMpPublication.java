@@ -9,8 +9,6 @@ import java.util.Arrays;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import org.apache.commons.lang3.StringUtils;
-
 public class CrossPropertyValidatorForMpPublication implements ConstraintValidator<CrossProperty, Publication<?>> {
 
 	/** {@inheritDoc}
@@ -38,25 +36,8 @@ public class CrossPropertyValidatorForMpPublication implements ConstraintValidat
 				context.disableDefaultConstraintViolation();
 				context.buildConstraintViolationWithTemplate(errorMsg).addConstraintViolation();
 			}
-
-//			if (StringUtils.isNotEmpty(value.getPublicationYear()) && value.isNoYear()) {
-//				rtn = false;
-//				Object[] messageArguments = Arrays.asList(new String[]{"Publication Year", "No Year=false"}).toArray();
-//				String errorMsg = PubsUtilities.buildErrorMsg("{pubs.eitheror.error}", messageArguments); 
-//				context.disableDefaultConstraintViolation();
-//				context.buildConstraintViolationWithTemplate(errorMsg).addConstraintViolation();
-//			}
-
-//			if (StringUtils.isEmpty(value.getPublicationYear()) && !value.isNoYear()) {
-//				rtn = false;
-//				Object[] messageArguments = Arrays.asList(new String[]{"Publication Year", "No Year=true"}).toArray();
-//				String errorMsg = PubsUtilities.buildErrorMsg("{pubs.eitheror.error}", messageArguments); 
-//				context.disableDefaultConstraintViolation();
-//				context.buildConstraintViolationWithTemplate(errorMsg).addConstraintViolation();
-//			}
 		}
 
 		return rtn;
 	}
-
 }

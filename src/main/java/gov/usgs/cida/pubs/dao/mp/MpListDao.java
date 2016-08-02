@@ -2,7 +2,6 @@ package gov.usgs.cida.pubs.dao.mp;
 
 import gov.usgs.cida.pubs.aop.ISetDbContext;
 import gov.usgs.cida.pubs.dao.BaseDao;
-import gov.usgs.cida.pubs.dao.intfc.IMpListDao;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-public class MpListDao extends BaseDao<MpList> implements IMpListDao {
+public class MpListDao extends BaseDao<MpList> {
 
 	@Autowired
 	public MpListDao(SqlSessionFactory sqlSessionFactory) {
@@ -23,7 +22,6 @@ public class MpListDao extends BaseDao<MpList> implements IMpListDao {
 	}
 
 	private static final String NS = "mpList";
-	private static final String GET_BY_IPDS_ID = ".getByIpdsId";
 	public static final String LIST_TYPE_SEARCH = "listType";
 
 	@Transactional(readOnly = true)
@@ -49,12 +47,5 @@ public class MpListDao extends BaseDao<MpList> implements IMpListDao {
 	@Override
 	public List<MpList> getByMap(Map<String, Object> filters) {
 		return getSqlSession().selectList(NS + GET_BY_MAP, filters);
-	}
-
-	@Transactional(readOnly = true)
-	@ISetDbContext
-	@Override
-	public MpList getByIpdsId(Integer ipdsId) {
-		return getSqlSession().selectOne(NS + GET_BY_IPDS_ID, ipdsId);
 	}
 }

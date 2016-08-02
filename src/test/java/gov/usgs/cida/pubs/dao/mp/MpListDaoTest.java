@@ -10,11 +10,11 @@ import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 import gov.usgs.cida.pubs.domain.mp.MpList.MpListType;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import java.time.LocalDateTime;
 import org.junit.Test;
 
 public class MpListDaoTest extends BaseSpringTest {
@@ -53,12 +53,6 @@ public class MpListDaoTest extends BaseSpringTest {
 		mpLists = MpList.getDao().getByMap(filters);
 		assertNotNull(mpLists);
 		assertEquals(1, mpLists.size());
-	}
-
-	@Test
-	public void getbyPscIdTests() {
-		//No data for this now.
-		MpList.getDao().getByIpdsId(1);
 	}
 
 	@Test

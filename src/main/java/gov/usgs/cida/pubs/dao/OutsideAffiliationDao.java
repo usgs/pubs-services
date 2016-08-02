@@ -1,7 +1,6 @@
 package gov.usgs.cida.pubs.dao;
 
 import gov.usgs.cida.pubs.aop.ISetDbContext;
-import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-public class OutsideAffiliationDao extends AffiliationDao {
+public class OutsideAffiliationDao extends AffiliationDao<OutsideAffiliation> {
 
 	@Autowired
     public OutsideAffiliationDao(SqlSessionFactory sqlSessionFactory) {
@@ -30,7 +29,7 @@ public class OutsideAffiliationDao extends AffiliationDao {
     @Transactional
     @ISetDbContext
     @Override
-    public Integer add(Affiliation<?> domainObject) {
+    public Integer add(OutsideAffiliation domainObject) {
         getSqlSession().insert(NS + ADD + OUTSIDE_AFFILIATION, domainObject);
         return domainObject.getId();
     }
@@ -43,7 +42,7 @@ public class OutsideAffiliationDao extends AffiliationDao {
     @ISetDbContext
     @Override
     public OutsideAffiliation getById(Integer domainID) {
-        return (OutsideAffiliation) getSqlSession().selectOne(NS + GET_BY_ID + OUTSIDE_AFFILIATION, domainID);
+        return getSqlSession().selectOne(NS + GET_BY_ID + OUTSIDE_AFFILIATION, domainID);
     }
 
     /** 
@@ -64,7 +63,7 @@ public class OutsideAffiliationDao extends AffiliationDao {
     @Transactional(readOnly = true)
     @ISetDbContext
     @Override
-    public List<Affiliation<?>> getByMap(Map<String, Object> filters) {
+    public List<OutsideAffiliation> getByMap(Map<String, Object> filters) {
         return getSqlSession().selectList(NS + GET_BY_MAP + OUTSIDE_AFFILIATION, filters);
     }
 
@@ -74,8 +73,7 @@ public class OutsideAffiliationDao extends AffiliationDao {
     @Transactional
     @ISetDbContext
     @Override
-    public void update(Affiliation<?> domainObject) {
+    public void update(OutsideAffiliation domainObject) {
         getSqlSession().insert(NS + UPDATE + OUTSIDE_AFFILIATION, domainObject);
     }
-
 }

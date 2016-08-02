@@ -5,7 +5,6 @@ import static org.junit.Assert.fail;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
 
 import java.util.Arrays;
@@ -35,19 +34,19 @@ public class OutsideAffiliationDaoTest extends BaseSpringTest {
 
     @Test
     public void getByIdInteger() {
-        Affiliation<?> outsideAffiliation = OutsideAffiliation.getDao().getById(5);
+        OutsideAffiliation outsideAffiliation = OutsideAffiliation.getDao().getById(5);
         AffiliationDaoTest.assertAffiliation5(outsideAffiliation);
     }
 
     @Test
     public void getByIdString() {
-        Affiliation<?> outsideAffiliation = OutsideAffiliation.getDao().getById("5");
+        OutsideAffiliation outsideAffiliation = OutsideAffiliation.getDao().getById("5");
         AffiliationDaoTest.assertAffiliation5(outsideAffiliation);
     }
 
     @Test
     public void getByMap() {
-        List<Affiliation<?>> outsideAffiliations = OutsideAffiliation.getDao().getByMap(null);
+        List<OutsideAffiliation> outsideAffiliations = OutsideAffiliation.getDao().getByMap(null);
         assertEquals(OUTSIDE_AFFILIATES_CNT, outsideAffiliations.size());
 
         Map<String, Object> filters = new HashMap<>();

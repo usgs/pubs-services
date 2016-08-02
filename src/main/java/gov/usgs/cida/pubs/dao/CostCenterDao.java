@@ -1,7 +1,6 @@
 package gov.usgs.cida.pubs.dao;
 
 import gov.usgs.cida.pubs.aop.ISetDbContext;
-import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-public class CostCenterDao extends AffiliationDao {
+public class CostCenterDao extends AffiliationDao<CostCenter> {
 
 	@Autowired
     public CostCenterDao(SqlSessionFactory sqlSessionFactory) {
@@ -30,7 +29,7 @@ public class CostCenterDao extends AffiliationDao {
     @Transactional
     @ISetDbContext
     @Override
-    public Integer add(Affiliation<?> domainObject) {
+    public Integer add(CostCenter domainObject) {
         getSqlSession().insert(NS + ADD + COST_CENTER, domainObject);
         return domainObject.getId();
     }
@@ -43,7 +42,7 @@ public class CostCenterDao extends AffiliationDao {
     @ISetDbContext
     @Override
     public CostCenter getById(Integer domainID) {
-        return (CostCenter) getSqlSession().selectOne(NS + GET_BY_ID + COST_CENTER, domainID);
+        return getSqlSession().selectOne(NS + GET_BY_ID + COST_CENTER, domainID);
     }
 
     /** 
@@ -64,7 +63,7 @@ public class CostCenterDao extends AffiliationDao {
     @Transactional(readOnly = true)
     @ISetDbContext
     @Override
-    public List<Affiliation<?>> getByMap(Map<String, Object> filters) {
+    public List<CostCenter> getByMap(Map<String, Object> filters) {
         return getSqlSession().selectList(NS + GET_BY_MAP + COST_CENTER, filters);
     }
 
@@ -74,8 +73,7 @@ public class CostCenterDao extends AffiliationDao {
     @Transactional
     @ISetDbContext
     @Override
-    public void update(Affiliation<?> domainObject) {
+    public void update(CostCenter domainObject) {
         getSqlSession().insert(NS + UPDATE + COST_CENTER, domainObject);
     }
-
 }

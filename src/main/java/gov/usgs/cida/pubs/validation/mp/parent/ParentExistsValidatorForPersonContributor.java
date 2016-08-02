@@ -7,7 +7,7 @@ import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class ParentExistsValidatorForPersonContributor implements ConstraintValidator<ParentExists, PersonContributor<?>> {
+public class ParentExistsValidatorForPersonContributor implements ConstraintValidator<ParentExists, PersonContributor<? extends PersonContributor<?>>> {
 
     /** {@inheritDoc}
      * @see javax.validation.ConstraintValidator#initialize(java.lang.annotation.Annotation)
@@ -21,7 +21,7 @@ public class ParentExistsValidatorForPersonContributor implements ConstraintVali
      * @see javax.validation.ConstraintValidator#isValid(java.lang.Object, javax.validation.ConstraintValidatorContext)
      */
     @Override
-    public boolean isValid(PersonContributor<?> value, ConstraintValidatorContext context) {
+    public boolean isValid(PersonContributor<? extends PersonContributor<?>> value, ConstraintValidatorContext context) {
         boolean rtn = true;
 
         if (null != value && null != context

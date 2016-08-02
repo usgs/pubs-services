@@ -198,15 +198,15 @@ public class IpdsBinding {
 		return contributorBusService.createObject(person);
 	}
 
-	protected Affiliation<?> getOrCreateNonUsgsAffiliation(final String name) {
-		Affiliation<?> affiliation = null;
+	protected OutsideAffiliation getOrCreateNonUsgsAffiliation(final String name) {
+		OutsideAffiliation affiliation = null;
 		Map<String, Object> filters = new HashMap<>();
 		filters.put(BaseDao.TEXT_SEARCH, name);
-		List<Affiliation<?>> affiliations = Affiliation.getDao().getByMap(filters);
+		List<OutsideAffiliation> affiliations = OutsideAffiliation.getDao().getByMap(filters);
 		if (affiliations.isEmpty()) {
 			affiliation = createNonUsgsAffiliation(name);
 		} else {
-			for (Affiliation<?> a : affiliations) {
+			for (OutsideAffiliation a : affiliations) {
 				//There should really only be one, only use it if it is an outside affiliation.
 				if (!a.isUsgs()) {
 					affiliation = (OutsideAffiliation) a;
@@ -217,8 +217,8 @@ public class IpdsBinding {
 		return affiliation;
 	}
 
-	protected Affiliation<?> createNonUsgsAffiliation(final String name) {
-		Affiliation<?> affiliation = new OutsideAffiliation();
+	protected OutsideAffiliation createNonUsgsAffiliation(final String name) {
+		OutsideAffiliation affiliation = new OutsideAffiliation();
 		affiliation.setText(name);
 		//TODO this should be the business service.
 //		return affiliationBusService.createObject(affiliation);
@@ -268,7 +268,7 @@ public class IpdsBinding {
 		return getOrCreateCostCenter(getFirstNodeText(element, "d:CostCenterId"));
 	}
 
-	protected Affiliation<?> createUsgsAffiliation(final String ipdsId) throws SAXException, IOException {
+	protected CostCenter createUsgsAffiliation(final String ipdsId) throws SAXException, IOException {
 		String costCenterXml = requester.getCostCenter(ipdsId, ipdsId);
 		Document doc = makeDocument(costCenterXml);
 
@@ -468,25 +468,25 @@ public class IpdsBinding {
 		return null;
 	}
 
-	public Affiliation<?> getOrCreateCostCenter(final PubMap inPub) throws SAXException, IOException {
+	public CostCenter getOrCreateCostCenter(final PubMap inPub) throws SAXException, IOException {
 		return getOrCreateCostCenter(getStringValue(inPub, IpdsMessageLog.COSTCENTERID));
 	}
 
-	protected Affiliation<?> getOrCreateCostCenter(final String costCenterId) throws SAXException, IOException {
+	protected CostCenter getOrCreateCostCenter(final String costCenterId) throws SAXException, IOException {
 		if (StringUtils.isBlank(costCenterId)) {
 			return null;
 		} else {
-			Affiliation<?> affiliation;
+			CostCenter costCenter;
 			Map<String, Object> filters = new HashMap<>();
 			filters.put("ipdsId", costCenterId);
-			List<Affiliation<?>> affiliations = CostCenter.getDao().getByMap(filters);
+			List<CostCenter> costCenters = CostCenter.getDao().getByMap(filters);
 			//TODO what if we get more than one?
-			if (affiliations.isEmpty()) {
-				affiliation = createUsgsAffiliation(costCenterId);
+			if (costCenters.isEmpty()) {
+				costCenter = createUsgsAffiliation(costCenterId);
 			} else {
-				affiliation = (CostCenter) affiliations.get(0);
+				costCenter = costCenters.get(0);
 			}
-			return affiliation;
+			return costCenter;
 		}
 	}
 

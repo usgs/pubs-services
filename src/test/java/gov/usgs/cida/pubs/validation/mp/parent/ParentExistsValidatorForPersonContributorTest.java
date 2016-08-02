@@ -5,6 +5,11 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import gov.usgs.cida.pubs.dao.CostCenterDao;
+import gov.usgs.cida.pubs.domain.CostCenter;
+import gov.usgs.cida.pubs.domain.PersonContributor;
+import gov.usgs.cida.pubs.domain.UsgsContributor;
+import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,30 +17,24 @@ import org.mockito.Mock;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
-import gov.usgs.cida.pubs.dao.AffiliationDao;
-import gov.usgs.cida.pubs.domain.Affiliation;
-import gov.usgs.cida.pubs.domain.PersonContributor;
-import gov.usgs.cida.pubs.domain.UsgsContributor;
-import gov.usgs.cida.pubs.validation.BaseValidatorTest;
-
 //The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we nned to let Spring know that the context is now dirty...
+//for each reference. This does mean that we need to let Spring know that the context is now dirty...
 @DirtiesContext(classMode=ClassMode.AFTER_CLASS)
 public class ParentExistsValidatorForPersonContributorTest extends BaseValidatorTest {
 
 	protected ParentExistsValidatorForPersonContributor validator;
-	protected PersonContributor<?> personContributor;
-	protected Affiliation<?> affiliation;
+	protected PersonContributor<? extends PersonContributor<?>> personContributor;
+	protected CostCenter affiliation;
 
 	@Mock
-	protected AffiliationDao affiliationDao;
+	protected CostCenterDao affiliationDao;
 
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
 		validator = new ParentExistsValidatorForPersonContributor();
 		personContributor = new UsgsContributor();
-		affiliation = new Affiliation<>();
+		affiliation = new CostCenter();
 		affiliation.setAffiliationDao(affiliationDao);
 	}
 
@@ -53,7 +52,7 @@ public class ParentExistsValidatorForPersonContributorTest extends BaseValidator
 
 	@Test
 	public void isValidTrueTest() {
-		when(affiliationDao.getById(any(Integer.class))).thenReturn(new Affiliation<>());
+		when(affiliationDao.getById(any(Integer.class))).thenReturn(new CostCenter());
 		personContributor.setAffiliation(affiliation);
 
 		affiliation.setId(1);
@@ -70,5 +69,4 @@ public class ParentExistsValidatorForPersonContributorTest extends BaseValidator
 		assertFalse(validator.isValid(personContributor, context));
 		verify(affiliationDao).getById(any(Integer.class));
 	}
-
 }

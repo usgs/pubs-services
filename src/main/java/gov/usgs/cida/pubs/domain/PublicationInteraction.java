@@ -10,13 +10,13 @@ public class PublicationInteraction extends BaseDomain<PublicationInteraction> i
 
 	private static final long serialVersionUID = -3684046139875959389L;
 
-    @JsonView(View.PW.class)
+	@JsonView(View.PW.class)
 	private Publication<?> subject;
 	
-    @JsonView(View.PW.class)
+	@JsonView(View.PW.class)
 	private Predicate predicate;
 	
-    @JsonView(View.PW.class)
+	@JsonView(View.PW.class)
 	private Publication<?> object;
 
 	public Publication<?> getSubject() {

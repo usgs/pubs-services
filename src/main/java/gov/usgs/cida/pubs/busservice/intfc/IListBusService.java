@@ -6,11 +6,11 @@ import java.util.Collection;
 
 public interface IListBusService <D> {
 
-    /**
-     *  The merge will process the collection, adding objects without an identifier and updating those with an identifier.
-     */
-    void merge(Integer parentId, Collection<? super D> collection);
+	/**
+	 *  The merge will process the collection, adding objects without an identifier and updating those with an identifier.
+	 */
+	void merge(Integer parentId, Collection<? super D> collection);
 
-    ValidationResults deleteObject(final D object);
+	ValidationResults deleteObject(final D object);
 
 }

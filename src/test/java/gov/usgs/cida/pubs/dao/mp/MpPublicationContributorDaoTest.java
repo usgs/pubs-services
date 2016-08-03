@@ -140,51 +140,51 @@ public class MpPublicationContributorDaoTest extends BaseSpringTest {
 		assertMpContributor11(contrib);
 	}
 
-    @Test
-    public void publishToPwTest() {
-    	MpPublicationContributor.getDao().publishToPw(null);
-    	MpPublicationContributor.getDao().publishToPw(-1);
-    	MpPublication.getDao().publishToPw(1);
-    	
-    	//this one should be a straight add.
-    	MpPublicationContributor.getDao().publishToPw(1);
-    	PwPublication pub = PwPublication.getDao().getById(1);
-    	assertEquals(4, pub.getContributors().size());
-    	assertEquals(2, pub.getContributorsToMap().get(PubsUtilities.getAuthorKey()).size());
-    	for (PublicationContributor<?> contrib : pub.getContributorsToMap().get(PubsUtilities.getAuthorKey())) {
-    		if (1 == contrib.getId()) {
-    			assertPwContributor1(contrib);
-    		} else if (2 == contrib.getId()) {
-    			assertPwContributor2(contrib);
-    		} else {
-    			fail("Got a bad contributor:" + contrib.getId());
-    		}
-    	}
-    	assertEquals(2, pub.getContributorsToMap().get(PubsUtilities.getEditorKey()).size());
-    	for (PublicationContributor<?> contrib : pub.getContributorsToMap().get(PubsUtilities.getEditorKey())) {
-    		if (3 == contrib.getId()) {
-    			assertPwContributor3(contrib);
-    		} else if (4 == contrib.getId()) {
-    			assertPwContributor4(contrib);
-    		} else {
-    			fail("Got a bad contributor:" + contrib.getId());
-    		}
-    	}
-    	
-    	//this one should be a merge.
-    	MpPublication.getDao().copyFromPw(4);
-    	MpPublicationContributor.getDao().copyFromPw(4);
-    	MpPublication.getDao().publishToPw(4);
-    	MpPublicationContributor.getDao().deleteById(10);
-    	MpPublicationContributor.getDao().publishToPw(4);
-    	pub = PwPublication.getDao().getById(4);
-    	assertEquals(1, pub.getContributors().size());
-    	assertNull(pub.getContributorsToMap().get(PubsUtilities.getAuthorKey()));
-    	assertEquals(1, pub.getContributorsToMap().get(PubsUtilities.getEditorKey()).size());
-    	for (PublicationContributor<?> contrib :pub.getContributorsToMap().get(PubsUtilities.getEditorKey())) {
-    		assertPwContributor11(contrib);
-    	}
-    }
+	@Test
+	public void publishToPwTest() {
+		MpPublicationContributor.getDao().publishToPw(null);
+		MpPublicationContributor.getDao().publishToPw(-1);
+		MpPublication.getDao().publishToPw(1);
+		
+		//this one should be a straight add.
+		MpPublicationContributor.getDao().publishToPw(1);
+		PwPublication pub = PwPublication.getDao().getById(1);
+		assertEquals(4, pub.getContributors().size());
+		assertEquals(2, pub.getContributorsToMap().get(PubsUtilities.getAuthorKey()).size());
+		for (PublicationContributor<?> contrib : pub.getContributorsToMap().get(PubsUtilities.getAuthorKey())) {
+			if (1 == contrib.getId()) {
+				assertPwContributor1(contrib);
+			} else if (2 == contrib.getId()) {
+				assertPwContributor2(contrib);
+			} else {
+				fail("Got a bad contributor:" + contrib.getId());
+			}
+		}
+		assertEquals(2, pub.getContributorsToMap().get(PubsUtilities.getEditorKey()).size());
+		for (PublicationContributor<?> contrib : pub.getContributorsToMap().get(PubsUtilities.getEditorKey())) {
+			if (3 == contrib.getId()) {
+				assertPwContributor3(contrib);
+			} else if (4 == contrib.getId()) {
+				assertPwContributor4(contrib);
+			} else {
+				fail("Got a bad contributor:" + contrib.getId());
+			}
+		}
+		
+		//this one should be a merge.
+		MpPublication.getDao().copyFromPw(4);
+		MpPublicationContributor.getDao().copyFromPw(4);
+		MpPublication.getDao().publishToPw(4);
+		MpPublicationContributor.getDao().deleteById(10);
+		MpPublicationContributor.getDao().publishToPw(4);
+		pub = PwPublication.getDao().getById(4);
+		assertEquals(1, pub.getContributors().size());
+		assertNull(pub.getContributorsToMap().get(PubsUtilities.getAuthorKey()));
+		assertEquals(1, pub.getContributorsToMap().get(PubsUtilities.getEditorKey()).size());
+		for (PublicationContributor<?> contrib :pub.getContributorsToMap().get(PubsUtilities.getEditorKey())) {
+			assertPwContributor11(contrib);
+		}
+	}
 
 	public static void assertPwContributor1(PublicationContributor<?> contrib) {
 		assertTrue(contrib instanceof PwPublicationContributor);

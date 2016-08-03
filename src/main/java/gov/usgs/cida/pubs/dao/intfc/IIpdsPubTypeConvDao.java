@@ -4,6 +4,6 @@ import gov.usgs.cida.pubs.domain.ipds.IpdsPubTypeConv;
 
 public interface IIpdsPubTypeConvDao {
 
-    IpdsPubTypeConv getByIpdsValue(String ipdsValue);
+	IpdsPubTypeConv getByIpdsValue(String ipdsValue);
 
 }

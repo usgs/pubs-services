@@ -13,25 +13,25 @@ import org.springframework.transaction.annotation.Transactional;
 public class IpdsProcessLogDao extends BaseDao<IpdsProcessLog> {
 
 	@Autowired
-    public IpdsProcessLogDao(SqlSessionFactory sqlSessionFactory) {
+	public IpdsProcessLogDao(SqlSessionFactory sqlSessionFactory) {
 		super(sqlSessionFactory);
 	}
 
 	private static final String NS = "ipdsProcessLog";
 
-    @Transactional
-    @ISetDbContext
-    @Override
-    public Integer add(IpdsProcessLog domainObject) {
-        getSqlSession().insert(NS + ADD, domainObject);
-        return domainObject.getId();
-    }
+	@Transactional
+	@ISetDbContext
+	@Override
+	public Integer add(IpdsProcessLog domainObject) {
+		getSqlSession().insert(NS + ADD, domainObject);
+		return domainObject.getId();
+	}
 
-    @Transactional(readOnly=true)
-    @ISetDbContext
-    @Override
-    public IpdsProcessLog getById(Integer domainId) {
-        return getSqlSession().selectOne(NS + GET_BY_ID, domainId);
-    }
+	@Transactional(readOnly=true)
+	@ISetDbContext
+	@Override
+	public IpdsProcessLog getById(Integer domainId) {
+		return getSqlSession().selectOne(NS + GET_BY_ID, domainId);
+	}
 
 }

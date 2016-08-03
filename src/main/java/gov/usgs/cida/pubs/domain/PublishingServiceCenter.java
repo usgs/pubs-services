@@ -15,11 +15,11 @@ public class PublishingServiceCenter extends BaseDomain<PublishingServiceCenter>
 
 	private static IPublishingServiceCenterDao pscDao;
 
-    public static final Integer ARTICLE = 2;
+	public static final Integer ARTICLE = 2;
 
-    public static final Integer REPORT = 18;
+	public static final Integer REPORT = 18;
 
-    private String text;
+	private String text;
 
 	@Override
 	public String getText() {
@@ -30,13 +30,13 @@ public class PublishingServiceCenter extends BaseDomain<PublishingServiceCenter>
 		text = inText;
 	}
 
-    public static IPublishingServiceCenterDao getDao() {
-        return pscDao;
-    }
+	public static IPublishingServiceCenterDao getDao() {
+		return pscDao;
+	}
 
-    @Autowired
-    public void setPublishingServiceCenterDao(final IPublishingServiceCenterDao inPscDao) {
-    	pscDao = inPscDao;
-    }
+	@Autowired
+	public void setPublishingServiceCenterDao(final IPublishingServiceCenterDao inPscDao) {
+		pscDao = inPscDao;
+	}
 
 }

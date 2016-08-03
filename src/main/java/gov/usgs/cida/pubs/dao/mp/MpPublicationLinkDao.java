@@ -48,16 +48,16 @@ public class MpPublicationLinkDao extends MpDao<MpPublicationLink> {
 		return (MpPublicationLink) getSqlSession().selectOne(NS + GET_BY_ID, domainID);
 	}
 
-    /** 
-     * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.String)
-     */
-    @Transactional(readOnly = true)
-    @ISetDbContext
-    @Override
-    public MpPublicationLink getById(String domainID) {
-        return getById(PubsUtilities.parseInteger(domainID));
-    }
+	/** 
+	 * {@inheritDoc}
+	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.String)
+	 */
+	@Transactional(readOnly = true)
+	@ISetDbContext
+	@Override
+	public MpPublicationLink getById(String domainID) {
+		return getById(PubsUtilities.parseInteger(domainID));
+	}
 
 	/**
 	 * {@inheritDoc}

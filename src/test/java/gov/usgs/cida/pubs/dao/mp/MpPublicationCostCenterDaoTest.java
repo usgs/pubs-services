@@ -35,120 +35,120 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 public class MpPublicationCostCenterDaoTest extends BaseSpringTest {
 
 
-    @Test
-    public void addGetbyIdDeleteByIdTest() {
-        Integer id = addMpPublicationCostCenter();
-        assertNotNull(id);
-        MpPublicationCostCenter mpcc = MpPublicationCostCenter.getDao().getById(id);
-        assertNotNull(mpcc);
-        assertEquals(id, mpcc.getId());
-        assertEquals(1, mpcc.getPublicationId().intValue());
-        assertEquals(3, mpcc.getCostCenter().getId().intValue());
-        MpPublicationCostCenter.getDao().deleteById(id);
-        assertNull(MpPublicationCostCenter.getDao().getById(id));
-    }
+	@Test
+	public void addGetbyIdDeleteByIdTest() {
+		Integer id = addMpPublicationCostCenter();
+		assertNotNull(id);
+		MpPublicationCostCenter mpcc = MpPublicationCostCenter.getDao().getById(id);
+		assertNotNull(mpcc);
+		assertEquals(id, mpcc.getId());
+		assertEquals(1, mpcc.getPublicationId().intValue());
+		assertEquals(3, mpcc.getCostCenter().getId().intValue());
+		MpPublicationCostCenter.getDao().deleteById(id);
+		assertNull(MpPublicationCostCenter.getDao().getById(id));
+	}
 
-    @Test
-    public void getByMapAndDelete() {
-        Integer id = addMpPublicationCostCenter();
-        Map<String, Object> filters = new HashMap<>();
-        filters.put("id", id);
-        Collection<MpPublicationCostCenter> mpccs = MpPublicationCostCenter.getDao().getByMap(filters);
-        assertNotNull(mpccs);
-        assertEquals(1, mpccs.size());
+	@Test
+	public void getByMapAndDelete() {
+		Integer id = addMpPublicationCostCenter();
+		Map<String, Object> filters = new HashMap<>();
+		filters.put("id", id);
+		Collection<MpPublicationCostCenter> mpccs = MpPublicationCostCenter.getDao().getByMap(filters);
+		assertNotNull(mpccs);
+		assertEquals(1, mpccs.size());
 
-        filters.clear();
-        filters.put("publicationId", 1);
-        mpccs = MpPublicationCostCenter.getDao().getByMap(filters);
-        assertNotNull(mpccs);
-        assertEquals(3, mpccs.size());
+		filters.clear();
+		filters.put("publicationId", 1);
+		mpccs = MpPublicationCostCenter.getDao().getByMap(filters);
+		assertNotNull(mpccs);
+		assertEquals(3, mpccs.size());
 
-        filters.clear();
-        filters.put("costCenterId", 3);
-        mpccs = MpPublicationCostCenter.getDao().getByMap(filters);
-        assertNotNull(mpccs);
-        assertEquals(1, mpccs.size());
+		filters.clear();
+		filters.put("costCenterId", 3);
+		mpccs = MpPublicationCostCenter.getDao().getByMap(filters);
+		assertNotNull(mpccs);
+		assertEquals(1, mpccs.size());
 
-        filters.put("id", id);
-        filters.put("publicationId", 1);
-        mpccs = MpPublicationCostCenter.getDao().getByMap(filters);
-        assertNotNull(mpccs);
-        assertEquals(1, mpccs.size());
+		filters.put("id", id);
+		filters.put("publicationId", 1);
+		mpccs = MpPublicationCostCenter.getDao().getByMap(filters);
+		assertNotNull(mpccs);
+		assertEquals(1, mpccs.size());
 
-        MpPublicationCostCenter.getDao().delete(MpPublicationCostCenter.getDao().getById(id));
-        assertNull(MpPublicationCostCenter.getDao().getById(id));
+		MpPublicationCostCenter.getDao().delete(MpPublicationCostCenter.getDao().getById(id));
+		assertNull(MpPublicationCostCenter.getDao().getById(id));
 
-        MpPublicationCostCenter.getDao().deleteByParent(2);
+		MpPublicationCostCenter.getDao().deleteByParent(2);
 		filters.put("publicationId", 1);
 		mpccs = MpPublicationCostCenter.getDao().getByMap(filters);
 		assertTrue(mpccs.isEmpty());
-    }
+	}
 
-    @Test
-    public void updateTest() {
-        MpPublicationCostCenter mpcc = MpPublicationCostCenter.getDao().getById(addMpPublicationCostCenter());
-        CostCenter cc = new CostCenter();
-        cc.setId(4);
-        mpcc.setCostCenter(cc);
-        //We don't update the publicationID...
-        mpcc.setPublicationId(4);
-        MpPublicationCostCenter.getDao().update(mpcc);
-        MpPublicationCostCenter mpcc2 = MpPublicationCostCenter.getDao().getById(mpcc.getId());
-        assertNotNull(mpcc);
-        assertEquals(mpcc.getId(), mpcc2.getId());
-        assertEquals(1, mpcc2.getPublicationId().intValue());
-        assertEquals(4, mpcc2.getCostCenter().getId().intValue());
-    }
+	@Test
+	public void updateTest() {
+		MpPublicationCostCenter mpcc = MpPublicationCostCenter.getDao().getById(addMpPublicationCostCenter());
+		CostCenter cc = new CostCenter();
+		cc.setId(4);
+		mpcc.setCostCenter(cc);
+		//We don't update the publicationID...
+		mpcc.setPublicationId(4);
+		MpPublicationCostCenter.getDao().update(mpcc);
+		MpPublicationCostCenter mpcc2 = MpPublicationCostCenter.getDao().getById(mpcc.getId());
+		assertNotNull(mpcc);
+		assertEquals(mpcc.getId(), mpcc2.getId());
+		assertEquals(1, mpcc2.getPublicationId().intValue());
+		assertEquals(4, mpcc2.getCostCenter().getId().intValue());
+	}
 
-    @Test
-    public void copyFromPwTest() {
-        MpPublication.getDao().copyFromPw(4);
-        MpPublicationCostCenter.getDao().copyFromPw(4);
-        MpPublicationCostCenter mpcc = MpPublicationCostCenter.getDao().getById(10);
-        assertNotNull(mpcc);
-        assertEquals(10, mpcc.getId().intValue());
-        assertEquals(4, mpcc.getPublicationId().intValue());
-        assertEquals(2, mpcc.getCostCenter().getId().intValue());
-    }
+	@Test
+	public void copyFromPwTest() {
+		MpPublication.getDao().copyFromPw(4);
+		MpPublicationCostCenter.getDao().copyFromPw(4);
+		MpPublicationCostCenter mpcc = MpPublicationCostCenter.getDao().getById(10);
+		assertNotNull(mpcc);
+		assertEquals(10, mpcc.getId().intValue());
+		assertEquals(4, mpcc.getPublicationId().intValue());
+		assertEquals(2, mpcc.getCostCenter().getId().intValue());
+	}
 
-    @Test
-    public void publishToPwTest() {
-    	MpPublicationCostCenter.getDao().publishToPw(null);
-    	MpPublicationCostCenter.getDao().publishToPw(-1);
-    	MpPublication.getDao().publishToPw(1);
-    	
-    	//this one should be a straight add.
-    	MpPublicationCostCenter.getDao().publishToPw(1);
-    	PwPublication pub = PwPublication.getDao().getById(1);
-    	assertEquals(2, pub.getCostCenters().size());
-    	for (PublicationCostCenter<?> costCenter : pub.getCostCenters()) {
-    		if (1 == costCenter.getId()) {
-    			assertPwCostCenter1(costCenter);
-    		} else if (2 == costCenter.getId()) {
-    			assertPwCostCenter2(costCenter);
-    		} else {
-    			fail("Got a bad contributor:" + costCenter.getId());
-    		}
-    	}
-    	
-    	//this one should be a merge.
-    	MpPublication.getDao().copyFromPw(4);
-    	MpPublicationCostCenter.getDao().copyFromPw(4);
-    	MpPublication.getDao().publishToPw(4);
-    	MpPublicationCostCenter.getDao().deleteById(10);
-    	MpPublicationCostCenter mpPCC = new MpPublicationCostCenter();
-    	CostCenter cc = new CostCenter();
-    	cc.setId(3);
-    	mpPCC.setCostCenter(cc);
-    	mpPCC.setPublicationId(4);
-    	MpPublicationCostCenter.getDao().add(mpPCC);
-    	MpPublicationCostCenter.getDao().publishToPw(4);
-    	pub = PwPublication.getDao().getById(4);
-    	assertEquals(1, pub.getCostCenters().size());
-    	for (PublicationCostCenter<?> costCenter : pub.getCostCenters()) {
-    		assertPwCostCenterXX(mpPCC.getId(), costCenter);
-    	}
-    }
+	@Test
+	public void publishToPwTest() {
+		MpPublicationCostCenter.getDao().publishToPw(null);
+		MpPublicationCostCenter.getDao().publishToPw(-1);
+		MpPublication.getDao().publishToPw(1);
+		
+		//this one should be a straight add.
+		MpPublicationCostCenter.getDao().publishToPw(1);
+		PwPublication pub = PwPublication.getDao().getById(1);
+		assertEquals(2, pub.getCostCenters().size());
+		for (PublicationCostCenter<?> costCenter : pub.getCostCenters()) {
+			if (1 == costCenter.getId()) {
+				assertPwCostCenter1(costCenter);
+			} else if (2 == costCenter.getId()) {
+				assertPwCostCenter2(costCenter);
+			} else {
+				fail("Got a bad contributor:" + costCenter.getId());
+			}
+		}
+		
+		//this one should be a merge.
+		MpPublication.getDao().copyFromPw(4);
+		MpPublicationCostCenter.getDao().copyFromPw(4);
+		MpPublication.getDao().publishToPw(4);
+		MpPublicationCostCenter.getDao().deleteById(10);
+		MpPublicationCostCenter mpPCC = new MpPublicationCostCenter();
+		CostCenter cc = new CostCenter();
+		cc.setId(3);
+		mpPCC.setCostCenter(cc);
+		mpPCC.setPublicationId(4);
+		MpPublicationCostCenter.getDao().add(mpPCC);
+		MpPublicationCostCenter.getDao().publishToPw(4);
+		pub = PwPublication.getDao().getById(4);
+		assertEquals(1, pub.getCostCenters().size());
+		for (PublicationCostCenter<?> costCenter : pub.getCostCenters()) {
+			assertPwCostCenterXX(mpPCC.getId(), costCenter);
+		}
+	}
 
 	public static void assertPwCostCenter1(PublicationCostCenter<?> costCenter) {
 		assertTrue(costCenter instanceof PwPublicationCostCenter);
@@ -205,12 +205,12 @@ public class MpPublicationCostCenterDaoTest extends BaseSpringTest {
 	}
 	
 	public Integer addMpPublicationCostCenter() {
-        MpPublicationCostCenter mpcc = new MpPublicationCostCenter();
-        mpcc.setPublicationId(1);
-        CostCenter cc = new CostCenter();
-        cc.setId(3);
-        mpcc.setCostCenter(cc);
-        return MpPublicationCostCenter.getDao().add(mpcc);
-    }
+		MpPublicationCostCenter mpcc = new MpPublicationCostCenter();
+		mpcc.setPublicationId(1);
+		CostCenter cc = new CostCenter();
+		cc.setId(3);
+		mpcc.setCostCenter(cc);
+		return MpPublicationCostCenter.getDao().add(mpcc);
+	}
 
 }

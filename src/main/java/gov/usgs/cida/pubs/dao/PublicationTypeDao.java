@@ -20,43 +20,43 @@ import org.springframework.transaction.annotation.Transactional;
 public class PublicationTypeDao extends BaseDao<PublicationType> {
 
 	@Autowired
-    public PublicationTypeDao(SqlSessionFactory sqlSessionFactory) {
+	public PublicationTypeDao(SqlSessionFactory sqlSessionFactory) {
 		super(sqlSessionFactory);
 	}
 
 	private static final String NS = "publicationType";
 
-    /** 
-     * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
-     */
-    @Transactional(readOnly = true)
-    @ISetDbContext
-    @Override
-    public PublicationType getById(Integer domainID) {
-        return (PublicationType) getSqlSession().selectOne(NS + GET_BY_ID, domainID);
-    }
+	/** 
+	 * {@inheritDoc}
+	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
+	 */
+	@Transactional(readOnly = true)
+	@ISetDbContext
+	@Override
+	public PublicationType getById(Integer domainID) {
+		return (PublicationType) getSqlSession().selectOne(NS + GET_BY_ID, domainID);
+	}
 
-    /** 
-     * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.String)
-     */
-    @Transactional(readOnly = true)
-    @ISetDbContext
-    @Override
-    public PublicationType getById(String domainID) {
-        return getById(PubsUtilities.parseInteger(domainID));
-    }
+	/** 
+	 * {@inheritDoc}
+	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.String)
+	 */
+	@Transactional(readOnly = true)
+	@ISetDbContext
+	@Override
+	public PublicationType getById(String domainID) {
+		return getById(PubsUtilities.parseInteger(domainID));
+	}
 
-    /** 
-     * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.dao.BaseDao#getByMap(Map)
-     */
-    @Transactional(readOnly = true)
-    @ISetDbContext
-    @Override
-    public List<PublicationType> getByMap(Map<String, Object> filters) {
-        return getSqlSession().selectList(NS + GET_BY_MAP, filters);
-    }
+	/** 
+	 * {@inheritDoc}
+	 * @see gov.usgs.cida.pubs.dao.BaseDao#getByMap(Map)
+	 */
+	@Transactional(readOnly = true)
+	@ISetDbContext
+	@Override
+	public List<PublicationType> getByMap(Map<String, Object> filters) {
+		return getSqlSession().selectList(NS + GET_BY_MAP, filters);
+	}
 
 }

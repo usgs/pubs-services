@@ -19,7 +19,7 @@ public class Message extends SearchResults {
 	}
 
 	@JsonProperty("message")
-    @JsonView(View.PW.class)
+	@JsonView(View.PW.class)
 	public String getMessage() {
 		return message;
 	}

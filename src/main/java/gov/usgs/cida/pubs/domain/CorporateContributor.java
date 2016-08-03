@@ -15,39 +15,39 @@ import gov.usgs.cida.pubs.json.View;
 @Component
 public class CorporateContributor extends Contributor<CorporateContributor> implements ILookup {
 
-    private static IDao<Contributor<?>> corporateContributorDao;
+	private static IDao<Contributor<?>> corporateContributorDao;
 
-    public CorporateContributor() {
-        corporation = true;
-        usgs = false;
-    }
+	public CorporateContributor() {
+		corporation = true;
+		usgs = false;
+	}
 
-    @JsonProperty("organization")
-    @JsonView(View.PW.class)
-    @Length(min=1, max=400)
-    private String organization;
+	@JsonProperty("organization")
+	@JsonView(View.PW.class)
+	@Length(min=1, max=400)
+	private String organization;
 
-    public String getOrganization() {
-        return organization;
-    }
+	public String getOrganization() {
+		return organization;
+	}
 
-    public void setOrganization(final String inOrganization) {
-        organization = inOrganization;
-    }
+	public void setOrganization(final String inOrganization) {
+		organization = inOrganization;
+	}
 
-    @Override
-    public String getText() {
-        return organization;
-    }
+	@Override
+	public String getText() {
+		return organization;
+	}
 
-    public static IDao<Contributor<?>> getDao() {
-        return corporateContributorDao;
-    }
+	public static IDao<Contributor<?>> getDao() {
+		return corporateContributorDao;
+	}
 
-    @Autowired
-    @Qualifier("corporateContributorDao")
-    public void setCorporateContributorDao(final IDao<Contributor<?>> inCorporateContributorDao) {
-        corporateContributorDao = inCorporateContributorDao;
-    }
+	@Autowired
+	@Qualifier("corporateContributorDao")
+	public void setCorporateContributorDao(final IDao<Contributor<?>> inCorporateContributorDao) {
+		corporateContributorDao = inCorporateContributorDao;
+	}
 
 }

@@ -20,113 +20,113 @@ import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 @ParentExists
 public class PersonContributor<D> extends Contributor<PersonContributor<D>> implements ILookup {
 
-    private static IDao<Contributor<?>> personContributorDao;
+	private static IDao<Contributor<?>> personContributorDao;
 
-    @JsonProperty("family")
-    @JsonView(View.PW.class)
-    @Length(min=1, max=40)
-    private String family;
+	@JsonProperty("family")
+	@JsonView(View.PW.class)
+	@Length(min=1, max=40)
+	private String family;
 
-    @JsonProperty("given")
-    @JsonView(View.PW.class)
-    @Length(min=0, max=40)
-    private String given;
+	@JsonProperty("given")
+	@JsonView(View.PW.class)
+	@Length(min=0, max=40)
+	private String given;
 
-    @JsonProperty("suffix")
-    @JsonView(View.PW.class)
-    @Length(min=0, max=40)
-    private String suffix;
+	@JsonProperty("suffix")
+	@JsonView(View.PW.class)
+	@Length(min=0, max=40)
+	private String suffix;
 
-    @JsonProperty("email")
-    @JsonView(View.PW.class)
-    @Length(min=0, max=400)
-    @Email
-    private String email;
+	@JsonProperty("email")
+	@JsonView(View.PW.class)
+	@Length(min=0, max=400)
+	@Email
+	private String email;
 
-    @JsonProperty("affiliation")
-    @JsonView(View.PW.class)
-    private Affiliation<? extends Affiliation<?>> affiliation;
+	@JsonProperty("affiliation")
+	@JsonView(View.PW.class)
+	private Affiliation<? extends Affiliation<?>> affiliation;
 
-    @JsonIgnore
-    private Integer ipdsContributorId;
+	@JsonIgnore
+	private Integer ipdsContributorId;
 
-    public String getFamily() {
-        return family;
-    }
+	public String getFamily() {
+		return family;
+	}
 
-    public void setFamily(final String inFamily) {
-        family = inFamily;
-    }
+	public void setFamily(final String inFamily) {
+		family = inFamily;
+	}
 
-    public String getGiven() {
-        return given;
-    }
+	public String getGiven() {
+		return given;
+	}
 
-    public void setGiven(final String inGiven) {
-        given = inGiven;
-    }
+	public void setGiven(final String inGiven) {
+		given = inGiven;
+	}
 
-    public String getSuffix() {
-        return suffix;
-    }
+	public String getSuffix() {
+		return suffix;
+	}
 
-    public void setSuffix(final String inSuffix) {
-        suffix = inSuffix;
-    }
+	public void setSuffix(final String inSuffix) {
+		suffix = inSuffix;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public void setEmail(final String inEmail) {
-        email = inEmail;
-    }
+	public void setEmail(final String inEmail) {
+		email = inEmail;
+	}
 
-    public Affiliation<? extends Affiliation<?>> getAffiliation() {
-        return affiliation;
-    }
+	public Affiliation<? extends Affiliation<?>> getAffiliation() {
+		return affiliation;
+	}
 
-    public void setAffiliation(final Affiliation<? extends Affiliation<?>> inAffiliation) {
-        affiliation = inAffiliation;
-    }
+	public void setAffiliation(final Affiliation<? extends Affiliation<?>> inAffiliation) {
+		affiliation = inAffiliation;
+	}
 
-    public Integer getIpdsContributorId() {
-        return ipdsContributorId;
-    }
+	public Integer getIpdsContributorId() {
+		return ipdsContributorId;
+	}
 
-    public void setIpdsContributorId(final Integer inIpdsContributorId) {
-        ipdsContributorId = inIpdsContributorId;
-    }
+	public void setIpdsContributorId(final Integer inIpdsContributorId) {
+		ipdsContributorId = inIpdsContributorId;
+	}
 
-    @Override
-    public String getText() {
-    	StringBuilder text = new StringBuilder();
-    	if (StringUtils.isNotBlank(family)) {
-    		text.append(family);
-    		if (StringUtils.isNotBlank(given) || StringUtils.isNotBlank(suffix)) {
-    			text.append(",");
-    		}
-    	}
-    	if (StringUtils.isNotBlank(given)) {
-    		text.append(" ").append(given);
-    	}
-    	if (StringUtils.isNotBlank(suffix)) {
-    		text.append(" ").append(suffix);
-    	}
-    	if (StringUtils.isNotBlank(email)) {
-    		text.append(" ").append(email);
-    	}
-        return text.toString();
-    }
+	@Override
+	public String getText() {
+		StringBuilder text = new StringBuilder();
+		if (StringUtils.isNotBlank(family)) {
+			text.append(family);
+			if (StringUtils.isNotBlank(given) || StringUtils.isNotBlank(suffix)) {
+				text.append(",");
+			}
+		}
+		if (StringUtils.isNotBlank(given)) {
+			text.append(" ").append(given);
+		}
+		if (StringUtils.isNotBlank(suffix)) {
+			text.append(" ").append(suffix);
+		}
+		if (StringUtils.isNotBlank(email)) {
+			text.append(" ").append(email);
+		}
+		return text.toString();
+	}
 
-    public static IDao<Contributor<?>> getDao() {
-        return personContributorDao;
-    }
+	public static IDao<Contributor<?>> getDao() {
+		return personContributorDao;
+	}
 
-    @Autowired
-    @Qualifier("personContributorDao")
-    public void setPersonContributorDao(final IDao<Contributor<?>> inPersonContributorDao) {
-        personContributorDao = inPersonContributorDao;
-    }
+	@Autowired
+	@Qualifier("personContributorDao")
+	public void setPersonContributorDao(final IDao<Contributor<?>> inPersonContributorDao) {
+		personContributorDao = inPersonContributorDao;
+	}
 
 }

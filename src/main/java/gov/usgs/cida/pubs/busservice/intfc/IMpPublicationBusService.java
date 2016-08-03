@@ -17,30 +17,30 @@ public interface IMpPublicationBusService extends IBusService<MpPublication> {
 	 */
 	ValidatorResult checkAvailability(Integer publicationId);
 
-    /**
-     * Publish the publication identified by the prodId.
-     * @param publicationId to publish.
-     * @return any validation errors that may have prevented the publishing of this citation
-     */
-    ValidationResults publish(Integer publicationId);
+	/**
+	 * Publish the publication identified by the prodId.
+	 * @param publicationId to publish.
+	 * @return any validation errors that may have prevented the publishing of this citation
+	 */
+	ValidationResults publish(Integer publicationId);
 
-    /**
-     * Release all publication locks held by the username.
-     * @param lockUsername for which to remove locks.
-     */
-    void releaseLocksUser(String lockUsername);
+	/**
+	 * Release all publication locks held by the username.
+	 * @param lockUsername for which to remove locks.
+	 */
+	void releaseLocksUser(String lockUsername);
 
-    /**
-     * Release the publication lock.
-     * @param publicationId of the pub to unlock.
-     */
-    void releaseLocksPub(Integer publicationId);
+	/**
+	 * Release the publication lock.
+	 * @param publicationId of the pub to unlock.
+	 */
+	void releaseLocksPub(Integer publicationId);
 
-    /** 
-     * Get an mpPublication by it's index id.
-     * @param indexId - index id of the object to retrieve. 
-     * @return the domain object.
-     */
+	/** 
+	 * Get an mpPublication by it's index id.
+	 * @param indexId - index id of the object to retrieve. 
+	 * @return the domain object.
+	 */
 	MpPublication getByIndexId(String indexId);
 
 }

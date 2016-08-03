@@ -27,71 +27,71 @@ import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 
 public class PwPublicationRssMvcServiceTest extends BaseSpringTest {
 	@Mock
-    private IPwPublicationBusService busService;
+	private IPwPublicationBusService busService;
 
-    @Resource(name="expectedGetRssPub")
-    public String expectedGetRssPub;
-    
+	@Resource(name="expectedGetRssPub")
+	public String expectedGetRssPub;
+	
 	@Autowired
-    public String warehouseEndpoint;
+	public String warehouseEndpoint;
 
 	public String expectedGetPwRssTitle;
-    public String expectedGetPwRssItemTitle;
-    public String expectedGetPwRssItemDescription;
+	public String expectedGetPwRssItemTitle;
+	public String expectedGetPwRssItemDescription;
 
-    private MockMvc mockMvc;
+	private MockMvc mockMvc;
 
-    private PwPublicationRssMvcService mvcRssService;
-    
-    @Before
-    public void setup() {
-    	MockitoAnnotations.initMocks(this);
-    	mvcRssService = new PwPublicationRssMvcService(busService, warehouseEndpoint);
-    	mockMvc = MockMvcBuilders.standaloneSetup(mvcRssService).build();
-    	
-    	int titleStart = expectedGetRssPub.indexOf("<title>") + "<title>".length();
-    	int titleEnd = expectedGetRssPub.indexOf("</title>", titleStart);
-    	expectedGetPwRssTitle = expectedGetRssPub.substring(titleStart, titleEnd);
-    	
-    	int itemTitleStart = expectedGetRssPub.indexOf("<title>", titleEnd) + "<title>".length();
-    	int itemTitleEnd = expectedGetRssPub.indexOf("</title>", itemTitleStart);
-    	expectedGetPwRssItemTitle = expectedGetRssPub.substring(itemTitleStart, itemTitleEnd);
-    	
-    	int itemDescStart = expectedGetRssPub.indexOf("<description>", itemTitleEnd) + "<description>".length();
-    	int itemDescEnd = expectedGetRssPub.indexOf("</description>", itemTitleStart);
-    	expectedGetPwRssItemDescription = expectedGetRssPub.substring(itemDescStart, itemDescEnd);
-    }
-    
-    @SuppressWarnings("unchecked")
+	private PwPublicationRssMvcService mvcRssService;
+	
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
+		mvcRssService = new PwPublicationRssMvcService(busService, warehouseEndpoint);
+		mockMvc = MockMvcBuilders.standaloneSetup(mvcRssService).build();
+		
+		int titleStart = expectedGetRssPub.indexOf("<title>") + "<title>".length();
+		int titleEnd = expectedGetRssPub.indexOf("</title>", titleStart);
+		expectedGetPwRssTitle = expectedGetRssPub.substring(titleStart, titleEnd);
+		
+		int itemTitleStart = expectedGetRssPub.indexOf("<title>", titleEnd) + "<title>".length();
+		int itemTitleEnd = expectedGetRssPub.indexOf("</title>", itemTitleStart);
+		expectedGetPwRssItemTitle = expectedGetRssPub.substring(itemTitleStart, itemTitleEnd);
+		
+		int itemDescStart = expectedGetRssPub.indexOf("<description>", itemTitleEnd) + "<description>".length();
+		int itemDescEnd = expectedGetRssPub.indexOf("</description>", itemTitleStart);
+		expectedGetPwRssItemDescription = expectedGetRssPub.substring(itemDescStart, itemDescEnd);
+	}
+	
+	@SuppressWarnings("unchecked")
 	@Test
-    public void getRssPubsTest() throws Exception {
-    	//Happy Path
-        when(busService.getObjects(anyMap())).thenReturn(Arrays.asList(PwPublicationTest.buildAPub(1)));
-    	
-        MvcResult rtn = mockMvc.perform(get("/publication/rss?orderby=dispPubDate").accept(PubsConstants.MEDIA_TYPE_RSS))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(PubsConstants.MEDIA_TYPE_RSS_VALUE))
-        .andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-        .andReturn();
+	public void getRssPubsTest() throws Exception {
+		//Happy Path
+		when(busService.getObjects(anyMap())).thenReturn(Arrays.asList(PwPublicationTest.buildAPub(1)));
+		
+		MvcResult rtn = mockMvc.perform(get("/publication/rss?orderby=dispPubDate").accept(PubsConstants.MEDIA_TYPE_RSS))
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(PubsConstants.MEDIA_TYPE_RSS_VALUE))
+		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andReturn();
 
-        String response = rtn.getResponse().getContentAsString();
-        
-        // Not in the business of building an XML object, that is the RSS client's responsibility.
-        // Just interested in our values matching up to where they need to be.
-        int titleStart = response.indexOf("<title>") + "<title>".length();
-    	int titleEnd = response.indexOf("</title>", titleStart);
-    	String resultingPwRssTitle = response.substring(titleStart, titleEnd);
-    	assertTrue(resultingPwRssTitle.equals(expectedGetPwRssTitle));
-    	
-    	int itemTitleStart = response.indexOf("<title>", titleEnd) + "<title>".length();
-    	int itemTitleEnd = response.indexOf("</title>", itemTitleStart);
-    	String resultingPwRssItemTitle = response.substring(itemTitleStart, itemTitleEnd);
-    	assertTrue(resultingPwRssItemTitle.equals(expectedGetPwRssItemTitle));
-    	
-    	int itemDescStart = response.indexOf("<description>", itemTitleEnd) + "<description>".length();
-    	int itemDescEnd = response.indexOf("</description>", itemTitleStart);
-    	String resultingPwRssItemDescription = response.substring(itemDescStart, itemDescEnd);
-    	assertTrue(resultingPwRssItemDescription.equals(expectedGetPwRssItemDescription));
-    }
+		String response = rtn.getResponse().getContentAsString();
+		
+		// Not in the business of building an XML object, that is the RSS client's responsibility.
+		// Just interested in our values matching up to where they need to be.
+		int titleStart = response.indexOf("<title>") + "<title>".length();
+		int titleEnd = response.indexOf("</title>", titleStart);
+		String resultingPwRssTitle = response.substring(titleStart, titleEnd);
+		assertTrue(resultingPwRssTitle.equals(expectedGetPwRssTitle));
+		
+		int itemTitleStart = response.indexOf("<title>", titleEnd) + "<title>".length();
+		int itemTitleEnd = response.indexOf("</title>", itemTitleStart);
+		String resultingPwRssItemTitle = response.substring(itemTitleStart, itemTitleEnd);
+		assertTrue(resultingPwRssItemTitle.equals(expectedGetPwRssItemTitle));
+		
+		int itemDescStart = response.indexOf("<description>", itemTitleEnd) + "<description>".length();
+		int itemDescEnd = response.indexOf("</description>", itemTitleStart);
+		String resultingPwRssItemDescription = response.substring(itemDescStart, itemDescEnd);
+		assertTrue(resultingPwRssItemDescription.equals(expectedGetPwRssItemDescription));
+	}
 
 }

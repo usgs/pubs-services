@@ -15,46 +15,46 @@ import gov.usgs.cida.pubs.domain.BaseDomain;
 @Component
 public class IpdsProcessLog extends BaseDomain<IpdsProcessLog> {
 
-    private static IDao<IpdsProcessLog> ipdsProcessLogDao;
+	private static IDao<IpdsProcessLog> ipdsProcessLogDao;
 
-    private String ipdsNumber;
+	private String ipdsNumber;
 
-    private String uri;
+	private String uri;
 
-    private String message;
+	private String message;
 
-    public String getIpdsNumber() {
-        return ipdsNumber;
-    }
+	public String getIpdsNumber() {
+		return ipdsNumber;
+	}
 
-    public void setIpdsNumber(String ipdsNumber) {
-        this.ipdsNumber = ipdsNumber;
-    }
+	public void setIpdsNumber(String ipdsNumber) {
+		this.ipdsNumber = ipdsNumber;
+	}
 
-    public String getUri() {
-        return uri;
-    }
+	public String getUri() {
+		return uri;
+	}
 
-    public void setUri(String inUri) {
-        uri = inUri;
-    }
+	public void setUri(String inUri) {
+		uri = inUri;
+	}
 
-    public String getMessage() {
-        return message;
-    }
+	public String getMessage() {
+		return message;
+	}
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+	public void setMessage(String message) {
+		this.message = message;
+	}
 
-    public static IDao<IpdsProcessLog> getDao() {
-        return ipdsProcessLogDao;
-    }
+	public static IDao<IpdsProcessLog> getDao() {
+		return ipdsProcessLogDao;
+	}
 
-    @Autowired
-    @Qualifier("ipdsProcessLogDao")
-    public void setIpdsProcessLogDao(final IDao<IpdsProcessLog> ipdsProcessLogDao) {
-        IpdsProcessLog.ipdsProcessLogDao = ipdsProcessLogDao;
-    }
+	@Autowired
+	@Qualifier("ipdsProcessLogDao")
+	public void setIpdsProcessLogDao(final IDao<IpdsProcessLog> ipdsProcessLogDao) {
+		IpdsProcessLog.ipdsProcessLogDao = ipdsProcessLogDao;
+	}
 
 }

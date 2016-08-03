@@ -10,19 +10,19 @@ public class PwPublicationContributor extends PublicationContributor<MpPublicati
 
 	private static IMpDao<PwPublicationContributor> pwPublicationContributorDao;
 
-    /**
-     * @return the pwPublicationContributorDao
-     */
-    public static IMpDao<PwPublicationContributor> getDao() {
-        return pwPublicationContributorDao;
-    }
+	/**
+	 * @return the pwPublicationContributorDao
+	 */
+	public static IMpDao<PwPublicationContributor> getDao() {
+		return pwPublicationContributorDao;
+	}
 
-    /**
-     * The setter for pwPublicationContributorDao.
-     * @param inPwPublicationContributorDao the pwPublicationContributorDao to set
-     */
-    public void setPwPublicationContributorDao(final IMpDao<PwPublicationContributor> inPwPublicationContributorDao) {
-        pwPublicationContributorDao = inPwPublicationContributorDao;
-    }
+	/**
+	 * The setter for pwPublicationContributorDao.
+	 * @param inPwPublicationContributorDao the pwPublicationContributorDao to set
+	 */
+	public void setPwPublicationContributorDao(final IMpDao<PwPublicationContributor> inPwPublicationContributorDao) {
+		pwPublicationContributorDao = inPwPublicationContributorDao;
+	}
 
 }

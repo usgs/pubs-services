@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface IIpdsMessageLogDao extends IDao<IpdsMessageLog> {
 
-    /**
-     * Get the a list of MP data from the ipds message.
-     * @param ipdsMessageLogId ID of the log to read.
-     * @return the list of IPDS data from the log
-     */
-    List<PubMap> getFromIpds(Integer ipdsMessageLogId);
+	/**
+	 * Get the a list of MP data from the ipds message.
+	 * @param ipdsMessageLogId ID of the log to read.
+	 * @return the list of IPDS data from the log
+	 */
+	List<PubMap> getFromIpds(Integer ipdsMessageLogId);
 
 }

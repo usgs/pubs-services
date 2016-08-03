@@ -34,57 +34,57 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 public class MpListPublicationBusServiceTest extends BaseSpringTest {
 
 	@Autowired
-    public Validator validator;
+	public Validator validator;
 
-    private MpListPublicationBusService busService;
+	private MpListPublicationBusService busService;
 
-    @Before
-    public void initTest() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        busService = new MpListPublicationBusService(validator);
-    }
+	@Before
+	public void initTest() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		busService = new MpListPublicationBusService(validator);
+	}
 
-    @Test
-    public void addPubToListTest() {
-        busService.addPubToList(null, null);
-        busService.addPubToList(1, null);
-        busService.addPubToList(null, new String[0]);
+	@Test
+	public void addPubToListTest() {
+		busService.addPubToList(null, null);
+		busService.addPubToList(1, null);
+		busService.addPubToList(null, new String[0]);
 
-        Collection<MpListPublication> mpListPublications = busService.addPubToList(3, new String[]{"1", "2"});
-        assertNotNull(mpListPublications);
-        assertEquals(2, mpListPublications.size());
-        boolean gotOne = false;
-        boolean gotTwo = false;
-        for (MpListPublication listPub : mpListPublications) {
-        	assertEquals(3, listPub.getMpList().getId().intValue());
-        	if (1 == listPub.getMpPublication().getId()) {
-        		gotOne = true;
-        	} else if (2 == listPub.getMpPublication().getId()) {
-        		gotTwo = true;
-        	} else {
-        		fail("unexpected publication ID:" + listPub.getMpPublication().getId());
-        	}
-        }
-        assertTrue(gotOne);
-        assertTrue(gotTwo);
-    }
+		Collection<MpListPublication> mpListPublications = busService.addPubToList(3, new String[]{"1", "2"});
+		assertNotNull(mpListPublications);
+		assertEquals(2, mpListPublications.size());
+		boolean gotOne = false;
+		boolean gotTwo = false;
+		for (MpListPublication listPub : mpListPublications) {
+			assertEquals(3, listPub.getMpList().getId().intValue());
+			if (1 == listPub.getMpPublication().getId()) {
+				gotOne = true;
+			} else if (2 == listPub.getMpPublication().getId()) {
+				gotTwo = true;
+			} else {
+				fail("unexpected publication ID:" + listPub.getMpPublication().getId());
+			}
+		}
+		assertTrue(gotOne);
+		assertTrue(gotTwo);
+	}
 
-    @Test
-    public void removePubFromListTest() {
-    	ValidationResults res = busService.removePubFromList(null, null);
-    	assertEquals(2, res.getValidationErrors().size());
-    	res = busService.removePubFromList(-1, null);
-    	assertEquals(1, res.getValidationErrors().size());
-    	res = busService.removePubFromList(null, -1);
-    	assertEquals(1, res.getValidationErrors().size());
-    	
-        res = busService.removePubFromList(9, 3);
-        assertEquals(0, res.getValidationErrors().size());
-        //This one matches the alternate key
-        assertNull(MpListPublication.getDao().getById(2));
-        //These two only match part of the alternate key
-        assertNotNull(MpListPublication.getDao().getById(3));
-        assertNotNull(MpListPublication.getDao().getById(4));
-    }
+	@Test
+	public void removePubFromListTest() {
+		ValidationResults res = busService.removePubFromList(null, null);
+		assertEquals(2, res.getValidationErrors().size());
+		res = busService.removePubFromList(-1, null);
+		assertEquals(1, res.getValidationErrors().size());
+		res = busService.removePubFromList(null, -1);
+		assertEquals(1, res.getValidationErrors().size());
+		
+		res = busService.removePubFromList(9, 3);
+		assertEquals(0, res.getValidationErrors().size());
+		//This one matches the alternate key
+		assertNull(MpListPublication.getDao().getById(2));
+		//These two only match part of the alternate key
+		assertNotNull(MpListPublication.getDao().getById(3));
+		assertNotNull(MpListPublication.getDao().getById(4));
+	}
 
 }

@@ -30,21 +30,21 @@ public class MpPublicationContributor extends PublicationContributor<MpPublicati
 		this.setRank(pubContributor.getRank());
 	}
 
-    /**
-     * @return the mpPublicationContributorDao
-     */
-    public static IMpDao<MpPublicationContributor> getDao() {
-        return mpPublicationContributorDao;
-    }
+	/**
+	 * @return the mpPublicationContributorDao
+	 */
+	public static IMpDao<MpPublicationContributor> getDao() {
+		return mpPublicationContributorDao;
+	}
 
-    /**
-     * The setter for mpPublicationContributorDao.
-     * @param inMpPublicationContributorDao the mpPublicationContributorDao to set
-     */
-    @Autowired
-    @Qualifier("mpPublicationContributorDao")
-    public void setMpPublicationContributorDao(final IMpDao<MpPublicationContributor> inMpPublicationContributorDao) {
-        mpPublicationContributorDao = inMpPublicationContributorDao;
-    }
+	/**
+	 * The setter for mpPublicationContributorDao.
+	 * @param inMpPublicationContributorDao the mpPublicationContributorDao to set
+	 */
+	@Autowired
+	@Qualifier("mpPublicationContributorDao")
+	public void setMpPublicationContributorDao(final IMpDao<MpPublicationContributor> inMpPublicationContributorDao) {
+		mpPublicationContributorDao = inMpPublicationContributorDao;
+	}
 
 }

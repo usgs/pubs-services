@@ -10,31 +10,31 @@ import gov.usgs.cida.pubs.domain.intfc.ILookup;
 @Component
 public class LinkType extends BaseDomain<LinkType> implements ILookup {
 
-    private static IDao<LinkType> linkTypeDao;
+	private static IDao<LinkType> linkTypeDao;
 
-    public static final Integer INDEX_PAGE = 15;
+	public static final Integer INDEX_PAGE = 15;
 
 	public static final Integer THUMBNAIL = 24;
 
-    private String text;
+	private String text;
 
-    @Override
-    public String getText() {
-        return text;
-    }
+	@Override
+	public String getText() {
+		return text;
+	}
 
-    public void setText(final String inText) {
-        text = inText;
-    }
+	public void setText(final String inText) {
+		text = inText;
+	}
 
-    public static IDao<LinkType> getDao() {
-        return linkTypeDao;
-    }
+	public static IDao<LinkType> getDao() {
+		return linkTypeDao;
+	}
 
-    @Autowired
-    @Qualifier("linkTypeDao")
-    public void setLinkTypeDao(final IDao<LinkType> inLinkTypeDao) {
-        linkTypeDao = inLinkTypeDao;
-    }
+	@Autowired
+	@Qualifier("linkTypeDao")
+	public void setLinkTypeDao(final IDao<LinkType> inLinkTypeDao) {
+		linkTypeDao = inLinkTypeDao;
+	}
 
 }

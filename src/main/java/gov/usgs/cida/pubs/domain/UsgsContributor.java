@@ -4,9 +4,9 @@ import gov.usgs.cida.pubs.domain.intfc.ILookup;
 
 public class UsgsContributor extends PersonContributor<UsgsContributor> implements ILookup {
 
-    public UsgsContributor() {
-        corporation = false;
-        usgs = true;
-    }
+	public UsgsContributor() {
+		corporation = false;
+		usgs = true;
+	}
 
 }

@@ -17,26 +17,26 @@ public class EndpointSecurityAnonymousTest extends BaseEndpointSecurityTest {
 
 	private HttpHeaders httpHeaders;
 	
-    @Before
-    public void setup() {
-    	preSetup();
-    	postSetup();
-    }
+	@Before
+	public void setup() {
+		preSetup();
+		postSetup();
+	}
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	@Test
-    public void anonymousTest() throws Exception {
-        when(authenticationService.authenticate(anyString(), anyString())).thenReturn(new AuthToken());
-        when(pwPubBusService.getObjects(anyMap())).thenReturn(Arrays.asList(PwPublicationTest.buildAPub(1)));
-        when(pwPubBusService.getByIndexId(anyString())).thenReturn(PwPublicationTest.buildAPub(1));
-    	
-    	httpHeaders = new HttpHeaders();
-    	publicTest(httpHeaders, status().isOk());
-    	authenticatedTest(httpHeaders, status().isUnauthorized());
-    	pubsAuthorizedTestGetsDeletes(httpHeaders, status().isUnauthorized(), false);
-    	pubsAuthorizedTestPosts(httpHeaders, status().isUnauthorized(), false);
-    	pubsAuthorizedTestPuts(httpHeaders, status().isUnauthorized(), false);
-    	adAuthenticatedOrPubsAuthorizedTest(httpHeaders, status().isUnauthorized());
-    }
-    
+	public void anonymousTest() throws Exception {
+		when(authenticationService.authenticate(anyString(), anyString())).thenReturn(new AuthToken());
+		when(pwPubBusService.getObjects(anyMap())).thenReturn(Arrays.asList(PwPublicationTest.buildAPub(1)));
+		when(pwPubBusService.getByIndexId(anyString())).thenReturn(PwPublicationTest.buildAPub(1));
+		
+		httpHeaders = new HttpHeaders();
+		publicTest(httpHeaders, status().isOk());
+		authenticatedTest(httpHeaders, status().isUnauthorized());
+		pubsAuthorizedTestGetsDeletes(httpHeaders, status().isUnauthorized(), false);
+		pubsAuthorizedTestPosts(httpHeaders, status().isUnauthorized(), false);
+		pubsAuthorizedTestPuts(httpHeaders, status().isUnauthorized(), false);
+		adAuthenticatedOrPubsAuthorizedTest(httpHeaders, status().isUnauthorized());
+	}
+	
 }

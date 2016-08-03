@@ -13,14 +13,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TestBusServiceConfig {
 
-    @Bean
-    public IPwPublicationBusService pwPublicationBusService() {
-        return Mockito.mock(PwPublicationBusService.class);
-    }
+	@Bean
+	public IPwPublicationBusService pwPublicationBusService() {
+		return Mockito.mock(PwPublicationBusService.class);
+	}
 
-    @Bean
-    public IBusService<PublicationSeries> publicationSeriesBusService() {
-        return Mockito.mock(PublicationSeriesBusService.class);
-    }
+	@Bean
+	public IBusService<PublicationSeries> publicationSeriesBusService() {
+		return Mockito.mock(PublicationSeriesBusService.class);
+	}
 
 }

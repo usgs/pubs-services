@@ -24,13 +24,13 @@ public class PublicationIndex extends BaseDomain<PublicationIndex> implements Se
 		q = inQ;
 	}
 
-    public static IPublicationIndexDao getDao() {
-        return publicationIndexDao;
-    }
+	public static IPublicationIndexDao getDao() {
+		return publicationIndexDao;
+	}
 
-    @Autowired
-    public void setPublicationIndexDao(final IPublicationIndexDao inPublicationIndexDao) {
-        publicationIndexDao = inPublicationIndexDao;
-    }
+	@Autowired
+	public void setPublicationIndexDao(final IPublicationIndexDao inPublicationIndexDao) {
+		publicationIndexDao = inPublicationIndexDao;
+	}
 
 }

@@ -31,16 +31,16 @@ public class MpListDao extends BaseDao<MpList> {
 		return getSqlSession().selectOne(NS + GET_BY_ID, domainID);
 	}
 
-    /** 
-     * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.String)
-     */
-    @Transactional(readOnly = true)
-    @ISetDbContext
-    @Override
-    public MpList getById(String domainID) {
-        return getById(PubsUtilities.parseInteger(domainID));
-    }
+	/** 
+	 * {@inheritDoc}
+	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.String)
+	 */
+	@Transactional(readOnly = true)
+	@ISetDbContext
+	@Override
+	public MpList getById(String domainID) {
+		return getById(PubsUtilities.parseInteger(domainID));
+	}
 
 	@Transactional(readOnly = true)
 	@ISetDbContext

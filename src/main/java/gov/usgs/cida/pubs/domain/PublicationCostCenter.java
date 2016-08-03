@@ -20,45 +20,45 @@ public class PublicationCostCenter<D> extends BaseDomain<D> implements Serializa
 	private static final long serialVersionUID = -1839682568695179903L;
 
 	@JsonIgnore
-    private Integer publicationId;
+	private Integer publicationId;
 
-    @JsonView(View.PW.class)
-    @JsonUnwrapped
-    @NotNull
-    @Valid
-    private CostCenter costCenter;
+	@JsonView(View.PW.class)
+	@JsonUnwrapped
+	@NotNull
+	@Valid
+	private CostCenter costCenter;
 
-    public Integer getPublicationId() {
-        return publicationId;
-    }
+	public Integer getPublicationId() {
+		return publicationId;
+	}
 
-    public void setPublicationId(final Integer inPublicationId) {
-        publicationId = inPublicationId;
-    }
+	public void setPublicationId(final Integer inPublicationId) {
+		publicationId = inPublicationId;
+	}
 
-    public void setPublicationId(final String inPublicationId) {
-        publicationId = PubsUtilities.parseInteger(inPublicationId);
-    }
+	public void setPublicationId(final String inPublicationId) {
+		publicationId = PubsUtilities.parseInteger(inPublicationId);
+	}
 
-    public CostCenter getCostCenter() {
-        return costCenter;
-    }
+	public CostCenter getCostCenter() {
+		return costCenter;
+	}
 
-    public void setCostCenter(final CostCenter inCostCenter) {
-        costCenter = inCostCenter;
-    }
+	public void setCostCenter(final CostCenter inCostCenter) {
+		costCenter = inCostCenter;
+	}
 
-    //We don't want the publicationCostCenter.id in the json view
-    @JsonIgnore
-    @Override
-    public Integer getId() {
-        return id;
-    }
+	//We don't want the publicationCostCenter.id in the json view
+	@JsonIgnore
+	@Override
+	public Integer getId() {
+		return id;
+	}
 
-    //We also don't want to deserialize the costCenter.id to the publicationCostCenter.id
-    @JsonIgnore
-    @Override
-    public void setId(final String inId) {
-        id = PubsUtilities.parseInteger(inId);
-    }
+	//We also don't want to deserialize the costCenter.id to the publicationCostCenter.id
+	@JsonIgnore
+	@Override
+	public void setId(final String inId) {
+		id = PubsUtilities.parseInteger(inId);
+	}
 }

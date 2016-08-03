@@ -1,19 +1,16 @@
 package gov.usgs.cida.pubs.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import gov.usgs.cida.pubs.domain.PublicationSeries;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
+import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
 
 import javax.validation.Validator;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import gov.usgs.cida.pubs.domain.PublicationSeries;
-import gov.usgs.cida.pubs.domain.PublicationSubtype;
-import gov.usgs.cida.pubs.domain.PublicationType;
-import gov.usgs.cida.pubs.domain.mp.MpPublication;
 
 public class PublicationValidationTest extends BaseValidatorTest {
 
@@ -39,9 +36,6 @@ public class PublicationValidationTest extends BaseValidatorTest {
 	@Test
 	public void noYearFalsePublicationYearEmptyTest() {
 		pub.setValidationErrors(validator.validate(pub));
-//		assertFalse(pub.getValidationErrors().isEmpty());
-//		assertEquals(1, pub.getValidationErrors().getValidationErrors().size());
-//		assertEquals("Either \"Publication Year\" or \"No Year=true\" must be specified.", pub.getValidationErrors().getValidationErrors().get(0).getMessage());
 		assertTrue(pub.getValidationErrors().isEmpty());
 	}
 
@@ -50,10 +44,6 @@ public class PublicationValidationTest extends BaseValidatorTest {
 		pub.setNoYear(true);
 		pub.setPublicationYear("1234");
 		pub.setValidationErrors(validator.validate(pub));
-//		assertFalse(pub.getValidationErrors().isEmpty());
-//		assertEquals(1, pub.getValidationErrors().getValidationErrors().size());
-//		assertEquals("Either \"Publication Year\" or \"No Year=false\" must be specified.", pub.getValidationErrors().getValidationErrors().get(0).getMessage());
 		assertTrue(pub.getValidationErrors().isEmpty());
 	}
-
 }

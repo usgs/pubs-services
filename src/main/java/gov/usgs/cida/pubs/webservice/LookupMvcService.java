@@ -1,5 +1,30 @@
 package gov.usgs.cida.pubs.webservice;
 
+import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.dao.ContributorTypeDao;
+import gov.usgs.cida.pubs.dao.CostCenterDao;
+import gov.usgs.cida.pubs.dao.LinkFileTypeDao;
+import gov.usgs.cida.pubs.dao.LinkTypeDao;
+import gov.usgs.cida.pubs.dao.OutsideAffiliationDao;
+import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
+import gov.usgs.cida.pubs.dao.PublicationSubtypeDao;
+import gov.usgs.cida.pubs.dao.PublicationTypeDao;
+import gov.usgs.cida.pubs.dao.PublishingServiceCenterDao;
+import gov.usgs.cida.pubs.domain.Contributor;
+import gov.usgs.cida.pubs.domain.ContributorType;
+import gov.usgs.cida.pubs.domain.CorporateContributor;
+import gov.usgs.cida.pubs.domain.CostCenter;
+import gov.usgs.cida.pubs.domain.LinkFileType;
+import gov.usgs.cida.pubs.domain.LinkType;
+import gov.usgs.cida.pubs.domain.OutsideAffiliation;
+import gov.usgs.cida.pubs.domain.PersonContributor;
+import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.PublicationSeries;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
+import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
+import gov.usgs.cida.pubs.json.View;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,32 +44,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
-
-import gov.usgs.cida.pubs.dao.BaseDao;
-import gov.usgs.cida.pubs.dao.ContributorTypeDao;
-import gov.usgs.cida.pubs.dao.CostCenterDao;
-import gov.usgs.cida.pubs.dao.LinkFileTypeDao;
-import gov.usgs.cida.pubs.dao.LinkTypeDao;
-import gov.usgs.cida.pubs.dao.OutsideAffiliationDao;
-import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
-import gov.usgs.cida.pubs.dao.PublicationSubtypeDao;
-import gov.usgs.cida.pubs.dao.PublicationTypeDao;
-import gov.usgs.cida.pubs.dao.PublishingServiceCenterDao;
-import gov.usgs.cida.pubs.domain.Affiliation;
-import gov.usgs.cida.pubs.domain.Contributor;
-import gov.usgs.cida.pubs.domain.ContributorType;
-import gov.usgs.cida.pubs.domain.CorporateContributor;
-import gov.usgs.cida.pubs.domain.CostCenter;
-import gov.usgs.cida.pubs.domain.LinkFileType;
-import gov.usgs.cida.pubs.domain.LinkType;
-import gov.usgs.cida.pubs.domain.OutsideAffiliation;
-import gov.usgs.cida.pubs.domain.PersonContributor;
-import gov.usgs.cida.pubs.domain.Publication;
-import gov.usgs.cida.pubs.domain.PublicationSeries;
-import gov.usgs.cida.pubs.domain.PublicationSubtype;
-import gov.usgs.cida.pubs.domain.PublicationType;
-import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
-import gov.usgs.cida.pubs.json.View;
 
 @RestController
 @RequestMapping(value="lookup", produces=MediaType.APPLICATION_JSON_VALUE)
@@ -154,11 +153,11 @@ public class LookupMvcService extends MvcService<PublicationType> {
 
 	@GetMapping("costcenters")
 	@JsonView(View.Lookup.class)
-	public @ResponseBody Collection<Affiliation<?>> getCostCenters(HttpServletRequest request, HttpServletResponse response,
+	public @ResponseBody Collection<CostCenter> getCostCenters(HttpServletRequest request, HttpServletResponse response,
 				@RequestParam(value=TEXT_SEARCH, required=false) String[] text,
 				@RequestParam(value=ACTIVE_SEARCH, required=false) String[] active) {
 		LOG.debug("CostCenter");
-		Collection<Affiliation<?>> rtn = new ArrayList<>();
+		Collection<CostCenter> rtn = new ArrayList<>();
 		if (validateParametersSetHeaders(request, response)) {
 			Map<String, Object> filters = new HashMap<>();
 			if (null != text && 0 < text.length) {
@@ -174,11 +173,11 @@ public class LookupMvcService extends MvcService<PublicationType> {
 
 	@GetMapping("outsideaffiliates")
 	@JsonView(View.Lookup.class)
-	public @ResponseBody Collection<Affiliation<?>> getOutsideAffiliates(HttpServletRequest request, HttpServletResponse response,
+	public @ResponseBody Collection<OutsideAffiliation> getOutsideAffiliates(HttpServletRequest request, HttpServletResponse response,
 				@RequestParam(value=TEXT_SEARCH, required=false) String[] text,
 				@RequestParam(value=ACTIVE_SEARCH, required=false) String[] active) {
 		LOG.debug("OutsideAffiliate");
-		Collection<Affiliation<?>> rtn = new ArrayList<>();
+		Collection<OutsideAffiliation> rtn = new ArrayList<>();
 		if (validateParametersSetHeaders(request, response)) {
 			Map<String, Object> filters = new HashMap<>();
 			if (null != text && 0 < text.length) {
@@ -300,5 +299,4 @@ public class LookupMvcService extends MvcService<PublicationType> {
 		}
 		return rtn;
 	}
-
 }

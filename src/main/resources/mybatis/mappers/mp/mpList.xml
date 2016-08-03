@@ -45,9 +45,4 @@
 		<include refid="filters"/>
 	</select>
 
-	<select id="getByIpdsId" parameterType="Integer" resultMap="mpListResult">
-		<include refid="baseSelect"/> 
-		 where ipds_internal_id = #{value,jdbcType=NUMERIC}
-	</select>
-
 </mapper>

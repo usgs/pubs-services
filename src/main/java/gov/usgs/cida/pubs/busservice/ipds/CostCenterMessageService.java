@@ -1,7 +1,6 @@
 package gov.usgs.cida.pubs.busservice.ipds;
 
 import gov.usgs.cida.pubs.busservice.intfc.IIpdsService;
-import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
@@ -79,7 +78,7 @@ public class CostCenterMessageService implements IIpdsService {
 					String name = ipdsBinding.getFirstNodeText(element, "d:Name");
 					Map<String, Object> filters = new HashMap<>();
 					filters.put("ipdsId", ipdsId);
-					List<Affiliation<?>> costCenters = CostCenter.getDao().getByMap(filters);
+					List<CostCenter> costCenters = CostCenter.getDao().getByMap(filters);
 					//TODO what if we get more than one?
 					if (costCenters.isEmpty()) {
 						costCenter.setIpdsId(ipdsId);

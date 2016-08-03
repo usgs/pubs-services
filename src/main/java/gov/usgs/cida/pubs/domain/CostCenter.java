@@ -16,43 +16,42 @@ public class CostCenter extends Affiliation<CostCenter> implements Serializable 
 
 	private static final long serialVersionUID = -7804226743028056085L;
 
-    private static IDao<Affiliation<?>> costCenterDao;
+	private static IDao<CostCenter> costCenterDao;
 
 	public CostCenter() {
-        usgs = true;
-        active = true;
-    }
+		usgs = true;
+		active = true;
+	}
 
-    @JsonIgnore
-    private Integer ipdsId;
+	@JsonIgnore
+	private Integer ipdsId;
 
-    public Integer getIpdsId() {
-        return ipdsId;
-    }
+	public Integer getIpdsId() {
+		return ipdsId;
+	}
 
-    public void setIpdsId(final Integer inIpdsId) {
-        ipdsId = inIpdsId;
-    }
+	public void setIpdsId(final Integer inIpdsId) {
+		ipdsId = inIpdsId;
+	}
 
-    public void setIpdsId(final String inIpdsId) {
-        ipdsId = PubsUtilities.parseInteger(inIpdsId);
-    }
+	public void setIpdsId(final String inIpdsId) {
+		ipdsId = PubsUtilities.parseInteger(inIpdsId);
+	}
 
-    /**
-     * @return the costCenterDao
-     */
-    public static IDao<Affiliation<?>> getDao() {
-        return costCenterDao;
-    }
+	/**
+	 * @return the costCenterDao
+	 */
+	public static IDao<CostCenter> getDao() {
+		return costCenterDao;
+	}
 
-    /**
-     * The setter for costCenterDao.
-     * @param inCostCenterDao the costCenterDao to set
-     */
-    @Autowired
-    @Qualifier("costCenterDao")
-    public void setCostCenterDao(final IDao<Affiliation<?>> inCostCenterDao) {
-        costCenterDao = inCostCenterDao;
-    }
-
+	/**
+	 * The setter for costCenterDao.
+	 * @param inCostCenterDao the costCenterDao to set
+	 */
+	@Autowired
+	@Qualifier("costCenterDao")
+	public void setCostCenterDao(final IDao<CostCenter> inCostCenterDao) {
+		costCenterDao = inCostCenterDao;
+	}
 }

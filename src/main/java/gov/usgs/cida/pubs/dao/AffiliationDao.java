@@ -13,49 +13,47 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-public class AffiliationDao extends BaseDao<Affiliation<?>> {
+public class AffiliationDao<D extends Affiliation<D>> extends BaseDao<D> {
 
 	@Autowired
-    public AffiliationDao(SqlSessionFactory sqlSessionFactory) {
+	public AffiliationDao(SqlSessionFactory sqlSessionFactory) {
 		super(sqlSessionFactory);
 	}
 
 	protected static final String NS = "affiliation";
-    public static final String ACTIVE_SEARCH = "active";
-    public static final String USGS_SEARCH = "usgs";
-    public static final String IPDSID_SEARCH = "ipdsId";
+	public static final String ACTIVE_SEARCH = "active";
+	public static final String USGS_SEARCH = "usgs";
+	public static final String IPDSID_SEARCH = "ipdsId";
 
-    /** 
-     * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
-     */
-    @Transactional(readOnly = true)
-    @ISetDbContext
-    @Override
-    public Affiliation<?> getById(Integer domainID) {
-        return (Affiliation<?>) getSqlSession().selectOne(NS + GET_BY_ID, domainID);
-    }
+	/** 
+	 * {@inheritDoc}
+	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
+	 */
+	@Transactional(readOnly = true)
+	@ISetDbContext
+	@Override
+	public D getById(Integer domainID) {
+		return getSqlSession().selectOne(NS + GET_BY_ID, domainID);
+	}
 
-    /** 
-     * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.String)
-     */
-    @Transactional(readOnly = true)
-    @ISetDbContext
-    @Override
-    public Affiliation<?> getById(String domainID) {
-        return getById(PubsUtilities.parseInteger(domainID));
-    }
-
-    /** 
-     * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.dao.BaseDao#getByMap(Map)
-     */
-    @Transactional(readOnly = true)
-    @ISetDbContext
-    @Override
-    public List<Affiliation<?>> getByMap(Map<String, Object> filters) {
-        return getSqlSession().selectList(NS + GET_BY_MAP, filters);
-    }
-
+	/** 
+	 * {@inheritDoc}
+	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.String)
+	 */
+	@Transactional(readOnly = true)
+	@ISetDbContext
+	@Override
+	public D getById(String domainID) {
+		return getById(PubsUtilities.parseInteger(domainID));
+	}
+	/** 
+	 * {@inheritDoc}
+	 * @see gov.usgs.cida.pubs.dao.BaseDao#getByMap(Map)
+	 */
+	@Transactional(readOnly = true)
+	@ISetDbContext
+	@Override
+	public List<D> getByMap(Map<String, Object> filters) {
+		return getSqlSession().selectList(NS + GET_BY_MAP, filters);
+	}
 }

@@ -1,7 +1,7 @@
 package gov.usgs.cida.pubs.domain.mp;
 
 
-import gov.usgs.cida.pubs.dao.intfc.IMpListDao;
+import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
 import gov.usgs.cida.pubs.validation.constraint.NoChildren;
@@ -10,6 +10,7 @@ import java.io.Serializable;
 
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -23,7 +24,7 @@ public class MpList extends BaseDomain<MpList>  implements Serializable {
 
 	private static final long serialVersionUID = 4584540523823086709L;
 
-	private static IMpListDao mpListDao;
+	private static IDao<MpList> mpListDao;
 
 	public static final String IPDS_JOURNAL_ARTICLES = "3";
 
@@ -89,13 +90,13 @@ public class MpList extends BaseDomain<MpList>  implements Serializable {
 		ipdsInternalId = inIpdsInternalId;
 	}
 
-	public static IMpListDao getDao() {
+	public static IDao<MpList> getDao() {
 		return mpListDao;
 	}
 
 	@Autowired
-	public void setMpListDao(final IMpListDao inMpListDao) {
+	@Qualifier("mpListDao")
+	public void setMpListDao(final IDao<MpList> inMpListDao) {
 		mpListDao = inMpListDao;
 	}
-
 }

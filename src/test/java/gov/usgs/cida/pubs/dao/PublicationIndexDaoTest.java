@@ -44,7 +44,7 @@ public class PublicationIndexDaoTest extends BaseSpringTest {
 		//verify the update
 		PublicationIndex publicationIndex = PublicationIndex.getDao().getById(pub.getId());
 		assertEquals(pub.getId(), publicationIndex.getId());
-		assertEquals("test	" + pub.getId(), publicationIndex.getQ().trim());
+		assertEquals("test    " + pub.getId(), publicationIndex.getQ().trim());
 	}
 
 }

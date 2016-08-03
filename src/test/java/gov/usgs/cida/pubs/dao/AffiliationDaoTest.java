@@ -54,12 +54,6 @@ public class AffiliationDaoTest extends BaseSpringTest {
 	@Test
 	public void notImplemented() {
 		try {
-			Affiliation.getDao().getByMap(null);
-			fail("Was able to getByMap");
-		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
-		}
-		try {
 			Affiliation.getDao().add(null);
 			fail("Was able to add.");
 		} catch (Exception e) {

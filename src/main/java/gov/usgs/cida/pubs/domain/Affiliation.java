@@ -1,6 +1,6 @@
 package gov.usgs.cida.pubs.domain;
 
-import gov.usgs.cida.pubs.dao.AffiliationDao;
+import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
 
 import javax.validation.constraints.NotNull;
@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({"id", "text", "active", "usgs"})
 public class Affiliation<D extends Affiliation<D>> extends BaseDomain<D> implements ILookup {
 
-	private static AffiliationDao<? extends Affiliation<?>> affiliationDao;
+	private static IDao<? extends Affiliation<?>> affiliationDao;
 
 	@JsonProperty("text")
 	@Length(min=1, max=500)
@@ -48,13 +48,13 @@ public class Affiliation<D extends Affiliation<D>> extends BaseDomain<D> impleme
 		return usgs;
 	}
 
-	public static AffiliationDao<? extends Affiliation<?>> getDao() {
+	public static IDao<? extends Affiliation<?>> getDao() {
 		return affiliationDao;
 	}
 
 	@Autowired
 	@Qualifier("affiliationDao")
-	public void setAffiliationDao(final AffiliationDao<D> inAffiliationDao) {
+	public void setAffiliationDao(final IDao<D> inAffiliationDao) {
 		affiliationDao = inAffiliationDao;
 	}
 }

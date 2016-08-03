@@ -1,6 +1,6 @@
 package gov.usgs.cida.pubs.domain;
 
-import gov.usgs.cida.pubs.dao.CostCenterDao;
+import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import java.io.Serializable;
@@ -16,7 +16,7 @@ public class CostCenter extends Affiliation<CostCenter> implements Serializable 
 
 	private static final long serialVersionUID = -7804226743028056085L;
 
-	private static CostCenterDao costCenterDao;
+	private static IDao<CostCenter> costCenterDao;
 
 	public CostCenter() {
 		usgs = true;
@@ -41,7 +41,7 @@ public class CostCenter extends Affiliation<CostCenter> implements Serializable 
 	/**
 	 * @return the costCenterDao
 	 */
-	public static CostCenterDao getDao() {
+	public static IDao<CostCenter> getDao() {
 		return costCenterDao;
 	}
 
@@ -51,7 +51,7 @@ public class CostCenter extends Affiliation<CostCenter> implements Serializable 
 	 */
 	@Autowired
 	@Qualifier("costCenterDao")
-	public void setCostCenterDao(final CostCenterDao inCostCenterDao) {
+	public void setCostCenterDao(final IDao<CostCenter> inCostCenterDao) {
 		costCenterDao = inCostCenterDao;
 	}
 }

@@ -29,138 +29,138 @@ import gov.usgs.cida.pubs.validation.ValidatorResult;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class BaseDomain<D> {
 
-    /** The ID of this domain object. */
-    protected Integer id;
+	/** The ID of this domain object. */
+	protected Integer id;
 
-    @JsonIgnore
-    private LocalDateTime insertDate;
+	@JsonIgnore
+	private LocalDateTime insertDate;
 
-    @JsonIgnore
-    private String insertUsername;
+	@JsonIgnore
+	private String insertUsername;
 
-    @JsonIgnore
-    private LocalDateTime updateDate;
+	@JsonIgnore
+	private LocalDateTime updateDate;
 
-    @JsonIgnore
-    private String updateUsername;
+	@JsonIgnore
+	private String updateUsername;
 
-    @JsonIgnore
-    protected ValidationResults validationErrors;
+	@JsonIgnore
+	protected ValidationResults validationErrors;
 
-    /**
-     * The getter for id.
-     * @return the id
-     */
-    public Integer getId() {
-        return id;
-    }
+	/**
+	 * The getter for id.
+	 * @return the id
+	 */
+	public Integer getId() {
+		return id;
+	}
 
-    /**
-     * The setter for id.
-     * @param inId the id to set
-     */
-    @JsonIgnore
-    public void setId(final Integer inId) {
-        id = inId;
-    }
+	/**
+	 * The setter for id.
+	 * @param inId the id to set
+	 */
+	@JsonIgnore
+	public void setId(final Integer inId) {
+		id = inId;
+	}
 
-    /**
-     * The string setter for id.
-     * @param inId the id to set
-     */
-    @JsonProperty("id")
-    @JsonView(View.Base.class)
-    public void setId(final String inId) {
-        id = PubsUtilities.parseInteger(inId);
-    }
+	/**
+	 * The string setter for id.
+	 * @param inId the id to set
+	 */
+	@JsonProperty("id")
+	@JsonView(View.Base.class)
+	public void setId(final String inId) {
+		id = PubsUtilities.parseInteger(inId);
+	}
 
-    /**
-     * @return the insertDate
-     */
-    public LocalDateTime getInsertDate() {
-        return insertDate;
-    }
+	/**
+	 * @return the insertDate
+	 */
+	public LocalDateTime getInsertDate() {
+		return insertDate;
+	}
 
-    /**
-     * @param inInsertDate the insertDate to set
-     */
-    public void setInsertDate(final LocalDateTime inInsertDate) {
-        insertDate = inInsertDate;
-    }
+	/**
+	 * @param inInsertDate the insertDate to set
+	 */
+	public void setInsertDate(final LocalDateTime inInsertDate) {
+		insertDate = inInsertDate;
+	}
 
-    /**
-     * @return the insertUsername
-     */
-    public String getInsertUsername() {
-        return insertUsername;
-    }
+	/**
+	 * @return the insertUsername
+	 */
+	public String getInsertUsername() {
+		return insertUsername;
+	}
 
-    /**
-     * @param inInsertUsername the insertUsername to set
-     */
-    public void setInsertUsername(final String inInsertUsername) {
-        insertUsername = inInsertUsername;
-    }
+	/**
+	 * @param inInsertUsername the insertUsername to set
+	 */
+	public void setInsertUsername(final String inInsertUsername) {
+		insertUsername = inInsertUsername;
+	}
 
-    /**
-     * @return the updateDate
-     */
-    public LocalDateTime getUpdateDate() {
-        return updateDate;
-    }
+	/**
+	 * @return the updateDate
+	 */
+	public LocalDateTime getUpdateDate() {
+		return updateDate;
+	}
 
-    /**
-     * @param inUpdateDate the updateDate to set
-     */
-    public void setUpdateDate(final LocalDateTime inUpdateDate) {
-        updateDate = inUpdateDate;
-    }
+	/**
+	 * @param inUpdateDate the updateDate to set
+	 */
+	public void setUpdateDate(final LocalDateTime inUpdateDate) {
+		updateDate = inUpdateDate;
+	}
 
-    /**
-     * @return the updateUsername
-     */
-    public String getUpdateUsername() {
-        return updateUsername;
-    }
+	/**
+	 * @return the updateUsername
+	 */
+	public String getUpdateUsername() {
+		return updateUsername;
+	}
 
-    /**
-     * @param inUpdateUsername the updateUsername to set
-     */
-    public void setUpdateUsername(final String inUpdateUsername) {
-        updateUsername = inUpdateUsername;
-    }
+	/**
+	 * @param inUpdateUsername the updateUsername to set
+	 */
+	public void setUpdateUsername(final String inUpdateUsername) {
+		updateUsername = inUpdateUsername;
+	}
 
-    /**
-     * @return the validationErrors
-     */
-    public ValidationResults getValidationErrors() {
-    	 if (null != validationErrors) {
-           return validationErrors;
-       } else {
-           return new ValidationResults();
-       }
-    }
+	/**
+	 * @return the validationErrors
+	 */
+	public ValidationResults getValidationErrors() {
+		 if (null != validationErrors) {
+		   return validationErrors;
+	   } else {
+		   return new ValidationResults();
+	   }
+	}
 
-    /**
-     * @param inValidationErrors the validationErrors to set
-     */
-    public void setValidationErrors(final Set<ConstraintViolation<D>> inValidationErrors) {
-        validationErrors = new ValidationResults();
-        if (null != inValidationErrors) {
-            List<ValidatorResult> vResults = new ArrayList<ValidatorResult>();
-            for (ConstraintViolation<D> vError : inValidationErrors) {
-                ValidatorResult vResult = new ValidatorResult(vError.getPropertyPath().toString(), vError.getMessage(), SeverityLevel.FATAL, null);
-                vResults.add(vResult);
-            }
-            validationErrors.setValidationErrors(vResults);
-        }
-    }
+	/**
+	 * @param inValidationErrors the validationErrors to set
+	 */
+	public void setValidationErrors(final Set<ConstraintViolation<D>> inValidationErrors) {
+		validationErrors = new ValidationResults();
+		if (null != inValidationErrors) {
+			List<ValidatorResult> vResults = new ArrayList<ValidatorResult>();
+			for (ConstraintViolation<D> vError : inValidationErrors) {
+				ValidatorResult vResult = new ValidatorResult(vError.getPropertyPath().toString(), vError.getMessage(), SeverityLevel.FATAL, null);
+				vResults.add(vResult);
+			}
+			validationErrors.setValidationErrors(vResults);
+		}
+	}
 
-    public void addValidatorResult(final ValidatorResult inValidatorResult) {
-        if (null == validationErrors) {
-            validationErrors = new ValidationResults();
-        }
-        validationErrors.addValidatorResult(inValidatorResult);
-    }
+	public void addValidatorResult(final ValidatorResult inValidatorResult) {
+		if (null == validationErrors) {
+			validationErrors = new ValidationResults();
+		}
+		validationErrors.addValidatorResult(inValidatorResult);
+	}
 
 }

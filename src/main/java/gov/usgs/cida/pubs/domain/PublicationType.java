@@ -21,52 +21,52 @@ public class PublicationType extends BaseDomain<PublicationType> implements ILoo
 
 	private static IDao<PublicationType> publicationTypeDao;
 
-    public static final Integer ARTICLE = 2;
+	public static final Integer ARTICLE = 2;
 
-    public static final Integer REPORT = 18;
+	public static final Integer REPORT = 18;
 
-    private String text;
+	private String text;
 
-    private Collection<PublicationSubtype> publicationSubtypes;
+	private Collection<PublicationSubtype> publicationSubtypes;
 
-    @Override
-    public String getText() {
-        return text;
-    }
-    
+	@Override
+	public String getText() {
+		return text;
+	}
+	
 	public void setText(String text) {
 		this.text = text;
 	}
 
-    /**
-     * @return the publicationSubtypes
-     */
-    public Collection<PublicationSubtype> getpublicationSubtypes() {
-        return publicationSubtypes;
-    }
+	/**
+	 * @return the publicationSubtypes
+	 */
+	public Collection<PublicationSubtype> getpublicationSubtypes() {
+		return publicationSubtypes;
+	}
 
-    /**
-     * @param inPublicationSubtypes the publicationSubtypes to set
-     */
-    public void setPublicationSubtypes(final Collection<PublicationSubtype> inPublicationSubtypes) {
-        publicationSubtypes = inPublicationSubtypes;
-    }
+	/**
+	 * @param inPublicationSubtypes the publicationSubtypes to set
+	 */
+	public void setPublicationSubtypes(final Collection<PublicationSubtype> inPublicationSubtypes) {
+		publicationSubtypes = inPublicationSubtypes;
+	}
 
-    /**
-     * @return the publicationTypeDao
-     */
-    public static IDao<PublicationType> getDao() {
-        return publicationTypeDao;
-    }
+	/**
+	 * @return the publicationTypeDao
+	 */
+	public static IDao<PublicationType> getDao() {
+		return publicationTypeDao;
+	}
 
-    /**
-     * The setter for publicationTypeDao.
-     * @param inPublicationTypeDao the publicationTypeDao to set
-     */
-    @Autowired
-    @Qualifier("publicationTypeDao")
-    public void setPublicationTypeDao(final IDao<PublicationType> inPublicationTypeDao) {
-        publicationTypeDao = inPublicationTypeDao;
-    }
+	/**
+	 * The setter for publicationTypeDao.
+	 * @param inPublicationTypeDao the publicationTypeDao to set
+	 */
+	@Autowired
+	@Qualifier("publicationTypeDao")
+	public void setPublicationTypeDao(final IDao<PublicationType> inPublicationTypeDao) {
+		publicationTypeDao = inPublicationTypeDao;
+	}
 
 }

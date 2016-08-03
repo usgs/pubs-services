@@ -131,44 +131,44 @@ public class MpPublicationLinkDaoTest extends BaseSpringTest {
 		assertMpLink10(link);
 	}
 
-    @Test
-    public void publishToPwTest() {
-    	MpPublicationLink.getDao().publishToPw(null);
-    	MpPublicationLink.getDao().publishToPw(-1);
-    	MpPublication.getDao().publishToPw(1);
-    	
-    	//this one should be a straight add.
-    	MpPublicationLink.getDao().publishToPw(1);
-    	PwPublication pub = PwPublication.getDao().getById(1);
-    	assertEquals(2, pub.getLinks().size());
-    	for (PublicationLink<?> link : pub.getLinks()) {
-    		if (1 == link.getId()) {
-    			assertPwLink1(link);
-    		} else if (2 == link.getId()) {
-    			assertPwLink2(link);
-    		} else {
-    			fail("Got a bad contributor:" + link.getId());
-    		}
-    	}
-    	
-//    	//this one should be a merge.
-//    	MpPublication.getDao().copyFromPw(4);
-//    	MpPublicationCostCenter.getDao().copyFromPw(4);
-//    	MpPublication.getDao().publishToPw(4);
-//    	MpPublicationCostCenter.getDao().deleteById(10);
-//    	MpPublicationCostCenter mpPCC = new MpPublicationCostCenter();
-//    	CostCenter cc = new CostCenter();
-//    	cc.setId(3);
-//    	mpPCC.setCostCenter(cc);
-//    	mpPCC.setPublicationId(4);
-//    	MpPublicationCostCenter.getDao().add(mpPCC);
-//    	MpPublicationCostCenter.getDao().publishToPw(4);
-//    	pub = PwPublication.getDao().getById(4);
-//    	assertEquals(1, pub.getCostCenters().size());
-//    	for (PublicationCostCenter<?> costCenter : pub.getCostCenters()) {
-//    		assertPwCostCenterXX(mpPCC.getId(), costCenter);
-//    	}
-    }
+	@Test
+	public void publishToPwTest() {
+		MpPublicationLink.getDao().publishToPw(null);
+		MpPublicationLink.getDao().publishToPw(-1);
+		MpPublication.getDao().publishToPw(1);
+		
+		//this one should be a straight add.
+		MpPublicationLink.getDao().publishToPw(1);
+		PwPublication pub = PwPublication.getDao().getById(1);
+		assertEquals(2, pub.getLinks().size());
+		for (PublicationLink<?> link : pub.getLinks()) {
+			if (1 == link.getId()) {
+				assertPwLink1(link);
+			} else if (2 == link.getId()) {
+				assertPwLink2(link);
+			} else {
+				fail("Got a bad contributor:" + link.getId());
+			}
+		}
+		
+//		//this one should be a merge.
+//		MpPublication.getDao().copyFromPw(4);
+//		MpPublicationCostCenter.getDao().copyFromPw(4);
+//		MpPublication.getDao().publishToPw(4);
+//		MpPublicationCostCenter.getDao().deleteById(10);
+//		MpPublicationCostCenter mpPCC = new MpPublicationCostCenter();
+//		CostCenter cc = new CostCenter();
+//		cc.setId(3);
+//		mpPCC.setCostCenter(cc);
+//		mpPCC.setPublicationId(4);
+//		MpPublicationCostCenter.getDao().add(mpPCC);
+//		MpPublicationCostCenter.getDao().publishToPw(4);
+//		pub = PwPublication.getDao().getById(4);
+//		assertEquals(1, pub.getCostCenters().size());
+//		for (PublicationCostCenter<?> costCenter : pub.getCostCenters()) {
+//			assertPwCostCenterXX(mpPCC.getId(), costCenter);
+//		}
+	}
 
 	public static void assertPwLink1(PublicationLink<?> link) {
 		assertTrue(link instanceof PwPublicationLink);

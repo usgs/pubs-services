@@ -16,30 +16,30 @@ import org.springframework.security.core.context.SecurityContextHolder;
  */
 public class BaseDaoTest extends BaseSpringTest {
 
-    @Test
-    public void getClientIdNoAuth() {
-        //no authentication
-        String clientId = PublicationType.getDao().getClientId();
-        assertNotNull("No Authentication", clientId);
-        assertEquals("No Authentication", PubsConstants.ANONYMOUS_USER, clientId);
-    }
-        
-    @Test
-    public void getClientIdAuth() {
-        //have authentication
-        PubsUtilitiesTest.buildTestAuthentication("dummy");
-        String clientId = PublicationType.getDao().getClientId();
-        assertNotNull("Have Authentication", clientId);
-        assertEquals("Have Authentication", "dummy", clientId);
-    }
+	@Test
+	public void getClientIdNoAuth() {
+		//no authentication
+		String clientId = PublicationType.getDao().getClientId();
+		assertNotNull("No Authentication", clientId);
+		assertEquals("No Authentication", PubsConstants.ANONYMOUS_USER, clientId);
+	}
+		
+	@Test
+	public void getClientIdAuth() {
+		//have authentication
+		PubsUtilitiesTest.buildTestAuthentication("dummy");
+		String clientId = PublicationType.getDao().getClientId();
+		assertNotNull("Have Authentication", clientId);
+		assertEquals("Have Authentication", "dummy", clientId);
+	}
 
-    @Test
-    public void getClientIdNoAuthAgain() {
-        //no authentication again
-    	SecurityContextHolder.clearContext();
-        String clientId = PublicationType.getDao().getClientId();
-        assertNotNull("No Authentication", clientId);
-        assertEquals("No Authentication", PubsConstants.ANONYMOUS_USER, clientId);
-    }
+	@Test
+	public void getClientIdNoAuthAgain() {
+		//no authentication again
+		SecurityContextHolder.clearContext();
+		String clientId = PublicationType.getDao().getClientId();
+		assertNotNull("No Authentication", clientId);
+		assertEquals("No Authentication", PubsConstants.ANONYMOUS_USER, clientId);
+	}
 
 }

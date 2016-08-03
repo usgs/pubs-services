@@ -19,7 +19,7 @@ import javax.validation.Constraint;
 @Target(TYPE)
 @Retention(RUNTIME)
 @Constraint(validatedBy={
-        CrossPropertyValidatorForMpPublication.class
+		CrossPropertyValidatorForMpPublication.class
 })
 @Documented
 public @interface CrossProperty {

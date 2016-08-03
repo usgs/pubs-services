@@ -13,33 +13,33 @@ import javax.validation.ConstraintValidatorContext;
 
 public class NoChildrenValidator implements ConstraintValidator<NoChildren, BaseDomain<?>> {
 
-    /** {@inheritDoc}
-     * @see javax.validation.ConstraintValidator#initialize(java.lang.annotation.Annotation)
-     */
-    @Override
-    public void initialize(NoChildren constraintAnnotation) {
-        // TODO Auto-generated method stub
+	/** {@inheritDoc}
+	 * @see javax.validation.ConstraintValidator#initialize(java.lang.annotation.Annotation)
+	 */
+	@Override
+	public void initialize(NoChildren constraintAnnotation) {
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    /** {@inheritDoc}
-     * @see javax.validation.ConstraintValidator#isValid(java.lang.Object, javax.validation.ConstraintValidatorContext)
-     */
-    @Override
-    public boolean isValid(BaseDomain<?> value, ConstraintValidatorContext context) {
-        boolean rtn = true;
-        Map<String, Object> filters = new HashMap<String,Object>();
-        filters.put(MpPublicationDao.LIST_ID, value.getId());
+	/** {@inheritDoc}
+	 * @see javax.validation.ConstraintValidator#isValid(java.lang.Object, javax.validation.ConstraintValidatorContext)
+	 */
+	@Override
+	public boolean isValid(BaseDomain<?> value, ConstraintValidatorContext context) {
+		boolean rtn = true;
+		Map<String, Object> filters = new HashMap<String,Object>();
+		filters.put(MpPublicationDao.LIST_ID, value.getId());
 
-        //TODO put back when lists are implemented.
-//        if (value.getClass().isAssignableFrom(MpListPubsRel.class)) {
-//            List<MpListPubsRel> list = MpListPubsRel.getDao().getByMap(filters);
-//            if (0 != list.size()) {
-//                rtn = false;
-//            }
-//        }
+		//TODO put back when lists are implemented.
+//		if (value.getClass().isAssignableFrom(MpListPubsRel.class)) {
+//			List<MpListPubsRel> list = MpListPubsRel.getDao().getByMap(filters);
+//			if (0 != list.size()) {
+//				rtn = false;
+//			}
+//		}
 
-        return rtn;
-    }
+		return rtn;
+	}
 
 }

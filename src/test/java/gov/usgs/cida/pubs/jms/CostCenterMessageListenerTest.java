@@ -30,46 +30,46 @@ public class CostCenterMessageListenerTest extends BaseSpringTest {
 	@Mock
 	public IIpdsService service;
 
-    private CostCenterMessageListener mc;
-    
-    @Before
-    public void initTest() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        mc = new CostCenterMessageListener(service);
-    }
+	private CostCenterMessageListener mc;
+	
+	@Before
+	public void initTest() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		mc = new CostCenterMessageListener(service);
+	}
 
-    @Test
-    public void testOnMessage() {
-        ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost?broker.persistent=false");
-        try {
-            Connection conn = connectionFactory.createConnection();
-            Session sess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            TextMessage message = sess.createTextMessage(null);
-            mc.onMessage(message);
-            verify(service, times(1)).processIpdsMessage(null);
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
-        }
+	@Test
+	public void testOnMessage() {
+		ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost?broker.persistent=false");
+		try {
+			Connection conn = connectionFactory.createConnection();
+			Session sess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			TextMessage message = sess.createTextMessage(null);
+			mc.onMessage(message);
+			verify(service, times(1)).processIpdsMessage(null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
 
-    }
+	}
 
-    @Test
-    public void testOnMessageErrorThown() {
-    	try {
+	@Test
+	public void testOnMessageErrorThown() {
+		try {
 			doThrow(new RuntimeException()).when(service).processIpdsMessage(null);
 
 			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost?broker.persistent=false");
-            Connection conn = connectionFactory.createConnection();
-            Session sess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            TextMessage message = sess.createTextMessage(null);
-            mc.onMessage(message);
-            verify(service, times(1)).processIpdsMessage(null);
-        } catch (Exception e) {
-            assertTrue(e instanceof RuntimeException);
-            assertEquals("Bad JMS Karma - CostCenter", e.getMessage());
-        }
+			Connection conn = connectionFactory.createConnection();
+			Session sess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			TextMessage message = sess.createTextMessage(null);
+			mc.onMessage(message);
+			verify(service, times(1)).processIpdsMessage(null);
+		} catch (Exception e) {
+			assertTrue(e instanceof RuntimeException);
+			assertEquals("Bad JMS Karma - CostCenter", e.getMessage());
+		}
 
-    }
+	}
 
 }

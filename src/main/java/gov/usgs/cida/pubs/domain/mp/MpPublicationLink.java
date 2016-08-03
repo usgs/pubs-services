@@ -34,14 +34,14 @@ public class MpPublicationLink extends PublicationLink<MpPublicationLink> {
 		this.setHelpText(pubLink.getHelpText());
 	}
 
-    public static IMpDao<MpPublicationLink> getDao() {
-        return mpPublicationLinkDao;
-    }
+	public static IMpDao<MpPublicationLink> getDao() {
+		return mpPublicationLinkDao;
+	}
 
-    @Autowired
-    @Qualifier("mpPublicationLinkDao")
-    public void setMpPublicationLinkDao(final IMpDao<MpPublicationLink> inMpPublicationLinkDao) {
-        mpPublicationLinkDao = inMpPublicationLinkDao;
-    }
+	@Autowired
+	@Qualifier("mpPublicationLinkDao")
+	public void setMpPublicationLinkDao(final IMpDao<MpPublicationLink> inMpPublicationLinkDao) {
+		mpPublicationLinkDao = inMpPublicationLinkDao;
+	}
 
 }

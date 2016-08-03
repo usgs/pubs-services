@@ -47,66 +47,66 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	private String testUnNumberedSeriesXml;
 
 	@Autowired
-    public String warehouseEndpoint;
+	public String warehouseEndpoint;
 
 	@Autowired
-    protected String crossRefProtocol;
+	protected String crossRefProtocol;
 	@Autowired
-    protected String crossRefHost;
+	protected String crossRefHost;
 	@Autowired
-    protected String crossRefUrl;
+	protected String crossRefUrl;
 	@Autowired
-    protected Integer crossRefPort;
+	protected Integer crossRefPort;
 	@Autowired
-    protected String crossRefUser;
+	protected String crossRefUser;
 	@Autowired
-    protected String crossRefPwd;
+	protected String crossRefPwd;
 	@Autowired
 	@Qualifier("numberedSeriesXml")
-    protected String numberedSeriesXml;
+	protected String numberedSeriesXml;
 	@Autowired
 	@Qualifier("unNumberedSeriesXml")
-    protected String unNumberedSeriesXml;
+	protected String unNumberedSeriesXml;
 	@Autowired
 	@Qualifier("personNameXml")
-    protected String personNameXml;
+	protected String personNameXml;
 	@Autowired
 	@Qualifier("organizationNameXml")
-    protected String organizationNameXml;
+	protected String organizationNameXml;
 	@Autowired
 	@Qualifier("pagesXml")
-    protected String pagesXml;
+	protected String pagesXml;
 	@Autowired
 	@Qualifier("crossRefDepositorEmail")
-    protected String depositorEmail;
+	protected String depositorEmail;
 	@Mock
-    protected PubsEMailer pubsEMailer;
+	protected PubsEMailer pubsEMailer;
 
-    private CrossRefBusService busService;
-    
-    @Before
-    public void initTest() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        busService = new CrossRefBusService(crossRefProtocol, crossRefHost, crossRefUrl, crossRefPort, crossRefUser,
-        		crossRefPwd, numberedSeriesXml, unNumberedSeriesXml, organizationNameXml, personNameXml,
-        		pagesXml, depositorEmail, pubsEMailer, warehouseEndpoint);
-    }
+	private CrossRefBusService busService;
+	
+	@Before
+	public void initTest() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		busService = new CrossRefBusService(crossRefProtocol, crossRefHost, crossRefUrl, crossRefPort, crossRefUser,
+				crossRefPwd, numberedSeriesXml, unNumberedSeriesXml, organizationNameXml, personNameXml,
+				pagesXml, depositorEmail, pubsEMailer, warehouseEndpoint);
+	}
 
-    @Test
-    public void replacePlaceHolderTest() {
-    	assertEquals("", busService.replacePlaceHolder(null, null, null));
-    	assertEquals("", busService.replacePlaceHolder(null, "f", "q"));
-    	assertEquals("", busService.replacePlaceHolder(null, null, "q"));
-    	assertEquals("", busService.replacePlaceHolder(null, "f", null));
-    	assertEquals("abc", busService.replacePlaceHolder("abc", null, null));
-    	assertEquals("abc", busService.replacePlaceHolder("abc", null, "q"));
-    	assertEquals("abc", busService.replacePlaceHolder("abc", "f", null));
-    	assertEquals("abc", busService.replacePlaceHolder("abc", "f", "q"));
-    	assertEquals("abq", busService.replacePlaceHolder("abc", "c", "q"));
-    	assertEquals("ab", busService.replacePlaceHolder("abc", "c", null));
-    	//We don't escape at this level...
-    	assertEquals("a&b<>q", busService.replacePlaceHolder("a&b<>c", "c", "q"));
-    }
+	@Test
+	public void replacePlaceHolderTest() {
+		assertEquals("", busService.replacePlaceHolder(null, null, null));
+		assertEquals("", busService.replacePlaceHolder(null, "f", "q"));
+		assertEquals("", busService.replacePlaceHolder(null, null, "q"));
+		assertEquals("", busService.replacePlaceHolder(null, "f", null));
+		assertEquals("abc", busService.replacePlaceHolder("abc", null, null));
+		assertEquals("abc", busService.replacePlaceHolder("abc", null, "q"));
+		assertEquals("abc", busService.replacePlaceHolder("abc", "f", null));
+		assertEquals("abc", busService.replacePlaceHolder("abc", "f", "q"));
+		assertEquals("abq", busService.replacePlaceHolder("abc", "c", "q"));
+		assertEquals("ab", busService.replacePlaceHolder("abc", "c", null));
+		//We don't escape at this level...
+		assertEquals("a&b<>q", busService.replacePlaceHolder("a&b<>c", "c", "q"));
+	}
 
 	@Test
 	public void buildXmlNPETest() {
@@ -144,36 +144,36 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 
 	@Test
 	public void buildBaseXmlEscapeTest() {
-	    CrossRefBusService busService2 = new CrossRefBusService(crossRefProtocol, crossRefHost, crossRefUrl, crossRefPort, crossRefUser,
-	    		crossRefPwd, numberedSeriesXml, unNumberedSeriesXml, organizationNameXml, personNameXml,
-	    		pagesXml, "drsteini@usgs.gov<>", pubsEMailer, warehouseEndpoint);
-	    String templateXml = "<root><de>" + CrossRefBusService.DEPOSITOR_EMAIL_REPLACE + "</de><yr>"
-		    	+ CrossRefBusService.DISSEMINATION_YEAR_REPLACE + "</yr><ti>"
-		    	+ CrossRefBusService.TITLE_REPLACE + "</ti><doi>"
-		    	+ CrossRefBusService.DOI_NAME_REPLACE + "</doi><i>"
-		    	+ CrossRefBusService.INDEX_PAGE_REPLACE + "</i><sna>"
-		    	+ CrossRefBusService.SERIES_NAME_REPLACE + "</sna><issn>"
-		    	+ CrossRefBusService.ONLINE_ISSN_REPLACE + "</issn><snbr>"
-		    	+ CrossRefBusService.SERIES_NUMBER_REPLACE + "</snbr><root>";
-	    String resultXml = "<root><de>drsteini@usgs.gov&lt;&gt;</de><yr>yr&lt;&gt;</yr><ti>title&lt;&gt;</ti><doi>"
-		    	    	+ "doi&lt;</doi><i>http://pubs.usgs.gov/&lt;&gt;</i><sna>&lt;sname&lt;</sna><issn>"
-		    	    	+ "&gt;issn&lt;</issn><snbr>&lt;snbr&gt;</snbr><root>";
-	    MpPublication pub = new MpPublication();
-	    pub.setPublicationYear("yr<>");
-	    pub.setTitle("title<>");
-	    pub.setDoi("doi<");
-	    pub.setSeriesNumber("<snbr>");
-	    PublicationSeries ps = new PublicationSeries();
-	    ps.setText("<sname<");
-	    ps.setOnlineIssn(">issn<");
-	    pub.setSeriesTitle(ps);
-	    
-	    String xml = busService2.buildBaseXml(pub, "http://pubs.usgs.gov/<>", templateXml);
+		CrossRefBusService busService2 = new CrossRefBusService(crossRefProtocol, crossRefHost, crossRefUrl, crossRefPort, crossRefUser,
+				crossRefPwd, numberedSeriesXml, unNumberedSeriesXml, organizationNameXml, personNameXml,
+				pagesXml, "drsteini@usgs.gov<>", pubsEMailer, warehouseEndpoint);
+		String templateXml = "<root><de>" + CrossRefBusService.DEPOSITOR_EMAIL_REPLACE + "</de><yr>"
+				+ CrossRefBusService.DISSEMINATION_YEAR_REPLACE + "</yr><ti>"
+				+ CrossRefBusService.TITLE_REPLACE + "</ti><doi>"
+				+ CrossRefBusService.DOI_NAME_REPLACE + "</doi><i>"
+				+ CrossRefBusService.INDEX_PAGE_REPLACE + "</i><sna>"
+				+ CrossRefBusService.SERIES_NAME_REPLACE + "</sna><issn>"
+				+ CrossRefBusService.ONLINE_ISSN_REPLACE + "</issn><snbr>"
+				+ CrossRefBusService.SERIES_NUMBER_REPLACE + "</snbr><root>";
+		String resultXml = "<root><de>drsteini@usgs.gov&lt;&gt;</de><yr>yr&lt;&gt;</yr><ti>title&lt;&gt;</ti><doi>"
+						+ "doi&lt;</doi><i>http://pubs.usgs.gov/&lt;&gt;</i><sna>&lt;sname&lt;</sna><issn>"
+						+ "&gt;issn&lt;</issn><snbr>&lt;snbr&gt;</snbr><root>";
+		MpPublication pub = new MpPublication();
+		pub.setPublicationYear("yr<>");
+		pub.setTitle("title<>");
+		pub.setDoi("doi<");
+		pub.setSeriesNumber("<snbr>");
+		PublicationSeries ps = new PublicationSeries();
+		ps.setText("<sname<");
+		ps.setOnlineIssn(">issn<");
+		pub.setSeriesTitle(ps);
+		
+		String xml = busService2.buildBaseXml(pub, "http://pubs.usgs.gov/<>", templateXml);
 		assertNotNull(xml);
 		assertEquals(harmonizeXml(resultXml), harmonizeXml(xml));
 	}
-    
-    
+	
+	
 	@Test
 	public void buildBaseXmlNumberedSeriesTest() {
 		MpPublication pub = buildNumberedSeriesPub();

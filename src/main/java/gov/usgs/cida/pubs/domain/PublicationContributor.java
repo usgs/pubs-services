@@ -21,51 +21,51 @@ public class PublicationContributor<D> extends BaseDomain<D> implements Serializ
 
 	private Integer publicationId;
 
-    @JsonProperty("contributorType")
-    @JsonView(View.PW.class)
-  //TODO Activate this once we can populate from front-end    @NotNull
-    private ContributorType contributorType;
+	@JsonProperty("contributorType")
+	@JsonView(View.PW.class)
+  //TODO Activate this once we can populate from front-end	@NotNull
+	private ContributorType contributorType;
 
-    @JsonProperty("rank")
-    @JsonView(View.PW.class)
-    private Integer rank;
+	@JsonProperty("rank")
+	@JsonView(View.PW.class)
+	private Integer rank;
 
-    @JsonView(View.PW.class)
-    @JsonUnwrapped
-    @NotNull
-    @Valid
-    private Contributor<?> contributor;
+	@JsonView(View.PW.class)
+	@JsonUnwrapped
+	@NotNull
+	@Valid
+	private Contributor<?> contributor;
 
-    public Integer getPublicationId() {
-        return publicationId;
-    }
+	public Integer getPublicationId() {
+		return publicationId;
+	}
 
-    public void setPublicationId(final Integer inPublicationId) {
-        publicationId = inPublicationId;
-    }
+	public void setPublicationId(final Integer inPublicationId) {
+		publicationId = inPublicationId;
+	}
 
-    public ContributorType getContributorType() {
-        return contributorType;
-    }
+	public ContributorType getContributorType() {
+		return contributorType;
+	}
 
-    public void setContributorType(final ContributorType inContributorType) {
-        contributorType = inContributorType;
-    }
+	public void setContributorType(final ContributorType inContributorType) {
+		contributorType = inContributorType;
+	}
 
-    public Integer getRank() {
-        return rank;
-    }
+	public Integer getRank() {
+		return rank;
+	}
 
-    public void setRank(final Integer inRank) {
-        rank = inRank;
-    }
+	public void setRank(final Integer inRank) {
+		rank = inRank;
+	}
 
-    public Contributor<?> getContributor() {
-        return contributor;
-    }
+	public Contributor<?> getContributor() {
+		return contributor;
+	}
 
-    public void setContributor(final Contributor<?> inContributor) {
-        contributor = inContributor;
-    }
+	public void setContributor(final Contributor<?> inContributor) {
+		contributor = inContributor;
+	}
 
 }

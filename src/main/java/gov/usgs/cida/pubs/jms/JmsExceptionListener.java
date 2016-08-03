@@ -8,10 +8,10 @@ import org.apache.commons.logging.LogFactory;
 
 public class JmsExceptionListener implements ExceptionListener {
 
-    private static final Log LOG = LogFactory.getLog(JmsExceptionListener.class);
+	private static final Log LOG = LogFactory.getLog(JmsExceptionListener.class);
 
-    public void onException( final JMSException e ) {
-        LOG.info(e);
-    }
+	public void onException( final JMSException e ) {
+		LOG.info(e);
+	}
 
 }

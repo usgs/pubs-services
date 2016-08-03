@@ -15,27 +15,27 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class CostCenterMessageListener implements MessageListener {
 
-    private static final Log LOG = LogFactory.getLog(CostCenterMessageListener.class);
+	private static final Log LOG = LogFactory.getLog(CostCenterMessageListener.class);
 
-    protected final IIpdsService costCenterMessageService;
+	protected final IIpdsService costCenterMessageService;
 
-    @Autowired
-    public CostCenterMessageListener(@Qualifier("costCenterMessageService") final IIpdsService costCenterMessageService) {
-        this.costCenterMessageService = costCenterMessageService;
-     }
+	@Autowired
+	public CostCenterMessageListener(@Qualifier("costCenterMessageService") final IIpdsService costCenterMessageService) {
+		this.costCenterMessageService = costCenterMessageService;
+	 }
 
-    @Transactional
-    public void onMessage(final Message message) {
-        LOG.info("Starting Processing the Message");
+	@Transactional
+	public void onMessage(final Message message) {
+		LOG.info("Starting Processing the Message");
 
-        try {
-        	costCenterMessageService.processIpdsMessage(null);
-        } catch (final Exception e) {
-            LOG.info(e);
-            throw new RuntimeException("Bad JMS Karma - CostCenter", e);
-        }
+		try {
+			costCenterMessageService.processIpdsMessage(null);
+		} catch (final Exception e) {
+			LOG.info(e);
+			throw new RuntimeException("Bad JMS Karma - CostCenter", e);
+		}
 
-        LOG.info("Done Processing the CostCenter Message");
-    }
+		LOG.info("Done Processing the CostCenter Message");
+	}
 
 }

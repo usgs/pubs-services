@@ -45,8 +45,8 @@ public class MpListPublication extends BaseDomain<MpListPublication> {
 		return mpListPublicationDao;
 	}
 
-    @Autowired
-    @Qualifier("mpListPublicationDao")
+	@Autowired
+	@Qualifier("mpListPublicationDao")
 	public void setMpListPublicationDao(final IMpDao<MpListPublication> inMpListPublicationDao) {
 		mpListPublicationDao = inMpListPublicationDao;
 	}

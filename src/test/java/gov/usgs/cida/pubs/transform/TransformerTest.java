@@ -34,11 +34,11 @@ public class TransformerTest {
 		}
 	}
 	
-    @Test
+	@Test
 	public void writeTest() {
-    	TTransformer transformer = new TTransformer(new ByteArrayOutputStream(), null);
+		TTransformer transformer = new TTransformer(new ByteArrayOutputStream(), null);
 
-    	//Don't process null results
+		//Don't process null results
 		try {
 			transformer.write((Object) null);
 			assertEquals(0, transformer.initCalled);
@@ -49,7 +49,7 @@ public class TransformerTest {
 			fail(e.getLocalizedMessage());
 		}
 
-    	//Don't process results that aren't a map
+		//Don't process results that aren't a map
 		try {
 			transformer.write((Object) "ABCDEFG");
 			assertEquals(0, transformer.initCalled);
@@ -59,11 +59,11 @@ public class TransformerTest {
 		} catch (IOException e) {
 			fail(e.getLocalizedMessage());
 		}
-    	
-    	Map<String, Object> result = new HashMap<>();
-    	result.put("A", "1");
-    	result.put("B", "2");
-    	
+		
+		Map<String, Object> result = new HashMap<>();
+		result.put("A", "1");
+		result.put("B", "2");
+		
 		try {
 			transformer.write((Object) result);
 			transformer.write((Object) result);
@@ -75,5 +75,5 @@ public class TransformerTest {
 			fail(e.getLocalizedMessage());
 		}
 	}
-    
+	
 }

@@ -18,27 +18,27 @@ public class PublicationIndexDao extends SqlSessionDaoSupport implements IPublic
 		setSqlSessionFactory(sqlSessionFactory);
 	}
 	
-    protected static final String NS = "publicationIndex";
+	protected static final String NS = "publicationIndex";
 
-    /** 
-     * {@inheritDoc}
-     * @see gov.usgs.cida.pubs.dao.intfc.IPublicationIndexDao#getById(java.lang.Integer)
-     */
-    @Transactional(readOnly = true)
-    @ISetDbContext
-    @Override
-    public PublicationIndex getById(Integer domainID) {
-        return (PublicationIndex) getSqlSession().selectOne(NS + BaseDao.GET_BY_ID, domainID);
-    }
+	/** 
+	 * {@inheritDoc}
+	 * @see gov.usgs.cida.pubs.dao.intfc.IPublicationIndexDao#getById(java.lang.Integer)
+	 */
+	@Transactional(readOnly = true)
+	@ISetDbContext
+	@Override
+	public PublicationIndex getById(Integer domainID) {
+		return (PublicationIndex) getSqlSession().selectOne(NS + BaseDao.GET_BY_ID, domainID);
+	}
 
-    /** {@inheritDoc}
-     * @see gov.usgs.cida.pubs.dao.intfc.IPublicationIndexDao#publish(java.lang.Integer)
-     */
-    @Transactional
-    @ISetDbContext
-    @Override
-    public void publish(Integer publicationId) {
-    	getSqlSession().selectOne(NS + BaseDao.UPDATE, publicationId);
-    }
+	/** {@inheritDoc}
+	 * @see gov.usgs.cida.pubs.dao.intfc.IPublicationIndexDao#publish(java.lang.Integer)
+	 */
+	@Transactional
+	@ISetDbContext
+	@Override
+	public void publish(Integer publicationId) {
+		getSqlSession().selectOne(NS + BaseDao.UPDATE, publicationId);
+	}
 
 }

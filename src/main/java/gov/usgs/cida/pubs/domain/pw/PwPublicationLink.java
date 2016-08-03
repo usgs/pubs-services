@@ -12,12 +12,12 @@ public class PwPublicationLink extends PublicationLink<PwPublicationLink> {
 
 	private static IMpDao<PwPublicationLink> pwPublicationLinkDao;
 
-    public static IMpDao<PwPublicationLink> getDao() {
-        return pwPublicationLinkDao;
-    }
+	public static IMpDao<PwPublicationLink> getDao() {
+		return pwPublicationLinkDao;
+	}
 
-    public void setPwPublicationLinkDao(final IMpDao<PwPublicationLink> inPwPublicationLinkDao) {
-        pwPublicationLinkDao = inPwPublicationLinkDao;
-    }
+	public void setPwPublicationLinkDao(final IMpDao<PwPublicationLink> inPwPublicationLinkDao) {
+		pwPublicationLinkDao = inPwPublicationLinkDao;
+	}
 
 }

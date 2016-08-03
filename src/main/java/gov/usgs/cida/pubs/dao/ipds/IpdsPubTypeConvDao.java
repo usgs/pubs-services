@@ -18,13 +18,13 @@ public class IpdsPubTypeConvDao extends SqlSessionDaoSupport implements IIpdsPub
 		setSqlSessionFactory(sqlSessionFactory);
 	}
 	
-    private static final String NS = "ipdsPubTypeConv";
+	private static final String NS = "ipdsPubTypeConv";
 
-    @Transactional(readOnly = true)
-    @ISetDbContext
-    @Override
-    public IpdsPubTypeConv getByIpdsValue(String ipdsValue) {
-        return getSqlSession().selectOne(NS + ".getByIpdsValue", ipdsValue);
-    }
+	@Transactional(readOnly = true)
+	@ISetDbContext
+	@Override
+	public IpdsPubTypeConv getByIpdsValue(String ipdsValue) {
+		return getSqlSession().selectOne(NS + ".getByIpdsValue", ipdsValue);
+	}
 
 }

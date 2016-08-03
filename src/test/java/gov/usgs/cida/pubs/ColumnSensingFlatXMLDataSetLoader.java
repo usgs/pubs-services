@@ -13,13 +13,13 @@ import org.springframework.core.io.Resource;
 import com.github.springtestdbunit.dataset.AbstractDataSetLoader;
 
 public class ColumnSensingFlatXMLDataSetLoader extends AbstractDataSetLoader {
-    @Override
-    protected IDataSet createDataSet(Resource resource) throws Exception {
+	@Override
+	protected IDataSet createDataSet(Resource resource) throws Exception {
 		FlatXmlDataSetBuilder builder = new FlatXmlDataSetBuilder();
 		builder.setColumnSensing(true);
 		InputStream inputStream = resource.getInputStream();
 		return createReplacementDataSet(builder.build(inputStream));
-    }
+	}
 
 	private ReplacementDataSet createReplacementDataSet(FlatXmlDataSet dataSet) {
 		ReplacementDataSet replacementDataSet = new ReplacementDataSet(dataSet);

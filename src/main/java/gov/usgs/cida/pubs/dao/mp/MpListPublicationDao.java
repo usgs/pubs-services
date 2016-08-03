@@ -42,14 +42,14 @@ public class MpListPublicationDao extends MpDao<MpListPublication> {
 		return (MpListPublication) getSqlSession().selectOne(NS + GET_BY_ID, domainID);
 	}
 
-    @Transactional(readOnly = true)
-    @ISetDbContext
-    @Override
-    public MpListPublication getById(String domainID) {
-        return getById(PubsUtilities.parseInteger(domainID));
-    }
+	@Transactional(readOnly = true)
+	@ISetDbContext
+	@Override
+	public MpListPublication getById(String domainID) {
+		return getById(PubsUtilities.parseInteger(domainID));
+	}
 
-    @Transactional(readOnly = true)
+	@Transactional(readOnly = true)
 	@ISetDbContext
 	@Override
 	public List<MpListPublication> getByMap(Map<String, Object> filters) {

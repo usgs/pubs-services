@@ -27,17 +27,17 @@ import com.fasterxml.jackson.annotation.JsonView;
 	"temporalEnd", "notes", "ipdsReviewProcessState", "ipdsInternalId", "lockUsername","contributors", "links", 
 	"scale", "projection", "datum", "country", "state", "county","city", "otherGeospatial", "geographicExtents", "volume", "issue",
 	"edition", "comments", "contact", "tableOfContents", "publishedDateStatement", "publishingServiceCenter", "contact",
-    "isPartOf", "supersededBy", "sourceDatabase", "published", "validationErrors"})
+	"isPartOf", "supersededBy", "sourceDatabase", "published", "validationErrors"})
 public class MpPublication extends Publication<MpPublication> {
 
-    private static final long serialVersionUID = 8072814759958143994L;
+	private static final long serialVersionUID = 8072814759958143994L;
 
-    private static IMpPublicationDao mpPublicationDao;
-    
-    @JsonIgnore
-    private String lockUsername;
-    
-    public String getLockUsername() {
+	private static IMpPublicationDao mpPublicationDao;
+	
+	@JsonIgnore
+	private String lockUsername;
+	
+	public String getLockUsername() {
 		return lockUsername;
 	}
 
@@ -46,27 +46,27 @@ public class MpPublication extends Publication<MpPublication> {
 	}
 
 	@JsonProperty("validationErrors")
-    @JsonView(View.PW.class)
-    @JsonUnwrapped
-    @Override
-    public ValidationResults getValidationErrors() {
-    	return super.getValidationErrors();
-    }
+	@JsonView(View.PW.class)
+	@JsonUnwrapped
+	@Override
+	public ValidationResults getValidationErrors() {
+		return super.getValidationErrors();
+	}
 
 	/**
-     * @return the mpPublicationDao
-     */
-    public static IMpPublicationDao getDao() {
-        return mpPublicationDao;
-    }
+	 * @return the mpPublicationDao
+	 */
+	public static IMpPublicationDao getDao() {
+		return mpPublicationDao;
+	}
 
-    /**
-     * The setter for mpPublicationDao.
-     * @param inMpPublicationDao the MpPublicationDao to set
-     */
-    @Autowired
-    public void setMpPublicationDao(final IMpPublicationDao inMpPublicationDao) {
-        mpPublicationDao = inMpPublicationDao;
-    }
+	/**
+	 * The setter for mpPublicationDao.
+	 * @param inMpPublicationDao the MpPublicationDao to set
+	 */
+	@Autowired
+	public void setMpPublicationDao(final IMpPublicationDao inMpPublicationDao) {
+		mpPublicationDao = inMpPublicationDao;
+	}
 
 }

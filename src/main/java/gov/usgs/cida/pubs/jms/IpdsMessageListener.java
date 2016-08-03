@@ -17,41 +17,41 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class IpdsMessageListener implements MessageListener {
 
-    private static final Log LOG = LogFactory.getLog(IpdsMessageListener.class);
+	private static final Log LOG = LogFactory.getLog(IpdsMessageListener.class);
 
-    protected final IIpdsService ipdsStringMessageService;
+	protected final IIpdsService ipdsStringMessageService;
 
-    protected final IIpdsService spnProductionMessageService;
+	protected final IIpdsService spnProductionMessageService;
 
-    @Autowired
-    public IpdsMessageListener(@Qualifier("ipdsStringMessageService") final IIpdsService ipdsStringMessageService,
-            @Qualifier("spnProductionMessageService") final IIpdsService spnProductionMessageService) {
-        this.ipdsStringMessageService = ipdsStringMessageService;
-        this.spnProductionMessageService = spnProductionMessageService;
-    }
+	@Autowired
+	public IpdsMessageListener(@Qualifier("ipdsStringMessageService") final IIpdsService ipdsStringMessageService,
+			@Qualifier("spnProductionMessageService") final IIpdsService spnProductionMessageService) {
+		this.ipdsStringMessageService = ipdsStringMessageService;
+		this.spnProductionMessageService = spnProductionMessageService;
+	}
 
-    @Transactional
-    public void onMessage(final Message message) {
-        LOG.info("Starting Processing the Message");
+	@Transactional
+	public void onMessage(final Message message) {
+		LOG.info("Starting Processing the Message");
 
-        try {
-            if (message instanceof TextMessage) {
-                TextMessage textMessage = (TextMessage) message;
-                String messageText = textMessage.getText();
-                if (null != messageText && messageText.startsWith(ProcessType.SPN_PRODUCTION.toString())) {
-                    spnProductionMessageService.processIpdsMessage(messageText.replace(ProcessType.SPN_PRODUCTION.toString(), ""));
-                } else {
-                    ipdsStringMessageService.processIpdsMessage(messageText);
-                }
-            } else {
-                throw new IllegalArgumentException("Invalid Message");
-            }
-        } catch (final Exception e) {
-            LOG.info(e);
-            throw new RuntimeException("Bad JMS Karma", e);
-        }
+		try {
+			if (message instanceof TextMessage) {
+				TextMessage textMessage = (TextMessage) message;
+				String messageText = textMessage.getText();
+				if (null != messageText && messageText.startsWith(ProcessType.SPN_PRODUCTION.toString())) {
+					spnProductionMessageService.processIpdsMessage(messageText.replace(ProcessType.SPN_PRODUCTION.toString(), ""));
+				} else {
+					ipdsStringMessageService.processIpdsMessage(messageText);
+				}
+			} else {
+				throw new IllegalArgumentException("Invalid Message");
+			}
+		} catch (final Exception e) {
+			LOG.info(e);
+			throw new RuntimeException("Bad JMS Karma", e);
+		}
 
-        LOG.info("Done Processing the Message");
-    }
+		LOG.info("Done Processing the Message");
+	}
 
 }

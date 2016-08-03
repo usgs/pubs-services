@@ -6,10 +6,10 @@ package gov.usgs.cida.pubs.busservice.intfc;
  */
 public interface IIpdsService {
 
-    /** 
-     * Let's place the message into the appropriate locations.
-     * @throws Exception 
-     */
-    void processIpdsMessage(String ipdsMessage) throws Exception;
+	/** 
+	 * Let's place the message into the appropriate locations.
+	 * @throws Exception 
+	 */
+	void processIpdsMessage(String ipdsMessage) throws Exception;
 
 }

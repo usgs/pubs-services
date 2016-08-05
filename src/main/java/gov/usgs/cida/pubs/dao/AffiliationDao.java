@@ -56,4 +56,24 @@ public class AffiliationDao<D extends Affiliation<D>> extends BaseDao<D> {
 	public List<D> getByMap(Map<String, Object> filters) {
 		return getSqlSession().selectList(NS + GET_BY_MAP, filters);
 	}
+	
+	/** {@inheritDoc}
+	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#delete(java.lang.Object)
+	 */
+	@Transactional
+	@ISetDbContext
+	@Override
+	public void delete(D domainObject) {
+		deleteById(domainObject.getId());
+	}
+	
+	/** {@inheritDoc}
+	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#deleteById(java.lang.Integer)
+	 */
+	@Transactional
+	@ISetDbContext
+	@Override
+	public void deleteById(Integer domainID) {
+		getSqlSession().delete(NS + DELETE, domainID);
+	}
 }

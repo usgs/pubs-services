@@ -1,5 +1,8 @@
 package gov.usgs.cida.pubs.webservice;
 
+import java.util.List;
+import java.util.Map;
+
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.CostCenter;
@@ -46,8 +49,33 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		this.outsideAffiliationBusService = outsideAffiliationBusService;
 	}
 
+	@GetMapping(value={"/costcenter"})
+	@JsonView(View.MP.class)
+	public List<CostCenter> getCostCenters(HttpServletRequest request, HttpServletResponse response) {
+		LOG.debug("getCostCenters");
+		setHeaders(response);
+		Map<String, Object> filters = null;
+		List<CostCenter> rtn = costCenterBusService.getObjects(filters);
+		if (null == rtn) {
+			response.setStatus(HttpStatus.NOT_FOUND.value());
+		}
+		return rtn;
+	}
+
+	@GetMapping(value={"/costcenter/{costCenterId}"})
+	@JsonView(View.MP.class)
+	public CostCenter getCostCenter(HttpServletRequest request, HttpServletResponse response, @PathVariable("costCenterId") String costCenterId) {
+		LOG.debug("getCostCenter");
+		setHeaders(response);
+		CostCenter rtn = costCenterBusService.getObject(PubsUtilities.parseInteger(costCenterId));
+		if (null == rtn) {
+			response.setStatus(HttpStatus.NOT_FOUND.value());
+		}
+		return rtn;
+	}
+
 	@PostMapping(value={"/costcenter"})
-	@JsonView(View.PW.class)
+	@JsonView(View.MP.class)
 	@Transactional
 	public CostCenter createCostCenter(@RequestBody CostCenter costCenter, HttpServletResponse response) {
 		LOG.debug("createCostCenter");
@@ -63,7 +91,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 
 	@DeleteMapping(value="/costcenter/{id}")
 	@Transactional
-	@JsonView(View.LookupMaint.class)
+	@JsonView(View.MP.class)
 	public @ResponseBody ValidationResults deleteCostCenter(@PathVariable String id, HttpServletResponse response) {
 		LOG.debug("deleteCostCenter");
 		setHeaders(response);
@@ -76,20 +104,8 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		return result;
 	}
 
-	@GetMapping(value={"/costcenter/{costCenterId}"})
-	@JsonView(View.PW.class)
-	public CostCenter getCostCenter(HttpServletRequest request, HttpServletResponse response, @PathVariable("costCenterId") String costCenterId) {
-		LOG.debug("getCostCenter");
-		setHeaders(response);
-		CostCenter rtn = costCenterBusService.getObject(PubsUtilities.parseInteger(costCenterId));
-		if (null == rtn) {
-			response.setStatus(HttpStatus.NOT_FOUND.value());
-		}
-		return rtn;
-	}
-
 	@PutMapping(value="/costcenter/{id}")
-	@JsonView(View.PW.class)
+	@JsonView(View.MP.class)
 	@Transactional
 	public CostCenter updateCostCenter(@RequestBody CostCenter costCenter, @PathVariable String id, HttpServletResponse response) {
 		LOG.debug("updateCostCenter");
@@ -104,8 +120,33 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 	}
 
 
+	@GetMapping(value={"/outsideaffiliation"})
+	@JsonView(View.MP.class)
+	public List<OutsideAffiliation> getOutsideAffiliations(HttpServletRequest request, HttpServletResponse response) {
+		LOG.debug("getOutsideAffiliations");
+		setHeaders(response);
+		Map<String, Object> filters = null;
+		List<OutsideAffiliation> rtn = outsideAffiliationBusService.getObjects(filters);
+		if (null == rtn) {
+			response.setStatus(HttpStatus.NOT_FOUND.value());
+		}
+		return rtn;
+	}
+
+	@GetMapping(value={"/outsideaffiliation/{outsideAffiliationId}"})
+	@JsonView(View.MP.class)
+	public OutsideAffiliation getOutsideAffiliation(HttpServletRequest request, HttpServletResponse response, @PathVariable("outsideAffiliationId") String outsideAffiliationId) {
+		LOG.debug("getOutsideAffiliation");
+		setHeaders(response);
+		OutsideAffiliation rtn = outsideAffiliationBusService.getObject(PubsUtilities.parseInteger(outsideAffiliationId));
+		if (null == rtn) {
+			response.setStatus(HttpStatus.NOT_FOUND.value());
+		}
+		return rtn;
+	}
+
 	@PostMapping(value={"/outsideaffiliation"})
-	@JsonView(View.PW.class)
+	@JsonView(View.MP.class)
 	@Transactional
 	public OutsideAffiliation createOutsideAffiliation(@RequestBody OutsideAffiliation outsideAffiliation, HttpServletResponse response) {
 		LOG.debug("createOutsideAffiliation");
@@ -121,7 +162,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 
 	@DeleteMapping(value="/outsideaffiliation/{id}")
 	@Transactional
-	@JsonView(View.LookupMaint.class)
+	@JsonView(View.MP.class)
 	public @ResponseBody ValidationResults deleteOutsideAffiliation(@PathVariable String id, HttpServletResponse response) {
 		LOG.debug("deleteOutsideAffiliation");
 		setHeaders(response);
@@ -134,21 +175,8 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		return result;
 	}
 
-	@GetMapping(value={"/outsideaffiliation/{outsideAffiliationId}"})
-	@JsonView(View.PW.class)
-	public OutsideAffiliation getOutsideAffiliation(HttpServletRequest request, HttpServletResponse response, @PathVariable("outsideAffiliationId") String outsideAffiliationId) {
-		LOG.debug("getOutsideAffiliation");
-		setHeaders(response);
-		OutsideAffiliation rtn = outsideAffiliationBusService.getObject(PubsUtilities.parseInteger(outsideAffiliationId));
-//		OutsideAffiliation.getDao().getById(PubsUtilities.parseInteger(outsideAffiliationId)
-		if (null == rtn) {
-			response.setStatus(HttpStatus.NOT_FOUND.value());
-		}
-		return rtn;
-	}
-
 	@PutMapping(value="/outsideaffiliation/{id}")
-	@JsonView(View.PW.class)
+	@JsonView(View.MP.class)
 	@Transactional
 	public OutsideAffiliation updateOutsideAffiliation(@RequestBody OutsideAffiliation outsideAffiliation, @PathVariable String id, HttpServletResponse response) {
 		LOG.debug("updateOutsideAffiliation");

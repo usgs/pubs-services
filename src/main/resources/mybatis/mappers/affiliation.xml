@@ -145,4 +145,9 @@
            where affiliation_id = #{id,jdbcType=NUMERIC}
     </update>
 
+    <delete id="delete" parameterType="Integer">
+        delete from affiliation
+         where affiliation_id = #{value,jdbcType=NUMERIC}
+    </delete>
+
 </mapper>

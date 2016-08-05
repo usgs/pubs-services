@@ -1,6 +1,7 @@
 package gov.usgs.cida.pubs.busservice;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.dao.CostCenterDaoTest;
@@ -39,13 +40,40 @@ public class CostCenterBusServiceTest extends BaseSpringTest {
 	}
 
 	@Test
-	public void addObjectTest() {
+	public void createObjectTest() {
 		CostCenter costCenter = new CostCenter();
 		costCenter.setText("I'm a cost center in a test!");
 		costCenter.setIpdsId(15);
 		busService.createObject(costCenter);
 		assertNotNull(costCenter.getId());
-		CostCenter persisted = (CostCenter) CostCenter.getDao().getById(costCenter.getId());
+		CostCenter persisted = CostCenter.getDao().getById(costCenter.getId());
 		assertDaoTestResults(CostCenter.class, costCenter, persisted, CostCenterDaoTest.IGNORE_PROPERTIES, true, true);
+	}
+
+	@Test
+	public void updateObjectTest() {
+		CostCenter costCenter = new CostCenter();
+		costCenter.setText("I'm a cost center in a test!");
+		costCenter.setIpdsId(15);
+		busService.createObject(costCenter);
+		assertNotNull(costCenter.getId());
+		CostCenter persisted = CostCenter.getDao().getById(costCenter.getId());
+		assertDaoTestResults(CostCenter.class, costCenter, persisted, CostCenterDaoTest.IGNORE_PROPERTIES, true, true);
+		costCenter.setText("I'm an updated cost center in a test!");
+		costCenter.setIpdsId(25);
+		busService.updateObject(costCenter);
+		CostCenter updated = CostCenter.getDao().getById(costCenter.getId());
+		assertDaoTestResults(CostCenter.class, costCenter, updated, CostCenterDaoTest.IGNORE_PROPERTIES, true, true);
+	}
+	
+	@Test
+	public void deleteObjectTest() {
+		CostCenter costCenter = new CostCenter();
+		costCenter.setText("I'm a cost center in a test!");
+		costCenter.setIpdsId(15);
+		busService.createObject(costCenter);
+		assertNotNull(costCenter.getId());
+		busService.deleteObject(costCenter.getId());
+		assertNull(CostCenter.getDao().getById(costCenter.getId()));
 	}
 }

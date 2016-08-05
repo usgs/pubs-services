@@ -1,6 +1,7 @@
 package gov.usgs.cida.pubs.dao;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
@@ -90,18 +91,44 @@ public class CostCenterDaoTest extends BaseSpringTest {
 
 	@Test
 	public void addUpdateTest() {
-		CostCenter affiliation = new CostCenter();
-		affiliation.setText("cost center 1");
-		affiliation.setIpdsId(randomPositiveInt());
-		CostCenter.getDao().add(affiliation);
-		CostCenter persistedAffiliation = (CostCenter) CostCenter.getDao().getById(affiliation.getId());
-		assertDaoTestResults(CostCenter.class, affiliation, persistedAffiliation, IGNORE_PROPERTIES, true, true);
+		CostCenter costCenter = new CostCenter();
+		costCenter.setText("cost center 1");
+		costCenter.setIpdsId(randomPositiveInt());
+		CostCenter.getDao().add(costCenter);
+		CostCenter persistedAffiliation = (CostCenter) CostCenter.getDao().getById(costCenter.getId());
+		assertDaoTestResults(CostCenter.class, costCenter, persistedAffiliation, IGNORE_PROPERTIES, true, true);
 
-		affiliation.setText("cost center 2");
-		affiliation.setIpdsId(randomPositiveInt()+4);
-		CostCenter.getDao().update(affiliation);
-		persistedAffiliation = (CostCenter) CostCenter.getDao().getById(affiliation.getId());
-		assertDaoTestResults(CostCenter.class, affiliation, persistedAffiliation, IGNORE_PROPERTIES, true, true);
+		costCenter.setText("cost center 2");
+		costCenter.setIpdsId(randomPositiveInt()+4);
+		CostCenter.getDao().update(costCenter);
+		persistedAffiliation = (CostCenter) CostCenter.getDao().getById(costCenter.getId());
+		assertDaoTestResults(CostCenter.class, costCenter, persistedAffiliation, IGNORE_PROPERTIES, true, true);
+	}
+
+	@Test
+	public void deleteTest() {
+		CostCenter costCenter = new CostCenter();
+		costCenter.setText("outside org 1");
+		costCenter.setIpdsId(randomPositiveInt());
+		CostCenter.getDao().add(costCenter);
+		CostCenter persistedAffiliation = CostCenter.getDao().getById(costCenter.getId());
+		assertDaoTestResults(CostCenter.class, costCenter, persistedAffiliation, IGNORE_PROPERTIES, true, true);
+
+		CostCenter.getDao().delete(costCenter);
+		assertNull(CostCenter.getDao().getById(costCenter.getId()));
+	}
+
+	@Test
+	public void deleteByIdTest() {
+		CostCenter costCenter = new CostCenter();
+		costCenter.setText("outside org 1");
+		costCenter.setIpdsId(randomPositiveInt());
+		CostCenter.getDao().add(costCenter);
+		CostCenter persistedAffiliation = CostCenter.getDao().getById(costCenter.getId());
+		assertDaoTestResults(CostCenter.class, costCenter, persistedAffiliation, IGNORE_PROPERTIES, true, true);
+
+		CostCenter.getDao().deleteById(costCenter.getId());
+		assertNull(CostCenter.getDao().getById(costCenter.getId()));
 	}
 
 	@Test
@@ -111,20 +138,6 @@ public class CostCenterDaoTest extends BaseSpringTest {
 			params.put(PublicationDao.PROD_ID, 1);
 			CostCenter.getDao().getObjectCount(params);
 			fail("Was able to get count.");
-		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
-		}
-
-		try {
-			CostCenter.getDao().delete(new CostCenter());
-			fail("Was able to delete.");
-		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
-		}
-
-		try {
-			CostCenter.getDao().deleteById(1);
-			fail("Was able to delete by it.");
 		} catch (Exception e) {
 			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
 		}

@@ -43,7 +43,7 @@ public class CostCenterBusServiceTest extends BaseSpringTest {
 	public void createObjectTest() {
 		CostCenter costCenter = new CostCenter();
 		costCenter.setText("I'm a cost center in a test!");
-		costCenter.setIpdsId(15);
+		costCenter.setIpdsId(randomPositiveInt());
 		busService.createObject(costCenter);
 		assertNotNull(costCenter.getId());
 		CostCenter persisted = CostCenter.getDao().getById(costCenter.getId());
@@ -54,13 +54,13 @@ public class CostCenterBusServiceTest extends BaseSpringTest {
 	public void updateObjectTest() {
 		CostCenter costCenter = new CostCenter();
 		costCenter.setText("I'm a cost center in a test!");
-		costCenter.setIpdsId(15);
+		costCenter.setIpdsId(randomPositiveInt());
 		busService.createObject(costCenter);
 		assertNotNull(costCenter.getId());
 		CostCenter persisted = CostCenter.getDao().getById(costCenter.getId());
 		assertDaoTestResults(CostCenter.class, costCenter, persisted, CostCenterDaoTest.IGNORE_PROPERTIES, true, true);
 		costCenter.setText("I'm an updated cost center in a test!");
-		costCenter.setIpdsId(25);
+		costCenter.setIpdsId(randomPositiveInt());
 		busService.updateObject(costCenter);
 		CostCenter updated = CostCenter.getDao().getById(costCenter.getId());
 		assertDaoTestResults(CostCenter.class, costCenter, updated, CostCenterDaoTest.IGNORE_PROPERTIES, true, true);
@@ -70,7 +70,7 @@ public class CostCenterBusServiceTest extends BaseSpringTest {
 	public void deleteObjectTest() {
 		CostCenter costCenter = new CostCenter();
 		costCenter.setText("I'm a cost center in a test!");
-		costCenter.setIpdsId(15);
+		costCenter.setIpdsId(randomPositiveInt());
 		busService.createObject(costCenter);
 		assertNotNull(costCenter.getId());
 		busService.deleteObject(costCenter.getId());

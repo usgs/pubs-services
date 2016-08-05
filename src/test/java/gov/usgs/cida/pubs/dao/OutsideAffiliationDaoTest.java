@@ -1,6 +1,7 @@
 package gov.usgs.cida.pubs.dao;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
@@ -92,13 +93,37 @@ public class OutsideAffiliationDaoTest extends BaseSpringTest {
 		OutsideAffiliation affiliation = new OutsideAffiliation();
 		affiliation.setText("outside org 1");
 		OutsideAffiliation.getDao().add(affiliation);
-		OutsideAffiliation persistedAffiliation = (OutsideAffiliation) OutsideAffiliation.getDao().getById(affiliation.getId());
+		OutsideAffiliation persistedAffiliation = OutsideAffiliation.getDao().getById(affiliation.getId());
 		assertDaoTestResults(OutsideAffiliation.class, affiliation, persistedAffiliation, IGNORE_PROPERTIES, true, true);
 
 		affiliation.setText("outside org 2");
 		OutsideAffiliation.getDao().update(affiliation);
-		persistedAffiliation = (OutsideAffiliation) OutsideAffiliation.getDao().getById(affiliation.getId());
+		persistedAffiliation = OutsideAffiliation.getDao().getById(affiliation.getId());
 		assertDaoTestResults(OutsideAffiliation.class, affiliation, persistedAffiliation, IGNORE_PROPERTIES, true, true);
+	}
+
+	@Test
+	public void deleteTest() {
+		OutsideAffiliation affiliation = new OutsideAffiliation();
+		affiliation.setText("outside org 1");
+		OutsideAffiliation.getDao().add(affiliation);
+		OutsideAffiliation persistedAffiliation = OutsideAffiliation.getDao().getById(affiliation.getId());
+		assertDaoTestResults(OutsideAffiliation.class, affiliation, persistedAffiliation, IGNORE_PROPERTIES, true, true);
+
+		OutsideAffiliation.getDao().delete(affiliation);
+		assertNull(OutsideAffiliation.getDao().getById(affiliation.getId()));
+	}
+
+	@Test
+	public void deleteByIdTest() {
+		OutsideAffiliation affiliation = new OutsideAffiliation();
+		affiliation.setText("outside org 1");
+		OutsideAffiliation.getDao().add(affiliation);
+		OutsideAffiliation persistedAffiliation = OutsideAffiliation.getDao().getById(affiliation.getId());
+		assertDaoTestResults(OutsideAffiliation.class, affiliation, persistedAffiliation, IGNORE_PROPERTIES, true, true);
+
+		OutsideAffiliation.getDao().deleteById(affiliation.getId());
+		assertNull(OutsideAffiliation.getDao().getById(affiliation.getId()));
 	}
 
 	@Test
@@ -111,20 +136,5 @@ public class OutsideAffiliationDaoTest extends BaseSpringTest {
 		} catch (Exception e) {
 			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
 		}
-
-		try {
-			OutsideAffiliation.getDao().delete(new OutsideAffiliation());
-			fail("Was able to delete.");
-		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
-		}
-
-		try {
-			OutsideAffiliation.getDao().deleteById(1);
-			fail("Was able to delete by it.");
-		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
-		}
 	}
-
 }

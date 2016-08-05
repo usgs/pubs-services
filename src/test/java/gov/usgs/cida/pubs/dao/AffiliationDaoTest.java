@@ -75,20 +75,6 @@ public class AffiliationDaoTest extends BaseSpringTest {
 		} catch (Exception e) {
 			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
 		}
-
-		try {
-			Affiliation.getDao().delete(null);
-			fail("Was able to delete.");
-		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
-		}
-
-		try {
-			Affiliation.getDao().deleteById(1);
-			fail("Was able to delete by it.");
-		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
-		}
 	}
 
 	public static void assertAffiliation1(Affiliation<?> affiliation) {

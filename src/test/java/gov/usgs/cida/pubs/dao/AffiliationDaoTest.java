@@ -12,6 +12,7 @@ import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -49,6 +50,15 @@ public class AffiliationDaoTest extends BaseSpringTest {
 
 		Affiliation<?> outsideAffiliation = Affiliation.getDao().getById("5");
 		assertAffiliation5(outsideAffiliation);
+	}
+
+	@Test
+	public void getByMap() {
+		Map<String, Object> filters = new HashMap<>();
+		filters.put(AffiliationDao.TEXT_SEARCH, "1");
+		List<? extends Affiliation<?>> results = Affiliation.getDao().getByMap(filters);
+		assertAffiliation1(results.get(0));
+		assertAffiliation5(results.get(1));
 	}
 
 	@Test

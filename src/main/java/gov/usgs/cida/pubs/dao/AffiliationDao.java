@@ -46,6 +46,7 @@ public class AffiliationDao<D extends Affiliation<D>> extends BaseDao<D> {
 	public D getById(String domainID) {
 		return getById(PubsUtilities.parseInteger(domainID));
 	}
+	
 	/** 
 	 * {@inheritDoc}
 	 * @see gov.usgs.cida.pubs.dao.BaseDao#getByMap(Map)

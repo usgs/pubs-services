@@ -9,6 +9,7 @@ import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 
+import gov.usgs.cida.pubs.validation.mp.unique.UniqueKeyValidatorForAffiliation;
 import gov.usgs.cida.pubs.validation.mp.unique.UniqueKeyValidatorForMpListPublication;
 import gov.usgs.cida.pubs.validation.mp.unique.UniqueKeyValidatorForMpPublication;
 import gov.usgs.cida.pubs.validation.mp.unique.UniqueKeyValidatorForMpPublicationContributor;
@@ -26,7 +27,8 @@ import gov.usgs.cida.pubs.validation.unique.UniqueKeyValidatorForPublicationSeri
 		UniqueKeyValidatorForMpPublication.class,
 		UniqueKeyValidatorForMpPublicationContributor.class,
 		UniqueKeyValidatorForMpPublicationCostCenter.class,
-		UniqueKeyValidatorForPublicationSeries.class
+		UniqueKeyValidatorForPublicationSeries.class,
+		UniqueKeyValidatorForAffiliation.class
 })
 @Documented
 public @interface UniqueKey {

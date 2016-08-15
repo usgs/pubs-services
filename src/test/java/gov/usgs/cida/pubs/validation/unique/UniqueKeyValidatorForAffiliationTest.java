@@ -1,4 +1,4 @@
-package gov.usgs.cida.pubs.validation.mp.unique;
+package gov.usgs.cida.pubs.validation.unique;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -6,9 +6,10 @@ import static org.mockito.Matchers.anyMapOf;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import gov.usgs.cida.pubs.TestAffiliation;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
-import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
+import gov.usgs.cida.pubs.validation.unique.UniqueKeyValidatorForAffiliation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +28,6 @@ public class UniqueKeyValidatorForAffiliationTest extends BaseValidatorTest {
 	protected UniqueKeyValidatorForAffiliation validator;
 	protected TestAffiliation affiliation;
 
-	class TestAffiliation extends Affiliation<TestAffiliation> {
-		
-	}
-	
 	@Mock
 	protected IDao<TestAffiliation> affiliationDao;
 

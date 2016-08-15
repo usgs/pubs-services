@@ -1,4 +1,4 @@
-package gov.usgs.cida.pubs.validation.mp.unique;
+package gov.usgs.cida.pubs.validation.unique;
 
 import gov.usgs.cida.pubs.dao.AffiliationDao;
 import gov.usgs.cida.pubs.domain.Affiliation;

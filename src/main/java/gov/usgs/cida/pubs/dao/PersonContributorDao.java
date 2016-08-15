@@ -20,6 +20,8 @@ public class PersonContributorDao extends ContributorDao {
 	}
 
 	private static final String PERSON = "PersonContributor";
+	
+	public static final String AFFILIATION_ID_SEARCH = "affiliationId";
 
 	/**
 	 * {@inheritDoc}

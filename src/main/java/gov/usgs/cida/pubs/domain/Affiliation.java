@@ -2,6 +2,9 @@ package gov.usgs.cida.pubs.domain;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
+import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
+import gov.usgs.cida.pubs.validation.constraint.NoChildren;
+import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
 
 import javax.validation.constraints.NotNull;
 
@@ -14,8 +17,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @Component
+@UniqueKey(message = "{affiliation.name.duplicate}")
+@NoChildren(groups = DeleteChecks.class)
 @JsonPropertyOrder({"id", "text", "active", "usgs"})
-public class Affiliation<D extends Affiliation<D>> extends BaseDomain<D> implements ILookup {
+public abstract class Affiliation<D extends Affiliation<D>> extends BaseDomain<D> implements ILookup {
 
 	private static IDao<? extends Affiliation<?>> affiliationDao;
 

@@ -36,7 +36,7 @@ import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.unique.UniqueKeyValidatorForPublicationSeriesTest;
 
 //The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we nned to let Spring know that the context is now dirty...
+//for each reference. This does mean that we need to let Spring know that the context is now dirty...
 @DirtiesContext(classMode=ClassMode.AFTER_CLASS)
 public class PublicationSeriesBusServiceTest extends BaseSpringTest {
 

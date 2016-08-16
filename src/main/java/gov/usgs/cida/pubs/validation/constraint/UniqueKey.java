@@ -13,6 +13,7 @@ import gov.usgs.cida.pubs.validation.mp.unique.UniqueKeyValidatorForMpListPublic
 import gov.usgs.cida.pubs.validation.mp.unique.UniqueKeyValidatorForMpPublication;
 import gov.usgs.cida.pubs.validation.mp.unique.UniqueKeyValidatorForMpPublicationContributor;
 import gov.usgs.cida.pubs.validation.mp.unique.UniqueKeyValidatorForMpPublicationCostCenter;
+import gov.usgs.cida.pubs.validation.unique.UniqueKeyValidatorForAffiliation;
 import gov.usgs.cida.pubs.validation.unique.UniqueKeyValidatorForPublicationSeries;
 
 /**
@@ -26,7 +27,8 @@ import gov.usgs.cida.pubs.validation.unique.UniqueKeyValidatorForPublicationSeri
 		UniqueKeyValidatorForMpPublication.class,
 		UniqueKeyValidatorForMpPublicationContributor.class,
 		UniqueKeyValidatorForMpPublicationCostCenter.class,
-		UniqueKeyValidatorForPublicationSeries.class
+		UniqueKeyValidatorForPublicationSeries.class,
+		UniqueKeyValidatorForAffiliation.class
 })
 @Documented
 public @interface UniqueKey {

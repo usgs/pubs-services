@@ -112,6 +112,9 @@
         <if test="corporation != null">
             and is_corporation = #{corporation}
         </if>
+        <if test="affiliationId != null">
+            and affiliation_id = #{affiliationId}
+        </if>
     </sql>
 
     <sql id="baseSelect">

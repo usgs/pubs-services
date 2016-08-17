@@ -66,8 +66,8 @@ public class MpPublicationCostCenterBusService implements IListBusService<Public
 
 			//Delete any left overs (would only apply to applications which are not sending the delete like they should.
 			if (!map.isEmpty()) {
-			   for (MpPublicationCostCenter pubCostCenter : map.values()) {
-				   deleteObject(pubCostCenter);
+				for (MpPublicationCostCenter pubCostCenter : map.values()) {
+					deleteObject(pubCostCenter);
 				}
 			}
 		}

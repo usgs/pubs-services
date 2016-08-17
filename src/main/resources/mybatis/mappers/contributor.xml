@@ -127,6 +127,14 @@
     <sql id="defaultOrderBy">
     	order by text
     </sql>
+    
+	<select id="getCount" resultType="Integer">
+		select count(*)
+		  from contributor
+        <where>
+            <include refid="filters"/>
+        </where>
+	</select>
 
     <select id="getById" parameterType="Integer" resultMap="result">
         <include refid="baseSelect"/>

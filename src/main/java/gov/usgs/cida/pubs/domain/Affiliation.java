@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @UniqueKey(message = "{affiliation.name.duplicate}")
 //@NoChildren(groups = DeleteChecks.class)
 @JsonPropertyOrder({"id", "text", "active", "usgs"})
-public abstract class Affiliation<D extends Affiliation<D>> extends BaseDomain<D> implements ILookup {
+public class Affiliation<D extends Affiliation<D>> extends BaseDomain<D> implements ILookup {
 
 	private static IDao<? extends Affiliation<?>> affiliationDao;
 

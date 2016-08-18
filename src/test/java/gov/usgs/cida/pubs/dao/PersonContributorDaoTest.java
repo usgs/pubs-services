@@ -4,6 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.IntegrationTest;
+import gov.usgs.cida.pubs.domain.Affiliation;
+import gov.usgs.cida.pubs.domain.Contributor;
+import gov.usgs.cida.pubs.domain.OutsideContributor;
+import gov.usgs.cida.pubs.domain.PersonContributor;
+import gov.usgs.cida.pubs.domain.UsgsContributor;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,15 +22,6 @@ import org.junit.experimental.categories.Category;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
-
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.IntegrationTest;
-import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.domain.Affiliation;
-import gov.usgs.cida.pubs.domain.Contributor;
-import gov.usgs.cida.pubs.domain.OutsideContributor;
-import gov.usgs.cida.pubs.domain.PersonContributor;
-import gov.usgs.cida.pubs.domain.UsgsContributor;
 
 @Category(IntegrationTest.class)
 @DatabaseSetups({
@@ -166,15 +164,10 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 	}
 
 	@Test
-	public void notImplemented() {
-		try {
-			Map<String, Object> params = new HashMap<String, Object>();
-			params.put(PublicationDao.PROD_ID, 1);
-			PersonContributor.getDao().getObjectCount(params);
-			fail("Was able to get count.");
-		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
-		}
+	public void getObjectCount() {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put(AffiliationDao.ID_SEARCH, 1);
+		assertEquals("One contrib with affiliation id = 1", 1, PersonContributor.getDao().getObjectCount(params).intValue());
 	}
 
 	public static PersonContributor<?> buildAPerson(final Integer personId, final String type) {

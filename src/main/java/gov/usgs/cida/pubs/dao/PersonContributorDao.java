@@ -67,4 +67,13 @@ public class PersonContributorDao extends ContributorDao {
 		getSqlSession().insert(NS + UPDATE + PERSON, domainObject);
 	}
 
+	/** {@inheritDoc}
+	 * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getObjectCount(java.util.Map)
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	@ISetDbContext
+	public Integer getObjectCount(Map<String, Object> filters) {
+		return getSqlSession().selectOne(NS + GET_COUNT, filters);
+	}
 }

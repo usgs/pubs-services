@@ -25,10 +25,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 @Category(IntegrationTest.class)
 @DatabaseSetups({
 	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-	@DatabaseSetup("classpath:/testData/publicationType.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-	@DatabaseSetup("classpath:/testData/dataset.xml")
+	@DatabaseSetup("classpath:/testData/affiliation.xml")
 })
 public class AffiliationDaoTest extends BaseSpringTest {
 
@@ -55,10 +52,15 @@ public class AffiliationDaoTest extends BaseSpringTest {
 	@Test
 	public void getByMap() {
 		Map<String, Object> filters = new HashMap<>();
-		filters.put(AffiliationDao.TEXT_SEARCH, "1");
+		filters.put(AffiliationDao.TEXT_SEARCH, "Affiliation Cost Center 1");
 		List<? extends Affiliation<?>> results = Affiliation.getDao().getByMap(filters);
 		assertAffiliation1(results.get(0));
-		assertAffiliation5(results.get(1));
+		filters.put(AffiliationDao.TEXT_SEARCH, "Affiliation Cost Center");
+		results = Affiliation.getDao().getByMap(filters);
+		assertEquals("Affiliations starting with 'Affiliation Cost Center'", 2, results.size());
+		filters.put(AffiliationDao.TEXT_SEARCH, "x");
+		results = Affiliation.getDao().getByMap(filters);
+		assertEquals("Affiliations starting with 'x'", 3, results.size());
 	}
 
 	@Test

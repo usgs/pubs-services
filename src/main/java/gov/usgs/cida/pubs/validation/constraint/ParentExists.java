@@ -14,7 +14,7 @@ import gov.usgs.cida.pubs.validation.mp.parent.ParentExistsValidatorForMpPublica
 import gov.usgs.cida.pubs.validation.mp.parent.ParentExistsValidatorForMpPublicationContributor;
 import gov.usgs.cida.pubs.validation.mp.parent.ParentExistsValidatorForMpPublicationCostCenter;
 import gov.usgs.cida.pubs.validation.mp.parent.ParentExistsValidatorForMpPublicationLink;
-import gov.usgs.cida.pubs.validation.mp.parent.ParentExistsValidatorForPersonContributor;
+import gov.usgs.cida.pubs.validation.parent.ParentExistsValidatorForPersonContributor;
 import gov.usgs.cida.pubs.validation.parent.ParentExistsValidatorForPublicationSeries;
 
 @Target(TYPE)

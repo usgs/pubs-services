@@ -1,4 +1,4 @@
-package gov.usgs.cida.pubs.validation.mp.parent;
+package gov.usgs.cida.pubs.validation.parent;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -10,6 +10,7 @@ import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
+import gov.usgs.cida.pubs.validation.parent.ParentExistsValidatorForPersonContributor;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -40,34 +40,30 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	private IBusService<PersonContributor<?>> personContributorBusService;
 
 	@Autowired
-	public ContributorMvcService(@Qualifier("corporateContributorBusService")
-			IBusService<CorporateContributor> corporateContributorBusService,
-			@Qualifier("personContributorBusService")
-			IBusService<PersonContributor<?>> personContributorBusService) {
+	public ContributorMvcService(@Qualifier("corporateContributorBusService") IBusService<CorporateContributor> corporateContributorBusService,
+			@Qualifier("personContributorBusService") IBusService<PersonContributor<?>> personContributorBusService) {
 		this.corporateContributorBusService = corporateContributorBusService;
 		this.personContributorBusService = personContributorBusService;
 	}
 
-	@GetMapping(value={"/contributor/{contributorId}"})
+	@GetMapping(value={"/contributor/{id}"})
 	@JsonView(View.PW.class)
-	public @ResponseBody Contributor<?> getContributor(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable("contributorId") String contributorId) {
+	public @ResponseBody Contributor<?> getContributor(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") String id) {
 		LOG.debug("getContributor");
 		setHeaders(response);
-		Contributor<?> rtn = Contributor.getDao().getById(PubsUtilities.parseInteger(contributorId));
+		Contributor<?> rtn = Contributor.getDao().getById(PubsUtilities.parseInteger(id));
 		if (null == rtn) {
 			response.setStatus(HttpStatus.NOT_FOUND.value());
 		}
 		return rtn;
 	}
 
-	@GetMapping(value={"/person/{contributorId}"})
+	@GetMapping(value={"/person/{id}"})
 	@JsonView(View.PW.class)
-	public @ResponseBody Contributor<?> getPerson(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable("contributorId") String contributorId) {
+	public @ResponseBody Contributor<?> getPerson(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") String id) {
 		LOG.debug("getPerson");
 		setHeaders(response);
-		Contributor<?> rtn = (Contributor<?>) personContributorBusService.getObject(PubsUtilities.parseInteger(contributorId));
+		Contributor<?> rtn = (Contributor<?>) personContributorBusService.getObject(PubsUtilities.parseInteger(id));
 		if (null == rtn) {
 			response.setStatus(HttpStatus.NOT_FOUND.value());
 		}
@@ -92,7 +88,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	@PutMapping(value="/usgscontributor/{id}")
 	@JsonView(View.PW.class)
 	@Transactional
-	public @ResponseBody UsgsContributor updateUsgsContributor(@RequestBody UsgsContributor person, @PathVariable String id, HttpServletResponse response) {
+	public @ResponseBody UsgsContributor updateUsgsContributor(@RequestBody UsgsContributor person, @PathVariable("id") String id, HttpServletResponse response) {
 		LOG.debug("updateUsgsContributor");
 		setHeaders(response);
 		UsgsContributor castPerson = (UsgsContributor) personContributorBusService.updateObject(person);
@@ -135,13 +131,13 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		return castPerson;
 	}
 
-	@GetMapping(value={"/corporation/{contributorId}"})
+	@GetMapping(value={"/corporation/{id}"})
 	@JsonView(View.PW.class)
 	public @ResponseBody CorporateContributor getCorporation(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable("contributorId") String contributorId) {
+			@PathVariable("id") String id) {
 		LOG.debug("getCorporation");
 		setHeaders(response);
-		CorporateContributor rtn = corporateContributorBusService.getObject(PubsUtilities.parseInteger(contributorId));
+		CorporateContributor rtn = corporateContributorBusService.getObject(PubsUtilities.parseInteger(id));
 		if (null == rtn) {
 			response.setStatus(HttpStatus.NOT_FOUND.value());
 		}

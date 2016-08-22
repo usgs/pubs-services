@@ -1,18 +1,17 @@
 package gov.usgs.cida.pubs.domain;
 
+import gov.usgs.cida.pubs.json.View;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.validation.constraint.ParentExists;
+import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
+
 import java.io.Serializable;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.annotation.JsonView;
-
-import gov.usgs.cida.pubs.json.View;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
-import gov.usgs.cida.pubs.validation.constraint.ParentExists;
-import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
 
 @UniqueKey(message = "{publication.indexid.duplicate}")
 @ParentExists
@@ -25,7 +24,6 @@ public class PublicationCostCenter<D> extends BaseDomain<D> implements Serializa
 	@JsonView(View.PW.class)
 	@JsonUnwrapped
 	@NotNull
-	@Valid
 	private CostCenter costCenter;
 
 	public Integer getPublicationId() {

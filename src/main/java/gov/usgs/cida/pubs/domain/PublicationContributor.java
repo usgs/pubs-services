@@ -6,7 +6,6 @@ import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
 
 import java.io.Serializable;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -33,7 +32,6 @@ public class PublicationContributor<D> extends BaseDomain<D> implements Serializ
 	@JsonView(View.PW.class)
 	@JsonUnwrapped
 	@NotNull
-	@Valid
 	private Contributor<?> contributor;
 
 	public Integer getPublicationId() {

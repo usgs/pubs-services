@@ -26,5 +26,4 @@ public @interface NoChildren {
 	public abstract Class<?>[] payload() default {};
 
 	String[] propertyName() default {};
-
 }

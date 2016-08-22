@@ -18,7 +18,6 @@ import gov.usgs.cida.pubs.validation.unique.UniqueKeyValidatorForPublicationSeri
 
 /**
  * @author drsteini
- *
  */
 @Target(TYPE)
 @Retention(RUNTIME)
@@ -38,5 +37,4 @@ public @interface UniqueKey {
 	public abstract Class<?>[] payload() default {};
 
 	String[] propertyName() default {};
-
 }

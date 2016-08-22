@@ -62,12 +62,12 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		return rtn;
 	}
 
-	@GetMapping(value={"/costcenter/{costCenterId}"})
+	@GetMapping(value={"/costcenter/{id}"})
 	@JsonView(View.MP.class)
-	public CostCenter getCostCenter(HttpServletRequest request, HttpServletResponse response, @PathVariable("costCenterId") String costCenterId) {
+	public CostCenter getCostCenter(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") String id) {
 		LOG.debug("getCostCenter");
 		setHeaders(response);
-		CostCenter rtn = costCenterBusService.getObject(PubsUtilities.parseInteger(costCenterId));
+		CostCenter rtn = costCenterBusService.getObject(PubsUtilities.parseInteger(id));
 		if (null == rtn) {
 			response.setStatus(HttpStatus.NOT_FOUND.value());
 		}
@@ -80,7 +80,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 	public CostCenter createCostCenter(@RequestBody CostCenter costCenter, HttpServletResponse response) {
 		LOG.debug("createCostCenter");
 		setHeaders(response);
-		CostCenter result = (CostCenter) costCenterBusService.createObject(costCenter);
+		CostCenter result = costCenterBusService.createObject(costCenter);
 		if (null != result && result.getValidationErrors().isEmpty()) {
 			response.setStatus(HttpServletResponse.SC_CREATED);
 		} else {
@@ -133,12 +133,12 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		return rtn;
 	}
 
-	@GetMapping(value={"/outsideaffiliation/{outsideAffiliationId}"})
+	@GetMapping(value={"/outsideaffiliation/{id}"})
 	@JsonView(View.MP.class)
-	public OutsideAffiliation getOutsideAffiliation(HttpServletRequest request, HttpServletResponse response, @PathVariable("outsideAffiliationId") String outsideAffiliationId) {
+	public OutsideAffiliation getOutsideAffiliation(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") String id) {
 		LOG.debug("getOutsideAffiliation");
 		setHeaders(response);
-		OutsideAffiliation rtn = outsideAffiliationBusService.getObject(PubsUtilities.parseInteger(outsideAffiliationId));
+		OutsideAffiliation rtn = outsideAffiliationBusService.getObject(PubsUtilities.parseInteger(id));
 		if (null == rtn) {
 			response.setStatus(HttpStatus.NOT_FOUND.value());
 		}
@@ -151,7 +151,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 	public OutsideAffiliation createOutsideAffiliation(@RequestBody OutsideAffiliation outsideAffiliation, HttpServletResponse response) {
 		LOG.debug("createOutsideAffiliation");
 		setHeaders(response);
-		OutsideAffiliation result = (OutsideAffiliation) outsideAffiliationBusService.createObject(outsideAffiliation);
+		OutsideAffiliation result = outsideAffiliationBusService.createObject(outsideAffiliation);
 		if (null != result && result.getValidationErrors().isEmpty()) {
 			response.setStatus(HttpServletResponse.SC_CREATED);
 		} else {

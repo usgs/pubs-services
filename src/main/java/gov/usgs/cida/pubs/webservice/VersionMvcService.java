@@ -1,18 +1,17 @@
 package gov.usgs.cida.pubs.webservice;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import gov.usgs.cida.pubs.domain.ApplicationVersion;
 
-@Controller
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping(value="version")
 public class VersionMvcService {
 
-	@GetMapping(value="version")
-	@ResponseBody
+	@GetMapping
 	public String getVersion() {
 		return ApplicationVersion.getVersion();
 	}
-
 }

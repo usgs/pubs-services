@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.domain;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
+import gov.usgs.cida.pubs.json.View;
 
 import javax.validation.constraints.NotNull;
 
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonView;
 
 @Component
 //@UniqueKey(message = "{affiliation.name.duplicate}")
@@ -26,10 +28,12 @@ public class Affiliation<D extends Affiliation<D>> extends BaseDomain<D> impleme
 	private String text;
 
 	@JsonProperty("active")
+	@JsonView(View.PW.class)
 	@NotNull
 	protected Boolean active;
 
 	@JsonProperty("usgs")
+	@JsonView(View.PW.class)
 	@NotNull
 	protected Boolean usgs;
 

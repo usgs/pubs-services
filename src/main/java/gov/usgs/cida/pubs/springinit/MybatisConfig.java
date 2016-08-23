@@ -19,6 +19,7 @@ import gov.usgs.cida.pubs.dao.typehandler.StringBooleanTypeHandler;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.domain.Contributor;
+import gov.usgs.cida.pubs.domain.ContributorAffiliation;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.CostCenter;
@@ -110,6 +111,7 @@ public class MybatisConfig {
 
 		registry.registerAlias("affiliation", Affiliation.class);
 		registry.registerAlias("contributor", Contributor.class);
+		registry.registerAlias("contributorAffiliation", ContributorAffiliation.class);
 		registry.registerAlias("contributorType", ContributorType.class);
 		registry.registerAlias("corporateContributor", CorporateContributor.class);
 		registry.registerAlias("costCenter", CostCenter.class);
@@ -140,5 +142,4 @@ public class MybatisConfig {
 		registry.register(PubMap.class, PubMapTypeHandler.class);
 		registry.register(Predicate.class, EnumOrdinalTypeHandler.class);
 	}
-
 }

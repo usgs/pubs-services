@@ -1,25 +1,11 @@
 package gov.usgs.cida.pubs.springinit;
 
-import javax.sql.DataSource;
-
-import org.apache.ibatis.type.EnumOrdinalTypeHandler;
-import org.apache.ibatis.type.TypeAliasRegistry;
-import org.apache.ibatis.type.TypeHandlerRegistry;
-import org.mybatis.spring.SqlSessionFactoryBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.transaction.PlatformTransactionManager;
-
 import gov.usgs.cida.pubs.PubMap;
 import gov.usgs.cida.pubs.dao.typehandler.PubMapTypeHandler;
 import gov.usgs.cida.pubs.dao.typehandler.StringBooleanTypeHandler;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.domain.Contributor;
-import gov.usgs.cida.pubs.domain.ContributorAffiliation;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.CostCenter;
@@ -54,6 +40,19 @@ import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationContributor;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationCostCenter;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationLink;
+
+import javax.sql.DataSource;
+
+import org.apache.ibatis.type.EnumOrdinalTypeHandler;
+import org.apache.ibatis.type.TypeAliasRegistry;
+import org.apache.ibatis.type.TypeHandlerRegistry;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 
 public class MybatisConfig {
 
@@ -111,7 +110,6 @@ public class MybatisConfig {
 
 		registry.registerAlias("affiliation", Affiliation.class);
 		registry.registerAlias("contributor", Contributor.class);
-		registry.registerAlias("contributorAffiliation", ContributorAffiliation.class);
 		registry.registerAlias("contributorType", ContributorType.class);
 		registry.registerAlias("corporateContributor", CorporateContributor.class);
 		registry.registerAlias("costCenter", CostCenter.class);

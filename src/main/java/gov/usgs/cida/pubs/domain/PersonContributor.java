@@ -54,7 +54,7 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 	@JsonProperty("affiliations")
 	@JsonView(View.PW.class)
 	@Valid
-	private Collection<ContributorAffiliation<?>> affiliations;
+	private Collection<Affiliation<? extends Affiliation<?>>> affiliations;
 
 	@JsonIgnore
 	private Integer ipdsContributorId;
@@ -99,11 +99,11 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 		affiliation = inAffiliation;
 	}
 
-	public Collection<ContributorAffiliation<?>> getAffiliations() {
+	public Collection<Affiliation<? extends Affiliation<?>>> getAffiliations() {
 		return affiliations;
 	}
 
-	public void setAffiliations(Collection<ContributorAffiliation<?>> affiliations) {
+	public void setAffiliations(Collection<Affiliation<? extends Affiliation<?>>> affiliations) {
 		this.affiliations = affiliations;
 	}
 

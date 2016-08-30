@@ -223,9 +223,8 @@
              values (<include refid="base.auditHosts"/>,#{contributor_id,jdbcType=NUMERIC}, #{affiliation_id,jdbcType=NUMERIC})
 	</insert>
     
-	<delete id="removeAffilition" parameterType="map" useGeneratedKeys="true" keyProperty="id" keyColumn="contributor_affiliation_id">
+	<delete id="clearAffilitions" parameterType="Integer">
         delete from contributor_affiliation (<include refid="base.auditCols"/>,
-         where contributor_id = #{contributor_id,jdbcType=NUMERIC}
-         and affiliation_id = #{affiliation_id,jdbcType=NUMERIC}
+         where contributor_id = #{value,jdbcType=NUMERIC}
 	</delete>
 </mapper>

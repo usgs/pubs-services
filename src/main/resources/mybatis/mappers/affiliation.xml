@@ -78,6 +78,13 @@
                <include refid="costCenterCols"/>
           from affiliation
     </sql>
+    
+    <select id="getByContributor" parameterType="Integer" resultMap="result">
+        <include refid="baseSelect"/>
+         where affiliation_id in (
+             select affiliation_id from contributor_affiliation
+             where contributor_id = #{value,jdbcType=NUMERIC})
+    </select>
 
     <select id="getById" parameterType="Integer" resultMap="result">
         <include refid="baseSelect"/>

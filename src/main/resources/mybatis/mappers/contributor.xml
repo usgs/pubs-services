@@ -220,7 +220,7 @@
 	<insert id="addAffilition" parameterType="map" useGeneratedKeys="true" keyProperty="id" keyColumn="contributor_affiliation_id">
         insert into contributor_affiliation (<include refid="base.auditCols"/>,
                                              contributor_id, affiliation_id)
-             values (<include refid="base.auditHosts"/>,#{contributor_id,jdbcType=NUMERIC}, #{affiliation_id,jdbcType=NUMERIC})
+             values (<include refid="base.auditHosts"/>,#{contributorId,jdbcType=NUMERIC}, #{affiliationId,jdbcType=NUMERIC})
 	</insert>
     
 	<delete id="clearAffilitions" parameterType="Integer">

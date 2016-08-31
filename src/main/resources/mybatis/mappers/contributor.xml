@@ -214,17 +214,17 @@
 
     <delete id="delete" parameterType="Integer">
         delete from contributor
-         where contributor_id = #{value,jdbcType=NUMERIC}
+            where contributor_id = #{value,jdbcType=NUMERIC}
     </delete>
     
-	<insert id="addAffilition" parameterType="map" useGeneratedKeys="true" keyProperty="id" keyColumn="contributor_affiliation_id">
+	<insert id="addAffiliation" parameterType="map" useGeneratedKeys="true" keyProperty="id" keyColumn="contributor_affiliation_id">
         insert into contributor_affiliation (<include refid="base.auditCols"/>,
                                              contributor_id, affiliation_id)
-             values (<include refid="base.auditHosts"/>,#{contributorId,jdbcType=NUMERIC}, #{affiliationId,jdbcType=NUMERIC})
+            values (<include refid="base.auditHosts"/>,#{contributorId,jdbcType=NUMERIC}, #{affiliationId,jdbcType=NUMERIC})
 	</insert>
     
-	<delete id="removeAffilitions" parameterType="Integer">
-        delete from contributor_affiliation (<include refid="base.auditCols"/>,
-         where contributor_id = #{value,jdbcType=NUMERIC}
+	<delete id="removeAffiliations" parameterType="Integer">
+        delete from contributor_affiliation
+            where contributor_id = #{value,jdbcType=NUMERIC}
 	</delete>
 </mapper>

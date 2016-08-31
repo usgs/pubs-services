@@ -12,9 +12,8 @@ public interface IPersonContributorDao extends IDao<Contributor<?>> {
 	void addAffiliation(Integer contributorId, Integer affiliationId);
 	
 	/**
-	 * Adds an affiliation to the contributor's list
+	 * Removes all affiliations from the contributor's list
 	 * @param contributorId
-	 * @param affiliationId
 	 */
 	void removeAffiliations(Integer contributorId);
 }

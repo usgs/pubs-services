@@ -23,10 +23,6 @@ import gov.usgs.cida.pubs.validation.constraint.NoChildren;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
 
-/**
- * @author drsteini
- *
- */
 @Component
 @UniqueKey(message = "{publicationseries.duplicate}")
 @ParentExists

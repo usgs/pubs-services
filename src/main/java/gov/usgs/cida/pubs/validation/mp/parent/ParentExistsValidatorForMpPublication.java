@@ -4,6 +4,7 @@ import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 
 import javax.validation.ConstraintValidator;
@@ -34,6 +35,7 @@ public class ParentExistsValidatorForMpPublication implements ConstraintValidato
 				context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
 					.addPropertyNode("type").addConstraintViolation();
 			}
+
 			if (null != value.getPublicationSubtype() && null != value.getPublicationSubtype().getId()
 					&& null == PublicationSubtype.getDao().getById(value.getPublicationSubtype().getId())) {
 				rtn = false;
@@ -41,6 +43,7 @@ public class ParentExistsValidatorForMpPublication implements ConstraintValidato
 				context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
 					.addPropertyNode("genre").addConstraintViolation();
 			}
+
 			if (null != value.getSeriesTitle() && null != value.getSeriesTitle().getId()
 					&& null == PublicationSeries.getDao().getById(value.getSeriesTitle().getId())) {
 				rtn = false;
@@ -48,6 +51,7 @@ public class ParentExistsValidatorForMpPublication implements ConstraintValidato
 				context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
 					.addPropertyNode("seriesTitle").addConstraintViolation();
 			}
+
 			if (null != value.getLargerWorkType() && null != value.getLargerWorkType().getId()
 					&& null == PublicationType.getDao().getById(value.getLargerWorkType().getId())) {
 				rtn = false;
@@ -55,6 +59,7 @@ public class ParentExistsValidatorForMpPublication implements ConstraintValidato
 				context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
 					.addPropertyNode("largerWorkType").addConstraintViolation();
 			}
+
 			if (null != value.getIsPartOf() && null != value.getIsPartOf().getId()
 					&& null == Publication.getPublicationDao().getById(value.getIsPartOf().getId())) {
 				rtn = false;
@@ -62,12 +67,21 @@ public class ParentExistsValidatorForMpPublication implements ConstraintValidato
 				context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
 					.addPropertyNode("isPartOf").addConstraintViolation();
 			}
+
 			if (null != value.getSupersededBy() && null != value.getSupersededBy().getId()
 					&& null == Publication.getPublicationDao().getById(value.getSupersededBy().getId())) {
 				rtn = false;
 				context.disableDefaultConstraintViolation();
 				context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
-					.addPropertyNode("SupersededBy").addConstraintViolation();
+					.addPropertyNode("supersededBy").addConstraintViolation();
+			}
+
+			if (null != value.getPublishingServiceCenter() && null != value.getPublishingServiceCenter().getId()
+					&& null == PublishingServiceCenter.getDao().getById(value.getPublishingServiceCenter().getId())) {
+				rtn = false;
+				context.disableDefaultConstraintViolation();
+				context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
+					.addPropertyNode("publishingServiceCenter").addConstraintViolation();
 			}
 		}
 

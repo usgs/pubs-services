@@ -90,7 +90,7 @@ public class UniqueKeyValidatorForAffiliationTest extends BaseValidatorTest {
 		verify(affiliationDao, times(1)).getByMap(anyMapOf(String.class, Object.class));
 	}
 
-	private List<TestAffiliation> buildList() {
+	public static List<TestAffiliation> buildList() {
 		List<TestAffiliation> rtn = new ArrayList<>();
 		TestAffiliation affiliation = new TestAffiliation();
 		affiliation.setId(1);

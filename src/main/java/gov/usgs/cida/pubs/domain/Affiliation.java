@@ -28,6 +28,7 @@ public class Affiliation<D extends Affiliation<D>> extends BaseDomain<D> impleme
 
 	@JsonProperty("text")
 	@Length(min=1, max=500)
+	@NotNull
 	private String text;
 
 	@JsonProperty("active")

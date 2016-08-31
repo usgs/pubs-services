@@ -1,10 +1,14 @@
 package gov.usgs.cida.pubs.busservice;
 
+import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +49,7 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 				uc.setValidationErrors(validator.validate(uc));
 			}
 			if (object.getValidationErrors().isEmpty()) {
+				updateAffiliations(id, object);
 				PersonContributor.getDao().update(object);
 				result = (PersonContributor<?>) PersonContributor.getDao().getById(id);
 			}
@@ -61,17 +66,26 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 		if (null != object) {
 			if (object instanceof OutsideContributor) {
 				Contributor<PersonContributor<OutsideContributor>> oc = (OutsideContributor) object;
-				oc.setValidationErrors(validator.validate(oc));
+				Set<ConstraintViolation<Contributor<PersonContributor<OutsideContributor>>>> results = validator.validate(oc);
+				oc.setValidationErrors(results);
 			} else {
 				Contributor<PersonContributor<UsgsContributor>> uc = (UsgsContributor) object;
-				uc.setValidationErrors(validator.validate(uc));
+				Set<ConstraintViolation<Contributor<PersonContributor<UsgsContributor>>>> results = validator.validate(uc);
+				uc.setValidationErrors(results);
 			}
 			if (object.getValidationErrors().isEmpty()) {
 				Integer id = PersonContributor.getDao().add(object);
+				updateAffiliations(id, object);
 				object = (PersonContributor<?>) PersonContributor.getDao().getById(id);
 			}
 		}
 		return object;
 	}
 
+	private void updateAffiliations(Integer contributorId, PersonContributor<?> object) {
+		PersonContributor.getDao().removeAffiliations(contributorId);
+		for (Affiliation<?> affiliation : object.getAffiliations()) {
+			PersonContributor.getDao().addAffiliation(contributorId, affiliation.getId());
+		}
+	}
 }

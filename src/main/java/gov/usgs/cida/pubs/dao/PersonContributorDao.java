@@ -1,8 +1,10 @@
 package gov.usgs.cida.pubs.dao;
 
 import gov.usgs.cida.pubs.aop.ISetDbContext;
+import gov.usgs.cida.pubs.dao.intfc.IPersonContributorDao;
 import gov.usgs.cida.pubs.domain.Contributor;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-public class PersonContributorDao extends ContributorDao {
+public class PersonContributorDao extends ContributorDao implements IPersonContributorDao {
 
 	@Autowired
 	public PersonContributorDao(SqlSessionFactory sqlSessionFactory) {
@@ -21,12 +23,13 @@ public class PersonContributorDao extends ContributorDao {
 
 	private static final String PERSON = "PersonContributor";
 	
-	public static final String AFFILIATION_ID_SEARCH = "affiliationId";
+	private static final String REMOVE = ".remove";
+	private static final String AFFILIATION = "Affiliation";
+	private static final String AFFILIATIONS = "Affiliations";
 
-	/**
-	 * {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.BaseDao#add(java.lang.Object)
-	 */
+	public static final String AFFILIATION_ID_SEARCH = "affiliationId";
+	public static final String CONTRIBUTOR_ID_SEARCH = "contributorId";
+
 	@Transactional
 	@ISetDbContext
 	@Override
@@ -35,10 +38,6 @@ public class PersonContributorDao extends ContributorDao {
 		return domainObject.getId();
 	}
 
-	/** 
-	 * {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
-	 */
 	@Transactional(readOnly = true)
 	@ISetDbContext
 	@Override
@@ -46,10 +45,6 @@ public class PersonContributorDao extends ContributorDao {
 		return (Contributor<?>) getSqlSession().selectOne(NS + GET_BY_ID + PERSON, domainID);
 	}
 
-	/** 
-	 * {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.BaseDao#getByMap(Map)
-	 */
 	@Transactional(readOnly = true)
 	@ISetDbContext
 	@Override
@@ -57,9 +52,6 @@ public class PersonContributorDao extends ContributorDao {
 		return getSqlSession().selectList(NS + GET_BY_MAP + PERSON, filters);
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#update(java.lang.Object)
-	 */
 	@Transactional
 	@ISetDbContext
 	@Override
@@ -67,13 +59,27 @@ public class PersonContributorDao extends ContributorDao {
 		getSqlSession().insert(NS + UPDATE + PERSON, domainObject);
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getObjectCount(java.util.Map)
-	 */
 	@Override
 	@Transactional(readOnly = true)
 	@ISetDbContext
 	public Integer getObjectCount(Map<String, Object> filters) {
 		return getSqlSession().selectOne(NS + GET_COUNT, filters);
+	}
+	
+	@Override
+	@Transactional
+	@ISetDbContext
+	public void addAffiliation(Integer contributorId, Integer affiliationId) {
+		Map<String, Object> filters = new HashMap<String, Object>();
+		filters.put(CONTRIBUTOR_ID_SEARCH, contributorId);
+		filters.put(AFFILIATION_ID_SEARCH, affiliationId);
+		getSqlSession().insert(NS + ADD + AFFILIATION, filters);
+	}
+
+	@Override
+	@Transactional
+	@ISetDbContext
+	public void removeAffiliations(Integer contributorId) {
+		getSqlSession().delete(NS + REMOVE + AFFILIATIONS, contributorId);
 	}
 }

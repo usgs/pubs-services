@@ -1,6 +1,6 @@
 package gov.usgs.cida.pubs.domain;
 
-import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.dao.intfc.IPersonContributorDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
 import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 @ParentExists
 public class PersonContributor<D> extends Contributor<PersonContributor<D>> implements ILookup {
 
-	private static IDao<Contributor<?>> personContributorDao;
+	private static IPersonContributorDao personContributorDao;
 
 	@JsonProperty("family")
 	@JsonView(View.PW.class)
@@ -137,13 +137,13 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 		return text.toString();
 	}
 
-	public static IDao<Contributor<?>> getDao() {
+	public static IPersonContributorDao getDao() {
 		return personContributorDao;
 	}
 
 	@Autowired
 	@Qualifier("personContributorDao")
-	public void setPersonContributorDao(final IDao<Contributor<?>> inPersonContributorDao) {
+	public void setPersonContributorDao(final IPersonContributorDao inPersonContributorDao) {
 		personContributorDao = inPersonContributorDao;
 	}
 }

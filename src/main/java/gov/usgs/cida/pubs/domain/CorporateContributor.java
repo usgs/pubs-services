@@ -1,5 +1,7 @@
 package gov.usgs.cida.pubs.domain;
 
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,6 +27,7 @@ public class CorporateContributor extends Contributor<CorporateContributor> impl
 	@JsonProperty("organization")
 	@JsonView(View.PW.class)
 	@Length(min=1, max=400)
+	@NotNull
 	private String organization;
 
 	public String getOrganization() {

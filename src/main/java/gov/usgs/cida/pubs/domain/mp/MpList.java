@@ -1,11 +1,6 @@
 package gov.usgs.cida.pubs.domain.mp;
 
 
-import gov.usgs.cida.pubs.dao.intfc.IDao;
-import gov.usgs.cida.pubs.domain.BaseDomain;
-import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
-import gov.usgs.cida.pubs.validation.constraint.NoChildren;
-
 import java.io.Serializable;
 
 import org.hibernate.validator.constraints.Length;
@@ -17,8 +12,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.domain.BaseDomain;
+
 @Component
-@NoChildren(groups = DeleteChecks.class)
 @JsonPropertyOrder({"id", "text", "description", "type"})
 public class MpList extends BaseDomain<MpList>  implements Serializable {
 
@@ -52,7 +49,6 @@ public class MpList extends BaseDomain<MpList>  implements Serializable {
 	private String description;
 
 	@JsonProperty("type")
-	@Length(min=0, max=500)
 	private MpListType type;
 
 	@JsonIgnore

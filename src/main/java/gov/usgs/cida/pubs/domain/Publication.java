@@ -48,6 +48,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	@JsonProperty("indexId")
 	@JsonView(View.PW.class)
 	@Length(min=1, max=100)
+	@NotNull
 	private String indexId;
 
 	@JsonProperty("displayToPublicDate")
@@ -98,6 +99,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 
 	@JsonProperty("title")
 	@JsonView(View.PW.class)
+	@NotNull
 	@Length(min=1, max=2000)
 	private String title;
 
@@ -319,7 +321,6 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 
 	@JsonProperty("publishingServiceCenter")
 	@JsonView(View.PW.class)
-	@Valid
 	private PublishingServiceCenter publishingServiceCenter;
 
 	@JsonProperty("publishedDate")

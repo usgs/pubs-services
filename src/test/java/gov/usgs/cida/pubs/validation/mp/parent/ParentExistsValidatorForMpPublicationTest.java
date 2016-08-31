@@ -17,10 +17,12 @@ import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
 import gov.usgs.cida.pubs.dao.PublicationSubtypeDao;
 import gov.usgs.cida.pubs.dao.PublicationTypeDao;
+import gov.usgs.cida.pubs.dao.PublishingServiceCenterDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 
@@ -37,6 +39,7 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 	protected PublicationType largerWorkType;
 	protected Publication<?> po;
 	protected Publication<?> sb;
+	protected PublishingServiceCenter psc;
 
 	@Mock
 	protected PublicationTypeDao publicationTypeDao;
@@ -46,6 +49,8 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 	protected PublicationSeriesDao publicationSeriesDao;
 	@Mock
 	protected PublicationDao publicationDao;
+	@Mock
+	protected PublishingServiceCenterDao publishingServiceCenterDao;
 
 	@Before
 	public void setUp() throws Exception {
@@ -62,6 +67,8 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		largerWorkType = new PublicationType();
 		po = new MpPublication();
 		sb = new MpPublication();
+		psc = new PublishingServiceCenter();
+		psc.setPublishingServiceCenterDao(publishingServiceCenterDao);
 	}
 
 	@Test
@@ -69,27 +76,30 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		assertTrue(validator.isValid(null, null));
 		assertTrue(validator.isValid(null, context));
 		assertTrue(validator.isValid(mpPub, null));
-		
+
 		assertTrue(validator.isValid(mpPub, context));
-		
+
 		mpPub.setPublicationType(pubType);
 		assertTrue(validator.isValid(mpPub, context));
-		
+
 		mpPub.setPublicationSubtype(pubSubtype);
 		assertTrue(validator.isValid(mpPub, context));
-		
+
 		mpPub.setSeriesTitle(pubSeries);
 		assertTrue(validator.isValid(mpPub, context));
-		
+
 		mpPub.setLargerWorkType(largerWorkType);
 		assertTrue(validator.isValid(mpPub, context));
-		
+
 		mpPub.setIsPartOf(po);
 		assertTrue(validator.isValid(mpPub, context));
-		
+
 		mpPub.setSupersededBy(sb);
 		assertTrue(validator.isValid(mpPub, context));
-	}
+
+		mpPub.setPublishingServiceCenter(psc);
+		assertTrue(validator.isValid(mpPub, context));
+}
 
 	@Test
 	public void isValidTrueTest() {
@@ -97,6 +107,7 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		when(publicationTypeDao.getById(any(Integer.class))).thenReturn(new PublicationType());
 		when(publicationSubtypeDao.getById(any(Integer.class))).thenReturn(new PublicationSubtype());
 		when(publicationSeriesDao.getById(any(Integer.class))).thenReturn(new PublicationSeries());
+		when(publishingServiceCenterDao.getById(any(Integer.class))).thenReturn(new PublishingServiceCenter());
 
 		mpPub.setPublicationType(pubType);
 		mpPub.setPublicationSubtype(pubSubtype);
@@ -104,6 +115,7 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		mpPub.setLargerWorkType(largerWorkType);
 		mpPub.setIsPartOf(po);
 		mpPub.setSupersededBy(sb);
+		mpPub.setPublishingServiceCenter(psc);
 
 		//Works with all set
 		pubType.setId(1);
@@ -112,7 +124,13 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		largerWorkType.setId(1);
 		po.setId(1);
 		sb.setId(1);
+		psc.setId(1);
 		assertTrue(validator.isValid(mpPub, context));
+		verify(publicationDao, times(2)).getById(any(Integer.class));
+		verify(publicationTypeDao, times(2)).getById(any(Integer.class));
+		verify(publicationSubtypeDao).getById(any(Integer.class));
+		verify(publicationSeriesDao).getById(any(Integer.class));
+		verify(publishingServiceCenterDao).getById(any(Integer.class));
 
 		//Works with pubType set
 		pubType.setId(1);
@@ -121,11 +139,13 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		largerWorkType.setId("");
 		po.setId("");
 		sb.setId("");
+		psc.setId("");
 		assertTrue(validator.isValid(mpPub, context));
 		verify(publicationDao, times(2)).getById(any(Integer.class));
 		verify(publicationTypeDao, times(3)).getById(any(Integer.class));
 		verify(publicationSubtypeDao).getById(any(Integer.class));
 		verify(publicationSeriesDao).getById(any(Integer.class));
+		verify(publishingServiceCenterDao).getById(any(Integer.class));
 
 		//Works with pubSubtype set
 		pubType.setId("");
@@ -134,11 +154,13 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		largerWorkType.setId("");
 		po.setId("");
 		sb.setId("");
+		psc.setId("");
 		assertTrue(validator.isValid(mpPub, context));
 		verify(publicationDao, times(2)).getById(any(Integer.class));
 		verify(publicationTypeDao, times(3)).getById(any(Integer.class));
 		verify(publicationSubtypeDao, times(2)).getById(any(Integer.class));
 		verify(publicationSeriesDao).getById(any(Integer.class));
+		verify(publishingServiceCenterDao).getById(any(Integer.class));
 
 		//Works with pubSeries set
 		pubType.setId("");
@@ -147,11 +169,13 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		largerWorkType.setId("");
 		po.setId("");
 		sb.setId("");
+		psc.setId("");
 		assertTrue(validator.isValid(mpPub, context));
 		verify(publicationDao, times(2)).getById(any(Integer.class));
 		verify(publicationTypeDao, times(3)).getById(any(Integer.class));
 		verify(publicationSubtypeDao, times(2)).getById(any(Integer.class));
 		verify(publicationSeriesDao, times(2)).getById(any(Integer.class));
+		verify(publishingServiceCenterDao).getById(any(Integer.class));
 
 		//Works with largerWorkType set
 		pubType.setId("");
@@ -160,11 +184,13 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		largerWorkType.setId(1);
 		po.setId("");
 		sb.setId("");
+		psc.setId("");
 		assertTrue(validator.isValid(mpPub, context));
 		verify(publicationDao, times(2)).getById(any(Integer.class));
 		verify(publicationTypeDao, times(4)).getById(any(Integer.class));
 		verify(publicationSubtypeDao, times(2)).getById(any(Integer.class));
 		verify(publicationSeriesDao, times(2)).getById(any(Integer.class));
+		verify(publishingServiceCenterDao).getById(any(Integer.class));
 
 		//Works with partOf set
 		pubType.setId("");
@@ -173,11 +199,13 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		largerWorkType.setId("");
 		po.setId(1);
 		sb.setId("");
+		psc.setId("");
 		assertTrue(validator.isValid(mpPub, context));
 		verify(publicationDao, times(3)).getById(any(Integer.class));
 		verify(publicationTypeDao, times(4)).getById(any(Integer.class));
 		verify(publicationSubtypeDao, times(2)).getById(any(Integer.class));
 		verify(publicationSeriesDao, times(2)).getById(any(Integer.class));
+		verify(publishingServiceCenterDao).getById(any(Integer.class));
 
 		//Works with supercededBy set
 		pubType.setId("");
@@ -186,11 +214,28 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		largerWorkType.setId("");
 		po.setId("");
 		sb.setId(1);
+		psc.setId("");
 		assertTrue(validator.isValid(mpPub, context));
 		verify(publicationDao, times(4)).getById(any(Integer.class));
 		verify(publicationTypeDao, times(4)).getById(any(Integer.class));
 		verify(publicationSubtypeDao, times(2)).getById(any(Integer.class));
 		verify(publicationSeriesDao, times(2)).getById(any(Integer.class));
+		verify(publishingServiceCenterDao).getById(any(Integer.class));
+
+		//Works with publishingServiceCenter set
+		pubType.setId("");
+		pubSubtype.setId("");
+		pubSeries.setId("");
+		largerWorkType.setId("");
+		po.setId("");
+		sb.setId("");
+		psc.setId(1);
+		assertTrue(validator.isValid(mpPub, context));
+		verify(publicationDao, times(4)).getById(any(Integer.class));
+		verify(publicationTypeDao, times(4)).getById(any(Integer.class));
+		verify(publicationSubtypeDao, times(2)).getById(any(Integer.class));
+		verify(publicationSeriesDao, times(2)).getById(any(Integer.class));
+		verify(publishingServiceCenterDao, times(2)).getById(any(Integer.class));
 	}
 
 	@Test
@@ -199,6 +244,7 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		when(publicationTypeDao.getById(any(Integer.class))).thenReturn(null);
 		when(publicationSubtypeDao.getById(any(Integer.class))).thenReturn(null);
 		when(publicationSeriesDao.getById(any(Integer.class))).thenReturn(null);
+		when(publishingServiceCenterDao.getById(any(Integer.class))).thenReturn(null);
 
 		mpPub.setPublicationType(pubType);
 		mpPub.setPublicationSubtype(pubSubtype);
@@ -206,6 +252,7 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		mpPub.setLargerWorkType(largerWorkType);
 		mpPub.setIsPartOf(po);
 		mpPub.setSupersededBy(sb);
+		mpPub.setPublishingServiceCenter(psc);
 
 		//Works with all set
 		pubType.setId(1);
@@ -214,11 +261,13 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		largerWorkType.setId(1);
 		po.setId(1);
 		sb.setId(1);
+		psc.setId(1);
 		assertFalse(validator.isValid(mpPub, context));
 		verify(publicationDao, times(2)).getById(any(Integer.class));
 		verify(publicationTypeDao, times(2)).getById(any(Integer.class));
 		verify(publicationSubtypeDao).getById(any(Integer.class));
 		verify(publicationSeriesDao).getById(any(Integer.class));
+		verify(publishingServiceCenterDao).getById(any(Integer.class));
 
 		//Works with pubType set
 		pubType.setId(1);
@@ -227,11 +276,13 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		largerWorkType.setId("");
 		po.setId("");
 		sb.setId("");
+		psc.setId("");
 		assertFalse(validator.isValid(mpPub, context));
 		verify(publicationDao, times(2)).getById(any(Integer.class));
 		verify(publicationTypeDao, times(3)).getById(any(Integer.class));
 		verify(publicationSubtypeDao).getById(any(Integer.class));
 		verify(publicationSeriesDao).getById(any(Integer.class));
+		verify(publishingServiceCenterDao).getById(any(Integer.class));
 
 		//Works with pubSubtype set
 		pubType.setId("");
@@ -240,11 +291,13 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		largerWorkType.setId("");
 		po.setId("");
 		sb.setId("");
+		psc.setId("");
 		assertFalse(validator.isValid(mpPub, context));
 		verify(publicationDao, times(2)).getById(any(Integer.class));
 		verify(publicationTypeDao, times(3)).getById(any(Integer.class));
 		verify(publicationSubtypeDao, times(2)).getById(any(Integer.class));
 		verify(publicationSeriesDao).getById(any(Integer.class));
+		verify(publishingServiceCenterDao).getById(any(Integer.class));
 
 		//Works with pubSeries set
 		pubType.setId("");
@@ -253,11 +306,13 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		largerWorkType.setId("");
 		po.setId("");
 		sb.setId("");
+		psc.setId("");
 		assertFalse(validator.isValid(mpPub, context));
 		verify(publicationDao, times(2)).getById(any(Integer.class));
 		verify(publicationTypeDao, times(3)).getById(any(Integer.class));
 		verify(publicationSubtypeDao, times(2)).getById(any(Integer.class));
 		verify(publicationSeriesDao, times(2)).getById(any(Integer.class));
+		verify(publishingServiceCenterDao).getById(any(Integer.class));
 
 		//Works with largerWorkType set
 		pubType.setId("");
@@ -266,11 +321,13 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		largerWorkType.setId(1);
 		po.setId("");
 		sb.setId("");
+		psc.setId("");
 		assertFalse(validator.isValid(mpPub, context));
 		verify(publicationDao, times(2)).getById(any(Integer.class));
 		verify(publicationTypeDao, times(4)).getById(any(Integer.class));
 		verify(publicationSubtypeDao, times(2)).getById(any(Integer.class));
 		verify(publicationSeriesDao, times(2)).getById(any(Integer.class));
+		verify(publishingServiceCenterDao).getById(any(Integer.class));
 
 		//Works with partOf set
 		pubType.setId("");
@@ -279,11 +336,13 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		largerWorkType.setId("");
 		po.setId(1);
 		sb.setId("");
+		psc.setId("");
 		assertFalse(validator.isValid(mpPub, context));
 		verify(publicationDao, times(3)).getById(any(Integer.class));
 		verify(publicationTypeDao, times(4)).getById(any(Integer.class));
 		verify(publicationSubtypeDao, times(2)).getById(any(Integer.class));
 		verify(publicationSeriesDao, times(2)).getById(any(Integer.class));
+		verify(publishingServiceCenterDao).getById(any(Integer.class));
 
 		//Works with supercededBy set
 		pubType.setId("");
@@ -292,11 +351,28 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 		largerWorkType.setId("");
 		po.setId("");
 		sb.setId(1);
+		psc.setId("");
 		assertFalse(validator.isValid(mpPub, context));
 		verify(publicationDao, times(4)).getById(any(Integer.class));
 		verify(publicationTypeDao, times(4)).getById(any(Integer.class));
 		verify(publicationSubtypeDao, times(2)).getById(any(Integer.class));
 		verify(publicationSeriesDao, times(2)).getById(any(Integer.class));
+		verify(publishingServiceCenterDao).getById(any(Integer.class));
+
+		//Works with publishingServiceCenter set
+		pubType.setId("");
+		pubSubtype.setId("");
+		pubSeries.setId("");
+		largerWorkType.setId("");
+		po.setId("");
+		sb.setId("");
+		psc.setId(1);
+		assertFalse(validator.isValid(mpPub, context));
+		verify(publicationDao, times(4)).getById(any(Integer.class));
+		verify(publicationTypeDao, times(4)).getById(any(Integer.class));
+		verify(publicationSubtypeDao, times(2)).getById(any(Integer.class));
+		verify(publicationSeriesDao, times(2)).getById(any(Integer.class));
+		verify(publishingServiceCenterDao, times(2)).getById(any(Integer.class));
 	}
 
 }

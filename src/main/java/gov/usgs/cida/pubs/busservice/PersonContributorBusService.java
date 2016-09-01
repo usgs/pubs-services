@@ -83,9 +83,13 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 	}
 
 	private void updateAffiliations(Integer contributorId, PersonContributor<?> object) {
-		PersonContributor.getDao().removeAffiliations(contributorId);
-		for (Affiliation<?> affiliation : object.getAffiliations()) {
-			PersonContributor.getDao().addAffiliation(contributorId, affiliation.getId());
+		if (null != object) {
+			PersonContributor.getDao().removeAffiliations(contributorId);
+			if (null != object.getAffiliations()) {
+				for (Affiliation<?> affiliation : object.getAffiliations()) {
+					PersonContributor.getDao().addAffiliation(contributorId, affiliation.getId());
+				}
+			}
 		}
 	}
 }

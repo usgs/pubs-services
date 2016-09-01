@@ -6,10 +6,9 @@ import static org.mockito.Matchers.anyMapOf;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import gov.usgs.cida.pubs.TestAffiliation;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
-import gov.usgs.cida.pubs.validation.unique.UniqueKeyValidatorForAffiliation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,16 +25,16 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 public class UniqueKeyValidatorForAffiliationTest extends BaseValidatorTest {
 	
 	protected UniqueKeyValidatorForAffiliation validator;
-	protected TestAffiliation affiliation;
+	protected CostCenter affiliation;
 
 	@Mock
-	protected IDao<TestAffiliation> affiliationDao;
+	protected IDao<CostCenter> affiliationDao;
 
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
 		validator = new UniqueKeyValidatorForAffiliation();
-		affiliation = new TestAffiliation();
+		affiliation = new CostCenter();
 		affiliation.setAffiliationDao(affiliationDao);
 	}
 
@@ -90,9 +89,9 @@ public class UniqueKeyValidatorForAffiliationTest extends BaseValidatorTest {
 		verify(affiliationDao, times(1)).getByMap(anyMapOf(String.class, Object.class));
 	}
 
-	public static List<TestAffiliation> buildList() {
-		List<TestAffiliation> rtn = new ArrayList<>();
-		TestAffiliation affiliation = new TestAffiliation();
+	public static List<CostCenter> buildList() {
+		List<CostCenter> rtn = new ArrayList<>();
+		CostCenter affiliation = new CostCenter();
 		affiliation.setId(1);
 		rtn.add(affiliation);
 		return rtn;

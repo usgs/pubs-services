@@ -4,8 +4,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyMapOf;
 import static org.mockito.Mockito.when;
-import gov.usgs.cida.pubs.TestAffiliation;
 import gov.usgs.cida.pubs.dao.PersonContributorDao;
+import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 
@@ -21,7 +21,7 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 public class NoChildrenValidatorForAffiliationTest extends BaseValidatorTest {
 
 	protected NoChildrenValidatorForAffiliation validator;
-	protected TestAffiliation affiliation;
+	protected CostCenter affiliation;
 	protected PersonContributor<?> personContributor;
 
 	@Mock
@@ -33,7 +33,7 @@ public class NoChildrenValidatorForAffiliationTest extends BaseValidatorTest {
 		validator = new NoChildrenValidatorForAffiliation();
 		personContributor = new PersonContributor<>();
 		personContributor.setPersonContributorDao(personContributorDao);
-		affiliation = new TestAffiliation();
+		affiliation = new CostCenter();
 	}
 
 	@Test

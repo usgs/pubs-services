@@ -37,7 +37,7 @@ public class ContributorDaoTest extends BaseSpringTest {
 	public static final int PERSON_CONTRIBUTOR_CNT = 3;
 	public static final int CORPORATE_CONTRIBUTOR_CNT = 1;
 
-	public static final List<String> IGNORE_PROPERTIES_PERSON = Arrays.asList("validationErrors", "valErrors", "organization");
+	public static final List<String> IGNORE_PROPERTIES_PERSON = Arrays.asList("validationErrors", "valErrors", "organization", "affiliations");
 	public static final List<String> IGNORE_PROPERTIES_CORPORATION = Arrays.asList("validationErrors", "valErrors", "family", 
 			"given", "suffix", "email", "affiliation");
 

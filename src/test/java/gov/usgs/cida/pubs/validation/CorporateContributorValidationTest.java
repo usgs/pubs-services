@@ -6,6 +6,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Mockito.when;
+import gov.usgs.cida.pubs.SeverityLevel;
+import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.domain.Contributor;
+import gov.usgs.cida.pubs.domain.CorporateContributor;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -20,18 +24,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
-import gov.usgs.cida.pubs.SeverityLevel;
-import gov.usgs.cida.pubs.dao.intfc.IDao;
-import gov.usgs.cida.pubs.domain.Contributor;
-import gov.usgs.cida.pubs.domain.CorporateContributor;
-import gov.usgs.cida.pubs.validation.unique.UniqueKeyValidatorForAffiliationTest;
-
 //The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
 //for each reference. This does mean that we need to let Spring know that the context is now dirty...
 @DirtiesContext(classMode=ClassMode.AFTER_CLASS)
 public class CorporateContributorValidationTest extends BaseValidatorTest {
 
-	public static final String DUPLICATE_TEXT = new ValidatorResult("text", "Affiliation \"abc\" is already in use: id 1.", SeverityLevel.FATAL, null).toString();
 	public static final String NOT_NULL_ORGANIZATION = new ValidatorResult("organization", NOT_NULL_MSG, SeverityLevel.FATAL, null).toString();
 	public static final String NOT_NULL_USGS = new ValidatorResult("usgs", NOT_NULL_MSG, SeverityLevel.FATAL, null).toString();
 	public static final String NOT_NULL_CORPORATION = new ValidatorResult("corporation", NOT_NULL_MSG, SeverityLevel.FATAL, null).toString();
@@ -47,13 +44,10 @@ public class CorporateContributorValidationTest extends BaseValidatorTest {
 
 	@Before
 	@Override
-	@SuppressWarnings("unchecked")
 	public void setUp() throws Exception {
 		super.setUp();
 		contributor = new CorporateContributor();
 		contributor.setContributorDao(contributorDao);
-
-		when(contributorDao.getByMap(anyMap())).thenReturn(UniqueKeyValidatorForAffiliationTest.buildList());
 	}
 
 	@Test

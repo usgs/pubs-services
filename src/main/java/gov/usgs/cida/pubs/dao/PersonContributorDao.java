@@ -27,8 +27,8 @@ public class PersonContributorDao extends ContributorDao implements IPersonContr
 	private static final String AFFILIATION = "Affiliation";
 	private static final String AFFILIATIONS = "Affiliations";
 
-	public static final String AFFILIATION_ID_SEARCH = "affiliationId";
-	public static final String CONTRIBUTOR_ID_SEARCH = "contributorId";
+	public static final String AFFILIATION_ID = "affiliationId";
+	public static final String CONTRIBUTOR_ID = "contributorId";
 
 	@Transactional
 	@ISetDbContext
@@ -71,8 +71,8 @@ public class PersonContributorDao extends ContributorDao implements IPersonContr
 	@ISetDbContext
 	public void addAffiliation(Integer contributorId, Integer affiliationId) {
 		Map<String, Object> filters = new HashMap<String, Object>();
-		filters.put(CONTRIBUTOR_ID_SEARCH, contributorId);
-		filters.put(AFFILIATION_ID_SEARCH, affiliationId);
+		filters.put(CONTRIBUTOR_ID, contributorId);
+		filters.put(AFFILIATION_ID, affiliationId);
 		getSqlSession().insert(NS + ADD + AFFILIATION, filters);
 	}
 

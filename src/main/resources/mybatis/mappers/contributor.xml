@@ -214,7 +214,7 @@
 
     <delete id="delete" parameterType="Integer">
         delete from contributor
-            where contributor_id = #{value,jdbcType=NUMERIC}
+         where contributor_id = #{value,jdbcType=NUMERIC}
     </delete>
     
 	<insert id="addAffiliation" parameterType="map" useGeneratedKeys="true" keyProperty="id" keyColumn="contributor_affiliation_id">
@@ -225,6 +225,6 @@
     
 	<delete id="removeAffiliations" parameterType="Integer">
         delete from contributor_affiliation
-            where contributor_id = #{value,jdbcType=NUMERIC}
+         where contributor_id = #{value,jdbcType=NUMERIC}
 	</delete>
 </mapper>

@@ -26,7 +26,7 @@ public class NoChildrenValidatorForAffiliation implements ConstraintValidator<No
 
 		if (null != value && null != context) {
 			Map<String, Object> filters = new HashMap<>();
-			filters.put(PersonContributorDao.AFFILIATION_ID_SEARCH, value.getId());
+			filters.put(PersonContributorDao.AFFILIATION_ID, value.getId());
 			Integer cnt = PersonContributor.getDao().getObjectCount(filters);
 			if (0 != cnt) {
 				valid = false;

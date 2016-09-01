@@ -1,9 +1,11 @@
 package gov.usgs.cida.pubs.domain;
 
-import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.dao.intfc.IPersonContributorDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
 import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
+
+import java.util.Collection;
 
 import javax.validation.constraints.NotNull;
 
@@ -22,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 @ParentExists
 public class PersonContributor<D> extends Contributor<PersonContributor<D>> implements ILookup {
 
-	private static IDao<Contributor<?>> personContributorDao;
+	private static IPersonContributorDao personContributorDao;
 
 	@JsonProperty("family")
 	@JsonView(View.PW.class)
@@ -49,6 +51,10 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 	@JsonProperty("affiliation")
 	@JsonView(View.PW.class)
 	private Affiliation<? extends Affiliation<?>> affiliation;
+
+	@JsonProperty("affiliations")
+	@JsonView(View.PW.class)
+	private Collection<Affiliation<? extends Affiliation<?>>> affiliations;
 
 	@JsonIgnore
 	private Integer ipdsContributorId;
@@ -93,6 +99,15 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 		affiliation = inAffiliation;
 	}
 
+	public Collection<Affiliation<? extends Affiliation<?>>> getAffiliations() {
+		return affiliations;
+	}
+
+	public void setAffiliations(
+			Collection<Affiliation<? extends Affiliation<?>>> affiliations) {
+		this.affiliations = affiliations;
+	}
+
 	public Integer getIpdsContributorId() {
 		return ipdsContributorId;
 	}
@@ -122,13 +137,13 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 		return text.toString();
 	}
 
-	public static IDao<Contributor<?>> getDao() {
+	public static IPersonContributorDao getDao() {
 		return personContributorDao;
 	}
 
 	@Autowired
 	@Qualifier("personContributorDao")
-	public void setPersonContributorDao(final IDao<Contributor<?>> inPersonContributorDao) {
+	public void setPersonContributorDao(final IPersonContributorDao inPersonContributorDao) {
 		personContributorDao = inPersonContributorDao;
 	}
 }

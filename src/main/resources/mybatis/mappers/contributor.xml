@@ -23,6 +23,7 @@
         <result property="suffix" column="suffix"/>
         <result property="email" column="email"/>
         <result property="ipdsContributorId" column="ipds_contributor_id"/>
+        <collection property="affiliations" column="contributor_id" select="affiliation.getByContributor"/>
         <discriminator javaType="String" column="is_usgs">
             <case value="Y" resultMap="usgsResult"/>
             <case value="N" resultMap="outsideResult"/>
@@ -215,5 +216,15 @@
         delete from contributor
          where contributor_id = #{value,jdbcType=NUMERIC}
     </delete>
-
+    
+	<insert id="addAffiliation" parameterType="map" useGeneratedKeys="true" keyProperty="id" keyColumn="contributor_affiliation_id">
+        insert into contributor_affiliation (<include refid="base.auditCols"/>,
+                                             contributor_id, affiliation_id)
+            values (<include refid="base.auditHosts"/>,#{contributorId,jdbcType=NUMERIC}, #{affiliationId,jdbcType=NUMERIC})
+	</insert>
+    
+	<delete id="removeAffiliations" parameterType="Integer">
+        delete from contributor_affiliation
+         where contributor_id = #{value,jdbcType=NUMERIC}
+	</delete>
 </mapper>

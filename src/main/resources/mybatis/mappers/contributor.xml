@@ -22,6 +22,7 @@
         <result property="given" column="given"/>
         <result property="suffix" column="suffix"/>
         <result property="email" column="email"/>
+        <result property="orcid" column="orcid"/>
         <result property="ipdsContributorId" column="ipds_contributor_id"/>
         <collection property="affiliations" column="contributor_id" select="affiliation.getByContributor"/>
         <discriminator javaType="String" column="is_usgs">
@@ -48,7 +49,7 @@
     </sql>
 
     <sql id="personCols">
-        family, given, suffix, email, ipds_contributor_id, affiliation_id
+        family, given, suffix, email, orcid, ipds_contributor_id, affiliation_id
     </sql>
 
     <sql id="baseHosts">
@@ -69,6 +70,7 @@
         #{given,jdbcType=VARCHAR},
         #{suffix,jdbcType=VARCHAR},
         #{email,jdbcType=VARCHAR},
+        #{orcid,jdbcType=VARCHAR},
         #{ipdsContributorId,jdbcType=NUMERIC},
         #{affiliation.id,jdbcType=NUMERIC}
     </sql>
@@ -90,6 +92,7 @@
         given = #{given,jdbcType=VARCHAR},
         suffix = #{suffix,jdbcType=VARCHAR},
         email = #{email,jdbcType=VARCHAR},
+        orcid = #{orcid,jdbcType=VARCHAR},
         ipds_contributor_id = #{ipdsContributorId,jdbcType=NUMERIC},
         affiliation_id = #{affiliation.id,jdbcType=NUMERIC}
     </sql>

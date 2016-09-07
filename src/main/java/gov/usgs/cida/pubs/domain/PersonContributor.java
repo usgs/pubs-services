@@ -48,6 +48,11 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 	@Email
 	private String email;
 
+	@JsonProperty("orcid")
+	@JsonView(View.PW.class)
+	@Length(min=19, max=19)
+	private String orcid;
+
 	@JsonProperty("affiliation")
 	@JsonView(View.PW.class)
 	private Affiliation<? extends Affiliation<?>> affiliation;
@@ -89,6 +94,14 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 
 	public void setEmail(final String inEmail) {
 		email = inEmail;
+	}
+
+	public String getOrcid() {
+		return orcid;
+	}
+
+	public void setOrcid(String orcid) {
+		this.orcid = orcid;
 	}
 
 	public Affiliation<? extends Affiliation<?>> getAffiliation() {

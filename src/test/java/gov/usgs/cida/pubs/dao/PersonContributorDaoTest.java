@@ -121,6 +121,7 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 		person.setGiven("given");
 		person.setSuffix("suffix");
 		person.setEmail("email");
+		person.setOrcid("0000-0002-1825-0097");
 		person.setIpdsContributorId(12);
 		person.setAffiliation(Affiliation.getDao().getById(1));
 		UsgsContributor.getDao().add(person);
@@ -131,6 +132,7 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 		person.setGiven("given2");
 		person.setSuffix("suffix2");
 		person.setEmail("email2");
+		person.setOrcid("0000-0002-1825-009X");
 		person.setIpdsContributorId(122);
 		person.setAffiliation(Affiliation.getDao().getById(2));
 		UsgsContributor.getDao().update(person);
@@ -143,6 +145,7 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 		outperson.setGiven("outgiven");
 		outperson.setSuffix("outsuffix");
 		outperson.setEmail("outemail");
+		outperson.setOrcid("0000-0002-1825-0097");
 		outperson.setIpdsContributorId(13);
 		outperson.setAffiliation(Affiliation.getDao().getById(7));
 		OutsideContributor.getDao().add(outperson);
@@ -153,6 +156,7 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 		outperson.setGiven("outgiven2");
 		outperson.setSuffix("outsuffix2");
 		outperson.setEmail("outemail2");
+		outperson.setOrcid("0000-0002-1825-009X");
 		outperson.setIpdsContributorId(123);
 		outperson.setAffiliation(Affiliation.getDao().getById(5));
 		OutsideContributor.getDao().update(outperson);

@@ -52,7 +52,7 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 
 	@JsonProperty("orcid")
 	@JsonView(View.PW.class)
-	@Length(min=19, max=19)
+	@Length(min=36, max=36)
 	private String orcid;
 
 	@JsonProperty("affiliations")

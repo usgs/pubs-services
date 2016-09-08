@@ -1,5 +1,12 @@
 package gov.usgs.cida.pubs.webservice;
 
+import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.dao.PublicationDao;
+import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
+import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,13 +33,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 
-import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.dao.BaseDao;
-import gov.usgs.cida.pubs.dao.PublicationDao;
-import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
-import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
-
 public abstract class MvcService<D> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MvcService.class);
@@ -41,7 +41,7 @@ public abstract class MvcService<D> {
 	private static final Pattern G_PATTERN = Pattern.compile("^polygon\\(\\((-?\\d+\\.?\\d* -?\\d+\\.?\\d*,){3,}-?\\d+\\.?\\d* -?\\d+\\.?\\d*\\)\\)$");
 
 	protected Map<String, Object> buildFilters(Boolean chorus, String[] contributingOffice, String[] contributor,
-			String endYear, String g, String global, String[] indexId, String[] ipdsId, String[] listId,
+			String[] orcid, String endYear, String g, String global, String[] indexId, String[] ipdsId, String[] listId,
 			String modDateHigh, String modDateLow, String modXDays, String orderBy, String page_number,
 			String page_row_start, String page_size, String[] prodId, String[] pubAbstract, String pubDateHigh,
 			String pubDateLow, String pubXDays, String q, String[] reportNumber, String[] seriesName,
@@ -52,6 +52,7 @@ public abstract class MvcService<D> {
 		filters.put(PwPublicationDao.CHORUS, chorus);
 		filters.put(PublicationDao.CONTRIBUTING_OFFICE, contributingOffice);
 		filters.put(PublicationDao.CONTRIBUTOR, configureContributorFilter(contributor));
+		filters.put(PublicationDao.ORCID, orcid);
 		filters.put(PublicationDao.END_YEAR, endYear);
 		filters.put(PwPublicationDao.G, configureGeospatialFilter(g));
 		filters.put(MpPublicationDao.GLOBAL, global);

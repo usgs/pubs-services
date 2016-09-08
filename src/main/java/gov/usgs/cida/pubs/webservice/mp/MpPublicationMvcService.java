@@ -86,7 +86,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 
 		setHeaders(response);
 
-		Map<String, Object> filters = buildFilters(null, contributingOffice, contributor, endYear, null, global,
+		Map<String, Object> filters = buildFilters(null, contributingOffice, contributor, null, endYear, null, global,
 				indexId, ipdsId, listId, null, null, null, null, null, pageRowStart,
 				pageSize, prodId, pubAbstract, null, null, null, q, reportNumber,
 				seriesName, startYear, subtypeName, title, typeName, year);

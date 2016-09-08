@@ -47,7 +47,7 @@ public class PersonContributorBusServiceTest extends BaseSpringTest {
 		person.setGiven("given");
 		person.setSuffix("suffix");
 		person.setEmail("email@usgs.gov");
-		person.setOrcid("0000-0002-1825-0097");
+		person.setOrcid("http://orcid.org/0000-0002-1825-0097");
 		person.setIpdsContributorId(12);
 		busService.createObject(person);
 		assertNotNull(person.getId());
@@ -60,7 +60,7 @@ public class PersonContributorBusServiceTest extends BaseSpringTest {
 		outperson.setGiven("outgiven");
 		outperson.setSuffix("outsuffix");
 		outperson.setEmail("outemail@usgs.gov");
-		outperson.setOrcid("0000-0002-1825-0097");
+		outperson.setOrcid("http://orcid.org/0000-0002-1825-0097");
 		outperson.setIpdsContributorId(13);
 		busService.createObject(outperson);
 		assertNotNull(outperson.getId());

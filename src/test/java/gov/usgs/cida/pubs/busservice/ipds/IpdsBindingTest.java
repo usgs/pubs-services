@@ -18,6 +18,7 @@ import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.LinkType;
+import gov.usgs.cida.pubs.domain.OutsideAffiliation;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.ProcessType;
@@ -90,6 +91,14 @@ public class IpdsBindingTest extends BaseSpringTest {
 	@Qualifier("personContributorBusService")
 	public IBusService<PersonContributor<?>> contributorBusService;
 
+	@Autowired
+	@Qualifier("costCenterBusService")
+	public IBusService<CostCenter> costCenterBusService;
+
+	@Autowired
+	@Qualifier("outsideAffiliationBusService")
+	public IBusService<OutsideAffiliation> outsideAffiliationBusService;
+
 	@Mock
 	private IpdsWsRequester ipdsWsRequester;
 
@@ -98,7 +107,7 @@ public class IpdsBindingTest extends BaseSpringTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		binding = new IpdsBinding(ipdsWsRequester, contributorBusService);
+		binding = new IpdsBinding(ipdsWsRequester, contributorBusService, costCenterBusService, outsideAffiliationBusService);
 	}
 
 	@Test
@@ -197,12 +206,11 @@ public class IpdsBindingTest extends BaseSpringTest {
 	public void createUsgsContributorTest() throws SAXException, IOException {
 		when(ipdsWsRequester.getContributor(anyString())).thenReturn(usgsContributorXml);
 		Document d = binding.makeDocument("<root><d:CostCenterId>1</d:CostCenterId></root>");
-		Contributor<?> contributor = binding.createUsgsContributor(d.getDocumentElement(), "123");
+		UsgsContributor contributor = binding.createUsgsContributor(d.getDocumentElement(), "123");
 		assertNotNull(contributor);
 		assertNotNull(contributor.getId());
-		assertTrue(contributor instanceof UsgsContributor);
-		assertUsgsContributorXml((UsgsContributor) contributor);
-		assertEquals("4", ((UsgsContributor) contributor).getAffiliation().getId().toString());
+		assertUsgsContributorXml(contributor);
+		assertEquals("4", contributor.getAffiliations().toArray(new CostCenter[1])[0].getId().toString());
 	}
 
 	@Test
@@ -219,16 +227,15 @@ public class IpdsBindingTest extends BaseSpringTest {
 	public void getOrCreateUsgsContributorTest() throws SAXException, IOException {
 		when(ipdsWsRequester.getContributor(anyString())).thenReturn(usgsContributorXml);
 		Document d = binding.makeDocument("<root><d:CostCenterId>1</d:CostCenterId></root>");
-		Contributor<?> contributor = binding.getOrCreateUsgsContributor(d.getDocumentElement(), "3");
+		UsgsContributor contributor = binding.getOrCreateUsgsContributor(d.getDocumentElement(), "3");
 		//Don't change affiliation
 		ContributorDaoTest.assertContributor1(contributor);
 
 		contributor = binding.getOrCreateUsgsContributor(d.getDocumentElement(), "123");
 		assertNotNull(contributor);
-		assertTrue(contributor instanceof UsgsContributor);
 		assertNotNull(contributor.getId());
-		assertUsgsContributorXml((UsgsContributor) contributor);
-		assertEquals("4", ((UsgsContributor) contributor).getAffiliation().getId().toString());
+		assertUsgsContributorXml(contributor);
+		assertEquals("4", contributor.getAffiliations().toArray(new CostCenter[1])[0].getId().toString());
 
 		contributor = binding.getOrCreateUsgsContributor(d.getDocumentElement(), "1");
 		ContributorDaoTest.assertContributor4(contributor, 4);
@@ -272,7 +279,7 @@ public class IpdsBindingTest extends BaseSpringTest {
 
 		//multiple&Mixed
 		affiliation = binding.getOrCreateOutsideAffiliation("Outside Affiliation");
-		AffiliationDaoTest.assertAffiliation5(affiliation);
+		assertNull(affiliation);
 	}
 
 	@Test
@@ -377,6 +384,8 @@ public class IpdsBindingTest extends BaseSpringTest {
 
 	@Test
 	public void bindContributorsTest() throws SAXException, IOException {
+		when(ipdsWsRequester.getCostCenter(anyString(), anyString())).thenReturn(costCenterXml);
+
 		Collection<PublicationContributor<?>> contributors = binding.bindContributors(contributorsXml);
 		assertEquals(4, contributors.size());
 		MpPublicationContributor authorA = (MpPublicationContributor) contributors.toArray()[0];
@@ -484,14 +493,14 @@ public class IpdsBindingTest extends BaseSpringTest {
 		assertEquals("ODoe", contributor.getFamily());
 		assertEquals("Jane", contributor.getGiven());
 		assertNull(contributor.getEmail());
-		assertEquals("7", contributor.getAffiliation().getId().toString());
+		assertEquals("7", contributor.getAffiliations().toArray(new OutsideAffiliation[1])[0].getId().toString());
 	}
 
 	protected void assertNewOutsideContributorUsgsAffiliationXml(OutsideContributor contributor) {
 		assertEquals("ODoul", contributor.getFamily());
 		assertEquals("Jane", contributor.getGiven());
 		assertNull(contributor.getEmail());
-		assertNull(contributor.getAffiliation());
+		assertTrue(contributor.getAffiliations().isEmpty());
 	}
 
    protected void assertPub1(MpPublication pub) {

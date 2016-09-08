@@ -68,21 +68,24 @@ public class IpdsBinding {
 	private static final Logger LOG = LoggerFactory.getLogger(IpdsBinding.class);
 
 	protected final IpdsWsRequester requester;
-
 	protected final IBusService<PersonContributor<?>> contributorBusService;
-
-//TODO implement this
-//	@Autowired
-//	public IBusService<Affiliation<?>> affiliationBusService;
+	protected final IBusService<CostCenter> costCenterBusService;
+	protected final IBusService<OutsideAffiliation> outsideAffiliationBusService;
 
 	private DocumentBuilder builder;
 
 	@Autowired
 	public IpdsBinding(final IpdsWsRequester requester,
 			@Qualifier("personContributorBusService")
-			final IBusService<PersonContributor<?>> contributorBusService) throws ParserConfigurationException {
+			final IBusService<PersonContributor<?>> contributorBusService,
+			@Qualifier("costCenterBusService")
+			final IBusService<CostCenter> costCenterBusService,
+			@Qualifier("outsideAffiliationBusService")
+			final IBusService<OutsideAffiliation> outsideAffiliationBusService) throws ParserConfigurationException {
 		this.requester = requester;
 		this.contributorBusService = contributorBusService;
+		this.costCenterBusService = costCenterBusService;
+		this.outsideAffiliationBusService = outsideAffiliationBusService;
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(false);
 		builder = factory.newDocumentBuilder();
@@ -138,7 +141,6 @@ public class IpdsBinding {
 		LOG.debug("\nCurrent Element :" + entry.getNodeName());
 
 		if (entry.getNodeType() == Node.ELEMENT_NODE) {
-			//This is really all we should ever get..
 			Element element = (Element) entry;
 			Contributor<?> person;
 			String ipdsContributorId = getFirstNodeText(element, "d:AuthorNameId");
@@ -155,7 +157,6 @@ public class IpdsBinding {
 			}
 			Integer rank = PubsUtilities.parseInteger(element.getElementsByTagName("d:Rank").item(0).getTextContent());
 			if (null == rank) {
-				//rank cannot be null
 				rtn.setRank(1);
 			} else {
 				rtn.setRank(rank);
@@ -164,8 +165,8 @@ public class IpdsBinding {
 		return rtn;
 	}
 
-	protected Contributor<?> getOrCreateOutsideContributor(final Element element) {
-		Contributor<?> person;
+	protected OutsideContributor getOrCreateOutsideContributor(final Element element) {
+		OutsideContributor person;
 		String family = null;
 		String given = null;
 		Map<String, Object> filters = new HashMap<>();
@@ -180,38 +181,44 @@ public class IpdsBinding {
 		filters.put("given", given);
 		filters.put("family", family);
 		List<Contributor<?>> people = OutsideContributor.getDao().getByMap(filters);
-//TODO what if we get more than one?
+		if (people.size() > 1) {
+			LOG.warn("Multiple OutsideContributors found for: " + family + ", " + given);
+		}
 		if (people.isEmpty()) {
 			person = createOutsideContributor(element, family, given);
 		} else {
-			person = people.get(0);
-//TODO - should we update the information on file?
+			person = (OutsideContributor) people.get(0);
 		}
 		return person;
 	}
 
-	protected Contributor<?> createOutsideContributor(final Element element, final String family, final String given) {
+	protected OutsideContributor createOutsideContributor(final Element element, final String family, final String given) {
 		OutsideContributor person = new OutsideContributor();
 		person.setFamily(family);
 		person.setGiven(given);
-		person.setAffiliation(getOrCreateOutsideAffiliation(getFirstNodeText(element, "d:NonUSGSAffiliation")));
-		return contributorBusService.createObject(person);
+		OutsideAffiliation outsideAffiliation = getOrCreateOutsideAffiliation(getFirstNodeText(element, "d:NonUSGSAffiliation"));
+		if (null != outsideAffiliation) {
+			person.getAffiliations().add(outsideAffiliation);
+		}
+		return (OutsideContributor) contributorBusService.createObject(person);
 	}
 
-	protected Affiliation<?> getOrCreateOutsideAffiliation(final String name) {
-		Affiliation<?> affiliation = null;
+	protected OutsideAffiliation getOrCreateOutsideAffiliation(final String name) {
+		OutsideAffiliation affiliation = null;
 		Map<String, Object> filters = new HashMap<>();
 		filters.put(BaseDao.TEXT_SEARCH, name);
 		List<? extends Affiliation<?>> affiliations = Affiliation.getDao().getByMap(filters);
-//TODO what if we get more than one?
+		if (affiliations.size() > 1) {
+			LOG.warn("Multiple OutsideAffiliation found for: " + name);
+		}
 		if (affiliations.isEmpty()) {
 			affiliation = createOutsideAffiliation(name);
 		} else {
 			for (Affiliation<?> a : affiliations) {
-				if (a.isUsgs()) {
-					continue; // skip cost centers
+				if (!a.isUsgs() && a.getText().equalsIgnoreCase(name)) {
+					affiliation = (OutsideAffiliation) a;
+					break;
 				}
-				affiliation = affiliations.get(0);
 			}
 		}
 		return affiliation;
@@ -220,36 +227,34 @@ public class IpdsBinding {
 	protected OutsideAffiliation createOutsideAffiliation(final String name) {
 		OutsideAffiliation affiliation = new OutsideAffiliation();
 		affiliation.setText(name);
-//TODO this should be the business service.
-//		return affiliationBusService.createObject(affiliation);
-		OutsideAffiliation.getDao().add(affiliation);
-		return affiliation;
+		return outsideAffiliationBusService.createObject(affiliation);
 	}
 
-	protected PersonContributor<?> getOrCreateUsgsContributor(final Element element, final String ipdsContributorId) throws SAXException, IOException {
-		PersonContributor<?> person;
+	protected UsgsContributor getOrCreateUsgsContributor(final Element element, final String ipdsContributorId) throws SAXException, IOException {
+		UsgsContributor person;
 		Map<String, Object> filters = new HashMap<>();
 
 		filters.put("ipdsContributorId", ipdsContributorId);
-		List<Contributor<?>> people = Contributor.getDao().getByMap(filters);
-		//We get at most one hit on the ipdsContributorId, if we don't get any we need to create the contributor.
+		List<Contributor<?>> people = UsgsContributor.getDao().getByMap(filters);
 		if (people.isEmpty()) {
-			person = createUsgsContributor(element, ipdsContributorId);
+			person = (UsgsContributor) createUsgsContributor(element, ipdsContributorId);
 		} else {
-			person = (PersonContributor<?>) people.get(0);
-			if (null == person.getAffiliation()) {
-				person.setAffiliation(getOrCreateCostCenter(element));
-				person = contributorBusService.updateObject(person);
+			person = (UsgsContributor) people.get(0);
+			CostCenter costCenter = getOrCreateCostCenter(element);
+			if (!person.getAffiliations().contains(costCenter)) {
+				person.getAffiliations().add(costCenter);
+				person = (UsgsContributor) contributorBusService.updateObject(person);
 			}
 		}
 		return person;
 	}
 
-	protected PersonContributor<?> createUsgsContributor(final Element element, final String ipdsContributorId) throws SAXException, IOException {
+	protected UsgsContributor createUsgsContributor(final Element element, final String ipdsContributorId) throws SAXException, IOException {
 		String contributorXml = requester.getContributor(ipdsContributorId);
 		UsgsContributor person = bindContributor(contributorXml);
-		person.setAffiliation(getOrCreateCostCenter(element));
-		return contributorBusService.createObject(person);
+		CostCenter costCenter = getOrCreateCostCenter(element);
+		person.getAffiliations().add(costCenter);
+		return (UsgsContributor) contributorBusService.createObject(person);
 	}
 
 	protected UsgsContributor bindContributor(String contributorXml) throws SAXException, IOException {
@@ -272,17 +277,19 @@ public class IpdsBinding {
 		return getOrCreateCostCenter(getStringValue(inPub, IpdsMessageLog.COSTCENTERID));
 	}
 
-	protected CostCenter getOrCreateCostCenter(final String costCenterId) throws SAXException, IOException {
-		if (StringUtils.isBlank(costCenterId)) {
+	protected CostCenter getOrCreateCostCenter(final String ipdsId) throws SAXException, IOException {
+		if (StringUtils.isBlank(ipdsId)) {
 			return null;
 		} else {
 			CostCenter costCenter;
 			Map<String, Object> filters = new HashMap<>();
-			filters.put("ipdsId", costCenterId);
+			filters.put("ipdsId", ipdsId);
 			List<CostCenter> costCenters = CostCenter.getDao().getByMap(filters);
-//TODO what if we get more than one?
+			if (costCenters.size() > 1) {
+				LOG.warn("Multiple costCenters found for ipdsId: " + ipdsId);
+			}
 			if (costCenters.isEmpty()) {
-				costCenter = createCostCenter(costCenterId);
+				costCenter = createCostCenter(ipdsId);
 			} else {
 				costCenter = costCenters.get(0);
 			}
@@ -293,14 +300,10 @@ public class IpdsBinding {
 	protected CostCenter createCostCenter(final String ipdsId) throws SAXException, IOException {
 		String costCenterXml = requester.getCostCenter(ipdsId, ipdsId);
 		Document doc = makeDocument(costCenterXml);
-
 		CostCenter affiliation = new CostCenter();
 		affiliation.setText(getFirstNodeText(doc.getDocumentElement(), "d:Name"));
 		affiliation.setIpdsId(ipdsId);
-//TODO this should be the business service.
-//	return affiliationBusService.createObject(affiliation);
-		CostCenter.getDao().add(affiliation);
-		return affiliation;
+		return costCenterBusService.createObject(affiliation);
 	}
 
 	protected Document makeDocument(final String xmlStr) throws SAXException, IOException {

@@ -23,9 +23,6 @@ public class CostCenterBusService extends BusService<CostCenter> {
 		this.validator = validator;
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#getObject(java.lang.Integer) 
-	 */
 	@Override
 	public CostCenter getObject(Integer objectId) {
 		CostCenter result = null;
@@ -60,9 +57,6 @@ public class CostCenterBusService extends BusService<CostCenter> {
 		return result;
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#createObject(java.lang.Object)
-	 */
 	@Override
 	@Transactional
 	public CostCenter createObject(CostCenter object) {
@@ -76,9 +70,6 @@ public class CostCenterBusService extends BusService<CostCenter> {
 		return object;
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#deleteObject(Integer)
-	 */
 	@Override
 	@Transactional
 	public ValidationResults deleteObject(Integer objectId) {

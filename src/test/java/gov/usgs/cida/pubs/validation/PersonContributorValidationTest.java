@@ -4,8 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
+import gov.usgs.cida.pubs.SeverityLevel;
+import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.domain.Contributor;
+import gov.usgs.cida.pubs.domain.CostCenter;
+import gov.usgs.cida.pubs.domain.OutsideContributor;
 
 import java.lang.reflect.Field;
 
@@ -21,19 +24,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
-import gov.usgs.cida.pubs.SeverityLevel;
-import gov.usgs.cida.pubs.dao.intfc.IDao;
-import gov.usgs.cida.pubs.domain.Contributor;
-import gov.usgs.cida.pubs.domain.CostCenter;
-import gov.usgs.cida.pubs.domain.OutsideContributor;
-
 //The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
 //for each reference. This does mean that we need to let Spring know that the context is now dirty...
 @DirtiesContext(classMode=ClassMode.AFTER_CLASS)
 public class PersonContributorValidationTest extends BaseValidatorTest {
 	private static final Logger LOG = LoggerFactory.getLogger(PersonContributorValidationTest.class);
 
-	public static final String INVALID_AFFILIATION = new ValidatorResult("affiliation", NO_PARENT_MSG, SeverityLevel.FATAL, null).toString();
 	public static final String NOT_NULL_FAMILY = new ValidatorResult("family", NOT_NULL_MSG, SeverityLevel.FATAL, null).toString();
 
 	public static final String INVALID_FAMILY_LENGTH = new ValidatorResult("family", LENGTH_1_TO_XXX_MSG + "40", SeverityLevel.FATAL, null).toString();
@@ -64,21 +60,7 @@ public class PersonContributorValidationTest extends BaseValidatorTest {
 		contributor.setContributorDao(contributorDao);
 		affiliation = new CostCenter();
 		affiliation.setAffiliationDao(affiliationDao);
-		contributor.setAffiliation(affiliation);
 		contributor.setFamily("a");
-	}
-
-	@Test
-	public void wiringTest() {
-		when(affiliationDao.getById(any(Integer.class))).thenReturn(null);
-		affiliation.setId(1);
-		contributor.setValidationErrors(validator.validate(contributor));
-		assertFalse(contributor.getValidationErrors().isEmpty());
-		assertEquals(1, contributor.getValidationErrors().getValidationErrors().size());
-		assertValidationResults(contributor.getValidationErrors().getValidationErrors(),
-				//From ParentExistsValidatorForPersonContributor
-				INVALID_AFFILIATION
-				);
 	}
 
 	@Test

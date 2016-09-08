@@ -201,7 +201,6 @@ public class ContributorDaoTest extends BaseSpringTest {
 		assertEquals("ConGiven", usgsContributor.getGiven());
 		assertEquals("ConSuffix", usgsContributor.getSuffix());
 		assertEquals("con@usgs.gov", usgsContributor.getEmail());
-		assertEquals(1, usgsContributor.getAffiliation().getId().intValue());
 	}
 
 	public static void assertContributor3(Contributor<?> contributor) {
@@ -212,7 +211,6 @@ public class ContributorDaoTest extends BaseSpringTest {
 		assertEquals("outerGiven", outsideContributor.getGiven());
 		assertEquals("outerSuffix", outsideContributor.getSuffix());
 		assertEquals("outer@gmail.com", outsideContributor.getEmail());
-		assertEquals(5, outsideContributor.getAffiliation().getId().intValue());
 	}
 
 	public static void assertContributor4(Contributor<?> contributor, Integer affiliationId) {
@@ -223,7 +221,5 @@ public class ContributorDaoTest extends BaseSpringTest {
 		assertEquals("4Given", usgsContributor.getGiven());
 		assertEquals("4Suffix", usgsContributor.getSuffix());
 		assertEquals("con4@usgs.gov", usgsContributor.getEmail());
-		assertEquals(affiliationId, usgsContributor.getAffiliation().getId());
 	}
-
 }

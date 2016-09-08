@@ -6,6 +6,8 @@ import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
@@ -53,13 +55,9 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 	@Length(min=19, max=19)
 	private String orcid;
 
-	@JsonProperty("affiliation")
-	@JsonView(View.PW.class)
-	private Affiliation<? extends Affiliation<?>> affiliation;
-
 	@JsonProperty("affiliations")
 	@JsonView(View.PW.class)
-	private Collection<Affiliation<? extends Affiliation<?>>> affiliations;
+	private Set<Affiliation<? extends Affiliation<?>>> affiliations;
 
 	@JsonIgnore
 	private Integer ipdsContributorId;
@@ -104,20 +102,14 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 		this.orcid = orcid;
 	}
 
-	public Affiliation<? extends Affiliation<?>> getAffiliation() {
-		return affiliation;
-	}
-
-	public void setAffiliation(final Affiliation<? extends Affiliation<?>> inAffiliation) {
-		affiliation = inAffiliation;
-	}
-
 	public Collection<Affiliation<? extends Affiliation<?>>> getAffiliations() {
+		if (null == affiliations) {
+			affiliations = new HashSet<>();
+		}
 		return affiliations;
 	}
 
-	public void setAffiliations(
-			Collection<Affiliation<? extends Affiliation<?>>> affiliations) {
+	public void setAffiliations(Set<Affiliation<? extends Affiliation<?>>> affiliations) {
 		this.affiliations = affiliations;
 	}
 

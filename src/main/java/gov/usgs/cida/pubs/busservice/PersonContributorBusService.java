@@ -23,9 +23,6 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 		this.validator = validator;
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#getObject(java.lang.Integer) 
-	 */
 	@Override
 	public PersonContributor<?> getObject(Integer objectId) {
 		PersonContributor<?> result = null;
@@ -57,9 +54,6 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 		return result;
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#createObject(java.lang.Object)
-	 */
 	@Override
 	@Transactional
 	public PersonContributor<?> createObject(PersonContributor<?> object) {
@@ -87,7 +81,9 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 			PersonContributor.getDao().removeAffiliations(contributorId);
 			if (null != object.getAffiliations()) {
 				for (Affiliation<?> affiliation : object.getAffiliations()) {
-					PersonContributor.getDao().addAffiliation(contributorId, affiliation.getId());
+					if (null != affiliation) {
+						PersonContributor.getDao().addAffiliation(contributorId, affiliation.getId());
+					}
 				}
 			}
 		}

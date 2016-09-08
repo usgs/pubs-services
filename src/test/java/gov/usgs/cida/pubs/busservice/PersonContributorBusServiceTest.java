@@ -1,6 +1,12 @@
 package gov.usgs.cida.pubs.busservice;
 
 import static org.junit.Assert.assertNotNull;
+import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.IntegrationTest;
+import gov.usgs.cida.pubs.dao.ContributorDaoTest;
+import gov.usgs.cida.pubs.domain.Contributor;
+import gov.usgs.cida.pubs.domain.OutsideContributor;
+import gov.usgs.cida.pubs.domain.UsgsContributor;
 
 import javax.validation.Validator;
 
@@ -12,14 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
-
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.IntegrationTest;
-import gov.usgs.cida.pubs.dao.ContributorDaoTest;
-import gov.usgs.cida.pubs.domain.Affiliation;
-import gov.usgs.cida.pubs.domain.Contributor;
-import gov.usgs.cida.pubs.domain.OutsideContributor;
-import gov.usgs.cida.pubs.domain.UsgsContributor;
 
 @Category(IntegrationTest.class)
 @DatabaseSetups({
@@ -51,7 +49,6 @@ public class PersonContributorBusServiceTest extends BaseSpringTest {
 		person.setEmail("email@usgs.gov");
 		person.setOrcid("0000-0002-1825-0097");
 		person.setIpdsContributorId(12);
-		person.setAffiliation(Affiliation.getDao().getById(1));
 		busService.createObject(person);
 		assertNotNull(person.getId());
 		UsgsContributor persisted = (UsgsContributor) Contributor.getDao().getById(person.getId());
@@ -65,7 +62,6 @@ public class PersonContributorBusServiceTest extends BaseSpringTest {
 		outperson.setEmail("outemail@usgs.gov");
 		outperson.setOrcid("0000-0002-1825-0097");
 		outperson.setIpdsContributorId(13);
-		outperson.setAffiliation(Affiliation.getDao().getById(5));
 		busService.createObject(outperson);
 		assertNotNull(outperson.getId());
 		OutsideContributor outpersisted = (OutsideContributor) Contributor.getDao().getById(outperson.getId());

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-	<CONTRIBUTOR CONTRIBUTOR_ID="1" FAMILY="ConFamily" GIVEN="ConGiven" SUFFIX="ConSuffix" EMAIL="con@usgs.gov" AFFILIATION_ID="1" IPDS_CONTRIBUTOR_ID="3" IS_CORPORATION="N" IS_USGS="Y" text="ConFamily, ConGiven ConSuffix con@usgs.gov"/>
+	<CONTRIBUTOR CONTRIBUTOR_ID="1" FAMILY="ConFamily" GIVEN="ConGiven" SUFFIX="ConSuffix" EMAIL="con@usgs.gov" IPDS_CONTRIBUTOR_ID="3" IS_CORPORATION="N" IS_USGS="Y" text="ConFamily, ConGiven ConSuffix con@usgs.gov"/>
 	<CONTRIBUTOR CONTRIBUTOR_ID="2" LITERAL="US Geological Survey Ice Survey Team" IS_CORPORATION="Y" IS_USGS="N" text="US Geological Survey Ice Survey Team"/>
-	<CONTRIBUTOR CONTRIBUTOR_ID="3" FAMILY="outerfamily" GIVEN="outerGiven" SUFFIX="outerSuffix" EMAIL="outer@gmail.com" AFFILIATION_ID="5" IS_CORPORATION="N" IS_USGS="N" text="outerfamily, outerGiven outerSuffix outer@gmail.com"/>
+	<CONTRIBUTOR CONTRIBUTOR_ID="3" FAMILY="outerfamily" GIVEN="outerGiven" SUFFIX="outerSuffix" EMAIL="outer@gmail.com" IS_CORPORATION="N" IS_USGS="N" text="outerfamily, outerGiven outerSuffix outer@gmail.com"/>
 	<CONTRIBUTOR CONTRIBUTOR_ID="4" FAMILY="4Family" GIVEN="4Given" SUFFIX="4Suffix" EMAIL="con4@usgs.gov" IPDS_CONTRIBUTOR_ID="1" IS_CORPORATION="N" IS_USGS="Y" text="4Family 4Given 4Suffix con4@usgs.gov"/>
 </dataset>

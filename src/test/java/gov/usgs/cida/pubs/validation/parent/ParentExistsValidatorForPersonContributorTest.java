@@ -6,11 +6,14 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import gov.usgs.cida.pubs.dao.CostCenterDao;
+import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
-import gov.usgs.cida.pubs.validation.parent.ParentExistsValidatorForPersonContributor;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +29,7 @@ public class ParentExistsValidatorForPersonContributorTest extends BaseValidator
 	protected ParentExistsValidatorForPersonContributor validator;
 	protected PersonContributor<? extends PersonContributor<?>> personContributor;
 	protected CostCenter affiliation;
+	protected Set<Affiliation<? extends Affiliation<?>>> affiliations;
 
 	@Mock
 	protected CostCenterDao affiliationDao;
@@ -37,6 +41,8 @@ public class ParentExistsValidatorForPersonContributorTest extends BaseValidator
 		personContributor = new UsgsContributor();
 		affiliation = new CostCenter();
 		affiliation.setAffiliationDao(affiliationDao);
+		affiliations = new HashSet<Affiliation<? extends Affiliation<?>>>();
+		affiliations.add(affiliation);
 	}
 
 	@Test
@@ -47,14 +53,14 @@ public class ParentExistsValidatorForPersonContributorTest extends BaseValidator
 
 		assertTrue(validator.isValid(personContributor, context));
 
-		personContributor.setAffiliation(affiliation);
+		personContributor.setAffiliations(affiliations);
 		assertTrue(validator.isValid(personContributor, context));
 	}
 
 	@Test
 	public void isValidTrueTest() {
 		when(affiliationDao.getById(any(Integer.class))).thenReturn(new CostCenter());
-		personContributor.setAffiliation(affiliation);
+		personContributor.setAffiliations(affiliations);
 
 		affiliation.setId(1);
 		assertTrue(validator.isValid(personContributor, context));
@@ -64,7 +70,7 @@ public class ParentExistsValidatorForPersonContributorTest extends BaseValidator
 	@Test
 	public void isValidFalseTest() {
 		when(affiliationDao.getById(any(Integer.class))).thenReturn(null);
-		personContributor.setAffiliation(affiliation);
+		personContributor.setAffiliations(affiliations);
 
 		affiliation.setId(-1);
 		assertFalse(validator.isValid(personContributor, context));

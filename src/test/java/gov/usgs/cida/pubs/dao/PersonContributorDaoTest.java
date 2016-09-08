@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
-import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
@@ -123,7 +122,6 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 		person.setEmail("email");
 		person.setOrcid("0000-0002-1825-0097");
 		person.setIpdsContributorId(12);
-		person.setAffiliation(Affiliation.getDao().getById(1));
 		UsgsContributor.getDao().add(person);
 		UsgsContributor persisted = (UsgsContributor) UsgsContributor.getDao().getById(person.getId());
 		assertDaoTestResults(UsgsContributor.class, person, persisted, ContributorDaoTest.IGNORE_PROPERTIES_PERSON, true, true);
@@ -134,7 +132,6 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 		person.setEmail("email2");
 		person.setOrcid("0000-0002-1825-009X");
 		person.setIpdsContributorId(122);
-		person.setAffiliation(Affiliation.getDao().getById(2));
 		UsgsContributor.getDao().update(person);
 		persisted = (UsgsContributor) UsgsContributor.getDao().getById(person.getId());
 		assertDaoTestResults(UsgsContributor.class, person, persisted, ContributorDaoTest.IGNORE_PROPERTIES_PERSON, true, true);
@@ -147,7 +144,6 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 		outperson.setEmail("outemail");
 		outperson.setOrcid("0000-0002-1825-0097");
 		outperson.setIpdsContributorId(13);
-		outperson.setAffiliation(Affiliation.getDao().getById(7));
 		OutsideContributor.getDao().add(outperson);
 		OutsideContributor outpersisted = (OutsideContributor) OutsideContributor.getDao().getById(outperson.getId());
 		assertDaoTestResults(OutsideContributor.class, outperson, outpersisted, ContributorDaoTest.IGNORE_PROPERTIES_PERSON, true, true);
@@ -158,7 +154,6 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 		outperson.setEmail("outemail2");
 		outperson.setOrcid("0000-0002-1825-009X");
 		outperson.setIpdsContributorId(123);
-		outperson.setAffiliation(Affiliation.getDao().getById(5));
 		OutsideContributor.getDao().update(outperson);
 		outpersisted = (OutsideContributor) OutsideContributor.getDao().getById(outperson.getId());
 		assertDaoTestResults(OutsideContributor.class, outperson, outpersisted, ContributorDaoTest.IGNORE_PROPERTIES_PERSON, true, true);
@@ -179,5 +174,4 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 		newPerson.setId(personId);
 		return newPerson;
 	}
-
 }

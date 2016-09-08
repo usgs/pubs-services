@@ -31,13 +31,9 @@
         </discriminator>
     </resultMap>
 
-    <resultMap id="usgsResult" type="UsgsContributor" extends="contributor.personResult">
-        <association property="affiliation" column="affiliation_id" select="affiliation.getByIdCostCenter"/>
-    </resultMap>
+    <resultMap id="usgsResult" type="UsgsContributor" extends="contributor.personResult" />
 
-    <resultMap id="outsideResult" type="OutsideContributor" extends="contributor.personResult">
-        <association property="affiliation" column="affiliation_id" select="affiliation.getByIdOutsideAffiliation"/>
-    </resultMap>
+    <resultMap id="outsideResult" type="OutsideContributor" extends="contributor.personResult" />
 
     <sql id="baseCols">
         contributor_id, is_corporation, is_usgs,
@@ -49,7 +45,7 @@
     </sql>
 
     <sql id="personCols">
-        family, given, suffix, email, orcid, ipds_contributor_id, affiliation_id
+        family, given, suffix, email, orcid, ipds_contributor_id
     </sql>
 
     <sql id="baseHosts">
@@ -71,8 +67,7 @@
         #{suffix,jdbcType=VARCHAR},
         #{email,jdbcType=VARCHAR},
         #{orcid,jdbcType=VARCHAR},
-        #{ipdsContributorId,jdbcType=NUMERIC},
-        #{affiliation.id,jdbcType=NUMERIC}
+        #{ipdsContributorId,jdbcType=NUMERIC}
     </sql>
 
     <sql id="baseSets">
@@ -93,8 +88,7 @@
         suffix = #{suffix,jdbcType=VARCHAR},
         email = #{email,jdbcType=VARCHAR},
         orcid = #{orcid,jdbcType=VARCHAR},
-        ipds_contributor_id = #{ipdsContributorId,jdbcType=NUMERIC},
-        affiliation_id = #{affiliation.id,jdbcType=NUMERIC}
+        ipds_contributor_id = #{ipdsContributorId,jdbcType=NUMERIC}
     </sql>
 
     <sql id="filters">
@@ -115,9 +109,6 @@
         </if>
         <if test="corporation != null">
             and is_corporation = #{corporation}
-        </if>
-        <if test="affiliationId != null">
-            and affiliation_id = #{affiliationId}
         </if>
     </sql>
 

@@ -23,9 +23,6 @@ public class OutsideAffiliationBusService extends BusService<OutsideAffiliation>
 		this.validator = validator;
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#getObject(java.lang.Integer) 
-	 */
 	@Override
 	public OutsideAffiliation getObject(Integer objectId) {
 		OutsideAffiliation result = null;
@@ -60,9 +57,6 @@ public class OutsideAffiliationBusService extends BusService<OutsideAffiliation>
 		return result;
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#createObject(java.lang.Object)
-	 */
 	@Override
 	@Transactional
 	public OutsideAffiliation createObject(OutsideAffiliation object) {
@@ -76,9 +70,6 @@ public class OutsideAffiliationBusService extends BusService<OutsideAffiliation>
 		return object;
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#deleteObject(Integer)
-	 */
 	@Override
 	@Transactional
 	public ValidationResults deleteObject(Integer objectId) {

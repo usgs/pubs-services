@@ -99,7 +99,7 @@
 			                   join contributor
 			                     on publication_contributor.contributor_id = contributor.contributor_id 
 			             where pub.publication_id = publication_contributor.publication_id and
-			                   <foreach item="oid" collection="orcid" open="()" separator="or" close=")">
+			                   <foreach item="oid" collection="orcid" open="(" separator="or" close=")">
 			                       contributor.orcid = #{oid}
 			                   </foreach>
 			           )

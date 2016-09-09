@@ -117,11 +117,24 @@ public class PublicationSeriesMvcServiceTest extends BaseSpringTest {
 	}
 
 	@Test
-	public void updateTest() throws Exception {
+	public void updateSameIdTest() throws Exception {
 		when(busService.updateObject(any(PublicationSeries.class))).thenReturn(PublicationSeriesTest.buildAPubSeries(13));
-		MvcResult rtn = mockMvc.perform(put("/publicationSeries/330").content(PublicationSeriesTest.DEFAULT_AS_JSON).contentType(MediaType.APPLICATION_JSON)
+		MvcResult rtn = mockMvc.perform(put("/publicationSeries/13").content(PublicationSeriesTest.DEFAULT_AS_JSON).contentType(MediaType.APPLICATION_JSON)
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andReturn();
+
+		assertThat(getRtnAsJSONObject(rtn),
+				sameJSONObjectAs(new JSONObject(PublicationSeriesTest.DEFAULT_MAINT_AS_JSON)));
+	}
+
+	@Test
+	public void updateDifferentIdTest() throws Exception {
+		MvcResult rtn = mockMvc.perform(put("/publicationSeries/330").content(PublicationSeriesTest.DEFAULT_AS_JSON).contentType(MediaType.APPLICATION_JSON)
+		.accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isBadRequest())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();

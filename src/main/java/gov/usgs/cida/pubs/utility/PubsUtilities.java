@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.utility;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.StopWords;
 import gov.usgs.cida.pubs.TextReservedWords;
+import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
@@ -23,14 +24,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
-/**
- * @author drsteini
- *
- */
 public final class PubsUtilities {
 
 	private PubsUtilities() {
-
 	}
 
 	/** Utility method for determining if a string represents an integer.  
@@ -94,8 +90,27 @@ public final class PubsUtilities {
 		return hasSpn && !hasOther;
 	}
 
+	/**
+	 * @param intString
+	 * @return the Integer represented by intString, or null if it isn't an Integer
+	 */
 	public static Integer parseInteger(final String intString) {
 		return isInteger(intString) ? Integer.parseInt(intString) : null;
+	}
+	
+	/**
+	 * @param intString
+	 * @param domainObject
+	 * @return true only if intString is a valid Integer and domainObject has a non-null id and they are equal
+	 */
+	public static boolean idMatches(final String intString, final BaseDomain<?> domainObject) {
+		boolean matches = false;
+		Integer id = parseInteger(intString);
+		Integer objId = domainObject.getId();
+		if (null != id && null != objId) {
+			matches = id.intValue() == objId.intValue();
+		}
+		return matches;
 	}
 
 	public static String buildErrorMsg(final String messageName, final Object[] messageArguments) {
@@ -202,5 +217,4 @@ public final class PubsUtilities {
 	public static String getEditorKey() {
 		return ContributorType.getDao().getById(ContributorType.EDITORS).getText().toLowerCase();
 	}
-
 }

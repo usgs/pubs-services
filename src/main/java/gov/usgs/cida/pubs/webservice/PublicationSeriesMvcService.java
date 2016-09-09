@@ -115,12 +115,20 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 	public @ResponseBody PublicationSeries updatePublicationSeries(@RequestBody PublicationSeries pubSeries, @PathVariable String id, HttpServletResponse response) {
 		LOG.debug("updateUsgsContributor");
 		setHeaders(response);
-		PublicationSeries result = busService.updateObject(pubSeries);
-		if (null != result && (null == result.getValidationErrors() || result.getValidationErrors().isEmpty())) {
+		
+		PublicationSeries result = pubSeries;
+		boolean idMatches = PubsUtilities.idMatches(id, pubSeries);
+		
+		if (idMatches) {
+			result = busService.updateObject(pubSeries);
+		}
+		
+		if (idMatches && null != result && (null == result.getValidationErrors() || result.getValidationErrors().isEmpty())) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
+		
 		return result;
 	}
 
@@ -137,5 +145,4 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 		}
 		return result;
 	}
-
 }

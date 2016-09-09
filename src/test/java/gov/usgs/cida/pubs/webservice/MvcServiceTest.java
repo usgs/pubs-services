@@ -55,7 +55,7 @@ public class MvcServiceTest {
 		Boolean chorus = true;
 		String[] contributingOffice = new String[]{"co1","co2"};
 		String[] contributor = new String[]{"Rebecca B. Carvin", "c2"};
-		String[] orcid = new String[]{"0000-0000-0000-0000", "1111-1111-1111-1111"};
+		String[] orcid = new String[]{"http://orcid.org/0000-0000-0000-0000", "http://orcid.org/1111-1111-1111-1111"};
 		String endYear = "2020";
 		String g = "polygon((-122.3876953125 37.80869897600677,-122.3876953125 36.75979104322286,-123.55224609375 36.75979104322286," +
 				"-123.55224609375 37.80869897600677,-122.3876953125 37.80869897600677))";

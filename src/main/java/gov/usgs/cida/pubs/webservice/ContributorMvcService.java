@@ -1,5 +1,15 @@
 package gov.usgs.cida.pubs.webservice;
 
+import gov.usgs.cida.pubs.busservice.intfc.IBusService;
+import gov.usgs.cida.pubs.domain.Contributor;
+import gov.usgs.cida.pubs.domain.CorporateContributor;
+import gov.usgs.cida.pubs.domain.OutsideContributor;
+import gov.usgs.cida.pubs.domain.PersonContributor;
+import gov.usgs.cida.pubs.domain.UsgsContributor;
+import gov.usgs.cida.pubs.json.View;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,15 +30,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
-
-import gov.usgs.cida.pubs.busservice.intfc.IBusService;
-import gov.usgs.cida.pubs.domain.Contributor;
-import gov.usgs.cida.pubs.domain.CorporateContributor;
-import gov.usgs.cida.pubs.domain.OutsideContributor;
-import gov.usgs.cida.pubs.domain.PersonContributor;
-import gov.usgs.cida.pubs.domain.UsgsContributor;
-import gov.usgs.cida.pubs.json.View;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 @RestController
 @RequestMapping(produces=MediaType.APPLICATION_JSON_VALUE)
@@ -91,13 +92,22 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	public @ResponseBody UsgsContributor updateUsgsContributor(@RequestBody UsgsContributor person, @PathVariable("id") String id, HttpServletResponse response) {
 		LOG.debug("updateUsgsContributor");
 		setHeaders(response);
-		UsgsContributor castPerson = (UsgsContributor) personContributorBusService.updateObject(person);
-		if (null != castPerson && (null == castPerson.getValidationErrors() || castPerson.getValidationErrors().isEmpty())) {
+		
+		UsgsContributor result = person;
+		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(id, person);
+		
+		if (null == idNotMatched) {
+			result = (UsgsContributor) personContributorBusService.updateObject(person);
+		} else {
+			result.addValidatorResult(idNotMatched);
+		}
+		
+		if (null != result && (null == result.getValidationErrors() || result.getValidationErrors().isEmpty())) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
-		return castPerson;
+		return result;
 	}
 
 	@PostMapping(value={"/outsidecontributor"})
@@ -122,13 +132,22 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	public @ResponseBody OutsideContributor updateOutsideContributor(@RequestBody OutsideContributor person, @PathVariable String id, HttpServletResponse response) {
 		LOG.debug("updateOutsideContributor");
 		setHeaders(response);
-		OutsideContributor castPerson = (OutsideContributor) personContributorBusService.updateObject(person);
-		if (null != castPerson && (null == castPerson.getValidationErrors() || castPerson.getValidationErrors().isEmpty())) {
+		
+		OutsideContributor result = person;
+		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(id, person);
+		
+		if (null == idNotMatched) {
+			result = (OutsideContributor) personContributorBusService.updateObject(person);
+		} else {
+			result.addValidatorResult(idNotMatched);
+		}
+
+		if (null != result && (null == result.getValidationErrors() || result.getValidationErrors().isEmpty())) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
-		return castPerson;
+		return result;
 	}
 
 	@GetMapping(value={"/corporation/{id}"})

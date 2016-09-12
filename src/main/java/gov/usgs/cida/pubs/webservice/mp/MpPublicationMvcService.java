@@ -1,5 +1,19 @@
 package gov.usgs.cida.pubs.webservice.mp;
 
+import gov.usgs.cida.pubs.busservice.intfc.IBusService;
+import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.dao.PublicationDao;
+import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
+import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.SearchResults;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.json.View;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
+import gov.usgs.cida.pubs.webservice.MvcService;
+
 import java.util.List;
 import java.util.Map;
 
@@ -25,24 +39,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import gov.usgs.cida.pubs.busservice.intfc.IBusService;
-import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
-import gov.usgs.cida.pubs.dao.BaseDao;
-import gov.usgs.cida.pubs.dao.PublicationDao;
-import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
-import gov.usgs.cida.pubs.domain.Publication;
-import gov.usgs.cida.pubs.domain.SearchResults;
-import gov.usgs.cida.pubs.domain.mp.MpPublication;
-import gov.usgs.cida.pubs.json.View;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
-import gov.usgs.cida.pubs.validation.ValidationResults;
-import gov.usgs.cida.pubs.validation.ValidatorResult;
-import gov.usgs.cida.pubs.webservice.MvcService;
-
-/**
- * @author drsteini
- *
- */
 @RestController
 @RequestMapping(value = "mppublications", produces="application/json")
 public class MpPublicationMvcService extends MvcService<MpPublication> {
@@ -155,22 +151,29 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 	@PutMapping(value = "{publicationId}")
 	@JsonView(View.MP.class)
 	@Transactional
-	public @ResponseBody MpPublication updateMpPublication(@RequestBody MpPublication pub, @PathVariable String publicationId,
-			HttpServletResponse response) {
+	public @ResponseBody MpPublication updateMpPublication(@RequestBody MpPublication pub, @PathVariable String publicationId, HttpServletResponse response) {
 		setHeaders(response);
-		Integer id = PubsUtilities.parseInteger(publicationId);
+	
 		MpPublication rtn = pub;
-		ValidatorResult locked = busService.checkAvailability(id);
-		if (null == locked) {
-			rtn = busService.updateObject(pub);
-			if (null != rtn && rtn.getValidationErrors().isEmpty()) {
-				response.setStatus(HttpServletResponse.SC_OK);
+		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(publicationId, pub);
+		
+		if (null == idNotMatched) {
+			Integer id = PubsUtilities.parseInteger(publicationId);
+			ValidatorResult locked = busService.checkAvailability(id);
+			if (null == locked) {
+				rtn = busService.updateObject(pub);
+				if (null != rtn && rtn.getValidationErrors().isEmpty()) {
+					response.setStatus(HttpServletResponse.SC_OK);
+				} else {
+					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				}
 			} else {
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				rtn.addValidatorResult(locked);
+				response.setStatus(HttpStatus.CONFLICT.value());
 			}
 		} else {
-			rtn.addValidatorResult(locked);
-			response.setStatus(HttpStatus.CONFLICT.value());
+			rtn.addValidatorResult(idNotMatched);
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
 		return rtn;
 	}
@@ -236,5 +239,4 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		}
 		return rtn;
 	}
-
 }

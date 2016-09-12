@@ -1,5 +1,15 @@
 package gov.usgs.cida.pubs.webservice;
 
+import gov.usgs.cida.pubs.busservice.intfc.IBusService;
+import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
+import gov.usgs.cida.pubs.domain.PublicationSeries;
+import gov.usgs.cida.pubs.domain.SearchResults;
+import gov.usgs.cida.pubs.json.View;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,15 +35,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
-
-import gov.usgs.cida.pubs.busservice.intfc.IBusService;
-import gov.usgs.cida.pubs.dao.BaseDao;
-import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
-import gov.usgs.cida.pubs.domain.PublicationSeries;
-import gov.usgs.cida.pubs.domain.SearchResults;
-import gov.usgs.cida.pubs.json.View;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
-import gov.usgs.cida.pubs.validation.ValidationResults;
 
 @RestController
 @RequestMapping(value="publicationSeries", produces=MediaType.APPLICATION_JSON_VALUE)
@@ -115,12 +116,22 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 	public @ResponseBody PublicationSeries updatePublicationSeries(@RequestBody PublicationSeries pubSeries, @PathVariable String id, HttpServletResponse response) {
 		LOG.debug("updateUsgsContributor");
 		setHeaders(response);
-		PublicationSeries result = busService.updateObject(pubSeries);
+		
+		PublicationSeries result = pubSeries;
+		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(id, pubSeries);
+		
+		if (null == idNotMatched) {
+			result = busService.updateObject(pubSeries);
+		} else {
+			result.addValidatorResult(idNotMatched);
+		}
+		
 		if (null != result && (null == result.getValidationErrors() || result.getValidationErrors().isEmpty())) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
+		
 		return result;
 	}
 
@@ -137,5 +148,4 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 		}
 		return result;
 	}
-
 }

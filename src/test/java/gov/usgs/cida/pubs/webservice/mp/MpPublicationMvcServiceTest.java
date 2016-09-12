@@ -17,6 +17,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
+import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.SeverityLevel;
+import gov.usgs.cida.pubs.busservice.intfc.IBusService;
+import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
+import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
+import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.utility.PubsUtilitiesTest;
+import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,21 +46,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.SeverityLevel;
-import gov.usgs.cida.pubs.busservice.intfc.IBusService;
-import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
-import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
-import gov.usgs.cida.pubs.domain.Publication;
-import gov.usgs.cida.pubs.domain.PublicationSubtype;
-import gov.usgs.cida.pubs.domain.PublicationType;
-import gov.usgs.cida.pubs.domain.mp.MpPublication;
-import gov.usgs.cida.pubs.validation.ValidationResults;
-import gov.usgs.cida.pubs.validation.ValidatorResult;
-
 public class MpPublicationMvcServiceTest extends BaseSpringTest {
 
+	private static final String MP_PUB_1_JSON = "{"
+			+ "\"publicationType\":{\"id\":" + PublicationType.REPORT + "}"
+			+ ",\"publicationSubtype\":{\"id\":" + PublicationSubtype.USGS_NUMBERED_SERIES + "}"
+			+ ",\"publicationYear\":\"1994\""
+			+ ",\"links\":[{\"rank\":1}]"
+			+ ",\"authors\":[{\"contributorId\": 81,\"corporation\": false,\"usgs\": true,\"family\": \"Wanda\","
+			+ "\"given\": \"Molina\",\"email\": \"wlmolina@usgs.gov\",\"affiliation\": {\"id\": 84,\"text\": \"Caribbean Water Science Center\""
+			+ "},\"id\": 110,\"rank\": 1}]"
+			+ "}";
 	public static final String LOCK_MSG = "{\"validationErrors\":[{\"field\":\"Publication\",\"message\":\"This Publication is being edited by somebody\",\"level\":\"FATAL\",\"value\":\"somebody\"}]}\"";
 	public static final String LOCK_MSG2 = LOCK_MSG.replace("}]}", "}],\"text\":\"null - null - null\",\"noYear\":false}");
 	public static final String LOCK_MSG3 = LOCK_MSG.replace("}]}", "}],\"id\":2,\"indexId\":\"abc\",\"publicationType\":{\"id\":18,\"text\":\"abc\"},"
@@ -102,8 +111,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
-		assertThat(getRtnAsJSONObject(rtn),
-				sameJSONObjectAs(new JSONObject(expectedGetPubsDefault)));
+		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(expectedGetPubsDefault)));
 	}
 	
 	@Test
@@ -118,8 +126,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
-		assertThat(getRtnAsJSONObject(rtn),
-				sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
+		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
 	}
 
 	@Test
@@ -132,8 +139,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
-		assertThat(getRtnAsJSONObject(rtn),
-				sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
+		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
 		
 		//Not available (locked by somebody)
 		rtn = mockMvc.perform(get("/mppublications/2?mimetype=json").accept(MediaType.APPLICATION_JSON))
@@ -141,8 +147,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 				.andReturn();
-		assertThat(getRtnAsJSONObject(rtn),
-				sameJSONObjectAs(new JSONObject(LOCK_MSG2)));
+		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(LOCK_MSG2)));
 		
 		//Pub not found
 		rtn = mockMvc.perform(get("/mppublications/3?mimetype=json").accept(MediaType.APPLICATION_JSON))
@@ -163,8 +168,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
-		assertThat(getRtnAsJSONObject(rtn),
-				sameJSONObjectAs(new JSONObject(expectedGetPubsDefault)));
+		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(expectedGetPubsDefault)));
 
 		MvcResult rtn2 = mockMvc.perform(get("/mppublications?q=NoPublicationIsGoingToHaveThisSearchTermZZzzzzZZZZZwhatNO").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -172,23 +176,14 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 				.andReturn();
 
-		assertThat(getRtnAsJSONObject(rtn2),
-				sameJSONObjectAs(new JSONObject(NO_RECORDS)));
+		assertThat(getRtnAsJSONObject(rtn2), sameJSONObjectAs(new JSONObject(NO_RECORDS)));
 	}
 
 	@Test
 	public void createPubTest() throws Exception {
 		when(busService.createObject(any(MpPublication.class))).thenReturn(null, buildAPub(1));
 
-		MvcResult rtn = mockMvc.perform(post("/mppublications").content("{"
-				+ "\"publicationType\":{\"id\":" + PublicationType.REPORT + "}"
-				+ ",\"publicationSubtype\":{\"id\":" + PublicationSubtype.USGS_NUMBERED_SERIES + "}"
-				+ ",\"publicationYear\":\"1994\""
-				+ ",\"links\":[{\"rank\":1}]"
-				+ ",\"authors\":[{\"contributorId\": 81,\"corporation\": false,\"usgs\": true,\"family\": \"Wanda\","
-				+ "\"given\": \"Molina\",\"email\": \"wlmolina@usgs.gov\",\"affiliation\": {\"id\": 84,\"text\": \"Caribbean Water Science Center\""
-				+ "},\"id\": 110,\"rank\": 1}]"
-				+ "}").contentType(MediaType.APPLICATION_JSON)
+		MvcResult rtn = mockMvc.perform(post("/mppublications").content(MP_PUB_1_JSON).contentType(MediaType.APPLICATION_JSON)
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isBadRequest())
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
@@ -196,23 +191,14 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 
 		assertEquals("", rtn.getResponse().getContentAsString());
 
-		rtn = mockMvc.perform(post("/mppublications").content("{"
-				+ "\"publicationType\":{\"id\":" + PublicationType.REPORT + "}"
-				+ ",\"publicationSubtype\":{\"id\":" + PublicationSubtype.USGS_NUMBERED_SERIES + "}"
-				+ ",\"publicationYear\":\"1994\""
-				+ ",\"links\":[{\"rank\":1}]"
-				+ ",\"authors\":[{\"contributorId\": 81,\"corporation\": false,\"usgs\": true,\"family\": \"Wanda\","
-				+ "\"given\": \"Molina\",\"email\": \"wlmolina@usgs.gov\",\"affiliation\": {\"id\": 84,\"text\": \"Caribbean Water Science Center\""
-				+ "},\"id\": 110,\"rank\": 1}]"
-				+ "}").contentType(MediaType.APPLICATION_JSON)
+		rtn = mockMvc.perform(post("/mppublications").content(MP_PUB_1_JSON).contentType(MediaType.APPLICATION_JSON)
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isCreated())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 
-		assertThat(getRtnAsJSONObject(rtn),
-				sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
+		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
 	}
 	
 	@Test
@@ -227,8 +213,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
-		assertThat(getRtnAsJSONObject(rtn),
-				sameJSONObjectAs(new JSONObject(LOCK_MSG3)));
+		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(LOCK_MSG3)));
 
 		rtn = mockMvc.perform(put("/mppublications/2").content("{\"id\":2,\"publicationType\":{\"id\":"
 				+ PublicationType.REPORT + ",\"text\":\"abc\"},\"indexId\":\"abc\"}").contentType(MediaType.APPLICATION_JSON)
@@ -245,8 +230,20 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
-		assertThat(getRtnAsJSONObject(rtn),
-				sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
+		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
+	}
+
+	@Test
+	public void updateMpPublicationIdNotMatchingTest() throws Exception {
+		String pubJson = "{\"id\":1,\"indexId\":\"abc\",\"publicationType\":{\"id\":18,\"text\":\"abc\"},\"noYear\":false,\"text\":\"abc - null - null\"}";
+		String pubJsonWithError = "{\"id\":1," + PubsUtilitiesTest.ID_NOT_MATCH_VALIDATION_JSON + ",\"indexId\":\"abc\",\"publicationType\":{\"id\":18,\"text\":\"abc\"},\"noYear\":false,\"text\":\"abc - null - null\"}";
+		MvcResult rtn = mockMvc.perform(put("/mppublications/30").content(pubJson).contentType(MediaType.APPLICATION_JSON)
+		.accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isBadRequest())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andReturn();
+		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(pubJsonWithError)));
 	}
 
 	@Test
@@ -258,8 +255,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
-		assertThat(getRtnAsJSONObject(rtn),
-				sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
+		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
 		
 		//Not available (locked by somebody)
 		rtn = mockMvc.perform(delete("/mppublications/2").accept(MediaType.APPLICATION_JSON))
@@ -267,8 +263,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 				.andReturn();
-		assertThat(getRtnAsJSONObject(rtn),
-				sameJSONObjectAs(new JSONObject(LOCK_MSG)));
+		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(LOCK_MSG)));
 	}
 	
 	@Test
@@ -281,8 +276,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
-		assertThat(getRtnAsJSONObject(rtn),
-				sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
+		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
 		
 		//Not available (locked by somebody)
 		rtn = mockMvc.perform(post("/mppublications/publish").content("{\"id\":2}}").contentType(MediaType.APPLICATION_JSON)
@@ -291,8 +285,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 				.andReturn();
-		assertThat(getRtnAsJSONObject(rtn),
-				sameJSONObjectAs(new JSONObject(LOCK_MSG)));
+		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(LOCK_MSG)));
 		
 		//Pub not found
 		ValidationResults vr = new ValidationResults();
@@ -303,8 +296,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 				.andExpect(status().isNotFound())
 				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 				.andReturn();
-		assertThat(getRtnAsJSONObject(rtn),
-				sameJSONObjectAs(new JSONObject("{\"validationErrors\":[{\"field\":\"Publication\",\"message\":\"Publication does not exist.\",\"level\":\"FATAL\",\"value\":\"3\"}]}")));
+		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject("{\"validationErrors\":[{\"field\":\"Publication\",\"message\":\"Publication does not exist.\",\"level\":\"FATAL\",\"value\":\"3\"}]}")));
 		
 	}
 	
@@ -317,8 +309,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
-		assertThat(getRtnAsJSONObject(rtn),
-				sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
+		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
 		verify(busService, times(1)).releaseLocksPub(anyInt());
 		
 		//Not available (locked by somebody)
@@ -328,8 +319,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 				.andReturn();
-		assertThat(getRtnAsJSONObject(rtn),
-				sameJSONObjectAs(new JSONObject(LOCK_MSG)));
+		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(LOCK_MSG)));
 		//We executed the releaseLocksPub above - this would be 2 if we also hit it in the locked test.
 		verify(busService, times(1)).releaseLocksPub(anyInt());
 	}

@@ -1,8 +1,5 @@
 package gov.usgs.cida.pubs.webservice;
 
-import java.util.List;
-import java.util.Map;
-
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.CostCenter;
@@ -10,6 +7,10 @@ import gov.usgs.cida.pubs.domain.OutsideAffiliation;
 import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
+
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -110,13 +111,22 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 	public CostCenter updateCostCenter(@RequestBody CostCenter costCenter, @PathVariable String id, HttpServletResponse response) {
 		LOG.debug("updateCostCenter");
 		setHeaders(response);
-		CostCenter updatedCostCenter = costCenterBusService.updateObject(costCenter);
-		if (null != updatedCostCenter && (null == updatedCostCenter.getValidationErrors() || updatedCostCenter.getValidationErrors().isEmpty())) {
+		
+		CostCenter result = costCenter;
+		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(id, costCenter);
+		
+		if (null != idNotMatched) {
+			result = costCenterBusService.updateObject(costCenter);
+		} else {
+			result.addValidatorResult(idNotMatched);
+		}
+		
+		if (null != result && (null == result.getValidationErrors() || result.getValidationErrors().isEmpty())) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
-		return updatedCostCenter;
+		return result;
 	}
 
 
@@ -181,12 +191,21 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 	public OutsideAffiliation updateOutsideAffiliation(@RequestBody OutsideAffiliation outsideAffiliation, @PathVariable String id, HttpServletResponse response) {
 		LOG.debug("updateOutsideAffiliation");
 		setHeaders(response);
-		OutsideAffiliation updatedOutsideAffiliation = outsideAffiliationBusService.updateObject(outsideAffiliation);
-		if (null != updatedOutsideAffiliation && (null == updatedOutsideAffiliation.getValidationErrors() || updatedOutsideAffiliation.getValidationErrors().isEmpty())) {
+		
+		OutsideAffiliation result = outsideAffiliation;
+		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(id, outsideAffiliation);
+		
+		if (null == idNotMatched) {
+			result = outsideAffiliationBusService.updateObject(outsideAffiliation);
+		} else {
+			result.addValidatorResult(idNotMatched);
+		}
+
+		if (null != result && (null == result.getValidationErrors() || result.getValidationErrors().isEmpty())) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
-		return updatedOutsideAffiliation;
+		return result;
 	}
 }

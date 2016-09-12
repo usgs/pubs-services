@@ -1,12 +1,15 @@
 package gov.usgs.cida.pubs.utility;
 
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.StopWords;
 import gov.usgs.cida.pubs.TextReservedWords;
+import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
 import gov.usgs.cida.pubs.webservice.security.PubsAuthentication;
 import gov.usgs.cida.pubs.webservice.security.PubsRoles;
 
@@ -23,14 +26,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
-/**
- * @author drsteini
- *
- */
 public final class PubsUtilities {
 
 	private PubsUtilities() {
-
 	}
 
 	/** Utility method for determining if a string represents an integer.  
@@ -94,8 +92,27 @@ public final class PubsUtilities {
 		return hasSpn && !hasOther;
 	}
 
+	/**
+	 * @param intString
+	 * @return the Integer represented by intString, or null if it isn't an Integer
+	 */
 	public static Integer parseInteger(final String intString) {
 		return isInteger(intString) ? Integer.parseInt(intString) : null;
+	}
+	
+	/**
+	 * @param intString
+	 * @param domainObject
+	 * @return null if intString matches the id in domainObject and they're not null, otherwise a ValidatorResult
+	 */
+	public static ValidatorResult validateIdsMatch(final String intString, final BaseDomain<?> domainObject) {
+		ValidatorResult result = new ValidatorResult("id", "The id in the URL does not match the id in the request.", SeverityLevel.FATAL, intString);
+		Integer id = parseInteger(intString);
+		Integer objId = domainObject.getId();
+		if (null != id && null != objId && id.intValue() == objId.intValue()) {
+			result = null;
+		}
+		return result;
 	}
 
 	public static String buildErrorMsg(final String messageName, final Object[] messageArguments) {
@@ -202,5 +219,4 @@ public final class PubsUtilities {
 	public static String getEditorKey() {
 		return ContributorType.getDao().getById(ContributorType.EDITORS).getText().toLowerCase();
 	}
-
 }

@@ -8,6 +8,7 @@ import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -93,13 +94,15 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		setHeaders(response);
 		
 		UsgsContributor result = person;
-		boolean idMatches = PubsUtilities.idMatches(id, person);
+		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(id, person);
 		
-		if (idMatches) {
+		if (null == idNotMatched) {
 			result = (UsgsContributor) personContributorBusService.updateObject(person);
+		} else {
+			result.addValidatorResult(idNotMatched);
 		}
 		
-		if (idMatches && null != result && (null == result.getValidationErrors() || result.getValidationErrors().isEmpty())) {
+		if (null != result && (null == result.getValidationErrors() || result.getValidationErrors().isEmpty())) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -131,13 +134,15 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		setHeaders(response);
 		
 		OutsideContributor result = person;
-		boolean idMatches = PubsUtilities.idMatches(id, person);
+		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(id, person);
 		
-		if (idMatches) {
+		if (null == idNotMatched) {
 			result = (OutsideContributor) personContributorBusService.updateObject(person);
+		} else {
+			result.addValidatorResult(idNotMatched);
 		}
 
-		if (idMatches && null != result && (null == result.getValidationErrors() || result.getValidationErrors().isEmpty())) {
+		if (null != result && (null == result.getValidationErrors() || result.getValidationErrors().isEmpty())) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

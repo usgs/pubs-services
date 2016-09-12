@@ -1,6 +1,7 @@
 package gov.usgs.cida.pubs.utility;
 
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.StopWords;
 import gov.usgs.cida.pubs.TextReservedWords;
 import gov.usgs.cida.pubs.domain.BaseDomain;
@@ -8,6 +9,7 @@ import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
 import gov.usgs.cida.pubs.webservice.security.PubsAuthentication;
 import gov.usgs.cida.pubs.webservice.security.PubsRoles;
 
@@ -101,16 +103,16 @@ public final class PubsUtilities {
 	/**
 	 * @param intString
 	 * @param domainObject
-	 * @return true only if intString is a valid Integer and domainObject has a non-null id and they are equal
+	 * @return null if intString matches the id in domainObject and they're not null, otherwise a ValidatorResult
 	 */
-	public static boolean idMatches(final String intString, final BaseDomain<?> domainObject) {
-		boolean matches = false;
+	public static ValidatorResult validateIdsMatch(final String intString, final BaseDomain<?> domainObject) {
+		ValidatorResult result = new ValidatorResult("id", "The id in the URL does not match the id in the request.", SeverityLevel.FATAL, intString);
 		Integer id = parseInteger(intString);
 		Integer objId = domainObject.getId();
-		if (null != id && null != objId) {
-			matches = id.intValue() == objId.intValue();
+		if (null != id && null != objId && id.intValue() == objId.intValue()) {
+			result = null;
 		}
-		return matches;
+		return result;
 	}
 
 	public static String buildErrorMsg(final String messageName, final Object[] messageArguments) {

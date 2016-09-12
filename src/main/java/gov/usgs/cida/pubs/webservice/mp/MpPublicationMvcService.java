@@ -1,5 +1,19 @@
 package gov.usgs.cida.pubs.webservice.mp;
 
+import gov.usgs.cida.pubs.busservice.intfc.IBusService;
+import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.dao.PublicationDao;
+import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
+import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.SearchResults;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.json.View;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
+import gov.usgs.cida.pubs.webservice.MvcService;
+
 import java.util.List;
 import java.util.Map;
 
@@ -24,20 +38,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
-
-import gov.usgs.cida.pubs.busservice.intfc.IBusService;
-import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
-import gov.usgs.cida.pubs.dao.BaseDao;
-import gov.usgs.cida.pubs.dao.PublicationDao;
-import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
-import gov.usgs.cida.pubs.domain.Publication;
-import gov.usgs.cida.pubs.domain.SearchResults;
-import gov.usgs.cida.pubs.domain.mp.MpPublication;
-import gov.usgs.cida.pubs.json.View;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
-import gov.usgs.cida.pubs.validation.ValidationResults;
-import gov.usgs.cida.pubs.validation.ValidatorResult;
-import gov.usgs.cida.pubs.webservice.MvcService;
 
 @RestController
 @RequestMapping(value = "mppublications", produces="application/json")
@@ -155,9 +155,9 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		setHeaders(response);
 	
 		MpPublication rtn = pub;
-		boolean idMatches = PubsUtilities.idMatches(publicationId, pub);
+		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(publicationId, pub);
 		
-		if (idMatches) {
+		if (null == idNotMatched) {
 			Integer id = PubsUtilities.parseInteger(publicationId);
 			ValidatorResult locked = busService.checkAvailability(id);
 			if (null == locked) {
@@ -172,6 +172,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 				response.setStatus(HttpStatus.CONFLICT.value());
 			}
 		} else {
+			rtn.addValidatorResult(idNotMatched);
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
 		return rtn;

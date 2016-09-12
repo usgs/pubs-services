@@ -17,6 +17,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
+import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.SeverityLevel;
+import gov.usgs.cida.pubs.busservice.intfc.IBusService;
+import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
+import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
+import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.utility.PubsUtilitiesTest;
+import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,19 +45,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.SeverityLevel;
-import gov.usgs.cida.pubs.busservice.intfc.IBusService;
-import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
-import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
-import gov.usgs.cida.pubs.domain.Publication;
-import gov.usgs.cida.pubs.domain.PublicationSubtype;
-import gov.usgs.cida.pubs.domain.PublicationType;
-import gov.usgs.cida.pubs.domain.mp.MpPublication;
-import gov.usgs.cida.pubs.validation.ValidationResults;
-import gov.usgs.cida.pubs.validation.ValidatorResult;
 
 public class MpPublicationMvcServiceTest extends BaseSpringTest {
 
@@ -235,14 +235,15 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 
 	@Test
 	public void updateMpPublicationIdNotMatchingTest() throws Exception {
-		String pubJson = "{\"id\":1,\"indexId\":\"abc\",\"publicationType\":{\"id\":18,\"text\":\"abc\"},\"validationErrors\":[],\"noYear\":false,\"text\":\"abc - null - null\"}";
+		String pubJson = "{\"id\":1,\"indexId\":\"abc\",\"publicationType\":{\"id\":18,\"text\":\"abc\"},\"noYear\":false,\"text\":\"abc - null - null\"}";
+		String pubJsonWithError = "{\"id\":1," + PubsUtilitiesTest.ID_NOT_MATCH_VALIDATION_JSON + ",\"indexId\":\"abc\",\"publicationType\":{\"id\":18,\"text\":\"abc\"},\"noYear\":false,\"text\":\"abc - null - null\"}";
 		MvcResult rtn = mockMvc.perform(put("/mppublications/30").content(pubJson).contentType(MediaType.APPLICATION_JSON)
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isBadRequest())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
-		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(pubJson)));
+		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(pubJsonWithError)));
 	}
 
 	@Test

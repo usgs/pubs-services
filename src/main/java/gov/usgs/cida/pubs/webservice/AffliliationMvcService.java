@@ -7,6 +7,7 @@ import gov.usgs.cida.pubs.domain.OutsideAffiliation;
 import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
 
 import java.util.List;
 import java.util.Map;
@@ -112,12 +113,15 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		setHeaders(response);
 		
 		CostCenter result = costCenter;
-		boolean idMatches = PubsUtilities.idMatches(id, costCenter);
+		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(id, costCenter);
 		
-		if (idMatches) {
+		if (null != idNotMatched) {
 			result = costCenterBusService.updateObject(costCenter);
+		} else {
+			result.addValidatorResult(idNotMatched);
 		}
-		if (idMatches && null != result && (null == result.getValidationErrors() || result.getValidationErrors().isEmpty())) {
+		
+		if (null != result && (null == result.getValidationErrors() || result.getValidationErrors().isEmpty())) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -189,13 +193,15 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		setHeaders(response);
 		
 		OutsideAffiliation result = outsideAffiliation;
-		boolean idMatches = PubsUtilities.idMatches(id, outsideAffiliation);
+		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(id, outsideAffiliation);
 		
-		if (idMatches) {
+		if (null == idNotMatched) {
 			result = outsideAffiliationBusService.updateObject(outsideAffiliation);
+		} else {
+			result.addValidatorResult(idNotMatched);
 		}
 
-		if (idMatches && null != result && (null == result.getValidationErrors() || result.getValidationErrors().isEmpty())) {
+		if (null != result && (null == result.getValidationErrors() || result.getValidationErrors().isEmpty())) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

@@ -3,20 +3,17 @@ package gov.usgs.cida.pubs.domain;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
-
-import org.json.JSONObject;
-
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
+
+import org.json.JSONObject;
+import org.junit.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class PublicationSeriesTest {
 

@@ -19,6 +19,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public class PubsUtilitiesTest extends BaseSpringTest {
 
+	public static final String ID_NOT_MATCH_VALIDATION_JSON = "\"validationErrors\":[{\"field\":\"id\",\"level\":\"FATAL\",\"message\":\"The id in the URL does not match the id in the request.\",\"value\":\"30\"}]";
+
 	@Test
 	public void isUsgsNumberedSeriesTest() {
 		assertFalse(PubsUtilities.isUsgsNumberedSeries(null));

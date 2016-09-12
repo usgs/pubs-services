@@ -12,6 +12,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
+import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.busservice.PublicationSeriesBusService;
+import gov.usgs.cida.pubs.domain.PublicationSeries;
+import gov.usgs.cida.pubs.domain.PublicationSeriesTest;
+import gov.usgs.cida.pubs.utility.PubsUtilitiesTest;
+import gov.usgs.cida.pubs.validation.ValidationResults;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +32,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.busservice.PublicationSeriesBusService;
-import gov.usgs.cida.pubs.domain.PublicationSeries;
-import gov.usgs.cida.pubs.domain.PublicationSeriesTest;
-import gov.usgs.cida.pubs.validation.ValidationResults;
 
 public class PublicationSeriesMvcServiceTest extends BaseSpringTest {
 
@@ -132,15 +132,16 @@ public class PublicationSeriesMvcServiceTest extends BaseSpringTest {
 
 	@Test
 	public void updateDifferentIdTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(put("/publicationSeries/330").content(PublicationSeriesTest.DEFAULT_AS_JSON).contentType(MediaType.APPLICATION_JSON)
+		MvcResult rtn = mockMvc.perform(put("/publicationSeries/30").content(PublicationSeriesTest.DEFAULT_AS_JSON).contentType(MediaType.APPLICATION_JSON)
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isBadRequest())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
-
+		
+		String expectedJSON = PublicationSeriesTest.DEFAULT_AS_JSON.replaceFirst("}$", "," + PubsUtilitiesTest.ID_NOT_MATCH_VALIDATION_JSON + "}");
 		assertThat(getRtnAsJSONObject(rtn),
-				sameJSONObjectAs(new JSONObject(PublicationSeriesTest.DEFAULT_MAINT_AS_JSON)));
+				sameJSONObjectAs(new JSONObject(expectedJSON)));
 	}
 
 	@Test

@@ -39,6 +39,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 
+	private static final String CONTENT_ID_1_JSON = "{\"id\":\"1\"}";
+	
 	@Autowired
 	protected FilterChainProxy springSecurityFilter;
 	@Autowired
@@ -275,31 +277,31 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 	
 	public void pubsAuthorizedTestPuts(HttpHeaders httpHeaders, ResultMatcher expectedStatus, boolean fudge) throws Exception {
 		//Contributor
-		mockContrib.perform(put("/corporation/1").content("{}").contentType(MediaType.APPLICATION_JSON)
+		mockContrib.perform(put("/corporation/1").content(CONTENT_ID_1_JSON).contentType(MediaType.APPLICATION_JSON)
 			.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
 
 		//These two endpoints are hard to mock, so we'll fudge it for now...
 		if (fudge) {
-			mockContrib.perform(put("/outsidecontributor/1").content("{}").contentType(MediaType.APPLICATION_JSON)
+			mockContrib.perform(put("/outsidecontributor/1").content(CONTENT_ID_1_JSON).contentType(MediaType.APPLICATION_JSON)
 				.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
 	
-			mockContrib.perform(put("/usgscontributor/1").content("{}").contentType(MediaType.APPLICATION_JSON)
+			mockContrib.perform(put("/usgscontributor/1").content(CONTENT_ID_1_JSON).contentType(MediaType.APPLICATION_JSON)
 				.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
 		} else {
-			mockContrib.perform(put("/outsidecontributor/1").content("{}").contentType(MediaType.APPLICATION_JSON)
+			mockContrib.perform(put("/outsidecontributor/1").content(CONTENT_ID_1_JSON).contentType(MediaType.APPLICATION_JSON)
 				.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 				.andExpect(expectedStatus);
 		
-			mockContrib.perform(put("/usgscontributor/1").content("{}").contentType(MediaType.APPLICATION_JSON)
+			mockContrib.perform(put("/usgscontributor/1").content(CONTENT_ID_1_JSON).contentType(MediaType.APPLICATION_JSON)
 				.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 				.andExpect(expectedStatus);
 		}
 
 		//MpPublication
-		mockMpPub.perform(put("/mppublications/2").content("{}").contentType(MediaType.APPLICATION_JSON)
+		mockMpPub.perform(put("/mppublications/1").content(CONTENT_ID_1_JSON).contentType(MediaType.APPLICATION_JSON)
 			.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
 	}

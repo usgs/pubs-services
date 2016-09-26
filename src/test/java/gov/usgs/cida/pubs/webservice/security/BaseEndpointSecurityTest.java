@@ -151,7 +151,7 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 		mockLookup.perform(get("/lookup/linkfiletypes?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
 		
-		mockLookup.perform(get("/lookup/people?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
+		mockLookup.perform(get("/lookup/people?mimetype=json&text=out").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
 		
 		mockLookup.perform(get("/lookup/corporations?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))

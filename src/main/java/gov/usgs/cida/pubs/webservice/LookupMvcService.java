@@ -33,6 +33,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -242,13 +243,17 @@ public class LookupMvcService extends MvcService<PublicationType> {
 	@GetMapping("people")
 	@JsonView(View.Lookup.class)
 	public @ResponseBody Collection<Contributor<?>> getContributorsPeople(HttpServletRequest request, HttpServletResponse response,
-				@RequestParam(value=TEXT_SEARCH, required=false) String[] text) {
+				@RequestParam(value=TEXT_SEARCH, required=true) String[] text) {
 		LOG.debug("Contributor - People");
-		Collection<Contributor<?>> rtn = new ArrayList<>();
-		if (validateParametersSetHeaders(request, response)) {
-			Map<String, Object> filters = new HashMap<>();
-			filters.put(BaseDao.TEXT_SEARCH, configureContributorFilter(text));
-			rtn = PersonContributor.getDao().getByMap(filters);
+			Collection<Contributor<?>> rtn = new ArrayList<>();
+		if (text.length > 0 && text[0].length() > 1) {
+			if (validateParametersSetHeaders(request, response)) {
+				Map<String, Object> filters = new HashMap<>();
+				filters.put(BaseDao.TEXT_SEARCH, configureContributorFilter(text));
+				rtn = PersonContributor.getDao().getByMap(filters);
+			}
+		}  else {
+			response.setStatus(HttpStatus.SC_BAD_REQUEST);
 		}
 		return rtn;
 	}

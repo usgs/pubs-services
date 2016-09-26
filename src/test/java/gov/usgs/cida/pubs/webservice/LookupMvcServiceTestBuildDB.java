@@ -71,15 +71,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 
 	@Test
 	public void getPeople() throws Exception {
-		MvcResult rtn = mockLookup.perform(get("/lookup/people?mimetype=json").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-		.andReturn();
-
-		assertEquals(ContributorDaoTest.PERSON_CONTRIBUTOR_CNT, getRtnAsJSONArray(rtn).length());
-
-		rtn = mockLookup.perform(get("/lookup/people?text=out").accept(MediaType.APPLICATION_JSON))
+		MvcResult rtn = mockLookup.perform(get("/lookup/people?text=out").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))

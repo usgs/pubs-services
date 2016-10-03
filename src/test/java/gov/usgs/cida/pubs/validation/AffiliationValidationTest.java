@@ -24,6 +24,7 @@ import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.CostCenter;
+import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
 import gov.usgs.cida.pubs.validation.unique.UniqueKeyValidatorForAffiliationTest;
 
@@ -44,6 +45,7 @@ public class AffiliationValidationTest extends BaseValidatorTest {
 	protected IDao<CostCenter> affiliationDao;
 	@Mock
 	protected PersonContributorDao personContributorDao;
+	protected UsgsContributor contributor;
 
 	//Using CostCenter because it works easier (all validations are the same via Affiliation...)
 	private CostCenter affiliation;
@@ -56,6 +58,8 @@ public class AffiliationValidationTest extends BaseValidatorTest {
 		affiliation = new CostCenter();
 		affiliation.setAffiliationDao(affiliationDao);
 		affiliation.setText("abc");
+		contributor = new UsgsContributor();
+		contributor.setPersonContributorDao(personContributorDao);
 
 		when(affiliationDao.getByMap(anyMap())).thenReturn(UniqueKeyValidatorForAffiliationTest.buildList());
 	}

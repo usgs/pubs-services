@@ -19,6 +19,10 @@
 		</layout>
 	</appender>
 
+	<category name="org.springframework">
+		<level value="INFO"/>
+	</category>
+
 	<category name="org.springframework.web">
 		<level value="INFO"/>
 	</category>
@@ -56,6 +60,10 @@
 	</category>
 
 	<category name="java.sql">
+		<level value="INFO"/> 
+	</category>
+
+	<category name="springfox">
 		<level value="INFO"/> 
 	</category>
 

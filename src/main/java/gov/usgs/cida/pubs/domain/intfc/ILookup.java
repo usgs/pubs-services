@@ -10,7 +10,7 @@ import gov.usgs.cida.pubs.json.View;
 public interface ILookup {
 
 	@JsonProperty("text")
-	@JsonView({View.Lookup.class, View.PW.class})
+	@JsonView({View.Base.class})
 	String getText();
 
 }

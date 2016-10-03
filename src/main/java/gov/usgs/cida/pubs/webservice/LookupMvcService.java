@@ -1,30 +1,5 @@
 package gov.usgs.cida.pubs.webservice;
 
-import gov.usgs.cida.pubs.dao.BaseDao;
-import gov.usgs.cida.pubs.dao.ContributorTypeDao;
-import gov.usgs.cida.pubs.dao.CostCenterDao;
-import gov.usgs.cida.pubs.dao.LinkFileTypeDao;
-import gov.usgs.cida.pubs.dao.LinkTypeDao;
-import gov.usgs.cida.pubs.dao.OutsideAffiliationDao;
-import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
-import gov.usgs.cida.pubs.dao.PublicationSubtypeDao;
-import gov.usgs.cida.pubs.dao.PublicationTypeDao;
-import gov.usgs.cida.pubs.dao.PublishingServiceCenterDao;
-import gov.usgs.cida.pubs.domain.Contributor;
-import gov.usgs.cida.pubs.domain.ContributorType;
-import gov.usgs.cida.pubs.domain.CorporateContributor;
-import gov.usgs.cida.pubs.domain.CostCenter;
-import gov.usgs.cida.pubs.domain.LinkFileType;
-import gov.usgs.cida.pubs.domain.LinkType;
-import gov.usgs.cida.pubs.domain.OutsideAffiliation;
-import gov.usgs.cida.pubs.domain.PersonContributor;
-import gov.usgs.cida.pubs.domain.Publication;
-import gov.usgs.cida.pubs.domain.PublicationSeries;
-import gov.usgs.cida.pubs.domain.PublicationSubtype;
-import gov.usgs.cida.pubs.domain.PublicationType;
-import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
-import gov.usgs.cida.pubs.json.View;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -45,6 +20,36 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
+import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.dao.ContributorTypeDao;
+import gov.usgs.cida.pubs.dao.CostCenterDao;
+import gov.usgs.cida.pubs.dao.LinkFileTypeDao;
+import gov.usgs.cida.pubs.dao.LinkTypeDao;
+import gov.usgs.cida.pubs.dao.OutsideAffiliationDao;
+import gov.usgs.cida.pubs.dao.PersonContributorDao;
+import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
+import gov.usgs.cida.pubs.dao.PublicationSubtypeDao;
+import gov.usgs.cida.pubs.dao.PublicationTypeDao;
+import gov.usgs.cida.pubs.dao.PublishingServiceCenterDao;
+import gov.usgs.cida.pubs.domain.Contributor;
+import gov.usgs.cida.pubs.domain.ContributorType;
+import gov.usgs.cida.pubs.domain.CorporateContributor;
+import gov.usgs.cida.pubs.domain.CostCenter;
+import gov.usgs.cida.pubs.domain.LinkFileType;
+import gov.usgs.cida.pubs.domain.LinkType;
+import gov.usgs.cida.pubs.domain.OutsideAffiliation;
+import gov.usgs.cida.pubs.domain.PersonContributor;
+import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.PublicationSeries;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
+import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
+import gov.usgs.cida.pubs.json.View;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping(value="lookup", produces=MediaType.APPLICATION_JSON_VALUE)
@@ -241,18 +246,26 @@ public class LookupMvcService extends MvcService<PublicationType> {
 	}
 
 	@GetMapping("people")
+	@ApiOperation(value="Search for Contributors",
+		notes="This search expects either an ORCID or a text search of at least two characters.")
+	@ApiResponses(value={
+			@ApiResponse(code=HttpStatus.SC_BAD_REQUEST, message="Invalid query parameters provided.") }
+	)
 	@JsonView(View.Lookup.class)
 	public @ResponseBody Collection<Contributor<?>> getContributorsPeople(HttpServletRequest request, HttpServletResponse response,
-				@RequestParam(value=TEXT_SEARCH, required=true) String[] text) {
+			@ApiParam("The ORCID to search for. Include the entire URI - for example: http://orcid.org/0000-0000-0000-0000") @RequestParam(value=PersonContributorDao.ORCID, required=false) String[] orcid,
+			@ApiParam("A 'contains' search value which if provided, must be at least 2 characters long.") @RequestParam(value=TEXT_SEARCH, required=false) String[] text) {
 		LOG.debug("Contributor - People");
 			Collection<Contributor<?>> rtn = new ArrayList<>();
-		if (text.length > 0 && text[0].length() > 1) {
+		if ((null != text && text.length > 0 && text[0].length() > 1)
+				|| (null != orcid && orcid.length > 0)) {
 			if (validateParametersSetHeaders(request, response)) {
 				Map<String, Object> filters = new HashMap<>();
 				filters.put(BaseDao.TEXT_SEARCH, configureContributorFilter(text));
+				filters.put(PersonContributorDao.ORCID, orcid);
 				rtn = PersonContributor.getDao().getByMap(filters);
 			}
-		}  else {
+		} else {
 			response.setStatus(HttpStatus.SC_BAD_REQUEST);
 		}
 		return rtn;
@@ -261,7 +274,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
 	@GetMapping("corporations")
 	@JsonView(View.Lookup.class)
 	public @ResponseBody Collection<Contributor<?>> getContributorsCorporations(HttpServletRequest request, HttpServletResponse response,
-				@RequestParam(value=TEXT_SEARCH, required=false) String[] text) {
+			@RequestParam(value=TEXT_SEARCH, required=false) String[] text) {
 		LOG.debug("Contributor - Corporations");
 		Collection<Contributor<?>> rtn = new ArrayList<>();
 		Map<String, Object> filters = new HashMap<>();

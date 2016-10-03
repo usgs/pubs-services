@@ -85,6 +85,31 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 				sameJSONArrayAs(
 						new JSONArray("[{\"id\":3,\"text\":\"outerfamily, outerGiven outerSuffix outer@gmail.com\"}]"))
 								.allowingAnyArrayOrdering());
+
+		rtn = mockLookup.perform(get("/lookup/people?orcid=http://orcid.org/0000-0000-0000-0004").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+				.andReturn();
+
+		rtnAsJSONArray = getRtnAsJSONArray(rtn);
+
+		assertEquals(1, rtnAsJSONArray.length());
+
+		assertThat(rtnAsJSONArray,
+				sameJSONArrayAs(
+						new JSONArray("[{\"id\":4,\"text\":\"4Family, 4Given 4Suffix con4@usgs.gov\"}]"))
+				.allowingAnyArrayOrdering());
+
+		mockLookup.perform(get("/lookup/people").accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isBadRequest())
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+			.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING));
+
+		mockLookup.perform(get("/lookup/people?text=a").accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isBadRequest())
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+			.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING));
 	}
 
 	@Test

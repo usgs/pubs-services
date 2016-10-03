@@ -28,7 +28,7 @@ public class PublicationDao extends BaseDao<Publication<?>> implements IPublicat
 	public static final String PUB_ABSTRACT = "abstract";
 	public static final String CONTRIBUTING_OFFICE = "contributingOffice";
 	public static final String CONTRIBUTOR = "contributor";
-	public static final String ORCID = "orcid";
+	public static final String ORCID = PersonContributorDao.ORCID;
 	public static final String END_YEAR = "endYear";
 	public static final String INDEX_ID = "indexId";
 	public static final String IPDS_ID = "ipdsId";

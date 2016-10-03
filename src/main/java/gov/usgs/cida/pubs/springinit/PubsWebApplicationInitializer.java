@@ -15,12 +15,12 @@ public class PubsWebApplicationInitializer implements WebApplicationInitializer 
 	 */
 	public void onStartup(ServletContext servletContext) throws ServletException {		
 		AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
-		ctx.register(SpringConfig.class, JndiConfig.class, JmsConfig.class);
+		ctx.register(SpringConfig.class, JndiConfig.class, JmsConfig.class, SwaggerConfig.class);
 
 		Dynamic servlet = servletContext.addServlet("springDispatcher", new DispatcherServlet(ctx));
 		servlet.addMapping("/*");
 		servlet.setAsyncSupported(false);
 		servlet.setLoadOnStartup(1);
 	}
-	
+
 }

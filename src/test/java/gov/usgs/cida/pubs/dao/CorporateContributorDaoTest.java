@@ -55,19 +55,19 @@ public class CorporateContributorDaoTest extends BaseSpringTest {
 		assertEquals(ContributorDaoTest.CORPORATE_CONTRIBUTOR_CNT, contributors.size());
 
 		Map<String, Object> filters = new HashMap<>();
-		filters.put("id", "2");
+		filters.put(CorporateContributorDao.ID_SEARCH, "2");
 		contributors = CorporateContributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(2, contributors.get(0).getId().intValue());
 
 		filters.clear();
-		filters.put("text", "us%");
+		filters.put(CorporateContributorDao.TEXT_SEARCH, "us%");
 		contributors = CorporateContributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(2, contributors.get(0).getId().intValue());
 
 		filters.clear();
-		filters.put("ipdsContributorId", 2);
+		filters.put(CorporateContributorDao.IPDS_CONTRIBUTOR_ID, 2);
 		contributors = CorporateContributor.getDao().getByMap(filters);
 		assertEquals(0, contributors.size());
 
@@ -77,7 +77,7 @@ public class CorporateContributorDaoTest extends BaseSpringTest {
 		contributors = CorporateContributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(2, contributors.get(0).getId().intValue());
-		filters.put("ipdsContributorId", 2);
+		filters.put(CorporateContributorDao.IPDS_CONTRIBUTOR_ID, 2);
 		contributors = CorporateContributor.getDao().getByMap(filters);
 		assertEquals(0, contributors.size());
 	}

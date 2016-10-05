@@ -1,13 +1,5 @@
 package gov.usgs.cida.pubs.webservice;
 
-import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.dao.BaseDao;
-import gov.usgs.cida.pubs.dao.PublicationDao;
-import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
-import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,22 +13,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.HttpMediaTypeNotSupportedException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.WebRequest;
+
+import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.dao.PublicationDao;
+import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
+import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 public abstract class MvcService<D> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(MvcService.class);
-	public static final String TEXT_SEARCH = "text";
+	public static final String TEXT_SEARCH = BaseDao.TEXT_SEARCH;
 	public static final String ACTIVE_SEARCH = "active";
 	private static final Pattern G_PATTERN = Pattern.compile("^polygon\\(\\((-?\\d+\\.?\\d* -?\\d+\\.?\\d*,){3,}-?\\d+\\.?\\d* -?\\d+\\.?\\d*\\)\\)$");
 
@@ -185,34 +174,6 @@ public abstract class MvcService<D> {
 		paging.put(BaseDao.PAGE_SIZE, pageSize);
 		paging.put(BaseDao.PAGE_NUMBER, pageNumber);
 		return paging;
-	}
-
-	@ExceptionHandler(Exception.class)
-	public @ResponseBody String handleUncaughtException(Exception ex, WebRequest request, HttpServletResponse response) throws IOException {
-		if (ex instanceof AccessDeniedException) {
-			response.setStatus(HttpStatus.FORBIDDEN.value());
-			return "You are not authorized to perform this action.";
-		} else if (ex instanceof MissingServletRequestParameterException
-				|| ex instanceof HttpMediaTypeNotSupportedException) {
-			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			return ex.getLocalizedMessage();
-		} else if (ex instanceof HttpMessageNotReadableException) {
-			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			if (ex.getLocalizedMessage().contains("\n")) {
-				//This exception's message contains implementation details after the new line, so only take up to that.
-				return ex.getLocalizedMessage().substring(0, ex.getLocalizedMessage().indexOf("\n"));
-			} else {
-				return ex.getLocalizedMessage().replaceAll("([a-zA-Z]+\\.)+","");
-			}
-		} else {
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			int hashValue = response.hashCode();
-			//Note: we are giving the user a generic message.  
-			//Server logs can be used to troubleshoot problems.
-			String msgText = "Something bad happened. Contact us with Reference Number: " + hashValue;
-			LOG.error(msgText, ex);
-			return msgText;
-		}
 	}
 
 	//This check is meant to slow any denial-of-service attacks against insecure ("permitAll") endpoints (see the securityContext.xml).

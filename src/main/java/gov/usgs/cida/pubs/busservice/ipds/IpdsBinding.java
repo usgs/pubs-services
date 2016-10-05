@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.busservice.ipds;
 import gov.usgs.cida.pubs.PubMap;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.Contributor;
@@ -178,8 +179,8 @@ public class IpdsBinding {
 		if (1 < nameParts.length) {
 			given = nameParts[1].trim();
 		}
-		filters.put("given", given);
-		filters.put("family", family);
+		filters.put(PersonContributorDao.GIVEN, given);
+		filters.put(PersonContributorDao.FAMILY, family);
 		List<Contributor<?>> people = OutsideContributor.getDao().getByMap(filters);
 		if (people.size() > 1) {
 			LOG.warn("Multiple OutsideContributors found for: " + family + ", " + given);
@@ -234,7 +235,7 @@ public class IpdsBinding {
 		UsgsContributor person;
 		Map<String, Object> filters = new HashMap<>();
 
-		filters.put("ipdsContributorId", ipdsContributorId);
+		filters.put(PersonContributorDao.IPDS_CONTRIBUTOR_ID, ipdsContributorId);
 		List<Contributor<?>> people = UsgsContributor.getDao().getByMap(filters);
 		if (people.isEmpty()) {
 			person = (UsgsContributor) createUsgsContributor(element, ipdsContributorId);

@@ -25,71 +25,69 @@
 
     <sql id="singleSearchTermFilter">
     <!-- single search term needs to or/and correctly -->
-       	<if test="searchTerms != null and searchTerms.length > 0">
-       		and 
-			<foreach item="term" collection="searchTerms" open=""
-					 separator="and" close=""> 
-				(<include refid="publication.singleSearchTermFilter"/>
-				<!--  contributing office -->
-				 or exists (select null
-                 	  	      from mp_pub_cost_center
-                  		           join affiliation
-                 	        	     on cost_center_id = affiliation_id
-                 	    	 where pub.publication_id = mp_pub_cost_center.publication_id and
-             	        	       upper(name) <include refid="publication.likeTerm"/>
+        <if test="searchTerms != null and searchTerms.length > 0">
+            <foreach item="term" collection="searchTerms" open="and (" separator="and" close=")">
+                <include refid="publication.singleSearchTermFilter"/>
+                <!--  contributing office -->
+                or exists (select null
+                             from mp_pub_cost_center
+                                  join affiliation
+                                    on cost_center_id = affiliation_id
+                            where pub.publication_id = mp_pub_cost_center.publication_id and
+                                 upper(name) <include refid="publication.likeTerm"/>
                            )
-               
+
                <!-- author -->
                 or exists (select null
-                   	         from mp_pub_contributor
-                   	              join contributor
-                   	                on mp_pub_contributor.contributor_id = contributor.contributor_id 
-               	            where pub.publication_id = mp_pub_contributor.publication_id and
-                 	         	  (upper(family) <include refid="publication.likeTerm"/> or
-                 	         	   upper(given) <include refid="publication.likeTerm"/> or
-                 	         	   upper(literal) <include refid="publication.likeTerm"/>
-                 	         	  )
-                 	      )
-              )
-			</foreach>
-       	</if>
+                             from mp_pub_contributor
+                                  join contributor
+                                    on mp_pub_contributor.contributor_id = contributor.contributor_id 
+                            where pub.publication_id = mp_pub_contributor.publication_id and
+                                  (upper(family) <include refid="publication.likeTerm"/> or
+                                   upper(given) <include refid="publication.likeTerm"/> or
+                                   upper(literal) <include refid="publication.likeTerm"/>
+                                  )
+                          )
+            </foreach>
+        </if>
     </sql>
-    
+
     <sql id="filters">
-    	<where>
-	    	<include refid="mpPublication.singleSearchTermFilter"/>
-	    	<include refid="publication.filters"/>
-	
-			<if test="null != listId">
-				<if test="listId.length > 0">
-					<foreach item="list" collection="listId" open=" and publication_id in (select publication_id from mp_list_publication where mp_list_id in(" separator="," close="))">
-						#{list,jdbcType=NUMERIC}
-					</foreach>
-				</if>
-			</if>
+        <where>
+            <include refid="mpPublication.singleSearchTermFilter"/>
+            <include refid="publication.filters"/>
+
+            <if test="null != listId and listId.length > 0">
+                 and publication_id in (select publication_id
+                                          from mp_list_publication
+                                         where mp_list_id in <foreach item="list" collection="listId" open="(" separator="," close=")">
+                                                                 #{list,jdbcType=NUMERIC}
+                                                             </foreach>
+                                       )
+            </if>
 
             <if test="contributor != null">
                 and exists (select null
-                   	          from mp_pub_contributor
-                   	               join contributor
-                   	                 on mp_pub_contributor.contributor_id = contributor.contributor_id 
-               	             where pub.publication_id = mp_pub_contributor.publication_id and
-                				   contains(text, #{contributor}) > 0
-		                   )
+                              from mp_pub_contributor
+                                   join contributor
+                                     on mp_pub_contributor.contributor_id = contributor.contributor_id
+                             where pub.publication_id = mp_pub_contributor.publication_id and
+                                   contains(text, #{contributor}) > 0
+                   )
             </if>
-            
+
             <if test="contributingOffice != null and contributingOffice.length > 0">
                 and exists (select null
-                   	          from mp_pub_cost_center
-                   	               join affiliation
-                   	                 on mp_pub_cost_center.cost_center_id = affiliation.affiliation_id 
-               	             where pub.publication_id = mp_pub_cost_center.publication_id and
-                				   <foreach item="co" collection="contributingOffice" open="(" separator="or" close=")"> 
-		                			   upper(name) like '%' || upper(#{co}) || '%'
-		                		   </foreach>
-		                   )
+                              from mp_pub_cost_center
+                                   join affiliation
+                                     on mp_pub_cost_center.cost_center_id = affiliation.affiliation_id
+                             where pub.publication_id = mp_pub_cost_center.publication_id and
+                                   <foreach item="co" collection="contributingOffice" open="(" separator="or" close=")">
+                                       upper(name) like '%' || upper(#{co}) || '%'
+                                   </foreach>
+                           )
             </if>
-		</where>
+        </where>
     </sql>
 
     <insert id="add" parameterType="MpPublication">
@@ -172,55 +170,55 @@
                on (mp.publication_id = pw.publication_id)
              when matched then update
                   set pw.index_id                     = mp.index_id,
-					  pw.display_to_public_date       = mp.display_to_public_date,
-					  pw.publication_year             = mp.publication_year,
-					  pw.no_year                      = mp.no_year,
-					  pw.publication_type_id          = mp.publication_type_id,
-					  pw.publication_subtype_id       = mp.publication_subtype_id,
-					  pw.publication_series_id        = mp.publication_series_id,
-					  pw.series_number                = mp.series_number,
-					  pw.subseries_title              = mp.subseries_title,
-					  pw.chapter                      = mp.chapter,
-					  pw.subchapter                   = mp.subchapter,
-					  pw.title                        = mp.title,
-					  pw.larger_work_type_id          = mp.larger_work_type_id,
-					  pw.larger_work_title            = mp.larger_work_title,
-					  pw.larger_work_subtype_id       = mp.larger_work_subtype_id,
-					  pw.conference_title             = mp.conference_title,
-					  pw.conference_date              = mp.conference_date,
-					  pw.conference_location          = mp.conference_location,
-					  pw.language                     = mp.language,
-					  pw.publisher                    = mp.publisher,
-					  pw.publisher_location           = mp.publisher_location,
-					  pw.doi_name                     = mp.doi_name,
-					  pw.issn                         = mp.issn,
-					  pw.isbn                         = mp.isbn,
-					  pw.collaboration                = mp.collaboration,
-					  pw.usgs_citation                = mp.usgs_citation,
-					  pw.product_description          = mp.product_description,
-					  pw.start_page                   = mp.start_page,
-					  pw.end_page                     = mp.end_page,
-					  pw.number_of_pages              = mp.number_of_pages,
-					  pw.online_only                  = mp.online_only,
-					  pw.additional_online_files      = mp.additional_online_files,
-					  pw.temporal_start               = mp.temporal_start,
-					  pw.temporal_end                 = mp.temporal_end,
-					  pw.ipds_id                      = mp.ipds_id,
-					  pw.ipds_review_process_state    = mp.ipds_review_process_state,
-					  pw.ipds_internal_id             = mp.ipds_internal_id,
-					  pw.scale                        = mp.scale,
-					  pw.projection                   = mp.projection,
-					  pw.datum                        = mp.datum,
-					  pw.country                      = mp.country,
-					  pw.state                        = mp.state,
-					  pw.county                       = mp.county,
-					  pw.city                         = mp.city,
-					  pw.other_geospatial             = mp.other_geospatial,
-					  pw.volume                       = mp.volume,
-					  pw.issue                        = mp.issue,
-        			  pw.edition                      = mp.edition,
-        			  pw.public_comments              = mp.public_comments,
-        		      pw.contact_info                 = mp.contact_info,
+                      pw.display_to_public_date       = mp.display_to_public_date,
+                      pw.publication_year             = mp.publication_year,
+                      pw.no_year                      = mp.no_year,
+                      pw.publication_type_id          = mp.publication_type_id,
+                      pw.publication_subtype_id       = mp.publication_subtype_id,
+                      pw.publication_series_id        = mp.publication_series_id,
+                      pw.series_number                = mp.series_number,
+                      pw.subseries_title              = mp.subseries_title,
+                      pw.chapter                      = mp.chapter,
+                      pw.subchapter                   = mp.subchapter,
+                      pw.title                        = mp.title,
+                      pw.larger_work_type_id          = mp.larger_work_type_id,
+                      pw.larger_work_title            = mp.larger_work_title,
+                      pw.larger_work_subtype_id       = mp.larger_work_subtype_id,
+                      pw.conference_title             = mp.conference_title,
+                      pw.conference_date              = mp.conference_date,
+                      pw.conference_location          = mp.conference_location,
+                      pw.language                     = mp.language,
+                      pw.publisher                    = mp.publisher,
+                      pw.publisher_location           = mp.publisher_location,
+                      pw.doi_name                     = mp.doi_name,
+                      pw.issn                         = mp.issn,
+                      pw.isbn                         = mp.isbn,
+                      pw.collaboration                = mp.collaboration,
+                      pw.usgs_citation                = mp.usgs_citation,
+                      pw.product_description          = mp.product_description,
+                      pw.start_page                   = mp.start_page,
+                      pw.end_page                     = mp.end_page,
+                      pw.number_of_pages              = mp.number_of_pages,
+                      pw.online_only                  = mp.online_only,
+                      pw.additional_online_files      = mp.additional_online_files,
+                      pw.temporal_start               = mp.temporal_start,
+                      pw.temporal_end                 = mp.temporal_end,
+                      pw.ipds_id                      = mp.ipds_id,
+                      pw.ipds_review_process_state    = mp.ipds_review_process_state,
+                      pw.ipds_internal_id             = mp.ipds_internal_id,
+                      pw.scale                        = mp.scale,
+                      pw.projection                   = mp.projection,
+                      pw.datum                        = mp.datum,
+                      pw.country                      = mp.country,
+                      pw.state                        = mp.state,
+                      pw.county                       = mp.county,
+                      pw.city                         = mp.city,
+                      pw.other_geospatial             = mp.other_geospatial,
+                      pw.volume                       = mp.volume,
+                      pw.issue                        = mp.issue,
+                      pw.edition                      = mp.edition,
+                      pw.public_comments              = mp.public_comments,
+                      pw.contact_info                 = mp.contact_info,
                       pw.table_of_contents            = mp.table_of_contents,
                       pw.publishing_service_center_id = mp.publishing_service_center_id,
                       pw.published_date               = mp.published_date,
@@ -231,28 +229,28 @@
                       pw.insert_username              = mp.insert_username,
                       pw.update_date                  = sysdate,
                       pw.update_username              = audit_trail_util.get_username,
-					  pw.abstract                     = mp.abstract,
-					  pw.notes                        = mp.notes,
-					  pw.geographic_extents           = mp.geographic_extents,
-					  pw.no_usgs_authors              = mp.no_usgs_authors
+                      pw.abstract                     = mp.abstract,
+                      pw.notes                        = mp.notes,
+                      pw.geographic_extents           = mp.geographic_extents,
+                      pw.no_usgs_authors              = mp.no_usgs_authors
              when not matched then insert (<include refid="publication.cols"/>)
-                  values (mp.publication_id,	 		mp.index_id,					mp.display_to_public_date,			mp.publication_year,
-                          mp.no_year,					mp.publication_type_id,			mp.publication_subtype_id,			mp.publication_series_id,
-                          mp.series_number,				mp.subseries_title,				mp.chapter,							mp.subchapter,
-                          mp.title,						mp.larger_work_type_id,			mp.larger_work_title,				mp.larger_work_subtype_id,
-                          mp.conference_title,			mp.conference_date,				mp.conference_location,				mp.language,
-                          mp.publisher,					mp.publisher_location,			mp.doi_name,						mp.issn,
-                          mp.isbn,						mp.collaboration,				mp.usgs_citation,					mp.product_description,
-                          mp.start_page,				mp.end_page,					mp.number_of_pages,					mp.online_only,
-                          mp.additional_online_files,	mp.temporal_start,				mp.temporal_end,					
-                          mp.ipds_id,					mp.ipds_review_process_state,	mp.ipds_internal_id,				mp.scale,
-                          mp.projection,				mp.datum,						mp.country,							mp.state,
-                          mp.county,					mp.city,						mp.other_geospatial,				
-                          mp.volume,					mp.issue,        				mp.edition,							mp.public_comments,
-                          mp.contact_info,				mp.table_of_contents,           mp.publishing_service_center_id,	mp.published_date,
-                          mp.is_part_of_id,				mp.superseded_by_id,			mp.revised_date,
-                          mp.insert_date, 				mp.insert_username, 			sysdate, 							audit_trail_util.get_username,
-                          mp.abstract,					mp.notes,						mp.geographic_extents,				mp.no_usgs_authors)
+                  values (mp.publication_id,            mp.index_id,                    mp.display_to_public_date,          mp.publication_year,
+                          mp.no_year,                   mp.publication_type_id,         mp.publication_subtype_id,          mp.publication_series_id,
+                          mp.series_number,             mp.subseries_title,             mp.chapter,                         mp.subchapter,
+                          mp.title,                     mp.larger_work_type_id,         mp.larger_work_title,               mp.larger_work_subtype_id,
+                          mp.conference_title,          mp.conference_date,             mp.conference_location,             mp.language,
+                          mp.publisher,                 mp.publisher_location,          mp.doi_name,                        mp.issn,
+                          mp.isbn,                      mp.collaboration,               mp.usgs_citation,                   mp.product_description,
+                          mp.start_page,                mp.end_page,                    mp.number_of_pages,                 mp.online_only,
+                          mp.additional_online_files,   mp.temporal_start,              mp.temporal_end,
+                          mp.ipds_id,                   mp.ipds_review_process_state,   mp.ipds_internal_id,                mp.scale,
+                          mp.projection,                mp.datum,                       mp.country,                         mp.state,
+                          mp.county,                    mp.city,                        mp.other_geospatial,
+                          mp.volume,                    mp.issue,                       mp.edition,                         mp.public_comments,
+                          mp.contact_info,              mp.table_of_contents,           mp.publishing_service_center_id,    mp.published_date,
+                          mp.is_part_of_id,             mp.superseded_by_id,            mp.revised_date,
+                          mp.insert_date,               mp.insert_username,             sysdate,                            audit_trail_util.get_username,
+                          mp.abstract,                  mp.notes,                       mp.geographic_extents,              mp.no_usgs_authors)
     </update>
 
     <delete id="delete" parameterType="Integer">

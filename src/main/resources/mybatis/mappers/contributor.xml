@@ -98,8 +98,8 @@
         <if test="ipdsContributorId != null">
             and ipds_contributor_id = #{ipdsContributorId}
         </if>
-       	<if test="text != null">
-       		and contains(text, #{text}) > 0
+        <if test="text != null">
+            and contains(text, #{text}) > 0
         </if>
         <if test="given != null">
             and upper(given) like upper(#{given}) || '%'
@@ -110,6 +110,11 @@
         <if test="corporation != null">
             and is_corporation = #{corporation}
         </if>
+        <if test="orcid != null and orcid.length > 0">
+            <foreach item="oid" collection="orcid" open="and (" separator="or" close=")">
+                orcid = #{oid}
+            </foreach>
+        </if>
     </sql>
 
     <sql id="baseSelect">
@@ -118,18 +123,18 @@
                <include refid="corpCols"/>
           from contributor
     </sql>
-    
+
     <sql id="defaultOrderBy">
-    	order by text
+        order by text
     </sql>
-    
-	<select id="getCount" resultType="Integer">
-		select count(*)
-		  from contributor
+
+    <select id="getCount" resultType="Integer">
+        select count(*)
+          from contributor
         <where>
             <include refid="filters"/>
         </where>
-	</select>
+    </select>
 
     <select id="getById" parameterType="Integer" resultMap="result">
         <include refid="baseSelect"/>
@@ -210,15 +215,15 @@
         delete from contributor
          where contributor_id = #{value,jdbcType=NUMERIC}
     </delete>
-    
-	<insert id="addAffiliation" parameterType="map" useGeneratedKeys="true" keyProperty="id" keyColumn="contributor_affiliation_id">
+
+    <insert id="addAffiliation" parameterType="map" useGeneratedKeys="true" keyProperty="id" keyColumn="contributor_affiliation_id">
         insert into contributor_affiliation (<include refid="base.auditCols"/>,
                                              contributor_id, affiliation_id)
             values (<include refid="base.auditHosts"/>,#{contributorId,jdbcType=NUMERIC}, #{affiliationId,jdbcType=NUMERIC})
-	</insert>
-    
-	<delete id="removeAffiliations" parameterType="Integer">
+    </insert>
+
+    <delete id="removeAffiliations" parameterType="Integer">
         delete from contributor_affiliation
          where contributor_id = #{value,jdbcType=NUMERIC}
-	</delete>
+    </delete>
 </mapper>

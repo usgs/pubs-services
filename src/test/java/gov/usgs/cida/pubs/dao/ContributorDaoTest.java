@@ -83,13 +83,13 @@ public class ContributorDaoTest extends BaseSpringTest {
 		assertEquals(CONTRIBUTOR_CNT, contributors.size());
 
 		Map<String, Object> filters = new HashMap<>();
-		filters.put("id", "1");
+		filters.put(ContributorDao.ID_SEARCH, "1");
 		contributors = Contributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(1, contributors.get(0).getId().intValue());
 
 		filters.clear();
-		filters.put("text", "con%");
+		filters.put(ContributorDao.TEXT_SEARCH, "con%");
 		contributors = Contributor.getDao().getByMap(filters);
 		assertEquals(2, contributors.size());
 		boolean got1 = false;
@@ -107,25 +107,25 @@ public class ContributorDaoTest extends BaseSpringTest {
 		assertTrue("Got 4", got4);
 
 		filters.clear();
-		filters.put("text", "us% and ge%");
+		filters.put(ContributorDao.TEXT_SEARCH, "us% and ge%");
 		contributors = Contributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(2, contributors.get(0).getId().intValue());
 
 		filters.clear();
-		filters.put("given", "con");
+		filters.put(PersonContributorDao.GIVEN, "con");
 		contributors = Contributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(1, contributors.get(0).getId().intValue());
 
 		filters.clear();
-		filters.put("family", "con");
+		filters.put(PersonContributorDao.FAMILY, "con");
 		contributors = Contributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(1, contributors.get(0).getId().intValue());
 
 		filters.clear();
-		filters.put("ipdsContributorId", 3);
+		filters.put(ContributorDao.IPDS_CONTRIBUTOR_ID, 3);
 		contributors = Contributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(1, contributors.get(0).getId().intValue());
@@ -137,34 +137,39 @@ public class ContributorDaoTest extends BaseSpringTest {
 		assertEquals(4, contributors.get(0).getId().intValue());
 		assertEquals(1, contributors.get(1).getId().intValue());
 		assertEquals(3, contributors.get(2).getId().intValue());
-		filters.put("text", "out%");
+		filters.put(ContributorDao.TEXT_SEARCH, "out%");
 		contributors = Contributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(3, contributors.get(0).getId().intValue());
-		filters.put("family", "out");
+		filters.put(PersonContributorDao.FAMILY, "out");
 		contributors = Contributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
-		filters.put("given", "out");
+		filters.put(PersonContributorDao.GIVEN, "out");
 		contributors = Contributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
-		filters.put("id", 3);
+		filters.put(ContributorDao.ID_SEARCH, 3);
 		contributors = Contributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
-		filters.put("ipdsContributorId", 2);
+		filters.put(ContributorDao.IPDS_CONTRIBUTOR_ID, 2);
 		contributors = Contributor.getDao().getByMap(filters);
 		assertEquals(0, contributors.size());
 
+		filters.clear();
+		filters.put(PersonContributorDao.ORCID, new String[]{"http://orcid.org/0000-0000-0000-0004"});
+		contributors = Contributor.getDao().getByMap(filters);
+		assertEquals(1, contributors.size());
+		assertEquals(4, contributors.get(0).getId().intValue());
 
 		filters.clear();
 		filters.put("corporation", true);
 		contributors = Contributor.getDao().getByMap(filters);
 		assertEquals(CORPORATE_CONTRIBUTOR_CNT, contributors.size());
 		assertEquals(2, contributors.get(0).getId().intValue());
-		filters.put("text", "us%");
+		filters.put(ContributorDao.ID_SEARCH, "us%");
 		contributors = Contributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(2, contributors.get(0).getId().intValue());
-		filters.put("ipdsContributorId", 1);
+		filters.put(ContributorDao.IPDS_CONTRIBUTOR_ID, 1);
 		contributors = Contributor.getDao().getByMap(filters);
 		assertEquals(0, contributors.size());
 	}

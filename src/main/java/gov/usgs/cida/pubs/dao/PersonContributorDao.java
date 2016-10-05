@@ -1,9 +1,5 @@
 package gov.usgs.cida.pubs.dao;
 
-import gov.usgs.cida.pubs.aop.ISetDbContext;
-import gov.usgs.cida.pubs.dao.intfc.IPersonContributorDao;
-import gov.usgs.cida.pubs.domain.Contributor;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +8,10 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import gov.usgs.cida.pubs.aop.ISetDbContext;
+import gov.usgs.cida.pubs.dao.intfc.IPersonContributorDao;
+import gov.usgs.cida.pubs.domain.Contributor;
 
 @Repository
 public class PersonContributorDao extends ContributorDao implements IPersonContributorDao {
@@ -29,6 +29,9 @@ public class PersonContributorDao extends ContributorDao implements IPersonContr
 
 	public static final String AFFILIATION_ID = "affiliationId";
 	public static final String CONTRIBUTOR_ID = "contributorId";
+	public static final String ORCID = "orcid";
+	public static final String GIVEN = "given";
+	public static final String FAMILY = "family";
 
 	@Transactional
 	@ISetDbContext

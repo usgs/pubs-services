@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import gov.usgs.cida.pubs.SeverityLevel;
+import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.CostCenter;
@@ -30,10 +31,10 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 public class PersonContributorValidationTest extends BaseValidatorTest {
 	private static final Logger LOG = LoggerFactory.getLogger(PersonContributorValidationTest.class);
 
-	public static final String NOT_NULL_FAMILY = new ValidatorResult("family", NOT_NULL_MSG, SeverityLevel.FATAL, null).toString();
+	public static final String NOT_NULL_FAMILY = new ValidatorResult(PersonContributorDao.FAMILY, NOT_NULL_MSG, SeverityLevel.FATAL, null).toString();
 
-	public static final String INVALID_FAMILY_LENGTH = new ValidatorResult("family", LENGTH_1_TO_XXX_MSG + "40", SeverityLevel.FATAL, null).toString();
-	public static final String INVALID_GIVEN_LENGTH = new ValidatorResult("given", LENGTH_0_TO_XXX_MSG + "40", SeverityLevel.FATAL, null).toString();
+	public static final String INVALID_FAMILY_LENGTH = new ValidatorResult(PersonContributorDao.FAMILY, LENGTH_1_TO_XXX_MSG + "40", SeverityLevel.FATAL, null).toString();
+	public static final String INVALID_GIVEN_LENGTH = new ValidatorResult(PersonContributorDao.GIVEN, LENGTH_0_TO_XXX_MSG + "40", SeverityLevel.FATAL, null).toString();
 	public static final String INVALID_SUFFIX_LENGTH = new ValidatorResult("suffix", LENGTH_0_TO_XXX_MSG + "40", SeverityLevel.FATAL, null).toString();
 	public static final String INVALID_EMAIL_LENGTH = new ValidatorResult("email", LENGTH_0_TO_XXX_MSG + "400", SeverityLevel.FATAL, null).toString();
 

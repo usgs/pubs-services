@@ -6,7 +6,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -20,16 +19,13 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.web.HttpMediaTypeNotSupportedException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.context.request.WebRequest;
 
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
@@ -96,8 +92,8 @@ public class MvcServiceTest {
 		assertEquals(contributingOffice, filters.get(PublicationDao.CONTRIBUTING_OFFICE));
 		assertTrue(filters.containsKey(PublicationDao.CONTRIBUTOR));
 		assertEquals("rebecca% and b.% and carvin% and c2%", filters.get(PublicationDao.CONTRIBUTOR));
-		assertTrue(filters.containsKey(PublicationDao.ORCID));
-		assertEquals(orcid, filters.get(PublicationDao.ORCID));
+		assertTrue(filters.containsKey(PersonContributorDao.ORCID));
+		assertEquals(orcid, filters.get(PersonContributorDao.ORCID));
 		assertTrue(filters.containsKey(PublicationDao.END_YEAR));
 		assertEquals(endYear, filters.get(PublicationDao.END_YEAR));
 		assertTrue(filters.containsKey(PwPublicationDao.G));
@@ -291,39 +287,6 @@ public class MvcServiceTest {
 		assertTrue(filters.containsKey(MpPublicationDao.SEARCH_TERMS));
 		q = (String) filters.get(PublicationDao.Q);
 		assertEquals("$turtles and $loggerhead", q);
-	}
-
-	@Test
-	public void handleUncaughtExceptionTest() throws IOException {
-		HttpServletResponse response = new MockHttpServletResponse();
-		assertEquals("Something bad happened. Contact us with Reference Number: ",
-				testMvcService.handleUncaughtException(new RuntimeException(), request, response).substring(0, 58));
-		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
-
-		response = new MockHttpServletResponse();
-		assertEquals("You are not authorized to perform this action.",
-				testMvcService.handleUncaughtException(new AccessDeniedException("haha"), request, response));
-		assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus());
-
-		response = new MockHttpServletResponse();
-		assertEquals("Required String parameter 'parm' is not present",
-				testMvcService.handleUncaughtException(new MissingServletRequestParameterException("parm", "String"), request, response));
-		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
-
-		response = new MockHttpServletResponse();
-		assertEquals("no way",
-				testMvcService.handleUncaughtException(new HttpMediaTypeNotSupportedException("no way"), request, response));
-		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
-
-		response = new MockHttpServletResponse();
-		assertEquals("ok to see",
-				testMvcService.handleUncaughtException(new HttpMessageNotReadableException("ok to see\nhide this\nand this"), request, response));
-		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
-
-		response = new MockHttpServletResponse();
-		assertEquals("Some123$Mes\tsage!!.",
-				testMvcService.handleUncaughtException(new HttpMessageNotReadableException("Some123$Mes\tsage!!."), request, response));
-		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
 	}
 
 	@Test

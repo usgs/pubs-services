@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="pwStore">
+
+    <resultMap id="result" type="PwStore" extends="base.result">
+        <id property="id" column="pw_store_id" />
+        <result property="publicationId" column="publication_id" />
+        <result property="store" column="store" />
+        <result property="available" column="available" />
+        <result property="price" column="price" />
+    </resultMap>
+
+    <sql id="cols">
+        pw_store_id, publication_id, rank, store, available, price,
+        <include refid="base.auditCols"/>
+    </sql>
+
+    <sql id="baseSelect">
+        select <include refid="cols"/>
+          from publication_store
+    </sql>
+
+    <select id="getByPublication" parameterType="Integer" resultMap="result">
+        <include refid="baseSelect"/>
+         where publication_id = #{value,jdbcType=NUMERIC}
+    </select>
+</mapper>

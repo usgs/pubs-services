@@ -13,7 +13,7 @@
 		<result property="chorus.publicationDate" column="chrs_publication_date"/>
 		<result property="chorus.auditedOn" column="chrs_audited_on"/>
 		<result property="chorus.pblcllyAccessDate" column="chrs_pblclly_access_date"/>
-        <collection property="stores" column="publication_id" select="affiliation.getByContributor"/>
+        <collection property="stores" column="publication_id" select="pwStore.getByPublication"/>
 	</resultMap>
 
 	<sql id="cols">

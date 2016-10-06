@@ -3,8 +3,7 @@
 
 <mapper namespace="pwStore">
 
-    <resultMap id="result" type="PwStore" extends="base.result">
-        <id property="id" column="pw_store_id" />
+    <resultMap id="result" type="PwStore">
         <result property="publicationId" column="publication_id" />
         <result property="store" column="store" />
         <result property="available" column="available" />
@@ -12,13 +11,12 @@
     </resultMap>
 
     <sql id="cols">
-        pw_store_id, publication_id, rank, store, available, price,
-        <include refid="base.auditCols"/>
+        publication_id, rank, store, available, price
     </sql>
 
     <sql id="baseSelect">
         select <include refid="cols"/>
-          from publication_store
+          from pw_publication_store
     </sql>
 
     <select id="getByPublication" parameterType="Integer" resultMap="result">

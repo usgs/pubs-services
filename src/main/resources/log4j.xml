@@ -13,66 +13,70 @@
 	<appender name="appLog" class="org.apache.log4j.DailyRollingFileAppender">
 		<param name="File" value="${catalina.base}/logs/pubs-services.log" />
 		<param name="Append" value="true" />
-		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'"/>
+		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{ISO8601} - %t %p (%C.java:%L) %M - %m%n" />
 		</layout>
 	</appender>
 
 	<category name="gov.usgs">
-		<level value="DEBUG"/>
+		<level value="INFO" />
 	</category>
 
 	<category name="java.sql">
-		<level value="WARN"/> 
+		<level value="INFO" /> 
 	</category>
 
 	<category name="org.apache.activemq">
-		<level value="WARN"/>
+		<level value="INFO" />
 	</category>
 
 	<category name="org.apache.ibatis">
-		<level value="WARN"/>
+		<level value="INFO" />
 	</category>
 
 	<category name="org.hibernate">
-		<level value="WARN"/>
+		<level value="INFO" />
 	</category>
 
 	<category name="org.mybatis">
-		<level value="WARN"/>
+		<level value="INFO" />
 	</category>
 
 	<category name="org.springframework">
-		<level value="WARN"/>
+		<level value="INFO" />
 	</category>
 
 	<category name="org.springframework.jdbc">
-		<level value="WARN"/>
+		<level value="INFO" />
+	</category>
+
+	<category name="org.springframework.jms">
+		<level value="OFF" />
 	</category>
 
 	<category name="org.springframework.security">
-		<level value="WARN"/>
+		<level value="INFO" />
 	</category>
 
 	<category name="org.springframework.transaction">
-		<level value="WARN"/>
+		<level value="INFO" />
 	</category>
 
 	<category name="org.springframework.web">
-		<level value="WARN"/>
+		<level value="INFO" />
 	</category>
 
 	<category name="springfox.documentation">
-		<level value="WARN"/>
+		<level value="INFO" />
 	</category>
 
 	<category name="springfox">
-		<level value="INFO"/> 
+		<level value="INFO" /> 
 	</category>
 
 	<root>
-		<level value="DEBUG"/>
+		<level value="INFO" />
 		<appender-ref ref="myconsole" />
 		<appender-ref ref="appLog" />
 	</root>

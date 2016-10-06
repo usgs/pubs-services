@@ -5,13 +5,13 @@
 
     <resultMap id="result" type="PwStore">
         <result property="publicationId" column="publication_id" />
-        <result property="store" column="store" />
+        <result property="store" column="store_url" />
         <result property="available" column="available" />
         <result property="price" column="price" />
     </resultMap>
 
     <sql id="cols">
-        publication_id, store, available, price
+        publication_id, store_url, available, price
     </sql>
 
     <sql id="baseSelect">

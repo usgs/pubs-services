@@ -11,7 +11,7 @@
     </resultMap>
 
     <sql id="cols">
-        publication_id, rank, store, available, price
+        publication_id, store, available, price
     </sql>
 
     <sql id="baseSelect">

@@ -116,7 +116,7 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 		filters.put(PersonContributorDao.IPDS_CONTRIBUTOR_ID, 1);
 		contributors = PersonContributor.getDao().getByMap(filters);
 		assertEquals(0, contributors.size());
-		filters.put(PersonContributorDao.ORCID, "http://orcid.org/0000-0000-0000-0001");
+		filters.put(PersonContributorDao.ORCID, new String[]{"http://orcid.org/0000-0000-0000-0001"});
 		contributors = PersonContributor.getDao().getByMap(filters);
 		assertEquals(0, contributors.size());
 	}

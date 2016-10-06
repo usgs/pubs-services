@@ -110,4 +110,46 @@ public class JndiConfig {
 		return (String) ctx.lookup("java:comp/env/pubs/warehouseEndpoint");
 	}
 
+	@Bean
+	public String displayProtocol() {
+		String displayProtocol = "https";
+		try {
+			String tmp = (String) ctx.lookup("java:comp/env/pubs/displayProtocol");
+			if (null != tmp) {
+				displayProtocol = tmp;
+			}
+		} catch (Exception e) {
+			LOG.info("Using default displayProtocol");
+		}
+		return displayProtocol;
+	}
+
+	@Bean
+	public String displayHost() throws NamingException {
+		String displayHost = "localhost:8443";
+		try {
+			String tmp = (String) ctx.lookup("java:comp/env/pubs/displayHost");
+			if (null != tmp) {
+				displayHost = tmp;
+			}
+		} catch (Exception e) {
+			LOG.info("Using default displayHost");
+		}
+		return displayHost;
+	}
+
+	@Bean
+	public String displayPath() throws NamingException {
+		String displayPath = "/pubs-services";
+		try {
+			String tmp = (String) ctx.lookup("java:comp/env/pubs/displayPath");
+			if (null != tmp) {
+				displayPath = tmp;
+			}
+		} catch (Exception e) {
+			LOG.info("Using default displayPath");
+		}
+		return displayPath;
+	}
+
 }

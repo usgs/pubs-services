@@ -29,6 +29,9 @@ public class PersonContributorDao extends ContributorDao implements IPersonContr
 
 	public static final String AFFILIATION_ID = "affiliationId";
 	public static final String CONTRIBUTOR_ID = "contributorId";
+	public static final String ORCID = "orcid";
+	public static final String GIVEN = "given";
+	public static final String FAMILY = "family";
 
 	@Transactional
 	@ISetDbContext

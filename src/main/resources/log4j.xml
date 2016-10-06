@@ -19,6 +19,33 @@
 		</layout>
 	</appender>
 
+<<<<<<< HEAD
+=======
+	<category name="org.springframework">
+		<level value="INFO"/>
+	</category>
+
+	<category name="org.springframework.web">
+		<level value="INFO"/>
+	</category>
+
+	<category name="org.springframework.security">
+		<level value="INFO"/>
+	</category>
+
+	<category name="org.springframework.jdbc">
+		<level value="INFO"/>
+	</category>
+
+	<category name="org.springframework.jms">
+		<level value="OFF"/>
+	</category>
+
+	<category name="org.springframework.transaction">
+		<level value="INFO"/>
+	</category>
+
+>>>>>>> branch 'master' of ssh://git@cida-eros-stash.er.usgs.gov:7999/~abramhall/pubs-services.git
 	<category name="gov.usgs">
 		<level value="DEBUG"/>
 	</category>
@@ -65,6 +92,10 @@
 
 	<category name="springfox.documentation">
 		<level value="WARN"/>
+	</category>
+
+	<category name="springfox">
+		<level value="INFO"/> 
 	</category>
 
 	<root>

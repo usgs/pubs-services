@@ -59,13 +59,13 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 		assertEquals(ContributorDaoTest.PERSON_CONTRIBUTOR_CNT, contributors.size());
 
 		Map<String, Object> filters = new HashMap<>();
-		filters.put("id", "1");
+		filters.put(PersonContributorDao.ID_SEARCH, "1");
 		contributors = PersonContributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(1, contributors.get(0).getId().intValue());
 
 		filters.clear();
-		filters.put("text", "con%");
+		filters.put(PersonContributorDao.TEXT_SEARCH, "con%");
 		contributors = PersonContributor.getDao().getByMap(filters);
 		assertEquals(2, contributors.size());
 		boolean got1 = false;
@@ -83,31 +83,40 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 		assertTrue("Got 4", got4);
 
 		filters.clear();
-		filters.put("given", "con");
+		filters.put(PersonContributorDao.GIVEN, "con");
 		contributors = PersonContributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(1, contributors.get(0).getId().intValue());
 
 		filters.clear();
-		filters.put("family", "con");
+		filters.put(PersonContributorDao.FAMILY, "con");
 		contributors = PersonContributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(1, contributors.get(0).getId().intValue());
 
 		filters.clear();
-		filters.put("family", "out");
+		filters.put(PersonContributorDao.ORCID, new String[]{"http://orcid.org/0000-0000-0000-0004"});
 		contributors = PersonContributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
-		filters.put("given", "out");
+		assertEquals(4, contributors.get(0).getId().intValue());
+
+		filters.clear();
+		filters.put(PersonContributorDao.FAMILY, "out");
 		contributors = PersonContributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
-		filters.put("text", "out%");
+		filters.put(PersonContributorDao.GIVEN, "out");
 		contributors = PersonContributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
-		filters.put("id", 3);
+		filters.put(PersonContributorDao.TEXT_SEARCH, "out%");
 		contributors = PersonContributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
-		filters.put("ipdsContributorId", 1);
+		filters.put(PersonContributorDao.ID_SEARCH, 3);
+		contributors = PersonContributor.getDao().getByMap(filters);
+		assertEquals(1, contributors.size());
+		filters.put(PersonContributorDao.IPDS_CONTRIBUTOR_ID, 1);
+		contributors = PersonContributor.getDao().getByMap(filters);
+		assertEquals(0, contributors.size());
+		filters.put(PersonContributorDao.ORCID, "http://orcid.org/0000-0000-0000-0001");
 		contributors = PersonContributor.getDao().getByMap(filters);
 		assertEquals(0, contributors.size());
 	}
@@ -165,8 +174,8 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 	@Test
 	public void getObjectCount() {
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put(AffiliationDao.ID_SEARCH, 1);
-		assertEquals("One contrib with affiliation id = 1", 1, PersonContributor.getDao().getObjectCount(params).intValue());
+		params.put(PersonContributorDao.ID_SEARCH, 1);
+		assertEquals("One contrib with id = 1", 1, PersonContributor.getDao().getObjectCount(params).intValue());
 	}
 
 	public static PersonContributor<?> buildAPerson(final Integer personId, final String type) {

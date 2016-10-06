@@ -72,7 +72,7 @@ public class MybatisConfig {
 		config.setCallSettersOnNulls(true);
 		config.setCacheEnabled(false);
 		config.setLazyLoadingEnabled(true);
-		config.setAggressiveLazyLoading(true);
+		config.setAggressiveLazyLoading(false);
 		config.setMapUnderscoreToCamelCase(true);
 
 		registerTypeHandlers(config.getTypeHandlerRegistry());

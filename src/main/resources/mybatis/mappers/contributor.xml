@@ -111,7 +111,7 @@
             and is_corporation = #{corporation}
         </if>
         <if test="usgs != null">
-            and is_usgs = #{isUsgs}
+            and is_usgs = #{usgs}
         </if>
         <if test="orcid != null and orcid.length > 0">
             <foreach item="oid" collection="orcid" open="and (" separator="or" close=")">

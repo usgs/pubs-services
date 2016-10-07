@@ -181,7 +181,7 @@ public class IpdsBinding {
 		}
 		filters.put(PersonContributorDao.GIVEN, given);
 		filters.put(PersonContributorDao.FAMILY, family);
-		filters.put(PersonContributorDao.IS_USGS, 'N');
+		filters.put(PersonContributorDao.USGS, false);
 		List<Contributor<?>> people = OutsideContributor.getDao().getByMap(filters);
 		if (people.size() > 1) {
 			LOG.warn("Multiple OutsideContributors found for: " + family + ", " + given);
@@ -239,6 +239,7 @@ public class IpdsBinding {
 		Map<String, Object> filters = new HashMap<>();
 
 		filters.put(PersonContributorDao.IPDS_CONTRIBUTOR_ID, ipdsContributorId);
+		filters.put(PersonContributorDao.USGS, true);
 		List<Contributor<?>> people = UsgsContributor.getDao().getByMap(filters);
 		if (people.isEmpty()) {
 			person = (UsgsContributor) createUsgsContributor(element, ipdsContributorId);

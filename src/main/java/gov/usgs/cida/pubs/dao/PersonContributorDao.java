@@ -32,7 +32,7 @@ public class PersonContributorDao extends ContributorDao implements IPersonContr
 	public static final String ORCID = "orcid";
 	public static final String GIVEN = "given";
 	public static final String FAMILY = "family";
-	public static final String IS_USGS = "isUsgs";
+	public static final String USGS = "usgs";
 
 	@Transactional
 	@ISetDbContext

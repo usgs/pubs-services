@@ -181,6 +181,7 @@ public class IpdsBinding {
 		}
 		filters.put(PersonContributorDao.GIVEN, given);
 		filters.put(PersonContributorDao.FAMILY, family);
+		filters.put(PersonContributorDao.USGS, false);
 		List<Contributor<?>> people = OutsideContributor.getDao().getByMap(filters);
 		if (people.size() > 1) {
 			LOG.warn("Multiple OutsideContributors found for: " + family + ", " + given);
@@ -206,19 +207,21 @@ public class IpdsBinding {
 
 	protected OutsideAffiliation getOrCreateOutsideAffiliation(final String name) {
 		OutsideAffiliation affiliation = null;
-		Map<String, Object> filters = new HashMap<>();
-		filters.put(BaseDao.TEXT_SEARCH, name);
-		List<? extends Affiliation<?>> affiliations = Affiliation.getDao().getByMap(filters);
-		if (affiliations.size() > 1) {
-			LOG.warn("Multiple OutsideAffiliation found for: " + name);
-		}
-		if (affiliations.isEmpty()) {
-			affiliation = createOutsideAffiliation(name);
-		} else {
-			for (Affiliation<?> a : affiliations) {
-				if (!a.isUsgs() && a.getText().equalsIgnoreCase(name)) {
-					affiliation = (OutsideAffiliation) a;
-					break;
+		if (null != name) {
+			Map<String, Object> filters = new HashMap<>();
+			filters.put(BaseDao.TEXT_SEARCH, name);
+			List<? extends Affiliation<?>> affiliations = Affiliation.getDao().getByMap(filters);
+			if (affiliations.size() > 1) {
+				LOG.warn("Multiple OutsideAffiliation found for: " + name);
+			}
+			if (affiliations.isEmpty()) {
+				affiliation = createOutsideAffiliation(name);
+			} else {
+				for (Affiliation<?> a : affiliations) {
+					if (!a.isUsgs() && a.getText().equalsIgnoreCase(name)) {
+						affiliation = (OutsideAffiliation) a;
+						break;
+					}
 				}
 			}
 		}
@@ -236,6 +239,7 @@ public class IpdsBinding {
 		Map<String, Object> filters = new HashMap<>();
 
 		filters.put(PersonContributorDao.IPDS_CONTRIBUTOR_ID, ipdsContributorId);
+		filters.put(PersonContributorDao.USGS, true);
 		List<Contributor<?>> people = UsgsContributor.getDao().getByMap(filters);
 		if (people.isEmpty()) {
 			person = (UsgsContributor) createUsgsContributor(element, ipdsContributorId);

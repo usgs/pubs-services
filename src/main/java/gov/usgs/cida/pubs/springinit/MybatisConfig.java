@@ -40,6 +40,7 @@ import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationContributor;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationCostCenter;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationLink;
+import gov.usgs.cida.pubs.domain.pw.PwStore;
 
 import javax.sql.DataSource;
 
@@ -107,6 +108,7 @@ public class MybatisConfig {
 		registry.registerAlias("pwPublicationContributor", PwPublicationContributor.class);
 		registry.registerAlias("pwPublicationCostCenter", PwPublicationCostCenter.class);
 		registry.registerAlias("pwPublicationLink", PwPublicationLink.class);
+		registry.registerAlias("pwStore", PwStore.class);
 
 		registry.registerAlias("affiliation", Affiliation.class);
 		registry.registerAlias("contributor", Contributor.class);

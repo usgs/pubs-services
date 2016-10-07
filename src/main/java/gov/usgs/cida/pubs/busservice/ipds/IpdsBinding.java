@@ -224,7 +224,7 @@ public class IpdsBinding {
 					}
 				}
 			}
-		}	
+		}
 		return affiliation;
 	}
 

@@ -776,7 +776,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	@JsonProperty("contributors")
 	@JsonView(View.PW.class)
 	public Map<String, Collection<PublicationContributor<?>>> getContributorsToMap() {
-		if (null != contributors && !contributors.isEmpty()) {
+		if (null != getContributors() && !getContributors().isEmpty()) {
 			Map<String, Collection<PublicationContributor<?>>> rtn = new HashMap<>();
 			for (Iterator<PublicationContributor<?>> i = contributors.iterator(); i.hasNext();) {
 				PublicationContributor<?> contributor = i.next();

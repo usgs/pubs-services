@@ -53,6 +53,17 @@ public class IpdsOutsideContributorService {
 		return contributor;
 	}
 
+	private Map<String, Object> getSearchFilters(final Element element) {
+		Map<String, Object> filters = new HashMap<>();
+		
+		String[] familyGiven = getContributorName(element);
+		
+		filters.put(PersonContributorDao.FAMILY, familyGiven[0]);
+		filters.put(PersonContributorDao.GIVEN, familyGiven[1]);
+		filters.put(PersonContributorDao.USGS, false);
+		return filters;
+	}
+
 	public OutsideContributor createContributor(final Element element) {
 		OutsideContributor contributor = new OutsideContributor();
 		String[] familyGiven = getContributorName(element);
@@ -68,17 +79,6 @@ public class IpdsOutsideContributorService {
 		}
 		contributor.getAffiliations().add(outsideAffiliation);
 		return contributor;
-	}
-
-	private Map<String, Object> getSearchFilters(final Element element) {
-		Map<String, Object> filters = new HashMap<>();
-		
-		String[] familyGiven = getContributorName(element);
-		
-		filters.put(PersonContributorDao.FAMILY, familyGiven[0]);
-		filters.put(PersonContributorDao.GIVEN, familyGiven[1]);
-		filters.put(PersonContributorDao.USGS, false);
-		return filters;
 	}
 
 	private String[] getContributorName(final Element element) {

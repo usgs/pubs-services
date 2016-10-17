@@ -64,11 +64,11 @@ public class IpdsContributorService {
 					contributor = ipdsUsgsContributorService.createContributor(element);
 				} else {
 					String costCenterId = parser.getFirstNodeText(element, "d:CostCenterId");
-					CostCenter costCenter = ipdsCostCenterService.getCostCenter(costCenterId);
-					if (null == costCenter) {
-						costCenter = ipdsCostCenterService.createCostCenter(costCenterId);
-					}
-					if (null != costCenter) {
+					if (null != costCenterId) {
+						CostCenter costCenter = ipdsCostCenterService.getCostCenter(costCenterId);
+						if (null == costCenter) {
+							costCenter = ipdsCostCenterService.createCostCenter(costCenterId);
+						}
 						addAffiliation(contributor, costCenter);
 					}
 				}

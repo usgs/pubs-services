@@ -243,8 +243,6 @@ public class IpdsWsRequester {
 	public String getIpdsCostCenterXml() {
 		StringBuilder url = new StringBuilder(URL_PREFIX)
 		.append("CostCenters()");
-
 		return getIpdsXml(url.toString(), null);
 	}
-
 }

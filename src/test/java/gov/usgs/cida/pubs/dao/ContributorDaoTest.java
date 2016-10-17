@@ -218,7 +218,7 @@ public class ContributorDaoTest extends BaseSpringTest {
 		assertEquals("outer@gmail.com", outsideContributor.getEmail());
 	}
 
-	public static void assertContributor4(Contributor<?> contributor, Integer affiliationId) {
+	public static void assertContributor4(Contributor<?> contributor) {
 		assertEquals(4, contributor.getId().intValue());
 		assertTrue(contributor instanceof UsgsContributor);
 		UsgsContributor usgsContributor = (UsgsContributor) contributor;

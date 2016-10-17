@@ -1,34 +1,6 @@
 package gov.usgs.cida.pubs.busservice.ipds;
 
-import gov.usgs.cida.pubs.PubMap;
-import gov.usgs.cida.pubs.busservice.intfc.IBusService;
-import gov.usgs.cida.pubs.dao.BaseDao;
-import gov.usgs.cida.pubs.dao.PersonContributorDao;
-import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
-import gov.usgs.cida.pubs.domain.Affiliation;
-import gov.usgs.cida.pubs.domain.Contributor;
-import gov.usgs.cida.pubs.domain.ContributorType;
-import gov.usgs.cida.pubs.domain.CostCenter;
-import gov.usgs.cida.pubs.domain.LinkType;
-import gov.usgs.cida.pubs.domain.OutsideAffiliation;
-import gov.usgs.cida.pubs.domain.OutsideContributor;
-import gov.usgs.cida.pubs.domain.PersonContributor;
-import gov.usgs.cida.pubs.domain.PublicationContributor;
-import gov.usgs.cida.pubs.domain.PublicationLink;
-import gov.usgs.cida.pubs.domain.PublicationSeries;
-import gov.usgs.cida.pubs.domain.PublicationSubtype;
-import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
-import gov.usgs.cida.pubs.domain.UsgsContributor;
-import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
-import gov.usgs.cida.pubs.domain.ipds.IpdsPubTypeConv;
-import gov.usgs.cida.pubs.domain.ipds.PublicationMap;
-import gov.usgs.cida.pubs.domain.mp.MpPublication;
-import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
-import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
-
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,64 +10,51 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-/**
- * Note: when binding author this uses the AuthorsNameText and EditorsNameText names for IPDS 
- * and should be mapped to the same field in MyPubs. Whiles is technically a transform within
- * the binding - it felt like the correct location. Of course we could move this if seen fit.
- * 
- * @author David U
- *
- */
+import gov.usgs.cida.pubs.PubMap;
+import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
+import gov.usgs.cida.pubs.domain.ContributorType;
+import gov.usgs.cida.pubs.domain.CostCenter;
+import gov.usgs.cida.pubs.domain.LinkType;
+import gov.usgs.cida.pubs.domain.PublicationContributor;
+import gov.usgs.cida.pubs.domain.PublicationLink;
+import gov.usgs.cida.pubs.domain.PublicationSeries;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
+import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
+import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
+import gov.usgs.cida.pubs.domain.ipds.IpdsPubTypeConv;
+import gov.usgs.cida.pubs.domain.ipds.PublicationMap;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
+
 @Service
 public class IpdsBinding {
 
-	private static final Logger LOG = LoggerFactory.getLogger(IpdsBinding.class);
-
-	protected final IpdsWsRequester requester;
-	protected final IBusService<PersonContributor<?>> contributorBusService;
-	protected final IBusService<CostCenter> costCenterBusService;
-	protected final IBusService<OutsideAffiliation> outsideAffiliationBusService;
-
-	private DocumentBuilder builder;
+	private final IpdsParserService parser;
+	private final IpdsCostCenterService ipdsCostCenterService;
+	private final IpdsContributorService ipdsContributorService;
 
 	@Autowired
-	public IpdsBinding(final IpdsWsRequester requester,
-			@Qualifier("personContributorBusService")
-			final IBusService<PersonContributor<?>> contributorBusService,
-			@Qualifier("costCenterBusService")
-			final IBusService<CostCenter> costCenterBusService,
-			@Qualifier("outsideAffiliationBusService")
-			final IBusService<OutsideAffiliation> outsideAffiliationBusService) throws ParserConfigurationException {
-		this.requester = requester;
-		this.contributorBusService = contributorBusService;
-		this.costCenterBusService = costCenterBusService;
-		this.outsideAffiliationBusService = outsideAffiliationBusService;
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setNamespaceAware(false);
-		builder = factory.newDocumentBuilder();
+	public IpdsBinding(IpdsParserService parser, IpdsCostCenterService ipdsCostCenterService, IpdsContributorService ipdsContributorService) throws ParserConfigurationException {
+		this.parser = parser;
+		this.ipdsCostCenterService = ipdsCostCenterService;
+		this.ipdsContributorService = ipdsContributorService;
 	}
 
 	public PublicationMap bindNotes(String notesXml, Set<String> tagsOfInterest) throws SAXException, IOException {
 		PublicationMap notes = new PublicationMap();
 		if (null != tagsOfInterest) {
-			Document doc= makeDocument(notesXml);
+			Document doc = parser.makeDocument(notesXml);
 
 			for (String tagName : tagsOfInterest) {
 				StringBuilder valueText = new StringBuilder();
@@ -119,11 +78,11 @@ public class IpdsBinding {
 	public Collection<PublicationContributor<?>> bindContributors(String contributorsXml) throws SAXException, IOException {
 		List<MpPublicationContributor> authors = new ArrayList<>();
 		List<MpPublicationContributor> editors = new ArrayList<>();
-		Document doc = makeDocument(contributorsXml);
+		Document doc = parser.makeDocument(contributorsXml);
 
 		NodeList entries = doc.getElementsByTagName("m:properties");
 		for (int n=0; n<entries.getLength(); n++) {
-			MpPublicationContributor pubContributor = buildPublicationContributor(entries.item(n));
+			MpPublicationContributor pubContributor = ipdsContributorService.buildPublicationContributor(entries.item(n));
 			if (ContributorType.AUTHORS.equals(pubContributor.getContributorType().getId())) {
 				authors.add(pubContributor);
 			} else {
@@ -135,198 +94,6 @@ public class IpdsBinding {
 		pubContributors.addAll(fixRanks(authors));
 		pubContributors.addAll(fixRanks(editors));
 		return pubContributors;
-	}
-
-	protected MpPublicationContributor buildPublicationContributor(final Node entry) throws SAXException, IOException {
-		MpPublicationContributor rtn = new MpPublicationContributor();
-		LOG.debug("\nCurrent Element :" + entry.getNodeName());
-
-		if (entry.getNodeType() == Node.ELEMENT_NODE) {
-			Element element = (Element) entry;
-			Contributor<?> person;
-			String ipdsContributorId = getFirstNodeText(element, "d:AuthorNameId");
-			if (StringUtils.isBlank(ipdsContributorId)) {
-				person = getOrCreateOutsideContributor(element);
-			} else {
-				person = getOrCreateUsgsContributor(element, ipdsContributorId);
-			}
-			rtn.setContributor(person);
-			if ("Author".equalsIgnoreCase(getFirstNodeText(element, "d:ContentType"))) {
-				rtn.setContributorType(ContributorType.getDao().getById(ContributorType.AUTHORS));
-			} else {
-				rtn.setContributorType(ContributorType.getDao().getById(ContributorType.EDITORS));
-			}
-			Integer rank = PubsUtilities.parseInteger(element.getElementsByTagName("d:Rank").item(0).getTextContent());
-			if (null == rank) {
-				rtn.setRank(1);
-			} else {
-				rtn.setRank(rank);
-			}
-		}
-		return rtn;
-	}
-
-	protected OutsideContributor getOrCreateOutsideContributor(final Element element) {
-		OutsideContributor person;
-		String family = null;
-		String given = null;
-		Map<String, Object> filters = new HashMap<>();
-		String contributorName = getFirstNodeText(element, "d:AuthorNameText");
-		String[] nameParts = contributorName.split(",");
-		if (0 < nameParts.length) {
-			family = nameParts[0].trim();
-		}
-		if (1 < nameParts.length) {
-			given = nameParts[1].trim();
-		}
-		filters.put(PersonContributorDao.GIVEN, given);
-		filters.put(PersonContributorDao.FAMILY, family);
-		filters.put(PersonContributorDao.USGS, false);
-		List<Contributor<?>> people = OutsideContributor.getDao().getByMap(filters);
-		if (people.size() > 1) {
-			LOG.warn("Multiple OutsideContributors found for: " + family + ", " + given);
-		}
-		if (people.isEmpty()) {
-			person = createOutsideContributor(element, family, given);
-		} else {
-			person = (OutsideContributor) people.get(0);
-		}
-		return person;
-	}
-
-	protected OutsideContributor createOutsideContributor(final Element element, final String family, final String given) {
-		OutsideContributor person = new OutsideContributor();
-		person.setFamily(family);
-		person.setGiven(given);
-		OutsideAffiliation outsideAffiliation = getOrCreateOutsideAffiliation(getFirstNodeText(element, "d:NonUSGSAffiliation"));
-		if (null != outsideAffiliation) {
-			person.getAffiliations().add(outsideAffiliation);
-		}
-		return (OutsideContributor) contributorBusService.createObject(person);
-	}
-
-	protected OutsideAffiliation getOrCreateOutsideAffiliation(final String name) {
-		OutsideAffiliation affiliation = null;
-		if (null != name) {
-			Map<String, Object> filters = new HashMap<>();
-			filters.put(BaseDao.TEXT_SEARCH, name);
-			List<? extends Affiliation<?>> affiliations = Affiliation.getDao().getByMap(filters);
-			if (affiliations.size() > 1) {
-				LOG.warn("Multiple OutsideAffiliation found for: " + name);
-			}
-			if (affiliations.isEmpty()) {
-				affiliation = createOutsideAffiliation(name);
-			} else {
-				for (Affiliation<?> a : affiliations) {
-					if (!a.isUsgs() && a.getText().equalsIgnoreCase(name)) {
-						affiliation = (OutsideAffiliation) a;
-						break;
-					}
-				}
-			}
-		}
-		return affiliation;
-	}
-
-	protected OutsideAffiliation createOutsideAffiliation(final String name) {
-		OutsideAffiliation affiliation = new OutsideAffiliation();
-		affiliation.setText(name);
-		return outsideAffiliationBusService.createObject(affiliation);
-	}
-
-	protected UsgsContributor getOrCreateUsgsContributor(final Element element, final String ipdsContributorId) throws SAXException, IOException {
-		UsgsContributor person;
-		Map<String, Object> filters = new HashMap<>();
-
-		filters.put(PersonContributorDao.IPDS_CONTRIBUTOR_ID, ipdsContributorId);
-		filters.put(PersonContributorDao.USGS, true);
-		List<Contributor<?>> people = UsgsContributor.getDao().getByMap(filters);
-		if (people.isEmpty()) {
-			person = (UsgsContributor) createUsgsContributor(element, ipdsContributorId);
-		} else {
-			person = (UsgsContributor) people.get(0);
-			CostCenter costCenter = getOrCreateCostCenter(element);
-			if (!person.getAffiliations().contains(costCenter)) {
-				person.getAffiliations().add(costCenter);
-				person = (UsgsContributor) contributorBusService.updateObject(person);
-			}
-		}
-		return person;
-	}
-
-	protected UsgsContributor createUsgsContributor(final Element element, final String ipdsContributorId) throws SAXException, IOException {
-		String contributorXml = requester.getContributor(ipdsContributorId);
-		UsgsContributor person = bindContributor(contributorXml);
-		CostCenter costCenter = getOrCreateCostCenter(element);
-		person.getAffiliations().add(costCenter);
-		return (UsgsContributor) contributorBusService.createObject(person);
-	}
-
-	protected UsgsContributor bindContributor(String contributorXml) throws SAXException, IOException {
-		UsgsContributor contributor = new UsgsContributor();
-		Document doc = makeDocument(contributorXml);
-
-		contributor.setIpdsContributorId(PubsUtilities.parseInteger(getFirstNodeText(doc.getDocumentElement(), "d:Id")));
-		contributor.setFamily(getFirstNodeText(doc.getDocumentElement(), "d:LastName"));
-		contributor.setGiven(getFirstNodeText(doc.getDocumentElement(), "d:FirstName"));
-		contributor.setEmail(getFirstNodeText(doc.getDocumentElement(), "d:WorkEMail"));
-
-		return contributor;
-	}
-
-	public CostCenter getOrCreateCostCenter(final Element element) throws SAXException, IOException {
-		return getOrCreateCostCenter(getFirstNodeText(element, "d:CostCenterId"));
-	}
-
-	public CostCenter getOrCreateCostCenter(final PubMap inPub) throws SAXException, IOException {
-		return getOrCreateCostCenter(getStringValue(inPub, IpdsMessageLog.COSTCENTERID));
-	}
-
-	protected CostCenter getOrCreateCostCenter(final String ipdsId) throws SAXException, IOException {
-		if (StringUtils.isBlank(ipdsId)) {
-			return null;
-		} else {
-			CostCenter costCenter;
-			Map<String, Object> filters = new HashMap<>();
-			filters.put("ipdsId", ipdsId);
-			List<CostCenter> costCenters = CostCenter.getDao().getByMap(filters);
-			if (costCenters.size() > 1) {
-				LOG.warn("Multiple costCenters found for ipdsId: " + ipdsId);
-			}
-			if (costCenters.isEmpty()) {
-				costCenter = createCostCenter(ipdsId);
-			} else {
-				costCenter = costCenters.get(0);
-			}
-			return costCenter;
-		}
-	}
-
-	protected CostCenter createCostCenter(final String ipdsId) throws SAXException, IOException {
-		String costCenterXml = requester.getCostCenter(ipdsId, ipdsId);
-		Document doc = makeDocument(costCenterXml);
-		CostCenter affiliation = new CostCenter();
-		affiliation.setText(getFirstNodeText(doc.getDocumentElement(), "d:Name"));
-		affiliation.setIpdsId(ipdsId);
-		return costCenterBusService.createObject(affiliation);
-	}
-
-	protected Document makeDocument(final String xmlStr) throws SAXException, IOException {
-		if (StringUtils.isNotBlank(xmlStr)) {
-			return builder.parse(new InputSource(new StringReader(xmlStr)));
-		}
-		return null;
-	}
-
-	protected String getFirstNodeText(final Element element, final String tagName) {
-		String rtn = null;
-		if (null != element) {
-			NodeList nodes = element.getElementsByTagName(tagName);
-			if (0 < nodes.getLength()) {
-				rtn = element.getElementsByTagName(tagName).item(0).getTextContent().trim();
-			}
-		}
-		return rtn;
 	}
 
 	protected Collection<MpPublicationContributor> fixRanks(final List<MpPublicationContributor> contributors) {
@@ -344,7 +111,6 @@ public class IpdsBinding {
 				fixMe.setRank(i);
 			}
 		}
-
 		return contributors;
 	}
 
@@ -476,6 +242,15 @@ public class IpdsBinding {
 			}
 		}
 		return rtn;
+	}
+	
+	public CostCenter getOrCreateCostCenter(final PubMap inPub) throws SAXException, IOException {
+		String ipdsId = getStringValue(inPub, IpdsMessageLog.COSTCENTERID);
+		CostCenter costCenter = ipdsCostCenterService.getCostCenter(ipdsId);
+		if (null == costCenter) {
+			costCenter = ipdsCostCenterService.createCostCenter(ipdsId);
+		}
+		return costCenter;
 	}
 
 	protected PublicationSeries getSeriesTitle(PublicationSubtype pubSubtype, PubMap inPub) {

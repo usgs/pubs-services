@@ -1,6 +1,7 @@
 package gov.usgs.cida.pubs.busservice.ipds;
 
 import gov.usgs.cida.pubs.busservice.intfc.IIpdsService;
+import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
@@ -20,29 +21,20 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-/**
- * @author drsteini
- *
- */
 @Service
 public class CostCenterMessageService implements IIpdsService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CostCenterMessageService.class);
 
-	private final IpdsBinding ipdsBinding;
-
+	private final IpdsParserService parser;
 	private final IpdsWsRequester requester;
 
 	@Autowired
-	CostCenterMessageService(final IpdsBinding ipdsBinding, final IpdsWsRequester requester) {
-		this.ipdsBinding = ipdsBinding;
+	CostCenterMessageService(final IpdsParserService parser, final IpdsWsRequester requester) {
+		this.parser = parser;
 		this.requester = requester;
 	}
 
-	/** {@inheritDoc}
-	 * @throws Exception 
-	 * @see gov.usgs.cida.mypubsJMS.service.intfc.IService#processIpdsMessage(java.lang.Object)
-	 */
 	@Override
 	@Transactional
 	public void processIpdsMessage(final String nothing) throws Exception {
@@ -65,7 +57,7 @@ public class CostCenterMessageService implements IIpdsService {
 		int errors = 0;
 
 		try {
-			Document doc = ipdsBinding.makeDocument(log);
+			Document doc = parser.makeDocument(log);
 
 			NodeList entries = doc.getElementsByTagName("m:properties");
 			for (int n=0; n<entries.getLength(); n++) {
@@ -74,10 +66,10 @@ public class CostCenterMessageService implements IIpdsService {
 					CostCenter costCenter = new CostCenter();
 					//This is really all we should ever get..
 					Element element = (Element) entries.item(n);
-					String ipdsId = ipdsBinding.getFirstNodeText(element, "d:Id");
-					String name = ipdsBinding.getFirstNodeText(element, "d:Name");
+					String ipdsId = parser.getFirstNodeText(element, "d:Id");
+					String name = parser.getFirstNodeText(element, "d:Name");
 					Map<String, Object> filters = new HashMap<>();
-					filters.put("ipdsId", ipdsId);
+					filters.put(PublicationDao.IPDS_ID, ipdsId);
 					List<CostCenter> costCenters = CostCenter.getDao().getByMap(filters);
 					//TODO what if we get more than one?
 					if (costCenters.isEmpty()) {

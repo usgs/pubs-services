@@ -87,7 +87,7 @@ public abstract class BaseSpringTest {
 	public static final Log LOG = LogFactory.getLog(BaseSpringTest.class);
 
 	@Before
-	public void setup() {
+	public void baseSpringSetup() {
 		SecurityContextHolder.clearContext();
 	}
 	

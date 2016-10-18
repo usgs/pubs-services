@@ -84,7 +84,7 @@ public class CostCenterDaoTest extends BaseSpringTest {
 		filters.put(CostCenterDao.ID_SEARCH, "1");
 		filters.put(CostCenterDao.TEXT_SEARCH, "affil");
 		filters.put(CostCenterDao.ACTIVE_SEARCH, true);
-		filters.put(CostCenterDao.IPDSID_SEARCH, "4");
+		filters.put(PublicationDao.IPDS_ID, "4");
 		costCenters = CostCenter.getDao().getByMap(filters);
 		assertEquals(1, costCenters.size());
 	}

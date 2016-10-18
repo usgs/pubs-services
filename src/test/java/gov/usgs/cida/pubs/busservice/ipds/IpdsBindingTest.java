@@ -1,35 +1,7 @@
 package gov.usgs.cida.pubs.busservice.ipds;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.IntegrationTest;
-import gov.usgs.cida.pubs.PubMap;
-import gov.usgs.cida.pubs.busservice.intfc.IBusService;
-import gov.usgs.cida.pubs.dao.AffiliationDaoTest;
-import gov.usgs.cida.pubs.dao.ContributorDaoTest;
-import gov.usgs.cida.pubs.dao.ipds.IpdsMessageLogDaoTest;
-import gov.usgs.cida.pubs.domain.Affiliation;
-import gov.usgs.cida.pubs.domain.Contributor;
-import gov.usgs.cida.pubs.domain.ContributorType;
-import gov.usgs.cida.pubs.domain.CostCenter;
-import gov.usgs.cida.pubs.domain.LinkType;
-import gov.usgs.cida.pubs.domain.OutsideAffiliation;
-import gov.usgs.cida.pubs.domain.OutsideContributor;
-import gov.usgs.cida.pubs.domain.PersonContributor;
-import gov.usgs.cida.pubs.domain.ProcessType;
-import gov.usgs.cida.pubs.domain.PublicationContributor;
-import gov.usgs.cida.pubs.domain.PublicationLink;
-import gov.usgs.cida.pubs.domain.PublicationSubtype;
-import gov.usgs.cida.pubs.domain.UsgsContributor;
-import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
-import gov.usgs.cida.pubs.domain.ipds.PublicationMap;
-import gov.usgs.cida.pubs.domain.mp.MpPublication;
-import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,21 +11,26 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
+
+import gov.usgs.cida.pubs.IntegrationTest;
+import gov.usgs.cida.pubs.PubMap;
+import gov.usgs.cida.pubs.dao.ipds.IpdsMessageLogDaoTest;
+import gov.usgs.cida.pubs.domain.LinkType;
+import gov.usgs.cida.pubs.domain.ProcessType;
+import gov.usgs.cida.pubs.domain.PublicationLink;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
+import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
+import gov.usgs.cida.pubs.domain.ipds.PublicationMap;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 
 @Category(IntegrationTest.class)
 @DatabaseSetups({
@@ -64,64 +41,25 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 	@DatabaseSetup("classpath:/testData/ipdsPubsTypeConv.xml"),
 	@DatabaseSetup("classpath:/testData/dataset.xml")
 })
-public class IpdsBindingTest extends BaseSpringTest {
+public class IpdsBindingTest extends BaseIpdsTest {
 
 	@Autowired
 	public String contributorsXml;
 
 	@Autowired
-	public String usgsContributorXml;
-
-	@Autowired
-	public String newOutsideContributorXml;
-
-	@Autowired
-	public String newOutsideContributorUsgsAffiliationXml;
-	
-	@Autowired
-	public String existingOutsideContributorXml;
-
-	@Autowired
-	public String costCenterXml;
-
-	@Autowired
 	public String notesXml;
 
 	@Autowired
-	@Qualifier("personContributorBusService")
-	public IBusService<PersonContributor<?>> contributorBusService;
+	private IpdsCostCenterService ipdsCostCenterService;
 
 	@Autowired
-	@Qualifier("costCenterBusService")
-	public IBusService<CostCenter> costCenterBusService;
+	private IpdsContributorService ipdsContributorService;
 
-	@Autowired
-	@Qualifier("outsideAffiliationBusService")
-	public IBusService<OutsideAffiliation> outsideAffiliationBusService;
-
-	@Mock
-	private IpdsWsRequester ipdsWsRequester;
-
-	public IpdsBinding binding;
+	private IpdsBinding binding;
 
 	@Before
 	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
-		binding = new IpdsBinding(ipdsWsRequester, contributorBusService, costCenterBusService, outsideAffiliationBusService);
-	}
-
-	@Test
-	public void makeDocumentTest() throws SAXException, IOException {
-		assertNull(binding.makeDocument(null));
-		assertNull(binding.makeDocument(""));
-		try {
-			binding.makeDocument("<root>");
-		} catch (Exception e) {
-			assertTrue(e instanceof SAXParseException);
-		}
-		Document doc = binding.makeDocument("<root/>");
-		assertNotNull(doc);
-		assertEquals(1, doc.getElementsByTagName("root").getLength());
+		binding = new IpdsBinding(ipdsParser, ipdsCostCenterService, ipdsContributorService);
 	}
 
 	@Test
@@ -184,172 +122,6 @@ public class IpdsBindingTest extends BaseSpringTest {
 	}
 
 	@Test
-	public void bindContributorTest() throws SAXException, IOException, ParserConfigurationException {
-		UsgsContributor person = binding.bindContributor(usgsContributorXml);
-		assertUsgsContributorXml(person);
-	}
-
-	@Test
-	public void getFirstNodeTextTest() throws SAXException, IOException {
-		Document d = binding.makeDocument("<root/>");
-		assertNull(binding.getFirstNodeText(null, null));
-		assertNull(binding.getFirstNodeText(d.getDocumentElement(), null));
-		assertNull(binding.getFirstNodeText(null, ""));
-
-		d = binding.makeDocument("<root><one>oneText</one><two>twoTextA</two><two>twoTextB</two></root>");
-		assertEquals("oneText", binding.getFirstNodeText(d.getDocumentElement(), "one"));
-		assertEquals("twoTextA", binding.getFirstNodeText(d.getDocumentElement(), "two"));
-		assertNull(binding.getFirstNodeText(d.getDocumentElement(), "three"));
-   }
-
-	@Test
-	public void createUsgsContributorTest() throws SAXException, IOException {
-		when(ipdsWsRequester.getContributor(anyString())).thenReturn(usgsContributorXml);
-		Document d = binding.makeDocument("<root><d:CostCenterId>1</d:CostCenterId></root>");
-		UsgsContributor contributor = binding.createUsgsContributor(d.getDocumentElement(), "123");
-		assertNotNull(contributor);
-		assertNotNull(contributor.getId());
-		assertUsgsContributorXml(contributor);
-		assertEquals("4", contributor.getAffiliations().toArray(new CostCenter[1])[0].getId().toString());
-	}
-
-	@Test
-	public void createNonUsgsContributor() throws SAXException, IOException {
-		Document d = binding.makeDocument(newOutsideContributorXml);
-		Contributor<?> contributor = binding.createOutsideContributor(d.getDocumentElement(), "ODoe", "Jane");
-		assertNotNull(contributor);
-		assertTrue(contributor instanceof OutsideContributor);
-		assertNotNull(contributor.getId());
-		assertNewOutsideContributorXml((OutsideContributor) contributor);
-	}
-
-	@Test
-	public void getOrCreateUsgsContributorTest() throws SAXException, IOException {
-		when(ipdsWsRequester.getContributor(anyString())).thenReturn(usgsContributorXml);
-		Document d = binding.makeDocument("<root><d:CostCenterId>1</d:CostCenterId></root>");
-		UsgsContributor contributor = binding.getOrCreateUsgsContributor(d.getDocumentElement(), "3");
-		//Don't change affiliation
-		ContributorDaoTest.assertContributor1(contributor);
-
-		contributor = binding.getOrCreateUsgsContributor(d.getDocumentElement(), "123");
-		assertNotNull(contributor);
-		assertNotNull(contributor.getId());
-		assertUsgsContributorXml(contributor);
-		assertEquals("4", contributor.getAffiliations().toArray(new CostCenter[1])[0].getId().toString());
-
-		contributor = binding.getOrCreateUsgsContributor(d.getDocumentElement(), "1");
-		ContributorDaoTest.assertContributor4(contributor, 4);
-	}
-
-	@Test
-	public void getOrCreateNonUsgsContributorTest() throws SAXException, IOException {
-		Document d = binding.makeDocument(existingOutsideContributorXml);
-		Contributor<?> contributor = binding.getOrCreateOutsideContributor(d.getDocumentElement());
-		ContributorDaoTest.assertContributor3(contributor);
-
-		d = binding.makeDocument(newOutsideContributorXml);
-		contributor = binding.getOrCreateOutsideContributor(d.getDocumentElement());
-		assertNotNull(contributor);
-		assertTrue(contributor instanceof OutsideContributor);
-		assertNotNull(contributor.getId());
-		assertNewOutsideContributorXml((OutsideContributor) contributor);
-		
-		
-		d = binding.makeDocument(newOutsideContributorUsgsAffiliationXml);
-		contributor = binding.getOrCreateOutsideContributor(d.getDocumentElement());
-		assertNotNull(contributor);
-		assertTrue(contributor instanceof OutsideContributor);
-		assertNotNull(contributor.getId());
-		assertNewOutsideContributorUsgsAffiliationXml((OutsideContributor) contributor);
-	}
-
-	@Test
-	public void getOrCreateOutsideAffiliationTest() {
-		//Get single
-		Affiliation<?> affiliation = binding.getOrCreateOutsideAffiliation("Outside Affiliation 1");
-		AffiliationDaoTest.assertAffiliation5(affiliation);
-
-		//New
-		affiliation = binding.getOrCreateOutsideAffiliation("Outside Test");
-		assertNewOutside(affiliation);
-		
-		//USGS
-		affiliation = binding.getOrCreateOutsideAffiliation("Affiliation Cost Center 1");
-		assertNull(affiliation);
-
-		//multiple&Mixed
-		affiliation = binding.getOrCreateOutsideAffiliation("Outside Affiliation");
-		assertNull(affiliation);
-	}
-
-	@Test
-	public void createOutsideAffiliationTest() {
-		Affiliation<?> affiliation = binding.getOrCreateOutsideAffiliation("Outside Test");
-		assertNewOutside(affiliation);
-	}
-
-	protected void assertNewOutside(Affiliation<?> affiliation) {
-		assertNotNull(affiliation.getId());
-		assertEquals("Outside Test", affiliation.getText());
-		assertTrue(affiliation.isActive());
-		assertFalse(affiliation.isUsgs());
-	}
-
-	@Test
-	public void getOrCreateCostCenterTest() throws SAXException, IOException {
-		when(ipdsWsRequester.getCostCenter(anyString(), anyString())).thenReturn(costCenterXml);
-		CostCenter affiliation = binding.getOrCreateCostCenter("4");
-		AffiliationDaoTest.assertAffiliation1(affiliation);
-
-		String ipdsId = String.valueOf(randomPositiveInt());
-		affiliation = binding.getOrCreateCostCenter(ipdsId);
-		assertNewUsgs(affiliation, ipdsId);
-	}
-
-	@Test
-	public void getOrCreateCostCenterCCTest() throws SAXException, IOException {
-		when(ipdsWsRequester.getCostCenter(anyString(), anyString())).thenReturn(costCenterXml);
-		PubMap pubMap = new PubMap();
-		pubMap.put(IpdsMessageLog.COSTCENTERID, "4");
-		CostCenter affiliation = binding.getOrCreateCostCenter(pubMap);
-		AffiliationDaoTest.assertAffiliation1(affiliation);
-
-		String ipdsId = String.valueOf(randomPositiveInt());
-		pubMap.put(IpdsMessageLog.COSTCENTERID, ipdsId);
-		affiliation = binding.getOrCreateCostCenter(pubMap);
-		assertNewUsgs(affiliation, ipdsId);
-	}
-
-	@Test
-	public void getOrCreateUsgsAffiliationTest() throws SAXException, IOException {
-		when(ipdsWsRequester.getCostCenter(anyString(), anyString())).thenReturn(costCenterXml);
-		Document d = binding.makeDocument("<root><d:CostCenterId>4</d:CostCenterId></root>");
-		CostCenter affiliation = binding.getOrCreateCostCenter(d.getDocumentElement());
-		AffiliationDaoTest.assertAffiliation1(affiliation);
-
-		String ipdsId = String.valueOf(randomPositiveInt());
-		d = binding.makeDocument("<root><d:CostCenterId>" + ipdsId + "</d:CostCenterId></root>");
-		affiliation = binding.getOrCreateCostCenter(d.getDocumentElement());
-		assertNewUsgs(affiliation, ipdsId);
-	}
-
-	@Test
-	public void createCostCenterTest() throws SAXException, IOException {
-		when(ipdsWsRequester.getCostCenter(anyString(), anyString())).thenReturn(costCenterXml);
-		String ipdsId = String.valueOf(randomPositiveInt());
-		CostCenter affiliation = binding.createCostCenter(ipdsId);
-		assertNewUsgs(affiliation, ipdsId);
-	}
-
-	protected void assertNewUsgs(CostCenter affiliation, String ipdsId) {
-		assertNotNull(affiliation.getId());
-		assertEquals("CostCenter Test", affiliation.getText());
-		assertTrue(affiliation.isActive());
-		assertTrue(affiliation.isUsgs());
-		assertEquals(ipdsId, ((CostCenter) affiliation).getIpdsId().toString());
-	}
-
-	@Test
 	public void fixRanksTest() {
 		List<MpPublicationContributor> contributors = new ArrayList<>();
 		MpPublicationContributor contributorA = new MpPublicationContributor();
@@ -380,46 +152,6 @@ public class IpdsBindingTest extends BaseSpringTest {
 		for (int i=0; i<fixed.size(); i++) {
 			assertEquals(i+1, ((MpPublicationContributor) fixed.toArray()[i]).getRank().intValue());
 		}
-	}
-
-	@Test
-	public void bindContributorsTest() throws SAXException, IOException {
-		when(ipdsWsRequester.getCostCenter(anyString(), anyString())).thenReturn(costCenterXml);
-
-		Collection<PublicationContributor<?>> contributors = binding.bindContributors(contributorsXml);
-		assertEquals(4, contributors.size());
-		MpPublicationContributor authorA = (MpPublicationContributor) contributors.toArray()[0];
-		assertEquals(1, authorA.getContributor().getId().intValue());
-		assertEquals(ContributorType.AUTHORS, authorA.getContributorType().getId());
-		assertEquals(2, authorA.getRank().intValue());
-		MpPublicationContributor authorB = (MpPublicationContributor) contributors.toArray()[1];
-		assertEquals(3, authorB.getContributor().getId().intValue());
-		assertEquals(ContributorType.AUTHORS, authorB.getContributorType().getId());
-		assertEquals(3, authorB.getRank().intValue());
-		MpPublicationContributor editorA = (MpPublicationContributor) contributors.toArray()[2];
-		assertEquals(3, editorA.getContributor().getId().intValue());
-		assertEquals(ContributorType.EDITORS, editorA.getContributorType().getId());
-		assertEquals(1, editorA.getRank().intValue());
-		MpPublicationContributor editorB = (MpPublicationContributor) contributors.toArray()[3];
-		assertEquals(1, editorB.getContributor().getId().intValue());
-		assertEquals(ContributorType.EDITORS, editorB.getContributorType().getId());
-		assertEquals(2, editorB.getRank().intValue());
-	}
-
-	@Test
-	public void getStringValueTest() {
-		PubMap pubMap = new PubMap();
-		assertNull(binding.getStringValue(null, null));
-		assertNull(binding.getStringValue(pubMap, null));
-		assertNull(binding.getStringValue(pubMap, "xx"));
-		assertNull(binding.getStringValue(pubMap, "xx"));
-		assertNull(binding.getStringValue(null, "xx"));
-
-		pubMap.put("xxx", "  owiytuiwruto   ");
-		assertEquals("owiytuiwruto", binding.getStringValue(pubMap, "xxx"));
-
-		pubMap.put("xxx", "");
-		assertNull(binding.getStringValue(pubMap, "xxx"));
 	}
 
 	@Test
@@ -482,28 +214,23 @@ public class IpdsBindingTest extends BaseSpringTest {
 		assertPub4(pub4);
 	}
 
-	protected void assertUsgsContributorXml(UsgsContributor person) {
-		assertEquals(123, person.getIpdsContributorId().intValue());
-		assertEquals("Doe", person.getFamily());
-		assertEquals("Jane", person.getGiven());
-		assertEquals("jmdoe@usgs.gov", person.getEmail());
+	@Test
+	public void getStringValueTest() {
+		PubMap pubMap = new PubMap();
+		assertNull(binding.getStringValue(null, null));
+		assertNull(binding.getStringValue(pubMap, null));
+		assertNull(binding.getStringValue(pubMap, "xx"));
+		assertNull(binding.getStringValue(pubMap, "xx"));
+		assertNull(binding.getStringValue(null, "xx"));
+
+		pubMap.put("xxx", "  owiytuiwruto   ");
+		assertEquals("owiytuiwruto", binding.getStringValue(pubMap, "xxx"));
+
+		pubMap.put("xxx", "");
+		assertNull(binding.getStringValue(pubMap, "xxx"));
 	}
 
-	protected void assertNewOutsideContributorXml(OutsideContributor contributor) {
-		assertEquals("ODoe", contributor.getFamily());
-		assertEquals("Jane", contributor.getGiven());
-		assertNull(contributor.getEmail());
-		assertEquals("7", contributor.getAffiliations().toArray(new OutsideAffiliation[1])[0].getId().toString());
-	}
-
-	protected void assertNewOutsideContributorUsgsAffiliationXml(OutsideContributor contributor) {
-		assertEquals("ODoul", contributor.getFamily());
-		assertEquals("Jane", contributor.getGiven());
-		assertNull(contributor.getEmail());
-		assertTrue(contributor.getAffiliations().isEmpty());
-	}
-
-   protected void assertPub1(MpPublication pub) {
+	protected void assertPub1(MpPublication pub) {
 		assertPubCommon(pub);
 
 		assertEquals(18, pub.getPublicationType().getId().intValue());
@@ -617,7 +344,7 @@ public class IpdsBindingTest extends BaseSpringTest {
 		assertEquals(4, pub.getPublishingServiceCenter().getId().intValue());
 	}
 
-	protected void assertPub4(MpPublication pub) {
+	private void assertPub4(MpPublication pub) {
 		assertPubCommon(pub);
 
 		assertEquals(21, pub.getPublicationType().getId().intValue());
@@ -655,7 +382,7 @@ public class IpdsBindingTest extends BaseSpringTest {
 		assertEquals(5, pub.getPublishingServiceCenter().getId().intValue());
 	}
 
-	protected void assertPubCommon(MpPublication pub) {
+	private void assertPubCommon(MpPublication pub) {
 		assertNotNull(pub);
 
 		assertNull(pub.getId());

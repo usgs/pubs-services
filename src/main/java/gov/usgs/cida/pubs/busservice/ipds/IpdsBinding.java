@@ -246,9 +246,12 @@ public class IpdsBinding {
 	
 	public CostCenter getOrCreateCostCenter(final PubMap inPub) throws SAXException, IOException {
 		String ipdsId = getStringValue(inPub, IpdsMessageLog.COSTCENTERID);
-		CostCenter costCenter = ipdsCostCenterService.getCostCenter(ipdsId);
-		if (null == costCenter) {
-			costCenter = ipdsCostCenterService.createCostCenter(ipdsId);
+		CostCenter costCenter = null;
+		if (null != ipdsId) {
+			costCenter = ipdsCostCenterService.getCostCenter(ipdsId);
+			if (null == costCenter) {
+				costCenter = ipdsCostCenterService.createCostCenter(ipdsId);
+			}
 		}
 		return costCenter;
 	}

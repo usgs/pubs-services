@@ -38,9 +38,11 @@ public class IpdsParserServiceTest extends BaseIpdsTest {
 		assertNull(ipdsParser.getFirstNodeText(d.getDocumentElement(), null));
 		assertNull(ipdsParser.getFirstNodeText(null, ""));
 
-		d = ipdsParser.makeDocument("<root><one>oneText</one><two>twoTextA</two><two>twoTextB</two></root>");
+		d = ipdsParser.makeDocument("<root><one>oneText</one><two>twoTextA</two><two>twoTextB</two><four m:null=\"true\" /><five></five></root>");
 		assertEquals("oneText", ipdsParser.getFirstNodeText(d.getDocumentElement(), "one"));
 		assertEquals("twoTextA", ipdsParser.getFirstNodeText(d.getDocumentElement(), "two"));
 		assertNull(ipdsParser.getFirstNodeText(d.getDocumentElement(), "three"));
+		assertNull(ipdsParser.getFirstNodeText(d.getDocumentElement(), "four"));
+		assertNull(ipdsParser.getFirstNodeText(d.getDocumentElement(), "five"));
    }
 }

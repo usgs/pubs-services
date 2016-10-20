@@ -39,6 +39,9 @@ public class IpdsParserService {
 			NodeList nodes = element.getElementsByTagName(tagName);
 			if (0 < nodes.getLength()) {
 				rtn = element.getElementsByTagName(tagName).item(0).getTextContent().trim();
+				if (rtn.isEmpty()) {
+					rtn = null;
+				}
 			}
 		}
 		return rtn;

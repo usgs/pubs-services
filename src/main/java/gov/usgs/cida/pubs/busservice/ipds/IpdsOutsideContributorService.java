@@ -41,34 +41,26 @@ public class IpdsOutsideContributorService {
 	}
 
 	public OutsideContributor getContributor(final Element element) {
+		String orcid = parser.formatOrcid(parser.getFirstNodeText(element, "d:ORCID"));
 		OutsideContributor contributor = null;
-		Map<String, Object> filters = getSearchFilters(element);
-		List<Contributor<?>> contributors = OutsideContributor.getDao().getByMap(filters);
-		if (!contributors.isEmpty()) {
-			if (contributors.size() > 1) {
-				LOG.warn("Multiple OutsideContributors found for: " + filters.get(PersonContributorDao.FAMILY) + ", " + filters.get(PersonContributorDao.GIVEN));
-			}
-			contributor = (OutsideContributor) contributors.get(0);
+		if (null != orcid) {
+			contributor = getByOrcid(orcid);
+		}
+		if (null == contributor) {
+			String contributorName = parser.getFirstNodeText(element, "d:AuthorNameText");
+			contributor = getByName(splitFullName(contributorName));
 		}
 		return contributor;
 	}
 
-	private Map<String, Object> getSearchFilters(final Element element) {
-		Map<String, Object> filters = new HashMap<>();
-		
-		String[] familyGiven = getContributorName(element);
-		
-		filters.put(PersonContributorDao.FAMILY, familyGiven[0]);
-		filters.put(PersonContributorDao.GIVEN, familyGiven[1]);
-		filters.put(PersonContributorDao.USGS, false);
-		return filters;
-	}
-
 	public OutsideContributor createContributor(final Element element) {
 		OutsideContributor contributor = new OutsideContributor();
-		String[] familyGiven = getContributorName(element);
+		String contributorName = parser.getFirstNodeText(element, "d:AuthorNameText");
+		String[] familyGiven = splitFullName(contributorName);
 		contributor.setFamily(familyGiven[0]);
 		contributor.setGiven(familyGiven[1]);
+		String orcid = parser.formatOrcid(parser.getFirstNodeText(element, "d:ORCID"));
+		contributor.setOrcid(orcid);
 		
 		contributor = (OutsideContributor) personContributorBusService.createObject(contributor);
 		
@@ -81,9 +73,25 @@ public class IpdsOutsideContributorService {
 		return contributor;
 	}
 
-	private String[] getContributorName(final Element element) {
+	private OutsideContributor getByOrcid(String orcid) {
+		Map<String, Object> filters = new HashMap<>();
+		filters.put(PersonContributorDao.USGS, false);
+		filters.put(PersonContributorDao.ORCID, new String[] {orcid});
+		List<Contributor<?>> contributors = OutsideContributor.getDao().getByMap(filters);
+		OutsideContributor contributor = null;
+		if (contributors.isEmpty()) {
+			LOG.debug("No OutsideContributors found for ORCID: " + filters.get(PersonContributorDao.ORCID));
+		} else {
+			if (contributors.size() > 1) {
+				LOG.warn("Multiple OutsideContributors found for ORCID: " + filters.get(PersonContributorDao.ORCID));
+			}
+			contributor = (OutsideContributor) contributors.get(0);
+		}
+		return contributor;
+	}
+
+	private String[] splitFullName(String contributorName) {
 		String[] familyGiven = new String[] {null, null};
-		String contributorName = parser.getFirstNodeText(element, "d:AuthorNameText");
 		String[] nameParts = contributorName.split(",");
 		
 		if (0 < nameParts.length) {
@@ -93,6 +101,23 @@ public class IpdsOutsideContributorService {
 			familyGiven[1] = nameParts[1].trim();
 		}
 		return familyGiven;
+	}
+
+	private OutsideContributor getByName(String[] name) {
+		Map<String, Object> filters = new HashMap<>();
+		filters.put(PersonContributorDao.FAMILY, name[0]);
+		filters.put(PersonContributorDao.GIVEN, name[1]);
+		List<Contributor<?>> contributors = OutsideContributor.getDao().getByMap(filters);
+		OutsideContributor contributor = null;
+		if (contributors.isEmpty()) {
+			LOG.debug("No OutsideContributors found for name: " + filters.get(PersonContributorDao.FAMILY) + ", " + filters.get(PersonContributorDao.GIVEN));
+		} else {
+			if (contributors.size() > 1) {
+				LOG.warn("Multiple OutsideContributors found for name: " + filters.get(PersonContributorDao.FAMILY) + ", " + filters.get(PersonContributorDao.GIVEN));
+			}
+			contributor = (OutsideContributor) contributors.get(0);
+		}
+		return contributor;
 	}
 
 	protected OutsideAffiliation getOutsideAffiliation(final String affiliationName) {

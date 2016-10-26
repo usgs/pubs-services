@@ -52,16 +52,19 @@ public class IpdsContributorService {
 		if (entry.getNodeType() == Node.ELEMENT_NODE) {
 			Element element = (Element) entry;
 			PersonContributor<?> contributor;
+			boolean updateContributor = true;
 			String ipdsContributorId = parser.getFirstNodeText(element, "d:AuthorNameId");
 			if (null == ipdsContributorId) {
 				contributor = ipdsOutsideContributorService.getContributor(element);
 				if (null == contributor) {
 					contributor = ipdsOutsideContributorService.createContributor(element);
+					updateContributor = false;
 				}
 			} else {
 				contributor = ipdsUsgsContributorService.getContributor(element);
 				if (null == contributor) {
 					contributor = ipdsUsgsContributorService.createContributor(element);
+					updateContributor = false;
 				} else {
 					String costCenterId = parser.getFirstNodeText(element, "d:CostCenterId");
 					if (null != costCenterId) {
@@ -72,6 +75,9 @@ public class IpdsContributorService {
 						addAffiliation(contributor, costCenter);
 					}
 				}
+			}
+			if (updateContributor) {
+				contributor = personContributorBusService.updateObject(contributor);
 			}
 			rtn.setContributor(contributor);
 			if ("Author".equalsIgnoreCase(parser.getFirstNodeText(element, "d:ContentType"))) {
@@ -92,7 +98,6 @@ public class IpdsContributorService {
 	private void addAffiliation(PersonContributor<?> contributor, Affiliation<? extends Affiliation<?>> affiliation) {
 		if (!contributor.getAffiliations().contains(affiliation)) {
 			contributor.getAffiliations().add(affiliation);
-			contributor = personContributorBusService.updateObject(contributor);
 		}
 	}
 }

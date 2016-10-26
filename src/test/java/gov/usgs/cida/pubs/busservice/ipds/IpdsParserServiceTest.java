@@ -44,5 +44,22 @@ public class IpdsParserServiceTest extends BaseIpdsTest {
 		assertNull(ipdsParser.getFirstNodeText(d.getDocumentElement(), "three"));
 		assertNull(ipdsParser.getFirstNodeText(d.getDocumentElement(), "four"));
 		assertNull(ipdsParser.getFirstNodeText(d.getDocumentElement(), "five"));
-   }
+	}
+
+	@Test
+	public void testFormatOrcid() {
+		String orcidNull = null;
+		String orcidPrefixNoNumber = IpdsParserService.ORCID_PREFIX + "";
+		String orcidPrefixBadNumber = IpdsParserService.ORCID_PREFIX + "ojae-hjrg-aag2-0020";
+		String orcidBadPrefixNoNumber = "http://notorcid.org";
+		String orcidBadPrefixBadNumber = "http://gro.dicro" + "1234-5678-9101-112K";
+
+		assertNull(ipdsParser.formatOrcid(orcidNull));
+		assertNull(ipdsParser.formatOrcid(orcidPrefixNoNumber));
+		assertNull(ipdsParser.formatOrcid(orcidPrefixBadNumber));
+		assertNull(ipdsParser.formatOrcid(orcidBadPrefixNoNumber));
+		assertNull(ipdsParser.formatOrcid(orcidBadPrefixBadNumber));
+		assertEquals("http://orcid.org/0000-0000-0000-0000", ipdsParser.formatOrcid("0000-0000-0000-0000"));
+		assertEquals("http://orcid.org/0000-0000-0000-000X", ipdsParser.formatOrcid("http://orcid.org/0000-0000-0000-000X"));
+	}
 }

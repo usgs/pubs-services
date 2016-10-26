@@ -41,6 +41,7 @@
         <d:Owshiddenversion m:type="Edm.Int32">2</d:Owshiddenversion>
         <d:Version>1.0</d:Version>
         <d:Path>/Lists/IPDS Authors</d:Path>
+        <d:ORCID>http://orcid.org/0000-0000-0000-0001</d:ORCID>
       </m:properties>
     </content>
   </entry>

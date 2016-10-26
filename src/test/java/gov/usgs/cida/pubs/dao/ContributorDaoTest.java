@@ -216,6 +216,7 @@ public class ContributorDaoTest extends BaseSpringTest {
 		assertEquals("outerGiven", outsideContributor.getGiven());
 		assertEquals("outerSuffix", outsideContributor.getSuffix());
 		assertEquals("outer@gmail.com", outsideContributor.getEmail());
+		assertEquals("http://orcid.org/0000-0000-0000-0001", outsideContributor.getOrcid());
 	}
 
 	public static void assertContributor4(Contributor<?> contributor) {

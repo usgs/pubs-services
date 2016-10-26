@@ -70,6 +70,7 @@ public class IpdsOutsideContributorServiceTest extends BaseIpdsTest {
 		assertNotNull(contributor.getId());
 		assertEquals("ODoe", contributor.getFamily());
 		assertEquals("Jane", contributor.getGiven());
+		assertEquals("http://orcid.org/1234-1234-1234-1234", contributor.getOrcid());
 		assertNull(contributor.getEmail());
 		assertEquals("7", contributor.getAffiliations().toArray(new OutsideAffiliation[1])[0].getId().toString());
 	}

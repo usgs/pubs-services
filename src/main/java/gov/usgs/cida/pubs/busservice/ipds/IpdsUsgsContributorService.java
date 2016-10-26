@@ -39,12 +39,23 @@ public class IpdsUsgsContributorService {
 
 	public UsgsContributor getContributor(final Element element) throws SAXException, IOException {
 		String ipdsContributorId = parser.getFirstNodeText(element, "d:AuthorNameId");
-		UsgsContributor contributor = null;
+		UsgsContributor contributor = getByIpdsId(ipdsContributorId);
+		if (null != contributor && null == contributor.getOrcid()) {
+			String orcid = parser.formatOrcid(parser.getFirstNodeText(element, "d:ORCID"));
+			contributor.setOrcid(orcid);
+		}
+		return contributor;
+	}
+
+	private UsgsContributor getByIpdsId(String ipdsContributorId) {
 		Map<String, Object> filters = new HashMap<>();
 		filters.put(PersonContributorDao.IPDS_CONTRIBUTOR_ID, ipdsContributorId);
 		filters.put(PersonContributorDao.USGS, true);
 		List<Contributor<?>> contributors = UsgsContributor.getDao().getByMap(filters);
-		if (!contributors.isEmpty()) {
+		UsgsContributor contributor = null;
+		if (contributors.isEmpty()) {
+			LOG.debug("No UsgsContributors found for ipdsId: " + filters.get(PersonContributorDao.IPDS_CONTRIBUTOR_ID));
+		} else {
 			if (contributors.size() > 1) {
 				LOG.warn("Multiple UsgsContributors found for ipdsId: " + filters.get(PersonContributorDao.IPDS_CONTRIBUTOR_ID));
 			}
@@ -57,6 +68,8 @@ public class IpdsUsgsContributorService {
 		String ipdsContributorId = parser.getFirstNodeText(element, "d:AuthorNameId");
 		String contributorXml = requester.getContributor(ipdsContributorId);
 		UsgsContributor contributor = bindContributor(contributorXml);
+		String orcid = parser.formatOrcid(parser.getFirstNodeText(element, "d:ORCID"));
+		contributor.setOrcid(orcid);;
 		contributor = (UsgsContributor) personContributorBusService.createObject(contributor);
 		return contributor;
 	}

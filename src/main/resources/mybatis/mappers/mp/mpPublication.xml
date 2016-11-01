@@ -27,6 +27,7 @@
     <!-- single search term needs to or/and correctly -->
         <if test="searchTerms != null and searchTerms.length > 0">
             <foreach item="term" collection="searchTerms" open="and (" separator="and" close=")">
+                (
                 <include refid="publication.singleSearchTermFilter"/>
                 <!--  contributing office -->
                 or exists (select null
@@ -48,6 +49,7 @@
                                    upper(literal) <include refid="publication.likeTerm"/>
                                   )
                           )
+                 )
             </foreach>
         </if>
     </sql>

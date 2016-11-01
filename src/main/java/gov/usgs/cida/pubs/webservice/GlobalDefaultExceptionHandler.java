@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -26,7 +27,8 @@ public class GlobalDefaultExceptionHandler {
 			response.setStatus(HttpStatus.FORBIDDEN.value());
 			return "You are not authorized to perform this action.";
 		} else if (ex instanceof MissingServletRequestParameterException
-				|| ex instanceof HttpMediaTypeNotSupportedException) {
+				|| ex instanceof HttpMediaTypeNotSupportedException
+				|| ex instanceof HttpMediaTypeNotAcceptableException) {
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ex.getLocalizedMessage();
 		} else if (ex instanceof HttpMessageNotReadableException) {
@@ -47,5 +49,4 @@ public class GlobalDefaultExceptionHandler {
 			return msgText;
 		}
 	}
-
 }

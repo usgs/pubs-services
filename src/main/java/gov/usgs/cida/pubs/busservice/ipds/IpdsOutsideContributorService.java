@@ -107,6 +107,7 @@ public class IpdsOutsideContributorService {
 		Map<String, Object> filters = new HashMap<>();
 		filters.put(PersonContributorDao.FAMILY, name[0]);
 		filters.put(PersonContributorDao.GIVEN, name[1]);
+		filters.put(PersonContributorDao.USGS, false);
 		List<Contributor<?>> contributors = OutsideContributor.getDao().getByMap(filters);
 		OutsideContributor contributor = null;
 		if (contributors.isEmpty()) {

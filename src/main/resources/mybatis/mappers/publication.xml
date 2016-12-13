@@ -416,10 +416,10 @@
 				    )
 			</if>
 			
-			<if test="doi != null and doi eq 'y'.toString()">
+			<if test='doi != null and doi == "y"'>
 				and pub.doi_name is not null
 			</if>
-			<if test="doi != null and doi eq 'n'.toString()">
+			<if test='doi != null and doi == "n"'>
 				and pub.doi_name is null
 			</if>
 

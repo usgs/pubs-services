@@ -30,7 +30,7 @@ public abstract class MvcService<D> {
 	private static final Pattern G_PATTERN = Pattern.compile("^polygon\\(\\((-?\\d+\\.?\\d* -?\\d+\\.?\\d*,){3,}-?\\d+\\.?\\d* -?\\d+\\.?\\d*\\)\\)$");
 
 	protected Map<String, Object> buildFilters(Boolean chorus, String[] contributingOffice, String[] contributor,
-			String[] orcid, String endYear, String g, String global, String[] indexId, String[] ipdsId, String[] listId,
+			String[] orcid, String doi, String endYear, String g, String global, String[] indexId, String[] ipdsId, String[] listId,
 			String modDateHigh, String modDateLow, String modXDays, String orderBy, String page_number,
 			String page_row_start, String page_size, String[] prodId, String[] pubAbstract, String pubDateHigh,
 			String pubDateLow, String pubXDays, String q, String[] reportNumber, String[] seriesName,
@@ -42,6 +42,7 @@ public abstract class MvcService<D> {
 		filters.put(PublicationDao.CONTRIBUTING_OFFICE, contributingOffice);
 		filters.put(PublicationDao.CONTRIBUTOR, configureContributorFilter(contributor));
 		filters.put(PublicationDao.ORCID, orcid);
+		filters.put(PublicationDao.DOI, doi);
 		filters.put(PublicationDao.END_YEAR, endYear);
 		filters.put(PwPublicationDao.G, configureGeospatialFilter(g));
 		filters.put(MpPublicationDao.GLOBAL, global);

@@ -66,6 +66,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 			@RequestParam(value=PublicationDao.PUB_ABSTRACT, required=false) String[] pubAbstract,
 			@RequestParam(value=PublicationDao.CONTRIBUTOR, required=false) String[] contributor,
 			@RequestParam(value=PublicationDao.ORCID, required=false) String[] orcid,
+			@RequestParam(value=PublicationDao.DOI, required=false) String doi,
 			@RequestParam(value=PublicationDao.PROD_ID, required=false) String[] prodId,
 			@RequestParam(value=PublicationDao.INDEX_ID, required=false) String[] indexId,
 			@RequestParam(value=PublicationDao.IPDS_ID, required=false) String[] ipdsId,
@@ -93,7 +94,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		setHeaders(response);
 
 		//Note that paging is only applied to the default&json formats below
-		Map<String, Object> filters = buildFilters(chorus, contributingOffice, contributor, orcid, endYear, g, null,
+		Map<String, Object> filters = buildFilters(chorus, contributingOffice, contributor, orcid, doi, endYear, g, null,
 				indexId, ipdsId, null, modDateHigh, modDateLow, modXDays, orderBy, null, null,
 				null, prodId, pubAbstract, pubDateHigh, pubDateLow, pubXDays, q, reportNumber,
 				seriesName, startYear, subtypeName, title, typeName, year);

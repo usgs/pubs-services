@@ -61,6 +61,7 @@ public class PublicationContributorValidationTest extends BaseValidatorTest {
 	public void setUp() throws Exception {
 		super.setUp();
 		pubContributor = new MpPublicationContributor();
+		pubContributor.setMpPublicationContributorDao(pubContributorDao);
 		contributor = new OutsideContributor();
 		contributor.setContributorDao(contributorDao);
 		contributor.setId(1);

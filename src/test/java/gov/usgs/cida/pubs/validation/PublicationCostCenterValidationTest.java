@@ -54,6 +54,7 @@ public class PublicationCostCenterValidationTest extends BaseValidatorTest {
 	public void setUp() throws Exception {
 		super.setUp();
 		pubCostCenter = new MpPublicationCostCenter();
+		pubCostCenter.setMpPublicationCostCenterDao(pubCostCenterDao);
 		costCenter = new CostCenter();
 		costCenter.setCostCenterDao(costCenterDao);
 		costCenter.setId(1);

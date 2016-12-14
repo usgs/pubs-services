@@ -66,7 +66,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 			@RequestParam(value=PublicationDao.PUB_ABSTRACT, required=false) String[] pubAbstract,
 			@RequestParam(value=PublicationDao.CONTRIBUTOR, required=false) String[] contributor,
 			@RequestParam(value=PublicationDao.ORCID, required=false) String[] orcid,
-			@RequestParam(value=PublicationDao.DOI, required=false) String doi,
+			@RequestParam(value=PublicationDao.DOI, required=false) Boolean doi,
 			@RequestParam(value=PublicationDao.PROD_ID, required=false) String[] prodId,
 			@RequestParam(value=PublicationDao.INDEX_ID, required=false) String[] indexId,
 			@RequestParam(value=PublicationDao.IPDS_ID, required=false) String[] ipdsId,

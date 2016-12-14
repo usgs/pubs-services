@@ -103,7 +103,7 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 			}
 		}
 
-		Map<String, Object> filters = buildFilters(chorus, contributingOffice, contributor, orcid, endYear, g, null,
+		Map<String, Object> filters = buildFilters(chorus, contributingOffice, contributor, orcid, null, endYear, g, null,
 				indexId, ipdsId, null, modDateHigh, modDateLow, modXDays, orderBy, null, null,
 				null, prodId, pubAbstract, pubDateHigh, pubDateLow, pubXDays, q, reportNumber,
 				seriesName, startYear, subtypeName, title, typeName, year);

@@ -52,6 +52,7 @@ public class MvcServiceTest {
 		String[] contributingOffice = new String[]{"co1","co2"};
 		String[] contributor = new String[]{"Rebecca B. Carvin", "c2"};
 		String[] orcid = new String[]{"http://orcid.org/0000-0000-0000-0000", "http://orcid.org/1111-1111-1111-1111"};
+		String doi = "y";
 		String endYear = "2020";
 		String g = "polygon((-122.3876953125 37.80869897600677,-122.3876953125 36.75979104322286,-123.55224609375 36.75979104322286," +
 				"-123.55224609375 37.80869897600677,-122.3876953125 37.80869897600677))";
@@ -80,7 +81,7 @@ public class MvcServiceTest {
 		String[] typeName = new String[]{"type1", "type2"};
 		String[] year = new String[]{"year1","year2"};
 
-		Map<String, Object> filters = testMvcService.buildFilters(chorus, contributingOffice, contributor, orcid, endYear, g, global, indexId,
+		Map<String, Object> filters = testMvcService.buildFilters(chorus, contributingOffice, contributor, orcid, doi, endYear, g, global, indexId,
 				ipdsId, listId, modDateHigh, modDateLow, modXDays, orderBy, page_number, page_row_start, page_size, prodId, pubAbstract,
 				pubDateHigh, pubDateLow, pubXDays, q, reportNumber, seriesName, startYear, subtypeName, title, typeName, year);
 
@@ -94,6 +95,7 @@ public class MvcServiceTest {
 		assertEquals("rebecca% and b.% and carvin% and c2%", filters.get(PublicationDao.CONTRIBUTOR));
 		assertTrue(filters.containsKey(PersonContributorDao.ORCID));
 		assertEquals(orcid, filters.get(PersonContributorDao.ORCID));
+		assertEquals(doi, filters.get(PublicationDao.DOI));
 		assertTrue(filters.containsKey(PublicationDao.END_YEAR));
 		assertEquals(endYear, filters.get(PublicationDao.END_YEAR));
 		assertTrue(filters.containsKey(PwPublicationDao.G));

@@ -348,6 +348,8 @@ public class PublicationDaoTest extends BaseSpringTest {
 		filters.put(PwPublicationDao.CHORUS, true);
 		filters.put(PublicationDao.CONTRIBUTING_OFFICE, new String[]{"contributingOffice1", "contributingOffice2"});
 		filters.put(PublicationDao.CONTRIBUTOR, "contributor1% and contributor2%");
+		
+		filters.put(PublicationDao.DOI, true);
 
 		filters.put(PublicationDao.END_YEAR, "yearEnd");
 		filters.put(PwPublicationDao.G, "polygon");

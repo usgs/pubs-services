@@ -416,12 +416,16 @@
 				    )
 			</if>
 			
-			<if test='doi != null and doi == "y"'>
-				and pub.doi_name is not null
-			</if>
-			<if test='doi != null and doi == "n"'>
-				and pub.doi_name is null
-			</if>
+			<if test="null != doi">
+			<choose>
+				<when test="doi">
+					and doi_name is not null
+				</when>
+				<otherwise>
+					and doi_name is null
+				</otherwise>
+			</choose>
+		</if>
 
 			<if test="publicationSeriesId != null">
 				and pub.publication_series_id = #{publicationSeriesId}

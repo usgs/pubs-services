@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>gov.usgs.cida</groupId>
 	<artifactId>pubs-services</artifactId>
-	<version>0.7.8-SNAPSHOT</version>
+	<version>0.7.8</version>
 	<packaging>war</packaging>
 
 	<properties>
@@ -28,7 +28,7 @@
 		<connection>scm:git:http://cida-eros-stash.er.usgs.gov:7999/pubs/pubs-services.git</connection>
 		<developerConnection>scm:git:ssh://cida-eros-stash.er.usgs.gov:7999/pubs/pubs-services.git</developerConnection>
 		<url>http:cida-eros-stash.er.usgs.gov:7999/pubs/pubs-services.git</url>
-		<tag>HEAD</tag>
+		<tag>pubs-services-0.7.8</tag>
 	</scm>
 
 	<distributionManagement>

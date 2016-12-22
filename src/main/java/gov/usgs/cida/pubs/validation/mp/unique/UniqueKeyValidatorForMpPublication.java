@@ -1,10 +1,5 @@
 package gov.usgs.cida.pubs.validation.mp.unique;
 
-import gov.usgs.cida.pubs.dao.PublicationDao;
-import gov.usgs.cida.pubs.domain.Publication;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
-import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +7,11 @@ import java.util.Map;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+
+import gov.usgs.cida.pubs.dao.PublicationDao;
+import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
 
 /**
  * @author drsteini
@@ -39,7 +39,7 @@ public class UniqueKeyValidatorForMpPublication implements ConstraintValidator<U
 			if (null != value.getIndexId()) {
 				Map<String, Object> filters = new HashMap<String,Object>();
 				filters.put(PublicationDao.INDEX_ID, new String[] { ((Publication<?>) value).getIndexId() });
-				List<Publication<?>> pubs = Publication.getPublicationDao().getByMap(filters);
+				List<Publication<?>> pubs = Publication.getPublicationDao().validateByMap(filters);
 				for (Publication<?> pub : pubs) {
 					if (null == value.getId() || 0 != pub.getId().compareTo(value.getId())) {
 						rtn = false;
@@ -50,11 +50,11 @@ public class UniqueKeyValidatorForMpPublication implements ConstraintValidator<U
 					}
 				}
 			}
-	
+
 			if (null != value.getIpdsId()) {
 				Map<String, Object> filters = new HashMap<String,Object>();
 				filters.put(PublicationDao.IPDS_ID, new String[] { ((Publication<?>) value).getIpdsId() });
-				List<Publication<?>> pubs = Publication.getPublicationDao().getByMap(filters);
+				List<Publication<?>> pubs = Publication.getPublicationDao().validateByMap(filters);
 				for (Publication<?> pub : pubs) {
 					if (null == value.getId() || 0 != pub.getId().compareTo(value.getId())) {
 						rtn = false;

@@ -449,7 +449,7 @@
 		pub.publication_id desc
 	</sql>
 
-	<sql id="allSelect">
+	<sql id="globalSelect">
 		select <include refid="base.pagingHint"/> *
 		  from (select <include refid="cols"/>, 'mypubs' sourceDatabase, published
 		          from mp_publication pub
@@ -466,6 +466,21 @@
 			   ) pub
 	</sql>
 
+	<sql id="allSelect">
+		select *
+		  from (select <include refid="cols"/>, 'mypubs' sourceDatabase, published
+		          from mp_publication pub
+		        <include refid="mpPublication.filters"/>
+		        union all
+		        select <include refid="cols"/>, 'pubs warehouse' sourceDatabase, 'Y' published
+		          from publication pub
+		         where publication_id in (select publication_id from publication
+		                                  minus
+		                                  select publication_id from mp_publication)
+		        <include refid="pwPublication.filters"/>
+		       ) pub
+	</sql>
+
 	<select id="getById" parameterType="Integer" resultMap="genericResult">
 		select *
 		  from (select <include refid="cols"/>, 'mypubs' sourceDatabase, published
@@ -480,15 +495,19 @@
 		   where publication_id = #{value,jdbcType=VARCHAR}
 	</select>
 
-	<select id="getByMap" parameterType="map" resultMap="genericResult">
+	<select id="validateByMap" parameterType="map" resultMap="genericResult">
 		<include refid="allSelect"/>
+	</select>
+
+	<select id="getByMap" parameterType="map" resultMap="genericResult">
+		<include refid="globalSelect"/>
 		<include refid="orderBy"/>
 		<include refid="base.pagingRowLimit"/>
 	</select>
 
 	<select id="getCount" parameterType="map" resultType="Integer">
 		select count(*)
-		  from (<include refid="allSelect"/>)
+		  from (<include refid="globalSelect"/>)
 	</select>
 
 	<sql id="baseLookupSelect">

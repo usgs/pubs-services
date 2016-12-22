@@ -411,4 +411,51 @@ public class PublicationDaoTest extends BaseSpringTest {
 		assertTrue(got1);
 		assertTrue(got6);
 	}
+
+	@Test
+	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testData/publicationType.xml"),
+		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+		@DatabaseSetup("classpath:/testData/dataset.xml")
+	})
+	public void validateByMapTest() {
+		//These should always check both tables - ignoring the MpPublicationDao.GLOBAL parameter
+		Map<String, Object> filters = new HashMap<>();
+		filters.put(PublicationDao.PROD_ID, new int[] { 2 });
+		Collection<Publication<?>> pubs = Publication.getPublicationDao().validateByMap(filters);
+		assertEquals(1, pubs.size());
+		assertEquals(2, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
+
+		filters.clear();
+		filters.put(PublicationDao.INDEX_ID, new int[] { 4 });
+		pubs = Publication.getPublicationDao().validateByMap(filters);
+		assertEquals(1, pubs.size());
+		assertEquals(4, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
+
+		filters.clear();
+		filters.put(PublicationDao.IPDS_ID, new String[] {"IP-056327"});
+		pubs = Publication.getPublicationDao().validateByMap(filters);
+		assertEquals(1, pubs.size());
+		assertEquals(3, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
+
+		filters.clear();
+		filters.put(MpPublicationDao.GLOBAL, "false");
+		filters.put(PublicationDao.IPDS_ID, new String[] {"IP-056327"});
+		pubs = Publication.getPublicationDao().validateByMap(filters);
+		assertEquals(1, pubs.size());
+		assertEquals(3, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
+
+		filters.clear();
+		filters.put(MpPublicationDao.GLOBAL, "false");
+		filters.put(PublicationDao.PROD_ID, new int[] { 4 });
+		filters.put(PublicationDao.INDEX_ID, new int[] { 4 });
+		filters.put(PublicationDao.IPDS_ID, new String[] {"ipds_id"});
+		pubs = Publication.getPublicationDao().validateByMap(filters);
+		assertEquals(1, pubs.size());
+		assertEquals(4, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
+
+		//This only checks that the final query is syntactically correct, not that it is logically correct!
+		pubs = Publication.getPublicationDao().getByMap(buildAllParms());
+	}
 }

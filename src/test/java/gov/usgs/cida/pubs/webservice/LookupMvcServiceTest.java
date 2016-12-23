@@ -65,7 +65,7 @@ public class LookupMvcServiceTest extends BaseSpringTest {
 		assertThat(rtnAsJSONArray,
 				sameJSONArrayAs(new JSONArray("[{\"id\":1,\"text\":\"pdf\"},{\"id\":2,\"text\":\"txt\"},"
 						+ "{\"id\":3,\"text\":\"xlsx\"},{\"id\":4,\"text\":\"shapefile\"},{\"id\":5,\"text\":\"html\"}"
-						+ ",{\"id\":6,\"text\":\"zip\"},{\"id\":7,\"text\":\"csv\"}]")).allowingAnyArrayOrdering());
+						+ ",{\"id\":6,\"text\":\"zip\"},{\"id\":7,\"text\":\"csv\"},{\"id\":8,\"text\":\"xml\"}]")).allowingAnyArrayOrdering());
 		
 		rtn = mockLookup.perform(get("/lookup/linkfiletypes?text=s").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())

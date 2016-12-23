@@ -15,7 +15,7 @@ import org.junit.Test;
 
 public class LinkFileTypeDaoTest extends BaseSpringTest {
 
-	public static final int LINK_FILE_TYPES_CNT = 7;
+	public static final int LINK_FILE_TYPES_CNT = 8;
 	public static final int LINK_FILE_TYPES_S_CNT = 1;
 
 	@Test

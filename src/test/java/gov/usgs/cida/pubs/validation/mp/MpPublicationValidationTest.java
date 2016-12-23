@@ -171,7 +171,7 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 		sb.setId(1);
 
 		when(publicationDao.getById(any(Integer.class))).thenReturn(null);
-		when(publicationDao.getByMap(anyMap())).thenReturn(UniqueKeyValidatorForMpPublicationTest.buildList());
+		when(publicationDao.validateByMap(anyMap())).thenReturn(UniqueKeyValidatorForMpPublicationTest.buildList());
 		when(publicationTypeDao.getById(any(Integer.class))).thenReturn(null);
 		when(publicationSubtypeDao.getById(any(Integer.class))).thenReturn(null);
 		when(publicationSeriesDao.getById(any(Integer.class))).thenReturn(null);
@@ -238,7 +238,7 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void crossPropertyTest() {
-		when(publicationDao.getByMap(anyMap())).thenReturn(new ArrayList<>());
+		when(publicationDao.validateByMap(anyMap())).thenReturn(new ArrayList<>());
 		when(publicationTypeDao.getById(any(Integer.class))).thenReturn(new PublicationType());
 		when(publicationSubtypeDao.getById(any(Integer.class))).thenReturn(new PublicationSubtype());
 		mpPub.setPublicationSubtype(pubSubtype);
@@ -256,7 +256,7 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void minLengthTest() {
-		when(publicationDao.getByMap(anyMap())).thenReturn(new ArrayList<>());
+		when(publicationDao.validateByMap(anyMap())).thenReturn(new ArrayList<>());
 		when(publicationTypeDao.getById(any(Integer.class))).thenReturn(new PublicationType());
 		mpPub.setIndexId("");
 
@@ -277,7 +277,7 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void maxLengthAndRegexTest() {
-		when(publicationDao.getByMap(anyMap())).thenReturn(new ArrayList<>());
+		when(publicationDao.validateByMap(anyMap())).thenReturn(new ArrayList<>());
 		when(publicationTypeDao.getById(any(Integer.class))).thenReturn(new PublicationType());
 
 		mpPub.setIndexId(StringUtils.repeat('X', 101));
@@ -368,7 +368,7 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void maxLengthAndRegexGoodTest() {
-		when(publicationDao.getByMap(anyMap())).thenReturn(new ArrayList<>());
+		when(publicationDao.validateByMap(anyMap())).thenReturn(new ArrayList<>());
 		when(publicationTypeDao.getById(any(Integer.class))).thenReturn(new PublicationType());
 
 		mpPub.setIndexId(StringUtils.repeat('X', 100));
@@ -418,7 +418,7 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void deleteTest() {
-		when(publicationDao.getByMap(anyMap())).thenReturn(new ArrayList<>());
+		when(publicationDao.validateByMap(anyMap())).thenReturn(new ArrayList<>());
 		when(publicationTypeDao.getById(any(Integer.class))).thenReturn(new PublicationType());
 
 		mpPub.setValidationErrors(validator.validate(mpPub, DeleteChecks.class));

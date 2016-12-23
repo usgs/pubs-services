@@ -4,8 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyMapOf;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -25,7 +26,6 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
-import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.dao.intfc.IPwPublicationDao;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
@@ -49,8 +49,6 @@ public class IpdsProcessTest extends BaseSpringTest {
 	protected IMpPublicationBusService pubBusService;
 	@Mock
 	protected IPwPublicationDao publicationDao;
-	@Mock
-	protected IDao<PublicationSeries> pubSeriestDao;
 
 	protected IpdsProcess ipdsProcess;
 	protected List<MpPublication> emptyList = new ArrayList<>();
@@ -65,7 +63,6 @@ public class IpdsProcessTest extends BaseSpringTest {
 		MockitoAnnotations.initMocks(this);
 		ipdsProcess = new IpdsProcess(crossRefBusService, binder, requester, pubBusService);
 		pubSeries = new PublicationSeries();
-		pubSeries.setPublicationSeriesDao(pubSeriestDao);
 		existingMpPub9 = new MpPublication();
 		existingMpPub9.setId(9);
 		existingMpPub11 = new MpPublication();
@@ -82,13 +79,13 @@ public class IpdsProcessTest extends BaseSpringTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void getFromMpTest() {
-		when(pubBusService.getObjects(anyMapOf(String.class, Object.class))).thenReturn(null, null, null, Arrays.asList(existingMpPub9,existingMpPub11), null, Arrays.asList(existingMpPub11,existingMpPub9), emptyList, emptyList);
+		when(pubBusService.getObjects(anyMap())).thenReturn(null, null, null, Arrays.asList(existingMpPub9,existingMpPub11), null, Arrays.asList(existingMpPub11,existingMpPub9), emptyList, emptyList);
 		MpPublication newPub = new MpPublication();
 		newPub.setIpdsId("IPDS_123");
 
 		//This time we don't find it by IPDS ID and we do not attempt by index ID
 		assertNull(ipdsProcess.getFromMp(newPub));
-		verify(pubBusService).getObjects(anyMapOf(String.class, Object.class));
+		verify(pubBusService).getObjects(anyMap());
 
 		//This time we don't find it by either ID
 		PublicationSubtype psub = new PublicationSubtype();
@@ -97,25 +94,26 @@ public class IpdsProcessTest extends BaseSpringTest {
 		newPub.setSeriesTitle(pubSeries);
 		newPub.setSeriesNumber("456");
 		assertNull(ipdsProcess.getFromMp(newPub));
-		verify(pubBusService, times(3)).getObjects(anyMapOf(String.class, Object.class));
+		verify(pubBusService, times(3)).getObjects(anyMap());
 
 		//This time is by IPDS ID
 		assertEquals(9, ipdsProcess.getFromMp(newPub).getId().intValue());
-		verify(pubBusService, times(4)).getObjects(anyMapOf(String.class, Object.class));
+		verify(pubBusService, times(4)).getObjects(anyMap());
 
 		//This time is by Index ID
 		assertEquals(11, ipdsProcess.getFromMp(newPub).getId().intValue());
-		verify(pubBusService, times(6)).getObjects(anyMapOf(String.class, Object.class));
+		verify(pubBusService, times(6)).getObjects(anyMap());
 
 		//Again not found with either - empty lists
 		assertNull(ipdsProcess.getFromMp(newPub));
-		verify(pubBusService, times(8)).getObjects(anyMapOf(String.class, Object.class));
+		verify(pubBusService, times(8)).getObjects(anyMap());
 	}
 
 	@Test
 	public void getFromPwTest() {
 		when(publicationDao.getByIpdsId(anyString())).thenReturn(null, null, existingPwPub9, null);
 		when(publicationDao.getByIndexId(anyString())).thenReturn(null, existingPwPub11);
+		when(pubBusService.getUsgsNumberedSeriesIndexId(any(MpPublication.class))).thenReturn("sir1234a");
 		MpPublication newPub = new MpPublication();
 		newPub.setIpdsId("IPDS_123");
 

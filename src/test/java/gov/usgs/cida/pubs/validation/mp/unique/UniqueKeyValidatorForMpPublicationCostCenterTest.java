@@ -2,7 +2,7 @@ package gov.usgs.cida.pubs.validation.mp.unique;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyMapOf;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -59,7 +59,7 @@ public class UniqueKeyValidatorForMpPublicationCostCenterTest extends BaseValida
 	@SuppressWarnings("unchecked")
 	@Test
 	public void isValidTrueTest() {
-		when(mpPublicationCostCenterDao.getByMap(anyMapOf(String.class, Object.class))).thenReturn(new ArrayList<>(), buildList(), new ArrayList<>());
+		when(mpPublicationCostCenterDao.getByMap(anyMap())).thenReturn(new ArrayList<>(), buildList(), new ArrayList<>());
 		mpPubCostCenter.setId(1);
 		mpPubCostCenter.setCostCenter(costCenter);
 		mpPubCostCenter.setPublicationId(1);
@@ -67,33 +67,33 @@ public class UniqueKeyValidatorForMpPublicationCostCenterTest extends BaseValida
 
 		//Works with empty list returned
 		assertTrue(validator.isValid(mpPubCostCenter, context));
-		verify(mpPublicationCostCenterDao).getByMap(anyMapOf(String.class, Object.class));
+		verify(mpPublicationCostCenterDao).getByMap(anyMap());
 
 		//Works with a list returned (pub assigned to same costCenter)
 		assertTrue(validator.isValid(mpPubCostCenter, context));
-		verify(mpPublicationCostCenterDao, times(2)).getByMap(anyMapOf(String.class, Object.class));
+		verify(mpPublicationCostCenterDao, times(2)).getByMap(anyMap());
 
 		//Works with add and no list returned (mpPubCostCenter.getid() is null)
 		mpPubCostCenter.setId("");
 		assertTrue(validator.isValid(mpPubCostCenter, context));
-		verify(mpPublicationCostCenterDao, times(3)).getByMap(anyMapOf(String.class, Object.class));
+		verify(mpPublicationCostCenterDao, times(3)).getByMap(anyMap());
 	}
 
 	@Test
 	public void isValidFalseTest() {
-		when(mpPublicationCostCenterDao.getByMap(anyMapOf(String.class, Object.class))).thenReturn(buildList());
+		when(mpPublicationCostCenterDao.getByMap(anyMap())).thenReturn(buildList());
 		mpPubCostCenter.setCostCenter(costCenter);
 		mpPubCostCenter.setPublicationId(1);
 		costCenter.setId(2);
 
 		//Works with add (mpPubCostCenter.getid() is null)
 		assertFalse(validator.isValid(mpPubCostCenter, context));
-		verify(mpPublicationCostCenterDao).getByMap(anyMapOf(String.class, Object.class));
+		verify(mpPublicationCostCenterDao).getByMap(anyMap());
 
 		//Works with a list returned (pub assigned to different costCenter)
 		mpPubCostCenter.setId(2);
 		assertFalse(validator.isValid(mpPubCostCenter, context));
-		verify(mpPublicationCostCenterDao, times(2)).getByMap(anyMapOf(String.class, Object.class));
+		verify(mpPublicationCostCenterDao, times(2)).getByMap(anyMap());
 	}
 
 	public static List<MpPublicationCostCenter> buildList() {

@@ -23,7 +23,6 @@ public class PublicationCostCenter<D> extends BaseDomain<D> implements Serializa
 
 	@JsonView(View.PW.class)
 	@JsonUnwrapped
-	@NotNull
 	private CostCenter costCenter;
 
 	public Integer getPublicationId() {
@@ -38,6 +37,7 @@ public class PublicationCostCenter<D> extends BaseDomain<D> implements Serializa
 		publicationId = PubsUtilities.parseInteger(inPublicationId);
 	}
 
+	@NotNull
 	public CostCenter getCostCenter() {
 		return costCenter;
 	}

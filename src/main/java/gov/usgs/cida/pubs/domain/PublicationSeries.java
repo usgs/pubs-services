@@ -39,7 +39,6 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
 	public static final Integer SIR = 334;
 
 	@JsonView(View.PW.class)
-	@NotNull
 	private PublicationSubtype publicationSubtype;
 
 	@JsonView(View.PW.class)
@@ -66,16 +65,11 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
 	@JsonView(View.PW.class)
 	private Boolean active;
 
-	/**
-	 * @return the publicationSubtype
-	 */
+	@NotNull
 	public PublicationSubtype getPublicationSubtype() {
 		return publicationSubtype;
 	}
 
-	/**
-	 * @param inPublicationSubtype the publicationSubtype to set
-	 */
 	public void setPublicationSubtype(final PublicationSubtype inPublicationSubtype) {
 		publicationSubtype = inPublicationSubtype;
 	}
@@ -141,10 +135,6 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
 		return publicationSeriesDao;
 	}
 
-	/**
-	 * The setter for publicationSeriesDao.
-	 * @param inPublicationSeriesDao the publicationSeriesDao to set
-	 */
 	@Autowired
 	@Qualifier("publicationSeriesDao")
 	public void setPublicationSeriesDao(final IDao<PublicationSeries> inPublicationSeriesDao) {

@@ -1,12 +1,14 @@
 package gov.usgs.cida.pubs.busservice;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyMapOf;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +29,8 @@ public class PublicationBusServiceTest extends BaseSpringTest {
 
 	protected PublicationBusService service;
 	protected Publication<?> pub;
-
+	protected Map<String, Object> filters = new HashMap<>();
+	
 	@Mock
 	protected IPublicationDao publicationDao;
 
@@ -41,18 +44,18 @@ public class PublicationBusServiceTest extends BaseSpringTest {
 
 	@Test
 	public void getObjectsTest() {
-		when(publicationDao.getByMap(anyMapOf(String.class, Object.class))).thenReturn(Arrays.asList(pub));
-		List<Publication<?>> pubs = service.getObjects(null);
+		when(publicationDao.getByMap(anyMap())).thenReturn(Arrays.asList(pub));
+		List<Publication<?>> pubs = service.getObjects(filters);
 		assertEquals(1, pubs.size());
 		assertEquals(pub, pubs.get(0));
-		verify(publicationDao).getByMap(anyMapOf(String.class, Object.class));
+		verify(publicationDao).getByMap(anyMap());
 	}
 
 	@Test
 	public void getObjectCountTest() {
-		when(publicationDao.getObjectCount(anyMapOf(String.class, Object.class))).thenReturn(15);
-		assertEquals(15, service.getObjectCount(null).intValue());
-		verify(publicationDao).getObjectCount(anyMapOf(String.class, Object.class));
+		when(publicationDao.getObjectCount(anyMap())).thenReturn(15);
+		assertEquals(15, service.getObjectCount(filters).intValue());
+		verify(publicationDao).getObjectCount(anyMap());
 	}
 
 }

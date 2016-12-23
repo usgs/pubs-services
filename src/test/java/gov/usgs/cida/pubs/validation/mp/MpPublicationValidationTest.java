@@ -3,8 +3,8 @@ package gov.usgs.cida.pubs.validation.mp;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyMap;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -138,7 +138,6 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 
 	@Before
 	@Override
-	@SuppressWarnings("unchecked")
 	public void setUp() throws Exception {
 		super.setUp();
 		pubType = new PublicationType();
@@ -236,7 +235,6 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void crossPropertyTest() {
 		when(publicationDao.validateByMap(anyMap())).thenReturn(new ArrayList<>());
 		when(publicationTypeDao.getById(any(Integer.class))).thenReturn(new PublicationType());
@@ -254,7 +252,6 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void minLengthTest() {
 		when(publicationDao.validateByMap(anyMap())).thenReturn(new ArrayList<>());
 		when(publicationTypeDao.getById(any(Integer.class))).thenReturn(new PublicationType());
@@ -275,7 +272,6 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void maxLengthAndRegexTest() {
 		when(publicationDao.validateByMap(anyMap())).thenReturn(new ArrayList<>());
 		when(publicationTypeDao.getById(any(Integer.class))).thenReturn(new PublicationType());
@@ -366,7 +362,6 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void maxLengthAndRegexGoodTest() {
 		when(publicationDao.validateByMap(anyMap())).thenReturn(new ArrayList<>());
 		when(publicationTypeDao.getById(any(Integer.class))).thenReturn(new PublicationType());
@@ -416,7 +411,6 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 	};
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void deleteTest() {
 		when(publicationDao.validateByMap(anyMap())).thenReturn(new ArrayList<>());
 		when(publicationTypeDao.getById(any(Integer.class))).thenReturn(new PublicationType());

@@ -20,6 +20,7 @@ public class EndpointSecurityPubsTest extends EndpointSecurityAuthTest {
 	public void adAuthenticatedTest() throws Exception {
 		mockSetup();
 		when(mockAuthClient.getRolesByToken("a-token-string")).thenReturn(new ArrayList<>(Arrays.asList(PubsRoles.PUBS_ADMIN.name())));
+
 		publicTest(httpHeaders, status().isOk());
 		authenticatedTest(httpHeaders, status().isOk());
 		pubsAuthorizedTestGetsDeletes(httpHeaders, status().isOk(), true);

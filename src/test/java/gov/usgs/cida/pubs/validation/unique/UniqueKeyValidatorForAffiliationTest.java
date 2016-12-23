@@ -2,7 +2,7 @@ package gov.usgs.cida.pubs.validation.unique;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyMapOf;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -48,45 +48,45 @@ public class UniqueKeyValidatorForAffiliationTest extends BaseValidatorTest {
 
 	@Test
 	public void isValidAddTest() {
-		when(affiliationDao.getByMap(anyMapOf(String.class, Object.class))).thenReturn(new ArrayList<>());
+		when(affiliationDao.getByMap(anyMap())).thenReturn(new ArrayList<>());
 		affiliation.setText("affiliation");
 		assertTrue(validator.isValid(affiliation, context));
-		verify(affiliationDao, times(1)).getByMap(anyMapOf(String.class, Object.class));
+		verify(affiliationDao, times(1)).getByMap(anyMap());
 	}
 
 	@Test
 	public void isValidAddFailTest() {
-		when(affiliationDao.getByMap(anyMapOf(String.class, Object.class))).thenReturn(buildList());
+		when(affiliationDao.getByMap(anyMap())).thenReturn(buildList());
 		affiliation.setText("affiliation");
 		assertFalse(validator.isValid(affiliation, context));
-		verify(affiliationDao, times(1)).getByMap(anyMapOf(String.class, Object.class));
+		verify(affiliationDao, times(1)).getByMap(anyMap());
 	}
 
 	@Test
 	public void isValidNoMatchTest() {
-		when(affiliationDao.getByMap(anyMapOf(String.class, Object.class))).thenReturn(new ArrayList<>());
+		when(affiliationDao.getByMap(anyMap())).thenReturn(new ArrayList<>());
 		affiliation.setId(1);
 		affiliation.setText("affiliation");
 		assertTrue(validator.isValid(affiliation, context));
-		verify(affiliationDao, times(1)).getByMap(anyMapOf(String.class, Object.class));
+		verify(affiliationDao, times(1)).getByMap(anyMap());
 	}
 
 	@Test
 	public void isValidMatchTest() {
-		when(affiliationDao.getByMap(anyMapOf(String.class, Object.class))).thenReturn(buildList());
+		when(affiliationDao.getByMap(anyMap())).thenReturn(buildList());
 		affiliation.setId(1);
 		affiliation.setText("affiliation");
 		assertTrue(validator.isValid(affiliation, context));
-		verify(affiliationDao, times(1)).getByMap(anyMapOf(String.class, Object.class));
+		verify(affiliationDao, times(1)).getByMap(anyMap());
 	}
 
 	@Test
 	public void isValidFalseTest() {
-		when(affiliationDao.getByMap(anyMapOf(String.class, Object.class))).thenReturn(buildList());
+		when(affiliationDao.getByMap(anyMap())).thenReturn(buildList());
 		affiliation.setId(2);
 		affiliation.setText("affiliation");
 		assertFalse(validator.isValid(affiliation, context));
-		verify(affiliationDao, times(1)).getByMap(anyMapOf(String.class, Object.class));
+		verify(affiliationDao, times(1)).getByMap(anyMap());
 	}
 
 	public static List<CostCenter> buildList() {

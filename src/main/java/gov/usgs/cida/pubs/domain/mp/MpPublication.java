@@ -33,10 +33,10 @@ public class MpPublication extends Publication<MpPublication> {
 	private static final long serialVersionUID = 8072814759958143994L;
 
 	private static IMpPublicationDao mpPublicationDao;
-	
+
 	@JsonIgnore
 	private String lockUsername;
-	
+
 	public String getLockUsername() {
 		return lockUsername;
 	}

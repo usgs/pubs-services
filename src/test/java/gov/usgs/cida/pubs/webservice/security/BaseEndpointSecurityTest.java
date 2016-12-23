@@ -230,7 +230,7 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 			.andExpect(expectedStatus);
 		
 		//These two are posts, but they return the same codes as a get when successful...
-		mockMpPub.perform(post("/mppublications/publish").content("{}").contentType(MediaType.APPLICATION_JSON)
+		mockMpPub.perform(post("/mppublications/publish").content("{\"id\":1}").contentType(MediaType.APPLICATION_JSON)
 			.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
 				

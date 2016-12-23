@@ -20,7 +20,7 @@
 		<mybatis-version>3.4.1</mybatis-version>
 		<servlet-version>3.1.0</servlet-version>
 		<slf4j-version>1.7.22</slf4j-version>
-		<spring-security-version>4.2.0.RELEASE</spring-security-version>
+		<spring-security-version>4.2.1.RELEASE</spring-security-version>
 		<spring-version>4.3.5.RELEASE</spring-version>
 	</properties>
 
@@ -174,6 +174,16 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>5.3.4.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.el</groupId>
+			<artifactId>javax.el-api</artifactId>
+			<version>2.2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.web</groupId>
+			<artifactId>javax.el</artifactId>
+			<version>2.2.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mybatis</groupId>

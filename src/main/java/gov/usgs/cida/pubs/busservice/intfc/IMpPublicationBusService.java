@@ -43,4 +43,6 @@ public interface IMpPublicationBusService extends IBusService<MpPublication> {
 	 */
 	MpPublication getByIndexId(String indexId);
 
+	String getUsgsNumberedSeriesIndexId(final MpPublication pub);
+
 }

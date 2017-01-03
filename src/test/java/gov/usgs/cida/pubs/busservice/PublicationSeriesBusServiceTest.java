@@ -2,8 +2,8 @@ package gov.usgs.cida.pubs.busservice;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyMapOf;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,6 +47,7 @@ public class PublicationSeriesBusServiceTest extends BaseSpringTest {
 	private PublicationSubtype subtype;
 	private Publication<?> pub;
 	private PublicationSeries pubSeries;
+	protected Map<String, Object> filters = new HashMap<>();
 
 	@Mock
 	protected PublicationSubtypeDao publicationSubtypeDao;
@@ -78,7 +79,7 @@ public class PublicationSeriesBusServiceTest extends BaseSpringTest {
 
 		verify(publicationSubtypeDao, never()).getById(any(Integer.class));
 		verify(publicationSeriesDao, never()).uniqueCheck(any(PublicationSeries.class));
-		verify(publicationDao, never()).getObjectCount(anyMapOf(String.class, Object.class));
+		verify(publicationDao, never()).getObjectCount(anyMap());
 		verify(publicationSeriesDao, never()).add(any(PublicationSeries.class));
 		verify(publicationSeriesDao, never()).getById(any(Integer.class));
 	}
@@ -99,7 +100,7 @@ public class PublicationSeriesBusServiceTest extends BaseSpringTest {
 		//Should be called by UniqueKeyValidatorForPublicationSeries
 		verify(publicationSeriesDao).uniqueCheck(any(PublicationSeries.class));
 		//Should not be called - not doing a delete validation
-		verify(publicationDao, never()).getObjectCount(anyMapOf(String.class, Object.class));
+		verify(publicationDao, never()).getObjectCount(anyMap());
 		//Should be called in PublicationSeriesBusService
 		verify(publicationSeriesDao).add(any(PublicationSeries.class));
 		//Should be called in PublicationSeriesBusService
@@ -122,7 +123,7 @@ public class PublicationSeriesBusServiceTest extends BaseSpringTest {
 		//Should be called by UniqueKeyValidatorForPublicationSeries
 		verify(publicationSeriesDao).uniqueCheck(any(PublicationSeries.class));
 		//Should not be called - not doing a delete validation
-		verify(publicationDao, never()).getObjectCount(anyMapOf(String.class, Object.class));
+		verify(publicationDao, never()).getObjectCount(anyMap());
 		//Should be not called in PublicationSeriesBusService when validation errors
 		verify(publicationSeriesDao, never()).add(any(PublicationSeries.class));
 		//Should be not called in PublicationSeriesBusService when validation errors
@@ -137,14 +138,14 @@ public class PublicationSeriesBusServiceTest extends BaseSpringTest {
 		verify(publicationSeriesDao, never()).getById(any(Integer.class));
 		verify(publicationSubtypeDao, never()).getById(any(Integer.class));
 		verify(publicationSeriesDao, never()).uniqueCheck(any(PublicationSeries.class));
-		verify(publicationDao, never()).getObjectCount(anyMapOf(String.class, Object.class));
+		verify(publicationDao, never()).getObjectCount(anyMap());
 		verify(publicationSeriesDao, never()).delete(any(PublicationSeries.class));
 	}
 
 	@Test
 	public void deleteObjectTest() {
 		when(publicationSeriesDao.getById(any(Integer.class))).thenReturn(pubSeries);
-		when(publicationDao.getObjectCount(anyMapOf(String.class, Object.class))).thenReturn(0);
+		when(publicationDao.getObjectCount(anyMap())).thenReturn(0);
 		pubSeries.setId(1);
 
 		ValidationResults vr = busService.deleteObject(1);
@@ -157,7 +158,7 @@ public class PublicationSeriesBusServiceTest extends BaseSpringTest {
 		//Should not be called on a delete
 		verify(publicationSeriesDao, never()).uniqueCheck(any(PublicationSeries.class));
 		//Should be called in NoChildrenValidatorForPublicationSeries
-		verify(publicationDao).getObjectCount(anyMapOf(String.class, Object.class));
+		verify(publicationDao).getObjectCount(anyMap());
 		//Should be called in PublicationSeriesBusService
 		verify(publicationSeriesDao).delete(any(PublicationSeries.class));
 	}
@@ -176,7 +177,7 @@ public class PublicationSeriesBusServiceTest extends BaseSpringTest {
 		//Should not be called on a delete
 		verify(publicationSeriesDao, never()).uniqueCheck(any(PublicationSeries.class));
 		//Do not get here when object not found for delete
-		verify(publicationDao, never()).getObjectCount(anyMapOf(String.class, Object.class));
+		verify(publicationDao, never()).getObjectCount(anyMap());
 		//Do not get here when object not found for delete
 		verify(publicationSeriesDao, never()).delete(any(PublicationSeries.class));
 	}
@@ -184,7 +185,7 @@ public class PublicationSeriesBusServiceTest extends BaseSpringTest {
 	@Test
 	public void deleteObjectErrorsTest() {
 		when(publicationSeriesDao.getById(any(Integer.class))).thenReturn(pubSeries);
-		when(publicationDao.getObjectCount(anyMapOf(String.class, Object.class))).thenReturn(12);
+		when(publicationDao.getObjectCount(anyMap())).thenReturn(12);
 
 		ValidationResults vr = busService.deleteObject(1);
 		assertEquals(1, vr.getValidationErrors().size());
@@ -196,7 +197,7 @@ public class PublicationSeriesBusServiceTest extends BaseSpringTest {
 		//Should not be called on a delete
 		verify(publicationSeriesDao, never()).uniqueCheck(any(PublicationSeries.class));
 		//Should be called in NoChildrenValidatorForPublicationSeries
-		verify(publicationDao).getObjectCount(anyMapOf(String.class, Object.class));
+		verify(publicationDao).getObjectCount(anyMap());
 		//Should not be called when validation errors
 		verify(publicationSeriesDao, never()).delete(any(PublicationSeries.class));
 	}
@@ -221,21 +222,21 @@ public class PublicationSeriesBusServiceTest extends BaseSpringTest {
 
 	@Test
 	public void getObjectsTest() {
-		when(publicationSeriesDao.getByMap(anyMapOf(String.class, Object.class))).thenReturn(new ArrayList<PublicationSeries>());
+		when(publicationSeriesDao.getByMap(anyMap())).thenReturn(new ArrayList<PublicationSeries>());
 
-		List<PublicationSeries> listPubSeries = busService.getObjects(null);
+		List<PublicationSeries> listPubSeries = busService.getObjects(filters);
 		assertEquals(0, listPubSeries.size());
 
-		verify(publicationSeriesDao).getByMap(anyMapOf(String.class, Object.class));
+		verify(publicationSeriesDao).getByMap(anyMap());
 	}
 
 	@Test
 	public void getObjectCountTest() {
-		when(publicationSeriesDao.getObjectCount(anyMapOf(String.class, Object.class))).thenReturn(10);
+		when(publicationSeriesDao.getObjectCount(anyMap())).thenReturn(10);
 
-		assertEquals(10, busService.getObjectCount(null).intValue());
+		assertEquals(10, busService.getObjectCount(filters).intValue());
 
-		verify(publicationSeriesDao).getObjectCount(anyMapOf(String.class, Object.class));
+		verify(publicationSeriesDao).getObjectCount(anyMap());
 	}
 
 	@Test
@@ -245,7 +246,7 @@ public class PublicationSeriesBusServiceTest extends BaseSpringTest {
 
 		verify(publicationSubtypeDao, never()).getById(any(Integer.class));
 		verify(publicationSeriesDao, never()).uniqueCheck(any(PublicationSeries.class));
-		verify(publicationDao, never()).getObjectCount(anyMapOf(String.class, Object.class));
+		verify(publicationDao, never()).getObjectCount(anyMap());
 		verify(publicationSeriesDao, never()).update(any(PublicationSeries.class));
 		verify(publicationSeriesDao, never()).getById(any(Integer.class));
 
@@ -254,7 +255,7 @@ public class PublicationSeriesBusServiceTest extends BaseSpringTest {
 
 		verify(publicationSubtypeDao, never()).getById(any(Integer.class));
 		verify(publicationSeriesDao, never()).uniqueCheck(any(PublicationSeries.class));
-		verify(publicationDao, never()).getObjectCount(anyMapOf(String.class, Object.class));
+		verify(publicationDao, never()).getObjectCount(anyMap());
 		verify(publicationSeriesDao, never()).update(any(PublicationSeries.class));
 		verify(publicationSeriesDao, never()).getById(any(Integer.class));
 	}
@@ -276,7 +277,7 @@ public class PublicationSeriesBusServiceTest extends BaseSpringTest {
 		//Should be called by UniqueKeyValidatorForPublicationSeries
 		verify(publicationSeriesDao).uniqueCheck(any(PublicationSeries.class));
 		//Should not be called - not doing a delete validation
-		verify(publicationDao, never()).getObjectCount(anyMapOf(String.class, Object.class));
+		verify(publicationDao, never()).getObjectCount(anyMap());
 		//Should be called in PublicationSeriesBusService
 		verify(publicationSeriesDao).update(any(PublicationSeries.class));
 		//Should be called in PublicationSeriesBusService
@@ -299,7 +300,7 @@ public class PublicationSeriesBusServiceTest extends BaseSpringTest {
 		//Should be called by UniqueKeyValidatorForPublicationSeries
 		verify(publicationSeriesDao).uniqueCheck(any(PublicationSeries.class));
 		//Should not be called - not doing a delete validation
-		verify(publicationDao, never()).getObjectCount(anyMapOf(String.class, Object.class));
+		verify(publicationDao, never()).getObjectCount(anyMap());
 		//Should be not called in PublicationSeriesBusService when validation errors
 		verify(publicationSeriesDao, never()).update(any(PublicationSeries.class));
 		//Should be not called in PublicationSeriesBusService when validation errors

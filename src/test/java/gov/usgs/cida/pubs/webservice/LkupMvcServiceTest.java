@@ -1,7 +1,7 @@
 package gov.usgs.cida.pubs.webservice;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.anyMapOf;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -52,7 +52,7 @@ public class LkupMvcServiceTest extends BaseSpringTest {
 	public void getPeopleTest() throws Exception {
 		mockLookup.perform(get("/lookup/people").accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
 		mockLookup.perform(get("/lookup/people?text=a").accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
-		when(personContributorDao.getByMap(anyMapOf(String.class, Object.class))).thenReturn(getPeople());
+		when(personContributorDao.getByMap(anyMap())).thenReturn(getPeople());
 
 		MvcResult rtn = mockLookup.perform(get("/lookup/people?text=kr").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())

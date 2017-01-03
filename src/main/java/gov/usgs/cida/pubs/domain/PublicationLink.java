@@ -31,7 +31,6 @@ public class PublicationLink<D> extends BaseDomain<D> implements Serializable {
 
 	@JsonProperty("type")
 	@JsonView(View.PW.class)
-	@NotNull
 	private LinkType linkType;
 
 	@JsonProperty("url")
@@ -79,6 +78,7 @@ public class PublicationLink<D> extends BaseDomain<D> implements Serializable {
 		rank = inRank;
 	}
 
+	@NotNull
 	public LinkType getLinkType() {
 		return linkType;
 	}

@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
@@ -52,7 +52,6 @@ public class AffiliationValidationTest extends BaseValidatorTest {
 
 	@Before
 	@Override
-	@SuppressWarnings("unchecked")
 	public void setUp() throws Exception {
 		super.setUp();
 		affiliation = new CostCenter();
@@ -76,7 +75,6 @@ public class AffiliationValidationTest extends BaseValidatorTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void deleteTest() {
 		when(personContributorDao.getObjectCount(anyMap())).thenReturn(3);
 		affiliation.setValidationErrors(validator.validate(affiliation, DeleteChecks.class));
@@ -117,7 +115,6 @@ public class AffiliationValidationTest extends BaseValidatorTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void minLengthTest() {
 		when(affiliationDao.getByMap(anyMap())).thenReturn(new ArrayList<>());
 		affiliation.setText("");
@@ -136,7 +133,6 @@ public class AffiliationValidationTest extends BaseValidatorTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void maxLengthTest() {
 		when(affiliationDao.getByMap(anyMap())).thenReturn(new ArrayList<>());
 

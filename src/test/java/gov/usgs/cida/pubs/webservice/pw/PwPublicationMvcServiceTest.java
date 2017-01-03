@@ -3,7 +3,7 @@ package gov.usgs.cida.pubs.webservice.pw;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -64,7 +64,6 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 		expectedGetPubsPageNumber = temp.replace(13,15,"25").replace(33,34,"125").replace(51, 55, "\"6\"").toString();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void getPubsTest() throws Exception {
 		//Happy Path

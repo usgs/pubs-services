@@ -2,7 +2,7 @@ package gov.usgs.cida.pubs.validation.mp.unique;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyMapOf;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -71,7 +71,7 @@ public class UniqueKeyValidatorForMpListPublicationTest extends BaseValidatorTes
 	@Test
 	@SuppressWarnings("unchecked")
 	public void isValidTrueTest() {
-		when(mpListPublicationDao.getByMap(anyMapOf(String.class, Object.class))).thenReturn(new ArrayList<>(), buildList(), new ArrayList<>());
+		when(mpListPublicationDao.getByMap(anyMap())).thenReturn(new ArrayList<>(), buildList(), new ArrayList<>());
 		mpListPublication.setMpList(mpList);
 		mpListPublication.setMpPublication(mpPublication);
 		mpListPublication.setId(1);
@@ -80,21 +80,21 @@ public class UniqueKeyValidatorForMpListPublicationTest extends BaseValidatorTes
 
 		//Works with empty list returned
 		assertTrue(validator.isValid(mpListPublication, context));
-		verify(mpListPublicationDao).getByMap(anyMapOf(String.class, Object.class));
+		verify(mpListPublicationDao).getByMap(anyMap());
 
 		//Works with a list returned (pub assigned to same list)
 		assertTrue(validator.isValid(mpListPublication, context));
-		verify(mpListPublicationDao, times(2)).getByMap(anyMapOf(String.class, Object.class));
+		verify(mpListPublicationDao, times(2)).getByMap(anyMap());
 
 		//Works with add and no list returned (MpListPublication.getid() is null)
 		mpListPublication.setId("");
 		assertTrue(validator.isValid(mpListPublication, context));
-		verify(mpListPublicationDao, times(3)).getByMap(anyMapOf(String.class, Object.class));
+		verify(mpListPublicationDao, times(3)).getByMap(anyMap());
 	}
 
 	@Test
 	public void isValidFalseTest() {
-		when(mpListPublicationDao.getByMap(anyMapOf(String.class, Object.class))).thenReturn(buildList());
+		when(mpListPublicationDao.getByMap(anyMap())).thenReturn(buildList());
 		mpListPublication.setMpList(mpList);
 		mpListPublication.setMpPublication(mpPublication);
 		mpPublication.setId(1);
@@ -102,12 +102,12 @@ public class UniqueKeyValidatorForMpListPublicationTest extends BaseValidatorTes
 
 		//Works with add (MpListPublication.getid() is null)
 		assertFalse(validator.isValid(mpListPublication, context));
-		verify(mpListPublicationDao).getByMap(anyMapOf(String.class, Object.class));
+		verify(mpListPublicationDao).getByMap(anyMap());
 
 		//Works with a list returned (pub assigned to different list)
 		mpListPublication.setId(2);
 		assertFalse(validator.isValid(mpListPublication, context));
-		verify(mpListPublicationDao, times(2)).getByMap(anyMapOf(String.class, Object.class));
+		verify(mpListPublicationDao, times(2)).getByMap(anyMap());
 	}
 
 	public static List<MpListPublication> buildList() {

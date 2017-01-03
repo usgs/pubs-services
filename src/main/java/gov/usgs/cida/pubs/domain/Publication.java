@@ -31,10 +31,6 @@ import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 import gov.usgs.cida.pubs.validation.constraint.PublishChecks;
 import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
 
-/**
- * @author drsteini
- *
- */
 @Component
 @UniqueKey(message = "{publication.indexid.duplicate}")
 @ParentExists
@@ -66,7 +62,6 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 
 	@JsonProperty("publicationType")
 	@JsonView(View.PW.class)
-	@NotNull
 	private PublicationType publicationType;
 
 	@JsonProperty("publicationSubtype")
@@ -352,58 +347,35 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	@JsonView(View.MP.class)
 	private Boolean noUsgsAuthors;
 
-	/**
-	 * @return the indexId
-	 */
 	public String getIndexId() {
 		return indexId;
 	}
 
-	/**
-	 * @param inIndexId the indexId to set
-	 */
 	public void setIndexId(final String inIndexId) {
 		indexId = inIndexId;
 	}
 
-	/**
-	 * @return the displayToPublicDate
-	 */
 	public LocalDateTime getDisplayToPublicDate() {
 		return displayToPublicDate;
 	}
 
-	/**
-	 * @param inDisplayToPublicDate the displayToPublicDate to set
-	 */
 	public void setDisplayToPublicDate(final LocalDateTime inDisplayToPublicDate) {
 		displayToPublicDate = inDisplayToPublicDate;
 	}
 
-	/**
-	 * @return the publicationType
-	 */
+	@NotNull
 	public PublicationType getPublicationType() {
 		return publicationType;
 	}
 
-	/**
-	 * @param inPublicationType the publicationType to set
-	 */
 	public void setPublicationType(final PublicationType inPublicationType) {
 		publicationType = inPublicationType;
 	}
 
-	/**
-	 * @return the publicationSubtype
-	 */
 	public PublicationSubtype getPublicationSubtype() {
 		return publicationSubtype;
 	}
 
-	/**
-	 * @param inPublicationSubtype the publicationSubtype to set
-	 */
 	public void setPublicationSubtype(
 			final PublicationSubtype inPublicationSubtype) {
 		publicationSubtype = inPublicationSubtype;
@@ -417,44 +389,26 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 		seriesTitle = inSeriesTitle;
 	}
 
-	/**
-	 * @return the seriesNumber
-	 */
 	public String getSeriesNumber() {
 		return seriesNumber;
 	}
 
-	/**
-	 * @param inSeriesNumber the seriesNumber to set
-	 */
 	public void setSeriesNumber(final String inSeriesNumber) {
 		seriesNumber = inSeriesNumber;
 	}
 
-	/**
-	 * @return the subSeriesTitle
-	 */
 	public String getSubseriesTitle() {
 		return subseriesTitle;
 	}
 
-	/**
-	 * @param inSubseriesTitle the subseriesTitle to set
-	 */
 	public void setSubseriesTitle(final String inSubseriesTitle) {
 		subseriesTitle = inSubseriesTitle;
 	}
 
-	/**
-	 * @return the chapter
-	 */
 	public String getChapter() {
 		return chapter;
 	}
 
-	/**
-	 * @param inChapter the chapter to set
-	 */
 	public void setChapter(final String inChapter) {
 		chapter = inChapter;
 	}
@@ -467,72 +421,42 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 		subchapterNumber = inSubchapterNumber;
 	}
 
-	/**
-	 * @return the title
-	 */
 	public String getTitle() {
 		return title;
 	}
 
-	/**
-	 * @param inTitle the title to set
-	 */
 	public void setTitle(final String inTitle) {
 		title = inTitle;
 	}
 
-	/**
-	 * @return the docAbstract
-	 */
 	public String getDocAbstract() {
 		return docAbstract;
 	}
 
-	/**
-	 * @param inDocAbstract the docAbstract to set
-	 */
 	public void setDocAbstract(final String inDocAbstract) {
 		docAbstract = inDocAbstract;
 	}
 
-	/**
-	 * @return the language
-	 */
 	public String getLanguage() {
 		return language;
 	}
 
-	/**
-	 * @param inLanguage the language to set
-	 */
 	public void setLanguage(final String inLanguage) {
 		language = inLanguage;
 	}
 
-	/**
-	 * @return the publisher
-	 */
 	public String getPublisher() {
 		return publisher;
 	}
 
-	/**
-	 * @param inPublisher the publisher to set
-	 */
 	public void setPublisher(final String inPublisher) {
 		publisher = inPublisher;
 	}
 
-	/**
-	 * @return the publisherLocation
-	 */
 	public String getPublisherLocation() {
 		return publisherLocation;
 	}
 
-	/**
-	 * @param inPublisherLocation the publisherLocation to set
-	 */
 	public void setPublisherLocation(final String inPublisherLocation) {
 		publisherLocation = inPublisherLocation;
 	}
@@ -545,170 +469,98 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 		doi = inDoi;
 	}
 
-	/**
-	 * @return the issn
-	 */
 	public String getIssn() {
 		return issn;
 	}
 
-	/**
-	 * @param inIssn the issn to set
-	 */
 	public void setIssn(final String inIssn) {
 		issn = inIssn;
 	}
 
-	/**
-	 * @return the isbn
-	 */
 	public String getIsbn() {
 		return isbn;
 	}
 
-	/**
-	 * @param inIsbn the isbn to set
-	 */
 	public void setIsbn(final String inIsbn) {
 		isbn = inIsbn;
 	}
 
-	/**
-	 * @return the collaboration
-	 */
 	public String getCollaboration() {
 		return collaboration;
 	}
 
-	/**
-	 * @param inCollaboration the collaboration to set
-	 */
 	public void setCollaboration(final String inCollaboration) {
 		collaboration = inCollaboration;
 	}
 
-	/**
-	 * @return the usgsCitation
-	 */
 	public String getUsgsCitation() {
 		return usgsCitation;
 	}
 
-	/**
-	 * @param inUsgsCitation the usgsCitation to set
-	 */
 	public void setUsgsCitation(final String inUsgsCitation) {
 		usgsCitation = inUsgsCitation;
 	}
 
-	/**
-	 * @return the productDescription
-	 */
 	public String getProductDescription() {
 		return productDescription;
 	}
 
-	/**
-	 * @param inProductDescription the productDescription to set
-	 */
 	public void setProductDescription(final String inProductDescription) {
 		productDescription = inProductDescription;
 	}
 
-	/**
-	 * @return the startPage
-	 */
 	public String getStartPage() {
 		return startPage;
 	}
 
-	/**
-	 * @param inStartPage the startPage to set
-	 */
 	public void setStartPage(final String inStartPage) {
 		startPage = inStartPage;
 	}
 
-	/**
-	 * @return the endPage
-	 */
 	public String getEndPage() {
 		return endPage;
 	}
 
-	/**
-	 * @param inEndPage the endPage to set
-	 */
 	public void setEndPage(final String inEndPage) {
 		endPage = inEndPage;
 	}
 
-	/**
-	 * @return the numberOfPages
-	 */
 	public String getNumberOfPages() {
 		return numberOfPages;
 	}
 
-	/**
-	 * @param inNumberOfPages the numberOfPages to set
-	 */
 	public void setNumberOfPages(final String inNumberOfPages) {
 		numberOfPages = inNumberOfPages;
 	}
 
-	/**
-	 * @return the onlineOnly
-	 */
 	public String getOnlineOnly() {
 		return onlineOnly;
 	}
 
-	/**
-	 * @param inOnlineOnly the onlineOnly to set
-	 */
 	public void setOnlineOnly(final String inOnlineOnly) {
 		onlineOnly = inOnlineOnly;
 	}
 
-	/**
-	 * @return the additionalOnlineFiles
-	 */
 	public String getAdditionalOnlineFiles() {
 		return additionalOnlineFiles;
 	}
 
-	/**
-	 * @param inAdditionalOnlineFiles the additionalOnlineFiles to set
-	 */
 	public void setAdditionalOnlineFiles(final String inAdditionalOnlineFiles) {
 		additionalOnlineFiles = inAdditionalOnlineFiles;
 	}
 
-	/**
-	 * @return the temporalStart
-	 */
 	public LocalDate getTemporalStart() {
 		return temporalStart;
 	}
 
-	/**
-	 * @param inTemporalStart the temporalStart to set
-	 */
 	public void setTemporalStart(final LocalDate inTemporalStart) {
 		temporalStart = inTemporalStart;
 	}
 
-	/**
-	 * @return the temporalEnd
-	 */
 	public LocalDate getTemporalEnd() {
 		return temporalEnd;
 	}
 
-	/**
-	 * @param inTemporalEnd the temporalEnd to set
-	 */
 	public void setTemporalEnd(final LocalDate inTemporalEnd) {
 		temporalEnd = inTemporalEnd;
 	}
@@ -721,16 +573,10 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 		this.notes = notes;
 	}
 
-	/**
-	 * @return the ipdsId
-	 */
 	public String getIpdsId() {
 		return ipdsId;
 	}
 
-	/**
-	 * @param inIpdsId the ipdsId to set
-	 */
 	public void setIpdsId(final String inIpdsId) {
 		ipdsId = inIpdsId;
 	}
@@ -743,16 +589,10 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 		this.ipdsReviewProcessState = inIpdsReviewProcessState;
 	}
 
-	/**
-	 * @param inIpdsInternalId the ipdsInternalId to set
-	 */
 	public void setIpdsInternalId(final String inIpdsInternalId) {
 		ipdsInternalId = inIpdsInternalId;
 	}
 
-	/**
-	 * @return the ipdsInternalId
-	 */
 	public String getIpdsInternalId() {
 		return ipdsInternalId;
 	}
@@ -1104,18 +944,10 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 		noUsgsAuthors = inNoUsgsAuthors;
 	}
 
-	/**
-	 * @return the publicationDao
-	 */
 	public static IPublicationDao getPublicationDao() {
 		return publicationDao;
 	}
 
-	/**
-	 * The setter for publicationDao.
-	 * 
-	 * @param inPublicationDao the publicationDao to set
-	 */
 	@Autowired
 	public void setPublicationDao(final IPublicationDao inPublicationDao) {
 		publicationDao = inPublicationDao;

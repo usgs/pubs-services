@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.when;
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
@@ -80,7 +80,6 @@ public class CorporateContributorValidationTest extends BaseValidatorTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void minLengthTest() {
 		when(contributorDao.getByMap(anyMap())).thenReturn(new ArrayList<>());
 		contributor.setOrganization("");
@@ -99,7 +98,6 @@ public class CorporateContributorValidationTest extends BaseValidatorTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void maxLengthTest() {
 		when(contributorDao.getByMap(anyMap())).thenReturn(new ArrayList<>());
 

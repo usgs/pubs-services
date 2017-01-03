@@ -2,8 +2,8 @@ package gov.usgs.cida.pubs.validation.mp;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyMap;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.when;
 
 import javax.validation.Validator;
@@ -51,7 +51,6 @@ public class MpListPublicationValidationTest extends BaseValidatorTest {
 
 	@Before
 	@Override
-	@SuppressWarnings("unchecked")
 	public void setUp() throws Exception {
 		super.setUp();
 		mpPublication = new MpPublication();

@@ -2,7 +2,7 @@ package gov.usgs.cida.pubs.validation.nochildren;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyMapOf;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.when;
 import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.domain.CostCenter;
@@ -45,13 +45,13 @@ public class NoChildrenValidatorForAffiliationTest extends BaseValidatorTest {
 
 	@Test
 	public void isValidTrueTest() {
-		when(personContributorDao.getObjectCount(anyMapOf(String.class, Object.class))).thenReturn(0);
+		when(personContributorDao.getObjectCount(anyMap())).thenReturn(0);
 		assertTrue(validator.isValid(affiliation, context));
 	}
 
 	@Test
 	public void isValidFalseTest() {
-		when(personContributorDao.getObjectCount(anyMapOf(String.class, Object.class))).thenReturn(10);
+		when(personContributorDao.getObjectCount(anyMap())).thenReturn(10);
 		assertFalse(validator.isValid(affiliation, context));
 	}
 }

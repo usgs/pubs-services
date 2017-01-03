@@ -2,7 +2,7 @@ package gov.usgs.cida.pubs.validation.nochildren;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyMapOf;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
@@ -46,13 +46,13 @@ public class NoChildrenValidatorForPublicationSeriesTest extends BaseValidatorTe
 
 	@Test
 	public void isValidTrueTest() {
-		when(publicationDao.getObjectCount(anyMapOf(String.class, Object.class))).thenReturn(0);
+		when(publicationDao.getObjectCount(anyMap())).thenReturn(0);
 		assertTrue(validator.isValid(series, context));
 	}
 
 	@Test
 	public void isValidFalseTest() {
-		when(publicationDao.getObjectCount(anyMapOf(String.class, Object.class))).thenReturn(10);
+		when(publicationDao.getObjectCount(anyMap())).thenReturn(10);
 		assertFalse(validator.isValid(series, context));
 	}
 

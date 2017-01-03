@@ -67,10 +67,10 @@ public abstract class BaseSpringTest {
 
 	@Autowired
 	protected WebApplicationContext wac;
-	
+
 	@Autowired
 	protected MappingJackson2HttpMessageConverter jackson2HttpMessageConverter;
-	
+
 	/** random for the class. */
 	protected static final Random RANDOM = new Random();
 
@@ -82,7 +82,7 @@ public abstract class BaseSpringTest {
 	}
 
 	protected Integer id;
-	
+
 	/** Log for errors etc. */
 	public static final Log LOG = LogFactory.getLog(BaseSpringTest.class);
 
@@ -90,17 +90,17 @@ public abstract class BaseSpringTest {
 	public void baseSpringSetup() {
 		SecurityContextHolder.clearContext();
 	}
-	
+
 	public static void buildTestAuthentication(String username) {
 		List<String> roles = new ArrayList<>(Arrays.asList(PubsRoles.PUBS_ADMIN.name()));
-   		SecurityContextHolder.getContext().setAuthentication(new PubsAuthentication(username, roles));
+		SecurityContextHolder.getContext().setAuthentication(new PubsAuthentication(username, roles));
 	}
-	
+
 	public static void buildTestAuthentication(String username, List<String> roles) {
 		SecurityContextHolder.clearContext();
-   		SecurityContextHolder.getContext().setAuthentication(new PubsAuthentication(username, roles));
+		SecurityContextHolder.getContext().setAuthentication(new PubsAuthentication(username, roles));
 	}
-	
+
 	public void assertDaoTestResults(final Class<?> inClass, final Object inObject, final Object resultObject) {
 		assertDaoTestResults(inClass, inObject, resultObject, null, false, false, false);
 	}
@@ -133,7 +133,7 @@ public abstract class BaseSpringTest {
 							assertProperty(inProp, resultProp, prop);
 						}
 					}
-				}  catch (Exception e) {
+				} catch (Exception e) {
 					throw new RuntimeException("Error getting property: " + prop.getName(), e);
 				}
 			}
@@ -179,7 +179,7 @@ public abstract class BaseSpringTest {
 	public String getCompareFile(String file) throws IOException {
 		return new String(FileCopyUtils.copyToByteArray(new ClassPathResource("testResult/" + file).getInputStream()));
 	}
-	
+
 	public JSONObject getRtnAsJSONObject(MvcResult rtn) throws Exception {
 		return new JSONObject(rtn.getResponse().getContentAsString());		
 	}

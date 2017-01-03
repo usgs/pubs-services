@@ -38,7 +38,7 @@ import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
 @EnableWebMvc
 @EnableTransactionManagement
 @EnableAspectJAutoProxy
-@Import({SecurityConfig.class, BusServiceConfig.class, MybatisConfig.class})
+@Import({BusServiceConfig.class, MybatisConfig.class})
 public class SpringConfig extends WebMvcConfigurerAdapter {
 
 	@Autowired

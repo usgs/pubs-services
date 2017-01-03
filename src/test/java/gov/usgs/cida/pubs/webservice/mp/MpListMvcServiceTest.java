@@ -1,7 +1,7 @@
 package gov.usgs.cida.pubs.webservice.mp;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -42,7 +42,6 @@ public class MpListMvcServiceTest extends BaseSpringTest {
 		mockMvc = MockMvcBuilders.standaloneSetup(mvcService).build();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void getListsTest() throws Exception {
 		when(busService.getObjects(anyMap())).thenReturn(getListOfMpList());

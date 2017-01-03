@@ -2,8 +2,8 @@ package gov.usgs.cida.pubs.webservice;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyMap;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -49,7 +49,6 @@ public class PublicationSeriesMvcServiceTest extends BaseSpringTest {
 		mockMvc = MockMvcBuilders.standaloneSetup(mvcService).build();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void getListTest() throws Exception {
 		//Happy Path

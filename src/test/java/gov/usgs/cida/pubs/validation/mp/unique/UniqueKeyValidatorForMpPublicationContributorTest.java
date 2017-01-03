@@ -2,7 +2,7 @@ package gov.usgs.cida.pubs.validation.mp.unique;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyMapOf;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -67,7 +67,7 @@ public class UniqueKeyValidatorForMpPublicationContributorTest extends BaseValid
 	@SuppressWarnings("unchecked")
 	@Test
 	public void isValidTrueTest() {
-		when(mpPublicationContributorDao.getByMap(anyMapOf(String.class, Object.class))).thenReturn(new ArrayList<>(), buildList(), new ArrayList<>());
+		when(mpPublicationContributorDao.getByMap(anyMap())).thenReturn(new ArrayList<>(), buildList(), new ArrayList<>());
 		mpPubContributor.setContributorType(type);
 		mpPubContributor.setContributor(contributor);
 		mpPubContributor.setId(1);
@@ -77,22 +77,22 @@ public class UniqueKeyValidatorForMpPublicationContributorTest extends BaseValid
 		
 		//Works with empty list returned
 		assertTrue(validator.isValid(mpPubContributor, context));
-		verify(mpPublicationContributorDao).getByMap(anyMapOf(String.class, Object.class));
+		verify(mpPublicationContributorDao).getByMap(anyMap());
 
 		//Works with a list returned (contributor has same role on same record)
 		assertTrue(validator.isValid(mpPubContributor, context));
-		verify(mpPublicationContributorDao, times(2)).getByMap(anyMapOf(String.class, Object.class));
+		verify(mpPublicationContributorDao, times(2)).getByMap(anyMap());
 
 		//Works with add and no list returned (MpPublicationContributor.getid() is null)
 		mpPubContributor.setId("");
 		assertTrue(validator.isValid(mpPubContributor, context));
-		verify(mpPublicationContributorDao, times(3)).getByMap(anyMapOf(String.class, Object.class));
+		verify(mpPublicationContributorDao, times(3)).getByMap(anyMap());
 		
 	}
 
 	@Test
 	public void isValidFalseTest() {
-		when(mpPublicationContributorDao.getByMap(anyMapOf(String.class, Object.class))).thenReturn(buildList());
+		when(mpPublicationContributorDao.getByMap(anyMap())).thenReturn(buildList());
 		mpPubContributor.setContributorType(type);
 		mpPubContributor.setContributor(contributor);
 		mpPubContributor.setPublicationId(1);
@@ -101,12 +101,12 @@ public class UniqueKeyValidatorForMpPublicationContributorTest extends BaseValid
 		
 		//Works with add (MpPublicationContributor.getid() is null)
 		assertFalse(validator.isValid(mpPubContributor, context));
-		verify(mpPublicationContributorDao).getByMap(anyMapOf(String.class, Object.class));
+		verify(mpPublicationContributorDao).getByMap(anyMap());
 
 		//Works with a list returned (contributor already has same role on this pub)
 		mpPubContributor.setId(2);
 		assertFalse(validator.isValid(mpPubContributor, context));
-		verify(mpPublicationContributorDao, times(2)).getByMap(anyMapOf(String.class, Object.class));
+		verify(mpPublicationContributorDao, times(2)).getByMap(anyMap());
 	}
 
 	public static List<MpPublicationContributor> buildList() {

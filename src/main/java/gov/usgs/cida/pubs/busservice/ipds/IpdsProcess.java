@@ -75,17 +75,12 @@ public class IpdsProcess implements IIpdsProcess {
 	}
 
 	protected String processPublication(final ProcessType inProcessType, final PubMap inPub) {
+		StringBuilder rtn = new StringBuilder("");
 		MpPublication pub = binder.bindPublication(inPub);
 
 		//Check for existing data in MyPubs and warehouse lands - use the first hit of each if any found.
-		//IPDS_ID is a alternate key, so there should only be 0 or 1 in each table.
-		Map<String, Object> filters = new HashMap<String, Object>();
-		filters.put(PublicationDao.IPDS_ID, new String[]{pub.getIpdsId()});
-		List<MpPublication> existingMpPubs = pubBusService.getObjects(filters);
-		MpPublication existingMpPub = null == existingMpPubs ? null : existingMpPubs.isEmpty() ? null : existingMpPubs.get(0);
-		PwPublication existingPwPub = PwPublication.getDao().getByIpdsId(pub.getIpdsId());
-
-		StringBuilder rtn = new StringBuilder("");
+		MpPublication existingMpPub = getFromMp(pub);
+		PwPublication existingPwPub = getFromPw(pub);
 
 		if (okToProcess(inProcessType, pub, existingMpPub, existingPwPub)) {
 			pub.setIpdsReviewProcessState(inProcessType.getIpdsValue());
@@ -178,6 +173,31 @@ public class IpdsProcess implements IIpdsProcess {
 		}
 
 		return rtn.append("\n\n").toString();
+	}
+
+	protected MpPublication getFromMp(MpPublication pub) {
+		//IPDS_ID and index ID are alternate keys, so there should only be 0 or 1 in each table.
+		Map<String, Object> filters = new HashMap<String, Object>();
+		filters.put(PublicationDao.IPDS_ID, new String[]{pub.getIpdsId()});
+		List<MpPublication> existingMpPubs = pubBusService.getObjects(filters);
+		MpPublication existingMpPub = null == existingMpPubs ? null : existingMpPubs.isEmpty() ? null : existingMpPubs.get(0);
+		if (null == existingMpPub && PubsUtilities.isUsgsNumberedSeries(pub.getPublicationSubtype())) {
+			//It's a USGS Numbered Series, to try again by index ID if not found by IPDS ID
+			filters.clear();
+			filters.put(PublicationDao.INDEX_ID, new String[]{pubBusService.getUsgsNumberedSeriesIndexId(pub)});
+			existingMpPubs = pubBusService.getObjects(filters);
+			existingMpPub = null == existingMpPubs ? null : existingMpPubs.isEmpty() ? null : existingMpPubs.get(0);
+		}
+		return existingMpPub;
+	}
+
+	protected PwPublication getFromPw(MpPublication pub) {
+		PwPublication existingPwPub = PwPublication.getDao().getByIpdsId(pub.getIpdsId());
+		if (null == existingPwPub && PubsUtilities.isUsgsNumberedSeries(pub.getPublicationSubtype())) {
+			//It's a USGS Numbered Series, to try again by index ID if not found by IPDS ID
+			existingPwPub = PwPublication.getDao().getByIndexId(pubBusService.getUsgsNumberedSeriesIndexId(pub));
+		}
+		return existingPwPub;
 	}
 
 	protected boolean okToProcess(final ProcessType inProcessType, final MpPublication pub,

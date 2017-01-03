@@ -22,7 +22,7 @@ public class PublicationContributor<D> extends BaseDomain<D> implements Serializ
 
 	@JsonProperty("contributorType")
 	@JsonView(View.PW.class)
-  //TODO Activate this once we can populate from front-end	@NotNull
+	//TODO Activate this once we can populate from front-end	@NotNull
 	private ContributorType contributorType;
 
 	@JsonProperty("rank")
@@ -31,7 +31,6 @@ public class PublicationContributor<D> extends BaseDomain<D> implements Serializ
 
 	@JsonView(View.PW.class)
 	@JsonUnwrapped
-	@NotNull
 	private Contributor<?> contributor;
 
 	public Integer getPublicationId() {
@@ -58,6 +57,7 @@ public class PublicationContributor<D> extends BaseDomain<D> implements Serializ
 		rank = inRank;
 	}
 
+	@NotNull
 	public Contributor<?> getContributor() {
 		return contributor;
 	}

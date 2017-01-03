@@ -1,10 +1,9 @@
 package gov.usgs.cida.pubs.webservice.security;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyMap;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -45,7 +44,6 @@ public abstract class EndpointSecurityAuthTest extends BaseEndpointSecurityTest 
 		postSetup();
 	}
 
-	@SuppressWarnings("unchecked")
 	public void mockSetup() throws Exception {
 		AuthToken testToken = new AuthToken();
 		testToken.setTokenId("a-token-string");
@@ -57,14 +55,14 @@ public abstract class EndpointSecurityAuthTest extends BaseEndpointSecurityTest 
 		when(mpPubBusService.getObject(anyInt())).thenReturn(MpPublicationDaoTest.buildAPub(1));
 		when(mpPubBusService.checkAvailability(anyInt())).thenReturn(null);
 		when(mpPubBusService.deleteObject(anyInt())).thenReturn(new ValidationResults());
-		when(mpPubBusService.createObject((MpPublication) anyObject())).thenReturn(MpPublicationDaoTest.buildAPub(1));
+		when(mpPubBusService.createObject(any(MpPublication.class))).thenReturn(MpPublicationDaoTest.buildAPub(1));
 		when(mpPubBusService.publish(anyInt())).thenReturn(new ValidationResults());
 		when(mpPubBusService.getByIndexId(anyString())).thenReturn(MpPublicationDaoTest.buildAPub(1));
-		when(mpPubBusService.updateObject((MpPublication) anyObject())).thenReturn(MpPublicationDaoTest.buildAPub(1));
+		when(mpPubBusService.updateObject(any(MpPublication.class))).thenReturn(MpPublicationDaoTest.buildAPub(1));
 
 		when(corpBusService.getObject(anyInt())).thenReturn(CorporateContributorDaoTest.buildACorp(1));
-		when(corpBusService.createObject((CorporateContributor) anyObject())).thenReturn(CorporateContributorDaoTest.buildACorp(1));
-		when(corpBusService.updateObject((CorporateContributor) anyObject())).thenReturn(CorporateContributorDaoTest.buildACorp(1));
+		when(corpBusService.createObject(any(CorporateContributor.class))).thenReturn(CorporateContributorDaoTest.buildACorp(1));
+		when(corpBusService.updateObject(any(CorporateContributor.class))).thenReturn(CorporateContributorDaoTest.buildACorp(1));
 
 		when(listBusService.updateObject(any(MpList.class))).thenReturn(MpListDaoTest.buildMpList(66));
 		when(listBusService.getObjects(anyMap())).thenReturn(MpListMvcServiceTest.getListOfMpList());
@@ -73,7 +71,7 @@ public abstract class EndpointSecurityAuthTest extends BaseEndpointSecurityTest 
 
 		//This gets tricky because the TokeSecurityFilter's AuthenticationService and the
 		//AuthTokenService's AuthenticationService end up not being the same object so we need to do the mocks at both levels...
-		when(authenticationService.authenticate(anyString(), anyString())).thenReturn(testToken);
+		when(authenticationService.authenticate(null, null)).thenReturn(testToken);
 		when(mockAuthClient.getNewToken(anyString(), anyString())).thenReturn(testToken);
 		when(mockAuthClient.getToken("a-token-string")).thenReturn(testToken);
 		when(mockAuthClient.isValidToken("a-token-string")).thenReturn(true);

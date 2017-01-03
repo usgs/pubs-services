@@ -2,7 +2,7 @@ package gov.usgs.cida.pubs.validation.mp.unique;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyMapOf;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -25,7 +25,7 @@ import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 //for each reference. This does mean that we need to let Spring know that the context is now dirty...
 @DirtiesContext(classMode=ClassMode.AFTER_CLASS)
 public class UniqueKeyValidatorForMpPublicationTest extends BaseValidatorTest {
-	
+
 	protected UniqueKeyValidatorForMpPublication validator;
 	protected Publication<?> mpPub;
 
@@ -51,120 +51,120 @@ public class UniqueKeyValidatorForMpPublicationTest extends BaseValidatorTest {
 
 	@Test
 	public void isValidAddTest() {
-		when(publicationDao.getByMap(anyMapOf(String.class, Object.class))).thenReturn(new ArrayList<>());
+		when(publicationDao.validateByMap(anyMap())).thenReturn(new ArrayList<>());
 
 		//With indexId
 		mpPub.setIndexId("123");
 		mpPub.setIpdsId(null);
 		assertTrue(validator.isValid(mpPub, context));
-		verify(publicationDao).getByMap(anyMapOf(String.class, Object.class));
+		verify(publicationDao).validateByMap(anyMap());
 
 		//With ipdsId
 		mpPub.setIndexId(null);
 		mpPub.setIpdsId("IPDS-456");
 		assertTrue(validator.isValid(mpPub, context));
-		verify(publicationDao, times(2)).getByMap(anyMapOf(String.class, Object.class));
+		verify(publicationDao, times(2)).validateByMap(anyMap());
 
 		//With both
 		mpPub.setIndexId("123");
 		mpPub.setIpdsId("IPDS-456");
 		assertTrue(validator.isValid(mpPub, context));
-		verify(publicationDao, times(4)).getByMap(anyMapOf(String.class, Object.class));
+		verify(publicationDao, times(4)).validateByMap(anyMap());
 	}
 
 	@Test
 	public void isValidAddFailTest() {
-		when(publicationDao.getByMap(anyMapOf(String.class, Object.class))).thenReturn(buildList());
+		when(publicationDao.validateByMap(anyMap())).thenReturn(buildList());
 
 		//With indexId
 		mpPub.setIndexId("123");
 		mpPub.setIpdsId(null);
 		assertFalse(validator.isValid(mpPub, context));
-		verify(publicationDao).getByMap(anyMapOf(String.class, Object.class));
+		verify(publicationDao).validateByMap(anyMap());
 
 		//With ipdsId
 		mpPub.setIndexId(null);
 		mpPub.setIpdsId("IPDS-456");
 		assertFalse(validator.isValid(mpPub, context));
-		verify(publicationDao, times(2)).getByMap(anyMapOf(String.class, Object.class));
+		verify(publicationDao, times(2)).validateByMap(anyMap());
 
 		//With both
 		mpPub.setIndexId("123");
 		mpPub.setIpdsId("IPDS-456");
 		assertFalse(validator.isValid(mpPub, context));
-		verify(publicationDao, times(4)).getByMap(anyMapOf(String.class, Object.class));
+		verify(publicationDao, times(4)).validateByMap(anyMap());
 	}
 
 	@Test
 	public void isValidNoMatchTest() {
-		when(publicationDao.getByMap(anyMapOf(String.class, Object.class))).thenReturn(new ArrayList<>());
+		when(publicationDao.validateByMap(anyMap())).thenReturn(new ArrayList<>());
 		mpPub.setId(1);
 
 		//With indexId
 		mpPub.setIndexId("123");
 		mpPub.setIpdsId(null);
 		assertTrue(validator.isValid(mpPub, context));
-		verify(publicationDao).getByMap(anyMapOf(String.class, Object.class));
+		verify(publicationDao).validateByMap(anyMap());
 
 		//With ipdsId
 		mpPub.setIndexId(null);
 		mpPub.setIpdsId("IPDS-456");
 		assertTrue(validator.isValid(mpPub, context));
-		verify(publicationDao, times(2)).getByMap(anyMapOf(String.class, Object.class));
+		verify(publicationDao, times(2)).validateByMap(anyMap());
 
 		//With both
 		mpPub.setIndexId("123");
 		mpPub.setIpdsId("IPDS-456");
 		assertTrue(validator.isValid(mpPub, context));
-		verify(publicationDao, times(4)).getByMap(anyMapOf(String.class, Object.class));
+		verify(publicationDao, times(4)).validateByMap(anyMap());
 	}
 
 	@Test
 	public void isValidMatchTest() {
-		when(publicationDao.getByMap(anyMapOf(String.class, Object.class))).thenReturn(buildList());
+		when(publicationDao.validateByMap(anyMap())).thenReturn(buildList());
 		mpPub.setId(1);
 
 		//With indexId
 		mpPub.setIndexId("123");
 		mpPub.setIpdsId(null);
 		assertTrue(validator.isValid(mpPub, context));
-		verify(publicationDao).getByMap(anyMapOf(String.class, Object.class));
+		verify(publicationDao).validateByMap(anyMap());
 
 		//With ipdsId
 		mpPub.setIndexId(null);
 		mpPub.setIpdsId("IPDS-456");
 		assertTrue(validator.isValid(mpPub, context));
-		verify(publicationDao, times(2)).getByMap(anyMapOf(String.class, Object.class));
+		verify(publicationDao, times(2)).validateByMap(anyMap());
 
 		//With both
 		mpPub.setIndexId("123");
 		mpPub.setIpdsId("IPDS-456");
 		assertTrue(validator.isValid(mpPub, context));
-		verify(publicationDao, times(4)).getByMap(anyMapOf(String.class, Object.class));
+		verify(publicationDao, times(4)).validateByMap(anyMap());
 	}
 
 	@Test
 	public void isValidFalseTest() {
-		when(publicationDao.getByMap(anyMapOf(String.class, Object.class))).thenReturn(buildList());
+		when(publicationDao.validateByMap(anyMap())).thenReturn(buildList());
 		mpPub.setId(2);
 
 		//With indexId
 		mpPub.setIndexId("123");
 		mpPub.setIpdsId(null);
 		assertFalse(validator.isValid(mpPub, context));
-		verify(publicationDao).getByMap(anyMapOf(String.class, Object.class));
+		verify(publicationDao).validateByMap(anyMap());
 
 		//With ipdsId
 		mpPub.setIndexId(null);
 		mpPub.setIpdsId("IPDS-456");
 		assertFalse(validator.isValid(mpPub, context));
-		verify(publicationDao, times(2)).getByMap(anyMapOf(String.class, Object.class));
+		verify(publicationDao, times(2)).validateByMap(anyMap());
 
 		//With both
 		mpPub.setIndexId("123");
 		mpPub.setIpdsId("IPDS-456");
 		assertFalse(validator.isValid(mpPub, context));
-		verify(publicationDao, times(4)).getByMap(anyMapOf(String.class, Object.class));
+		verify(publicationDao, times(4)).validateByMap(anyMap());
 	}
 
 	public static List<Publication<?>> buildList() {

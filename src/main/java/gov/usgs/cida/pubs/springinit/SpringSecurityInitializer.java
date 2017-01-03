@@ -1,5 +1,7 @@
 package gov.usgs.cida.pubs.springinit;
 
-public class SpringSecurityInitializer {// extends AbstractSecurityWebApplicationInitializer {
+import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
+
+public class SpringSecurityInitializer extends AbstractSecurityWebApplicationInitializer {
 
 }

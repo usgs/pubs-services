@@ -352,7 +352,7 @@ public class PublicationDaoTest extends BaseSpringTest {
 		filters.put(PublicationDao.DOI, true);
 
 		filters.put(PublicationDao.END_YEAR, "yearEnd");
-		filters.put(PwPublicationDao.G, "polygon");
+		filters.put(PwPublicationDao.G, new String[]{"polygon"});
 		filters.put(MpPublicationDao.GLOBAL, "yes");
 		filters.put(PublicationDao.INDEX_ID, new String[]{"indexId1", "indexId2"});
 		filters.put(PublicationDao.IPDS_ID, new String[]{"ipdsId1", "ipdsId2"});

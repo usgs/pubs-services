@@ -17,6 +17,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.dao.PublicationDao;
+import gov.usgs.cida.pubs.dao.PublicationDaoTest;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 
@@ -72,18 +73,19 @@ public class PwPublicationDaoTest extends BaseSpringTest {
 		assertEquals(1, pubs.size());
 		PwPublicationTest.assertPwPub4(pubs.get(0));
 		PwPublicationTest.assertPwPub4Children(pubs.get(0));
-		
+
 		String[] polygon = {"-122.3876953125","37.80869897600677","-122.3876953125","36.75979104322286","-123.55224609375","36.75979104322286",
 							"-123.55224609375","37.80869897600677","-122.3876953125","37.80869897600677"};
 		filters.put(PwPublicationDao.G, polygon);
 		pubs = PwPublication.getDao().getByMap(filters);
-		
-		
+
+		//This only checks that the final query is syntactically correct, not that it is logically correct!
+		PwPublication.getDao().getByMap(PublicationDaoTest.buildAllParms());
 		//TODO add in real filter tests
 	}
-	
+
 	@Test
-   	@DatabaseSetup("classpath:/testData/publicationOrderBy.xml")
+	@DatabaseSetup("classpath:/testData/publicationOrderBy.xml")
 	public void getByMapOrderByTest() {
 		Map<String, Object> filters = new HashMap<>();
 		List<PwPublication> pubs = PwPublication.getDao().getByMap(filters);
@@ -112,7 +114,7 @@ public class PwPublicationDaoTest extends BaseSpringTest {
 		assertEquals(300, pubs.get(21).getId().intValue());
 		assertEquals(560, pubs.get(22).getId().intValue());
 		assertEquals(320, pubs.get(23).getId().intValue());
-		
+
 		filters.put(PublicationDao.ORDER_BY, "title");
 		pubs = PwPublication.getDao().getByMap(filters);
 		assertEquals(24, pubs.size());
@@ -143,6 +145,13 @@ public class PwPublicationDaoTest extends BaseSpringTest {
 	}
 
 	@Test
+	public void getStreamByMapTest() {
+		//This only checks that the final query is syntactically correct, not that it is logically correct!
+		PwPublication.getDao().stream(PublicationDaoTest.buildAllParms(), null);
+		//TODO add in real filter tests
+	}
+
+	@Test
 	@DatabaseSetups({
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
@@ -154,7 +163,9 @@ public class PwPublicationDaoTest extends BaseSpringTest {
 		filters.put(PublicationDao.Q, "title");
 		Integer cnt = PwPublication.getDao().getObjectCount(filters);
 		assertEquals(1, cnt.intValue());
-		
+
+		//This only checks that the final query is syntactically correct, not that it is logically correct!
+		cnt = PwPublication.getDao().getObjectCount(PublicationDaoTest.buildAllParms());
 		//TODO add in real filter tests
 	}
 
@@ -176,12 +187,12 @@ public class PwPublicationDaoTest extends BaseSpringTest {
 		assertNotNull(pub);
 		PwPublicationTest.assertPwPub4(pub);
 		PwPublicationTest.assertPwPub4Children(pub);
-		
+
 		//5 is not ready to display
 		pub = PwPublication.getDao().getByIndexId("9");
 		assertNull(pub);
 		//but it really does exist
 		assertNotNull(PwPublication.getDao().getById(5));
 	}
-	
+
 }

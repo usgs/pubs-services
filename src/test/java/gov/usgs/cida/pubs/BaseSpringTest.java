@@ -43,7 +43,6 @@ import com.github.springtestdbunit.dataset.ReplacementDataSetModifier;
 
 import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.springinit.SpringConfig;
-import gov.usgs.cida.pubs.springinit.TestBusServiceConfig;
 import gov.usgs.cida.pubs.springinit.TestSecurityConfig;
 import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 import gov.usgs.cida.pubs.webservice.security.PubsAuthentication;
@@ -58,7 +57,7 @@ import gov.usgs.cida.pubs.webservice.security.PubsRoles;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = {SpringConfig.class, TestSpringConfig.class, TestBusServiceConfig.class, TestSecurityConfig.class})
+@ContextConfiguration(classes = {SpringConfig.class, TestSpringConfig.class, TestSecurityConfig.class})
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, 
 	TransactionDbUnitTestExecutionListener.class, DirtiesContextTestExecutionListener.class
 	})

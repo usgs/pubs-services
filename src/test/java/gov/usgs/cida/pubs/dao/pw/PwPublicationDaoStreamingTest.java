@@ -52,7 +52,7 @@ public class PwPublicationDaoStreamingTest extends BaseSpringTest {
 		TestResultHandler<PwPublication> handler = new TestResultHandler<>();
 		Map<String, Object> filters = new HashMap<>();
 		filters.put(PublicationDao.ORDER_BY, "publication_year");
-		PwPublication.getDao().stream(filters, handler);
+		PwPublication.getDao().stream(PwPublicationDao.NS + PwPublicationDao.GET_STREAM_BY_MAP, filters, handler);
 		List<Map<String, Object>> pubs = handler.results;
 		assertNotNull(pubs);
 		assertEquals(2, pubs.size());
@@ -133,7 +133,7 @@ public class PwPublicationDaoStreamingTest extends BaseSpringTest {
 	})
 	public void getStreamByMapSyntaxTest() {
 		TestResultHandler<PwPublication> handler = new TestResultHandler<>();
-		PwPublication.getDao().stream(buildAllFilters(), handler);
+		PwPublication.getDao().stream(PwPublicationDao.NS + PwPublicationDao.GET_STREAM_BY_MAP, buildAllFilters(), handler);
 		//TODO real filter testing, not just parsing 
 	}
 
@@ -143,7 +143,7 @@ public class PwPublicationDaoStreamingTest extends BaseSpringTest {
 	})
 	public void streamOrderByTest() {
 		TestResultHandler<PwPublication> handler = new TestResultHandler<>();
-		PwPublication.getDao().stream(new HashMap<>(), handler);
+		PwPublication.getDao().stream(PwPublicationDao.NS + PwPublicationDao.GET_STREAM_BY_MAP, new HashMap<>(), handler);
 		List<Map<String, Object>> pubs = handler.results;
 		assertEquals(24, pubs.size());
 		assertEquals("340", pubs.get(0).get("WAREHOUSE_URL"));

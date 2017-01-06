@@ -19,11 +19,11 @@ public abstract class Transformer extends OutputStream implements ITransformer {
 		this.target = target;
 		this.mapping = mapping;
 	}
-	
+
 	protected String getMappedName(Entry<?, ?> entry) {
 		return mapping.get(entry.getKey());
 	}
-	
+
 	@Override
 	public void write(Object result) throws IOException {
 		if (null == result) {
@@ -41,9 +41,9 @@ public abstract class Transformer extends OutputStream implements ITransformer {
 		}
 		target.flush();
 	}
-	
+
 	protected abstract void init() throws IOException;
-	
+
 	protected abstract void writeHeader(Map<?,?> resultMap) throws IOException;
 
 	protected abstract void writeData(Map<?,?> resultMap) throws IOException;
@@ -54,4 +54,13 @@ public abstract class Transformer extends OutputStream implements ITransformer {
 		throw new RuntimeException("Writing a single byte is not supported");
 	}
 
+	@Override
+	public void end() {
+		try {
+			target.flush();
+			this.close();
+		} catch (IOException ex) {
+			throw new RuntimeException("Error ending transformation", ex);
+		}
+	}
 }

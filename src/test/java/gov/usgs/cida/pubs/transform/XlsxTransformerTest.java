@@ -37,12 +37,12 @@ public class XlsxTransformerTest {
 		mapping.put("D", "colD");
 		mapping.put("E", "colE");
 		mapping.put("F", "colF");
-		
+
 		XlsxTransformer transformer = new XlsxTransformer(baos, mapping);
 		try {
 			transformer.write(getTestRow());
-			transformer.finishWorkbook();
-			
+			transformer.end();
+
 			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 			Workbook wb = new XSSFWorkbook(bais);
 			assertNotNull(wb);
@@ -71,7 +71,7 @@ public class XlsxTransformerTest {
 					fail(c.getStringCellValue() + " is not valid");
 				}
 			}
-			
+
 			Row row1 = sheet.getRow(1);
 			assertNotNull(row1);
 			Iterator<Cell> y = row1.cellIterator();
@@ -94,8 +94,7 @@ public class XlsxTransformerTest {
 			fail(e.getLocalizedMessage());
 		}
 	}
-	
-	
+
 	@Test
 	public void bunchOfRows() throws Exception {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -106,13 +105,13 @@ public class XlsxTransformerTest {
 		mapping.put("D", "colD");
 		mapping.put("E", "colE");
 		mapping.put("F", "colF");
-		
+
 		XlsxTransformer transformer = new XlsxTransformer(baos, mapping);
 		try {
 			for (int i = 0; i < 1000; i++) {
 				transformer.write(getTestRow());
 			}
-			transformer.finishWorkbook();
+			transformer.end();
 			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 			Workbook wb = new XSSFWorkbook(bais);
 			assertNotNull(wb);
@@ -121,29 +120,29 @@ public class XlsxTransformerTest {
 			Row row1 = sheet.getRow(0);
 			assertNotNull(row1);
 			assertEquals("colA", row1.getCell(0).getStringCellValue());
-			
+
 			Row lastRow = sheet.getRow(1000);
 			assertNotNull(lastRow);
 			assertEquals("1000", lastRow.getCell(2).getStringCellValue());
 			assertEquals(1000, sheet.getLastRowNum());
-	
+
 			transformer.close();
 		} catch (IOException e) {
 			fail(e.getLocalizedMessage());
 		}
 	}
-	
-	public  Map<String, Object> getTestRow() {
-		   Map<String, Object> record = new LinkedHashMap<String, Object>();
-		   record.put("A", "data1");
-		   record.put("B", "data2");
-		   record.put("C", rowCount++);
-		   record.put("D", new Date(10000));
-		   record.put("E", null);
-		   record.put("F", new BigDecimal(29382.2398));
-		   record.put("G", "nocando");
-		   
-		   return record;
+
+	public Map<String, Object> getTestRow() {
+		Map<String, Object> record = new LinkedHashMap<String, Object>();
+		record.put("A", "data1");
+		record.put("B", "data2");
+		record.put("C", rowCount++);
+		record.put("D", new Date(10000));
+		record.put("E", null);
+		record.put("F", new BigDecimal(29382.2398));
+		record.put("G", "nocando");
+
+		return record;
 	}
 
 }

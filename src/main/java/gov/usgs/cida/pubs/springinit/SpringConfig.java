@@ -100,7 +100,7 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
 		matcher.setCaseSensitive(false);
 		configurer.setPathMatcher(matcher);
 		//This will prevent Spring from expecting anything after a dot to be a file suffix.
-		//It is needed because fsome index ID's contain a dot.
+		//It is needed because some index ID's contain a dot.
 		configurer.setUseSuffixPatternMatch(false);
 	}
 

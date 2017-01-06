@@ -127,10 +127,8 @@ public class XlsxTransformer extends Transformer {
 		endRow();
 	}
 
-	/**
-	 * Once we are done with the filter, the sheet needs it's ending tag.
-	 */
-	public void finishWorkbook() {
+	@Override
+	public void end() {
 		try {
 			//zos will be null if we did not process any data - in which case we do not need to close the sheet or zos.
 			if (null != zos) {
@@ -141,6 +139,7 @@ public class XlsxTransformer extends Transformer {
 			LOG.error("Problem encountered finishing the workbook.", e);
 			throw new RuntimeException(e);
 		}
+		super.end();
 	}
 
 	

@@ -18,6 +18,7 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -94,6 +95,12 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void configurePathMatch(PathMatchConfigurer configurer) {
+		//This should make the url case insensitive
+		AntPathMatcher matcher = new AntPathMatcher();
+		matcher.setCaseSensitive(false);
+		configurer.setPathMatcher(matcher);
+		//This will prevent Spring from expecting anything after a dot to be a file suffix.
+		//It is needed because fsome index ID's contain a dot.
 		configurer.setUseSuffixPatternMatch(false);
 	}
 

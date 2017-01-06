@@ -1,14 +1,15 @@
 package gov.usgs.cida.pubs.busservice.intfc;
 
+import java.util.Map;
+
+import org.apache.ibatis.session.ResultHandler;
+
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 
 public interface IPwPublicationBusService extends IBusService<PwPublication> {
 
-	/** 
-	 * Get a publication by it's index id.
-	 * @param indexId - index id of the object to retrieve. 
-	 * @return the domain object.
-	 */
 	PwPublication getByIndexId(String indexId);
+
+	void stream(String statement, Map<String, Object> filters, ResultHandler<PwPublication> handler);
 
 }

@@ -1,10 +1,5 @@
 package gov.usgs.cida.pubs.dao.pw;
 
-import gov.usgs.cida.pubs.aop.ISetDbContext;
-import gov.usgs.cida.pubs.dao.BaseDao;
-import gov.usgs.cida.pubs.dao.intfc.IPwPublicationDao;
-import gov.usgs.cida.pubs.domain.pw.PwPublication;
-
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +8,11 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import gov.usgs.cida.pubs.aop.ISetDbContext;
+import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.dao.intfc.IPwPublicationDao;
+import gov.usgs.cida.pubs.domain.pw.PwPublication;
 
 /**
  * @author drsteini
@@ -28,10 +28,10 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 		super(sqlSessionFactory);
 	}
 
-	private static final String NS = "pwPublication";
+	public static final String NS = "pwPublication";
 	private static final String GET_BY_INDEX_ID = ".getByIndexId";
 	private static final String GET_BY_IPDS_ID = ".getByIpdsId";
-	private static final String GET_STREAM_BY_MAP = ".getStreamByMap";
+	public static final String GET_STREAM_BY_MAP = ".getStreamByMap";
 
 	public static final String CHORUS = "chorus";
 	public static final String G = "g";
@@ -97,8 +97,8 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	}
 
 	@Override
-	public void stream(Map<String, Object> filters, ResultHandler<PwPublication> handler) {
-		getSqlSession().select(NS + GET_STREAM_BY_MAP, filters, handler);
+	public void stream(String statement, Map<String, Object> filters, ResultHandler<PwPublication> handler) {
+		getSqlSession().select(statement, filters, handler);
 	}
 
 }

@@ -147,7 +147,14 @@ public class PwPublicationDaoTest extends BaseSpringTest {
 	@Test
 	public void getStreamByMapTest() {
 		//This only checks that the final query is syntactically correct, not that it is logically correct!
-		PwPublication.getDao().stream(PublicationDaoTest.buildAllParms(), null);
+		PwPublication.getDao().stream(PwPublicationDao.NS + PwPublicationDao.GET_STREAM_BY_MAP, PublicationDaoTest.buildAllParms(), null);
+		//TODO add in real filter tests
+	}
+
+	@Test
+	public void getPoJoStreamByMapTest() {
+		//This only checks that the final query is syntactically correct, not that it is logically correct!
+		PwPublication.getDao().stream(PwPublicationDao.NS + PwPublicationDao.GET_BY_MAP, PublicationDaoTest.buildAllParms(), null);
 		//TODO add in real filter tests
 	}
 

@@ -1,130 +1,129 @@
 package gov.usgs.cida.pubs.webservice.pw;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
 
-import java.io.IOException;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.json.JSONObject;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.http.entity.mime.MIME;
+import org.apache.ibatis.session.ResultHandler;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
-import gov.usgs.cida.pubs.domain.pw.PwPublication;
-import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
+import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.domain.SearchResults;
 
 public class PwPublicationMvcServiceTest extends BaseSpringTest {
 
 	@Autowired
 	public String warehouseEndpoint;
-	@Autowired
+	@Mock
 	private IPwPublicationBusService busService;
+	@Mock
+	private PwPublicationMvcService mvcService;
 
-	public String expectedGetPwPub1;
-
-	public String expectedGetPubsDefault;
-	
-	public String expectedGetPubsPageNumber;
-
-	private MockMvc mockMvc;
+	private Map<String, Object> filters;
 
 	@Before
 	public void setup() {
-		Mockito.reset(busService);
+		MockitoAnnotations.initMocks(this);
+		mvcService = new PwPublicationMvcService(busService, warehouseEndpoint);
 
-		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-
-		try {
-			expectedGetPwPub1 = getCompareFile("pwPublication/serialized.json");
-		} catch (IOException e) {
-			fail(e.getLocalizedMessage());
-		}
-
-		StringBuilder temp = new StringBuilder("{\"pageSize\":\"15\",\"pageRowStart\":\"0\",");
-		temp.append("\"pageNumber\":null,\"recordCount\":12,\"records\":[");
-		temp.append(expectedGetPwPub1);
-		temp.append("]}");
-		expectedGetPubsDefault = temp.toString();
-		expectedGetPubsPageNumber = temp.replace(13,15,"25").replace(33,34,"125").replace(51, 55, "\"6\"").toString();
+		filters = new HashMap<>();
+		filters.put(BaseDao.PAGE_SIZE, "13");
+		filters.put(BaseDao.PAGE_ROW_START, "4");
+		filters.put(BaseDao.PAGE_NUMBER, "8");
 	}
 
 	@Test
-	public void getPubsTest() throws Exception {
-		//Happy Path
-		when(busService.getObjects(anyMap())).thenReturn(Arrays.asList(PwPublicationTest.buildAPub(1)));
-		when(busService.getObjectCount(anyMap())).thenReturn(Integer.valueOf(12));
+	public void getCountAndPagingTest() {
+		when(busService.getObjectCount(anyMap())).thenReturn(18);
 
-		MvcResult rtn = mockMvc.perform(get("/publication?mimetype=json").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-		.andReturn();
+		SearchResults sr = mvcService.getCountAndPaging(filters);
+		assertEquals("13", sr.getPageSize());
+		assertEquals("4", sr.getPageRowStart());
+		assertEquals("8", sr.getPageNumber());
+		assertEquals(18, sr.getRecordCount().intValue());
+		assertNull(sr.getRecords());
 
-		assertThat(getRtnAsJSONObject(rtn),
-				sameJSONObjectAs(new JSONObject(expectedGetPubsDefault)));
+		filters.remove(BaseDao.PAGE_NUMBER);
 
-		//With page number
-		rtn = mockMvc.perform(get("/publication?mimetype=json&page_number=6").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-		.andReturn();
-
-		assertThat(getRtnAsJSONObject(rtn),
-				sameJSONObjectAs(new JSONObject(expectedGetPubsPageNumber)));
+		sr = mvcService.getCountAndPaging(filters);
+		assertEquals("13", sr.getPageSize());
+		assertEquals("4", sr.getPageRowStart());
+		assertNull(sr.getPageNumber());
+		assertEquals(18, sr.getRecordCount().intValue());
+		assertNull(sr.getRecords());
 	}
 
 	@Test
-	public void getPwPublicationTest() throws Exception {
-		//Happy Path
-		when(busService.getByIndexId("1")).thenReturn(PwPublicationTest.buildAPub(1));
-		MvcResult rtn = mockMvc.perform(get("/publication/1?mimetype=json").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-		.andReturn();
-
-		assertThat(getRtnAsJSONObject(rtn),
-				sameJSONObjectAs(new JSONObject(expectedGetPwPub1)));
-
-		//Pub not found
-		rtn = mockMvc.perform(get("/publication/3?mimetype=json").accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound())
-				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-				.andReturn();
-		assertEquals(0, rtn.getResponse().getContentAsString().length());
+	@SuppressWarnings("unchecked")
+	public void streamResultsTsvTest() {
+		HttpServletResponse response = new MockHttpServletResponse();
+		mvcService.streamResults(filters, PubsConstants.MEDIA_TYPE_TSV_EXTENSION, response);
+		assertEquals(PubsConstants.DEFAULT_ENCODING, response.getCharacterEncoding());
+		assertEquals("attachment; filename=publications.tsv", response.getHeader(MIME.CONTENT_DISPOSITION));
+		assertEquals(PubsConstants.MEDIA_TYPE_TSV_VALUE, response.getContentType());
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		verify(busService).stream(eq("pwPublication.getStreamByMap"), anyMap(), any(ResultHandler.class));
+		verify(busService, never()).getObjectCount(anyMap());
 	}
 
 	@Test
-	public void getPwPublicationPeriodTest() throws Exception {
-		//dot in index
-		PwPublication pub1_1 = new PwPublication();
-		pub1_1.setIndexId("1.1");
-		when(busService.getByIndexId("1.1")).thenReturn(pub1_1);
-		MvcResult rtn = mockMvc.perform(get("/publication/1.1?mimetype=json").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-		.andReturn();
+	@SuppressWarnings("unchecked")
+	public void streamResultsCsvTest() {
+		HttpServletResponse response = new MockHttpServletResponse();
+		mvcService.streamResults(filters, PubsConstants.MEDIA_TYPE_CSV_EXTENSION, response);
+		assertEquals(PubsConstants.DEFAULT_ENCODING, response.getCharacterEncoding());
+		assertEquals("attachment; filename=publications.csv", response.getHeader(MIME.CONTENT_DISPOSITION));
+		assertEquals(PubsConstants.MEDIA_TYPE_CSV_VALUE, response.getContentType());
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		verify(busService).stream(eq("pwPublication.getStreamByMap"), anyMap(), any(ResultHandler.class));
+		verify(busService, never()).getObjectCount(anyMap());
+	}
 
-		assertThat(getRtnAsJSONObject(rtn),
-				sameJSONObjectAs(new JSONObject("{\"text\":\"1.1 - null - null\",\"indexId\":\"1.1\", \"noYear\":false}")));
+	@Test
+	@SuppressWarnings("unchecked")
+	public void streamResultsXlsxTest() {
+		HttpServletResponse response = new MockHttpServletResponse();
+		mvcService.streamResults(filters, PubsConstants.MEDIA_TYPE_XLSX_EXTENSION, response);
+		assertEquals(PubsConstants.DEFAULT_ENCODING, response.getCharacterEncoding());
+		assertEquals("attachment; filename=publications.xlsx", response.getHeader(MIME.CONTENT_DISPOSITION));
+		assertEquals(PubsConstants.MEDIA_TYPE_XLSX_VALUE, response.getContentType());
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		verify(busService).stream(eq("pwPublication.getStreamByMap"), anyMap(), any(ResultHandler.class));
+		verify(busService, never()).getObjectCount(anyMap());
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void streamResultsJsonTest() {
+		HttpServletResponse response = new MockHttpServletResponse();
+		mvcService.streamResults(filters, PubsConstants.MEDIA_TYPE_JSON_EXTENSION, response);
+		assertEquals(PubsConstants.DEFAULT_ENCODING, response.getCharacterEncoding());
+		assertEquals("attachment; filename=publications.json", response.getHeader(MIME.CONTENT_DISPOSITION));
+		assertEquals(MediaType.APPLICATION_JSON_UTF8_VALUE, response.getContentType());
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		verify(busService).stream(eq("pwPublication.getByMap"), anyMap(), any(ResultHandler.class));
+		verify(busService).getObjectCount(anyMap());
 	}
 
 }

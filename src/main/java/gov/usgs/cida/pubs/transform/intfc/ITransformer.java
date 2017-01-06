@@ -6,4 +6,6 @@ public interface ITransformer {
 
 	void write(Object object) throws IOException;
 
+	void end();
+
 }

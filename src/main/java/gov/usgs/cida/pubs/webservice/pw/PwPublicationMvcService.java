@@ -109,7 +109,6 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 
 	protected void streamResults(Map<String, Object> filters, String mimeType, HttpServletResponse response) {
 		response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
-		response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + mimeType);
 		String statement = PwPublicationDao.NS;
 
 		try {
@@ -119,16 +118,19 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 				transformer = new DelimitedTransformer(response.getOutputStream(), PublicationColumns.getMappings(), "\t");
 				statement = statement + PwPublicationDao.GET_STREAM_BY_MAP;
 				response.setContentType(PubsConstants.MEDIA_TYPE_TSV_VALUE);
+				response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + mimeType);
 				break;
 			case PubsConstants.MEDIA_TYPE_XLSX_EXTENSION:
 				transformer = new XlsxTransformer(response.getOutputStream(), PublicationColumns.getMappings());
 				statement = statement + PwPublicationDao.GET_STREAM_BY_MAP;
 				response.setContentType(PubsConstants.MEDIA_TYPE_XLSX_VALUE);
+				response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + mimeType);
 				break;
 			case PubsConstants.MEDIA_TYPE_CSV_EXTENSION:
 				transformer = new DelimitedTransformer(response.getOutputStream(), PublicationColumns.getMappings(), ",");
 				statement = statement + PwPublicationDao.GET_STREAM_BY_MAP;
 				response.setContentType(PubsConstants.MEDIA_TYPE_CSV_VALUE);
+				response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + mimeType);
 				break;
 			default:
 				//Let json be the default

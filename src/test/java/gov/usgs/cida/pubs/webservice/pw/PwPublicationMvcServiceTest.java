@@ -119,7 +119,6 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 		HttpServletResponse response = new MockHttpServletResponse();
 		mvcService.streamResults(filters, PubsConstants.MEDIA_TYPE_JSON_EXTENSION, response);
 		assertEquals(PubsConstants.DEFAULT_ENCODING, response.getCharacterEncoding());
-		assertEquals("attachment; filename=publications.json", response.getHeader(MIME.CONTENT_DISPOSITION));
 		assertEquals(MediaType.APPLICATION_JSON_UTF8_VALUE, response.getContentType());
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		verify(busService).stream(eq("pwPublication.getByMap"), anyMap(), any(ResultHandler.class));

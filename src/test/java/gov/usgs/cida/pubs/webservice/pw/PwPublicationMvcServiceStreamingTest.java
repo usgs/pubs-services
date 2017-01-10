@@ -84,7 +84,6 @@ public class PwPublicationMvcServiceStreamingTest extends BaseSpringTest {
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 			.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-			.andExpect(header().string(MIME.CONTENT_DISPOSITION, "attachment; filename=publications.json"))
 			.andReturn();
 	
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()), sameJSONObjectAs(new JSONObject(getCompareFile("stream.json"))).allowingAnyArrayOrdering());

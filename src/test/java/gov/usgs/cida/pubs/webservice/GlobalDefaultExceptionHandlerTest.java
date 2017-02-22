@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.webservice;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,33 +34,54 @@ public class GlobalDefaultExceptionHandlerTest {
 	@Test
 	public void handleUncaughtExceptionTest() throws IOException {
 		HttpServletResponse response = new MockHttpServletResponse();
-		assertEquals("Something bad happened. Contact us with Reference Number: ",
-				controller.handleUncaughtException(new RuntimeException(), request, response).substring(0, 58));
+		String expected = "Something bad happened. Contact us with Reference Number: ";
+		Map<String, String> actual = controller.handleUncaughtException(new RuntimeException(), request, response);
+		assertEquals(expected, actual.get(GlobalDefaultExceptionHandler.ERROR_MESSAGE_KEY).substring(0, expected.length()));
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());
+	}
 
-		response = new MockHttpServletResponse();
-		assertEquals("You are not authorized to perform this action.",
-				controller.handleUncaughtException(new AccessDeniedException("haha"), request, response));
+	@Test
+	public void handleAccessDeniedException() throws IOException {
+		HttpServletResponse response = new MockHttpServletResponse();
+		String expected = "You are not authorized to perform this action.";
+		Map<String, String> actual = controller.handleUncaughtException(new AccessDeniedException("haha"), request, response);
+		assertEquals(expected, actual.get(GlobalDefaultExceptionHandler.ERROR_MESSAGE_KEY));
 		assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus());
+	}
 
-		response = new MockHttpServletResponse();
-		assertEquals("Required String parameter 'parm' is not present",
-				controller.handleUncaughtException(new MissingServletRequestParameterException("parm", "String"), request, response));
+	@Test
+	public void handleMissingServletRequestParameterException() throws IOException {
+		HttpServletResponse response = new MockHttpServletResponse();
+		String expected = "Required String parameter 'parm' is not present";
+		Map<String, String> actual = controller.handleUncaughtException(new MissingServletRequestParameterException("parm", "String"), request, response);
+		assertEquals(expected, actual.get(GlobalDefaultExceptionHandler.ERROR_MESSAGE_KEY));
 		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+	}
 
-		response = new MockHttpServletResponse();
-		assertEquals("no way",
-				controller.handleUncaughtException(new HttpMediaTypeNotSupportedException("no way"), request, response));
+	@Test
+	public void handleHttpMediaTypeNotSupportedException() throws IOException {
+		HttpServletResponse response = new MockHttpServletResponse();
+		String expected = "no way";
+		Map<String, String> actual = controller.handleUncaughtException(new HttpMediaTypeNotSupportedException(expected), request, response);
+		assertEquals(expected, actual.get(GlobalDefaultExceptionHandler.ERROR_MESSAGE_KEY));
 		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
-
-		response = new MockHttpServletResponse();
-		assertEquals("ok to see",
-				controller.handleUncaughtException(new HttpMessageNotReadableException("ok to see\nhide this\nand this"), request, response));
+	}
+	
+	@Test
+	public void handleHttpMessageNotReadableException() throws IOException {
+		HttpServletResponse response = new MockHttpServletResponse();
+		String expected = "Some123$Mes\tsage!!.";
+		Map<String, String> actual = controller.handleUncaughtException(new HttpMessageNotReadableException(expected), request, response);
+		assertEquals(expected, actual.get(GlobalDefaultExceptionHandler.ERROR_MESSAGE_KEY));
 		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+	}
 
-		response = new MockHttpServletResponse();
-		assertEquals("Some123$Mes\tsage!!.",
-				controller.handleUncaughtException(new HttpMessageNotReadableException("Some123$Mes\tsage!!."), request, response));
+	@Test
+	public void handleMultilineHttpMessageNotReadableException() throws IOException {
+		HttpServletResponse response = new MockHttpServletResponse();
+		String expected = "ok to see";
+		Map<String, String> actual = controller.handleUncaughtException(new HttpMessageNotReadableException("ok to see\nhide this\nand this"), request, response);
+		assertEquals(expected, actual.get(GlobalDefaultExceptionHandler.ERROR_MESSAGE_KEY));
 		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
 	}
 

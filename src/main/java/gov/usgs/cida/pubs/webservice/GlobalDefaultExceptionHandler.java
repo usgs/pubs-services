@@ -1,6 +1,8 @@
 package gov.usgs.cida.pubs.webservice;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,24 +22,27 @@ import org.springframework.web.context.request.WebRequest;
 @ControllerAdvice
 public class GlobalDefaultExceptionHandler {
 	private static final Logger LOG = LoggerFactory.getLogger(GlobalDefaultExceptionHandler.class);
+	
+	static final String ERROR_MESSAGE_KEY = "Error Message";
 
 	@ExceptionHandler(Exception.class)
-	public @ResponseBody String handleUncaughtException(Exception ex, WebRequest request, HttpServletResponse response) throws IOException {
+	public @ResponseBody Map<String, String> handleUncaughtException(Exception ex, WebRequest request, HttpServletResponse response) throws IOException {
+		Map<String, String> responseMap = new HashMap<>();
 		if (ex instanceof AccessDeniedException) {
 			response.setStatus(HttpStatus.FORBIDDEN.value());
-			return "You are not authorized to perform this action.";
+			responseMap.put(ERROR_MESSAGE_KEY, "You are not authorized to perform this action.");
 		} else if (ex instanceof MissingServletRequestParameterException
 				|| ex instanceof HttpMediaTypeNotSupportedException
 				|| ex instanceof HttpMediaTypeNotAcceptableException) {
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
-			return ex.getLocalizedMessage();
+			responseMap.put(ERROR_MESSAGE_KEY, ex.getLocalizedMessage());
 		} else if (ex instanceof HttpMessageNotReadableException) {
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 			if (ex.getLocalizedMessage().contains("\n")) {
 				//This exception's message contains implementation details after the new line, so only take up to that.
-				return ex.getLocalizedMessage().substring(0, ex.getLocalizedMessage().indexOf("\n"));
+				responseMap.put(ERROR_MESSAGE_KEY, ex.getLocalizedMessage().substring(0, ex.getLocalizedMessage().indexOf("\n")));
 			} else {
-				return ex.getLocalizedMessage().replaceAll("([a-zA-Z]+\\.)+","");
+				responseMap.put(ERROR_MESSAGE_KEY, ex.getLocalizedMessage().replaceAll("([a-zA-Z]+\\.)+",""));
 			}
 		} else {
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -46,7 +51,8 @@ public class GlobalDefaultExceptionHandler {
 			//Server logs can be used to troubleshoot problems.
 			String msgText = "Something bad happened. Contact us with Reference Number: " + hashValue;
 			LOG.error(msgText, ex);
-			return msgText;
+			responseMap.put(ERROR_MESSAGE_KEY, msgText);
 		}
+		return responseMap;
 	}
 }

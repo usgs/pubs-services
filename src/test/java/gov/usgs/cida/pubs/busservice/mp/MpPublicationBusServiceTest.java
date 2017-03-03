@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
 import gov.usgs.cida.pubs.dao.PublicationDao;
@@ -37,6 +38,7 @@ import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 import gov.usgs.cida.pubs.utility.PubsUtilitiesTest;
 import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
 import gov.usgs.cida.pubs.webservice.security.PubsRoles;
 
 import java.util.ArrayList;
@@ -136,20 +138,65 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
 	}
 
 	@Test
-	public void createObjectTest() {
-		//TODO both a good create and a create w/validation errors.
-		//public MpPublication createObject(MpPublication object)
-		busService.createObject(null);
-
-		MpPublication pub = busService.createObject(new MpPublication());
-		assertNotNull(pub.getId());
+	public void testCreateNull() {
+		assertNull("null should return null", busService.createObject(null));
 	}
 
 	@Test
-	public void updateObjectTest() {
-		busService.updateObject(null);
-		busService.updateObject(new MpPublication());
+	public void testCreateEmpty() {
+		MpPublication mpPub = new MpPublication();
+		MpPublication newPub = busService.createObject(mpPub);
+		ValidationResults validationErrors = newPub.getValidationErrors();
+		assertFalse("Should be invalid", validationErrors.isEmpty());
+		assertEquals("Two required fields", 2, validationErrors.getValidationErrors().size());
+		for (ValidatorResult result : validationErrors.getValidationErrors()) {
+			assertEquals(SeverityLevel.FATAL, result.getLevel());
+			assertEquals("may not be null", result.getMessage());
+		}
+	}
 
+	@Test
+	public void testCreateValid() {
+		MpPublication mpPub = new MpPublication();
+		
+		mpPub.setTitle("newPubTitle");
+		mpPub.setPublicationType(new PublicationType());
+		mpPub.setIpdsId("zeroToFifteen");
+
+		MpPublication newPub = busService.createObject(mpPub);
+		ValidationResults validationErrors = newPub.getValidationErrors();
+
+		assertTrue("Should be valid", validationErrors.isEmpty());
+		assertNotNull(newPub.getId());
+		assertEquals("newPubTitle", newPub.getTitle());
+		assertEquals("zeroToFifteen", newPub.getIpdsId());
+	}
+
+	@Test
+	public void testUpdateNull() {
+		assertNull("null should return null", busService.updateObject(null));
+	}
+
+	@Test
+	public void testUpdateIpdsId() {
+		MpPublication original = MpPublicationDaoTest.addAPub(MpPublication.getDao().getNewProdId());
+		original.setIpdsId(null);
+		assertNull("Original pub should have no ipdsid", original.getIpdsId());
+		original.setIpdsId("firstSetIpds");
+		MpPublication firstUpdated = busService.updateObject(original);
+		assertDaoTestResults(MpPublication.class, original, firstUpdated, IGNORE_PROPERTIES, true, true);
+		assertEquals("Ipdsid should be set", "firstSetIpds", firstUpdated.getIpdsId());
+		
+		MpPublication.getDao().publishToPw(firstUpdated.getId());
+		PwPublication published = PwPublication.getDao().getById(firstUpdated.getId());
+
+		firstUpdated.setIpdsId("editTheIpdsid");
+		MpPublication secondUpdated = busService.updateObject(firstUpdated);
+		assertEquals("Ipdsid should not be edited", published.getIpdsId(), secondUpdated.getIpdsId());
+	}
+	
+	@Test
+	public void testUpdate() {
 		MpPublication pub = MpPublicationDaoTest.updatePubProperties(MpPublicationDaoTest.addAPub(MpPublication.getDao().getNewProdId()));
 		MpPublication after = busService.updateObject(MpPublicationDaoTest.updatePubProperties(pub));
 		assertDaoTestResults(MpPublication.class, pub, after, IGNORE_PROPERTIES, true, true);
@@ -161,7 +208,6 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
 		mid.setIpdsId("12345678901234567890");
 		after = busService.updateObject(mid);
 		assertDaoTestResults(MpPublication.class, pub, after, IGNORE_PROPERTIES, true, true);
-//		assertEquals(4, after.getValidationErrors().getValidationErrors().size());
 		assertEquals(3, after.getValidationErrors().getValidationErrors().size());
 	}
 

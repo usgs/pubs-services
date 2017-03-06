@@ -41,10 +41,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * @author drsteini
- *
- */
 @Service
 public class MpPublicationBusService extends MpBusService<MpPublication> implements IMpPublicationBusService {
 
@@ -83,9 +79,6 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 		this.warehouseEndpoint = warehouseEndpoint;
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#getObject(java.lang.Integer)
-	 */
 	@Override
 	public MpPublication getObject(Integer objectId) {
 		beginPublicationEdit(objectId);
@@ -97,17 +90,11 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 		return MpPublication.getDao().getObjectCount(filters);
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#getObjects(java.util.Map)
-	 */
 	@Override
 	public List<MpPublication> getObjects(Map<String, Object> filters) {
 		return MpPublication.getDao().getByMap(filters);
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#createObject(java.lang.Object)
-	 */
 	@Override
 	@Transactional
 	public MpPublication createObject(MpPublication object) {
@@ -124,9 +111,6 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 		return null;
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#updateObject(java.lang.Object)
-	 */
 	@Override
 	@Transactional
 	public MpPublication updateObject(MpPublication object) {
@@ -143,9 +127,6 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 		return null;
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.busservice.intfc.IBusService#deleteObject(Integer)
-	 */
 	@Override
 	@Transactional
 	public ValidationResults deleteObject(Integer objectId) {
@@ -208,6 +189,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 					//USGS Numbered and Unnumbered Series with a published DOI keep it, everyone else can update from the UI input.
 					outPublication.setDoi(published.getDoi());
 				}
+				outPublication.setIpdsId(published.getIpdsId()); // only block edits to ipdsId if published
 			}
 		}
 		return outPublication;
@@ -261,9 +243,6 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 		return outPublication;
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.busservice.intfc.IMpBusService#publish(Integer)
-	 */
 	@Override
 	@Transactional
 	public ValidationResults publish(final Integer publicationId) {

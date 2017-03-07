@@ -20,11 +20,11 @@
 	</appender>
 
 	<category name="gov.usgs">
-		<level value="INFO" />
+		<level value="TRACE" />
 	</category>
 
 	<category name="java.sql">
-		<level value="DEBUG" /> 
+		<level value="OFF" /> 
 	</category>
 
 	<category name="org.apache.activemq">
@@ -32,7 +32,7 @@
 	</category>
 
 	<category name="org.apache.ibatis">
-		<level value="INFO" />
+		<level value="OFF" />
 	</category>
 
 	<category name="org.hibernate">
@@ -76,7 +76,7 @@
 	</category>
 
 	<root>
-		<level value="INFO" />
+		<level value="TRACE" />
 		<appender-ref ref="myconsole" />
 		<appender-ref ref="appLog" />
 	</root>

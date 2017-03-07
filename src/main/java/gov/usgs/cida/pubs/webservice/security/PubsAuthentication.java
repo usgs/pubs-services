@@ -26,6 +26,7 @@ public class PubsAuthentication implements Authentication {
 			try {
 				//role validation - we only add roles here that are valid for pubs.
 				PubsRoles pubsRole = PubsRoles.valueOf(role);
+				LOG.debug(MessageFormat.format("Role {0} added.", role));
 				auths.add(new SimpleGrantedAuthority(pubsRole.getSpringRole()));
 			} catch (Exception e) {
 				LOG.debug(MessageFormat.format("Role {0} ignored.", role), e);

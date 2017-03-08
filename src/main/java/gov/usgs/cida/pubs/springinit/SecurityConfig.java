@@ -1,6 +1,8 @@
 package gov.usgs.cida.pubs.springinit;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -9,6 +11,10 @@ import javax.naming.NamingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.vote.AffirmativeBased;
+import org.springframework.security.access.vote.AuthenticatedVoter;
+import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -52,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.addFilterBefore(tokenSecurityFilter, UsernamePasswordAuthenticationFilter.class)
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
-				.authorizeRequests()
+				.authorizeRequests().accessDecisionManager(new PubsAccessDecicionManager(getDecisionVoters()))
 					.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 					.antMatchers("/auth/logout").authenticated()
 					.antMatchers("/mppublications/*/preview*").hasAnyRole("AD_AUTHENTICATED", "PUBS_AUTHORIZED")
@@ -67,9 +73,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.httpBasic().authenticationEntryPoint(unauthorizedEntryPoint);
 	}	
 
+	private List<AccessDecisionVoter<? extends Object>> getDecisionVoters() {
+		List<AccessDecisionVoter<? extends Object>> decisionVoters = new ArrayList<AccessDecisionVoter<? extends Object>>();
+		decisionVoters.add(new RoleVoter());
+		decisionVoters.add(new AuthenticatedVoter());
+		return decisionVoters;
+	}
+
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(pubsAuthenticationProvider);
 	}
+	
+	private class PubsAccessDecicionManager extends AffirmativeBased {
 
+		public PubsAccessDecicionManager(List<AccessDecisionVoter<? extends Object>> decisionVoters) {
+			super(decisionVoters);
+		}
+		
+	}
 }

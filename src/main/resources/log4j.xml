@@ -20,7 +20,7 @@
 	</appender>
 
 	<category name="gov.usgs">
-		<level value="TRACE" />
+		<level value="DEBUG" />
 	</category>
 
 	<category name="java.sql">
@@ -56,7 +56,7 @@
 	</category>
 
 	<category name="org.springframework.security">
-		<level value="INFO" />
+		<level value="DEBUG" />
 	</category>
 
 	<category name="org.springframework.transaction">
@@ -76,7 +76,7 @@
 	</category>
 
 	<root>
-		<level value="TRACE" />
+		<level value="DEBUG" />
 		<appender-ref ref="myconsole" />
 		<appender-ref ref="appLog" />
 	</root>

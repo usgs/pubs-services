@@ -18,7 +18,9 @@ public class EndpointSecurityAdTest extends EndpointSecurityAuthTest {
 	@Test
 	public void adAuthenticatedTest() throws Exception {
 		mockSetup();
-		when(mockAuthClient.getRolesByToken("a-token-string")).thenReturn(new ArrayList<String>());
+		ArrayList<String> authRoles = new ArrayList<String>();
+		authRoles.add(PubsRoles.AD_AUTHENTICATED.name());
+		when(mockAuthClient.getRolesByToken("a-token-string")).thenReturn(authRoles);
 
 		publicTest(httpHeaders, status().isOk());
 		authenticatedTest(httpHeaders, status().isOk());

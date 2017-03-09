@@ -29,7 +29,8 @@ public class PubsAuthentication implements Authentication {
 				LOG.debug(MessageFormat.format("Role {0} ignored.", role), e);
 			}
 		}
-		if (isAuthenticated() && getAuthorities().size() > 1) {
+		int authCheckThreshold = isAuthenticated() ? 1 : 0;
+		if (getAuthorities().size() > authCheckThreshold) {
 			SimpleGrantedAuthority pubsAdminRole = new SimpleGrantedAuthority(PubsRoles.PUBS_AUTHORIZED.getSpringRole());
 			addAuthority(pubsAdminRole);
 		}

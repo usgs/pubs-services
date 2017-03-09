@@ -4,7 +4,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +18,10 @@ public class EndpointSecurityPubsTest extends EndpointSecurityAuthTest {
 	@Test
 	public void adAuthenticatedTest() throws Exception {
 		mockSetup();
-		when(mockAuthClient.getRolesByToken("a-token-string")).thenReturn(new ArrayList<>(Arrays.asList(PubsRoles.PUBS_ADMIN.name())));
+		ArrayList<String> authRoles = new ArrayList<String>();
+		authRoles.add(PubsRoles.AD_AUTHENTICATED.name());
+		authRoles.add(PubsRoles.PUBS_ADMIN.name());
+		when(mockAuthClient.getRolesByToken("a-token-string")).thenReturn(authRoles);
 
 		publicTest(httpHeaders, status().isOk());
 		authenticatedTest(httpHeaders, status().isOk());

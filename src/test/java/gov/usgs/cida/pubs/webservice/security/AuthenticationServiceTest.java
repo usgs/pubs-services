@@ -34,6 +34,7 @@ public class AuthenticationServiceTest {
 		testToken.setTokenId("a-token-string");
 		testToken.setUsername("testyUser");
 		ArrayList<String> pubsRoles = new ArrayList<>();
+		pubsRoles.add(PubsRoles.AD_AUTHENTICATED.name());
 		pubsRoles.add(PubsRoles.PUBS_SPN_USER.name());
 		when(mockAuthClient.getNewToken("username", "password")).thenReturn(testToken);
 		when(mockAuthClient.getToken("a-token-string")).thenReturn(testToken);
@@ -45,9 +46,9 @@ public class AuthenticationServiceTest {
 		assertEquals("testyUser", auth.getName());
 		assertFalse(auth.getAuthorities().isEmpty());
 		assertEquals(3, auth.getAuthorities().size());
-		assertEquals(PubsRoles.PUBS_SPN_USER.getSpringRole(), auth.getAuthorities().toArray()[0].toString());
-		assertEquals(PubsRoles.PUBS_AUTHORIZED.getSpringRole(), auth.getAuthorities().toArray()[1].toString());
-		assertEquals(PubsRoles.AD_AUTHENTICATED.getSpringRole(), auth.getAuthorities().toArray()[2].toString());
+		assertEquals(PubsRoles.AD_AUTHENTICATED.getSpringRole(), auth.getAuthorities().toArray()[0].toString());
+		assertEquals(PubsRoles.PUBS_SPN_USER.getSpringRole(), auth.getAuthorities().toArray()[1].toString());
+		assertEquals(PubsRoles.PUBS_AUTHORIZED.getSpringRole(), auth.getAuthorities().toArray()[2].toString());
 		
 		AuthToken response = testService.authenticate("username", "password");
 		assertEquals(testToken, response);
@@ -62,11 +63,13 @@ public class AuthenticationServiceTest {
 		testToken.setUsername("testyUser");
 		when(mockAuthClient.getNewToken("username", "password")).thenReturn(testToken);
 		when(mockAuthClient.getToken("a-token-string")).thenReturn(testToken);
-		when(mockAuthClient.getRolesByToken("a-token-string")).thenReturn(new ArrayList<String>());
+		ArrayList<String> authResults = new ArrayList<String>();
+		authResults.add(PubsRoles.AD_AUTHENTICATED.name());
+		when(mockAuthClient.getRolesByToken("a-token-string")).thenReturn(authResults);
 		when(mockAuthClient.isValidToken("a-token-string")).thenReturn(false);
 		when(mockAuthClient.isValidToken("b-token-string")).thenReturn(true);
 		when(mockAuthClient.getToken("b-token-string")).thenReturn(testToken);
-		when(mockAuthClient.getRolesByToken("b-token-string")).thenReturn(new ArrayList<String>());
+		when(mockAuthClient.getRolesByToken("b-token-string")).thenReturn(authResults);
 		
 		testService.authorizeToken(testToken.getTokenId());
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();

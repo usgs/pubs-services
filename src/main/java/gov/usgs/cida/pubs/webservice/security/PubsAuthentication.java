@@ -16,24 +16,31 @@ public class PubsAuthentication implements Authentication {
 	private static final Logger LOG = LoggerFactory.getLogger(PubsAuthentication.class);
 	private static final long serialVersionUID = 1L;
 
-	private Collection<GrantedAuthority> authorities;
-	private User principal;
+	private final User principal;
+	private final Collection<GrantedAuthority> authorities = new ArrayList<>();
 
-	public PubsAuthentication(String username, List<String> rawRoles) {
-		Collection<GrantedAuthority> auths = new ArrayList<>();
-
-		for(String role : rawRoles) {
+	public PubsAuthentication(String username, List<String> roles) {
+		for(String role : roles) {
 			try {
-				//role validation - we only add roles here that are valid for pubs.
 				PubsRoles pubsRole = PubsRoles.valueOf(role);
-				LOG.debug(MessageFormat.format("Role {0} added.", role));
-				auths.add(new SimpleGrantedAuthority(pubsRole.getSpringRole()));
+				SimpleGrantedAuthority pubsAuthority = new SimpleGrantedAuthority(pubsRole.getSpringRole());
+				addAuthority(pubsAuthority);
 			} catch (Exception e) {
 				LOG.debug(MessageFormat.format("Role {0} ignored.", role), e);
 			}
 		}
-		authorities = auths;
-		principal = new User(username, "******", authorities);
+		if (isAuthenticated() && getAuthorities().size() > 1) {
+			SimpleGrantedAuthority pubsAdminRole = new SimpleGrantedAuthority(PubsRoles.PUBS_AUTHORIZED.getSpringRole());
+			addAuthority(pubsAdminRole);
+		}
+		principal = new User(username, "******", getAuthorities());
+	}
+
+	private void addAuthority(SimpleGrantedAuthority pubsAuthority) {
+		if (!authorities.contains(pubsAuthority)) {
+			authorities.add(pubsAuthority);
+			LOG.debug(MessageFormat.format("Role {0} added.", pubsAuthority.getAuthority()));
+		}
 	}
 
 	@Override
@@ -63,7 +70,7 @@ public class PubsAuthentication implements Authentication {
 
 	@Override
 	public boolean isAuthenticated() {
-		return !authorities.isEmpty();
+		return authorities.contains(new SimpleGrantedAuthority(PubsRoles.AD_AUTHENTICATED.getSpringRole()));
 	}
 
 	@Override
@@ -71,9 +78,4 @@ public class PubsAuthentication implements Authentication {
 			throws IllegalArgumentException {
 		throw new RuntimeException("PubsAuthentication calculates authenticated status based on roles");
 	}
-
-	public void addAuthority(PubsRoles role) {
-		authorities.add(new SimpleGrantedAuthority(role.getSpringRole()));
-	}
-
 }

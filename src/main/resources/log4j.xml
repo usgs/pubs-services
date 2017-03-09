@@ -20,11 +20,11 @@
 	</appender>
 
 	<category name="gov.usgs">
-		<level value="DEBUG" />
+		<level value="INFO" />
 	</category>
 
 	<category name="java.sql">
-		<level value="OFF" /> 
+		<level value="DEBUG" /> 
 	</category>
 
 	<category name="org.apache.activemq">
@@ -32,7 +32,7 @@
 	</category>
 
 	<category name="org.apache.ibatis">
-		<level value="OFF" />
+		<level value="INFO" />
 	</category>
 
 	<category name="org.hibernate">
@@ -56,7 +56,7 @@
 	</category>
 
 	<category name="org.springframework.security">
-		<level value="DEBUG" />
+		<level value="INFO" />
 	</category>
 
 	<category name="org.springframework.transaction">
@@ -76,7 +76,7 @@
 	</category>
 
 	<root>
-		<level value="DEBUG" />
+		<level value="INFO" />
 		<appender-ref ref="myconsole" />
 		<appender-ref ref="appLog" />
 	</root>

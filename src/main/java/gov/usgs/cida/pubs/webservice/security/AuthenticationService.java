@@ -73,17 +73,11 @@ public class AuthenticationService {
 		LOG.debug("authorizeToken: " + token);
 		String username = authClient.getToken(token).getUsername();
 		LOG.debug("username: " + username);
-		List<String> rolesByToken = authClient.getRolesByToken(token);
-		for (String role : rolesByToken) {
+		List<String> roles = authClient.getRolesByToken(token);
+		for (String role : roles) {
 			LOG.debug("role: " + role);
 		}
-		PubsAuthentication authentication = new PubsAuthentication(username, rolesByToken);
-
-		if (authentication.isAuthenticated()) {
-			authentication.addAuthority(PubsRoles.PUBS_AUTHORIZED);
-		}
-		authentication.addAuthority(PubsRoles.AD_AUTHENTICATED);
+		PubsAuthentication authentication = new PubsAuthentication(username, roles);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 	}
-
 }

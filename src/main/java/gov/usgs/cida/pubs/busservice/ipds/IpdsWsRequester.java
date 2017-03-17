@@ -113,6 +113,8 @@ public class IpdsWsRequester {
 
 	protected String getIpdsXml(final String url, final String ipdsId)  {
 		String xml = null;
+		
+		LOG.debug("requesting url: " + url);
 
 		HttpResponse response = doGet(url);
 		try {

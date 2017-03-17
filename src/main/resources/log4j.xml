@@ -30,7 +30,7 @@
 	
 	<category name="gov.usgs.cida.pubs.busservice.ipds">
 		<level value="DEBUG" />
-		<appender-ref ref="ipdsLog" />
+		<appender-ref ref="ipdsLog" additive="false" />
 	</category>
 
 	<category name="gov.usgs">

@@ -19,6 +19,20 @@
 		</layout>
 	</appender>
 
+	<appender name="ipdsLog" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="${catalina.base}/logs/ipds.log" />
+		<param name="Append" value="true" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ISO8601} - %t %p (%C.java:%L) %M - %m%n" />
+		</layout>
+	</appender>
+	
+	<category name="gov.usgs.cida.pubs.busservice.ipds">
+		<level value="DEBUG" />
+		<appender-ref ref="ipdsLog" />
+	</category>
+
 	<category name="gov.usgs">
 		<level value="INFO" />
 	</category>

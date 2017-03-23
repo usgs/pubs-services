@@ -189,7 +189,9 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 					//USGS Numbered and Unnumbered Series with a published DOI keep it, everyone else can update from the UI input.
 					outPublication.setDoi(published.getDoi());
 				}
-				outPublication.setIpdsId(published.getIpdsId()); // only block edits to ipdsId if published
+				if (!StringUtils.isBlank(published.getIpdsId())) {
+					outPublication.setIpdsId(published.getIpdsId()); // only block edits to ipdsId if published and not blank
+				}
 			}
 		}
 		return outPublication;

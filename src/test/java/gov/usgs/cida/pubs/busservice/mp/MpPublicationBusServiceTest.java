@@ -178,21 +178,47 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
 	}
 
 	@Test
-	public void testUpdateIpdsId() {
+	public void testUpdateIpdsIdEditableWhenNotPublished() {
 		MpPublication original = MpPublicationDaoTest.addAPub(MpPublication.getDao().getNewProdId());
-		original.setIpdsId(null);
-		assertNull("Original pub should have no ipdsid", original.getIpdsId());
 		original.setIpdsId("firstSetIpds");
+		
 		MpPublication firstUpdated = busService.updateObject(original);
 		assertDaoTestResults(MpPublication.class, original, firstUpdated, IGNORE_PROPERTIES, true, true);
 		assertEquals("Ipdsid should be set", "firstSetIpds", firstUpdated.getIpdsId());
 		
-		MpPublication.getDao().publishToPw(firstUpdated.getId());
-		PwPublication published = PwPublication.getDao().getById(firstUpdated.getId());
+		firstUpdated.setIpdsId("updatedIPDS");
+		MpPublication newUpdate = busService.updateObject(firstUpdated);
+		assertDaoTestResults(MpPublication.class, firstUpdated, newUpdate, IGNORE_PROPERTIES, true, true);
+		assertEquals("Ipdsid should be updated", "updatedIPDS", newUpdate.getIpdsId());
+	}
 
-		firstUpdated.setIpdsId("editTheIpdsid");
-		MpPublication secondUpdated = busService.updateObject(firstUpdated);
-		assertEquals("Ipdsid should not be edited", published.getIpdsId(), secondUpdated.getIpdsId());
+	@Test
+	public void testUpdateIpdsIdEditableIfBlankWhenPublished() {
+		MpPublication original = MpPublicationDaoTest.addAPub(MpPublication.getDao().getNewProdId());
+		original.setIpdsId(null);
+		MpPublication.getDao().update(original);
+		assertNull("IpdsId should be null", original.getIpdsId());
+
+		MpPublication.getDao().publishToPw(original.getId());
+
+		original.setIpdsId("firstSetIpds");
+		MpPublication firstUpdated = busService.updateObject(original);
+		assertDaoTestResults(MpPublication.class, original, firstUpdated, IGNORE_PROPERTIES, true, true);
+		assertEquals("IpdsId should be set", "firstSetIpds", firstUpdated.getIpdsId());
+	}
+
+	@Test
+	public void testUpdateIpdsIdNotEditableIfSetWhenPublished() {
+		MpPublication original = MpPublicationDaoTest.addAPub(MpPublication.getDao().getNewProdId());
+		original.setIpdsId("originalIpds");
+		
+		MpPublication.getDao().publishToPw(original.getId());
+		PwPublication published = PwPublication.getDao().getById(original.getId());
+
+		original.setIpdsId("updateIpds");
+		MpPublication firstUpdated = busService.updateObject(original);
+		assertDaoTestResults(MpPublication.class, original, firstUpdated, IGNORE_PROPERTIES, true, true);
+		assertEquals("IpdsId should not be changed", published.getIpdsId(), firstUpdated.getIpdsId());
 	}
 	
 	@Test

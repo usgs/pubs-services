@@ -84,7 +84,7 @@ public class PublicationSeriesValidationTest extends BaseValidatorTest {
 		pubSeries.setOnlineIssn("On-lineX");
 
 		pubSeries.setValidationErrors(validator.validate(pubSeries));
-		assertFalse(pubSeries.getValidationErrors().isEmpty());
+		assertFalse(pubSeries.isValid());
 		assertEquals(6, pubSeries.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(pubSeries.getValidationErrors().getValidationErrors(),
 				//From ParentExistsValidatorForPublicationSeries
@@ -103,7 +103,7 @@ public class PublicationSeriesValidationTest extends BaseValidatorTest {
 		pubSeries.setPublicationSubtype(null);;
 		pubSeries.setText(null);
 		pubSeries.setValidationErrors(validator.validate(pubSeries));
-		assertFalse(pubSeries.getValidationErrors().isEmpty());
+		assertFalse(pubSeries.isValid());
 		assertEquals(2, pubSeries.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(pubSeries.getValidationErrors().getValidationErrors(),
 				//From PublicationSeries
@@ -117,7 +117,7 @@ public class PublicationSeriesValidationTest extends BaseValidatorTest {
 		when(publicationSubtypeDao.getById(any(Integer.class))).thenReturn(new PublicationSubtype());
 		pubSeries.setText("");
 		pubSeries.setValidationErrors(validator.validate(pubSeries));
-		assertFalse(pubSeries.getValidationErrors().isEmpty());
+		assertFalse(pubSeries.isValid());
 		assertEquals(1, pubSeries.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(pubSeries.getValidationErrors().getValidationErrors(),
 				//From PublicationSeries
@@ -126,7 +126,7 @@ public class PublicationSeriesValidationTest extends BaseValidatorTest {
 
 		pubSeries.setText("A");
 		pubSeries.setValidationErrors(validator.validate(pubSeries));
-		assertTrue(pubSeries.getValidationErrors().isEmpty());
+		assertTrue(pubSeries.isValid());
 	}
 
 	@Test
@@ -138,7 +138,7 @@ public class PublicationSeriesValidationTest extends BaseValidatorTest {
 		pubSeries.setOnlineIssn(StringUtils.repeat('X', 10));
 		pubSeries.setPrintIssn(StringUtils.repeat('X', 10));
 		pubSeries.setValidationErrors(validator.validate(pubSeries));
-		assertFalse(pubSeries.getValidationErrors().isEmpty());
+		assertFalse(pubSeries.isValid());
 		assertEquals(5, pubSeries.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(pubSeries.getValidationErrors().getValidationErrors(),
 				//From PublicationSeries
@@ -155,14 +155,14 @@ public class PublicationSeriesValidationTest extends BaseValidatorTest {
 		pubSeries.setOnlineIssn(StringUtils.repeat('X', 9));
 		pubSeries.setPrintIssn(StringUtils.repeat('X', 9));
 		pubSeries.setValidationErrors(validator.validate(pubSeries));
-		assertTrue(pubSeries.getValidationErrors().isEmpty());
+		assertTrue(pubSeries.isValid());
 	}
 
 	@Test
 	public void deleteTest() {
 		when(pubDao.getObjectCount(anyMap())).thenReturn(5);
 		pubSeries.setValidationErrors(validator.validate(pubSeries, DeleteChecks.class));
-		assertFalse(pubSeries.getValidationErrors().isEmpty());
+		assertFalse(pubSeries.isValid());
 		assertEquals(1, pubSeries.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(pubSeries.getValidationErrors().getValidationErrors(),
 				//From NoChildrenValidatorForPublicationSeries

@@ -22,6 +22,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 @Service
+@Deprecated
 public class CostCenterMessageService implements IIpdsService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CostCenterMessageService.class);

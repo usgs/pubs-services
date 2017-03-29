@@ -68,7 +68,7 @@ public class CorporateContributorValidationTest extends BaseValidatorTest {
 		//end voodoo
 
 		contributor.setValidationErrors(validator.validate(contributor));
-		assertFalse(contributor.getValidationErrors().isEmpty());
+		assertFalse(contributor.isValid());
 		assertEquals(3, contributor.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(contributor.getValidationErrors().getValidationErrors(),
 				//From CorporateContributor
@@ -85,7 +85,7 @@ public class CorporateContributorValidationTest extends BaseValidatorTest {
 		contributor.setOrganization("");
 
 		contributor.setValidationErrors(validator.validate(contributor));
-		assertFalse(contributor.getValidationErrors().isEmpty());
+		assertFalse(contributor.isValid());
 		assertEquals(1, contributor.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(contributor.getValidationErrors().getValidationErrors(),
 				//From CorporateContributor
@@ -94,7 +94,7 @@ public class CorporateContributorValidationTest extends BaseValidatorTest {
 
 		contributor.setOrganization("a");
 		contributor.setValidationErrors(validator.validate(contributor));
-		assertTrue(contributor.getValidationErrors().isEmpty());
+		assertTrue(contributor.isValid());
 	}
 
 	@Test
@@ -103,7 +103,7 @@ public class CorporateContributorValidationTest extends BaseValidatorTest {
 
 		contributor.setOrganization(StringUtils.repeat('X', 401));
 		contributor.setValidationErrors(validator.validate(contributor));
-		assertFalse(contributor.getValidationErrors().isEmpty());
+		assertFalse(contributor.isValid());
 		assertEquals(1, contributor.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(contributor.getValidationErrors().getValidationErrors(),
 				//From CorporateContributor
@@ -112,7 +112,7 @@ public class CorporateContributorValidationTest extends BaseValidatorTest {
 
 		contributor.setOrganization(StringUtils.repeat('X', 400));
 		contributor.setValidationErrors(validator.validate(contributor));
-		assertTrue(contributor.getValidationErrors().isEmpty());
+		assertTrue(contributor.isValid());
 	}
 
 }

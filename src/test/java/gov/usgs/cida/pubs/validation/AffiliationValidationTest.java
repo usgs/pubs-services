@@ -66,7 +66,7 @@ public class AffiliationValidationTest extends BaseValidatorTest {
 	@Test
 	public void uniqueKeyTest() {
 		affiliation.setValidationErrors(validator.validate(affiliation));
-		assertFalse(affiliation.getValidationErrors().isEmpty());
+		assertFalse(affiliation.isValid());
 		assertEquals(1, affiliation.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(affiliation.getValidationErrors().getValidationErrors(),
 				//From UniqueKeyValidatorForAffiliation
@@ -78,7 +78,7 @@ public class AffiliationValidationTest extends BaseValidatorTest {
 	public void deleteTest() {
 		when(personContributorDao.getObjectCount(anyMap())).thenReturn(3);
 		affiliation.setValidationErrors(validator.validate(affiliation, DeleteChecks.class));
-		assertFalse(affiliation.getValidationErrors().isEmpty());
+		assertFalse(affiliation.isValid());
 		assertEquals(1, affiliation.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(affiliation.getValidationErrors().getValidationErrors(),
 				//From NoChildrenValidatorForAffiliation
@@ -104,7 +104,7 @@ public class AffiliationValidationTest extends BaseValidatorTest {
 		//end voodoo
 
 		affiliation.setValidationErrors(validator.validate(affiliation));
-		assertFalse(affiliation.getValidationErrors().isEmpty());
+		assertFalse(affiliation.isValid());
 		assertEquals(3, affiliation.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(affiliation.getValidationErrors().getValidationErrors(),
 				//From Affiliation
@@ -120,7 +120,7 @@ public class AffiliationValidationTest extends BaseValidatorTest {
 		affiliation.setText("");
 
 		affiliation.setValidationErrors(validator.validate(affiliation));
-		assertFalse(affiliation.getValidationErrors().isEmpty());
+		assertFalse(affiliation.isValid());
 		assertEquals(1, affiliation.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(affiliation.getValidationErrors().getValidationErrors(),
 				//From Affiliation
@@ -129,7 +129,7 @@ public class AffiliationValidationTest extends BaseValidatorTest {
 
 		affiliation.setText("a");
 		affiliation.setValidationErrors(validator.validate(affiliation));
-		assertTrue(affiliation.getValidationErrors().isEmpty());
+		assertTrue(affiliation.isValid());
 	}
 
 	@Test
@@ -138,7 +138,7 @@ public class AffiliationValidationTest extends BaseValidatorTest {
 
 		affiliation.setText(StringUtils.repeat('X', 501));
 		affiliation.setValidationErrors(validator.validate(affiliation));
-		assertFalse(affiliation.getValidationErrors().isEmpty());
+		assertFalse(affiliation.isValid());
 		assertEquals(1, affiliation.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(affiliation.getValidationErrors().getValidationErrors(),
 				//From Affiliation
@@ -147,7 +147,7 @@ public class AffiliationValidationTest extends BaseValidatorTest {
 
 		affiliation.setText(StringUtils.repeat('X', 500));
 		affiliation.setValidationErrors(validator.validate(affiliation));
-		assertTrue(affiliation.getValidationErrors().isEmpty());
+		assertTrue(affiliation.isValid());
 	}
 
 }

@@ -349,7 +349,7 @@
 			<if test="indexId != null and indexId.length > 0">
 				and (
 				<foreach item="i" collection="indexId" open="" separator="or" close="">
-					upper(pub.index_id) = upper(#{i})
+					upper(pub.index_id) = upper(#{i,jdbcType=VARCHAR})
 				</foreach>
 				)
 			</if>
@@ -357,7 +357,7 @@
 			<if test="ipdsId != null and ipdsId.length > 0">
 				and (
 				<foreach item="i" collection="ipdsId" open="" separator="or" close="">
-					pub.ipds_id = #{i}
+					pub.ipds_id = #{i,jdbcType=VARCHAR}
 				</foreach>
 				)
 			</if>

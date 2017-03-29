@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<feed xml:base="https://ipds.usgs.gov/_vti_bin/listdata.svc/" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns="http://www.w3.org/2005/Atom">
+  <title type="text">InformationProductsArchive</title>
+  <id>https://ipds.usgs.gov/_vti_bin/ListData.svc/InformationProductsArchive</id>
+  <updated>2013-10-24T16:36:25Z</updated>
+  <link rel="self" title="InformationProductsArchive" href="InformationProductsArchive" />
+  <entry m:etag="W/&quot;2&quot;">
+    <id>https://ipds.usgs.gov/_vti_bin/listdata.svc/InformationProductsArchive(81817)</id>
+    <title type="text">Pesticides in groundwater of Wyoming, 2008-2010</title>
+    <updated>2013-10-23T11:46:41-06:00</updated>
+    <author>
+      <name />
+    </author>
+    <link rel="edit" title="InformationProductsArchiveItem" href="InformationProductsArchive(81817)" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/SeniorUSGSAuthor" type="application/atom+xml;type=entry" title="SeniorUSGSAuthor" href="InformationProductsArchive(81817)/SeniorUSGSAuthor" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/AuthorSupervisor" type="application/atom+xml;type=entry" title="AuthorSupervisor" href="InformationProductsArchive(81817)/AuthorSupervisor" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ProductType" type="application/atom+xml;type=entry" title="ProductType" href="InformationProductsArchive(81817)/ProductType" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/OMBInfluentialFlag" type="application/atom+xml;type=entry" title="OMBInfluentialFlag" href="InformationProductsArchive(81817)/OMBInfluentialFlag" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/PolicySensitiveFlag" type="application/atom+xml;type=entry" title="PolicySensitiveFlag" href="InformationProductsArchive(81817)/PolicySensitiveFlag" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/HighlyVisibleFlag" type="application/atom+xml;type=entry" title="HighlyVisibleFlag" href="InformationProductsArchive(81817)/HighlyVisibleFlag" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/IPDSReviewProcessState" type="application/atom+xml;type=entry" title="IPDSReviewProcessState" href="InformationProductsArchive(81817)/IPDSReviewProcessState" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/IPDSTaskStatus" type="application/atom+xml;type=entry" title="IPDSTaskStatus" href="InformationProductsArchive(81817)/IPDSTaskStatus" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/BureauApprovingOfficial" type="application/atom+xml;type=entry" title="BureauApprovingOfficial" href="InformationProductsArchive(81817)/BureauApprovingOfficial" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/CenterChief" type="application/atom+xml;type=entry" title="CenterChief" href="InformationProductsArchive(81817)/CenterChief" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/PSCChief" type="application/atom+xml;type=entry" title="PSCChief" href="InformationProductsArchive(81817)/PSCChief" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/VISpecialist" type="application/atom+xml;type=entry" title="VISpecialist" href="InformationProductsArchive(81817)/VISpecialist" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/CostCenter" type="application/atom+xml;type=entry" title="CostCenter" href="InformationProductsArchive(81817)/CostCenter" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/PublishingServiceCenter" type="application/atom+xml;type=entry" title="PublishingServiceCenter" href="InformationProductsArchive(81817)/PublishingServiceCenter" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/CreatedBy" type="application/atom+xml;type=entry" title="CreatedBy" href="InformationProductsArchive(81817)/CreatedBy" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ModifiedBy" type="application/atom+xml;type=entry" title="ModifiedBy" href="InformationProductsArchive(81817)/ModifiedBy" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ReviewType" type="application/atom+xml;type=entry" title="ReviewType" href="InformationProductsArchive(81817)/ReviewType" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/USGSMissionArea" type="application/atom+xml;type=entry" title="USGSMissionArea" href="InformationProductsArchive(81817)/USGSMissionArea" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/USGSRegion" type="application/atom+xml;type=entry" title="USGSRegion" href="InformationProductsArchive(81817)/USGSRegion" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/USGSSeries" type="application/atom+xml;type=entry" title="USGSSeries" href="InformationProductsArchive(81817)/USGSSeries" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/BindingType" type="application/atom+xml;type=entry" title="BindingType" href="InformationProductsArchive(81817)/BindingType" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/USGSProgram" type="application/atom+xml;type=feed" title="USGSProgram" href="InformationProductsArchive(81817)/USGSProgram" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/SPNEditor" type="application/atom+xml;type=entry" title="SPNEditor" href="InformationProductsArchive(81817)/SPNEditor" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Influential_OMB_Flag" type="application/atom+xml;type=entry" title="Influential_OMB_Flag" href="InformationProductsArchive(81817)/Influential_OMB_Flag" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/HVisible_Flag" type="application/atom+xml;type=entry" title="HVisible_Flag" href="InformationProductsArchive(81817)/HVisible_Flag" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Sensitive_Policy_Flag" type="application/atom+xml;type=entry" title="Sensitive_Policy_Flag" href="InformationProductsArchive(81817)/Sensitive_Policy_Flag" />
+    <category term="Microsoft.SharePoint.DataService.InformationProductsArchiveItem" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+    <content type="application/xml">
+      <m:properties>
+        <d:ContentTypeID>0x010047D2DB888AD4DA4BA707C7C92A0751FE00B12414C54CE93A45907AE5099ADAC025</d:ContentTypeID>
+        <d:WorkingTitle>Pesticides in groundwater of Wyoming, 2008-2010</d:WorkingTitle>
+        <d:IPNumber>IP-035570</d:IPNumber>
+        <d:SeniorUSGSAuthorId m:type="Edm.Int32">1706</d:SeniorUSGSAuthorId>
+        <d:AuthorSupervisorId m:type="Edm.Int32">233</d:AuthorSupervisorId>
+        <d:ProductTypeValue>USGS series</d:ProductTypeValue>
+        <d:BasisNumber>GC12rt001410200</d:BasisNumber>
+        <d:IPPANumber>den12-cmrt00-0097</d:IPPANumber>
+        <d:ProductSummary>A synthesis of pesticides in groundwater data collected from 1995 through 2010 in Wyoming, examining changes in use and trends in concentrations</d:ProductSummary>
+        <d:PlannedDisseminationDate m:type="Edm.DateTime">2013-05-03T00:00:00</d:PlannedDisseminationDate>
+        <d:TeamProjectName xml:space="preserve"> </d:TeamProjectName>
+        <d:Cooperators>Wyoming Department of Agriculture</d:Cooperators>
+        <d:OMBInfluentialFlagValue m:null="true" />
+        <d:PolicySensitiveFlagValue m:null="true" />
+        <d:HighlyVisibleFlagValue m:null="true" />
+        <d:FinalTitle>Pesticides in Wyoming Groundwater, 2008–10</d:FinalTitle>
+        <d:Abstract>My Abstract</d:Abstract>
+        <d:Citation>Eddy-Miller, C.A., Bartos, T.T., and Taylor, M.L., 2013, Pesticides in Wyoming Groundwater, 2008–10: U.S. Geological Survey Scientific Investigations Report 2013–5064, 45 p.</d:Citation>
+        <d:NonUSGSPublisher xml:space="preserve">U.S. Geological Survey</d:NonUSGSPublisher>
+        <d:SupersedesIPNumber xml:space="preserve"> </d:SupersedesIPNumber>
+        <d:NumberOfMapsOrPlates m:type="Edm.Double">0</d:NumberOfMapsOrPlates>
+        <d:PageRange m:null="true" />
+        <d:PhysicalDescription>Physical Description</d:PhysicalDescription>
+        <d:NumberOfUSGSCopies m:type="Edm.Double" m:null="true" />
+        <d:USGSSeriesNumber>2013-5064</d:USGSSeriesNumber>
+        <d:USGSSeriesLetter xml:space="preserve"> </d:USGSSeriesLetter>
+        <d:DigitalObjectIdentifier m:null="true" />
+        <d:GPOJacketNumber xml:space="preserve"> </d:GPOJacketNumber>
+        <d:GPOReqNumber xml:space="preserve"> </d:GPOReqNumber>
+        <d:PrintOrderNumber xml:space="preserve"> </d:PrintOrderNumber>
+        <d:NBROfPSPages m:type="Edm.Double" m:null="true" />
+        <d:NBROfOSPages m:type="Edm.Double" m:null="true" />
+        <d:NBROfCPSPages m:type="Edm.Double" m:null="true" />
+        <d:NBROfCOSPages m:type="Edm.Double" m:null="true" />
+        <d:EditionNumber m:type="Edm.Double">12</d:EditionNumber>
+        <d:Volume xml:space="preserve">A</d:Volume>
+        <d:LegacyData m:null="true" />
+        <d:ProductDisseminated m:type="Edm.Boolean">false</d:ProductDisseminated>
+        <d:DiseminationDate m:type="Edm.DateTime">2013-04-08T11:48:00</d:DiseminationDate>
+        <d:Issue xml:space="preserve">c</d:Issue>
+        <d:RelatedIPNumber m:null="true" />
+        <d:ISBN xml:space="preserve"> </d:ISBN>
+        <d:IPDSReviewProcessStateValue>SPN Production</d:IPDSReviewProcessStateValue>
+        <d:IPDSTaskStatusValue>Approve</d:IPDSTaskStatusValue>
+        <d:IPDSWorkflowStartDate m:type="Edm.DateTime">2013-04-03T17:45:22</d:IPDSWorkflowStartDate>
+        <d:IPDSWorkflowStopDate m:type="Edm.DateTime">2013-04-08T17:48:12</d:IPDSWorkflowStopDate>
+        <d:BureauApprovingOfficialId m:type="Edm.Int32">42</d:BureauApprovingOfficialId>
+        <d:CenterChiefId m:type="Edm.Int32">233</d:CenterChiefId>
+        <d:PSCChiefId m:type="Edm.Int32">31</d:PSCChiefId>
+        <d:VISpecialistId m:type="Edm.Int32">613</d:VISpecialistId>
+        <d:PublishedURL>http://pubs.usgs.gov/sir/2013/5064/, http://pubs.usgs.gov/sir/2013/5064/</d:PublishedURL>
+        <d:ProductNumber>https://ipds.usgs.gov/WPP/Record.aspx?IP=IP-035570, IP-035570</d:ProductNumber>
+        <d:CostCenterId m:type="Edm.Int32">52</d:CostCenterId>
+        <d:PublishingServiceCenterId m:type="Edm.Int32">4</d:PublishingServiceCenterId>
+        <d:TempWorkflow m:type="Edm.Int32" m:null="true" />
+        <d:CreatedById m:type="Edm.Int32">325</d:CreatedById>
+        <d:ModifiedById m:type="Edm.Int32">12</d:ModifiedById>
+        <d:Modified m:type="Edm.DateTime">2013-10-23T11:46:41</d:Modified>
+        <d:Created m:type="Edm.DateTime">2013-06-14T22:58:31</d:Created>
+        <d:ProductPrintingCost m:type="Edm.Double" m:null="true" />
+        <d:NBROfInfoDelCopies m:type="Edm.Double" m:null="true" />
+        <d:ReviewTypeValue m:null="true" />
+        <d:USGSMissionAreaValue>Water</d:USGSMissionAreaValue>
+        <d:USGSRegionValue>Northwest Region</d:USGSRegionValue>
+        <d:USGSSeriesValue>Scientific Investigations Report</d:USGSSeriesValue>
+        <d:BindingTypeValue m:null="true" />
+        <d:SPNEditorId m:type="Edm.Int32">1134</d:SPNEditorId>
+        <d:Influential_OMB_FlagValue>No</d:Influential_OMB_FlagValue>
+        <d:HVisible_FlagValue>No</d:HVisible_FlagValue>
+        <d:Sensitive_Policy_FlagValue>No</d:Sensitive_Policy_FlagValue>
+        <d:JournalTitle>Larger Work Title</d:JournalTitle>
+        <d:PUBS_Response m:null="true" />
+        <d:PUBS_Status m:null="true" />
+        <d:Id m:type="Edm.Int32">81817</d:Id>
+        <d:ContentType>Information Product</d:ContentType>
+        <d:Owshiddenversion m:type="Edm.Int32">2</d:Owshiddenversion>
+        <d:Version>1.0</d:Version>
+        <d:Path>/Lists/Information Products Archive</d:Path>
+      </m:properties>
+    </content>
+  </entry>
+  <entry m:etag="W/&quot;2&quot;">
+    <id>https://ipds.usgs.gov/_vti_bin/listdata.svc/InformationProductsArchive(81817)</id>
+    <title type="text">Pesticides in groundwater of Wyoming, 2008-2010</title>
+    <updated>2013-10-23T11:46:41-06:00</updated>
+    <author>
+      <name />
+    </author>
+    <link rel="edit" title="InformationProductsArchiveItem" href="InformationProductsArchive(81817)" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/SeniorUSGSAuthor" type="application/atom+xml;type=entry" title="SeniorUSGSAuthor" href="InformationProductsArchive(81817)/SeniorUSGSAuthor" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/AuthorSupervisor" type="application/atom+xml;type=entry" title="AuthorSupervisor" href="InformationProductsArchive(81817)/AuthorSupervisor" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ProductType" type="application/atom+xml;type=entry" title="ProductType" href="InformationProductsArchive(81817)/ProductType" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/OMBInfluentialFlag" type="application/atom+xml;type=entry" title="OMBInfluentialFlag" href="InformationProductsArchive(81817)/OMBInfluentialFlag" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/PolicySensitiveFlag" type="application/atom+xml;type=entry" title="PolicySensitiveFlag" href="InformationProductsArchive(81817)/PolicySensitiveFlag" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/HighlyVisibleFlag" type="application/atom+xml;type=entry" title="HighlyVisibleFlag" href="InformationProductsArchive(81817)/HighlyVisibleFlag" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/IPDSReviewProcessState" type="application/atom+xml;type=entry" title="IPDSReviewProcessState" href="InformationProductsArchive(81817)/IPDSReviewProcessState" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/IPDSTaskStatus" type="application/atom+xml;type=entry" title="IPDSTaskStatus" href="InformationProductsArchive(81817)/IPDSTaskStatus" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/BureauApprovingOfficial" type="application/atom+xml;type=entry" title="BureauApprovingOfficial" href="InformationProductsArchive(81817)/BureauApprovingOfficial" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/CenterChief" type="application/atom+xml;type=entry" title="CenterChief" href="InformationProductsArchive(81817)/CenterChief" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/PSCChief" type="application/atom+xml;type=entry" title="PSCChief" href="InformationProductsArchive(81817)/PSCChief" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/VISpecialist" type="application/atom+xml;type=entry" title="VISpecialist" href="InformationProductsArchive(81817)/VISpecialist" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/CostCenter" type="application/atom+xml;type=entry" title="CostCenter" href="InformationProductsArchive(81817)/CostCenter" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/PublishingServiceCenter" type="application/atom+xml;type=entry" title="PublishingServiceCenter" href="InformationProductsArchive(81817)/PublishingServiceCenter" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/CreatedBy" type="application/atom+xml;type=entry" title="CreatedBy" href="InformationProductsArchive(81817)/CreatedBy" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ModifiedBy" type="application/atom+xml;type=entry" title="ModifiedBy" href="InformationProductsArchive(81817)/ModifiedBy" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ReviewType" type="application/atom+xml;type=entry" title="ReviewType" href="InformationProductsArchive(81817)/ReviewType" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/USGSMissionArea" type="application/atom+xml;type=entry" title="USGSMissionArea" href="InformationProductsArchive(81817)/USGSMissionArea" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/USGSRegion" type="application/atom+xml;type=entry" title="USGSRegion" href="InformationProductsArchive(81817)/USGSRegion" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/USGSSeries" type="application/atom+xml;type=entry" title="USGSSeries" href="InformationProductsArchive(81817)/USGSSeries" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/BindingType" type="application/atom+xml;type=entry" title="BindingType" href="InformationProductsArchive(81817)/BindingType" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/USGSProgram" type="application/atom+xml;type=feed" title="USGSProgram" href="InformationProductsArchive(81817)/USGSProgram" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/SPNEditor" type="application/atom+xml;type=entry" title="SPNEditor" href="InformationProductsArchive(81817)/SPNEditor" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Influential_OMB_Flag" type="application/atom+xml;type=entry" title="Influential_OMB_Flag" href="InformationProductsArchive(81817)/Influential_OMB_Flag" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/HVisible_Flag" type="application/atom+xml;type=entry" title="HVisible_Flag" href="InformationProductsArchive(81817)/HVisible_Flag" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Sensitive_Policy_Flag" type="application/atom+xml;type=entry" title="Sensitive_Policy_Flag" href="InformationProductsArchive(81817)/Sensitive_Policy_Flag" />
+    <category term="Microsoft.SharePoint.DataService.InformationProductsArchiveItem" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+    <content type="application/xml">
+      <m:properties>
+        <d:ContentTypeID>0x010047D2DB888AD4DA4BA707C7C92A0751FE00B12414C54CE93A45907AE5099ADAC025</d:ContentTypeID>
+        <d:WorkingTitle>Pesticides in groundwater of Wyoming, 2008-2010</d:WorkingTitle>
+        <d:IPNumber>IP-035570f</d:IPNumber>
+        <d:SeniorUSGSAuthorId m:type="Edm.Int32">1706</d:SeniorUSGSAuthorId>
+        <d:AuthorSupervisorId m:type="Edm.Int32">233</d:AuthorSupervisorId>
+        <d:ProductTypeValue>USGS series</d:ProductTypeValue>
+        <d:BasisNumber>GC12rt001410200</d:BasisNumber>
+        <d:IPPANumber>den12-cmrt00-0097</d:IPPANumber>
+        <d:ProductSummary>A synthesis of pesticides in groundwater data collected from 1995 through 2010 in Wyoming, examining changes in use and trends in concentrations</d:ProductSummary>
+        <d:PlannedDisseminationDate m:type="Edm.DateTime">2013-05-03T00:00:00</d:PlannedDisseminationDate>
+        <d:TeamProjectName xml:space="preserve"> </d:TeamProjectName>
+        <d:Cooperators>Wyoming Department of Agriculture</d:Cooperators>
+        <d:OMBInfluentialFlagValue m:null="true" />
+        <d:PolicySensitiveFlagValue m:null="true" />
+        <d:HighlyVisibleFlagValue m:null="true" />
+        <d:FinalTitle>Pesticides in Wyoming Groundwater, 2008–10</d:FinalTitle>
+        <d:Abstract>My Abstract</d:Abstract>
+        <d:Citation>Eddy-Miller, C.A., Bartos, T.T., and Taylor, M.L., 2013, Pesticides in Wyoming Groundwater, 2008–10: U.S. Geological Survey Scientific Investigations Report 2013–5064, 45 p.</d:Citation>
+        <d:NonUSGSPublisher xml:space="preserve">U.S. Geological Survey</d:NonUSGSPublisher>
+        <d:SupersedesIPNumber xml:space="preserve"> </d:SupersedesIPNumber>
+        <d:NumberOfMapsOrPlates m:type="Edm.Double">0</d:NumberOfMapsOrPlates>
+        <d:PageRange m:null="true" />
+        <d:PhysicalDescription>Physical Description</d:PhysicalDescription>
+        <d:NumberOfUSGSCopies m:type="Edm.Double" m:null="true" />
+        <d:USGSSeriesNumber>2013-5064</d:USGSSeriesNumber>
+        <d:USGSSeriesLetter xml:space="preserve">F</d:USGSSeriesLetter>
+        <d:DigitalObjectIdentifier m:null="true" />
+        <d:GPOJacketNumber xml:space="preserve"> </d:GPOJacketNumber>
+        <d:GPOReqNumber xml:space="preserve"> </d:GPOReqNumber>
+        <d:PrintOrderNumber xml:space="preserve"> </d:PrintOrderNumber>
+        <d:NBROfPSPages m:type="Edm.Double" m:null="true" />
+        <d:NBROfOSPages m:type="Edm.Double" m:null="true" />
+        <d:NBROfCPSPages m:type="Edm.Double" m:null="true" />
+        <d:NBROfCOSPages m:type="Edm.Double" m:null="true" />
+        <d:EditionNumber m:type="Edm.Double">12</d:EditionNumber>
+        <d:Volume xml:space="preserve">A</d:Volume>
+        <d:LegacyData m:null="true" />
+        <d:ProductDisseminated m:type="Edm.Boolean">false</d:ProductDisseminated>
+        <d:DiseminationDate m:type="Edm.DateTime">2013-04-08T11:48:00</d:DiseminationDate>
+        <d:Issue xml:space="preserve">c</d:Issue>
+        <d:RelatedIPNumber m:null="true" />
+        <d:ISBN xml:space="preserve"> </d:ISBN>
+        <d:IPDSReviewProcessStateValue>SPN Production</d:IPDSReviewProcessStateValue>
+        <d:IPDSTaskStatusValue>Approve</d:IPDSTaskStatusValue>
+        <d:IPDSWorkflowStartDate m:type="Edm.DateTime">2013-04-03T17:45:22</d:IPDSWorkflowStartDate>
+        <d:IPDSWorkflowStopDate m:type="Edm.DateTime">2013-04-08T17:48:12</d:IPDSWorkflowStopDate>
+        <d:BureauApprovingOfficialId m:type="Edm.Int32">42</d:BureauApprovingOfficialId>
+        <d:CenterChiefId m:type="Edm.Int32">233</d:CenterChiefId>
+        <d:PSCChiefId m:type="Edm.Int32">31</d:PSCChiefId>
+        <d:VISpecialistId m:type="Edm.Int32">613</d:VISpecialistId>
+        <d:PublishedURL>http://pubs.usgs.gov/sir/2013/5064/, http://pubs.usgs.gov/sir/2013/5064/</d:PublishedURL>
+        <d:ProductNumber>https://ipds.usgs.gov/WPP/Record.aspx?IP=IP-035570, IP-035570</d:ProductNumber>
+        <d:CostCenterId m:type="Edm.Int32">52</d:CostCenterId>
+        <d:PublishingServiceCenterId m:type="Edm.Int32">4</d:PublishingServiceCenterId>
+        <d:TempWorkflow m:type="Edm.Int32" m:null="true" />
+        <d:CreatedById m:type="Edm.Int32">325</d:CreatedById>
+        <d:ModifiedById m:type="Edm.Int32">12</d:ModifiedById>
+        <d:Modified m:type="Edm.DateTime">2013-10-23T11:46:41</d:Modified>
+        <d:Created m:type="Edm.DateTime">2013-06-14T22:58:31</d:Created>
+        <d:ProductPrintingCost m:type="Edm.Double" m:null="true" />
+        <d:NBROfInfoDelCopies m:type="Edm.Double" m:null="true" />
+        <d:ReviewTypeValue m:null="true" />
+        <d:USGSMissionAreaValue>Water</d:USGSMissionAreaValue>
+        <d:USGSRegionValue>Northwest Region</d:USGSRegionValue>
+        <d:USGSSeriesValue>Scientific Investigations Reporter</d:USGSSeriesValue>
+        <d:BindingTypeValue m:null="true" />
+        <d:SPNEditorId m:type="Edm.Int32">1134</d:SPNEditorId>
+        <d:Influential_OMB_FlagValue>No</d:Influential_OMB_FlagValue>
+        <d:HVisible_FlagValue>No</d:HVisible_FlagValue>
+        <d:Sensitive_Policy_FlagValue>No</d:Sensitive_Policy_FlagValue>
+        <d:JournalTitle>Larger Work Title</d:JournalTitle>
+        <d:PUBS_Response m:null="true" />
+        <d:PUBS_Status m:null="true" />
+        <d:Id m:type="Edm.Int32">81817</d:Id>
+        <d:ContentType>Information Product</d:ContentType>
+        <d:Owshiddenversion m:type="Edm.Int32">2</d:Owshiddenversion>
+        <d:Version>1.0</d:Version>
+        <d:Path>/Lists/Information Products Archive</d:Path>
+      </m:properties>
+    </content>
+  </entry>
+  <entry m:etag="W/&quot;2&quot;">
+    <id>https://ipds.usgs.gov/_vti_bin/listdata.svc/InformationProductsArchive(81817)</id>
+    <title type="text">Pesticides in groundwater of Wyoming, 2008-2010</title>
+    <updated>2013-10-23T11:46:41-06:00</updated>
+    <author>
+      <name />
+    </author>
+    <link rel="edit" title="InformationProductsArchiveItem" href="InformationProductsArchive(81817)" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/SeniorUSGSAuthor" type="application/atom+xml;type=entry" title="SeniorUSGSAuthor" href="InformationProductsArchive(81817)/SeniorUSGSAuthor" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/AuthorSupervisor" type="application/atom+xml;type=entry" title="AuthorSupervisor" href="InformationProductsArchive(81817)/AuthorSupervisor" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ProductType" type="application/atom+xml;type=entry" title="ProductType" href="InformationProductsArchive(81817)/ProductType" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/OMBInfluentialFlag" type="application/atom+xml;type=entry" title="OMBInfluentialFlag" href="InformationProductsArchive(81817)/OMBInfluentialFlag" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/PolicySensitiveFlag" type="application/atom+xml;type=entry" title="PolicySensitiveFlag" href="InformationProductsArchive(81817)/PolicySensitiveFlag" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/HighlyVisibleFlag" type="application/atom+xml;type=entry" title="HighlyVisibleFlag" href="InformationProductsArchive(81817)/HighlyVisibleFlag" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/IPDSReviewProcessState" type="application/atom+xml;type=entry" title="IPDSReviewProcessState" href="InformationProductsArchive(81817)/IPDSReviewProcessState" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/IPDSTaskStatus" type="application/atom+xml;type=entry" title="IPDSTaskStatus" href="InformationProductsArchive(81817)/IPDSTaskStatus" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/BureauApprovingOfficial" type="application/atom+xml;type=entry" title="BureauApprovingOfficial" href="InformationProductsArchive(81817)/BureauApprovingOfficial" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/CenterChief" type="application/atom+xml;type=entry" title="CenterChief" href="InformationProductsArchive(81817)/CenterChief" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/PSCChief" type="application/atom+xml;type=entry" title="PSCChief" href="InformationProductsArchive(81817)/PSCChief" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/VISpecialist" type="application/atom+xml;type=entry" title="VISpecialist" href="InformationProductsArchive(81817)/VISpecialist" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/CostCenter" type="application/atom+xml;type=entry" title="CostCenter" href="InformationProductsArchive(81817)/CostCenter" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/PublishingServiceCenter" type="application/atom+xml;type=entry" title="PublishingServiceCenter" href="InformationProductsArchive(81817)/PublishingServiceCenter" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/CreatedBy" type="application/atom+xml;type=entry" title="CreatedBy" href="InformationProductsArchive(81817)/CreatedBy" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ModifiedBy" type="application/atom+xml;type=entry" title="ModifiedBy" href="InformationProductsArchive(81817)/ModifiedBy" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ReviewType" type="application/atom+xml;type=entry" title="ReviewType" href="InformationProductsArchive(81817)/ReviewType" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/USGSMissionArea" type="application/atom+xml;type=entry" title="USGSMissionArea" href="InformationProductsArchive(81817)/USGSMissionArea" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/USGSRegion" type="application/atom+xml;type=entry" title="USGSRegion" href="InformationProductsArchive(81817)/USGSRegion" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/USGSSeries" type="application/atom+xml;type=entry" title="USGSSeries" href="InformationProductsArchive(81817)/USGSSeries" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/BindingType" type="application/atom+xml;type=entry" title="BindingType" href="InformationProductsArchive(81817)/BindingType" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/USGSProgram" type="application/atom+xml;type=feed" title="USGSProgram" href="InformationProductsArchive(81817)/USGSProgram" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/SPNEditor" type="application/atom+xml;type=entry" title="SPNEditor" href="InformationProductsArchive(81817)/SPNEditor" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Influential_OMB_Flag" type="application/atom+xml;type=entry" title="Influential_OMB_Flag" href="InformationProductsArchive(81817)/Influential_OMB_Flag" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/HVisible_Flag" type="application/atom+xml;type=entry" title="HVisible_Flag" href="InformationProductsArchive(81817)/HVisible_Flag" />
+    <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Sensitive_Policy_Flag" type="application/atom+xml;type=entry" title="Sensitive_Policy_Flag" href="InformationProductsArchive(81817)/Sensitive_Policy_Flag" />
+    <category term="Microsoft.SharePoint.DataService.InformationProductsArchiveItem" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+    <content type="application/xml">
+      <m:properties>
+        <d:ContentTypeID>0x010047D2DB888AD4DA4BA707C7C92A0751FE00B12414C54CE93A45907AE5099ADAC025</d:ContentTypeID>
+        <d:WorkingTitle>Pesticides in groundwater of Wyoming, 2008-2010</d:WorkingTitle>
+        <d:IPNumber>IP-035570x</d:IPNumber>
+        <d:SeniorUSGSAuthorId m:type="Edm.Int32">1706</d:SeniorUSGSAuthorId>
+        <d:AuthorSupervisorId m:type="Edm.Int32">233</d:AuthorSupervisorId>
+        <d:ProductTypeValue>USGS series</d:ProductTypeValue>
+        <d:BasisNumber>GC12rt001410200</d:BasisNumber>
+        <d:IPPANumber>den12-cmrt00-0097</d:IPPANumber>
+        <d:ProductSummary>A synthesis of pesticides in groundwater data collected from 1995 through 2010 in Wyoming, examining changes in use and trends in concentrations</d:ProductSummary>
+        <d:PlannedDisseminationDate m:type="Edm.DateTime">2013-05-03T00:00:00</d:PlannedDisseminationDate>
+        <d:TeamProjectName xml:space="preserve"> </d:TeamProjectName>
+        <d:Cooperators>Wyoming Department of Agriculture</d:Cooperators>
+        <d:OMBInfluentialFlagValue m:null="true" />
+        <d:PolicySensitiveFlagValue m:null="true" />
+        <d:HighlyVisibleFlagValue m:null="true" />
+        <d:FinalTitle>Pesticides in Wyoming Groundwater, 2008–10</d:FinalTitle>
+        <d:Abstract>My Abstract</d:Abstract>
+        <d:Citation>Eddy-Miller, C.A., Bartos, T.T., and Taylor, M.L., 2013, Pesticides in Wyoming Groundwater, 2008–10: U.S. Geological Survey Scientific Investigations Report 2013–5064, 45 p.</d:Citation>
+        <d:NonUSGSPublisher xml:space="preserve">U.S. Geological Survey</d:NonUSGSPublisher>
+        <d:SupersedesIPNumber xml:space="preserve"> </d:SupersedesIPNumber>
+        <d:NumberOfMapsOrPlates m:type="Edm.Double">0</d:NumberOfMapsOrPlates>
+        <d:PageRange m:null="true" />
+        <d:PhysicalDescription>Physical Description</d:PhysicalDescription>
+        <d:NumberOfUSGSCopies m:type="Edm.Double" m:null="true" />
+        <d:USGSSeriesNumber>2013-5064</d:USGSSeriesNumber>
+        <d:USGSSeriesLetter xml:space="preserve">Z</d:USGSSeriesLetter>
+        <d:DigitalObjectIdentifier m:null="true" />
+        <d:GPOJacketNumber xml:space="preserve"> </d:GPOJacketNumber>
+        <d:GPOReqNumber xml:space="preserve"> </d:GPOReqNumber>
+        <d:PrintOrderNumber xml:space="preserve"> </d:PrintOrderNumber>
+        <d:NBROfPSPages m:type="Edm.Double" m:null="true" />
+        <d:NBROfOSPages m:type="Edm.Double" m:null="true" />
+        <d:NBROfCPSPages m:type="Edm.Double" m:null="true" />
+        <d:NBROfCOSPages m:type="Edm.Double" m:null="true" />
+        <d:EditionNumber m:type="Edm.Double">12</d:EditionNumber>
+        <d:Volume xml:space="preserve">A</d:Volume>
+        <d:LegacyData m:null="true" />
+        <d:ProductDisseminated m:type="Edm.Boolean">false</d:ProductDisseminated>
+        <d:DiseminationDate m:type="Edm.DateTime">2013-04-08T11:48:00</d:DiseminationDate>
+        <d:Issue xml:space="preserve">c</d:Issue>
+        <d:RelatedIPNumber m:null="true" />
+        <d:ISBN xml:space="preserve"> </d:ISBN>
+        <d:IPDSReviewProcessStateValue>SPN Production</d:IPDSReviewProcessStateValue>
+        <d:IPDSTaskStatusValue>Approve</d:IPDSTaskStatusValue>
+        <d:IPDSWorkflowStartDate m:type="Edm.DateTime">2013-04-03T17:45:22</d:IPDSWorkflowStartDate>
+        <d:IPDSWorkflowStopDate m:type="Edm.DateTime">2013-04-08T17:48:12</d:IPDSWorkflowStopDate>
+        <d:BureauApprovingOfficialId m:type="Edm.Int32">42</d:BureauApprovingOfficialId>
+        <d:CenterChiefId m:type="Edm.Int32">233</d:CenterChiefId>
+        <d:PSCChiefId m:type="Edm.Int32">31</d:PSCChiefId>
+        <d:VISpecialistId m:type="Edm.Int32">613</d:VISpecialistId>
+        <d:PublishedURL>http://pubs.usgs.gov/sir/2013/5064/, http://pubs.usgs.gov/sir/2013/5064/</d:PublishedURL>
+        <d:ProductNumber>https://ipds.usgs.gov/WPP/Record.aspx?IP=IP-035570, IP-035570</d:ProductNumber>
+        <d:CostCenterId m:type="Edm.Int32">52</d:CostCenterId>
+        <d:PublishingServiceCenterId m:type="Edm.Int32">4</d:PublishingServiceCenterId>
+        <d:TempWorkflow m:type="Edm.Int32" m:null="true" />
+        <d:CreatedById m:type="Edm.Int32">325</d:CreatedById>
+        <d:ModifiedById m:type="Edm.Int32">12</d:ModifiedById>
+        <d:Modified m:type="Edm.DateTime">2013-10-23T11:46:41</d:Modified>
+        <d:Created m:type="Edm.DateTime">2013-06-14T22:58:31</d:Created>
+        <d:ProductPrintingCost m:type="Edm.Double" m:null="true" />
+        <d:NBROfInfoDelCopies m:type="Edm.Double" m:null="true" />
+        <d:ReviewTypeValue m:null="true" />
+        <d:USGSMissionAreaValue>Water</d:USGSMissionAreaValue>
+        <d:USGSRegionValue>Northwest Region</d:USGSRegionValue>
+        <d:USGSSeriesValue>Scientific Investigations Report</d:USGSSeriesValue>
+        <d:BindingTypeValue m:null="true" />
+        <d:SPNEditorId m:type="Edm.Int32">1134</d:SPNEditorId>
+        <d:Influential_OMB_FlagValue>No</d:Influential_OMB_FlagValue>
+        <d:HVisible_FlagValue>No</d:HVisible_FlagValue>
+        <d:Sensitive_Policy_FlagValue>No</d:Sensitive_Policy_FlagValue>
+        <d:JournalTitle>Larger Work Title</d:JournalTitle>
+        <d:PUBS_Response m:null="true" />
+        <d:PUBS_Status m:null="true" />
+        <d:Id m:type="Edm.Int32">81817</d:Id>
+        <d:ContentType>Information Product</d:ContentType>
+        <d:Owshiddenversion m:type="Edm.Int32">2</d:Owshiddenversion>
+        <d:Version>1.0</d:Version>
+        <d:Path>/Lists/Information Products Archive</d:Path>
+      </m:properties>
+    </content>
+  </entry>
+</feed>

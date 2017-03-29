@@ -45,10 +45,10 @@ public class JndiConfig {
 		return (String) ctx.lookup("java:comp/env/jms/ipdsQueueName");
 	}
 
-	@Bean
-	public String costCenterQueueName() throws NamingException {
-		return (String) ctx.lookup("java:comp/env/jms/costCenterQueueName");
-	}
+//	@Bean
+//	public String costCenterQueueName() throws NamingException {
+//		return (String) ctx.lookup("java:comp/env/jms/costCenterQueueName");
+//	}
 
 	@Bean
 	public String ipdsEndpoint() throws NamingException {

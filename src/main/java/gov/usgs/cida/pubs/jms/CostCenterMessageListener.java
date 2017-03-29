@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Deprecated
 public class CostCenterMessageListener implements MessageListener {
 
 	private static final Log LOG = LogFactory.getLog(CostCenterMessageListener.class);

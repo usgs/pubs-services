@@ -42,7 +42,7 @@ public class MpListValidationTest extends BaseValidatorTest {
 		mpList.setText(StringUtils.repeat('X', 501));
 		mpList.setDescription(StringUtils.repeat('X', 2001));
 		mpList.setValidationErrors(validator.validate(mpList));
-		assertFalse(mpList.getValidationErrors().isEmpty());
+		assertFalse(mpList.isValid());
 		assertEquals(2, mpList.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(mpList.getValidationErrors().getValidationErrors(),
 				//From MpList
@@ -53,7 +53,7 @@ public class MpListValidationTest extends BaseValidatorTest {
 		mpList.setText(StringUtils.repeat('X', 500));
 		mpList.setDescription(StringUtils.repeat('X', 2000));
 		mpList.setValidationErrors(validator.validate(mpList));
-		assertTrue(mpList.getValidationErrors().isEmpty());
+		assertTrue(mpList.isValid());
 	}
 
 }

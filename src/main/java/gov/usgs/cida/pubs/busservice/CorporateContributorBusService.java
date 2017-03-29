@@ -34,7 +34,7 @@ public class CorporateContributorBusService extends BusService<CorporateContribu
 			Integer id = object.getId();
 			Contributor<CorporateContributor> castObject = object;
 			castObject.setValidationErrors(validator.validate(castObject));
-			if (castObject.getValidationErrors().isEmpty()) {
+			if (castObject.isValid()) {
 				CorporateContributor.getDao().update(castObject);
 				result = (CorporateContributor) CorporateContributor.getDao().getById(id);
 			}
@@ -49,7 +49,7 @@ public class CorporateContributorBusService extends BusService<CorporateContribu
 		if (null != object) {
 			Contributor<CorporateContributor> castObject = object;
 			castObject.setValidationErrors(validator.validate(castObject));
-			if (castObject.getValidationErrors().isEmpty()) {
+			if (castObject.isValid()) {
 				Integer id = CorporateContributor.getDao().add(castObject);
 				result = (CorporateContributor) CorporateContributor.getDao().getById(id);
 			}

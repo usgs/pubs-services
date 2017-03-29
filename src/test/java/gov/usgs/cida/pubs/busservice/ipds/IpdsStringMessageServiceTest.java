@@ -47,24 +47,24 @@ public class IpdsStringMessageServiceTest extends BaseSpringTest {
 
 	@Before
 	public void setUp() throws Exception {
-	   MockitoAnnotations.initMocks(this);
-	   when(requester.getIpdsProductXml(anyString())).thenAnswer(new Answer<String>() {
-		   @Override
-		   public String answer(InvocationOnMock invocation) throws Throwable {
-			 Object[] args = invocation.getArguments();
-			 return "<root>" + (String) args[0] + "</root>";
-		   }
-		 });
-	   when(ipdsProcess.processLog(any(ProcessType.class), anyInt())).thenReturn("Did Processing");
-	   service = new IpdsStringMessageService(ipdsProcess, requester);
+		MockitoAnnotations.initMocks(this);
+		when(requester.getIpdsProductXml(anyString())).thenAnswer(new Answer<String>() {
+			@Override
+			public String answer(InvocationOnMock invocation) throws Throwable {
+				Object[] args = invocation.getArguments();
+				return "<root>" + (String) args[0] + "</root>";
+			}
+		});
+		when(ipdsProcess.processLog(any(ProcessType.class), anyInt())).thenReturn("Did Processing");
+		service = new IpdsStringMessageService(ipdsProcess, requester);
 	}
 
 	@Test
 	public void quickAndDirty() throws Exception {
-	  when(requester.getIpdsProductXml(anyString())).thenReturn(badXml);
-	  service.processIpdsMessage(null);		
+		when(requester.getIpdsProductXml(anyString())).thenReturn(badXml);
+		service.processIpdsMessage(null);
 	}
-	
+
 	@Test
 	public void testNoDate() throws Exception {
 		try {

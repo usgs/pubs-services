@@ -84,7 +84,7 @@ public class PublicationContributorValidationTest extends BaseValidatorTest {
 		pubContributor.setPublicationId(1);
 
 		pubContributor.setValidationErrors(validator.validate(pubContributor));
-		assertFalse(pubContributor.getValidationErrors().isEmpty());
+		assertFalse(pubContributor.isValid());
 		assertEquals(4, pubContributor.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(pubContributor.getValidationErrors().getValidationErrors(),
 				//From UniqueKeyValidatorForMpPublicationContributor
@@ -100,7 +100,7 @@ public class PublicationContributorValidationTest extends BaseValidatorTest {
 	public void notNullTest() {
 		pubContributor.setContributor(null);
 		pubContributor.setValidationErrors(validator.validate(pubContributor));
-		assertFalse(pubContributor.getValidationErrors().isEmpty());
+		assertFalse(pubContributor.isValid());
 		assertEquals(1, pubContributor.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(pubContributor.getValidationErrors().getValidationErrors(),
 				//From PublicationContributor

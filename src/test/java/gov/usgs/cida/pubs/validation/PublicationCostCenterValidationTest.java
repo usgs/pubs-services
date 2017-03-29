@@ -71,7 +71,7 @@ public class PublicationCostCenterValidationTest extends BaseValidatorTest {
 		pubCostCenter.setPublicationId(1);
 
 		pubCostCenter.setValidationErrors(validator.validate(pubCostCenter));
-		assertFalse(pubCostCenter.getValidationErrors().isEmpty());
+		assertFalse(pubCostCenter.isValid());
 		assertEquals(3, pubCostCenter.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(pubCostCenter.getValidationErrors().getValidationErrors(),
 				//From UniqueKeyValidatorForMpPublicationCostCenter
@@ -86,7 +86,7 @@ public class PublicationCostCenterValidationTest extends BaseValidatorTest {
 	public void notNullTest() {
 		pubCostCenter.setCostCenter(null);
 		pubCostCenter.setValidationErrors(validator.validate(pubCostCenter));
-		assertFalse(pubCostCenter.getValidationErrors().isEmpty());
+		assertFalse(pubCostCenter.isValid());
 		assertEquals(1, pubCostCenter.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(pubCostCenter.getValidationErrors().getValidationErrors(),
 				//From PublicationCostCenter

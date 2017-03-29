@@ -85,7 +85,7 @@ public class PublicationLinkValidationTest extends BaseValidatorTest {
 		pubLink.setPublicationId(1);
 
 		pubLink.setValidationErrors(validator.validate(pubLink));
-		assertFalse(pubLink.getValidationErrors().isEmpty());
+		assertFalse(pubLink.isValid());
 		assertEquals(3, pubLink.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(pubLink.getValidationErrors().getValidationErrors(),
 				//From ParentExistsValidatorForMpPublicationLink
@@ -100,7 +100,7 @@ public class PublicationLinkValidationTest extends BaseValidatorTest {
 		pubLink.setLinkType(null);
 		pubLink.setUrl(null);
 		pubLink.setValidationErrors(validator.validate(pubLink));
-		assertFalse(pubLink.getValidationErrors().isEmpty());
+		assertFalse(pubLink.isValid());
 		assertEquals(2, pubLink.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(pubLink.getValidationErrors().getValidationErrors(),
 				//From PublicationLink
@@ -118,7 +118,7 @@ public class PublicationLinkValidationTest extends BaseValidatorTest {
 		pubLink.setDescription(StringUtils.repeat('X', 4001));
 		pubLink.setUrl("X");
 		pubLink.setValidationErrors(validator.validate(pubLink));
-		assertFalse(pubLink.getValidationErrors().isEmpty());
+		assertFalse(pubLink.isValid());
 		assertEquals(4, pubLink.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(pubLink.getValidationErrors().getValidationErrors(),
 				//From PublicationLink
@@ -133,7 +133,7 @@ public class PublicationLinkValidationTest extends BaseValidatorTest {
 		pubLink.setDescription(StringUtils.repeat('X', 4000));
 		pubLink.setUrl("http://noway.com");
 		pubLink.setValidationErrors(validator.validate(pubLink));
-		assertTrue(pubLink.getValidationErrors().isEmpty());
+		assertTrue(pubLink.isValid());
 	}
 
 }

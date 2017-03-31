@@ -38,7 +38,7 @@ public class CostCenterMessageService implements IIpdsService {
 
 	@Override
 	@Transactional
-	public void processIpdsMessage(final String nothing) throws Exception {
+	public void processIpdsMessage(final String nothing) {
 		String inMessageText = requester.getIpdsCostCenterXml();
 		IpdsMessageLog newMessage = new IpdsMessageLog();
 		newMessage.setMessageText(PubsEscapeXML10.ESCAPE_XML10.translate(inMessageText));

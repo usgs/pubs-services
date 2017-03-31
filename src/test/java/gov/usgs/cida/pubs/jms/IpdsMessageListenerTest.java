@@ -27,7 +27,7 @@ public class IpdsMessageListenerTest extends BaseSpringTest {
 	private class Isms implements IIpdsService {
 		public String msgText;
 		@Override
-		public void processIpdsMessage(String ipdsMessage) throws Exception {
+		public void processIpdsMessage(String ipdsMessage) {
 			msgText = null == ipdsMessage ? "nullInput" : ipdsMessage;
 		}
 	}
@@ -37,7 +37,7 @@ public class IpdsMessageListenerTest extends BaseSpringTest {
 	private class Spms implements IIpdsService {
 		public String msgText;
 		@Override
-		public void processIpdsMessage(String ipdsMessage) throws Exception {
+		public void processIpdsMessage(String ipdsMessage) {
 			msgText = null == ipdsMessage ? "nullInput" : ipdsMessage;
 		}
 	}

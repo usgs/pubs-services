@@ -20,15 +20,16 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.http.impl.cookie.BrowserCompatSpecFactory.SecurityLevel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionStatus;
 import org.xml.sax.SAXException;
 
 import gov.usgs.cida.pubs.BaseSpringTest;
@@ -37,6 +38,7 @@ import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.dao.intfc.IPwPublicationDao;
+import gov.usgs.cida.pubs.dao.ipds.IpdsMessageLogDao;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
@@ -44,6 +46,7 @@ import gov.usgs.cida.pubs.domain.PublicationCostCenter;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
 import gov.usgs.cida.pubs.domain.ipds.PublicationMap;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
@@ -65,24 +68,41 @@ public class IpdsProcessTest extends BaseSpringTest {
 	protected IMpPublicationBusService pubBusService;
 	@Mock
 	protected IPwPublicationDao publicationDao;
-	@Autowired
+	@Mock
 	protected PlatformTransactionManager transactionManager;
+	@Mock
+	protected IpdsMessageLogDao ipdsMessageLogDao;
 
 	protected IpdsProcess ipdsProcess;
 	protected List<MpPublication> emptyList = new ArrayList<>();
 	protected PublicationSeries pubSeries;
+	protected PublicationSubtype pubSubtype;
+	protected PublicationType pubType;
 	protected MpPublication existingMpPub9;
 	protected MpPublication existingMpPub11;
 	protected PwPublication existingPwPub9;
 	protected PwPublication existingPwPub11;
+	protected IpdsMessageLog ipdsMessageLog;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		ipdsProcess = new IpdsProcess(crossRefBusService, binder, requester, pubBusService, transactionManager);
+		pubType = new PublicationType();
+		pubType.setId(1);
+		pubType.setText("Test Type");
+		pubSubtype = new PublicationSubtype();
+		pubSubtype.setId(2);
+		pubSubtype.setText("Test Subtype");
 		pubSeries = new PublicationSeries();
+		pubSeries.setText("Test Series");
 		existingMpPub9 = new MpPublication();
 		existingMpPub9.setId(9);
+		existingMpPub9.setPublicationType(pubType);
+		existingMpPub9.setPublicationSubtype(pubSubtype);
+		existingMpPub9.setSeriesTitle(pubSeries);
+		existingMpPub9.setIpdsReviewProcessState("Test State");
+		existingMpPub9.setDoi("Test Doi");
 		existingMpPub11 = new MpPublication();
 		existingMpPub11.setId(11);
 
@@ -92,6 +112,8 @@ public class IpdsProcessTest extends BaseSpringTest {
 		existingPwPub11.setId(11);
 
 		existingPwPub9.setPwPublicationDao(publicationDao);
+		IpdsMessageLog ipdsMessageLog = new IpdsMessageLog();
+		ipdsMessageLog.setIpdsMessageLogDao(ipdsMessageLogDao);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -452,7 +474,7 @@ public class IpdsProcessTest extends BaseSpringTest {
 	}
 
 	@Test
-	public void processPublicationTest() {
+	public void processPublicationFailuresAndDeleteTest() {
 		MpPublication newMpPub = new MpPublication();
 		when(pubBusService.deleteObject(null)).thenReturn(null);
 		when(pubBusService.createObject(newMpPub)).thenReturn(getInvalidPub(), newMpPub);
@@ -470,38 +492,233 @@ public class IpdsProcessTest extends BaseSpringTest {
 		verify(requester, never()).updateIpdsDoi(any(MpPublication.class));
 		verify(crossRefBusService, never()).submitCrossRef(any(MpPublication.class));
 
-		//Clean SPN_PRODUCTION
+		//What is this process type?
 		IpdsProcess.setErrors(0);
 		IpdsProcess.setStringBuilder(new StringBuilder(""));
 		IpdsProcess.setAdditions(0);
+		ipdsProcess.processPublication(ProcessType.COST_CENTER, null, newMpPub, null);
+		assertEquals("\n\tTrouble getting comment: null\n\tAdded to MyPubs as ProdId: null", IpdsProcess.getStringBuilder().toString());
+		assertEquals(1, IpdsProcess.getErrors().intValue());
+		assertEquals(1, IpdsProcess.getAdditions().intValue());
+		verify(pubBusService, never()).deleteObject(null);
+		verify(pubBusService, times(2)).createObject(newMpPub);
+		verify(requester, never()).updateIpdsDoi(any(MpPublication.class));
+		verify(crossRefBusService, never()).submitCrossRef(any(MpPublication.class));
+
+		//Delete
+		IpdsProcess.setErrors(0);
+		IpdsProcess.setStringBuilder(new StringBuilder(""));
+		IpdsProcess.setAdditions(0);
+		ipdsProcess.processPublication(ProcessType.COST_CENTER, null, newMpPub, newMpPub);
+		assertEquals("\n\tTrouble getting comment: null\n\tAdded to MyPubs as ProdId: null", IpdsProcess.getStringBuilder().toString());
+		assertEquals(1, IpdsProcess.getErrors().intValue());
+		assertEquals(1, IpdsProcess.getAdditions().intValue());
+		verify(pubBusService).deleteObject(null);
+		verify(pubBusService, times(3)).createObject(newMpPub);
+		verify(requester, never()).updateIpdsDoi(any(MpPublication.class));
+		verify(crossRefBusService, never()).submitCrossRef(any(MpPublication.class));
+	}
+
+	@Test
+	public void processPublicationSpnTest() {
+		MpPublication newMpPub = new MpPublication();
+		when(pubBusService.deleteObject(null)).thenReturn(null);
+		when(pubBusService.createObject(newMpPub)).thenReturn(newMpPub);
+		when(requester.updateIpdsDoi(any(MpPublication.class))).thenReturn("");
+		IpdsProcess.setErrors(0);
+		IpdsProcess.setStringBuilder(new StringBuilder(""));
+		IpdsProcess.setAdditions(0);
+
 		ipdsProcess.processPublication(ProcessType.SPN_PRODUCTION, null, newMpPub, null);
 		assertEquals("\n\tTrouble getting comment: null\n\tAdded to MyPubs as ProdId: null\n\t", IpdsProcess.getStringBuilder().toString());
 		assertEquals(1, IpdsProcess.getErrors().intValue());
 		assertEquals(1, IpdsProcess.getAdditions().intValue());
 		verify(pubBusService, never()).deleteObject(null);
-		verify(pubBusService, times(2)).createObject(newMpPub);
+		verify(pubBusService).createObject(newMpPub);
 		verify(requester).updateIpdsDoi(any(MpPublication.class));
 		verify(crossRefBusService, never()).submitCrossRef(any(MpPublication.class));
+	}
 
-		//Clean DISSEMINATION - not USGS Numbered or UnNumbered Series
+	@Test
+	public void processPublicationDisseminationTest() {
+		MpPublication newMpPub = new MpPublication();
+		when(pubBusService.deleteObject(null)).thenReturn(null);
+		when(pubBusService.createObject(newMpPub)).thenReturn(newMpPub);
+		when(requester.updateIpdsDoi(any(MpPublication.class))).thenReturn("");
 		IpdsProcess.setErrors(0);
 		IpdsProcess.setStringBuilder(new StringBuilder(""));
 		IpdsProcess.setAdditions(0);
+
+		//Not USGS Numbered or UnNumbered Series
 		ipdsProcess.processPublication(ProcessType.DISSEMINATION, null, newMpPub, null);
-		assertEquals("\n\tTrouble getting comment: null\n\tAdded to MyPubs as ProdId: null\n\t", IpdsProcess.getStringBuilder().toString());
+		assertEquals("\n\tTrouble getting comment: null\n\tAdded to MyPubs as ProdId: null", IpdsProcess.getStringBuilder().toString());
+		assertEquals(1, IpdsProcess.getErrors().intValue());
+		assertEquals(1, IpdsProcess.getAdditions().intValue());
+		verify(pubBusService, never()).deleteObject(null);
+		verify(pubBusService).createObject(newMpPub);
+		verify(requester, never()).updateIpdsDoi(any(MpPublication.class));
+		verify(crossRefBusService, never()).submitCrossRef(any(MpPublication.class));
+
+		//Is USGS Numbered, null doi
+		IpdsProcess.setErrors(0);
+		IpdsProcess.setStringBuilder(new StringBuilder(""));
+		IpdsProcess.setAdditions(0);
+		PublicationSubtype numbered = new PublicationSubtype();
+		numbered.setId(5);
+		newMpPub.setPublicationSubtype(numbered);
+		ipdsProcess.processPublication(ProcessType.DISSEMINATION, null, newMpPub, null);
+		assertEquals("\n\tTrouble getting comment: null\n\tAdded to MyPubs as ProdId: null", IpdsProcess.getStringBuilder().toString());
 		assertEquals(1, IpdsProcess.getErrors().intValue());
 		assertEquals(1, IpdsProcess.getAdditions().intValue());
 		verify(pubBusService, never()).deleteObject(null);
 		verify(pubBusService, times(2)).createObject(newMpPub);
-		verify(requester).updateIpdsDoi(any(MpPublication.class));
+		verify(requester, never()).updateIpdsDoi(any(MpPublication.class));
 		verify(crossRefBusService, never()).submitCrossRef(any(MpPublication.class));
-	}
-	}
+
+		//Is USGS Numbered, emptyString doi
+		IpdsProcess.setErrors(0);
+		IpdsProcess.setStringBuilder(new StringBuilder(""));
+		IpdsProcess.setAdditions(0);
+		newMpPub.setDoi("");
+		ipdsProcess.processPublication(ProcessType.DISSEMINATION, null, newMpPub, null);
+		assertEquals("\n\tTrouble getting comment: null\n\tAdded to MyPubs as ProdId: null", IpdsProcess.getStringBuilder().toString());
+		assertEquals(1, IpdsProcess.getErrors().intValue());
+		assertEquals(1, IpdsProcess.getAdditions().intValue());
+		verify(pubBusService, never()).deleteObject(null);
+		verify(pubBusService, times(3)).createObject(newMpPub);
+		verify(requester, never()).updateIpdsDoi(any(MpPublication.class));
+		verify(crossRefBusService, never()).submitCrossRef(any(MpPublication.class));
+
+		//Is USGS Numbered, "real" doi
+		IpdsProcess.setErrors(0);
+		IpdsProcess.setStringBuilder(new StringBuilder(""));
+		IpdsProcess.setAdditions(0);
+		newMpPub.setDoi("http:\\doi.gov");
+		ipdsProcess.processPublication(ProcessType.DISSEMINATION, null, newMpPub, null);
+		assertEquals("\n\tTrouble getting comment: null\n\tAdded to MyPubs as ProdId: null", IpdsProcess.getStringBuilder().toString());
+		assertEquals(1, IpdsProcess.getErrors().intValue());
+		assertEquals(1, IpdsProcess.getAdditions().intValue());
+		verify(pubBusService, never()).deleteObject(null);
+		verify(pubBusService, times(4)).createObject(newMpPub);
+		verify(requester, never()).updateIpdsDoi(any(MpPublication.class));
+		verify(crossRefBusService).submitCrossRef(any(MpPublication.class));
+
+		//Is USGS UnNumbered, null doi
+		IpdsProcess.setErrors(0);
+		IpdsProcess.setStringBuilder(new StringBuilder(""));
+		IpdsProcess.setAdditions(0);
+		newMpPub.setDoi(null);
+		PublicationSubtype unnumbered = new PublicationSubtype();
+		unnumbered.setId(6);
+		newMpPub.setPublicationSubtype(unnumbered);
+		ipdsProcess.processPublication(ProcessType.DISSEMINATION, null, newMpPub, null);
+		assertEquals("\n\tTrouble getting comment: null\n\tAdded to MyPubs as ProdId: null", IpdsProcess.getStringBuilder().toString());
+		assertEquals(1, IpdsProcess.getErrors().intValue());
+		assertEquals(1, IpdsProcess.getAdditions().intValue());
+		verify(pubBusService, never()).deleteObject(null);
+		verify(pubBusService, times(5)).createObject(newMpPub);
+		verify(requester, never()).updateIpdsDoi(any(MpPublication.class));
+		verify(crossRefBusService).submitCrossRef(any(MpPublication.class));
+
+		//Is USGS UnNumbered, emptyString doi
+		IpdsProcess.setErrors(0);
+		IpdsProcess.setStringBuilder(new StringBuilder(""));
+		IpdsProcess.setAdditions(0);
+		newMpPub.setDoi("");
+		ipdsProcess.processPublication(ProcessType.DISSEMINATION, null, newMpPub, null);
+		assertEquals("\n\tTrouble getting comment: null\n\tAdded to MyPubs as ProdId: null", IpdsProcess.getStringBuilder().toString());
+		assertEquals(1, IpdsProcess.getErrors().intValue());
+		assertEquals(1, IpdsProcess.getAdditions().intValue());
+		verify(pubBusService, never()).deleteObject(null);
+		verify(pubBusService, times(6)).createObject(newMpPub);
+		verify(requester, never()).updateIpdsDoi(any(MpPublication.class));
+		verify(crossRefBusService).submitCrossRef(any(MpPublication.class));
+
+		//Is USGS UnNumbered, "real" doi
+		IpdsProcess.setErrors(0);
+		IpdsProcess.setStringBuilder(new StringBuilder(""));
+		IpdsProcess.setAdditions(0);
+		newMpPub.setDoi("http:\\doi.gov");
+		ipdsProcess.processPublication(ProcessType.DISSEMINATION, null, newMpPub, null);
+		assertEquals("\n\tTrouble getting comment: null\n\tAdded to MyPubs as ProdId: null", IpdsProcess.getStringBuilder().toString());
+		assertEquals(1, IpdsProcess.getErrors().intValue());
+		assertEquals(1, IpdsProcess.getAdditions().intValue());
+		verify(pubBusService, never()).deleteObject(null);
+		verify(pubBusService, times(7)).createObject(newMpPub);
+		verify(requester, never()).updateIpdsDoi(any(MpPublication.class));
+		verify(crossRefBusService, times(2)).submitCrossRef(any(MpPublication.class));	}
 
 	protected MpPublication getInvalidPub() {
 		MpPublication rtn = new MpPublication();
 		ValidatorResult vr = new ValidatorResult("inField", "inMessage",SeverityLevel.FATAL, "inValue");
 		rtn.addValidatorResult(vr);
+		return rtn;
+	}
+
+	@Test
+	public void processIpdsPublicationTest() throws SAXException, IOException {
+		PubMap pm = new PubMap();
+		pm.put(IpdsMessageLog.IPNUMBER, "IP-123");
+		when(binder.bindPublication(any(PubMap.class))).thenReturn(existingMpPub9);
+		when(pubBusService.getObjects(anyMap())).thenThrow(new RuntimeException("test")).thenReturn(null);
+		when(pubBusService.createObject(existingMpPub9)).thenReturn(existingMpPub9);
+		when(requester.getNotes(null)).thenReturn("<xml></xml>");
+		when(binder.bindNotes(anyString(), anySet())).thenReturn(getPublicationMapEmpty());
+		when(transactionManager.getTransaction(any(TransactionDefinition.class))).thenReturn(new DefaultTransactionStatus(null, false, false, false, false, null));
+		IpdsProcess.setErrors(0);
+		IpdsProcess.setStringBuilder(new StringBuilder(""));
+		IpdsProcess.setAdditions(0);
+
+		//Error condition - should rollback
+		ipdsProcess.processIpdsPublication(ProcessType.SPN_PRODUCTION, pm);
+		assertEquals("IP-123:\n\tERROR: Trouble processing pub: test\n\n", IpdsProcess.getStringBuilder().toString());
+		assertEquals(1, IpdsProcess.getErrors().intValue());
+		assertEquals(0, IpdsProcess.getAdditions().intValue());
+		verify(transactionManager).getTransaction(any(TransactionDefinition.class));
+		verify(transactionManager).rollback(any(TransactionStatus.class));
+		verify(transactionManager, never()).commit(any(TransactionStatus.class));
+
+		//Good, but not processed - should commit
+		IpdsProcess.setErrors(0);
+		IpdsProcess.setStringBuilder(new StringBuilder(""));
+		IpdsProcess.setAdditions(0);
+		ipdsProcess.processIpdsPublication(ProcessType.COST_CENTER, pm);
+		assertEquals("IP-123:\n\tIPDS record not processed (COST_CENTER)- Publication Type: Test Type PublicationSubtype: Test Subtype Series: Test Series Process State: Test State DOI: Test Doi\n\n",
+				IpdsProcess.getStringBuilder().toString());
+		assertEquals(0, IpdsProcess.getErrors().intValue());
+		assertEquals(0, IpdsProcess.getAdditions().intValue());
+		verify(transactionManager, times(2)).getTransaction(any(TransactionDefinition.class));
+		verify(transactionManager).rollback(any(TransactionStatus.class));
+		verify(transactionManager).commit(any(TransactionStatus.class));
+
+		//Good, processed, and should commit
+		IpdsProcess.setErrors(0);
+		IpdsProcess.setStringBuilder(new StringBuilder(""));
+		IpdsProcess.setAdditions(0);
+		ipdsProcess.processIpdsPublication(ProcessType.DISSEMINATION, pm);
+		assertEquals("IP-123:\n\tAdded to MyPubs as ProdId: 9\n\n", IpdsProcess.getStringBuilder().toString());
+		assertEquals(0, IpdsProcess.getErrors().intValue());
+		assertEquals(1, IpdsProcess.getAdditions().intValue());
+		verify(transactionManager, times(3)).getTransaction(any(TransactionDefinition.class));
+		verify(transactionManager).rollback(any(TransactionStatus.class));
+		verify(transactionManager, times(2)).commit(any(TransactionStatus.class));
+	}
+
+	@Test
+	public void processLogTest() {
+		String expectedMsg = "Summary:\n\tTotal Entries: 2\n\tPublications Added: 0\n\tErrors Encountered: 2\n\nnull:\n\tERROR: Trouble processing pub: test\n\nnull:\n\tERROR: Trouble processing pub: test\n\n";
+		when(binder.bindPublication(any(PubMap.class))).thenThrow(new RuntimeException("test"));
+		when(ipdsMessageLogDao.getFromIpds(1)).thenReturn(getPubMapList());
+		assertEquals(expectedMsg, ipdsProcess.processLog(ProcessType.COST_CENTER, 1));
+
+		//Should be the same message as the ThreadLocals are reset at start of method
+		assertEquals(expectedMsg, ipdsProcess.processLog(ProcessType.COST_CENTER, 1));
+	}
+
+	protected List<PubMap> getPubMapList() {
+		List<PubMap> rtn = new ArrayList<>();
+		rtn.add(new PubMap());
+		rtn.add(new PubMap());
 		return rtn;
 	}
 }

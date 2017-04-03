@@ -72,7 +72,7 @@ public class MpListPublicationValidationTest extends BaseValidatorTest {
 	@Test
 	public void wiringTest() {
 		mpListPublication.setValidationErrors(validator.validate(mpListPublication));
-		assertFalse(mpListPublication.getValidationErrors().isEmpty());
+		assertFalse(mpListPublication.isValid());
 		assertEquals(3, mpListPublication.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(mpListPublication.getValidationErrors().getValidationErrors(),
 				//From UniqueKeyValidatorForMpListPublication

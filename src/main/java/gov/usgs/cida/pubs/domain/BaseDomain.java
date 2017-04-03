@@ -47,103 +47,66 @@ public abstract class BaseDomain<D> {
 	@JsonIgnore
 	protected ValidationResults validationErrors;
 
-	/**
-	 * The getter for id.
-	 * @return the id
-	 */
 	public Integer getId() {
 		return id;
 	}
 
-	/**
-	 * The setter for id.
-	 * @param inId the id to set
-	 */
 	@JsonIgnore
 	public void setId(final Integer inId) {
 		id = inId;
 	}
 
-	/**
-	 * The string setter for id.
-	 * @param inId the id to set
-	 */
 	@JsonProperty("id")
 	@JsonView(View.Base.class)
 	public void setId(final String inId) {
 		id = PubsUtilities.parseInteger(inId);
 	}
 
-	/**
-	 * @return the insertDate
-	 */
 	public LocalDateTime getInsertDate() {
 		return insertDate;
 	}
 
-	/**
-	 * @param inInsertDate the insertDate to set
-	 */
 	public void setInsertDate(final LocalDateTime inInsertDate) {
 		insertDate = inInsertDate;
 	}
 
-	/**
-	 * @return the insertUsername
-	 */
 	public String getInsertUsername() {
 		return insertUsername;
 	}
 
-	/**
-	 * @param inInsertUsername the insertUsername to set
-	 */
 	public void setInsertUsername(final String inInsertUsername) {
 		insertUsername = inInsertUsername;
 	}
 
-	/**
-	 * @return the updateDate
-	 */
 	public LocalDateTime getUpdateDate() {
 		return updateDate;
 	}
 
-	/**
-	 * @param inUpdateDate the updateDate to set
-	 */
 	public void setUpdateDate(final LocalDateTime inUpdateDate) {
 		updateDate = inUpdateDate;
 	}
 
-	/**
-	 * @return the updateUsername
-	 */
 	public String getUpdateUsername() {
 		return updateUsername;
 	}
 
-	/**
-	 * @param inUpdateUsername the updateUsername to set
-	 */
 	public void setUpdateUsername(final String inUpdateUsername) {
 		updateUsername = inUpdateUsername;
 	}
 
-	/**
-	 * @return the validationErrors
-	 */
-	public ValidationResults getValidationErrors() {
-		 if (null != validationErrors) {
-		   return validationErrors;
-	   } else {
-		   return new ValidationResults();
-	   }
+	@JsonIgnore
+	public boolean isValid() {
+		return getValidationErrors().isEmpty();
 	}
 
-	/**
-	 * @param inValidationErrors the validationErrors to set
-	 */
+	public ValidationResults getValidationErrors() {
+		if (null != validationErrors) {
+			return validationErrors;
+		} else {
+			return new ValidationResults();
+		}
+	}
+
 	public void setValidationErrors(final Set<ConstraintViolation<D>> inValidationErrors) {
 		validationErrors = new ValidationResults();
 		if (null != inValidationErrors) {

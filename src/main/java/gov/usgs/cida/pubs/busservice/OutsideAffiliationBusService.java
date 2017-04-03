@@ -49,7 +49,7 @@ public class OutsideAffiliationBusService extends BusService<OutsideAffiliation>
 		if (null != object && null != object.getId()) {
 			Integer id = object.getId();
 			object.setValidationErrors(validator.validate(object));
-			if (object.getValidationErrors().isEmpty()) {
+			if (object.isValid()) {
 				OutsideAffiliation.getDao().update(object);
 				result = OutsideAffiliation.getDao().getById(id);
 			}
@@ -62,7 +62,7 @@ public class OutsideAffiliationBusService extends BusService<OutsideAffiliation>
 	public OutsideAffiliation createObject(OutsideAffiliation object) {
 		if (null != object) {
 			object.setValidationErrors(validator.validate(object));
-			if (object.getValidationErrors().isEmpty()) {
+			if (object.isValid()) {
 				Integer id = OutsideAffiliation.getDao().add(object);
 				object = OutsideAffiliation.getDao().getById(id);
 			}

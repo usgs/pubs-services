@@ -83,7 +83,7 @@ public class PersonContributorValidationTest extends BaseValidatorTest {
 		//end voodoo
 
 		contributor.setValidationErrors(validator.validate(contributor));
-		assertFalse(contributor.getValidationErrors().isEmpty());
+		assertFalse(contributor.isValid());
 		assertEquals(3, contributor.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(contributor.getValidationErrors().getValidationErrors(),
 				//From PersonContributor
@@ -99,7 +99,7 @@ public class PersonContributorValidationTest extends BaseValidatorTest {
 		contributor.setFamily("");
 
 		contributor.setValidationErrors(validator.validate(contributor));
-		assertFalse(contributor.getValidationErrors().isEmpty());
+		assertFalse(contributor.isValid());
 		assertEquals(1, contributor.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(contributor.getValidationErrors().getValidationErrors(),
 				//From PersonContributor
@@ -108,7 +108,7 @@ public class PersonContributorValidationTest extends BaseValidatorTest {
 
 		contributor.setFamily("a");
 		contributor.setValidationErrors(validator.validate(contributor));
-		assertTrue(contributor.getValidationErrors().isEmpty());
+		assertTrue(contributor.isValid());
 	}
 
 	@Test
@@ -118,7 +118,7 @@ public class PersonContributorValidationTest extends BaseValidatorTest {
 		contributor.setSuffix(StringUtils.repeat('X', 41));
 		contributor.setEmail(StringUtils.repeat('X', 401));
 		contributor.setValidationErrors(validator.validate(contributor));
-		assertFalse(contributor.getValidationErrors().isEmpty());
+		assertFalse(contributor.isValid());
 		assertEquals(5, contributor.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(contributor.getValidationErrors().getValidationErrors(),
 				//From PersonContributor
@@ -134,7 +134,7 @@ public class PersonContributorValidationTest extends BaseValidatorTest {
 		contributor.setSuffix(StringUtils.repeat('X', 40));
 		contributor.setEmail(StringUtils.repeat('X', 400));
 		contributor.setValidationErrors(validator.validate(contributor));
-		assertFalse(contributor.getValidationErrors().isEmpty());
+		assertFalse(contributor.isValid());
 		assertEquals(1, contributor.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(contributor.getValidationErrors().getValidationErrors(),
 				//From PersonContributor

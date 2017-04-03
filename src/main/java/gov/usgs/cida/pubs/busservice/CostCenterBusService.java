@@ -49,7 +49,7 @@ public class CostCenterBusService extends BusService<CostCenter> {
 		if (null != object && null != object.getId()) {
 			Integer id = object.getId();
 			object.setValidationErrors(validator.validate(object));
-			if (object.getValidationErrors().isEmpty()) {
+			if (object.isValid()) {
 				CostCenter.getDao().update(object);
 				result = CostCenter.getDao().getById(id);
 			}
@@ -62,7 +62,7 @@ public class CostCenterBusService extends BusService<CostCenter> {
 	public CostCenter createObject(CostCenter object) {
 		if (null != object) {
 			object.setValidationErrors(validator.validate(object));
-			if (object.getValidationErrors().isEmpty()) {
+			if (object.isValid()) {
 				Integer id = CostCenter.getDao().add(object);
 				object = CostCenter.getDao().getById(id);
 			}

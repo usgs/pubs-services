@@ -43,7 +43,7 @@ public class MpPublicationLinkValidationTest extends BaseValidatorTest {
 		pubLink.setLinkType(null);
 
 		pubLink.setValidationErrors(validator.validate(pubLink));
-		assertFalse(pubLink.getValidationErrors().isEmpty());
+		assertFalse(pubLink.isValid());
 		assertValidationResults(pubLink.getValidationErrors().getValidationErrors(),
 				//From PublicationLink
 				NOT_NULL_LINK_TYPE,
@@ -54,7 +54,7 @@ public class MpPublicationLinkValidationTest extends BaseValidatorTest {
 	@Test
 	public void notNullTrueTest() {
 		pubLink.setValidationErrors(validator.validate(pubLink));
-		assertTrue(pubLink.getValidationErrors().isEmpty());
+		assertTrue(pubLink.isValid());
 	}
 
 	@Test
@@ -62,7 +62,7 @@ public class MpPublicationLinkValidationTest extends BaseValidatorTest {
 		pubLink.setUrl("GP");
 		pubLink.setLinkType(new LinkType());
 		pubLink.setValidationErrors(validator.validate(pubLink));
-		assertFalse(pubLink.getValidationErrors().isEmpty());
+		assertFalse(pubLink.isValid());
 		assertValidationResults(pubLink.getValidationErrors().getValidationErrors(),
 				//From PublicationLink
 				BAD_URL
@@ -75,7 +75,7 @@ public class MpPublicationLinkValidationTest extends BaseValidatorTest {
 		pubLink.setDescription(StringUtils.repeat('Y', 4001));
 		pubLink.setSize(StringUtils.repeat('Z', 101));
 		pubLink.setValidationErrors(validator.validate(pubLink));
-		assertFalse(pubLink.getValidationErrors().isEmpty());
+		assertFalse(pubLink.isValid());
 		assertValidationResults(pubLink.getValidationErrors().getValidationErrors(),
 				//From PublicationLink
 				INVALID_DESCRIPTION_LENGTH,
@@ -90,7 +90,7 @@ public class MpPublicationLinkValidationTest extends BaseValidatorTest {
 		pubLink.setDescription(StringUtils.repeat('Y', 4000));
 		pubLink.setSize(StringUtils.repeat('Z', 100));
 		pubLink.setValidationErrors(validator.validate(pubLink));
-		assertTrue(pubLink.getValidationErrors().isEmpty());
+		assertTrue(pubLink.isValid());
 	}
 
 }

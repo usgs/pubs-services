@@ -22,6 +22,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 @Service
+@Deprecated
 public class CostCenterMessageService implements IIpdsService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CostCenterMessageService.class);
@@ -37,7 +38,7 @@ public class CostCenterMessageService implements IIpdsService {
 
 	@Override
 	@Transactional
-	public void processIpdsMessage(final String nothing) throws Exception {
+	public void processIpdsMessage(final String nothing) {
 		String inMessageText = requester.getIpdsCostCenterXml();
 		IpdsMessageLog newMessage = new IpdsMessageLog();
 		newMessage.setMessageText(PubsEscapeXML10.ESCAPE_XML10.translate(inMessageText));

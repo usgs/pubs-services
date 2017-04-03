@@ -102,7 +102,7 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 		LOG.debug("createPublicationSeries");
 		setHeaders(response);
 		PublicationSeries result = busService.createObject(pubSeries);
-		if (null != result && result.getValidationErrors().isEmpty()) {
+		if (null != result && result.isValid()) {
 			response.setStatus(HttpServletResponse.SC_CREATED);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -126,7 +126,7 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 			result.addValidatorResult(idNotMatched);
 		}
 		
-		if (null != result && (null == result.getValidationErrors() || result.getValidationErrors().isEmpty())) {
+		if (null != result && result.isValid()) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

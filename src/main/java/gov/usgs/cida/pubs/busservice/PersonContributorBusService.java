@@ -45,7 +45,7 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 				Contributor<PersonContributor<UsgsContributor>> uc = (UsgsContributor) object;
 				uc.setValidationErrors(validator.validate(uc));
 			}
-			if (object.getValidationErrors().isEmpty()) {
+			if (object.isValid()) {
 				updateAffiliations(id, object);
 				PersonContributor.getDao().update(object);
 				result = (PersonContributor<?>) PersonContributor.getDao().getById(id);
@@ -67,7 +67,7 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 				Set<ConstraintViolation<Contributor<PersonContributor<UsgsContributor>>>> results = validator.validate(uc);
 				uc.setValidationErrors(results);
 			}
-			if (object.getValidationErrors().isEmpty()) {
+			if (object.isValid()) {
 				Integer id = PersonContributor.getDao().add(object);
 				updateAffiliations(id, object);
 				object = (PersonContributor<?>) PersonContributor.getDao().getById(id);

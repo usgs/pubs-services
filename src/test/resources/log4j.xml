@@ -19,11 +19,11 @@
 	</category>
 
 	<category name="gov.usgs">
-		<level value="INFO"/>
+		<level value="TRACE"/>
 	</category>
 
 	<category name="org.mybatis">
-		<level value="INFO"/>
+		<level value="DEBUG"/>
 	</category>
 
 	<category name="org.dbunit">
@@ -35,15 +35,23 @@
 	</category>
 
 	<category name="org.apache.ibatis">
-		<level value="INFO"/>
+		<level value="DEBUG"/>
 	</category>
 
 	<category name="java.sql">
-		<level value="INFO"/> 
+		<level value="DEBUG"/>
+	</category>
+
+	<category name="org.springframework.transaction">
+		<level value="TRACE"/>
+	</category>
+
+	<category name="gov.usgs.cida.config.DynamicReadOnlyProperties">
+		<level value="OFF"/>
 	</category>
 
 	<root>
-		<level value="INFO"/>
+		<level value="DEBUG"/>
 		<appender-ref ref="myconsole" />
 	</root>
 

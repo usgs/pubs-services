@@ -52,7 +52,7 @@ public class PublicationSeriesBusService extends BusService<PublicationSeries> {
 		if (null != object && null != object.getId()) {
 			Integer id = object.getId();
 			object.setValidationErrors(validator.validate(object));
-			if (object.getValidationErrors().isEmpty()) {
+			if (object.isValid()) {
 				PublicationSeries.getDao().update(object);
 				result = PublicationSeries.getDao().getById(id);
 			}
@@ -68,7 +68,7 @@ public class PublicationSeriesBusService extends BusService<PublicationSeries> {
 	public PublicationSeries createObject(PublicationSeries object) {
 		if (null != object) {
 			object.setValidationErrors(validator.validate(object));
-			if (object.getValidationErrors().isEmpty()) {
+			if (object.isValid()) {
 				Integer id = PublicationSeries.getDao().add(object);
 				object = PublicationSeries.getDao().getById(id);
 			}

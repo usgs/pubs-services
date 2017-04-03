@@ -7,10 +7,10 @@
 
     <Environment name="jms/ipdsQueueName" type="java.lang.String" value="ipdsToPubsDev"/>
 
-    <Environment name="pubs/ipds/endpoint" type="java.lang.String" value="ipdsdev.usgs.gov"/>
+    <Environment name="pubs/ipds/endpoint" type="java.lang.String" value="ipds.usgs.gov"/>
     <Environment name="pubs/ipds/protocol" type="java.lang.String" value="https"/>
     <Environment name="pubs/ipds/port" type="java.lang.Integer" value="80"/>
-    <Environment name="pubs/ipds/pubsWsPwd" type="java.lang.String" value="**********"/>
+    <Environment name="pubs/ipds/pubsWsPwd" type="java.lang.String" value="Hoplu9osmop#utrevate"/>
     <Environment name="pubs/ipds/pubsWsUser" type="java.lang.String" value="igscci-IPDSPubsWS"/>
 
     <Environment name="pubs/crossRef/protocol" type="java.lang.String" value="http"/>

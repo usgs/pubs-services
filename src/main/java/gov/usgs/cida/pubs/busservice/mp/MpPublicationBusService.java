@@ -101,7 +101,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 		if (null != object) {
 			MpPublication pub = publicationPreProcessing(object);
 			pub.setValidationErrors(validator.validate(pub));
-			if (pub.getValidationErrors().isEmpty()) {
+			if (pub.isValid()) {
 				MpPublication.getDao().add(pub);
 				MpPublication.getDao().lockPub(pub.getId());
 				pub = publicationPostProcessing(pub);
@@ -118,7 +118,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 			beginPublicationEdit(object.getId());
 			MpPublication pub = publicationPreProcessing(object);
 			pub.setValidationErrors(validator.validate(pub));
-			if (pub.getValidationErrors().isEmpty()) {
+			if (pub.isValid()) {
 				MpPublication.getDao().update(pub);
 				pub = publicationPostProcessing(pub);
 			}

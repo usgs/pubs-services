@@ -78,7 +78,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		LOG.debug("createUsgsContributor");
 		setHeaders(response);
 		UsgsContributor result = (UsgsContributor) personContributorBusService.createObject(person);
-		if (null != result && result.getValidationErrors().isEmpty()) {
+		if (null != result && result.isValid()) {
 			response.setStatus(HttpServletResponse.SC_CREATED);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -102,7 +102,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 			result.addValidatorResult(idNotMatched);
 		}
 		
-		if (null != result && (null == result.getValidationErrors() || result.getValidationErrors().isEmpty())) {
+		if (null != result && result.isValid()) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -118,7 +118,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		LOG.debug("createOutsideContributor");
 		setHeaders(response);
 		OutsideContributor result = (OutsideContributor) personContributorBusService.createObject(person);
-		if (null != result && result.getValidationErrors().isEmpty()) {
+		if (null != result && result.isValid()) {
 			response.setStatus(HttpServletResponse.SC_CREATED);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -142,7 +142,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 			result.addValidatorResult(idNotMatched);
 		}
 
-		if (null != result && (null == result.getValidationErrors() || result.getValidationErrors().isEmpty())) {
+		if (null != result && result.isValid()) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -170,7 +170,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		LOG.debug("createCorporation");
 		setHeaders(response);
 		CorporateContributor result = corporateContributorBusService.createObject(corporation);
-		if (null != result && result.getValidationErrors().isEmpty()) {
+		if (null != result && result.isValid()) {
 			response.setStatus(HttpServletResponse.SC_CREATED);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -185,7 +185,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		LOG.debug("updateCorporation");
 		setHeaders(response);
 		CorporateContributor result = corporateContributorBusService.updateObject(corporation);
-		if (null != result && (null == result.getValidationErrors() || result.getValidationErrors().isEmpty())) {
+		if (null != result && result.isValid()) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

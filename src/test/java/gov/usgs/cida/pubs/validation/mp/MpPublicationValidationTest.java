@@ -192,7 +192,7 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 		mpPub.setLinks(getInvalidPublicationLink());
 
 		mpPub.setValidationErrors(validator.validate(mpPub));
-		assertFalse(mpPub.getValidationErrors().isEmpty());
+		assertFalse(mpPub.isValid());
 		assertEquals(13, mpPub.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(mpPub.getValidationErrors().getValidationErrors(),
 				//From ParentExistsValidatorForMpPublication
@@ -223,7 +223,7 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 		mpPub.setTitle(null);
 
 		mpPub.setValidationErrors(validator.validate(mpPub, Default.class, PublishChecks.class));
-		assertFalse(mpPub.getValidationErrors().isEmpty());
+		assertFalse(mpPub.isValid());
 		assertEquals(4, mpPub.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(mpPub.getValidationErrors().getValidationErrors(),
 				//From Publication
@@ -243,7 +243,7 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 		mpPub.setSeriesTitle(null);
 
 		mpPub.setValidationErrors(validator.validate(mpPub));
-		assertFalse(mpPub.getValidationErrors().isEmpty());
+		assertFalse(mpPub.isValid());
 		assertEquals(1, mpPub.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(mpPub.getValidationErrors().getValidationErrors(),
 				//From CrossPropertyValidatorForMpPublication
@@ -258,7 +258,7 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 		mpPub.setIndexId("");
 
 		mpPub.setValidationErrors(validator.validate(mpPub));
-		assertFalse(mpPub.getValidationErrors().isEmpty());
+		assertFalse(mpPub.isValid());
 		assertEquals(1, mpPub.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(mpPub.getValidationErrors().getValidationErrors(),
 				//From Publication
@@ -268,7 +268,7 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 		mpPub.setIndexId("a");
 
 		mpPub.setValidationErrors(validator.validate(mpPub));
-		assertTrue(mpPub.getValidationErrors().isEmpty());
+		assertTrue(mpPub.isValid());
 	}
 
 	@Test
@@ -317,7 +317,7 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 		mpPub.setContact(StringUtils.repeat('X', 4001));
 
 		mpPub.setValidationErrors(validator.validate(mpPub));
-		assertFalse(mpPub.getValidationErrors().isEmpty());
+		assertFalse(mpPub.isValid());
 		assertEquals(37, mpPub.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(mpPub.getValidationErrors().getValidationErrors(),
 				//From Publication
@@ -407,7 +407,7 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 		mpPub.setContact(StringUtils.repeat('X', 4000));
 
 		mpPub.setValidationErrors(validator.validate(mpPub));
-		assertTrue(mpPub.getValidationErrors().isEmpty());
+		assertTrue(mpPub.isValid());
 	};
 
 	@Test
@@ -416,7 +416,7 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 		when(publicationTypeDao.getById(any(Integer.class))).thenReturn(new PublicationType());
 
 		mpPub.setValidationErrors(validator.validate(mpPub, DeleteChecks.class));
-		assertTrue(mpPub.getValidationErrors().isEmpty());
+		assertTrue(mpPub.isValid());
 	}
 
 	public static Collection<PublicationContributor<?>> getInvalidPublicationContributors() {

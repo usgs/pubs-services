@@ -140,7 +140,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 	public @ResponseBody MpPublication createPub(@RequestBody MpPublication pub, HttpServletResponse response) {
 		setHeaders(response);
 		MpPublication newPub = busService.createObject(pub);
-		if (null != newPub && newPub.getValidationErrors().isEmpty()) {
+		if (null != newPub && newPub.isValid()) {
 			response.setStatus(HttpServletResponse.SC_CREATED);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -162,7 +162,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 			ValidatorResult locked = busService.checkAvailability(id);
 			if (null == locked) {
 				rtn = busService.updateObject(pub);
-				if (null != rtn && rtn.getValidationErrors().isEmpty()) {
+				if (null != rtn && rtn.isValid()) {
 					response.setStatus(HttpServletResponse.SC_OK);
 				} else {
 					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

@@ -82,7 +82,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		LOG.debug("createCostCenter");
 		setHeaders(response);
 		CostCenter result = costCenterBusService.createObject(costCenter);
-		if (null != result && result.getValidationErrors().isEmpty()) {
+		if (null != result && result.isValid()) {
 			response.setStatus(HttpServletResponse.SC_CREATED);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -121,7 +121,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 			result.addValidatorResult(idNotMatched);
 		}
 		
-		if (null != result && (null == result.getValidationErrors() || result.getValidationErrors().isEmpty())) {
+		if (null != result && result.isValid()) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -162,7 +162,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		LOG.debug("createOutsideAffiliation");
 		setHeaders(response);
 		OutsideAffiliation result = outsideAffiliationBusService.createObject(outsideAffiliation);
-		if (null != result && result.getValidationErrors().isEmpty()) {
+		if (null != result && result.isValid()) {
 			response.setStatus(HttpServletResponse.SC_CREATED);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -201,7 +201,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 			result.addValidatorResult(idNotMatched);
 		}
 
-		if (null != result && (null == result.getValidationErrors() || result.getValidationErrors().isEmpty())) {
+		if (null != result && result.isValid()) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

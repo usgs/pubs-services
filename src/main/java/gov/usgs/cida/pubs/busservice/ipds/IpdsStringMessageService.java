@@ -28,13 +28,9 @@ public class IpdsStringMessageService implements IIpdsService {
 		this.requester = requester;
 	}
 
-	/** {@inheritDoc}
-	 * @throws Exception 
-	 * @see gov.usgs.cida.mypubsJMS.service.intfc.IService#processIpdsMessage(java.lang.Object)
-	 */
 	@Override
 	@Transactional
-	public void processIpdsMessage(final String targetDate) throws Exception {
+	public void processIpdsMessage(final String targetDate) {
 		LocalDate asOf = (null == targetDate || 0 == targetDate.length()) ? LocalDate.now() : LocalDate.parse(targetDate);
 		String inMessageText = requester.getIpdsProductXml(asOf.toString());
 		IpdsMessageLog newMessage = new IpdsMessageLog();

@@ -34,6 +34,7 @@ public class PublicationDao extends BaseDao<Publication<?>> implements IPublicat
 	public static final String END_YEAR = "endYear";
 	public static final String INDEX_ID = "indexId";
 	public static final String IPDS_ID = "ipdsId";
+	public static final String LINK_TYPE = "linkType";
 	public static final String ORDER_BY = "orderBy";
 	public static final String PROD_ID = "prodId";
 	public static final String Q = "q";

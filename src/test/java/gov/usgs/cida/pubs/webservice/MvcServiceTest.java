@@ -73,6 +73,7 @@ public class MvcServiceTest {
 		String pubDateLow = "pubDateLo";
 		String pubXDays = "23";
 		String q = "turtles-loggerhead";
+		String[] linkType = new String[]{"linkType1","linkType2"};
 		String[] reportNumber = new String[]{"report1","report2"};
 		String[] seriesName = new String[]{"series1","series2"};
 		String startYear = "1859";
@@ -83,7 +84,7 @@ public class MvcServiceTest {
 
 		Map<String, Object> filters = testMvcService.buildFilters(chorus, contributingOffice, contributor, orcid, doi, endYear, g, global, indexId,
 				ipdsId, listId, modDateHigh, modDateLow, modXDays, orderBy, page_number, page_row_start, page_size, prodId, pubAbstract,
-				pubDateHigh, pubDateLow, pubXDays, q, reportNumber, seriesName, startYear, subtypeName, title, typeName, year);
+				pubDateHigh, pubDateLow, pubXDays, q, linkType, reportNumber, seriesName, startYear, subtypeName, title, typeName, year);
 
 		assertTrue(filters.containsKey(PublicationDao.PUB_ABSTRACT ));
 		assertEquals(pubAbstract, filters.get(PublicationDao.PUB_ABSTRACT));
@@ -135,6 +136,8 @@ public class MvcServiceTest {
 		assertEquals("$turtles and $loggerhead", filters.get(PublicationDao.Q));
 		assertTrue(filters.containsKey(MpPublicationDao.SEARCH_TERMS));
 		assertArrayEquals(new String[]{"turtles","loggerhead"}, (Object[])filters.get(MpPublicationDao.SEARCH_TERMS));
+		assertTrue(filters.containsKey(PublicationDao.LINK_TYPE));
+		assertEquals(linkType, filters.get(PublicationDao.LINK_TYPE));
 		assertTrue(filters.containsKey(PublicationDao.REPORT_NUMBER));
 		assertEquals(reportNumber, filters.get(PublicationDao.REPORT_NUMBER));
 		assertTrue(filters.containsKey(PublicationDao.SERIES_NAME));

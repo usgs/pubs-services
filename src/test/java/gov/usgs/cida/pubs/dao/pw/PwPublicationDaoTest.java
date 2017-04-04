@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.dao.pw;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.PublicationDaoTest;
+import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 
@@ -200,6 +202,24 @@ public class PwPublicationDaoTest extends BaseSpringTest {
 		assertNull(pub);
 		//but it really does exist
 		assertNotNull(PwPublication.getDao().getById(5));
+	}
+
+	@Test
+	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testData/publicationType.xml"),
+		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+		@DatabaseSetup("classpath:/testData/dataset.xml")
+	})
+	public void testGetByLinkType() {
+		Map<String, Object> filters = new HashMap<>();
+		filters.put(PublicationDao.LINK_TYPE, new String[] {"Abstract"});
+		List<PwPublication> pubs = PwPublication.getDao().getByMap(filters);
+		assertNotNull(pubs);
+		assertFalse(pubs.isEmpty());
+		assertFalse(pubs.get(0).getLinks().isEmpty());
+		PublicationLink<?> publicationLink = (PublicationLink<?>)pubs.get(0).getLinks().toArray()[0];
+		assertEquals("Abstract",publicationLink.getLinkType().getText());
 	}
 
 }

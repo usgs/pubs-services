@@ -25,6 +25,7 @@ import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationTest;
@@ -253,6 +254,25 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 		//This one is only in Publication, so we shouldn't frind it
 		assertNull(MpPublication.getDao().getByIndexId("9"));
 	}
+
+	@Test
+	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testData/publicationType.xml"),
+		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+		@DatabaseSetup("classpath:/testData/dataset.xml")
+	})
+	public void testGetByLinkType() {
+		Map<String, Object> filters = new HashMap<>();
+		filters.put(PublicationDao.LINK_TYPE, new String[] {"Abstract"});
+		List<MpPublication> pubs = MpPublication.getDao().getByMap(filters);
+		assertNotNull(pubs);
+		assertFalse(pubs.isEmpty());
+		assertFalse(pubs.get(0).getLinks().isEmpty());
+		PublicationLink<?> publicationLink = (PublicationLink<?>)pubs.get(0).getLinks().toArray()[0];
+		assertEquals("Abstract",publicationLink.getLinkType().getText());
+	}
+
 
 	public static void assertMpPub1(Publication<?> pub, String expectedLockUsername) {
 		assertTrue(pub instanceof MpPublication);

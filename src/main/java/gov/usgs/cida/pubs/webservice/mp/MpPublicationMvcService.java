@@ -74,6 +74,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 			@RequestParam(value=PublicationDao.SUBTYPE_NAME, required=false) String[] subtypeName,
 			@RequestParam(value=PublicationDao.SERIES_NAME, required=false) String[] seriesName,
 			@RequestParam(value=PublicationDao.REPORT_NUMBER, required=false) String[] reportNumber,
+			@RequestParam(value=PublicationDao.LINK_TYPE, required=false) String[] linkType,
 			@RequestParam(value=BaseDao.PAGE_ROW_START, required=false, defaultValue = "0") String pageRowStart,
 			@RequestParam(value=BaseDao.PAGE_SIZE, required=false, defaultValue = "25") String pageSize,
 			@RequestParam(value=MpPublicationDao.LIST_ID, required=false) String[] listId,
@@ -84,7 +85,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 
 		Map<String, Object> filters = buildFilters(null, contributingOffice, contributor, null, null, endYear, null, global,
 				indexId, ipdsId, listId, null, null, null, null, null, pageRowStart,
-				pageSize, prodId, pubAbstract, null, null, null, q, reportNumber,
+				pageSize, prodId, pubAbstract, null, null, null, q, linkType, reportNumber,
 				seriesName, startYear, subtypeName, title, typeName, year);
 
 		List<Publication<?>> pubs = pubBusService.getObjects(filters);

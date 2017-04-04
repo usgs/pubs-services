@@ -415,6 +415,17 @@
 					</foreach>
 				    )
 			</if>
+
+			<if test="linkType != null and linkType.length > 0">
+				and pub.publication_id in (
+					select publication_id from publication_link where link_type_id in (
+						select link_type_id from link_type where 
+							<foreach item="r" collection="linkType" open="" separator="or" close="">
+								upper(name) like '%' || upper(#{r}) || '%'
+							</foreach>
+						)
+					)
+			</if>
 			
 			<if test="null != doi">
 			<choose>

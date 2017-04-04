@@ -76,6 +76,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 			@RequestParam(value=PublicationDao.SUBTYPE_NAME, required=false) String[] subtypeName,
 			@RequestParam(value=PublicationDao.SERIES_NAME, required=false) String[] seriesName,
 			@RequestParam(value=PublicationDao.REPORT_NUMBER, required=false) String[] reportNumber,
+			@RequestParam(value=PublicationDao.LINK_TYPE, required=false) String[] linkType,
 			@RequestParam(value=BaseDao.PAGE_ROW_START, required=false) String pageRowStart,
 			@RequestParam(value=BaseDao.PAGE_NUMBER, required=false) String pageNumber,
 			@RequestParam(value=BaseDao.PAGE_SIZE, required=false) String pageSize,
@@ -96,7 +97,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		//Note that paging is only applied to the json format
 		Map<String, Object> filters = buildFilters(chorus, contributingOffice, contributor, orcid, doi, endYear, g, null,
 				indexId, ipdsId, null, modDateHigh, modDateLow, modXDays, orderBy, null, null,
-				null, prodId, pubAbstract, pubDateHigh, pubDateLow, pubXDays, q, reportNumber,
+				null, prodId, pubAbstract, pubDateHigh, pubDateLow, pubXDays, q, linkType, reportNumber,
 				seriesName, startYear, subtypeName, title, typeName, year);
 
 		filters.put("url", warehouseEndpoint + "/publication/");

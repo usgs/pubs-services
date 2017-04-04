@@ -33,7 +33,7 @@ public abstract class MvcService<D> {
 			String[] orcid, Boolean doi, String endYear, String g, String global, String[] indexId, String[] ipdsId, String[] listId,
 			String modDateHigh, String modDateLow, String modXDays, String orderBy, String page_number,
 			String page_row_start, String page_size, String[] prodId, String[] pubAbstract, String pubDateHigh,
-			String pubDateLow, String pubXDays, String q, String[] reportNumber, String[] seriesName,
+			String pubDateLow, String pubXDays, String q, String[] linkType, String[] reportNumber, String[] seriesName,
 			String startYear, String[] subtypeName, String[] title, String[] typeName, String[] year) {
 		Map<String, Object> filters = new HashMap<>();
 
@@ -61,6 +61,7 @@ public abstract class MvcService<D> {
 		filters.put(PwPublicationDao.PUB_DATE_LOW, pubDateLow);
 		filters.put(PwPublicationDao.PUB_X_DAYS, pubXDays);
 		filters.putAll(configureSingleSearchFilters(q));
+		filters.put(PublicationDao.LINK_TYPE, linkType);
 		filters.put(PublicationDao.REPORT_NUMBER, reportNumber);
 		filters.put(PublicationDao.SERIES_NAME, seriesName);
 		filters.put(PublicationDao.START_YEAR, startYear);

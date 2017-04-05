@@ -78,18 +78,6 @@
                    )
             </if>
 
-            <if test="linkType != null and linkType.length > 0">
-                and exists (select null
-                              from mp_publication_link
-                                   join link_type
-                                     on mp_publication_link.link_type_id = link_type.link_type_id
-                             where pub.publication_id = mp_publication_link.publication_id and
-                                   <foreach item="lt" collection="linkType" open="(" separator="or" close=")">
-                                       upper(link_type.name) = upper(#{lt})
-                                   </foreach>
-                           )
-            </if>
-
             <if test="contributingOffice != null and contributingOffice.length > 0">
                 and exists (select null
                               from mp_pub_cost_center

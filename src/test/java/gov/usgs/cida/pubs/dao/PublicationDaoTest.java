@@ -372,6 +372,9 @@ public class PublicationDaoTest extends BaseSpringTest {
 		filters.put(PwPublicationDao.PUB_DATE_LOW, "2010-10-10");
 		filters.put(PwPublicationDao.PUB_X_DAYS, "1");
 		filters.put(PublicationDao.Q, "$turtles");
+
+		
+		filters.put(PublicationDao.LINK_TYPE, new String[]{"linkType1", "linkType2"});
 		filters.put(PublicationDao.REPORT_NUMBER, new String[]{"reportNumber1", "reportNumber2"});
 		filters.put(MpPublicationDao.SEARCH_TERMS, new String[]{"searchTerms1", "searchTerms2"});
 

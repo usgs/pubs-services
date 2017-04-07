@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 @Component
 @JsonPropertyOrder({"id", "indexId", "displayToPublicDate", "lastModifiedDate", "publicationType", "publicationSubtype",
 	"largerWorkType", "largerWorkTitle", "largerWorkSubtype", "seriesTitle", "costCenters", "subseriesTitle", "seriesNumber", "chapter",
-	"subchapterNumber", "title", "docAbstract", "usgsCitation", "collaboration", "language", "publisher", "publisherLocation",
+	"subchapterNumber","displayTitle", "title", "docAbstract", "usgsCitation", "collaboration", "language", "publisher", "publisherLocation",
 	"publicationYear", "conferenceTitle", "conferenceDate", "conferenceLocation", "doi", "issn", "isbn", "ipdsId",
 	"productDescription", "startPage", "endPage", "numberOfPages", "onlineOnly", "additionalOnlineFiles", "temporalStart", 
 	"temporalEnd", "notes", "ipdsReviewProcessState", "ipdsInternalId", "lockUsername","contributors", "links", 

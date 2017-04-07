@@ -123,6 +123,7 @@ public class PublicationTest extends BaseSpringTest {
 		newPub.setSubseriesTitle("subseries");
 		newPub.setChapter("chapter");
 		newPub.setSubchapterNumber("subchapter");
+                newPub.setDisplayTitle("Display Title");
 		newPub.setTitle("Title");
 		newPub.setDocAbstract("Abstract Text");
 		newPub.setLanguage("Language");

@@ -88,6 +88,7 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 	public static final String INVALID_START_PAGE_LENGTH = new ValidatorResult("startPage", LENGTH_0_TO_XXX_MSG + "20", SeverityLevel.FATAL, null).toString();
 	public static final String INVALID_STATE_LENGTH = new ValidatorResult("state", LENGTH_0_TO_XXX_MSG + "500", SeverityLevel.FATAL, null).toString();
 	public static final String INVALID_SUBSERIES_TITLE_LENGTH = new ValidatorResult("subseriesTitle", LENGTH_0_TO_XXX_MSG + "255", SeverityLevel.FATAL, null).toString();
+        public static final String INVALID_DISPLAY_TITLE_LENGTH = new ValidatorResult("displayTitle", LENGTH_1_TO_XXX_MSG + "2000", SeverityLevel.FATAL, null).toString();
 	public static final String INVALID_TITLE_LENGTH = new ValidatorResult("title", LENGTH_1_TO_XXX_MSG + "2000", SeverityLevel.FATAL, null).toString();
 	public static final String INVALID_USGS_CITATION_LENGTH = new ValidatorResult("usgsCitation", LENGTH_0_TO_XXX_MSG + "4000", SeverityLevel.FATAL, null).toString();
 	public static final String INVALID_VOLUME_LENGTH = new ValidatorResult("volume", LENGTH_0_TO_XXX_MSG + "50", SeverityLevel.FATAL, null).toString();
@@ -282,6 +283,7 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 		mpPub.setSubseriesTitle(StringUtils.repeat('X', 256));
 		mpPub.setChapter(StringUtils.repeat('X', 101));
 		mpPub.setSubchapterNumber(StringUtils.repeat('X', 101));
+                mpPub.setDisplayTitle(StringUtils.repeat('X', 2001));
 		mpPub.setTitle(StringUtils.repeat('X', 2001));
 		mpPub.setLargerWorkTitle(StringUtils.repeat('X', 2001));
 		mpPub.setConferenceTitle(StringUtils.repeat('X', 2001));
@@ -318,7 +320,7 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 
 		mpPub.setValidationErrors(validator.validate(mpPub));
 		assertFalse(mpPub.isValid());
-		assertEquals(37, mpPub.getValidationErrors().getValidationErrors().size());
+		assertEquals(38, mpPub.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(mpPub.getValidationErrors().getValidationErrors(),
 				//From Publication
 				INVALID_ADD_ONLINE_LENGTH,
@@ -355,6 +357,7 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 				INVALID_START_PAGE_LENGTH,
 				INVALID_STATE_LENGTH,
 				INVALID_SUBSERIES_TITLE_LENGTH,
+                                INVALID_DISPLAY_TITLE_LENGTH,
 				INVALID_TITLE_LENGTH,
 				INVALID_USGS_CITATION_LENGTH,
 				INVALID_VOLUME_LENGTH
@@ -372,6 +375,7 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 		mpPub.setSubseriesTitle(StringUtils.repeat('X', 255));
 		mpPub.setChapter(StringUtils.repeat('X', 100));
 		mpPub.setSubchapterNumber(StringUtils.repeat('X', 100));
+                mpPub.setDisplayTitle(StringUtils.repeat('X', 2000));
 		mpPub.setTitle(StringUtils.repeat('X', 2000));
 		mpPub.setLargerWorkTitle(StringUtils.repeat('X', 2000));
 		mpPub.setConferenceTitle(StringUtils.repeat('X', 2000));

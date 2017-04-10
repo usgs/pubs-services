@@ -65,6 +65,7 @@ public class PwPublicationDaoStreamingTest extends BaseSpringTest {
 		Map<String, Object> pub = pubs.get(0);
 		assertEquals("Book chapter", pub.get("PUBLICATION_TYPE"));
 		assertEquals("Abstract or summary", pub.get("PUBLICATION_SUBTYPE"));
+                assertEquals("display title", pub.get("DISPLAY_TITLE"));
 		assertEquals("title", pub.get("TITLE"));
 		assertEquals("Resource Publication", pub.get("SERIES_TITLE"));
 		assertEquals("series number", pub.get("SERIES_NUMBER"));

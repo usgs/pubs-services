@@ -68,7 +68,7 @@ public class PwPublicationTest extends BaseSpringTest {
 		assertEquals("subseries title", pub.getSubseriesTitle());
 		assertEquals("chapter", pub.getChapter());
 		assertEquals("subchapter", pub.getSubchapterNumber());
-                assertEquals("displayTitle", pub.getDisplayTitle());
+                assertEquals("display title", pub.getDisplayTitle());
 		assertEquals("title", pub.getTitle());
 		assertEquals("abstract", pub.getDocAbstract());
 		assertEquals("language", pub.getLanguage());

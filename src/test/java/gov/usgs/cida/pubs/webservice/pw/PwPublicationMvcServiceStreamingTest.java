@@ -64,9 +64,6 @@ public class PwPublicationMvcServiceStreamingTest extends BaseSpringTest {
 		
 		final String compareFile = getCompareFile("stream.tsv");
 		final String contentAsString = rtn.getResponse().getContentAsString();
-		
-		System.out.println("EXPECTED= " + compareFile);
-		System.out.println("ACTUAL= " + contentAsString);
 	
 		assertEquals(compareFile, contentAsString);
 	}

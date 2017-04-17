@@ -764,7 +764,7 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
 		assertEquals(1, pub.getCostCenters().size());
 		PublicationIndex pi = PublicationIndex.getDao().getById(2);
 		assertNotNull(pi);
-		assertEquals("title the abstract subseries title series number 2 ipdsid Report USGS Numbered Series Professional Paper PP ConFamily, ConGiven, ConSuffix US Geological Survey Ice Survey Team xAffiliation Cost Center 4    ", pi.getQ());
+		assertEquals("display title title the abstract subseries title series number 2 ipdsid Report USGS Numbered Series Professional Paper PP ConFamily, ConGiven, ConSuffix US Geological Survey Ice Survey Team xAffiliation Cost Center 4    ", pi.getQ());
 
 		assertMpPublicationDeleted(2);
 	}
@@ -783,7 +783,7 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
 		assertEquals(1, pub.getCostCenters().size());
 		PublicationIndex pi = PublicationIndex.getDao().getById(2);
 		assertNotNull(pi);
-		assertEquals("title the abstract subseries title series number 2 ipdsid Report USGS Numbered Series Professional Paper PP ConFamily, ConGiven, ConSuffix US Geological Survey Ice Survey Team xAffiliation Cost Center 4    ", pi.getQ());
+		assertEquals("display title title the abstract subseries title series number 2 ipdsid Report USGS Numbered Series Professional Paper PP ConFamily, ConGiven, ConSuffix US Geological Survey Ice Survey Team xAffiliation Cost Center 4    ", pi.getQ());
 
 		//Still in MP
 		MpPublication mpPub = MpPublication.getDao().getById(2);

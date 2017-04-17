@@ -192,6 +192,7 @@
 		       #{url,jdbcType=VARCHAR} || pub.index_id warehouse_url,
 		       publication_type.name publication_type,
 		       publication_subtype.name publication_subtype,
+                       pub.display_title,
 		       pub.title,
 		       publication_series.name series_title,
 		       pub.series_number,

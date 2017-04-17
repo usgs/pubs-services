@@ -26,6 +26,7 @@
 	"seriesNumber": "Series Number",
 	"chapter": "chapter",
 	"subchapterNumber": "subchapter",
+        "displayTitle": "Display Title",
 	"title": "Title",
 	"docAbstract": "Abstract Text",
 	"usgsCitation": "usgscitation",

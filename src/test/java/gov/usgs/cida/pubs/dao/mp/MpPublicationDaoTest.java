@@ -354,6 +354,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 		assertEquals("subseries title", pub.getSubseriesTitle());
 		assertEquals("chapter", pub.getChapter());
 		assertEquals("subchapter title", pub.getSubchapterNumber());
+                assertEquals("display title", pub.getDisplayTitle());
 		assertEquals("title", pub.getTitle());
 		assertEquals("the abstract", pub.getDocAbstract());
 		assertEquals("language", pub.getLanguage());
@@ -443,6 +444,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 		updatedPub.setSubseriesTitle("subseries2");
 		updatedPub.setChapter("chapter2");
 		updatedPub.setSubchapterNumber("subchapter2");
+                updatedPub.setDisplayTitle("display title 2");
 		updatedPub.setTitle("Title2");
 		updatedPub.setDocAbstract("Abstract Text2");
 		updatedPub.setLanguage("Language2");

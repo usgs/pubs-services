@@ -61,8 +61,11 @@ public class PwPublicationMvcServiceStreamingTest extends BaseSpringTest {
 			.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 			.andExpect(header().string(MIME.CONTENT_DISPOSITION, "attachment; filename=publications.tsv"))
 			.andReturn();
+		
+		final String compareFile = getCompareFile("stream.tsv");
+		final String contentAsString = rtn.getResponse().getContentAsString();
 	
-		assertEquals(getCompareFile("stream.tsv"), rtn.getResponse().getContentAsString());
+		assertEquals(compareFile, contentAsString);
 	}
 
 	@Test

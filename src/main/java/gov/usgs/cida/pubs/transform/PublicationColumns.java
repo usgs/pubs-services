@@ -15,6 +15,7 @@ public class PublicationColumns {
 		mappings.put("WAREHOUSE_URL", "URL");
 		mappings.put("PUBLICATION_TYPE", "Publication type");
 		mappings.put("PUBLICATION_SUBTYPE", "Publication Subtype");
+                mappings.put("DISPLAY_TITLE", "Display title");
 		mappings.put("TITLE", "Title");
 		mappings.put("SERIES_TITLE", "Series title");
 		mappings.put("SERIES_NUMBER", "Series number");

@@ -13,6 +13,7 @@
 		<result property="subseriesTitle" column="subseries_title"/>
 		<result property="chapter" column="chapter"/>
 		<result property="subchapterNumber" column="subchapter"/>
+                <result property="displayTitle" column="display_title"/>
 		<result property="title" column="title"/>
 		<result property="docAbstract" column="abstract"/>
 		<result property="largerWorkTitle" column="larger_work_title"/>
@@ -110,6 +111,7 @@
 		subseries_title,
 		chapter,
 		subchapter,
+                display_title,
 		title,
 		larger_work_type_id,
 		larger_work_title,
@@ -175,6 +177,7 @@
 		#{subseriesTitle,jdbcType=VARCHAR},
 		#{chapter,jdbcType=VARCHAR},
 		#{subchapterNumber,jdbcType=VARCHAR},
+                #{displayTitle,jdbcType=VARCHAR},
 		#{title,jdbcType=VARCHAR},
 		#{largerWorkType.id,jdbcType=NUMERIC},
 		#{largerWorkTitle,jdbcType=VARCHAR},
@@ -239,6 +242,7 @@
 		subseries_title = #{subseriesTitle,jdbcType=VARCHAR},
 		chapter = #{chapter,jdbcType=VARCHAR},
 		subchapter = #{subchapterNumber,jdbcType=VARCHAR},
+                display_title = #{displayTitle,jdbcType=VARCHAR},
 		title = #{title,jdbcType=VARCHAR},
 		larger_work_type_id = #{largerWorkType.id,jdbcType=NUMERIC},
 		larger_work_title = #{largerWorkTitle,jdbcType=VARCHAR},

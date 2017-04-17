@@ -1,9 +1,358 @@
 {
-  "pageSize": "15",
-  "pageRowStart": "0",
-  "pageNumber": null,
-  "recordCount": 2,
-  "records": [{"id":4,"text":"4 - 2014 - title","interactions":[{"subject":{"id":4,"text":"4 - 2014 - title","indexId":"4","publicationYear":"2014","noYear":false,"chapter":"chapter","subchapterNumber":"subchapter","title":"title"},"predicate":"IS_PART_OF","object":{"id":5,"text":"9 - null -  future title","indexId":"9","noYear":false,"title":" future title"},"id":1},{"subject":{"id":4,"text":"4 - 2014 - title","indexId":"4","publicationYear":"2014","noYear":false,"chapter":"chapter","subchapterNumber":"subchapter","title":"title"},"predicate":"SUPERSEDED_BY","object":{"id":6,"text":"6.1 - null - mostly null","indexId":"6.1","noYear":false,"title":"mostly null"},"id":2}],"isPartOf":{"id":5,"text":"9 - No Year -  future title","indexId":"9","noYear":true,"title":" future title"},"supersededBy":{"id":6,"text":"6.1 - No Year - mostly null","indexId":"6.1","noYear":true,"title":"mostly null"},"lastModifiedDate":"2017-01-04T14:17:24","indexId":"4","displayToPublicDate":"2014-07-22T17:09:24","publicationYear":"2014","noYear":false,"publicationType":{"id":5,"text":"Book chapter"},"publicationSubtype":{"id":18,"text":"Abstract or summary"},"seriesTitle":{"id":332,"text":"Resource Publication","code":"RP","seriesDoiName":"seriesDoi","onlineIssn":"soIssn","printIssn":"spIssn","active":false,"publicationSubtype":{"id":5}},"seriesNumber":"series number","subseriesTitle":"subseries title","chapter":"chapter","subchapterNumber":"subchapter","title":"title","docAbstract":"abstract","largerWorkType":{"id":23,"text":"Dataset"},"largerWorkTitle":"Some Journal","largerWorkSubtype":{"id":23,"text":"Database-spatial"},"conferenceTitle":"Conference Title","conferenceDate":"A free form DATE","conferenceLocation":"A conference location","language":"language","publisher":"publisher","publisherLocation":"publisher loc","doi":"doi","issn":"issn","isbn":"isbn","collaboration":"collaborator","usgsCitation":"usgs citation","productDescription":"product description","startPage":"start","endPage":"end","numberOfPages":"12","onlineOnly":"N","additionalOnlineFiles":"Y","temporalStart":"2014-07-22","temporalEnd":"2014-07-23","ipdsId":"ipds_id","costCenters":[{"id":1,"text":"Affiliation Cost Center 1","active":true,"usgs":true},{"id":2,"text":"Affiliation Cost Center 2","active":true,"usgs":true}],"links":[{"id":3,"type":{"id":24,"text":"Thumbnail"}},{"id":1,"type":{"id":1,"text":"Abstract"}},{"id":2,"type":{"id":2,"text":"Additional Report Piece"}}],"scale":"100","projection":"EPSG:3857","datum":"NAD83","country":"USA","state":"WI","county":"DANE","city":"MIDDLETON","otherGeospatial":"On the moon","geographicExtents":"{ \"json\": \"extents\" }","volume":"V98675","issue":"I78123","edition":"edition4","publicComments":"comments on this4","contact":"contact for the pub4","tableOfContents":"contents, table of4","publishingServiceCenter":{"id":5,"text":"Lafayette PSC"},"publishedDate":"2001-01-01","revisedDate":"2004-04-04","scienceBaseUri":"http://sciencebase.org","chorus":{"doi":"http://doi.org","url":"http://dx.doi.org/10.1002/ece3.1813","publisher":"Wiley-Blackwell","authors":"Beerens James M., Frederick Peter C., Noonburg Erik G., Gawlik Dale E.","journalName":"Ecology and Evolution","publicationDate":"11/19/2015","auditedOn":"11/21/2015","publiclyAccessibleDate":"11/19/2015"},"stores":[],"contributors":{"compilers":[{"text":"outerfamily, outerGiven outerSuffix outer@gmail.com","contributorId":3,"corporation":false,"usgs":false,"family":"outerfamily","given":"outerGiven","suffix":"outerSuffix","email":"outer@gmail.com","affiliations":[],"id":9,"contributorType":{"id":3,"text":"Compilers"},"rank":1},{"text":"ConFamily, ConGiven ConSuffix con@usgs.gov","contributorId":1,"corporation":false,"usgs":true,"family":"ConFamily","given":"ConGiven","suffix":"ConSuffix","email":"con@usgs.gov","affiliations":[],"id":7,"contributorType":{"id":3,"text":"Compilers"},"rank":2},{"text":"US Geological Survey Ice Survey Team","contributorId":2,"corporation":true,"usgs":false,"organization":"US Geological Survey Ice Survey Team","id":8,"contributorType":{"id":3,"text":"Compilers"},"rank":3}],"editors":[{"text":"outerfamily, outerGiven outerSuffix outer@gmail.com","contributorId":3,"corporation":false,"usgs":false,"family":"outerfamily","given":"outerGiven","suffix":"outerSuffix","email":"outer@gmail.com","affiliations":[],"id":6,"contributorType":{"id":2,"text":"Editors"},"rank":1},{"text":"US Geological Survey Ice Survey Team","contributorId":2,"corporation":true,"usgs":false,"organization":"US Geological Survey Ice Survey Team","id":5,"contributorType":{"id":2,"text":"Editors"},"rank":2},{"text":"ConFamily, ConGiven ConSuffix con@usgs.gov","contributorId":1,"corporation":false,"usgs":true,"family":"ConFamily","given":"ConGiven","suffix":"ConSuffix","email":"con@usgs.gov","affiliations":[],"id":4,"contributorType":{"id":2,"text":"Editors"},"rank":3}],"authors":[{"text":"ConFamily, ConGiven ConSuffix con@usgs.gov","contributorId":1,"corporation":false,"usgs":true,"family":"ConFamily","given":"ConGiven","suffix":"ConSuffix","email":"con@usgs.gov","affiliations":[],"id":1,"contributorType":{"id":1,"text":"Authors"},"rank":1},{"text":"US Geological Survey Ice Survey Team","contributorId":2,"corporation":true,"usgs":false,"organization":"US Geological Survey Ice Survey Team","id":2,"contributorType":{"id":1,"text":"Authors"},"rank":2},{"text":"outerfamily, outerGiven outerSuffix outer@gmail.com","contributorId":3,"corporation":false,"usgs":false,"family":"outerfamily","given":"outerGiven","suffix":"outerSuffix","email":"outer@gmail.com","affiliations":[],"id":3,"contributorType":{"id":1,"text":"Authors"},"rank":3}]}}
-,{"id":6,"text":"6.1 - No Year - mostly null","interactions":[{"subject":{"id":4,"text":"4 - 2014 - title","indexId":"4","publicationYear":"2014","noYear":false,"chapter":"chapter","subchapterNumber":"subchapter","title":"title"},"predicate":"SUPERSEDED_BY","object":{"id":6,"text":"6.1 - null - mostly null","indexId":"6.1","noYear":false,"title":"mostly null"},"id":1}],"lastModifiedDate":"2017-01-04T14:17:24","indexId":"6.1","displayToPublicDate":"2001-12-31T23:59:59","noYear":true,"title":"mostly null","costCenters":[],"links":[],"stores":[]}
-]
+	"pageSize": "15",
+	"pageRowStart": "0",
+	"pageNumber": null,
+	"recordCount": 2,
+	"records": [{
+		"id": 4,
+		"text": "4 - 2014 - title",
+		"interactions": [{
+			"subject": {
+				"id": 4,
+				"text": "4 - 2014 - title",
+				"indexId": "4",
+				"publicationYear": "2014",
+				"noYear": false,
+				"chapter": "chapter",
+				"subchapterNumber": "subchapter",
+				"title": "title"
+			},
+			"predicate": "IS_PART_OF",
+			"object": {
+				"id": 5,
+				"text": "9 - null -  future title",
+				"indexId": "9",
+				"noYear": false,
+				"title": " future title"
+			},
+			"id": 1
+		}, {
+			"subject": {
+				"id": 4,
+				"text": "4 - 2014 - title",
+				"indexId": "4",
+				"publicationYear": "2014",
+				"noYear": false,
+				"chapter": "chapter",
+				"subchapterNumber": "subchapter",
+				"title": "title"
+			},
+			"predicate": "SUPERSEDED_BY",
+			"object": {
+				"id": 6,
+				"text": "6.1 - null - mostly null",
+				"indexId": "6.1",
+				"noYear": false,
+				"title": "mostly null"
+			},
+			"id": 2
+		}],
+		"isPartOf": {
+			"id": 5,
+			"text": "9 - No Year -  future title",
+			"indexId": "9",
+			"noYear": true,
+			"title": " future title"
+		},
+		"supersededBy": {
+			"id": 6,
+			"text": "6.1 - No Year - mostly null",
+			"indexId": "6.1",
+			"noYear": true,
+			"title": "mostly null"
+		},
+		"lastModifiedDate": "2017-01-04T14:17:24",
+		"indexId": "4",
+		"displayToPublicDate": "2014-07-22T17:09:24",
+		"publicationYear": "2014",
+		"noYear": false,
+		"publicationType": {
+			"id": 5,
+			"text": "Book chapter"
+		},
+		"publicationSubtype": {
+			"id": 18,
+			"text": "Abstract or summary"
+		},
+		"seriesTitle": {
+			"id": 332,
+			"text": "Resource Publication",
+			"code": "RP",
+			"seriesDoiName": "seriesDoi",
+			"onlineIssn": "soIssn",
+			"printIssn": "spIssn",
+			"active": false,
+			"publicationSubtype": {
+				"id": 5
+			}
+		},
+		"seriesNumber": "series number",
+		"subseriesTitle": "subseries title",
+		"chapter": "chapter",
+		"subchapterNumber": "subchapter",
+        "displayTitle": "display title",
+		"title": "title",
+		"docAbstract": "abstract",
+		"largerWorkType": {
+			"id": 23,
+			"text": "Dataset"
+		},
+		"largerWorkTitle": "Some Journal",
+		"largerWorkSubtype": {
+			"id": 23,
+			"text": "Database-spatial"
+		},
+		"conferenceTitle": "Conference Title",
+		"conferenceDate": "A free form DATE",
+		"conferenceLocation": "A conference location",
+		"language": "language",
+		"publisher": "publisher",
+		"publisherLocation": "publisher loc",
+		"doi": "doi",
+		"issn": "issn",
+		"isbn": "isbn",
+		"collaboration": "collaborator",
+		"usgsCitation": "usgs citation",
+		"productDescription": "product description",
+		"startPage": "start",
+		"endPage": "end",
+		"numberOfPages": "12",
+		"onlineOnly": "N",
+		"additionalOnlineFiles": "Y",
+		"temporalStart": "2014-07-22",
+		"temporalEnd": "2014-07-23",
+		"ipdsId": "ipds_id",
+		"costCenters": [{
+			"id": 1,
+			"text": "Affiliation Cost Center 1",
+			"active": true,
+			"usgs": true
+		}, {
+			"id": 2,
+			"text": "Affiliation Cost Center 2",
+			"active": true,
+			"usgs": true
+		}],
+		"links": [{
+			"id": 3,
+			"type": {
+				"id": 24,
+				"text": "Thumbnail"
+			}
+		}, {
+			"id": 1,
+			"type": {
+				"id": 1,
+				"text": "Abstract"
+			}
+		}, {
+			"id": 2,
+			"type": {
+				"id": 2,
+				"text": "Additional Report Piece"
+			}
+		}],
+		"scale": "100",
+		"projection": "EPSG:3857",
+		"datum": "NAD83",
+		"country": "USA",
+		"state": "WI",
+		"county": "DANE",
+		"city": "MIDDLETON",
+		"otherGeospatial": "On the moon",
+		"geographicExtents": "{ \"json\": \"extents\" }",
+		"volume": "V98675",
+		"issue": "I78123",
+		"edition": "edition4",
+		"publicComments": "comments on this4",
+		"contact": "contact for the pub4",
+		"tableOfContents": "contents, table of4",
+		"publishingServiceCenter": {
+			"id": 5,
+			"text": "Lafayette PSC"
+		},
+		"publishedDate": "2001-01-01",
+		"revisedDate": "2004-04-04",
+		"scienceBaseUri": "http://sciencebase.org",
+		"chorus": {
+			"doi": "http://doi.org",
+			"url": "http://dx.doi.org/10.1002/ece3.1813",
+			"publisher": "Wiley-Blackwell",
+			"authors": "Beerens James M., Frederick Peter C., Noonburg Erik G., Gawlik Dale E.",
+			"journalName": "Ecology and Evolution",
+			"publicationDate": "11/19/2015",
+			"auditedOn": "11/21/2015",
+			"publiclyAccessibleDate": "11/19/2015"
+		},
+		"stores": [],
+		"contributors": {
+			"compilers": [{
+				"text": "outerfamily, outerGiven outerSuffix outer@gmail.com",
+				"contributorId": 3,
+				"corporation": false,
+				"usgs": false,
+				"family": "outerfamily",
+				"given": "outerGiven",
+				"suffix": "outerSuffix",
+				"email": "outer@gmail.com",
+				"affiliations": [],
+				"id": 9,
+				"contributorType": {
+					"id": 3,
+					"text": "Compilers"
+				},
+				"rank": 1
+			}, {
+				"text": "ConFamily, ConGiven ConSuffix con@usgs.gov",
+				"contributorId": 1,
+				"corporation": false,
+				"usgs": true,
+				"family": "ConFamily",
+				"given": "ConGiven",
+				"suffix": "ConSuffix",
+				"email": "con@usgs.gov",
+				"affiliations": [],
+				"id": 7,
+				"contributorType": {
+					"id": 3,
+					"text": "Compilers"
+				},
+				"rank": 2
+			}, {
+				"text": "US Geological Survey Ice Survey Team",
+				"contributorId": 2,
+				"corporation": true,
+				"usgs": false,
+				"organization": "US Geological Survey Ice Survey Team",
+				"id": 8,
+				"contributorType": {
+					"id": 3,
+					"text": "Compilers"
+				},
+				"rank": 3
+			}],
+			"editors": [{
+				"text": "outerfamily, outerGiven outerSuffix outer@gmail.com",
+				"contributorId": 3,
+				"corporation": false,
+				"usgs": false,
+				"family": "outerfamily",
+				"given": "outerGiven",
+				"suffix": "outerSuffix",
+				"email": "outer@gmail.com",
+				"affiliations": [],
+				"id": 6,
+				"contributorType": {
+					"id": 2,
+					"text": "Editors"
+				},
+				"rank": 1
+			}, {
+				"text": "US Geological Survey Ice Survey Team",
+				"contributorId": 2,
+				"corporation": true,
+				"usgs": false,
+				"organization": "US Geological Survey Ice Survey Team",
+				"id": 5,
+				"contributorType": {
+					"id": 2,
+					"text": "Editors"
+				},
+				"rank": 2
+			}, {
+				"text": "ConFamily, ConGiven ConSuffix con@usgs.gov",
+				"contributorId": 1,
+				"corporation": false,
+				"usgs": true,
+				"family": "ConFamily",
+				"given": "ConGiven",
+				"suffix": "ConSuffix",
+				"email": "con@usgs.gov",
+				"affiliations": [],
+				"id": 4,
+				"contributorType": {
+					"id": 2,
+					"text": "Editors"
+				},
+				"rank": 3
+			}],
+			"authors": [{
+				"text": "ConFamily, ConGiven ConSuffix con@usgs.gov",
+				"contributorId": 1,
+				"corporation": false,
+				"usgs": true,
+				"family": "ConFamily",
+				"given": "ConGiven",
+				"suffix": "ConSuffix",
+				"email": "con@usgs.gov",
+				"affiliations": [],
+				"id": 1,
+				"contributorType": {
+					"id": 1,
+					"text": "Authors"
+				},
+				"rank": 1
+			}, {
+				"text": "US Geological Survey Ice Survey Team",
+				"contributorId": 2,
+				"corporation": true,
+				"usgs": false,
+				"organization": "US Geological Survey Ice Survey Team",
+				"id": 2,
+				"contributorType": {
+					"id": 1,
+					"text": "Authors"
+				},
+				"rank": 2
+			}, {
+				"text": "outerfamily, outerGiven outerSuffix outer@gmail.com",
+				"contributorId": 3,
+				"corporation": false,
+				"usgs": false,
+				"family": "outerfamily",
+				"given": "outerGiven",
+				"suffix": "outerSuffix",
+				"email": "outer@gmail.com",
+				"affiliations": [],
+				"id": 3,
+				"contributorType": {
+					"id": 1,
+					"text": "Authors"
+				},
+				"rank": 3
+			}]
+		}
+	}, {
+		"id": 6,
+		"text": "6.1 - No Year - mostly null",
+		"interactions": [{
+			"subject": {
+				"id": 4,
+				"text": "4 - 2014 - title",
+				"indexId": "4",
+				"publicationYear": "2014",
+				"noYear": false,
+				"chapter": "chapter",
+				"subchapterNumber": "subchapter",
+				"title": "title"
+			},
+			"predicate": "SUPERSEDED_BY",
+			"object": {
+				"id": 6,
+				"text": "6.1 - null - mostly null",
+				"indexId": "6.1",
+				"noYear": false,
+				"title": "mostly null"
+			},
+			"id": 1
+		}],
+		"lastModifiedDate": "2017-01-04T14:17:24",
+		"indexId": "6.1",
+		"displayToPublicDate": "2001-12-31T23:59:59",
+		"noYear": true,
+		"title": "mostly null",
+		"costCenters": [],
+		"links": [],
+		"stores": []
+	}]
 }

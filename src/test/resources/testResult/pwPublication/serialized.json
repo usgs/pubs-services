@@ -37,6 +37,7 @@
 	"subseriesTitle": "subseries",
 	"chapter": "chapter",
 	"subchapterNumber": "subchapter",
+        "displayTitle": "Display Title",
 	"title": "Title",
 	"docAbstract": "Abstract Text",
 	"largerWorkType": {

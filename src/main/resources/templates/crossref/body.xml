@@ -26,6 +26,7 @@
 			</#if>
 			<content_item component_type="other">
 				<contributors>
+					<#-- The first contributor in the list will be designated first author in crossref markup -->
 					<#assign sequence = "first">
 					<#list pubContributors as pubContributor>
 					
@@ -33,25 +34,35 @@
 						<#-- "author", "editor", "chair", "translator" -->
 						<#-- Map our relevant contributor type values to a Crossref-compliant value -->
 						
-						<#if pubContributor.contributorType.text == authorKey>
+						<#if pubContributor.contributorType.id == authorKey>
 							<#assign contributorTypeText = "author">
-						<#elseif pubContributor.contributorType.text == editorKey>
+						<#elseif pubContributor.contributorType.id == editorKey>
 							<#assign contributorTypeText = "editor">
+						<#else>
+							<#-- this will not pass schema validation -->
+							<#assign contributorTypeText = "">
 						</#if>
 						
-						<#if pubContributor.contributor?? && pubContributor.contributor.isCorporation()>
-							<organization sequence="${sequence}" contributor_role="${contributorTypeText}">${pubContributor.contributor.organization!}</organization>
-						<#else>
-							<person_name sequence="${sequence}" contributor_role="${contributorTypeText}">
-								<#if pubContributor.contributor?? && pubContributor.contributor.given??>
-									<given_name>${pubContributor.contributor.given}</given_name>
-								</#if>
-								<surname>${pubContributor.contributor.family}</surname>
-								<#if pubContributor.contributor?? && pubContributor.contributor.suffix??>
-									<suffix>${pubContributor.contributor.suffix}</suffix>
-								</#if>
-							</person_name>
+						<#if pubContributor.contributor??>
+							<#if pubContributor.contributor.isCorporation()>
+								<organization sequence="${sequence}" contributor_role="${contributorTypeText}">${pubContributor.contributor.organization!}</organization>
+							<#else>
+								<person_name sequence="${sequence}" contributor_role="${contributorTypeText}">
+									<#if pubContributor.contributor.given??>
+										<given_name>${pubContributor.contributor.given}</given_name>
+									</#if>
+									<surname>${pubContributor.contributor.family}</surname>
+									<#if pubContributor.contributor.suffix??>
+										<suffix>${pubContributor.contributor.suffix}</suffix>
+									</#if>
+									<#if pubContributor.contributor.orcid??>
+										<ORCID>${pubContributor.contributor.orcid}</ORCID>
+									</#if>
+								</person_name>
+							</#if>
 						</#if>
+						
+						<#-- Subsequent contributors in the list will not be designated first author, they will be designated "additional" -->
 						<#assign sequence = "additional">
 					</#list>
 				</contributors>

@@ -12,6 +12,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
+import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
@@ -98,8 +99,8 @@ public class CrossrefTransformer extends Transformer {
 		List<PublicationContributor<?>> contributors = crossRefBusService.getContributors(pub);
 		model.put("pubContributors", contributors);
 		
-		model.put("authorKey", PubsUtilities.getAuthorKey());
-		model.put("editorKey", PubsUtilities.getEditorKey());
+		model.put("authorKey", ContributorType.AUTHORS);
+		model.put("editorKey", ContributorType.EDITORS);
 		
 		writeModelToTemplate(model, "crossref/body.xml");
 	}

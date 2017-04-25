@@ -27,11 +27,15 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
+import freemarker.cache.ClassTemplateLoader;
+import freemarker.template.TemplateException;
 
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.utility.CustomStringToArrayConverter;
 import gov.usgs.cida.pubs.utility.CustomStringToStringConverter;
 import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
+import java.io.IOException;
+import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
 
 @Configuration
 @ComponentScan(basePackages={"gov.usgs.cida.pubs.webservice", "gov.usgs.cida.pubs.utility", "gov.usgs.cida.pubs.dao",
@@ -77,6 +81,7 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
 			.mediaType(PubsConstants.MEDIA_TYPE_XML_EXTENSION, MediaType.APPLICATION_XML)
 			.mediaType(PubsConstants.MEDIA_TYPE_JSON_EXTENSION, MediaType.APPLICATION_JSON)
 			.mediaType(PubsConstants.MEDIA_TYPE_XLSX_EXTENSION, PubsConstants.MEDIA_TYPE_XLSX)
+			.mediaType(PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION, PubsConstants.MEDIA_TYPE_CROSSREF)
 			;
 	}
 
@@ -130,4 +135,25 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
 			.addResourceLocations("classpath:/META-INF/resources/webjars/");
 	}
 
+	
+	@Bean
+	public FreeMarkerConfigurationFactory freeMarkerConfigurationFactory() {
+		FreeMarkerConfigurationFactory factory = new FreeMarkerConfigurationFactory();
+		factory.setPreferFileSystemAccess(false);
+		return factory;
+	}
+	
+	@Bean
+	public freemarker.template.Configuration freeMarkerConfiguration() {
+		freemarker.template.Configuration templateConfig;
+		try {
+			templateConfig = freeMarkerConfigurationFactory().createConfiguration();
+			templateConfig.setTemplateLoader(
+				new ClassTemplateLoader(this.getClass().getClassLoader(), "templates")
+			);
+		} catch (IOException | TemplateException ex) {
+			throw new RuntimeException("could not create freemarker template configuration", ex);
+		}
+		return templateConfig;
+	}
 }

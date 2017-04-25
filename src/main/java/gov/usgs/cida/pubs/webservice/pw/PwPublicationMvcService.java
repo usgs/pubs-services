@@ -19,23 +19,29 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import freemarker.template.Configuration;
 
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
 import gov.usgs.cida.pubs.dao.resulthandler.StreamingResultHandler;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.json.View;
+import gov.usgs.cida.pubs.transform.CrossrefTransformer;
 import gov.usgs.cida.pubs.transform.DelimitedTransformer;
 import gov.usgs.cida.pubs.transform.JsonTransformer;
 import gov.usgs.cida.pubs.transform.PublicationColumns;
 import gov.usgs.cida.pubs.transform.XlsxTransformer;
 import gov.usgs.cida.pubs.transform.intfc.ITransformer;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.webservice.MvcService;
 import io.swagger.annotations.ApiParam;
+import java.io.OutputStream;
 
 @RestController
 @RequestMapping(value="publication")
@@ -44,14 +50,26 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 
 	private final IPwPublicationBusService busService;
 	private final String warehouseEndpoint;
-
+	private final Configuration templateConfiguration;
+	private final String depositorEmail;
+	private final ICrossRefBusService crossRefBusService;
+	
 	@Autowired
 	public PwPublicationMvcService(@Qualifier("pwPublicationBusService")
 			final IPwPublicationBusService busService,
 			@Qualifier("warehouseEndpoint")
-			final String warehouseEndpoint) {
+			final String warehouseEndpoint,
+			@Qualifier("freeMarkerConfiguration")
+			final Configuration templateConfiguration,
+			@Qualifier("crossRefDepositorEmail")
+			final String depositorEmail,
+			final ICrossRefBusService crossRefBusService
+	) {
 		this.busService = busService;
 		this.warehouseEndpoint = warehouseEndpoint;
+		this.templateConfiguration = templateConfiguration;
+		this.depositorEmail = depositorEmail;
+		this.crossRefBusService = crossRefBusService;
 	}
 
 	@GetMapping(produces={MediaType.APPLICATION_JSON_VALUE,
@@ -173,5 +191,39 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		}
 		return rtn;
 	}
-
+	
+	
+	@GetMapping(
+		value="{indexId}",
+		params = {"mimetype=" + PubsConstants.MEDIA_TYPE_CROSSREF_VALUE}
+	)
+	public void getPwPublicationCrossRef(HttpServletRequest request, HttpServletResponse response,
+				@PathVariable("indexId") String indexId) throws IOException {
+		PwPublication pub = busService.getByIndexId(indexId);
+		if (null == pub || !isUsgsSeries(pub)) {
+			response.sendError(HttpStatus.NOT_FOUND.value());
+		} else {
+			writeCrossrefForPub(response, pub);
+		}
+	}
+	protected void writeCrossrefForPub(HttpServletResponse response, PwPublication pub) throws IOException {
+		try (OutputStream outputStream = response.getOutputStream()) {
+			response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
+			response.setContentType(PubsConstants.MEDIA_TYPE_CROSSREF_VALUE);
+			response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION);
+			CrossrefTransformer transformer = new CrossrefTransformer(
+				outputStream,
+				templateConfiguration,
+				depositorEmail,
+				crossRefBusService
+			);
+			transformer.write(pub);
+			transformer.end();
+		}
+	}
+	
+	protected boolean isUsgsSeries(PwPublication pub){
+		PublicationSubtype subtype = pub.getPublicationSubtype();
+		return PubsUtilities.isUsgsNumberedSeries(subtype) || PubsUtilities.isUsgsUnnumberedSeries(subtype);
+	}
 }

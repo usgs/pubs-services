@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.webservice.pw;
 
+import freemarker.template.Configuration;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,9 +28,18 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.SearchResults;
+import gov.usgs.cida.pubs.domain.pw.PwPublication;
+import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 public class PwPublicationMvcServiceTest extends BaseSpringTest {
 
@@ -41,11 +51,24 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 	private PwPublicationMvcService mvcService;
 
 	private Map<String, Object> filters;
-
+	
+	@Mock
+	private Configuration templateConfiguration;
+	
+	@Mock
+	private ICrossRefBusService crossRefBusService;
+	
+	private final String TEST_EMAIL = "nobody@usgs.gov";
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		mvcService = new PwPublicationMvcService(busService, warehouseEndpoint);
+		mvcService = new PwPublicationMvcService(
+			busService,
+			warehouseEndpoint,
+			templateConfiguration,
+			TEST_EMAIL,
+			crossRefBusService
+		);
 
 		filters = new HashMap<>();
 		filters.put(BaseDao.PAGE_SIZE, "13");
@@ -123,6 +146,80 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		verify(busService).stream(eq("pwPublication.getByMap"), anyMap(), any(ResultHandler.class));
 		verify(busService).getObjectCount(anyMap());
+	}
+	
+	@Test
+	public void testCrossrefPubNotFound() throws IOException {
+		IPwPublicationBusService mockBusService = mock(IPwPublicationBusService.class);
+		when(mockBusService.getByIndexId(anyString())).thenReturn(null);
+		PwPublicationMvcService instance = new PwPublicationMvcService(
+			mockBusService,
+			warehouseEndpoint,
+			templateConfiguration,
+			TEST_EMAIL,
+			crossRefBusService
+		);
+		HttpServletRequest request = new MockHttpServletRequest();
+		HttpServletResponse response = new MockHttpServletResponse();
+		
+		instance.getPwPublicationCrossRef(request, response, "non-existent pub");
+		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+	}
+	
+	@Test
+	public void testCrossrefNonUsgsSeriesPubFound() throws IOException {
+		IPwPublicationBusService mockBusService = mock(IPwPublicationBusService.class);
+		PwPublication nonUsgsSeriesPub = new PwPublication();
+		PublicationSubtype subtype = new PublicationSubtype();
+		subtype.setId(PublicationSubtype.USGS_DATA_RELEASE);
+		nonUsgsSeriesPub.setPublicationSubtype(subtype);
+		when(mockBusService.getByIndexId(anyString())).thenReturn(nonUsgsSeriesPub);
+		PwPublicationMvcService instance = new PwPublicationMvcService(
+			mockBusService,
+			warehouseEndpoint,
+			templateConfiguration,
+			TEST_EMAIL,
+			crossRefBusService
+		);
+		HttpServletRequest request = new MockHttpServletRequest();
+		HttpServletResponse response = new MockHttpServletResponse();
+		
+		instance.getPwPublicationCrossRef(request, response, "existent non-USGS series pub");
+		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+	}
+	
+	@Test
+	public void testCrossrefUsgsSeriesPubFound() throws IOException {
+		IPwPublicationBusService mockBusService = mock(IPwPublicationBusService.class);
+		PwPublication usgsSeriesPub = new PwPublication();
+		PublicationSubtype subtype = new PublicationSubtype();
+		subtype.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
+		usgsSeriesPub.setPublicationSubtype(subtype);
+		when(mockBusService.getByIndexId(anyString())).thenReturn(usgsSeriesPub);
+		PwPublicationMvcService instance = new PwPublicationMvcService(
+			mockBusService,
+			warehouseEndpoint,
+			templateConfiguration,
+			TEST_EMAIL,
+			crossRefBusService
+		) { 
+			/**
+			 * We're testing the conditional logic of the MvcService,
+			 * not the transformation from pub to Crossref XML, so 
+			 * we set a non-failing status code.
+			 */
+			@Override
+			protected void writeCrossrefForPub(HttpServletResponse response, PwPublication pub) throws IOException {
+				response.setStatus(HttpStatus.OK.value());
+				response.getOutputStream().println("OK");
+				response.getOutputStream().close();
+			}
+		};
+		HttpServletRequest request = new MockHttpServletRequest();
+		HttpServletResponse response = new MockHttpServletResponse();
+		
+		instance.getPwPublicationCrossRef(request, response, "existent non-USGS series pub");
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
 
 }

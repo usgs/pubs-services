@@ -5,6 +5,7 @@ import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.CrossRefLog;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.PersonContributor;
+import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
@@ -15,9 +16,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -130,7 +133,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 
 	@Override
 	public void submitCrossRef(final MpPublication mpPublication) {
-		String indexPage = getIndexPage(mpPublication);
+		String indexPage = getEscapedIndexPage(mpPublication);
 		if (null != indexPage && 0 < indexPage.length()) {
 			LOG.debug("Posting to http://"+ crossRefHost + ":" + crossRefPort);
 
@@ -249,38 +252,42 @@ public class CrossRefBusService implements ICrossRefBusService {
 	protected String getBatchId() {
 		return String.valueOf(new Date().getTime());
 	}
-
-	protected String getContributors(MpPublication pub) {
-		StringBuilder rtn = new StringBuilder("");
+	
+	@Override
+	public List<PublicationContributor<?>> getContributors(Publication<?> pub) {
+		List<PublicationContributor<?>> rtn = new ArrayList<>();
 		//This process requires that the contributors are in rank order.
 		//And that the contributor is valid.
 		if (null != pub && null != pub.getContributors() && !pub.getContributors().isEmpty()) {
 			Map<String, Collection<PublicationContributor<?>>> contributors = pub.getContributorsToMap();
-			String sequence = FIRST;
-			Collection<PublicationContributor<?>> authors = contributors.get(PubsUtilities.getAuthorKey());
+			String authorKey = PubsUtilities.getAuthorKey();
+			Collection<PublicationContributor<?>> authors = contributors.get(authorKey);
 			if (null != authors && !authors.isEmpty()) {
-				for (PublicationContributor<?> author : authors) {
-					if (author.getContributor() instanceof PersonContributor) {
-						rtn.append(processPerson(author, sequence));
-					} else {
-						rtn.append(processCorporation(author, sequence));
-					}
-					sequence = ADDITIONAL;
-					rtn.append("\n");
-				}
+				rtn.addAll(authors);
 			}
-
-			Collection<PublicationContributor<?>> editors = contributors.get(PubsUtilities.getEditorKey());
+			String editorKey = PubsUtilities.getEditorKey();
+			Collection<PublicationContributor<?>> editors = contributors.get(editorKey);
 			if (null != editors && !editors.isEmpty()) {
-				for (PublicationContributor<?> editor : editors) {
-					if (editor.getContributor() instanceof PersonContributor) {
-						rtn.append(processPerson(editor, sequence));
-					} else {
-						rtn.append(processCorporation(editor, sequence));
-					}
-					sequence = ADDITIONAL;
-					rtn.append("\n");
+				rtn.addAll(editors);
+			}
+		}
+		return rtn;
+	}
+	protected String getContributors(MpPublication pub) {
+		StringBuilder rtn = new StringBuilder("");
+		//This process requires that the contributors are in rank order.
+		//And that the contributor is valid.
+		List<PublicationContributor<?>> contributors = getContributors((Publication<?>)pub);
+		if(!contributors.isEmpty()){
+			String sequence = FIRST;
+			for (PublicationContributor<?> contributor : contributors) {
+				if (contributor.getContributor() instanceof PersonContributor) {
+					rtn.append(processPerson(contributor, sequence));
+				} else {
+					rtn.append(processCorporation(contributor, sequence));
 				}
+				sequence = ADDITIONAL;
+				rtn.append("\n");
 			}
 		}
 		return rtn.toString();
@@ -341,7 +348,14 @@ public class CrossRefBusService implements ICrossRefBusService {
 		return rtn;
 	}
 
-	protected String getIndexPage(MpPublication pub) {
+	protected String getEscapedIndexPage(MpPublication pub) {
+		String unescapedIndexPage = this.getIndexPage(pub);
+		String escapedIndexPage = StringEscapeUtils.escapeXml10(unescapedIndexPage);
+		return escapedIndexPage;
+	}
+
+	@Override
+	public String getIndexPage(Publication<?> pub) {
 		String rtn = "";
 		if (null != pub) {
 			if (null != pub.getLinks()) {
@@ -357,7 +371,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 				rtn = warehouseEndpoint + "/publication/" + pub.getIndexId();
 			}
 		}
-		return StringEscapeUtils.escapeXml10(rtn);
+		return rtn;
 	}
-
+	
 }

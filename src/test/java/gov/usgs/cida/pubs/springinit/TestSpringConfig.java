@@ -232,5 +232,20 @@ public class TestSpringConfig {
 	public String testUnNumberedSeriesXml() throws IOException {
 		return new String(FileCopyUtils.copyToByteArray(testUnNumberedSeries.getInputStream()));
 	}
+	
+	@Value("classpath:testResult/testOneUnNumberedSeriesPub.xml")
+	private Resource testOneUnNumberedSeries;
+	@Bean
+	public String testOneUnNumberedSeriesPubXml() throws IOException{
+		return new String(FileCopyUtils.copyToByteArray(testOneUnNumberedSeries.getInputStream()));
+	}
+	
+	@Value("classpath:testResult/testOneNumberedSeriesPub.xml")
+	private Resource testOneNumberedSeries;
+	@Bean
+	public String testOneNumberedSeriesPubXml() throws IOException{
+		return new String(FileCopyUtils.copyToByteArray(testOneNumberedSeries.getInputStream()));
+	}
+	
 
 }

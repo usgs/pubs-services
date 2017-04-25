@@ -11,19 +11,22 @@ public final class PubsConstants {
 	public static final String MEDIA_TYPE_CSV_VALUE = "text/csv";
 	public static final String MEDIA_TYPE_TSV_VALUE = "text/tab-separated-values";
 	public static final String MEDIA_TYPE_XLSX_VALUE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-
+	public static final String MEDIA_TYPE_CROSSREF_VALUE = "application/vnd.crossref.deposit+xml";
+	
 	public static final MediaType MEDIA_TYPE_CSV = new MediaType("text", "csv");
 	public static final MediaType MEDIA_TYPE_TSV = new MediaType("text", "tab-separated-values");
 	public static final MediaType MEDIA_TYPE_XLSX = new MediaType("application", "vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 	public static final MediaType MEDIA_TYPE_RSS = MediaType.TEXT_XML;
-
+	public static final MediaType MEDIA_TYPE_CROSSREF = new MediaType("application", "vnd.crossref.deposit+xml");
+	
 	public static final String MEDIA_TYPE_CSV_EXTENSION = "csv";
 	public static final String MEDIA_TYPE_TSV_EXTENSION = "tsv";
 	public static final String MEDIA_TYPE_XLSX_EXTENSION = "xlsx";
 	public static final String MEDIA_TYPE_XML_EXTENSION = "xml";
 	public static final String MEDIA_TYPE_JSON_EXTENSION = "json";
 	public static final String MEDIA_TYPE_RSS_EXTENSION = "rss";
-
+	public static final String MEDIA_TYPE_CROSSREF_EXTENSION = "crossref.xml";
+	
 	public static final String CONTENT_PARAMETER_NAME = "mimeType";
 	public static final String ACCEPT_HEADER = "Accept";
 	
@@ -40,7 +43,7 @@ public final class PubsConstants {
 	public static final Integer DEFAULT_LOCK_TIMEOUT_HOURS = 3;
 	
 	public static final String NOT_IMPLEMENTED = "NOT IMPLEMENTED.";
-
+	
 	private PubsConstants() {
 	}
 

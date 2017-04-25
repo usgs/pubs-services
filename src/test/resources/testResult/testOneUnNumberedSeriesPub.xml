@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doi_batch xmlns="http://www.crossref.org/schema/4.4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.crossref.org/schema/4.4.0 http://www.crossref.org/schema/deposit/crossref4.4.0.xsd" version="4.4.0">
+    <head>
+        <doi_batch_id>82adfd8d-1737-4e62-86bc-5e7be1c07b7d</doi_batch_id>
+        <timestamp>1493070447545</timestamp>
+        <depositor>
+            <depositor_name>USGS</depositor_name>
+            <email_address>nobody@usgs.gov</email_address>
+        </depositor>
+        <registrant>U.S. Geological Survey</registrant>
+    </head>
+    <body>
+        <report-paper>
+            <report-paper_metadata language="en">
+                <titles>
+                    <title>General Information Product</title>
+                </titles>
+                <publication_date media_type="online">
+                    <year>2013</year>
+                </publication_date>
+            </report-paper_metadata>
+            <content_item component_type="other">
+                <contributors>
+                    <person_name sequence="first" contributor_role="author">
+                        <given_name>John</given_name>
+                        <surname>Powell</surname>
+                        <suffix>Jr.</suffix>
+                    </person_name>
+                    <organization sequence="additional" contributor_role="author">Evil Corp</organization>
+                    <person_name sequence="additional" contributor_role="editor">
+                        <given_name>John</given_name>
+                        <surname>Powell</surname>
+                        <suffix>Jr.</suffix>
+                    </person_name>
+                    <organization sequence="additional" contributor_role="editor">Evil Corp</organization>
+                </contributors>
+                <titles>
+                    <title>Postwildfire debris-flow hazard assessment of the area burned by the 2013 West Fork Fire Complex, southwestern Colorado</title>
+                </titles>
+                <publication_date media_type="online">
+                    <year>2013</year>
+                </publication_date>
+                <pages>
+                    <first_page>52</first_page>
+                    <last_page>56</last_page>
+                </pages>
+                <doi_data>
+                    <doi>10.3133/ofr20131259</doi>
+                    <resource>http://pubs.usgs.gov/of/2013/1259/</resource>
+                </doi_data>
+            </content_item>
+        </report-paper>
+    </body>
+</doi_batch>

@@ -1,0 +1,78 @@
+		<report-paper>
+			<#if isNumberedSeries>
+			<report-paper_series_metadata language="en">
+				<series_metadata>
+					<titles>
+						<title>${pub.seriesTitle.text}</title>
+					</titles>
+					<issn>${pub.seriesTitle.onlineIssn}</issn>
+				</series_metadata>
+				<titles>
+					<title>${pub.seriesTitle.text}</title>
+				</titles>
+				<publication_date media_type="online">
+					<year>${pub.publicationYear}</year>
+				</publication_date>
+			</report-paper_series_metadata>
+			<#else>
+				<report-paper_metadata language="en">
+					<titles>
+						<title>${pub.seriesTitle.text}</title>
+					</titles>
+					<publication_date media_type="online">
+						<year>${pub.publicationYear}</year>
+					</publication_date>
+				</report-paper_metadata>
+			</#if>
+			<content_item component_type="other">
+				<contributors>
+					<#assign sequence = "first">
+					<#list pubContributors as pubContributor>
+					
+						<#-- The XSD only permits the following values for contributors' "contributor_role" attribute. -->
+						<#-- "author", "editor", "chair", "translator" -->
+						<#-- Map our relevant contributor type values to a Crossref-compliant value -->
+						
+						<#if pubContributor.contributorType.text == authorKey>
+							<#assign contributorTypeText = "author">
+						<#elseif pubContributor.contributorType.text == editorKey>
+							<#assign contributorTypeText = "editor">
+						</#if>
+						
+						<#if pubContributor.contributor?? && pubContributor.contributor.isCorporation()>
+							<organization sequence="${sequence}" contributor_role="${contributorTypeText}">${pubContributor.contributor.organization!}</organization>
+						<#else>
+							<person_name sequence="${sequence}" contributor_role="${contributorTypeText}">
+								<#if pubContributor.contributor?? && pubContributor.contributor.given??>
+									<given_name>${pubContributor.contributor.given}</given_name>
+								</#if>
+								<surname>${pubContributor.contributor.family}</surname>
+								<#if pubContributor.contributor?? && pubContributor.contributor.suffix??>
+									<suffix>${pubContributor.contributor.suffix}</suffix>
+								</#if>
+							</person_name>
+						</#if>
+						<#assign sequence = "additional">
+					</#list>
+				</contributors>
+				<titles>
+					<title>${pub.title}</title>
+				</titles>
+				<#if isNumberedSeries>
+					<component_number>${pub.seriesNumber}</component_number>
+				</#if>
+				<publication_date media_type="online">
+					<year>${pub.publicationYear}</year>
+				</publication_date>
+				<#if pub.startPage?? && pub.endPage??>
+				<pages>
+					<first_page>${pub.startPage}</first_page>
+					<last_page>${pub.endPage}</last_page>
+				</pages>
+				</#if>
+				<doi_data>
+					<doi>${pub.doi}</doi>
+					<resource>${indexPage}</resource>
+				</doi_data>
+			</content_item>
+		</report-paper>

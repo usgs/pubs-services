@@ -32,8 +32,6 @@ import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
 
-@Ignore
-//TODO
 public class CrossRefBusServiceTest extends BaseSpringTest {
 	
 	private static final String testPagesXml = "<pages><first_page>52</first_page><last_page>56</last_page></pages>";
@@ -358,30 +356,30 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 
 	@Test
 	public void getIndexPageTest() {
-		assertEquals("", busService.getIndexPage(null));
+		assertEquals("", busService.getEscapedIndexPage(null));
 
 		MpPublication pub = new MpPublication();
-		assertEquals("", busService.getIndexPage(pub));
+		assertEquals("", busService.getEscapedIndexPage(pub));
 		
 		pub.setIndexId("abcdef123");
 		String newUrl = warehouseEndpoint+"/publication/abcdef123";
-		assertEquals(newUrl, busService.getIndexPage(pub));
+		assertEquals(newUrl, busService.getEscapedIndexPage(pub));
 		
 		Collection<PublicationLink<?>> links = new ArrayList<>();
 		pub.setLinks(links);
-		assertEquals(newUrl, busService.getIndexPage(pub));
+		assertEquals(newUrl, busService.getEscapedIndexPage(pub));
 
 		PublicationLink<?> link = new MpPublicationLink();
 		links.add(link);
-		assertEquals(newUrl, busService.getIndexPage(pub));
+		assertEquals(newUrl, busService.getEscapedIndexPage(pub));
 
 		link.setUrl("xyz");
-		assertEquals(newUrl, busService.getIndexPage(pub));
+		assertEquals(newUrl, busService.getEscapedIndexPage(pub));
 
 		LinkType linkType = new LinkType();
 		linkType.setId(LinkType.THUMBNAIL);
 		link.setLinkType(linkType);;
-		assertEquals(newUrl, busService.getIndexPage(pub));
+		assertEquals(newUrl, busService.getEscapedIndexPage(pub));
 
 		PublicationLink<?> link2 = new MpPublicationLink();
 		LinkType linkType2 = new LinkType();
@@ -389,11 +387,11 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		link2.setLinkType(linkType2);
 		link2.setUrl("http://pubs.usgs.gov/of/2013/1259/");
 		links.add(link2);
-		assertEquals("http://pubs.usgs.gov/of/2013/1259/", busService.getIndexPage(pub));
+		assertEquals("http://pubs.usgs.gov/of/2013/1259/", busService.getEscapedIndexPage(pub));
 		
 		//escape for xml
 		link2.setUrl("http://pubs.usgs.gov/of/2013/1259/<>");
-		assertEquals("http://pubs.usgs.gov/of/2013/1259/&lt;&gt;", busService.getIndexPage(pub));
+		assertEquals("http://pubs.usgs.gov/of/2013/1259/&lt;&gt;", busService.getEscapedIndexPage(pub));
 	}
 
 	@Test

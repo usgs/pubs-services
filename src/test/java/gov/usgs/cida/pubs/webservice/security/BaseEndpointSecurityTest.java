@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.webservice.security;
 
+import freemarker.template.Configuration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
@@ -10,6 +11,7 @@ import gov.usgs.cida.auth.client.IAuthClient;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
+import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpListPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
@@ -88,6 +90,14 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 
 	private MockMvc mockLookup;
 	
+	@Mock
+	private Configuration templateConfiguration;
+	
+	@Mock
+	private ICrossRefBusService crossRefBusService;
+	
+	private final String TEST_EMAIL = "nobody@usgs.gov";
+	
 	public void preSetup() {
 		MockitoAnnotations.initMocks(this);
 	}
@@ -99,7 +109,7 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 		mpPubMvc = new MpPublicationMvcService(pubBusService, mpPubBusService);
 		mockMpPub = MockMvcBuilders.standaloneSetup(mpPubMvc).addFilters(springSecurityFilter).build();
 
-		pwPubMvc = new PwPublicationMvcService(pwPubBusService, warehouseEndpoint);
+		pwPubMvc = new PwPublicationMvcService(pwPubBusService, warehouseEndpoint, templateConfiguration, TEST_EMAIL, crossRefBusService);
 		mockPwPub = MockMvcBuilders.standaloneSetup(pwPubMvc).addFilters(springSecurityFilter).build();
 		pwPubRssMvc = new PwPublicationRssMvcService(pwPubBusService, warehouseEndpoint);
 		mockPwPubRss = MockMvcBuilders.standaloneSetup(pwPubRssMvc).addFilters(springSecurityFilter).build();

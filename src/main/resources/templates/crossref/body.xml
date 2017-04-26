@@ -36,11 +36,8 @@
 						
 						<#if pubContributor.contributorType.id == authorKey>
 							<#assign contributorTypeText = "author">
-						<#elseif pubContributor.contributorType.id == editorKey>
-							<#assign contributorTypeText = "editor">
 						<#else>
-							<#-- this will not pass schema validation -->
-							<#assign contributorTypeText = "">
+							<#assign contributorTypeText = "editor">
 						</#if>
 						
 						<#if pubContributor.contributor??>

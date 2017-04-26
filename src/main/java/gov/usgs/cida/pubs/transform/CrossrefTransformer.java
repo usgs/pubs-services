@@ -100,7 +100,6 @@ public class CrossrefTransformer extends Transformer {
 		model.put("pubContributors", contributors);
 		
 		model.put("authorKey", ContributorType.AUTHORS);
-		model.put("editorKey", ContributorType.EDITORS);
 		
 		writeModelToTemplate(model, "crossref/body.xml");
 	}

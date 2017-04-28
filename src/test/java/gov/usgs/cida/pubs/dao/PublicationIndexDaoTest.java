@@ -26,7 +26,7 @@ public class PublicationIndexDaoTest extends BaseSpringTest {
 	public void getByIdTest() {
 		PublicationIndex publicationIndex = PublicationIndex.getDao().getById(5);
 		assertEquals(5, publicationIndex.getId().intValue());
-		assertEquals("future title 9 ConFamily, ConGiven, ConSuffix;US Geological Survey Ice Survey Team; US Geological Survey Ice Survey Team; Affiliation Cost Center 2", publicationIndex.getQ());
+		assertEquals(" future title 9 ConFamily, ConGiven, ConSuffix;US Geological Survey Ice Survey Team; US Geological Survey Ice Survey Team; Affiliation Cost Center 2", publicationIndex.getQ());
 	}
 
 	@Test

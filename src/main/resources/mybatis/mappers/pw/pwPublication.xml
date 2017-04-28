@@ -190,9 +190,11 @@
 	<select id="getStreamByMap" parameterType="map" resultType="java.util.LinkedHashMap" fetchSize="100">
 		select <include refid="base.pagingHint"/> 
 		       #{url,jdbcType=VARCHAR} || pub.index_id warehouse_url,
+		       pub.publication_id,
+		       pub.index_id,
 		       publication_type.name publication_type,
 		       publication_subtype.name publication_subtype,
-                       pub.display_title,
+               pub.display_title,
 		       pub.title,
 		       publication_series.name series_title,
 		       pub.series_number,

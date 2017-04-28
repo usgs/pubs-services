@@ -40,13 +40,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	private static final long serialVersionUID = -9013357854464855631L;
 
 	private static IPublicationDao publicationDao;
-	
-	@JsonProperty("publicationId")
-	@JsonView(View.PW.class)
-	@Length(min=1, max=100)
-	@NotNull
-	private String publicationId;
-	
+
 	@JsonProperty("indexId")
 	@JsonView(View.PW.class)
 	@Length(min=1, max=100)
@@ -357,15 +351,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	@JsonProperty("noUsgsAuthors")
 	@JsonView(View.MP.class)
 	private Boolean noUsgsAuthors;
-	
-	public String getPublicationId() {
-		return publicationId;
-	}
 
-	public void setPublicationId(final String inPublicationId) {
-		publicationId = inPublicationId;
-	}
-	
 	public String getIndexId() {
 		return indexId;
 	}

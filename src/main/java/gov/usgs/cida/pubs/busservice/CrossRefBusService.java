@@ -259,14 +259,14 @@ public class CrossRefBusService implements ICrossRefBusService {
 		//This process requires that the contributors are in rank order.
 		//And that the contributor is valid.
 		if (null != pub && null != pub.getContributors() && !pub.getContributors().isEmpty()) {
-			Map<String, Collection<PublicationContributor<?>>> contributors = pub.getContributorsToMap();
+			Map<String, List<PublicationContributor<?>>> contributors = pub.getContributorsToMap();
 			String authorKey = PubsUtilities.getAuthorKey();
-			Collection<PublicationContributor<?>> authors = contributors.get(authorKey);
+			List<PublicationContributor<?>> authors = contributors.get(authorKey);
 			if (null != authors && !authors.isEmpty()) {
 				rtn.addAll(authors);
 			}
 			String editorKey = PubsUtilities.getEditorKey();
-			Collection<PublicationContributor<?>> editors = contributors.get(editorKey);
+			List<PublicationContributor<?>> editors = contributors.get(editorKey);
 			if (null != editors && !editors.isEmpty()) {
 				rtn.addAll(editors);
 			}

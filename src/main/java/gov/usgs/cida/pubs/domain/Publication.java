@@ -30,6 +30,8 @@ import gov.usgs.cida.pubs.validation.constraint.CrossProperty;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 import gov.usgs.cida.pubs.validation.constraint.PublishChecks;
 import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
+import java.util.Comparator;
+import java.util.List;
 
 @Component
 @UniqueKey(message = "{publication.indexid.duplicate}")
@@ -613,11 +615,17 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 		contributors = inContributors;
 	}
 
+	/**
+	 * 
+	 * @return A map whose keys are lowercased contributor type text and 
+	 * whose values are a sorted list of contributors. Each list is sorted 
+	 * by rank.
+	 */
 	@JsonProperty("contributors")
 	@JsonView(View.PW.class)
-	public Map<String, Collection<PublicationContributor<?>>> getContributorsToMap() {
+	public Map<String, List<PublicationContributor<?>>> getContributorsToMap() {
 		if (null != getContributors() && !getContributors().isEmpty()) {
-			Map<String, Collection<PublicationContributor<?>>> rtn = new HashMap<>();
+			Map<String, List<PublicationContributor<?>>> rtn = new HashMap<>();
 			for (Iterator<PublicationContributor<?>> i = contributors.iterator(); i.hasNext();) {
 				PublicationContributor<?> contributor = i.next();
 				//So, this is a lot of work to make sure that we don't NPE in the event that the contributor
@@ -634,10 +642,16 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 					}
 				}
 				if (!rtn.containsKey(key)) {
-					rtn.put(key, new ArrayList<PublicationContributor<?>>());
+					rtn.put(key, new ArrayList<>());
 				}
 				rtn.get(key).add(contributor);
 			}
+			Comparator<Integer> nullSafeIntegerComparator = Comparator.nullsLast(Integer::compareTo);
+			Comparator<PublicationContributor> publicationRankComparator = Comparator.comparing(PublicationContributor::getRank, nullSafeIntegerComparator);
+			//now sort all lists in-place
+			rtn.values().forEach((contributorList) -> {
+				contributorList.sort(publicationRankComparator);
+			});
 			return rtn;
 		} else {
 			return null;
@@ -645,14 +659,14 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	}
 
 	@JsonProperty("contributors")
-	public void setContributorsFromMap(final Map<String, Collection<PublicationContributor<?>>> inContributors) {
+	public void setContributorsFromMap(final Map<String, List<PublicationContributor<?>>> inContributors) {
 		if (null == contributors) {
-			contributors = new ArrayList<PublicationContributor<?>>();
+			contributors = new ArrayList<>();
 		} else {
 			contributors.clear();
 		}
 		if (null != inContributors) {
-			for (Entry<String, Collection<PublicationContributor<?>>> contributorEntry : inContributors.entrySet()) {
+			for (Entry<String, List<PublicationContributor<?>>> contributorEntry : inContributors.entrySet()) {
 				if (null != contributorEntry.getValue()) {
 					contributors.addAll(contributorEntry.getValue());
 				}

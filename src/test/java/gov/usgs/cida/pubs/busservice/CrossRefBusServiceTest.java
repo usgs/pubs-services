@@ -297,12 +297,14 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		PublicationContributor<?> pubContributor1 = new MpPublicationContributor();
 		pubContributor1.setContributor(contributor1);
 		pubContributor1.setContributorType(contributorTypeEditor);
+		pubContributor1.setRank(1);
 		contributors.add(pubContributor1);
 		CorporateContributor contributor2 = new CorporateContributor();
 		contributor2.setOrganization("orgNameEditor");
 		PublicationContributor<?> pubContributor2 = new MpPublicationContributor();
 		pubContributor2.setContributor(contributor2);
 		pubContributor2.setContributorType(contributorTypeEditor);
+		pubContributor2.setRank(2);
 		contributors.add(pubContributor2);
 		assertEquals("<person_name sequence=\"first\" contributor_role=\"editor\"><surname>familyNameEditor</surname></person_name>"
 				+ "<organization sequence=\"additional\" contributor_role=\"editor\">orgNameEditor</organization>",
@@ -315,18 +317,24 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		PublicationContributor<?> pubContributor4 = new MpPublicationContributor();
 		pubContributor4.setContributor(contributor4);
 		pubContributor4.setContributorType(contributorTypeAuthor);
+		pubContributor4.setRank(3);
 		contributors.add(pubContributor4);
 		OutsideContributor contributor3 = new OutsideContributor();
 		contributor3.setFamily("familyNameAuthor");
 		PublicationContributor<?> pubContributor3 = new MpPublicationContributor();
 		pubContributor3.setContributor(contributor3);
 		pubContributor3.setContributorType(contributorTypeAuthor);
+		pubContributor3.setRank(4);
 		contributors.add(pubContributor3);
-		assertEquals("<organization sequence=\"first\" contributor_role=\"author\">orgNameAuthor</organization>"
-				+ "<person_name sequence=\"additional\" contributor_role=\"author\"><surname>familyNameAuthor</surname></person_name>"
-				+ "<person_name sequence=\"additional\" contributor_role=\"editor\"><surname>familyNameEditor</surname></person_name>"
-				+ "<organization sequence=\"additional\" contributor_role=\"editor\">orgNameEditor</organization>",
-				harmonizeXml(busService.getContributors(pub)));
+		assertEquals(
+			//authors first in rank order
+			"<organization sequence=\"first\" contributor_role=\"author\">orgNameAuthor</organization>"
+			+ "<person_name sequence=\"additional\" contributor_role=\"author\"><surname>familyNameAuthor</surname></person_name>"
+			//editors second in rank order
+			+ "<person_name sequence=\"additional\" contributor_role=\"editor\"><surname>familyNameEditor</surname></person_name>"
+			+ "<organization sequence=\"additional\" contributor_role=\"editor\">orgNameEditor</organization>"
+			,
+			harmonizeXml(busService.getContributors(pub)));
 	}
 	
 	@Test

@@ -1,11 +1,11 @@
 package gov.usgs.cida.pubs.busservice;
 
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
+import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.CrossRefLog;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.PersonContributor;
-import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
@@ -16,7 +16,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -85,6 +84,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 	protected final String depositorEmail;
 	protected final PubsEMailer pubsEMailer;
 	protected final String warehouseEndpoint;
+	protected final IPublicationBusService pubBusService;
 
 	@Autowired
 	public CrossRefBusService(
@@ -114,7 +114,8 @@ public class CrossRefBusService implements ICrossRefBusService {
 			final String depositorEmail,
 			final PubsEMailer pubsEMailer,
 			@Qualifier("warehouseEndpoint")
-			final String warehouseEndpoint) {
+			final String warehouseEndpoint,
+			final IPublicationBusService pubBusService) {
 		this.crossRefProtocol = crossRefProtocol;
 		this.crossRefHost = crossRefHost;
 		this.crossRefUrl = crossRefUrl;
@@ -129,12 +130,14 @@ public class CrossRefBusService implements ICrossRefBusService {
 		this.depositorEmail = depositorEmail;
 		this.pubsEMailer = pubsEMailer;
 		this.warehouseEndpoint = warehouseEndpoint;
+		this.pubBusService = pubBusService;
 	}
 
 	@Override
 	public void submitCrossRef(final MpPublication mpPublication) {
-		String indexPage = getEscapedIndexPage(mpPublication);
-		if (null != indexPage && 0 < indexPage.length()) {
+		String indexPage = pubBusService.getIndexPage(mpPublication);
+		String escapedIndexPage = StringEscapeUtils.escapeXml10(indexPage);
+		if (null != escapedIndexPage && 0 < escapedIndexPage.length()) {
 			LOG.debug("Posting to http://"+ crossRefHost + ":" + crossRefPort);
 
 			StringBuilder url = new StringBuilder(crossRefUrl).append("?operation=doMDUpload&login_id=")
@@ -145,7 +148,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 			HttpPost httpPost = new HttpPost(url.toString());
 			HttpHost httpHost = new HttpHost(crossRefHost, crossRefPort, crossRefProtocol);
 
-			String fileName = buildXml(mpPublication, indexPage);
+			String fileName = buildXml(mpPublication, escapedIndexPage);
 
 			if (null != fileName) {
 				try {
@@ -253,42 +256,38 @@ public class CrossRefBusService implements ICrossRefBusService {
 		return String.valueOf(new Date().getTime());
 	}
 	
-	@Override
-	public List<PublicationContributor<?>> getContributors(Publication<?> pub) {
-		List<PublicationContributor<?>> rtn = new ArrayList<>();
-		//This process requires that the contributors are in rank order.
-		//And that the contributor is valid.
-		if (null != pub && null != pub.getContributors() && !pub.getContributors().isEmpty()) {
-			Map<String, List<PublicationContributor<?>>> contributors = pub.getContributorsToMap();
-			String authorKey = PubsUtilities.getAuthorKey();
-			List<PublicationContributor<?>> authors = contributors.get(authorKey);
-			if (null != authors && !authors.isEmpty()) {
-				rtn.addAll(authors);
-			}
-			String editorKey = PubsUtilities.getEditorKey();
-			List<PublicationContributor<?>> editors = contributors.get(editorKey);
-			if (null != editors && !editors.isEmpty()) {
-				rtn.addAll(editors);
-			}
-		}
-		return rtn;
-	}
 	protected String getContributors(MpPublication pub) {
 		StringBuilder rtn = new StringBuilder("");
 		//This process requires that the contributors are in rank order.
 		//And that the contributor is valid.
-		List<PublicationContributor<?>> contributors = getContributors((Publication<?>)pub);
-		if(!contributors.isEmpty()){
+		if (null != pub && null != pub.getContributors() && !pub.getContributors().isEmpty()) {
+			Map<String, List<PublicationContributor<?>>> contributors = pub.getContributorsToMap();
 			String sequence = FIRST;
-			for (PublicationContributor<?> contributor : contributors) {
-				if (contributor.getContributor() instanceof PersonContributor) {
-					rtn.append(processPerson(contributor, sequence));
+			Collection<PublicationContributor<?>> authors = contributors.get(PubsUtilities.getAuthorKey());
+			if (null != authors && !authors.isEmpty()) {
+				for (PublicationContributor<?> author : authors) {
+					if (author.getContributor() instanceof PersonContributor) {
+						rtn.append(processPerson(author, sequence));
+					} else {
+						rtn.append(processCorporation(author, sequence));
+			}
+					sequence = ADDITIONAL;
+					rtn.append("\n");
+			}
+		}
+
+			Collection<PublicationContributor<?>> editors = contributors.get(PubsUtilities.getEditorKey());
+			if (null != editors && !editors.isEmpty()) {
+				for (PublicationContributor<?> editor : editors) {
+					if (editor.getContributor() instanceof PersonContributor) {
+						rtn.append(processPerson(editor, sequence));
 				} else {
-					rtn.append(processCorporation(contributor, sequence));
+						rtn.append(processCorporation(editor, sequence));
 				}
 				sequence = ADDITIONAL;
 				rtn.append("\n");
 			}
+		}
 		}
 		return rtn.toString();
 	}
@@ -344,32 +343,6 @@ public class CrossRefBusService implements ICrossRefBusService {
 				&& StringUtils.isNotBlank(pub.getEndPage())) {
 			rtn = pagesXml.replace(START_PAGE_REPLACE, StringEscapeUtils.escapeXml10(pub.getStartPage().trim()))
 					.replace(END_PAGE_REPLACE, StringEscapeUtils.escapeXml10(pub.getEndPage().trim()));
-		}
-		return rtn;
-	}
-
-	protected String getEscapedIndexPage(MpPublication pub) {
-		String unescapedIndexPage = this.getIndexPage(pub);
-		String escapedIndexPage = StringEscapeUtils.escapeXml10(unescapedIndexPage);
-		return escapedIndexPage;
-	}
-
-	@Override
-	public String getIndexPage(Publication<?> pub) {
-		String rtn = "";
-		if (null != pub) {
-			if (null != pub.getLinks()) {
-				Collection<PublicationLink<?>> links = pub.getLinks();
-				for (Iterator<PublicationLink<?>> linksIter = links.iterator(); linksIter.hasNext();) {
-					PublicationLink<?> link = linksIter.next();
-					if (null != link.getLinkType() && LinkType.INDEX_PAGE.equals(link.getLinkType().getId())) {
-						rtn = link.getUrl();
-					}
-				}
-			}
-			if (rtn.isEmpty() && null != pub.getIndexId()) {
-				rtn = warehouseEndpoint + "/publication/" + pub.getIndexId();
-			}
 		}
 		return rtn;
 	}

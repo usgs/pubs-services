@@ -29,6 +29,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
+import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
@@ -56,7 +57,7 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 	private Configuration templateConfiguration;
 	
 	@Mock
-	private ICrossRefBusService crossRefBusService;
+	private IPublicationBusService pubBusService;
 	
 	private final String TEST_EMAIL = "nobody@usgs.gov";
 	@Before
@@ -67,7 +68,7 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 			warehouseEndpoint,
 			templateConfiguration,
 			TEST_EMAIL,
-			crossRefBusService
+			pubBusService
 		);
 
 		filters = new HashMap<>();
@@ -157,7 +158,7 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 			warehouseEndpoint,
 			templateConfiguration,
 			TEST_EMAIL,
-			crossRefBusService
+			pubBusService
 		);
 		HttpServletRequest request = new MockHttpServletRequest();
 		HttpServletResponse response = new MockHttpServletResponse();
@@ -179,7 +180,7 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 			warehouseEndpoint,
 			templateConfiguration,
 			TEST_EMAIL,
-			crossRefBusService
+			pubBusService
 		);
 		HttpServletRequest request = new MockHttpServletRequest();
 		HttpServletResponse response = new MockHttpServletResponse();
@@ -201,7 +202,7 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 			warehouseEndpoint,
 			templateConfiguration,
 			TEST_EMAIL,
-			crossRefBusService
+			pubBusService
 		) { 
 			/**
 			 * We're testing the conditional logic of the MvcService,

@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.LinkType;
@@ -79,6 +80,8 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	protected String depositorEmail;
 	@Mock
 	protected PubsEMailer pubsEMailer;
+	@Mock
+	IPublicationBusService pubBusService;
 
 	private CrossRefBusService busService;
 	
@@ -87,7 +90,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		MockitoAnnotations.initMocks(this);
 		busService = new CrossRefBusService(crossRefProtocol, crossRefHost, crossRefUrl, crossRefPort, crossRefUser,
 				crossRefPwd, numberedSeriesXml, unNumberedSeriesXml, organizationNameXml, personNameXml,
-				pagesXml, depositorEmail, pubsEMailer, warehouseEndpoint);
+				pagesXml, depositorEmail, pubsEMailer, warehouseEndpoint, pubBusService);
 	}
 
 	@Test
@@ -144,7 +147,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	public void buildBaseXmlEscapeTest() {
 		CrossRefBusService busService2 = new CrossRefBusService(crossRefProtocol, crossRefHost, crossRefUrl, crossRefPort, crossRefUser,
 				crossRefPwd, numberedSeriesXml, unNumberedSeriesXml, organizationNameXml, personNameXml,
-				pagesXml, "drsteini@usgs.gov<>", pubsEMailer, warehouseEndpoint);
+				pagesXml, "drsteini@usgs.gov<>", pubsEMailer, warehouseEndpoint, pubBusService);
 		String templateXml = "<root><de>" + CrossRefBusService.DEPOSITOR_EMAIL_REPLACE + "</de><yr>"
 				+ CrossRefBusService.DISSEMINATION_YEAR_REPLACE + "</yr><ti>"
 				+ CrossRefBusService.TITLE_REPLACE + "</ti><doi>"
@@ -361,47 +364,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		pub.setEndPage("56<>");
 		assertEquals(testPagesXmlEscaped, harmonizeXml(busService.getPages(pub)));
 	}
-
-	@Test
-	public void getIndexPageTest() {
-		assertEquals("", busService.getEscapedIndexPage(null));
-
-		MpPublication pub = new MpPublication();
-		assertEquals("", busService.getEscapedIndexPage(pub));
-		
-		pub.setIndexId("abcdef123");
-		String newUrl = warehouseEndpoint+"/publication/abcdef123";
-		assertEquals(newUrl, busService.getEscapedIndexPage(pub));
-		
-		Collection<PublicationLink<?>> links = new ArrayList<>();
-		pub.setLinks(links);
-		assertEquals(newUrl, busService.getEscapedIndexPage(pub));
-
-		PublicationLink<?> link = new MpPublicationLink();
-		links.add(link);
-		assertEquals(newUrl, busService.getEscapedIndexPage(pub));
-
-		link.setUrl("xyz");
-		assertEquals(newUrl, busService.getEscapedIndexPage(pub));
-
-		LinkType linkType = new LinkType();
-		linkType.setId(LinkType.THUMBNAIL);
-		link.setLinkType(linkType);;
-		assertEquals(newUrl, busService.getEscapedIndexPage(pub));
-
-		PublicationLink<?> link2 = new MpPublicationLink();
-		LinkType linkType2 = new LinkType();
-		linkType2.setId(LinkType.INDEX_PAGE);
-		link2.setLinkType(linkType2);
-		link2.setUrl("http://pubs.usgs.gov/of/2013/1259/");
-		links.add(link2);
-		assertEquals("http://pubs.usgs.gov/of/2013/1259/", busService.getEscapedIndexPage(pub));
-		
-		//escape for xml
-		link2.setUrl("http://pubs.usgs.gov/of/2013/1259/<>");
-		assertEquals("http://pubs.usgs.gov/of/2013/1259/&lt;&gt;", busService.getEscapedIndexPage(pub));
-	}
-
+	
 	@Test
 	public void submitCrossRefTest() {
 		MpPublication pub = buildNumberedSeriesPub();

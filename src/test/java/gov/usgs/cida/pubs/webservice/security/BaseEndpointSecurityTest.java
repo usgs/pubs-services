@@ -14,6 +14,7 @@ import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpListPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
@@ -58,7 +59,7 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 	private MockMvc mockAuth;
 
 	@Mock
-	protected IBusService<Publication<?>> pubBusService;
+	protected IBusService<Publication<?>> busSvcForPub;
 	private MpPublicationMvcService mpPubMvc;
 	private MockMvc mockMpPub;
 	
@@ -94,7 +95,7 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 	private Configuration templateConfiguration;
 	
 	@Mock
-	private ICrossRefBusService crossRefBusService;
+	private IPublicationBusService pubBusService;
 	
 	private final String TEST_EMAIL = "nobody@usgs.gov";
 	
@@ -106,10 +107,10 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 		authTokenService = new AuthTokenService(authenticationService, mpPubBusService);
 		mockAuth = MockMvcBuilders.standaloneSetup(authTokenService).addFilters(springSecurityFilter).build();
 		
-		mpPubMvc = new MpPublicationMvcService(pubBusService, mpPubBusService);
+		mpPubMvc = new MpPublicationMvcService(busSvcForPub, mpPubBusService);
 		mockMpPub = MockMvcBuilders.standaloneSetup(mpPubMvc).addFilters(springSecurityFilter).build();
 
-		pwPubMvc = new PwPublicationMvcService(pwPubBusService, warehouseEndpoint, templateConfiguration, TEST_EMAIL, crossRefBusService);
+		pwPubMvc = new PwPublicationMvcService(pwPubBusService, warehouseEndpoint, templateConfiguration, TEST_EMAIL, pubBusService);
 		mockPwPub = MockMvcBuilders.standaloneSetup(pwPubMvc).addFilters(springSecurityFilter).build();
 		pwPubRssMvc = new PwPublicationRssMvcService(pwPubBusService, warehouseEndpoint);
 		mockPwPubRss = MockMvcBuilders.standaloneSetup(pwPubRssMvc).addFilters(springSecurityFilter).build();

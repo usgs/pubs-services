@@ -23,6 +23,7 @@ import freemarker.template.Configuration;
 
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
+import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
@@ -52,7 +53,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	private final String warehouseEndpoint;
 	private final Configuration templateConfiguration;
 	private final String depositorEmail;
-	private final ICrossRefBusService crossRefBusService;
+	private final IPublicationBusService pubBusService;
 	
 	@Autowired
 	public PwPublicationMvcService(@Qualifier("pwPublicationBusService")
@@ -63,13 +64,13 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 			final Configuration templateConfiguration,
 			@Qualifier("crossRefDepositorEmail")
 			final String depositorEmail,
-			final ICrossRefBusService crossRefBusService
+			final IPublicationBusService pubBusService
 	) {
 		this.busService = busService;
 		this.warehouseEndpoint = warehouseEndpoint;
 		this.templateConfiguration = templateConfiguration;
 		this.depositorEmail = depositorEmail;
-		this.crossRefBusService = crossRefBusService;
+		this.pubBusService = pubBusService;
 	}
 
 	@GetMapping(produces={MediaType.APPLICATION_JSON_VALUE,
@@ -215,7 +216,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 				outputStream,
 				templateConfiguration,
 				depositorEmail,
-				crossRefBusService
+				pubBusService
 			);
 			transformer.write(pub);
 			transformer.end();

@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.transform;
 import freemarker.template.Configuration;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
+import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
@@ -50,9 +51,9 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 	private CrossrefTransformer instance;
 	private ByteArrayOutputStream target;
 	private static DocumentBuilder docBuilder; 
+	
 	@Autowired
-	@Qualifier("crossRefBusService")
-	private ICrossRefBusService crossRefBusService;
+	private IPublicationBusService publicationBusService;
 	
 	private static final String TEST_TIMESTAMP = "1493070447545";
 	private static final String TEST_BATCH_ID = "82adfd8d-1737-4e62-86bc-5e7be1c07b7d";
@@ -79,7 +80,7 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 	@Before
 	public void setUp() {
 		this.target = new ByteArrayOutputStream();
-		instance = new CrossrefTransformer(this.target, templateConfig, "nobody@usgs.gov", crossRefBusService){
+		instance = new CrossrefTransformer(this.target, templateConfig, "nobody@usgs.gov", publicationBusService){
 			/**
 			 * Override randomly-generated value so we can compare
 			 * consistent values over time

@@ -12,12 +12,14 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
+import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -30,26 +32,26 @@ public class CrossrefTransformer extends Transformer {
 	protected Configuration templateConfiguration;
 	protected OutputStreamWriter strWriter;
 	protected String crossRefDepositorEmail;
-	protected ICrossRefBusService crossRefBusService;
+	protected IPublicationBusService pubBusService;
 
 	/**
 	 * 
 	 * @param target
 	 * @param templateConfiguration
 	 * @param crossRefDepositorEmail String email used in crossref submission
-	 * @param crossRefBusService
+	 * @param pubBusService
 	 */
 	public CrossrefTransformer(
 		OutputStream target,
 		Configuration templateConfiguration,
 		String crossRefDepositorEmail,
-		ICrossRefBusService crossRefBusService
+		IPublicationBusService pubBusService
 	) {
 		super(target, null);
 		this.templateConfiguration = templateConfiguration;
 		this.crossRefDepositorEmail = crossRefDepositorEmail;
 		this.strWriter = new OutputStreamWriter(target);
-		this.crossRefBusService = crossRefBusService;
+		this.pubBusService = pubBusService;
 		init();
 	}
 	protected String getTimeStamp(){
@@ -93,10 +95,10 @@ public class CrossrefTransformer extends Transformer {
 		boolean isNumberedSeries = PubsUtilities.isUsgsNumberedSeries(pub.getPublicationSubtype());
 		model.put("isNumberedSeries", isNumberedSeries);
 		
-		String indexPage = crossRefBusService.getIndexPage(pub);
+		String indexPage = pubBusService.getIndexPage(pub);
 		model.put("indexPage", indexPage);
 		
-		List<PublicationContributor<?>> contributors = crossRefBusService.getContributors(pub);
+		List<PublicationContributor<?>> contributors = this.getContributors(pub);
 		model.put("pubContributors", contributors);
 		
 		model.put("authorKey", ContributorType.AUTHORS);
@@ -133,5 +135,25 @@ public class CrossrefTransformer extends Transformer {
 		} catch (TemplateException|IOException ex) {
 			throw new RuntimeException("Error processing template", ex);
 		}
+	}
+	
+	protected List<PublicationContributor<?>> getContributors(Publication<?> pub) {
+		List<PublicationContributor<?>> rtn = new ArrayList<>();
+		//This process requires that the contributors are in rank order.
+		//And that the contributor is valid.
+		if (null != pub && null != pub.getContributors() && !pub.getContributors().isEmpty()) {
+			Map<String, List<PublicationContributor<?>>> contributors = pub.getContributorsToMap();
+			String authorKey = PubsUtilities.getAuthorKey();
+			List<PublicationContributor<?>> authors = contributors.get(authorKey);
+			if (null != authors && !authors.isEmpty()) {
+				rtn.addAll(authors);
+			}
+			String editorKey = PubsUtilities.getEditorKey();
+			List<PublicationContributor<?>> editors = contributors.get(editorKey);
+			if (null != editors && !editors.isEmpty()) {
+				rtn.addAll(editors);
+			}
+		}
+		return rtn;
 	}
 }

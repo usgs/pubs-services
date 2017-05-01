@@ -39,6 +39,7 @@ import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.accept.ContentNegotiationStrategy;
 
 public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 
@@ -99,6 +100,8 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 	
 	private final String TEST_EMAIL = "nobody@usgs.gov";
 	
+	@Autowired
+	private ContentNegotiationStrategy contentStrategy;
 	public void preSetup() {
 		MockitoAnnotations.initMocks(this);
 	}
@@ -110,7 +113,7 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 		mpPubMvc = new MpPublicationMvcService(busSvcForPub, mpPubBusService);
 		mockMpPub = MockMvcBuilders.standaloneSetup(mpPubMvc).addFilters(springSecurityFilter).build();
 
-		pwPubMvc = new PwPublicationMvcService(pwPubBusService, warehouseEndpoint, templateConfiguration, TEST_EMAIL, pubBusService);
+		pwPubMvc = new PwPublicationMvcService(pwPubBusService, warehouseEndpoint, templateConfiguration, TEST_EMAIL, pubBusService, contentStrategy);
 		mockPwPub = MockMvcBuilders.standaloneSetup(pwPubMvc).addFilters(springSecurityFilter).build();
 		pwPubRssMvc = new PwPublicationRssMvcService(pwPubBusService, warehouseEndpoint);
 		mockPwPubRss = MockMvcBuilders.standaloneSetup(pwPubRssMvc).addFilters(springSecurityFilter).build();

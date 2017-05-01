@@ -41,6 +41,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.accept.ContentNegotiationStrategy;
 
 public class PwPublicationMvcServiceTest extends BaseSpringTest {
 
@@ -59,6 +60,9 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 	@Mock
 	private IPublicationBusService pubBusService;
 	
+	@Autowired
+	private ContentNegotiationStrategy contentStrategy;
+	
 	private final String TEST_EMAIL = "nobody@usgs.gov";
 	@Before
 	public void setup() {
@@ -68,7 +72,8 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 			warehouseEndpoint,
 			templateConfiguration,
 			TEST_EMAIL,
-			pubBusService
+			pubBusService,
+			contentStrategy
 		);
 
 		filters = new HashMap<>();
@@ -158,12 +163,12 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 			warehouseEndpoint,
 			templateConfiguration,
 			TEST_EMAIL,
-			pubBusService
+			pubBusService,
+			contentStrategy
 		);
-		HttpServletRequest request = new MockHttpServletRequest();
 		HttpServletResponse response = new MockHttpServletResponse();
 		
-		instance.getPwPublicationCrossRef(request, response, "non-existent pub");
+		instance.getPwPublicationCrossRef("non-existent pub", response);
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 	}
 	
@@ -180,12 +185,12 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 			warehouseEndpoint,
 			templateConfiguration,
 			TEST_EMAIL,
-			pubBusService
+			pubBusService,
+			contentStrategy
 		);
-		HttpServletRequest request = new MockHttpServletRequest();
 		HttpServletResponse response = new MockHttpServletResponse();
 		
-		instance.getPwPublicationCrossRef(request, response, "existent non-USGS series pub");
+		instance.getPwPublicationCrossRef("existent non-USGS series pub", response);
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 	}
 	
@@ -202,7 +207,8 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 			warehouseEndpoint,
 			templateConfiguration,
 			TEST_EMAIL,
-			pubBusService
+			pubBusService,
+			contentStrategy
 		) { 
 			/**
 			 * We're testing the conditional logic of the MvcService,
@@ -216,10 +222,9 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 				response.getOutputStream().close();
 			}
 		};
-		HttpServletRequest request = new MockHttpServletRequest();
 		HttpServletResponse response = new MockHttpServletResponse();
 		
-		instance.getPwPublicationCrossRef(request, response, "existent non-USGS series pub");
+		instance.getPwPublicationCrossRef("existent non-USGS series pub", response);
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
 

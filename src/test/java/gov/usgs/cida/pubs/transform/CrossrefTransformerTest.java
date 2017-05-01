@@ -27,9 +27,12 @@ import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
+import gov.usgs.cida.pubs.domain.PublicationContributorTest;
 import gov.usgs.cida.pubs.domain.PublicationLink;
+import gov.usgs.cida.pubs.domain.PublicationLinkTest;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
+import gov.usgs.cida.pubs.domain.PublicationTest;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 import java.util.ArrayList;
@@ -58,12 +61,6 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 	private static final String TEST_TIMESTAMP = "1493070447545";
 	private static final String TEST_BATCH_ID = "82adfd8d-1737-4e62-86bc-5e7be1c07b7d";
 	
-	public String getAuthorKey() {
-		return PubsUtilities.getAuthorKey();
-	}
-	public String getEditorKey() {
-		return PubsUtilities.getEditorKey();
-	}
 	
 	@BeforeClass
 	public static void setUpClass() {
@@ -122,7 +119,7 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 	}
 	
 	private Publication buildNumberedSeriesPub() {
-		Publication pub = new Publication();
+		Publication pub = PublicationTest.buildAPub(new Publication(), 42);
 		PublicationSubtype numbered = new PublicationSubtype();
 		numbered.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
 		pub.setPublicationSubtype(numbered);
@@ -138,73 +135,23 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 		pub.setDoi("10.3133/ofr20131259");
 
 		Collection<PublicationContributor<?>> contributors = new ArrayList<>();
-		contributors.add(buildPersonPublicationAuthor());
-		contributors.add(buildPersonPublicationEditor());
-		contributors.add(buildCorporatePublicationAuthor());
-		contributors.add(buildCorporatePublicationEditor());
+		contributors.add(PublicationContributorTest.buildPersonPublicationAuthor());
+		contributors.add(PublicationContributorTest.buildPersonPublicationEditor());
+		contributors.add(PublicationContributorTest.buildCorporatePublicationAuthor());
+		contributors.add(PublicationContributorTest.buildCorporatePublicationEditor());
 		pub.setContributors(contributors);
 
 		pub.setStartPage("52");
 		pub.setEndPage("56");
 		
 		Collection<PublicationLink<?>> links = new ArrayList<>();
-		PublicationLink<?> link = new PublicationLink();
-		LinkType linkType = new LinkType();
-		linkType.setId(LinkType.INDEX_PAGE);
-		link.setLinkType(linkType);
-		link.setUrl("http://pubs.usgs.gov/of/2013/1259/");
-		links.add(link);
+		links.add(PublicationLinkTest.buildIndexLink());
 		pub.setLinks(links);
 
 		return pub;
 	}
-	
-	protected PublicationContributor<?> buildPersonPublicationAuthor() {
-		return buildPersonPublicationContributor(getAuthorKey(), ContributorType.AUTHORS);
-	}
-	
-	protected PublicationContributor<?> buildPersonPublicationEditor() {
-		return buildPersonPublicationContributor(getEditorKey(), ContributorType.EDITORS);
-	}
-	
-	protected PublicationContributor<?> buildPersonPublicationContributor(String typeText, int typeId) {
-		UsgsContributor contributor = new UsgsContributor();
-		contributor.setGiven("John");
-		contributor.setFamily("Powell");
-		contributor.setSuffix("Jr.");
-		ContributorType contributorTypeAuthor = new ContributorType();
-		contributorTypeAuthor.setText(typeText);
-		contributorTypeAuthor.setId(typeId);
-		PublicationContributor<?> pubContributor = new PublicationContributor();
-		pubContributor.setContributor(contributor);
-		pubContributor.setContributorType(contributorTypeAuthor);
-		return pubContributor;
-	}
-	
-	protected PublicationContributor<?> buildCorporatePublicationAuthor() {
-		return buildCorporatePublicationContributor(getAuthorKey(), ContributorType.AUTHORS);
-	}
-	
-	protected PublicationContributor<?> buildCorporatePublicationEditor() {
-		return buildCorporatePublicationContributor(getEditorKey(), ContributorType.EDITORS);
-	}
-	
-	
-	protected PublicationContributor<?> buildCorporatePublicationContributor(String typeText, int typeId) {
-		CorporateContributor contributor = new CorporateContributor();
-		contributor.setOrganization("Evil Corp");
-		ContributorType contributorTypeAuthor = new ContributorType();
-		contributorTypeAuthor.setText(typeText);
-		contributorTypeAuthor.setId(typeId);
-		PublicationContributor<?> pubContributor = new PublicationContributor();
-		pubContributor.setContributor(contributor);
-		pubContributor.setContributorType(contributorTypeAuthor);
-		return pubContributor;
-		
-	}
-	
 	protected Publication buildUnNumberedSeriesPub() {
-		Publication pub = new Publication();
+		Publication pub = PublicationTest.buildAPub(new Publication(), 42);
 		PublicationSubtype unnumbered = new PublicationSubtype();
 		unnumbered.setId(PublicationSubtype.USGS_UNNUMBERED_SERIES);
 		pub.setPublicationSubtype(unnumbered);
@@ -223,20 +170,15 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 		
 		Collection<PublicationContributor<?>> contributors = new ArrayList<>();
 		
-		contributors.add(buildPersonPublicationAuthor());
-		contributors.add(buildPersonPublicationEditor());
-		contributors.add(buildCorporatePublicationAuthor());
-		contributors.add(buildCorporatePublicationEditor());
+		contributors.add(PublicationContributorTest.buildPersonPublicationAuthor());
+		contributors.add(PublicationContributorTest.buildPersonPublicationEditor());
+		contributors.add(PublicationContributorTest.buildCorporatePublicationAuthor());
+		contributors.add(PublicationContributorTest.buildCorporatePublicationEditor());
 		
 		pub.setContributors(contributors);
 		
 		Collection<PublicationLink<?>> links = new ArrayList<>();
-		PublicationLink<?> link = new PublicationLink();
-		LinkType linkType = new LinkType();
-		linkType.setId(LinkType.INDEX_PAGE);
-		link.setLinkType(linkType);
-		link.setUrl("http://pubs.usgs.gov/of/2013/1259/");
-		links.add(link);
+		links.add(PublicationLinkTest.buildIndexLink());
 		pub.setLinks(links);
 		
 		return pub;

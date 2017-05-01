@@ -2,8 +2,8 @@ package gov.usgs.cida.pubs.transform;
 
 import freemarker.template.Configuration;
 import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
+import gov.usgs.cida.pubs.domain.Contributor;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
@@ -277,6 +277,37 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 	@Test
 	public void testOneNumberedSeriesPub() throws IOException {
 		Publication pub = buildNumberedSeriesPub();
+		instance.write(pub);
+		instance.end();
+		String output = new String(target.toByteArray(), "UTF-8");
+		assertNotNull(output);
+		assertTrue(0 < output.length());
+		assertWellFormed(output);
+		String expected = harmonizeXml(testOneNumberedSeriesXml);
+		String actual = harmonizeXml(output);
+		assertEquals(expected, actual);
+	}
+	
+	/**
+	 * Test that contributors of unknown type are omitted
+	 */
+	@Test
+	public void testOmitUnknownContributorType() throws IOException {
+		//make a new contributor with an unknown type
+		int unknownContributorTypeId = -999;
+		ContributorType unknownContributorType = new ContributorType();
+		unknownContributorType.setId(unknownContributorTypeId);
+		
+		PublicationContributor strangePublicationContributor = new PublicationContributor();
+		strangePublicationContributor.setContributorType(unknownContributorType);
+		
+		Publication pub = buildNumberedSeriesPub();
+		
+		//add the contributor of unknown type to the publication
+		Collection<PublicationContributor> contributors = pub.getContributors();
+		contributors.add(strangePublicationContributor);
+		pub.setContributors(contributors);
+		
 		instance.write(pub);
 		instance.end();
 		String output = new String(target.toByteArray(), "UTF-8");

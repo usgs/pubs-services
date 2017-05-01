@@ -36,11 +36,11 @@
 						
 						<#if pubContributor.contributorType.id == authorKey>
 							<#assign contributorTypeText = "author">
-						<#else>
+						<#elseif pubContributor.contributorType.id == editorKey || pubContributor.contributorType.id == compilersKey>
 							<#assign contributorTypeText = "editor">
 						</#if>
 						
-						<#if pubContributor.contributor??>
+						<#if pubContributor.contributor?? && contributorTypeText??>
 							<#if pubContributor.contributor.isCorporation()>
 								<organization sequence="${sequence}" contributor_role="${contributorTypeText}">${pubContributor.contributor.organization!}</organization>
 							<#else>

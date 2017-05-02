@@ -29,6 +29,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import com.fasterxml.jackson.databind.SerializationFeature;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.TemplateException;
+import freemarker.template.TemplateExceptionHandler;
 
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.utility.CustomStringToArrayConverter;
@@ -151,6 +152,7 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
 			templateConfig.setTemplateLoader(
 				new ClassTemplateLoader(this.getClass().getClassLoader(), "templates")
 			);
+			templateConfig.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 		} catch (IOException | TemplateException ex) {
 			throw new RuntimeException("could not create freemarker template configuration", ex);
 		}

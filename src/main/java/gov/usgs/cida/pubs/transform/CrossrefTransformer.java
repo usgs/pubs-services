@@ -85,7 +85,7 @@ public class CrossrefTransformer extends Transformer {
 
 	@Override
 	public void write(Object result) throws IOException {
-		Publication pub = (Publication)result;
+		Publication<?> pub = (Publication)result;
 		LOG.trace("Writing crossref report entry for publication with indexId = '" + pub.getIndexId() + "'");
 		
 		Map<String, Object> model = new HashMap<>();

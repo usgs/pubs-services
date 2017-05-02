@@ -88,7 +88,7 @@ public class PublicationBusServiceTest extends BaseSpringTest {
 
 		LinkType linkType = new LinkType();
 		linkType.setId(LinkType.THUMBNAIL);
-		link.setLinkType(linkType);;
+		link.setLinkType(linkType);
 		assertEquals(newUrl, service.getIndexPage(pub));
 
 		PublicationLink<?> link2 = new MpPublicationLink();

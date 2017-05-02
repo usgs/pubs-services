@@ -18,7 +18,7 @@ public class PublicationContributorTest {
 		ContributorType contributorTypeAuthor = new ContributorType();
 		contributorTypeAuthor.setText(typeText);
 		contributorTypeAuthor.setId(typeId);
-		PublicationContributor<?> pubContributor = new PublicationContributor();
+		PublicationContributor<?> pubContributor = new PublicationContributor<>();
 		pubContributor.setContributor(contributor);
 		pubContributor.setContributorType(contributorTypeAuthor);
 		return pubContributor;
@@ -49,7 +49,7 @@ public class PublicationContributorTest {
 		ContributorType contributorTypeAuthor = new ContributorType();
 		contributorTypeAuthor.setText(typeText);
 		contributorTypeAuthor.setId(typeId);
-		PublicationContributor<?> pubContributor = new PublicationContributor();
+		PublicationContributor<?> pubContributor = new PublicationContributor<>();
 		pubContributor.setContributor(contributor);
 		pubContributor.setContributorType(contributorTypeAuthor);
 		return pubContributor;

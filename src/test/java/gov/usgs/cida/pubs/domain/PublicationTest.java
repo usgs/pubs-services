@@ -30,7 +30,7 @@ public class PublicationTest extends BaseSpringTest {
 		MpPublication pub = new MpPublication();
 		assertNull(pub.getContributorsToMap());
 		
-		Collection<PublicationContributor<?>> cl = new ArrayList<PublicationContributor<?>>();
+		Collection<PublicationContributor<?>> cl = new ArrayList<>();
 		pub.setContributors(cl);
 		assertNull(pub.getContributorsToMap());
 
@@ -77,19 +77,19 @@ public class PublicationTest extends BaseSpringTest {
 		ContributorType editorType = new ContributorType();
 		editorType.setId(ContributorType.EDITORS);
 		
-		PublicationContributor<?> firstAuthor = new PublicationContributor();
+		PublicationContributor<?> firstAuthor = new PublicationContributor<>();
 		firstAuthor.setContributorType(authorType);
 		firstAuthor.setRank(1);
 		
-		PublicationContributor<?> secondAuthor = new PublicationContributor();
+		PublicationContributor<?> secondAuthor = new PublicationContributor<>();
 		secondAuthor.setContributorType(authorType);
 		secondAuthor.setRank(2);
 		
-		PublicationContributor<?> firstEditor = new PublicationContributor();
+		PublicationContributor<?> firstEditor = new PublicationContributor<>();
 		firstEditor.setContributorType(editorType);
 		firstEditor.setRank(3);
 		
-		PublicationContributor<?> secondEditor = new PublicationContributor();
+		PublicationContributor<?> secondEditor = new PublicationContributor<>();
 		secondEditor.setContributorType(editorType);
 		secondEditor.setRank(4);
 		
@@ -112,7 +112,7 @@ public class PublicationTest extends BaseSpringTest {
 			pub.setContributors(contributors);
 			Map<String, List<PublicationContributor<?>>> actual = pub.getContributorsToMap();
 			assertEquals(expected, actual);
-		};
+		}
 	}
 	@Test
 	public void testSetMappingContributors() {
@@ -120,7 +120,7 @@ public class PublicationTest extends BaseSpringTest {
 		pub.setContributorsFromMap(null);
 		assertTrue(pub.getContributors().isEmpty());
 		
-		Map<String, List<PublicationContributor<?>>> cm = new HashMap<String, List<PublicationContributor<?>>>();
+		Map<String, List<PublicationContributor<?>>> cm = new HashMap<>();
 		pub.setContributorsFromMap(cm);
 		assertTrue(pub.getContributors().isEmpty());
 		
@@ -128,7 +128,7 @@ public class PublicationTest extends BaseSpringTest {
 		pub.setContributorsFromMap(cm);
 		assertTrue(pub.getContributors().isEmpty());
 
-		List<PublicationContributor<?>> cl = new ArrayList<PublicationContributor<?>>();
+		List<PublicationContributor<?>> cl = new ArrayList<>();
 		cm.put("unknown", cl);
 		pub.setContributorsFromMap(cm);
 		assertTrue(pub.getContributors().isEmpty());

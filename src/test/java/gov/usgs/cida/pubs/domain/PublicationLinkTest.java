@@ -3,7 +3,7 @@ package gov.usgs.cida.pubs.domain;
 
 public class PublicationLinkTest {
 	public static PublicationLink<?> buildIndexLink(){
-		PublicationLink<?> link = new PublicationLink();
+		PublicationLink<?> link = new PublicationLink<>();
 		LinkType linkType = new LinkType();
 		linkType.setId(LinkType.INDEX_PAGE);
 		link.setLinkType(linkType);

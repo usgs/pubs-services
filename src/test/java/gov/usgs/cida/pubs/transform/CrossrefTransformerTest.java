@@ -113,8 +113,8 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 		assertEquals("The XML is not well-formed.", "", errorMsg);
 	}
 	
-	private Publication buildNumberedSeriesPub() {
-		Publication pub = PublicationTest.buildAPub(new Publication(), 42);
+	private Publication<?> buildNumberedSeriesPub() {
+		Publication<?> pub = PublicationTest.buildAPub(new Publication<>(), 42);
 		PublicationSubtype numbered = new PublicationSubtype();
 		numbered.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
 		pub.setPublicationSubtype(numbered);
@@ -145,8 +145,8 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 
 		return pub;
 	}
-	protected Publication buildUnNumberedSeriesPub() {
-		Publication pub = PublicationTest.buildAPub(new Publication(), 42);
+	protected Publication<?> buildUnNumberedSeriesPub() {
+		Publication<?> pub = PublicationTest.buildAPub(new Publication<>(), 42);
 		PublicationSubtype unnumbered = new PublicationSubtype();
 		unnumbered.setId(PublicationSubtype.USGS_UNNUMBERED_SERIES);
 		pub.setPublicationSubtype(unnumbered);
@@ -196,7 +196,7 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 	 */
 	@Test
 	public void testOneUnNumberedSeriesPub() throws IOException {
-		Publication pub = buildUnNumberedSeriesPub();
+		Publication<?> pub = buildUnNumberedSeriesPub();
 		instance.write(pub);
 		instance.end();
 		String output = new String(target.toByteArray(), "UTF-8");
@@ -213,7 +213,7 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 	 */
 	@Test
 	public void testOneNumberedSeriesPub() throws IOException {
-		Publication pub = buildNumberedSeriesPub();
+		Publication<?> pub = buildNumberedSeriesPub();
 		instance.write(pub);
 		instance.end();
 		String output = new String(target.toByteArray(), "UTF-8");
@@ -235,13 +235,13 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 		ContributorType unknownContributorType = new ContributorType();
 		unknownContributorType.setId(unknownContributorTypeId);
 		
-		PublicationContributor strangePublicationContributor = new PublicationContributor();
+		PublicationContributor<?> strangePublicationContributor = new PublicationContributor<>();
 		strangePublicationContributor.setContributorType(unknownContributorType);
 		
-		Publication pub = buildNumberedSeriesPub();
+		Publication<?> pub = buildNumberedSeriesPub();
 		
 		//add the contributor of unknown type to the publication
-		Collection<PublicationContributor> contributors = pub.getContributors();
+		Collection<PublicationContributor<?>> contributors = pub.getContributors();
 		contributors.add(strangePublicationContributor);
 		pub.setContributors(contributors);
 		

@@ -156,41 +156,23 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 	
 	@Test
 	public void testCrossrefPubNotFound() throws IOException {
-		IPwPublicationBusService mockBusService = mock(IPwPublicationBusService.class);
-		when(mockBusService.getByIndexId(anyString())).thenReturn(null);
-		PwPublicationMvcService instance = new PwPublicationMvcService(
-			mockBusService,
-			warehouseEndpoint,
-			templateConfiguration,
-			TEST_EMAIL,
-			pubBusService,
-			contentStrategy
-		);
+		when(busService.getByIndexId(anyString())).thenReturn(null);
 		HttpServletResponse response = new MockHttpServletResponse();
-		
-		instance.getPwPublicationCrossRef("non-existent pub", response);
+		mvcService.getPwPublicationCrossRef("non-existent pub", response);
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 	}
 	
 	@Test
 	public void testCrossrefNonUsgsSeriesPubFound() throws IOException {
-		IPwPublicationBusService mockBusService = mock(IPwPublicationBusService.class);
 		PwPublication nonUsgsSeriesPub = new PwPublication();
 		PublicationSubtype subtype = new PublicationSubtype();
 		subtype.setId(PublicationSubtype.USGS_DATA_RELEASE);
 		nonUsgsSeriesPub.setPublicationSubtype(subtype);
-		when(mockBusService.getByIndexId(anyString())).thenReturn(nonUsgsSeriesPub);
-		PwPublicationMvcService instance = new PwPublicationMvcService(
-			mockBusService,
-			warehouseEndpoint,
-			templateConfiguration,
-			TEST_EMAIL,
-			pubBusService,
-			contentStrategy
-		);
+		when(busService.getByIndexId(anyString())).thenReturn(nonUsgsSeriesPub);
+
 		HttpServletResponse response = new MockHttpServletResponse();
 		
-		instance.getPwPublicationCrossRef("existent non-USGS series pub", response);
+		mvcService.getPwPublicationCrossRef("existent non-USGS series pub", response);
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 	}
 	
@@ -209,7 +191,7 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 			TEST_EMAIL,
 			pubBusService,
 			contentStrategy
-		) { 
+		) {
 			/**
 			 * We're testing the conditional logic of the MvcService,
 			 * not the transformation from pub to Crossref XML, so 

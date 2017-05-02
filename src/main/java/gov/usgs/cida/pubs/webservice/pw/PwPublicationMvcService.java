@@ -207,13 +207,14 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		String statement = PwPublicationDao.NS + PwPublicationDao.GET_STREAM;
 		
 		Map<String, Object> filters = ImmutableMap.of(
-			PublicationDao.SUBTYPE_ID, new int[]{PublicationSubtype.USGS_NUMBERED_SERIES, PublicationSubtype.USGS_UNNUMBERED_SERIES}
+			PublicationDao.SUBTYPE_ID, new int[]{PublicationSubtype.USGS_NUMBERED_SERIES, PublicationSubtype.USGS_UNNUMBERED_SERIES},
+			PublicationDao.DOI, true
 		);
 		try (OutputStream outputStream = response.getOutputStream()) {
 			response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
 			response.setContentType(PubsConstants.MEDIA_TYPE_CROSSREF_VALUE);
 			response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION);
-			ITransformer transformer = transformerFactory.getTransformer(statement, outputStream, null);
+			ITransformer transformer = transformerFactory.getTransformer(PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION, outputStream, null);
 			busService.stream(statement, filters, new StreamingResultHandler<>(transformer));
 		}
 		

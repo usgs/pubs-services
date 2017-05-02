@@ -1,6 +1,5 @@
 package gov.usgs.cida.pubs.webservice.pw;
 
-import freemarker.template.Configuration;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,8 +27,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
-import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
@@ -38,12 +35,8 @@ import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.transform.TransformerFactory;
 import gov.usgs.cida.pubs.transform.intfc.ITransformer;
 import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
-import static org.hamcrest.Matchers.anything;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.accept.ContentNegotiationStrategy;
 
 public class PwPublicationMvcServiceTest extends BaseSpringTest {

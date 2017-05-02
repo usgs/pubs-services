@@ -1,6 +1,5 @@
 package gov.usgs.cida.pubs.busservice;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

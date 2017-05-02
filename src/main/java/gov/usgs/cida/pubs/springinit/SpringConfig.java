@@ -152,7 +152,11 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
 			templateConfig.setTemplateLoader(
 				new ClassTemplateLoader(this.getClass().getClassLoader(), "templates")
 			);
+			//we will choose whether TemplateExceptions should halt the program
 			templateConfig.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+			
+			//we will choose whether TemplateExceptions should be logged
+			templateConfig.setLogTemplateExceptions(false);
 		} catch (IOException | TemplateException ex) {
 			throw new RuntimeException("could not create freemarker template configuration", ex);
 		}

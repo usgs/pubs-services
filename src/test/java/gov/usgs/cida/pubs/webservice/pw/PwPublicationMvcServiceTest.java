@@ -35,8 +35,11 @@ import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
+import gov.usgs.cida.pubs.transform.TransformerFactory;
+import gov.usgs.cida.pubs.transform.intfc.ITransformer;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
+import static org.hamcrest.Matchers.anything;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -54,26 +57,28 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 
 	private Map<String, Object> filters;
 	
-	@Mock
-	private Configuration templateConfiguration;
-	
-	@Mock
-	private IPublicationBusService pubBusService;
-	
 	@Autowired
 	private ContentNegotiationStrategy contentStrategy;
 	
-	private final String TEST_EMAIL = "nobody@usgs.gov";
+	@Mock
+	private TransformerFactory transformerFactory;
+	@Mock
+	private TransformerFactory mockTransformerFactory;
+	
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
+		/**
+		 * Since we're testing the conditional logic of the MvcService,
+		 * rather than the transformation from pub to XML, CSV, etc., we
+		 * always return a no-op transformer from the transformer factory
+		 */
+		when(transformerFactory.getTransformer(anyString(), any(), any())).thenReturn(mock(ITransformer.class));
 		mvcService = new PwPublicationMvcService(
 			busService,
 			warehouseEndpoint,
-			templateConfiguration,
-			TEST_EMAIL,
-			pubBusService,
-			contentStrategy
+			contentStrategy,
+			transformerFactory
 		);
 
 		filters = new HashMap<>();
@@ -166,6 +171,9 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 	public void testCrossrefNonUsgsSeriesPubFound() throws IOException {
 		PwPublication nonUsgsSeriesPub = new PwPublication();
 		PublicationSubtype subtype = new PublicationSubtype();
+		
+		//can use any PublicationSubtype other than USGS_NUMBERED_SERIES
+		//and USGS_UNNUMBERED_SERIES
 		subtype.setId(PublicationSubtype.USGS_DATA_RELEASE);
 		nonUsgsSeriesPub.setPublicationSubtype(subtype);
 		when(busService.getByIndexId(anyString())).thenReturn(nonUsgsSeriesPub);
@@ -178,35 +186,19 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 	
 	@Test
 	public void testCrossrefUsgsSeriesPubFound() throws IOException {
-		IPwPublicationBusService mockBusService = mock(IPwPublicationBusService.class);
+		/**
+		 * Since we're testing the conditional logic of the MvcService,
+		 * rather than the retrieval of the correct publications through
+		 * the business service, we return a mock publication
+		 */
 		PwPublication usgsSeriesPub = new PwPublication();
 		PublicationSubtype subtype = new PublicationSubtype();
 		subtype.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
 		usgsSeriesPub.setPublicationSubtype(subtype);
-		when(mockBusService.getByIndexId(anyString())).thenReturn(usgsSeriesPub);
-		PwPublicationMvcService instance = new PwPublicationMvcService(
-			mockBusService,
-			warehouseEndpoint,
-			templateConfiguration,
-			TEST_EMAIL,
-			pubBusService,
-			contentStrategy
-		) {
-			/**
-			 * We're testing the conditional logic of the MvcService,
-			 * not the transformation from pub to Crossref XML, so 
-			 * we set a non-failing status code.
-			 */
-			@Override
-			protected void writeCrossrefForPub(HttpServletResponse response, PwPublication pub) throws IOException {
-				response.setStatus(HttpStatus.OK.value());
-				response.getOutputStream().println("OK");
-				response.getOutputStream().close();
-			}
-		};
-		HttpServletResponse response = new MockHttpServletResponse();
+		when(busService.getByIndexId(anyString())).thenReturn(usgsSeriesPub);
 		
-		instance.getPwPublicationCrossRef("existent non-USGS series pub", response);
+		HttpServletResponse response = new MockHttpServletResponse();
+		mvcService.getPwPublicationCrossRef("existent non-USGS series pub", response);
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
 

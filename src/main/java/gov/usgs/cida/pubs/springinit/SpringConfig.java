@@ -39,7 +39,7 @@ import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
 
 @Configuration
 @ComponentScan(basePackages={"gov.usgs.cida.pubs.webservice", "gov.usgs.cida.pubs.utility", "gov.usgs.cida.pubs.dao",
-		"gov.usgs.cida.pubs.jms", "gov.usgs.cida.pubs.domain", "gov.usgs.cida.pubs.aop", "gov.usgs.cida.pubs.busservice"})
+		"gov.usgs.cida.pubs.jms", "gov.usgs.cida.pubs.domain", "gov.usgs.cida.pubs.aop", "gov.usgs.cida.pubs.busservice", "gov.usgs.cida.pubs.transform"})
 @EnableWebMvc
 @EnableTransactionManagement
 @EnableAspectJAutoProxy

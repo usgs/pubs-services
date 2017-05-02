@@ -20,10 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.collect.ImmutableMap;
-import freemarker.template.Configuration;
 
 import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
@@ -33,17 +31,12 @@ import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.json.View;
-import gov.usgs.cida.pubs.transform.CrossrefTransformer;
-import gov.usgs.cida.pubs.transform.DelimitedTransformer;
-import gov.usgs.cida.pubs.transform.JsonTransformer;
-import gov.usgs.cida.pubs.transform.PublicationColumns;
-import gov.usgs.cida.pubs.transform.XlsxTransformer;
+import gov.usgs.cida.pubs.transform.TransformerFactory;
 import gov.usgs.cida.pubs.transform.intfc.ITransformer;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.webservice.MvcService;
 import io.swagger.annotations.ApiParam;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.List;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.accept.ContentNegotiationStrategy;
@@ -56,29 +49,21 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 
 	private final IPwPublicationBusService busService;
 	private final String warehouseEndpoint;
-	private final Configuration templateConfiguration;
-	private final String depositorEmail;
-	private final IPublicationBusService pubBusService;
-	private ContentNegotiationStrategy contentStrategy;
+	private final ContentNegotiationStrategy contentStrategy;
+	private final TransformerFactory transformerFactory;
 	
 	@Autowired
 	public PwPublicationMvcService(@Qualifier("pwPublicationBusService")
 			final IPwPublicationBusService busService,
 			@Qualifier("warehouseEndpoint")
 			final String warehouseEndpoint,
-			@Qualifier("freeMarkerConfiguration")
-			final Configuration templateConfiguration,
-			@Qualifier("crossRefDepositorEmail")
-			final String depositorEmail,
-			final IPublicationBusService pubBusService,
-			final ContentNegotiationStrategy contentStrategy
+			final ContentNegotiationStrategy contentStrategy,
+			final TransformerFactory transformerFactory
 	) {
 		this.busService = busService;
 		this.warehouseEndpoint = warehouseEndpoint;
-		this.templateConfiguration = templateConfiguration;
-		this.depositorEmail = depositorEmail;
-		this.pubBusService = pubBusService;
 		this.contentStrategy = contentStrategy;
+		this.transformerFactory = transformerFactory;
 	}
 
 	@GetMapping(produces={MediaType.APPLICATION_JSON_VALUE,
@@ -141,33 +126,31 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 
 		try {
 			ITransformer transformer;
+			SearchResults searchResults = null;
 			switch (mimeType) {
 			case PubsConstants.MEDIA_TYPE_TSV_EXTENSION:
-				transformer = new DelimitedTransformer(response.getOutputStream(), PublicationColumns.getMappings(), "\t");
 				statement = statement + PwPublicationDao.GET_STREAM_BY_MAP;
 				response.setContentType(PubsConstants.MEDIA_TYPE_TSV_VALUE);
 				response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + mimeType);
 				break;
 			case PubsConstants.MEDIA_TYPE_XLSX_EXTENSION:
-				transformer = new XlsxTransformer(response.getOutputStream(), PublicationColumns.getMappings());
 				statement = statement + PwPublicationDao.GET_STREAM_BY_MAP;
 				response.setContentType(PubsConstants.MEDIA_TYPE_XLSX_VALUE);
 				response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + mimeType);
 				break;
 			case PubsConstants.MEDIA_TYPE_CSV_EXTENSION:
-				transformer = new DelimitedTransformer(response.getOutputStream(), PublicationColumns.getMappings(), ",");
 				statement = statement + PwPublicationDao.GET_STREAM_BY_MAP;
 				response.setContentType(PubsConstants.MEDIA_TYPE_CSV_VALUE);
 				response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + mimeType);
 				break;
 			default:
 				//Let json be the default
-				transformer = new JsonTransformer(response.getOutputStream(), getCountAndPaging(filters));
+				searchResults = getCountAndPaging(filters);
 				statement = statement + PwPublicationDao.GET_BY_MAP;
 				response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 				break;
 			}
-
+			transformer = transformerFactory.getTransformer(mimeType, response.getOutputStream(), searchResults);
 			busService.stream(statement, filters, new StreamingResultHandler<PwPublication>(transformer));
 
 			transformer.end();
@@ -190,10 +173,14 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	}
 
 	@GetMapping(
-		value="{indexId}"
+		value="{indexId}",
+		produces={
+			MediaType.APPLICATION_JSON_VALUE, 
+			PubsConstants.MEDIA_TYPE_CROSSREF_VALUE
+		}
 	)
 	@JsonView(View.PW.class)
-	public Object getPwPublication(
+	public PwPublication getPwPublication(
 		HttpServletRequest request,
 		HttpServletResponse response,
 		@PathVariable("indexId") String indexId
@@ -226,13 +213,8 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 			response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
 			response.setContentType(PubsConstants.MEDIA_TYPE_CROSSREF_VALUE);
 			response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION);
-			CrossrefTransformer transformer = new CrossrefTransformer(
-				outputStream,
-				templateConfiguration,
-				depositorEmail,
-				pubBusService
-			);
-			busService.stream(statement, filters, new StreamingResultHandler<PwPublication>(transformer));
+			ITransformer transformer = transformerFactory.getTransformer(statement, outputStream, null);
+			busService.stream(statement, filters, new StreamingResultHandler<>(transformer));
 		}
 		
 	}
@@ -287,12 +269,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 			response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
 			response.setContentType(PubsConstants.MEDIA_TYPE_CROSSREF_VALUE);
 			response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION);
-			CrossrefTransformer transformer = new CrossrefTransformer(
-				outputStream,
-				templateConfiguration,
-				depositorEmail,
-				pubBusService
-			);
+			ITransformer transformer = transformerFactory.getTransformer(PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION, outputStream, null);
 			transformer.write(pub);
 			transformer.end();
 		}

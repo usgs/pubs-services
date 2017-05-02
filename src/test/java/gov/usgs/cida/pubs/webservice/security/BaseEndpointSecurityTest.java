@@ -1,6 +1,5 @@
 package gov.usgs.cida.pubs.webservice.security;
 
-import freemarker.template.Configuration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
@@ -11,16 +10,15 @@ import gov.usgs.cida.auth.client.IAuthClient;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
-import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpListPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
-import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.mp.MpList;
+import gov.usgs.cida.pubs.transform.TransformerFactory;
 import gov.usgs.cida.pubs.webservice.ContributorMvcService;
 import gov.usgs.cida.pubs.webservice.LookupMvcService;
 import gov.usgs.cida.pubs.webservice.VersionMvcService;
@@ -92,13 +90,8 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 
 	private MockMvc mockLookup;
 	
-	@Mock
-	private Configuration templateConfiguration;
-	
-	@Mock
-	private IPublicationBusService pubBusService;
-	
-	private final String TEST_EMAIL = "nobody@usgs.gov";
+	@Autowired
+	private TransformerFactory transformerFactory;
 	
 	@Autowired
 	private ContentNegotiationStrategy contentStrategy;
@@ -113,7 +106,7 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 		mpPubMvc = new MpPublicationMvcService(busSvcForPub, mpPubBusService);
 		mockMpPub = MockMvcBuilders.standaloneSetup(mpPubMvc).addFilters(springSecurityFilter).build();
 
-		pwPubMvc = new PwPublicationMvcService(pwPubBusService, warehouseEndpoint, templateConfiguration, TEST_EMAIL, pubBusService, contentStrategy);
+		pwPubMvc = new PwPublicationMvcService(pwPubBusService, warehouseEndpoint, contentStrategy, transformerFactory);
 		mockPwPub = MockMvcBuilders.standaloneSetup(pwPubMvc).addFilters(springSecurityFilter).build();
 		pwPubRssMvc = new PwPublicationRssMvcService(pwPubBusService, warehouseEndpoint);
 		mockPwPubRss = MockMvcBuilders.standaloneSetup(pwPubRssMvc).addFilters(springSecurityFilter).build();

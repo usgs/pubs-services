@@ -11,7 +11,6 @@ import com.google.common.collect.ImmutableMap;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.Publication;
@@ -27,7 +26,7 @@ import java.util.UUID;
 import org.apache.commons.io.IOUtils;
 
 public class CrossrefTransformer extends Transformer {
-	private static final Logger LOG = LoggerFactory.getLogger(JsonTransformer.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CrossrefTransformer.class);
 	
 	protected Configuration templateConfiguration;
 	protected OutputStreamWriter strWriter;
@@ -87,7 +86,7 @@ public class CrossrefTransformer extends Transformer {
 	@Override
 	public void write(Object result) throws IOException {
 		try {
-			Publication pub = (Publication)result;
+			Publication<?> pub = (Publication)result;
 			LOG.trace("Writing crossref report entry for publication with indexId = '" + pub.getIndexId() + "'");
 
 			Map<String, Object> model = new HashMap<>();
@@ -120,7 +119,6 @@ public class CrossrefTransformer extends Transformer {
 			//add error message as a comment to the xml document
 			strWriter.append("<!-- " + message + " -->");
 		}
-		
 	}
 
 	/** output the closing tags and close stuff as appropriate. */

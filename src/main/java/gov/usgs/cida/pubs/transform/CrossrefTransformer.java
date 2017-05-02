@@ -16,13 +16,17 @@ import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 import org.apache.commons.io.IOUtils;
 
 public class CrossrefTransformer extends Transformer {
@@ -75,7 +79,11 @@ public class CrossrefTransformer extends Transformer {
 	@Override
 	protected void writeHeader(Map<?,?> model) {
 		LOG.trace("writing crossref header");
-		writeModelToTemplate(model, "crossref/header.xml");
+		try{
+			writeModelToTemplate(model, "crossref/header.xml");
+		} catch (IOException | TemplateException e) {
+			throw new RuntimeException("Error writing header", e);
+		}
 	}
 
 	@Override
@@ -105,19 +113,23 @@ public class CrossrefTransformer extends Transformer {
 			model.put("editorKey", ContributorType.EDITORS);
 			model.put("compilerKey", ContributorType.COMPILERS);
 			writeModelToTemplate(model, "crossref/body.xml");
-		} catch (Exception e) {
-			//since publications are of varying quality, we need to
-			//be very acommodating of errors.
+		} catch (TemplateException | IOException e) {
+			/**
+			 * Since publications are of varying quality, we need to
+			 * omit erroring publications and continue on to the next
+			 * publication. We log a valid xml comment with minimal 
+			 * information on erroring pubs
+			 */
 			String message = "";
 			if(result instanceof Publication){
-				message = "Problematic Publication Index Id: '" 
-					+ ((Publication) result).getIndexId() + "'. ";
+				message = "Excluded Problematic Publication with Index Id: " 
+					+ ((Publication) result).getIndexId();
 			}
 			LOG.error("Error transforming object into Crossref XML. "
 				+ message, e);
 			
 			//add error message as a comment to the xml document
-			strWriter.append("<!-- " + message + " -->");
+			strWriter.append("<!-- " + message + " -->\n");
 		}
 	}
 
@@ -128,6 +140,8 @@ public class CrossrefTransformer extends Transformer {
 		Map<String, Object> model = new HashMap<>();
 		try{
 			writeModelToTemplate(model, "crossref/footer.xml");
+		} catch (IOException | TemplateException e) {
+			throw new RuntimeException("Error writing footer", e);
 		} finally {
 			IOUtils.closeQuietly(strWriter);
 		}
@@ -138,17 +152,31 @@ public class CrossrefTransformer extends Transformer {
 	 * @param model
 	 * @param templatePath a classpath relative path
 	 */
-	protected void writeModelToTemplate(Map<?, ?> model, String templatePath){
+	protected void writeModelToTemplate(Map<?, ?> model, String templatePath) throws IOException, TemplateException{
 		Template t;
 		try {
 			t = this.templateConfiguration.getTemplate(templatePath);
 		} catch (IOException ex) {
 			throw new RuntimeException("Error loading template", ex);
 		}
-		try {
-			t.process(model, this.strWriter);
-		} catch (TemplateException|IOException ex) {
-			throw new RuntimeException("Error processing template", ex);
+		/**
+		 * We only want to include reports that are successfully
+		 * transformed into crossref in the output. Thankfully, each
+		 * report is small, so we can write each to its own in-memory 
+		 * buffer. If the transformation is successful, then the result
+		 * is written to the main output. If not, the caller is 
+		 * responsible for handling the error.
+		*/
+		ByteArrayInputStream bais = null;
+		try(
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			OutputStreamWriter reportWriter = new OutputStreamWriter(baos)
+		) {
+			t.process(model, reportWriter);
+			bais = new ByteArrayInputStream(baos.toByteArray());
+			IOUtils.copy(bais, strWriter);
+		} finally {
+			IOUtils.closeQuietly(bais);
 		}
 	}
 	

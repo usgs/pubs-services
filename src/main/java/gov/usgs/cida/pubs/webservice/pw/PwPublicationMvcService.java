@@ -188,10 +188,14 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	}
 
 	@GetMapping(
-		value="{indexId}"
+		value="{indexId}",
+		produces={
+			MediaType.APPLICATION_JSON_VALUE, 
+			PubsConstants.MEDIA_TYPE_CROSSREF_VALUE
+		}
 	)
 	@JsonView(View.PW.class)
-	public Object getPwPublication(
+	public PwPublication getPwPublication(
 		HttpServletRequest request,
 		HttpServletResponse response,
 		@PathVariable("indexId") String indexId

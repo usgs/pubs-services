@@ -27,7 +27,7 @@ import java.util.UUID;
 import org.apache.commons.io.IOUtils;
 
 public class CrossrefTransformer extends Transformer {
-	private static final Logger LOG = LoggerFactory.getLogger(JsonTransformer.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CrossrefTransformer.class);
 	
 	protected Configuration templateConfiguration;
 	protected OutputStreamWriter strWriter;

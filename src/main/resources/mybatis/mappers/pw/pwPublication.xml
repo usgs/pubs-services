@@ -187,6 +187,13 @@
 		</where>
 	</select>
 
+	<select id="getStream" parameterType="map" resultMap="result" fetchSize="100">
+		<include refid="baseSelectPublic"/>
+		<where>
+			<include refid="filters"/>
+		</where>
+	</select>
+
 	<select id="getStreamByMap" parameterType="map" resultType="java.util.LinkedHashMap" fetchSize="100">
 		select <include refid="base.pagingHint"/> 
 		       #{url,jdbcType=VARCHAR} || pub.index_id warehouse_url,

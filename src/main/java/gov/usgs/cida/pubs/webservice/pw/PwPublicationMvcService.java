@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.google.common.collect.ImmutableMap;
 import freemarker.template.Configuration;
 
 import gov.usgs.cida.pubs.PubsConstants;
@@ -42,6 +43,7 @@ import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.webservice.MvcService;
 import io.swagger.annotations.ApiParam;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.List;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.accept.ContentNegotiationStrategy;
@@ -205,6 +207,34 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		} else {
 			return getPwPublicationJSON(indexId, response);
 		}
+	}
+	/**
+	 * Get all USGS Numbered and Unnumbered Series as CrossrefXML
+	 * @param request
+	 * @param response
+	 * @throws IOException 
+	 */
+	@RequestMapping("/usgs-series")
+	public void getUsgsSeriesPublications(HttpServletRequest request,
+		HttpServletResponse response) throws IOException{
+		String statement = PwPublicationDao.NS + PwPublicationDao.GET_STREAM;
+		
+		Map<String, Object> filters = ImmutableMap.of(
+			PublicationDao.SUBTYPE_ID, new int[]{PublicationSubtype.USGS_NUMBERED_SERIES, PublicationSubtype.USGS_UNNUMBERED_SERIES}
+		);
+		try (OutputStream outputStream = response.getOutputStream()) {
+			response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
+			response.setContentType(PubsConstants.MEDIA_TYPE_CROSSREF_VALUE);
+			response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION);
+			CrossrefTransformer transformer = new CrossrefTransformer(
+				outputStream,
+				templateConfiguration,
+				depositorEmail,
+				pubBusService
+			);
+			busService.stream(statement, filters, new StreamingResultHandler<PwPublication>(transformer));
+		}
+		
 	}
 	
 	/**

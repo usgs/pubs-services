@@ -42,6 +42,7 @@ public class PublicationDao extends BaseDao<Publication<?>> implements IPublicat
 	public static final String SERIES_NAME = "seriesName";
 	public static final String START_YEAR = "startYear";
 	public static final String SUBTYPE_NAME = "subtypeName";
+	public static final String SUBTYPE_ID = "subtypeId";
 	public static final String TITLE = "title";
 	public static final String TYPE_NAME = "typeName";
 	public static final String YEAR = "year";

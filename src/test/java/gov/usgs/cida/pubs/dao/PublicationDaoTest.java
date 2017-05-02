@@ -16,6 +16,7 @@ import org.junit.experimental.categories.Category;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
+import com.google.common.collect.ImmutableMap;
 
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
@@ -460,5 +461,28 @@ public class PublicationDaoTest extends BaseSpringTest {
 
 		//This only checks that the final query is syntactically correct, not that it is logically correct!
 		pubs = Publication.getPublicationDao().getByMap(buildAllParms());
+	}
+	@Test
+	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testData/publicationType.xml"),
+		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+		@DatabaseSetup("classpath:/testData/dataset.xml")
+	})
+	public void selectByPublicationSubtype(){
+		//get all of a known subtype ID
+		Map<String, Object> filters = ImmutableMap.of(
+			PublicationDao.SUBTYPE_ID, new int[]{5}
+		);
+		List<Publication<?>> pubs = Publication.getPublicationDao().getByMap(filters);
+		assertEquals(3, pubs.size());
+		
+		//verify that none of an unknown subtype ID are returned
+		filters = ImmutableMap.of(
+			PublicationDao.SUBTYPE_ID, new int[]{-999}
+		);
+		pubs = Publication.getPublicationDao().getByMap(filters);
+		assertEquals(0, pubs.size());
+		
 	}
 }

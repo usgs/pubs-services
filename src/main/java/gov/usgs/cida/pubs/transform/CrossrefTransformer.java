@@ -86,25 +86,41 @@ public class CrossrefTransformer extends Transformer {
 
 	@Override
 	public void write(Object result) throws IOException {
-		Publication pub = (Publication)result;
-		LOG.trace("Writing crossref report entry for publication with indexId = '" + pub.getIndexId() + "'");
+		try {
+			Publication pub = (Publication)result;
+			LOG.trace("Writing crossref report entry for publication with indexId = '" + pub.getIndexId() + "'");
+
+			Map<String, Object> model = new HashMap<>();
+			model.put("pub", pub);
+
+			boolean isNumberedSeries = PubsUtilities.isUsgsNumberedSeries(pub.getPublicationSubtype());
+			model.put("isNumberedSeries", isNumberedSeries);
+
+			String indexPage = pubBusService.getIndexPage(pub);
+			model.put("indexPage", indexPage);
+
+			List<PublicationContributor<?>> contributors = this.getContributors(pub);
+			model.put("pubContributors", contributors);
+
+			model.put("authorKey", ContributorType.AUTHORS);
+			model.put("editorKey", ContributorType.EDITORS);
+			model.put("compilerKey", ContributorType.COMPILERS);
+			writeModelToTemplate(model, "crossref/body.xml");
+		} catch (Exception e) {
+			//since publications are of varying quality, we need to
+			//be very acommodating of errors.
+			String message = "";
+			if(result instanceof Publication){
+				message = "Problematic Publication Index Id: '" 
+					+ ((Publication) result).getIndexId() + "'. ";
+			}
+			LOG.error("Error transforming object into Crossref XML. "
+				+ message, e);
+			
+			//add error message as a comment to the xml document
+			strWriter.append("<!-- " + message + " -->");
+		}
 		
-		Map<String, Object> model = new HashMap<>();
-		model.put("pub", pub);
-		
-		boolean isNumberedSeries = PubsUtilities.isUsgsNumberedSeries(pub.getPublicationSubtype());
-		model.put("isNumberedSeries", isNumberedSeries);
-		
-		String indexPage = pubBusService.getIndexPage(pub);
-		model.put("indexPage", indexPage);
-		
-		List<PublicationContributor<?>> contributors = this.getContributors(pub);
-		model.put("pubContributors", contributors);
-		
-		model.put("authorKey", ContributorType.AUTHORS);
-		model.put("editorKey", ContributorType.EDITORS);
-		model.put("compilerKey", ContributorType.COMPILERS);
-		writeModelToTemplate(model, "crossref/body.xml");
 	}
 
 	/** output the closing tags and close stuff as appropriate. */

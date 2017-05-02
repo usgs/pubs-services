@@ -31,6 +31,7 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	public static final String NS = "pwPublication";
 	private static final String GET_BY_INDEX_ID = ".getByIndexId";
 	private static final String GET_BY_IPDS_ID = ".getByIpdsId";
+	public static final String GET_STREAM = ".getStream";
 	public static final String GET_STREAM_BY_MAP = ".getStreamByMap";
 
 	public static final String CHORUS = "chorus";

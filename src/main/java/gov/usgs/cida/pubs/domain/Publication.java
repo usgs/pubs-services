@@ -92,10 +92,10 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	@Length(min=0, max=255)
 	private String subchapterNumber;
 
-        @JsonProperty("displayTitle")
-        @JsonView(View.PW.class)
-        @Length(min=1, max=2000)
-        private String displayTitle;
+	@JsonProperty("displayTitle")
+	@JsonView(View.PW.class)
+	@Length(min=1, max=2000)
+	private String displayTitle;
         
 	@JsonProperty("title")
 	@JsonView(View.PW.class)

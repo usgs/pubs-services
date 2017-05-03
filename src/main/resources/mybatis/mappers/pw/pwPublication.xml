@@ -15,6 +15,11 @@
 		<result property="chorus.pblcllyAccessDate" column="chrs_pblclly_access_date"/>
         <collection property="stores" column="publication_id" select="pwStore.getByPublication"/>
 	</resultMap>
+	
+	<resultMap id="eagerResult" type="PwPublication" extends="result">
+		<collection property="contributors" column="publication_id" select="pwPublicationContributor.getByPublication" fetchType="eager"/>
+		<collection property="links" column="publication_id" select="pwPublicationLink.getByPublication" fetchType="eager"/>
+	</resultMap>
 
 	<sql id="cols">
 		<include refid="publication.cols"/>,
@@ -187,7 +192,7 @@
 		</where>
 	</select>
 
-	<select id="getStream" parameterType="map" resultMap="result" fetchSize="100">
+	<select id="getStreamWithEagerLoading" parameterType="map" resultMap="eagerResult" fetchSize="1000">
 		<include refid="baseSelectPublic"/>
 		<where>
 			<include refid="filters"/>

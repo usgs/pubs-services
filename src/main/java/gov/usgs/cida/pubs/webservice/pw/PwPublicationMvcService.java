@@ -204,7 +204,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	@RequestMapping("/usgs-series")
 	public void getUsgsSeriesPublications(HttpServletRequest request,
 		HttpServletResponse response) throws IOException{
-		String statement = PwPublicationDao.NS + PwPublicationDao.GET_STREAM;
+		String statement = PwPublicationDao.NS + PwPublicationDao.GET_STREAM_WITH_EAGER_LOADING;
 		
 		Map<String, Object> filters = ImmutableMap.of(
 			PublicationDao.SUBTYPE_ID, new int[]{PublicationSubtype.USGS_NUMBERED_SERIES, PublicationSubtype.USGS_UNNUMBERED_SERIES},

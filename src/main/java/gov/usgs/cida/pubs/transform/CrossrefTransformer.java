@@ -36,7 +36,8 @@ public class CrossrefTransformer extends Transformer {
 	protected OutputStreamWriter strWriter;
 	protected String crossRefDepositorEmail;
 	protected IPublicationBusService pubBusService;
-
+	protected final String AUTHOR_KEY;
+	protected final String EDITOR_KEY;
 	/**
 	 * 
 	 * @param target
@@ -55,6 +56,10 @@ public class CrossrefTransformer extends Transformer {
 		this.crossRefDepositorEmail = crossRefDepositorEmail;
 		this.strWriter = new OutputStreamWriter(target);
 		this.pubBusService = pubBusService;
+		//these values from the database are unlikely to change
+		//during the lifetime of the object
+		AUTHOR_KEY = PubsUtilities.getAuthorKey();
+		EDITOR_KEY = PubsUtilities.getEditorKey();
 		init();
 	}
 	protected String getTimeStamp(){
@@ -66,6 +71,7 @@ public class CrossrefTransformer extends Transformer {
 	}
 	@Override
 	protected void init() {
+		
 		String timestamp = getTimeStamp();
 		String batchId = getBatchId();
 		Map<String, String> model = ImmutableMap.of(
@@ -186,13 +192,11 @@ public class CrossrefTransformer extends Transformer {
 		//And that the contributor is valid.
 		if (null != pub && null != pub.getContributors() && !pub.getContributors().isEmpty()) {
 			Map<String, List<PublicationContributor<?>>> contributors = pub.getContributorsToMap();
-			String authorKey = PubsUtilities.getAuthorKey();
-			List<PublicationContributor<?>> authors = contributors.get(authorKey);
+			List<PublicationContributor<?>> authors = contributors.get(AUTHOR_KEY);
 			if (null != authors && !authors.isEmpty()) {
 				rtn.addAll(authors);
 			}
-			String editorKey = PubsUtilities.getEditorKey();
-			List<PublicationContributor<?>> editors = contributors.get(editorKey);
+			List<PublicationContributor<?>> editors = contributors.get(EDITOR_KEY);
 			if (null != editors && !editors.isEmpty()) {
 				rtn.addAll(editors);
 			}

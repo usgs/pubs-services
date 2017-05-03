@@ -54,11 +54,11 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	
 	@Autowired
 	public PwPublicationMvcService(@Qualifier("pwPublicationBusService")
-			final IPwPublicationBusService busService,
+			IPwPublicationBusService busService,
 			@Qualifier("warehouseEndpoint")
-			final String warehouseEndpoint,
-			final ContentNegotiationStrategy contentStrategy,
-			final TransformerFactory transformerFactory
+			String warehouseEndpoint,
+			ContentNegotiationStrategy contentStrategy,
+			TransformerFactory transformerFactory
 	) {
 		this.busService = busService;
 		this.warehouseEndpoint = warehouseEndpoint;

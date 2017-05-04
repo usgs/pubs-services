@@ -11,29 +11,31 @@ import com.google.common.collect.ImmutableMap;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 import java.io.OutputStreamWriter;
-import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
 import org.apache.commons.io.IOUtils;
 
 public class CrossrefTransformer extends Transformer {
 	private static final Logger LOG = LoggerFactory.getLogger(CrossrefTransformer.class);
 	
 	protected Configuration templateConfiguration;
-	protected OutputStreamWriter strWriter;
+	protected OutputStreamWriter streamWriter;
+	protected BufferedWriter bufferedWriter;
 	protected String crossRefDepositorEmail;
 	protected IPublicationBusService pubBusService;
 	protected final String AUTHOR_KEY;
@@ -54,7 +56,13 @@ public class CrossrefTransformer extends Transformer {
 		super(target, null);
 		this.templateConfiguration = templateConfiguration;
 		this.crossRefDepositorEmail = crossRefDepositorEmail;
-		this.strWriter = new OutputStreamWriter(target);
+		try {
+			this.streamWriter = new OutputStreamWriter(target, PubsConstants.DEFAULT_ENCODING);
+		} catch (UnsupportedEncodingException ex) {
+			//we can't do anything about this
+			throw new RuntimeException(ex);
+		}
+		this.bufferedWriter = new BufferedWriter(streamWriter);
 		this.pubBusService = pubBusService;
 		//these values from the database are unlikely to change
 		//during the lifetime of the object
@@ -86,7 +94,7 @@ public class CrossrefTransformer extends Transformer {
 	protected void writeHeader(Map<?,?> model) {
 		LOG.trace("writing crossref header");
 		try{
-			writeModelToTemplate(model, "crossref/header.xml");
+			writeModelToTemplate(model, "crossref/header.ftlx");
 		} catch (IOException | TemplateException e) {
 			throw new RuntimeException("Error writing header", e);
 		}
@@ -118,7 +126,7 @@ public class CrossrefTransformer extends Transformer {
 			model.put("authorKey", ContributorType.AUTHORS);
 			model.put("editorKey", ContributorType.EDITORS);
 			model.put("compilerKey", ContributorType.COMPILERS);
-			writeModelToTemplate(model, "crossref/body.xml");
+			writeModelToTemplate(model, "crossref/body.ftlx");
 		} catch (TemplateException | IOException e) {
 			/**
 			 * Since publications are of varying quality, we need to
@@ -135,7 +143,7 @@ public class CrossrefTransformer extends Transformer {
 				+ message, e);
 			
 			//add error message as a comment to the xml document
-			strWriter.append("<!-- " + message + " -->\n");
+			bufferedWriter.append("<!-- " + message + " -->\n");
 		}
 	}
 
@@ -145,11 +153,13 @@ public class CrossrefTransformer extends Transformer {
 		LOG.trace("writing crossref footer");
 		Map<String, Object> model = new HashMap<>();
 		try{
-			writeModelToTemplate(model, "crossref/footer.xml");
-		} catch (IOException | TemplateException e) {
+			writeModelToTemplate(model, "crossref/footer.ftlx");
+			bufferedWriter.flush();
+		} catch (IOException | TemplateException e ) {
 			throw new RuntimeException("Error writing footer", e);
 		} finally {
-			IOUtils.closeQuietly(strWriter);
+			IOUtils.closeQuietly(bufferedWriter);
+			IOUtils.closeQuietly(streamWriter);
 		}
 	}
 	
@@ -167,7 +177,7 @@ public class CrossrefTransformer extends Transformer {
 		}
 		/**
 		 * We only want to include reports that are successfully
-		 * transformed into crossref in the output. Thankfully, each
+		 * transformed into Crossref in the output. Thankfully, each
 		 * report is small, so we can write each to its own in-memory 
 		 * buffer. If the transformation is successful, then the result
 		 * is written to the main output. If not, the caller is 
@@ -180,7 +190,7 @@ public class CrossrefTransformer extends Transformer {
 		) {
 			t.process(model, reportWriter);
 			bais = new ByteArrayInputStream(baos.toByteArray());
-			IOUtils.copy(bais, strWriter);
+			IOUtils.copy(bais, bufferedWriter);
 		} finally {
 			IOUtils.closeQuietly(bais);
 		}

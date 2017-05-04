@@ -216,6 +216,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 			response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION);
 			ITransformer transformer = transformerFactory.getTransformer(PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION, outputStream, null);
 			busService.stream(statement, filters, new StreamingResultHandler<>(transformer));
+			transformer.end();
 		}
 		
 	}

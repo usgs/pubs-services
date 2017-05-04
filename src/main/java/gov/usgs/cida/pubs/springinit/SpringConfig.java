@@ -155,6 +155,9 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
 			//we will choose whether TemplateExceptions should halt the program
 			templateConfig.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 			
+			//Associate ".ftlx" file extensions with XML auto-escaping,
+			//and ".ftlh" extensions with HTML auto-escaping
+			templateConfig.setRecognizeStandardFileExtensions(true);
 			//we will choose whether TemplateExceptions should be logged
 			templateConfig.setLogTemplateExceptions(false);
 		} catch (IOException | TemplateException ex) {

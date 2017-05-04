@@ -106,9 +106,13 @@ public class IpdsProcess implements IIpdsProcess {
 				}
 				getStringBuilder().append(" Process State: " + newMpPub.getIpdsReviewProcessState() + " DOI: " + newMpPub.getDoi());
 			}
-			txnMgr.commit(txStatus);
+			if (!txStatus.isRollbackOnly()) {
+				txnMgr.commit(txStatus);
+			} else {
+				throw new RuntimeException("Transaction set to rollbackOnly!!");
+			}
 		} catch (Exception e) {
-			String msg = "ERROR: Trouble processing pub: ";
+			String msg = "ERROR: Trouble processing pub: " + ipdsPub.get(IpdsMessageLog.IPNUMBER) +  " - ";
 			LOG.info(msg, e);
 			getStringBuilder().append("\n\t").append(msg).append(e.getMessage());
 			setErrors(getErrors() + 1);

@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 public class CrossrefTransformer extends Transformer {
 	private static final Logger LOG = LoggerFactory.getLogger(CrossrefTransformer.class);
@@ -111,42 +112,67 @@ public class CrossrefTransformer extends Transformer {
 			Publication<?> pub = (Publication)result;
 			LOG.trace("Writing crossref report entry for publication with indexId = '" + pub.getIndexId() + "'");
 
-			Map<String, Object> model = new HashMap<>();
-			model.put("pub", pub);
-
-			boolean isNumberedSeries = PubsUtilities.isUsgsNumberedSeries(pub.getPublicationSubtype());
-			model.put("isNumberedSeries", isNumberedSeries);
-
-			String indexPage = pubBusService.getIndexPage(pub);
-			model.put("indexPage", indexPage);
-
 			List<PublicationContributor<?>> contributors = this.getContributors(pub);
-			model.put("pubContributors", contributors);
+			if (contributors.isEmpty()) {
+				String message = getExcludedErrorMessage(result);
+				LOG.error(message + ". Publication had no contributors.");
+				writeComment(message);
+			} else {
+				Map<String, Object> model = new HashMap<>();
+				model.put("pub", pub);
+				boolean isNumberedSeries = PubsUtilities.isUsgsNumberedSeries(pub.getPublicationSubtype());
+				model.put("isNumberedSeries", isNumberedSeries);
 
-			model.put("authorKey", ContributorType.AUTHORS);
-			model.put("editorKey", ContributorType.EDITORS);
-			model.put("compilerKey", ContributorType.COMPILERS);
-			writeModelToTemplate(model, "crossref/body.ftlx");
+				String indexPage = pubBusService.getIndexPage(pub);
+				model.put("indexPage", indexPage);
+
+				model.put("pubContributors", contributors);
+
+				model.put("authorKey", ContributorType.AUTHORS);
+				model.put("editorKey", ContributorType.EDITORS);
+				model.put("compilerKey", ContributorType.COMPILERS);
+				writeModelToTemplate(model, "crossref/body.ftlx");
+			}
 		} catch (TemplateException | IOException e) {
 			/**
-			 * Since publications are of varying quality, we need to
-			 * omit erroring publications and continue on to the next
-			 * publication. We log a valid xml comment with minimal 
-			 * information on erroring pubs
+			 * Since publications are of varying quality, we omit 
+			 * erroneous publications and continue on to the next
+			 * publication.
 			 */
-			String message = "";
-			if(result instanceof Publication){
-				message = "Excluded Problematic Publication with Index Id: " 
-					+ ((Publication) result).getIndexId();
-			}
+			String message = getExcludedErrorMessage(result);
 			LOG.error("Error transforming object into Crossref XML. "
 				+ message, e);
-			
+
 			//add error message as a comment to the xml document
-			bufferedWriter.append("<!-- " + message + " -->\n");
+			writeComment(message);
 		}
 	}
-
+	
+	/**
+	 * Writes the given string as an XML comment
+	 * @param message
+	 * @throws IOException 
+	 */
+	protected void writeComment(String message) throws IOException {
+		//add error message as a comment to the xml document
+		bufferedWriter.append("<!-- " + StringEscapeUtils.escapeXml11(message) + " -->\n");
+	}
+	
+	/**
+	 * 
+	 * @param result
+	 * @return a generic message if 'result' is not a pub, else return a
+	 * message that helps identify a problematic pub.
+	 */
+	protected String getExcludedErrorMessage(Object result) {
+		String message = "Excluded Problematic Publication";
+		if (result instanceof Publication) {
+			message += " with Index Id: " 
+				+ ((Publication) result).getIndexId();
+		}
+		return message;
+	}
+	
 	/** output the closing tags and close stuff as appropriate. */
 	@Override
 	public void end() {

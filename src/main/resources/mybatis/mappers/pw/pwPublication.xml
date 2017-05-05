@@ -192,7 +192,7 @@
 		</where>
 	</select>
 
-	<select id="getStreamWithEagerLoading" parameterType="map" resultMap="eagerResult" fetchSize="1000">
+	<select id="getStreamWithEagerLoading" parameterType="map" resultMap="eagerResult" fetchSize="100">
 		<include refid="baseSelectPublic"/>
 		<where>
 			<include refid="filters"/>

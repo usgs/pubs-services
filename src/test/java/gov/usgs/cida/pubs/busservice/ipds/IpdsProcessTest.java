@@ -671,7 +671,7 @@ public class IpdsProcessTest extends BaseSpringTest {
 
 		//Error condition - should rollback
 		ipdsProcess.processIpdsPublication(ProcessType.SPN_PRODUCTION, pm);
-		assertEquals("IP-123:\n\tERROR: Trouble processing pub: test\n\n", IpdsProcess.getStringBuilder().toString());
+		assertEquals("IP-123:\n\tERROR: Trouble processing pub: IP-123 - test\n\n", IpdsProcess.getStringBuilder().toString());
 		assertEquals(1, IpdsProcess.getErrors().intValue());
 		assertEquals(0, IpdsProcess.getAdditions().intValue());
 		verify(transactionManager).getTransaction(any(TransactionDefinition.class));
@@ -706,7 +706,7 @@ public class IpdsProcessTest extends BaseSpringTest {
 
 	@Test
 	public void processLogTest() {
-		String expectedMsg = "Summary:\n\tTotal Entries: 2\n\tPublications Added: 0\n\tErrors Encountered: 2\n\nnull:\n\tERROR: Trouble processing pub: test\n\nnull:\n\tERROR: Trouble processing pub: test\n\n";
+		String expectedMsg = "Summary:\n\tTotal Entries: 2\n\tPublications Added: 0\n\tErrors Encountered: 2\n\nnull:\n\tERROR: Trouble processing pub: null - test\n\nnull:\n\tERROR: Trouble processing pub: null - test\n\n";
 		when(binder.bindPublication(any(PubMap.class))).thenThrow(new RuntimeException("test"));
 		when(ipdsMessageLogDao.getFromIpds(1)).thenReturn(getPubMapList());
 		assertEquals(expectedMsg, ipdsProcess.processLog(ProcessType.COST_CENTER, 1));

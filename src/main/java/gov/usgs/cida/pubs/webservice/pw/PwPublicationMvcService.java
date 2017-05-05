@@ -175,7 +175,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		value="{indexId}",
 		produces={
 			MediaType.APPLICATION_JSON_VALUE, 
-			PubsConstants.MEDIA_TYPE_CROSSREF_VALUE
+			MediaType.APPLICATION_XML_VALUE
 		}
 	)
 	@JsonView(View.PW.class)
@@ -202,7 +202,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	 */
 	protected boolean isCrossRefRequest(List<MediaType> mediaTypes){
 		boolean isCrossRefRequest = false;
-		if (null != mediaTypes && mediaTypes.contains(PubsConstants.MEDIA_TYPE_CROSSREF)) {
+		if (null != mediaTypes && mediaTypes.contains(MediaType.APPLICATION_XML)) {
 			isCrossRefRequest = true;
 		}
 		return isCrossRefRequest;
@@ -243,9 +243,9 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	protected void writeCrossrefForPub(HttpServletResponse response, PwPublication pub) throws IOException {
 		try (OutputStream outputStream = response.getOutputStream()) {
 			response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
-			response.setContentType(PubsConstants.MEDIA_TYPE_CROSSREF_VALUE);
-			response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION);
-			ITransformer transformer = transformerFactory.getTransformer(PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION, outputStream, null);
+			response.setContentType(MediaType.APPLICATION_XML_VALUE);
+			response.setHeader(MIME.CONTENT_DISPOSITION, "inline");
+			ITransformer transformer = transformerFactory.getTransformer(PubsConstants.MEDIA_TYPE_XML_EXTENSION, outputStream, null);
 			transformer.write(pub);
 			transformer.end();
 		}

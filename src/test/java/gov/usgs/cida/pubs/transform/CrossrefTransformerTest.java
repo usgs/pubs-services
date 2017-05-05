@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.transform;
 
 import freemarker.template.Configuration;
 import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,6 +33,7 @@ import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationTest;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 public class CrossrefTransformerTest extends BaseSpringTest {
 	@Autowired
@@ -185,10 +187,54 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 	@Test
 	public void testNoPubs() throws UnsupportedEncodingException, ParserConfigurationException, SAXException, IOException {
 		instance.end();
-		String output = new String(target.toByteArray(), "UTF-8");
+		String output = new String(target.toByteArray(), PubsConstants.DEFAULT_ENCODING);
 		assertNotNull(output);
 		assertTrue(0 < output.length());
 		assertWellFormed(output);
+	}
+	
+	@Test
+	public void testPubWithoutContributors() throws IOException, UnsupportedEncodingException {
+		Publication<?> pub = buildUnNumberedSeriesPub();
+		pub.setContributors(Collections.EMPTY_LIST);
+		boolean success = instance.writeResult(pub);
+		assertFalse("A publication should not have an entry written if it has no contributors", success);
+		
+		//we expect the rest of the document to get written, even if
+		//one publication can't be successfully written
+		
+		instance.end();
+		String output = new String(target.toByteArray(), PubsConstants.DEFAULT_ENCODING);
+		
+		assertNotNull(output);
+		assertTrue(0 < output.length());
+		assertWellFormed(output);
+		
+		assertTrue("There should be a minimal comment about the missing publication in the output.",
+			output.contains(instance.wrapInComment(instance.getExcludedErrorMessage(pub)))
+		);
+	}
+	
+	@Test
+	public void testPubWithoutSeriesTitle() throws IOException, UnsupportedEncodingException {
+		Publication<?> pub = buildUnNumberedSeriesPub();
+		pub.setSeriesTitle(null);
+		boolean success = instance.writeResult(pub);
+		assertFalse("A publication should not have an entry written if it has no associated series", success);
+		
+		//we expect the rest of the document to get written, even if
+		//one publication can't be successfully written
+		
+		instance.end();
+		String output = new String(target.toByteArray(), PubsConstants.DEFAULT_ENCODING);
+		
+		assertNotNull(output);
+		assertTrue(0 < output.length());
+		assertWellFormed(output);
+		
+		assertTrue("There should be a minimal comment about the missing publication in the output.",
+			output.contains(instance.wrapInComment(instance.getExcludedErrorMessage(pub)))
+		);
 	}
 	
 	/**
@@ -197,9 +243,10 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 	@Test
 	public void testOneUnNumberedSeriesPub() throws IOException {
 		Publication<?> pub = buildUnNumberedSeriesPub();
-		instance.write(pub);
+		boolean success = instance.writeResult(pub);
+		assertTrue("should be able to write a valid publication", success);
 		instance.end();
-		String output = new String(target.toByteArray(), "UTF-8");
+		String output = new String(target.toByteArray(), PubsConstants.DEFAULT_ENCODING);
 		assertNotNull(output);
 		assertTrue(0 < output.length());
 		assertWellFormed(output);
@@ -214,9 +261,10 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 	@Test
 	public void testOneNumberedSeriesPub() throws IOException {
 		Publication<?> pub = buildNumberedSeriesPub();
-		instance.write(pub);
+		boolean success = instance.writeResult(pub);
+		assertTrue("should be able to write a valid publication", success);
 		instance.end();
-		String output = new String(target.toByteArray(), "UTF-8");
+		String output = new String(target.toByteArray(), PubsConstants.DEFAULT_ENCODING);
 		assertNotNull(output);
 		assertTrue(0 < output.length());
 		assertWellFormed(output);
@@ -245,9 +293,11 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 		contributors.add(strangePublicationContributor);
 		pub.setContributors(contributors);
 		
-		instance.write(pub);
+		boolean success = instance.writeResult(pub);
+		assertTrue("should be able to write a valid publication, even if one of its contributors is of an unknown type", success);
+		
 		instance.end();
-		String output = new String(target.toByteArray(), "UTF-8");
+		String output = new String(target.toByteArray(), PubsConstants.DEFAULT_ENCODING);
 		assertNotNull(output);
 		assertTrue(0 < output.length());
 		assertWellFormed(output);

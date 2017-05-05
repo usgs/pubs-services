@@ -108,6 +108,17 @@ public class CrossrefTransformer extends Transformer {
 
 	@Override
 	public void write(Object result) throws IOException {
+		writeResult(result);
+	}
+	
+	/**
+	 * 
+	 * @param result
+	 * @return true if result was written succesfully, false otherwise.
+	 * @throws IOException 
+	 */
+	protected boolean writeResult(Object result) throws IOException {
+		boolean success = false;
 		try {
 			Publication<?> pub = (Publication)result;
 			LOG.trace("Writing crossref report entry for publication with indexId = '" + pub.getIndexId() + "'");
@@ -132,6 +143,7 @@ public class CrossrefTransformer extends Transformer {
 				model.put("editorKey", ContributorType.EDITORS);
 				model.put("compilerKey", ContributorType.COMPILERS);
 				writeModelToTemplate(model, "crossref/body.ftlx");
+				success = true;
 			}
 		} catch (TemplateException | IOException e) {
 			/**
@@ -146,6 +158,11 @@ public class CrossrefTransformer extends Transformer {
 			//add error message as a comment to the xml document
 			writeComment(message);
 		}
+		return success;
+	}
+	
+	protected String wrapInComment(String message) {
+		return "<!-- " + StringEscapeUtils.escapeXml11(message) + " -->\n";
 	}
 	
 	/**
@@ -155,7 +172,7 @@ public class CrossrefTransformer extends Transformer {
 	 */
 	protected void writeComment(String message) throws IOException {
 		//add error message as a comment to the xml document
-		bufferedWriter.append("<!-- " + StringEscapeUtils.escapeXml11(message) + " -->\n");
+		bufferedWriter.append(wrapInComment(message));
 	}
 	
 	/**

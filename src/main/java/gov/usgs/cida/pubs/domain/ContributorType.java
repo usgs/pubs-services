@@ -12,6 +12,7 @@ public class ContributorType extends BaseDomain<ContributorType> implements ILoo
 
 	public static final Integer AUTHORS = 1;
 	public static final Integer EDITORS = 2;
+	public static final Integer COMPILERS = 3;
 
 	private static IDao<ContributorType> contributorTypeDao;
 

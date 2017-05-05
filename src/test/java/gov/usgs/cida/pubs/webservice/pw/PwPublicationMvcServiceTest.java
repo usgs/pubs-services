@@ -29,7 +29,15 @@ import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.SearchResults;
+import gov.usgs.cida.pubs.domain.pw.PwPublication;
+import gov.usgs.cida.pubs.transform.TransformerFactory;
+import gov.usgs.cida.pubs.transform.intfc.ITransformer;
+import java.io.IOException;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import org.springframework.web.accept.ContentNegotiationStrategy;
 
 public class PwPublicationMvcServiceTest extends BaseSpringTest {
 
@@ -41,11 +49,30 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 	private PwPublicationMvcService mvcService;
 
 	private Map<String, Object> filters;
-
+	
+	@Autowired
+	private ContentNegotiationStrategy contentStrategy;
+	
+	@Mock
+	private TransformerFactory transformerFactory;
+	@Mock
+	private TransformerFactory mockTransformerFactory;
+	
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		mvcService = new PwPublicationMvcService(busService, warehouseEndpoint);
+		/**
+		 * Since we're testing the conditional logic of the MvcService,
+		 * rather than the transformation from pub to XML, CSV, etc., we
+		 * always return a no-op transformer from the transformer factory
+		 */
+		when(transformerFactory.getTransformer(anyString(), any(), any())).thenReturn(mock(ITransformer.class));
+		mvcService = new PwPublicationMvcService(
+			busService,
+			warehouseEndpoint,
+			contentStrategy,
+			transformerFactory
+		);
 
 		filters = new HashMap<>();
 		filters.put(BaseDao.PAGE_SIZE, "13");
@@ -123,6 +150,49 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		verify(busService).stream(eq("pwPublication.getByMap"), anyMap(), any(ResultHandler.class));
 		verify(busService).getObjectCount(anyMap());
+	}
+	
+	@Test
+	public void testCrossrefPubNotFound() throws IOException {
+		when(busService.getByIndexId(anyString())).thenReturn(null);
+		HttpServletResponse response = new MockHttpServletResponse();
+		mvcService.getPwPublicationCrossRef("non-existent pub", response);
+		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+	}
+	
+	@Test
+	public void testCrossrefNonUsgsSeriesPubFound() throws IOException {
+		PwPublication nonUsgsSeriesPub = new PwPublication();
+		PublicationSubtype subtype = new PublicationSubtype();
+		
+		//can use any PublicationSubtype other than USGS_NUMBERED_SERIES
+		//and USGS_UNNUMBERED_SERIES
+		subtype.setId(PublicationSubtype.USGS_DATA_RELEASE);
+		nonUsgsSeriesPub.setPublicationSubtype(subtype);
+		when(busService.getByIndexId(anyString())).thenReturn(nonUsgsSeriesPub);
+
+		HttpServletResponse response = new MockHttpServletResponse();
+		
+		mvcService.getPwPublicationCrossRef("existent non-USGS series pub", response);
+		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+	}
+	
+	@Test
+	public void testCrossrefUsgsSeriesPubFound() throws IOException {
+		/**
+		 * Since we're testing the conditional logic of the MvcService,
+		 * rather than the retrieval of the correct publications through
+		 * the business service, we return a mock publication
+		 */
+		PwPublication usgsSeriesPub = new PwPublication();
+		PublicationSubtype subtype = new PublicationSubtype();
+		subtype.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
+		usgsSeriesPub.setPublicationSubtype(subtype);
+		when(busService.getByIndexId(anyString())).thenReturn(usgsSeriesPub);
+		
+		HttpServletResponse response = new MockHttpServletResponse();
+		mvcService.getPwPublicationCrossRef("existent non-USGS series pub", response);
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
 
 }

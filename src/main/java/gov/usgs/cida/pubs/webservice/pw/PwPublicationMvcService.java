@@ -26,16 +26,20 @@ import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
 import gov.usgs.cida.pubs.dao.resulthandler.StreamingResultHandler;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.json.View;
-import gov.usgs.cida.pubs.transform.DelimitedTransformer;
-import gov.usgs.cida.pubs.transform.JsonTransformer;
-import gov.usgs.cida.pubs.transform.PublicationColumns;
-import gov.usgs.cida.pubs.transform.XlsxTransformer;
+import gov.usgs.cida.pubs.transform.TransformerFactory;
 import gov.usgs.cida.pubs.transform.intfc.ITransformer;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.webservice.MvcService;
 import io.swagger.annotations.ApiParam;
+import java.io.OutputStream;
+import java.util.List;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.accept.ContentNegotiationStrategy;
+import org.springframework.web.context.request.ServletWebRequest;
 
 @RestController
 @RequestMapping(value="publication")
@@ -44,14 +48,21 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 
 	private final IPwPublicationBusService busService;
 	private final String warehouseEndpoint;
-
+	private final ContentNegotiationStrategy contentStrategy;
+	private final TransformerFactory transformerFactory;
+	
 	@Autowired
 	public PwPublicationMvcService(@Qualifier("pwPublicationBusService")
 			final IPwPublicationBusService busService,
 			@Qualifier("warehouseEndpoint")
-			final String warehouseEndpoint) {
+			final String warehouseEndpoint,
+			final ContentNegotiationStrategy contentStrategy,
+			final TransformerFactory transformerFactory
+	) {
 		this.busService = busService;
 		this.warehouseEndpoint = warehouseEndpoint;
+		this.contentStrategy = contentStrategy;
+		this.transformerFactory = transformerFactory;
 	}
 
 	@GetMapping(produces={MediaType.APPLICATION_JSON_VALUE,
@@ -114,33 +125,31 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 
 		try {
 			ITransformer transformer;
+			SearchResults searchResults = null;
 			switch (mimeType) {
 			case PubsConstants.MEDIA_TYPE_TSV_EXTENSION:
-				transformer = new DelimitedTransformer(response.getOutputStream(), PublicationColumns.getMappings(), "\t");
 				statement = statement + PwPublicationDao.GET_STREAM_BY_MAP;
 				response.setContentType(PubsConstants.MEDIA_TYPE_TSV_VALUE);
 				response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + mimeType);
 				break;
 			case PubsConstants.MEDIA_TYPE_XLSX_EXTENSION:
-				transformer = new XlsxTransformer(response.getOutputStream(), PublicationColumns.getMappings());
 				statement = statement + PwPublicationDao.GET_STREAM_BY_MAP;
 				response.setContentType(PubsConstants.MEDIA_TYPE_XLSX_VALUE);
 				response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + mimeType);
 				break;
 			case PubsConstants.MEDIA_TYPE_CSV_EXTENSION:
-				transformer = new DelimitedTransformer(response.getOutputStream(), PublicationColumns.getMappings(), ",");
 				statement = statement + PwPublicationDao.GET_STREAM_BY_MAP;
 				response.setContentType(PubsConstants.MEDIA_TYPE_CSV_VALUE);
 				response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + mimeType);
 				break;
 			default:
 				//Let json be the default
-				transformer = new JsonTransformer(response.getOutputStream(), getCountAndPaging(filters));
+				searchResults = getCountAndPaging(filters);
 				statement = statement + PwPublicationDao.GET_BY_MAP;
 				response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 				break;
 			}
-
+			transformer = transformerFactory.getTransformer(mimeType, response.getOutputStream(), searchResults);
 			busService.stream(statement, filters, new StreamingResultHandler<PwPublication>(transformer));
 
 			transformer.end();
@@ -162,16 +171,88 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		return results;
 	}
 
-	@GetMapping(value="{indexId}", produces=MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(
+		value="{indexId}",
+		produces={
+			MediaType.APPLICATION_JSON_VALUE, 
+			PubsConstants.MEDIA_TYPE_CROSSREF_VALUE
+		}
+	)
 	@JsonView(View.PW.class)
-	public PwPublication getPwPublication(HttpServletRequest request, HttpServletResponse response,
-				@PathVariable("indexId") String indexId) {
+	public PwPublication getPwPublication(
+		HttpServletRequest request,
+		HttpServletResponse response,
+		@PathVariable("indexId") String indexId
+		) throws HttpMediaTypeNotAcceptableException, IOException {
 		setHeaders(response);
+		List<MediaType> mediaTypes = contentStrategy.resolveMediaTypes(new ServletWebRequest(request));
+		
+		if(isCrossRefRequest(mediaTypes)){
+			getPwPublicationCrossRef(indexId, response);
+			return null;
+		} else {
+			return getPwPublicationJSON(indexId, response);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param mediaTypes the media types as specified by the user in the request headers
+	 * @return true if the user has requested crossref xml either through the query string or the headers, false otherwise
+	 */
+	protected boolean isCrossRefRequest(List<MediaType> mediaTypes){
+		boolean isCrossRefRequest = false;
+		if (null != mediaTypes && mediaTypes.contains(PubsConstants.MEDIA_TYPE_CROSSREF)) {
+			isCrossRefRequest = true;
+		}
+		return isCrossRefRequest;
+	}
+	
+	public PwPublication getPwPublicationJSON(String indexId, HttpServletResponse response){
 		PwPublication rtn = busService.getByIndexId(indexId);
 		if (null == rtn) {
 			response.setStatus(HttpStatus.NOT_FOUND.value());
 		}
 		return rtn;
 	}
-
+	
+	/**
+	 * If the specified publication exists and is a USGS Series, responds with Crossref XML.
+	 * Otherwise responds with a 404 Not Found.
+	 * 
+	 * @param indexId publication index
+	 * @param response
+	 * @throws IOException 
+	 */
+	public void getPwPublicationCrossRef(String indexId, HttpServletResponse response) throws IOException {
+		PwPublication pub = busService.getByIndexId(indexId);
+		if (null == pub || !isUsgsSeries(pub)) {
+			response.sendError(HttpStatus.NOT_FOUND.value());
+		} else {
+			writeCrossrefForPub(response, pub);
+		}
+	}
+	
+	/**
+	 * Writes the specified USGS Series Publication to Crossref XML.
+	 * This method will error if the specified publication is not a USGS Series.
+	 * @param response
+	 * @param pub
+	 * @throws IOException 
+	 */
+	protected void writeCrossrefForPub(HttpServletResponse response, PwPublication pub) throws IOException {
+		try (OutputStream outputStream = response.getOutputStream()) {
+			response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
+			response.setContentType(PubsConstants.MEDIA_TYPE_CROSSREF_VALUE);
+			response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION);
+			ITransformer transformer = transformerFactory.getTransformer(PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION, outputStream, null);
+			transformer.write(pub);
+			transformer.end();
+		}
+	}
+	
+	protected boolean isUsgsSeries(PwPublication pub){
+		PublicationSubtype subtype = pub.getPublicationSubtype();
+		return PubsUtilities.isUsgsNumberedSeries(subtype) || PubsUtilities.isUsgsUnnumberedSeries(subtype);
+	}
 }

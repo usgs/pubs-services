@@ -5,5 +5,5 @@ import gov.usgs.cida.pubs.domain.mp.MpPublication;
 public interface ICrossRefBusService {
 
 	void submitCrossRef(MpPublication mpPublication);
-
+	
 }

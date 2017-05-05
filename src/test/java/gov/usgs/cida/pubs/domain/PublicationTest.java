@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.domain;
 
+import com.google.common.collect.ImmutableMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -11,27 +12,32 @@ import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PublicationTest extends BaseSpringTest {
-
+	private static final Logger LOG = LoggerFactory.getLogger(PublicationTest.class);
 	@Test
 	public void testMappingContributors() {
 		MpPublication pub = new MpPublication();
 		assertNull(pub.getContributorsToMap());
 		
-		Collection<PublicationContributor<?>> cl = new ArrayList<PublicationContributor<?>>();
+		Collection<PublicationContributor<?>> cl = new ArrayList<>();
 		pub.setContributors(cl);
 		assertNull(pub.getContributorsToMap());
 
 		PublicationContributor<?> author = new MpPublicationContributor();
 		cl.add(author);
 		//Not really an author yet...
-		Map<String, Collection<PublicationContributor<?>>> hm = pub.getContributorsToMap();
+		Map<String, List<PublicationContributor<?>>> hm = pub.getContributorsToMap();
 		assertTrue(hm.containsKey("unknown"));
 		author.setContributorType(new ContributorType());
 		hm = pub.getContributorsToMap();
@@ -61,14 +67,60 @@ public class PublicationTest extends BaseSpringTest {
 		assertTrue(hm.containsKey("unknown"));
 		assertEquals(2, hm.get("unknown").size());
 	}
-
+	@Test
+	public void testGetMappingContributorsSorted() {
+		Publication<?> pub = new Publication<>();
+		
+		ContributorType authorType = new ContributorType();
+		authorType.setId(ContributorType.AUTHORS);
+		
+		ContributorType editorType = new ContributorType();
+		editorType.setId(ContributorType.EDITORS);
+		
+		PublicationContributor<?> firstAuthor = new PublicationContributor<>();
+		firstAuthor.setContributorType(authorType);
+		firstAuthor.setRank(1);
+		
+		PublicationContributor<?> secondAuthor = new PublicationContributor<>();
+		secondAuthor.setContributorType(authorType);
+		secondAuthor.setRank(2);
+		
+		PublicationContributor<?> firstEditor = new PublicationContributor<>();
+		firstEditor.setContributorType(editorType);
+		firstEditor.setRank(3);
+		
+		PublicationContributor<?> secondEditor = new PublicationContributor<>();
+		secondEditor.setContributorType(editorType);
+		secondEditor.setRank(4);
+		
+		List<PublicationContributor<?>> contributors = Arrays.asList(
+			//purposefully not in order
+			secondEditor,
+			firstAuthor,
+			firstEditor,
+			secondAuthor
+		
+		);
+		Map<String, List<PublicationContributor<?>>> expected = ImmutableMap.of(
+			"authors", Arrays.asList(firstAuthor, secondAuthor),
+			"editors", Arrays.asList(firstEditor, secondEditor)
+		);
+		//Test a non-exhaustive set of permutations (exhaustive is too slow)
+		for(int i = 0; i < 3; i++){
+			Collections.rotate(contributors, 1);
+			LOG.debug("a contributors test permutation: " + contributors.toString());
+			pub.setContributors(contributors);
+			Map<String, List<PublicationContributor<?>>> actual = pub.getContributorsToMap();
+			assertEquals(expected, actual);
+		}
+	}
 	@Test
 	public void testSetMappingContributors() {
 		MpPublication pub = new MpPublication();
 		pub.setContributorsFromMap(null);
 		assertTrue(pub.getContributors().isEmpty());
 		
-		Map<String, Collection<PublicationContributor<?>>> cm = new HashMap<String, Collection<PublicationContributor<?>>>();
+		Map<String, List<PublicationContributor<?>>> cm = new HashMap<>();
 		pub.setContributorsFromMap(cm);
 		assertTrue(pub.getContributors().isEmpty());
 		
@@ -76,7 +128,7 @@ public class PublicationTest extends BaseSpringTest {
 		pub.setContributorsFromMap(cm);
 		assertTrue(pub.getContributors().isEmpty());
 
-		Collection<PublicationContributor<?>> cl = new ArrayList<PublicationContributor<?>>();
+		List<PublicationContributor<?>> cl = new ArrayList<>();
 		cm.put("unknown", cl);
 		pub.setContributorsFromMap(cm);
 		assertTrue(pub.getContributors().isEmpty());

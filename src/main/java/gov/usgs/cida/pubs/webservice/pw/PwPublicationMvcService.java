@@ -196,16 +196,17 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		}
 	}
 	/**
-	 * Get all USGS Numbered and Unnumbered Series as CrossrefXML
+	 * Get all USGS Numbered and Unnumbered Series with DOIs and Contributors
+	 * as Crossref XML.
 	 * @param request
 	 * @param response
 	 * @throws IOException 
 	 */
 	@GetMapping(
-		value = "/usgs-series-crossref",
+		value = "/bulk-crossref",
 		produces = { MediaType.APPLICATION_XML_VALUE }
 	)
-	public void getUsgsSeriesPublicationsAsCrossRef(HttpServletRequest request,
+	public void getBulkCrossref(HttpServletRequest request,
 		HttpServletResponse response) throws IOException{
 		String statement = PwPublicationDao.NS + PwPublicationDao.GET_CROSSREF_PUBLICATIONS;
 		

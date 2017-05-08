@@ -192,10 +192,14 @@
 		</where>
 	</select>
 
-	<select id="getStreamWithEagerLoading" parameterType="map" resultMap="eagerResult" fetchSize="100">
+	<select id="getCrossrefPubs" parameterType="map" resultMap="eagerResult" fetchSize="100">
 		<include refid="baseSelectPublic"/>
 		<where>
-			<include refid="filters"/>
+			pub.publication_subtype_id in 
+				<foreach item="r" collection="subtypeId" open="(" separator="," close=")">
+				#{r}
+				</foreach>
+			and pub.doi_name is not null
 		</where>
 	</select>
 

@@ -201,14 +201,19 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	 * @param response
 	 * @throws IOException 
 	 */
-	@RequestMapping("/usgs-series")
-	public void getUsgsSeriesPublications(HttpServletRequest request,
+	@GetMapping(
+		value = "/usgs-series-crossref",
+		produces = { MediaType.APPLICATION_XML_VALUE }
+	)
+	public void getUsgsSeriesPublicationsAsCrossRef(HttpServletRequest request,
 		HttpServletResponse response) throws IOException{
-		String statement = PwPublicationDao.NS + PwPublicationDao.GET_STREAM_WITH_EAGER_LOADING;
+		String statement = PwPublicationDao.NS + PwPublicationDao.GET_CROSSREF_PUBLICATIONS;
 		
 		Map<String, Object> filters = ImmutableMap.of(
-			PublicationDao.SUBTYPE_ID, new int[]{PublicationSubtype.USGS_NUMBERED_SERIES, PublicationSubtype.USGS_UNNUMBERED_SERIES},
-			PublicationDao.DOI, true
+			PwPublicationDao.SUBTYPE_ID, new int[]{
+				PublicationSubtype.USGS_NUMBERED_SERIES,
+				PublicationSubtype.USGS_UNNUMBERED_SERIES
+			}
 		);
 		try (OutputStream outputStream = response.getOutputStream()) {
 			response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);

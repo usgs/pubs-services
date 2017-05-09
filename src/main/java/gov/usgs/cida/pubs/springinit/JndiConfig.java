@@ -69,6 +69,11 @@ public class JndiConfig {
 	public String crossRefUrl() throws NamingException {
 		return (String) ctx.lookup("java:comp/env/pubs/crossRef/url");
 	}
+	
+	@Bean
+	public String crossRefSchemaUrl() throws NamingException {
+		return (String) ctx.lookup("java:comp/env/pubs/crossRef/schema/url");
+	}
 
 	@Bean
 	public Integer crossRefPort() throws NamingException {

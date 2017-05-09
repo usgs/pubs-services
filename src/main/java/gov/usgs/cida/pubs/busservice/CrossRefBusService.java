@@ -1,23 +1,33 @@
 package gov.usgs.cida.pubs.busservice;
 
+import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.CrossRefLog;
 import gov.usgs.cida.pubs.domain.PersonContributor;
+import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.transform.TransformerFactory;
+import gov.usgs.cida.pubs.transform.intfc.ITransformer;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.validation.xml.XMLValidationException;
+import gov.usgs.cida.pubs.validation.xml.XMLValidator;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -81,8 +91,10 @@ public class CrossRefBusService implements ICrossRefBusService {
 	protected final String depositorEmail;
 	protected final PubsEMailer pubsEMailer;
 	protected final String warehouseEndpoint;
+	protected final String crossRefSchemaUrl;
 	protected final IPublicationBusService pubBusService;
-
+	protected final TransformerFactory transformerFactory;
+	protected final XMLValidator xmlValidator;
 	@Autowired
 	public CrossRefBusService(
 			@Qualifier("crossRefProtocol")
@@ -91,6 +103,8 @@ public class CrossRefBusService implements ICrossRefBusService {
 			final String crossRefHost,
 			@Qualifier("crossRefUrl")
 			final String crossRefUrl,
+			@Qualifier("crossRefSchemaUrl")
+			final String crossRefSchemaUrl,
 			@Qualifier("crossRefPort")
 			final Integer crossRefPort,
 			@Qualifier("crossRefUser")
@@ -112,7 +126,9 @@ public class CrossRefBusService implements ICrossRefBusService {
 			final PubsEMailer pubsEMailer,
 			@Qualifier("warehouseEndpoint")
 			final String warehouseEndpoint,
-			final IPublicationBusService pubBusService) {
+			final IPublicationBusService pubBusService,
+			final TransformerFactory transformerFactory,
+			final XMLValidator xmlValidator) {
 		this.crossRefProtocol = crossRefProtocol;
 		this.crossRefHost = crossRefHost;
 		this.crossRefUrl = crossRefUrl;
@@ -127,48 +143,77 @@ public class CrossRefBusService implements ICrossRefBusService {
 		this.depositorEmail = depositorEmail;
 		this.pubsEMailer = pubsEMailer;
 		this.warehouseEndpoint = warehouseEndpoint;
+		this.crossRefSchemaUrl = crossRefSchemaUrl;
 		this.pubBusService = pubBusService;
+		this.transformerFactory = transformerFactory;
+		this.xmlValidator = xmlValidator;
 	}
 
+	public String getCrossrefXml(Publication<?> pub) throws IOException, UnsupportedEncodingException{
+		String xml = null;
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		
+		ITransformer transformer = transformerFactory.getTransformer(PubsConstants.MEDIA_TYPE_XML_EXTENSION, baos, null);
+		transformer.write(pub);
+		transformer.end();
+	
+		xml = new String(baos.toByteArray(), PubsConstants.DEFAULT_ENCODING);
+		
+		return xml;
+	}
+	
 	@Override
 	public void submitCrossRef(final MpPublication mpPublication) {
-		String indexPage = pubBusService.getIndexPage(mpPublication);
-		String escapedIndexPage = StringEscapeUtils.escapeXml10(indexPage);
-		if (null != escapedIndexPage && 0 < escapedIndexPage.length()) {
-			LOG.debug("Posting to http://"+ crossRefHost + ":" + crossRefPort);
+		String crossrefXml;
+		String msg;
+		try {
+			crossrefXml = getCrossrefXml(mpPublication);
+		} catch (Exception ex) {
+			
+		}
+		
+		try {
+			xmlValidator.validate(crossRefSchemaUrl, crossrefXml);
+						LOG.debug("Posting to http://" + crossRefHost + ":" + crossRefPort);
 
 			StringBuilder url = new StringBuilder(crossRefUrl).append("?operation=doMDUpload&login_id=")
-					.append(crossRefUser).append("&login_passwd=").append(crossRefPwd).append("&area=live");
+				.append(crossRefUser).append("&login_passwd=").append(crossRefPwd).append("&area=live");
 
 			HttpResponse rtn = null;
 			CloseableHttpClient httpClient = HttpClients.createDefault();
 			HttpPost httpPost = new HttpPost(url.toString());
 			HttpHost httpHost = new HttpHost(crossRefHost, crossRefPort, crossRefProtocol);
 
-			String fileName = buildXml(mpPublication, escapedIndexPage);
-
-			if (null != fileName) {
-				try {
-					FileBody file = new FileBody(new File(fileName), ContentType.TEXT_XML, mpPublication.getIndexId() + ".xml");
-					HttpEntity httpEntity = MultipartEntityBuilder.create()
-							.addPart("fname", file)
-							.build();
-					httpPost.setEntity(httpEntity);
-					rtn = httpClient.execute(httpHost, httpPost, new BasicHttpContext());
-				} catch (Exception e) {
-					String subject = "Unexpected error in POST to crossref";
-					LOG.info(subject, e);
-					pubsEMailer.sendMail(subject, e.getMessage());
-				}
+			try {
+				File tempFile = File.createTempFile("crossRef", "xml");
+				String fileName = tempFile.getAbsolutePath();
+				FileBody file = new FileBody(new File(fileName), ContentType.TEXT_XML, mpPublication.getIndexId() + ".xml");
+				HttpEntity httpEntity = MultipartEntityBuilder.create()
+					.addPart("fname", file)
+					.build();
+				httpPost.setEntity(httpEntity);
+				rtn = httpClient.execute(httpHost, httpPost, new BasicHttpContext());
+			} catch (IOException e) {
+				String subject = "Unexpected error in POST to crossref";
+				LOG.info(subject, e);
+				pubsEMailer.sendMail(subject, e.getMessage());
 			}
 
 			if (null == rtn || null == rtn.getStatusLine()
-					|| HttpStatus.SC_OK != rtn.getStatusLine().getStatusCode()) {
-				String msg = null == rtn ? "rtn is null" : rtn.getStatusLine().toString();
+				|| HttpStatus.SC_OK != rtn.getStatusLine().getStatusCode()) {
+				msg = null == rtn ? "rtn is null" : rtn.getStatusLine().toString();
 				LOG.info("not cool" + msg);
 				pubsEMailer.sendMail("Unexpected error in POST to crossref", msg);
 			}
+		} catch (XMLValidationException ex) {
+			msg = "Unexpected error converting publication with Index ID '" + +"' to Crossref XML.";
+			LOG.error(, ex);
+			
+			pubsEMailer.sendMail(, msg);
 		}
+
+
+
 	}
 
 	protected String buildXml(final MpPublication pub, final String indexPage) {

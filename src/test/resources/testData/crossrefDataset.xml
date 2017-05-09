@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<!-- publications with the correct subtype, but without doi's -->
+	<PUBLICATION PUBLICATION_ID="0" INDEX_ID="sir0" DISPLAY_TO_PUBLIC_DATE="2001-12-31 23:59:59" TITLE="title0" NO_YEAR="Y" PUBLICATION_SUBTYPE_ID="5"/>
+	<PUBLICATION PUBLICATION_ID="1" INDEX_ID="sir1" DISPLAY_TO_PUBLIC_DATE="2001-12-31 23:59:59" TITLE="title1" NO_YEAR="Y" PUBLICATION_SUBTYPE_ID="6"/>
+	<!-- publications with the correct subtype and with doi's -->
+	<PUBLICATION PUBLICATION_ID="2" INDEX_ID="sir2" DISPLAY_TO_PUBLIC_DATE="2001-12-31 23:59:59" TITLE="title2" NO_YEAR="Y" PUBLICATION_SUBTYPE_ID="5" DOI_NAME="a doi"/>
+	<PUBLICATION PUBLICATION_ID="3" INDEX_ID="sir3" DISPLAY_TO_PUBLIC_DATE="2001-12-31 23:59:59" TITLE="title3" NO_YEAR="Y" PUBLICATION_SUBTYPE_ID="6" DOI_NAME="another doi"/>
+	<!-- publication with the wrong subtype, and with a doi -->
+	<PUBLICATION PUBLICATION_ID="4" INDEX_ID="sir4" DISPLAY_TO_PUBLIC_DATE="2001-12-31 23:59:59" TITLE="title2" NO_YEAR="Y" PUBLICATION_SUBTYPE_ID="18" DOI_NAME="a doi"/>
+	<!-- publication with the wrong subtype and without a doi -->
+	<PUBLICATION PUBLICATION_ID="5" INDEX_ID="sir5" DISPLAY_TO_PUBLIC_DATE="2001-12-31 23:59:59" TITLE="title2" NO_YEAR="Y" PUBLICATION_SUBTYPE_ID="18" />
+</dataset>

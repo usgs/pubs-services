@@ -15,6 +15,11 @@
 		<result property="chorus.pblcllyAccessDate" column="chrs_pblclly_access_date"/>
         <collection property="stores" column="publication_id" select="pwStore.getByPublication"/>
 	</resultMap>
+	
+	<resultMap id="eagerResult" type="PwPublication" extends="result">
+		<collection property="contributors" column="publication_id" select="pwPublicationContributor.getByPublication" fetchType="eager"/>
+		<collection property="links" column="publication_id" select="pwPublicationLink.getByPublication" fetchType="eager"/>
+	</resultMap>
 
 	<sql id="cols">
 		<include refid="publication.cols"/>,
@@ -184,6 +189,17 @@
 		  from public_publication pub
 		<where>
 			<include refid="filters"/>
+		</where>
+	</select>
+
+	<select id="getCrossrefPubs" parameterType="map" resultMap="eagerResult" fetchSize="100">
+		<include refid="baseSelectPublic"/>
+		<where>
+			pub.publication_subtype_id in 
+				<foreach item="r" collection="subtypeId" open="(" separator="," close=")">
+				#{r}
+				</foreach>
+			and pub.doi_name is not null
 		</where>
 	</select>
 

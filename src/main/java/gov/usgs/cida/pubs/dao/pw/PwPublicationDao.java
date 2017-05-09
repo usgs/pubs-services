@@ -31,8 +31,10 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	public static final String NS = "pwPublication";
 	private static final String GET_BY_INDEX_ID = ".getByIndexId";
 	private static final String GET_BY_IPDS_ID = ".getByIpdsId";
+	public static final String GET_CROSSREF_PUBLICATIONS = ".getCrossrefPubs";
 	public static final String GET_STREAM_BY_MAP = ".getStreamByMap";
-
+	
+	public static final String SUBTYPE_ID = "subtypeId";
 	public static final String CHORUS = "chorus";
 	public static final String G = "g";
 	public static final String MOD_DATE_HIGH = "mod_date_high";
@@ -100,5 +102,9 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	public void stream(String statement, Map<String, Object> filters, ResultHandler<PwPublication> handler) {
 		getSqlSession().select(statement, filters, handler);
 	}
-
+	
+	@Override
+	public List<PwPublication> getCrossrefPublications(Map<String, Object> filters){
+		return getSqlSession().selectList(NS + GET_CROSSREF_PUBLICATIONS, filters);
+	}
 }

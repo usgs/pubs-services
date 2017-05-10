@@ -22,6 +22,7 @@ import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
+import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
@@ -147,6 +148,26 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	public void submitCrossRefTest() {
 		MpPublication pub = buildNumberedSeriesPub();
 		busService.submitCrossRef(pub);
+	}
+	
+	
+	@Test
+	public void getIndexIdMessageForNullPub() {
+		assertEquals("", busService.getIndexIdMessage(null));
+	}
+	
+	@Test
+	public void getIndexIdMessageForPubWithoutIndexId() {
+		Publication<?> pub = new Publication<>();
+		assertEquals("", busService.getIndexIdMessage(pub));
+	}
+	
+	@Test
+	public void getIndexIdForPubWithIndexId() {
+		String indexId = "greatPubIndexId07";
+		Publication<?> pub = new Publication<>();
+		pub.setIndexId(indexId);
+		assertTrue(busService.getIndexIdMessage(pub).contains(indexId));
 	}
 	
 }

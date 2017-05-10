@@ -17,7 +17,7 @@ import org.xml.sax.SAXException;
 @Component
 public class XMLValidator {
 	protected final transient Logger logger = LoggerFactory.getLogger(getClass());
-	SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
+	SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 	
 	/**
 	 * Throws an exception if the specified XML is not valid according to 

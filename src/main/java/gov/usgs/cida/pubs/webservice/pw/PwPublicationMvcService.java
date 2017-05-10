@@ -37,6 +37,8 @@ import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.webservice.MvcService;
 import io.swagger.annotations.ApiParam;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.accept.ContentNegotiationStrategy;
@@ -51,7 +53,10 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	private final String warehouseEndpoint;
 	private final ContentNegotiationStrategy contentStrategy;
 	private final TransformerFactory transformerFactory;
-	
+	private final static Map<String, MediaType> EXTENSION_TO_MEDIA_TYPE = ImmutableMap.of(
+		PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION, PubsConstants.MEDIA_TYPE_CROSSREF,
+		PubsConstants.MEDIA_TYPE_JSON_EXTENSION, MediaType.APPLICATION_JSON_UTF8
+	);
 	@Autowired
 	public PwPublicationMvcService(@Qualifier("pwPublicationBusService")
 			IPwPublicationBusService busService,
@@ -183,12 +188,24 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	public PwPublication getPwPublication(
 		HttpServletRequest request,
 		HttpServletResponse response,
-		@PathVariable("indexId") String indexId
+		@PathVariable("indexId") String indexId,
+		@ApiParam(allowableValues=PubsConstants.MEDIA_TYPE_JSON_EXTENSION + "," + PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION)
+		@RequestParam(value=PubsConstants.CONTENT_PARAMETER_NAME, required=false) String mimeType
 		) throws HttpMediaTypeNotAcceptableException, IOException {
 		setHeaders(response);
-		List<MediaType> mediaTypes = contentStrategy.resolveMediaTypes(new ServletWebRequest(request));
+		List<MediaType> mediaTypes;
+		if(null == mimeType){
+			mediaTypes = contentStrategy.resolveMediaTypes(new ServletWebRequest(request));
+		} else {
+			MediaType knownMediaType = EXTENSION_TO_MEDIA_TYPE.get(mimeType);
+			if(null != knownMediaType) {
+				mediaTypes = Arrays.asList(knownMediaType);
+			} else {
+				mediaTypes = Collections.EMPTY_LIST;
+			}
+		}
 		
-		if(isCrossRefRequest(mediaTypes)){
+		if(isCrossRefRequest(mediaTypes)) {
 			getPwPublicationCrossRef(indexId, response);
 			return null;
 		} else {
@@ -277,7 +294,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		try (OutputStream outputStream = response.getOutputStream()) {
 			response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
 			response.setContentType(PubsConstants.MEDIA_TYPE_CROSSREF_VALUE);
-			response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION);
+			response.setHeader(MIME.CONTENT_DISPOSITION, "inline");
 			ITransformer transformer = transformerFactory.getTransformer(PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION, outputStream, null);
 			transformer.write(pub);
 			transformer.end();

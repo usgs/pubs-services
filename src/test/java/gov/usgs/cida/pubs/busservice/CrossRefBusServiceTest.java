@@ -34,6 +34,8 @@ import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.transform.TransformerFactory;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
 import gov.usgs.cida.pubs.validation.xml.XMLValidator;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 public class CrossRefBusServiceTest extends BaseSpringTest {
 
@@ -168,6 +170,28 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		Publication<?> pub = new Publication<>();
 		pub.setIndexId(indexId);
 		assertTrue(busService.getIndexIdMessage(pub).contains(indexId));
+	}
+	
+	@Test
+	public void testBuildCrossrefUrl() throws UnsupportedEncodingException {
+		String protocol = "https";
+		String host = "test.crossref.org";
+		int port = 443;
+		String base = "/servlet/";
+		//place url-unsafe characters in these fields
+		String user = "demonstration_username&?%";
+		String password = "demonstration_password&?%";
+		
+		String actual = busService.buildCrossRefUrl(protocol, host, port, base, user, password);
+		
+		assertFalse("special user characters should be escaped from url", actual.contains(user));
+		assertFalse("special password characters should be escaped from url", actual.contains(password));
+		
+		String encodedUser = URLEncoder.encode(user, "UTF-8");
+		String encodedPassword = URLEncoder.encode(password, "UTF-8");
+		
+		assertTrue("special user characters should be escaped from url", actual.contains(encodedUser));
+		assertTrue("special password characters should be escaped from url", actual.contains(encodedPassword));
 	}
 	
 }

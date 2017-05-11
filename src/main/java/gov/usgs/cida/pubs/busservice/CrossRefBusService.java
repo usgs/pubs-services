@@ -14,7 +14,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -79,7 +82,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 		this.xmlValidator = xmlValidator;
 	}
 
-	protected String getCrossrefXml(Publication<?> pub) {
+	protected String getCrossRefXml(Publication<?> pub) {
 		String xml = null;
 		try{
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -93,12 +96,13 @@ public class CrossRefBusService implements ICrossRefBusService {
 			xmlValidator.validate(crossRefSchemaUrl, xml);
 		} catch (XMLValidationException ex) {
 			String msg = "The Crossref XML generated for the publication did not validate against the Crossref schema. " + getIndexIdMessage(pub);
-			LOG.info(msg, ex);
+			LOG.error(msg, ex);
 			msg += "\n" + ex.getMessage();
 			pubsEMailer.sendMail("Invalid Crossref XML Generated for Publication", msg);
 		} catch (Exception ex) {
+			//broad catch prevents interruption of control flow elsewhere
 			String msg = "Error converting pub to Crossref XML before submitting to Crossref webservices. " + getIndexIdMessage(pub);
-			LOG.info(msg, ex);
+			LOG.error(msg, ex);
 			msg += "\n" + ex.getMessage();
 			pubsEMailer.sendMail("Could not generate Crossref XML for Publication", msg);
 		}
@@ -120,12 +124,15 @@ public class CrossRefBusService implements ICrossRefBusService {
 	 * Builds a url for registering crossref content.
 	 * https://support.crossref.org/hc/en-us/articles/214960123-Using-HTTPS-to-POST-Files
 	 * 
-	 * @param base the base of the request
+	 * @param protocol usually http or https
+	 * @param host machine name. Usually test.crossref.org or doi.crossref.org
+	 * @param port usually 80 or 443
+	 * @param base the base path of the request
 	 * @param user the value of the "login_id" parameter
 	 * @param password the value of the "login_passwd" parameter
 	 * @return String URL with safely-encoded parameters
 	 */
-	protected String buildCrossRefUrl(String base, String user, String password) {
+	protected String buildCrossRefUrl(String protocol, String host, int port, String base, String user, String password) {
 		String url = null;
 		try {
 			/*
@@ -134,13 +141,17 @@ public class CrossRefBusService implements ICrossRefBusService {
 			  may not be UTF-8 over time.
 			  https://docs.oracle.com/javase/8/docs/api/java/net/URLEncoder.html#encode-java.lang.String-java.lang.String-
 			*/
+			
 			final String UTF8 = "UTF-8";
-			url = crossRefUrl +
-			"?operation=doMDUpload&login_id=" +
-			URLEncoder.encode(crossRefUser, UTF8) +
+			String query = "?operation=doMDUpload&login_id=" +
+			URLEncoder.encode(user, UTF8) +
 			"&login_passwd=" +
-			URLEncoder.encode(crossRefPwd, UTF8) +
+			URLEncoder.encode(password, UTF8) +
 			"&area=live";
+			URI uri = new URI(protocol, null, host, port, base, null, null);
+			url = uri.toString() + query;
+		}catch (URISyntaxException ex) {
+			LOG.error("Could not construct Crossref submission url", ex);
 		} catch (UnsupportedEncodingException ex) {
 			//no recovery possible
 			throw new RuntimeException(ex);
@@ -150,40 +161,59 @@ public class CrossRefBusService implements ICrossRefBusService {
 	
 	@Override
 	public void submitCrossRef(final MpPublication mpPublication) {
-		String crossrefXml = getCrossrefXml(mpPublication);
-		String msg;
+		String crossRefXml = getCrossRefXml(mpPublication);
+		if (null != crossRefXml) {
+			LOG.debug("Posting to " + crossRefHost + "://" + crossRefHost + ":" + crossRefPort);
+			String url = buildCrossRefUrl(crossRefProtocol, crossRefHost, crossRefPort, crossRefUrl, crossRefUser, crossRefPwd);
+			if (null != url) {
+				HttpResponse response = null;
+				CloseableHttpClient httpClient = HttpClients.createDefault();
+				HttpPost httpPost = buildCrossRefPost(crossRefXml, url);
+				HttpHost httpHost = new HttpHost(crossRefHost, crossRefPort, crossRefProtocol);
+
+				try {
+					response = httpClient.execute(httpHost, httpPost, new BasicHttpContext());
+				} catch (IOException e) {
+					String subject = "Unexpected error in POST to crossref";
+					LOG.info(subject, e);
+					pubsEMailer.sendMail(subject, e.getMessage());
+				}
+
+				handleResponse(response);
+			}
+		}
+	}
+	
+	protected HttpPost buildCrossRefPost(String crossRefXml, String url) {
+		HttpPost httpPost = new HttpPost(url);
 		
-		if (null != crossrefXml) {
-			LOG.debug("Posting to http://" + crossRefHost + ":" + crossRefPort);
-
-			String url = buildCrossRefUrl(crossRefUrl, crossRefUser, crossRefPwd);
-
-			HttpResponse rtn = null;
-			CloseableHttpClient httpClient = HttpClients.createDefault();
-			HttpPost httpPost = new HttpPost(url);
-			HttpHost httpHost = new HttpHost(crossRefHost, crossRefPort, crossRefProtocol);
-
-			try {
-				File tempFile = File.createTempFile("crossRef", "xml");
-				String fileName = tempFile.getAbsolutePath();
-				FileBody file = new FileBody(new File(fileName), ContentType.TEXT_XML, mpPublication.getIndexId() + ".xml");
-				HttpEntity httpEntity = MultipartEntityBuilder.create()
-					.addPart("fname", file)
-					.build();
-				httpPost.setEntity(httpEntity);
-				rtn = httpClient.execute(httpHost, httpPost, new BasicHttpContext());
-			} catch (IOException e) {
-				String subject = "Unexpected error in POST to crossref";
-				LOG.info(subject, e);
-				pubsEMailer.sendMail(subject, e.getMessage());
-			}
-
-			if (null == rtn || null == rtn.getStatusLine()
-				|| HttpStatus.SC_OK != rtn.getStatusLine().getStatusCode()) {
-				msg = null == rtn ? "rtn is null" : rtn.getStatusLine().toString();
-				LOG.info("not cool" + msg);
-				pubsEMailer.sendMail("Unexpected error in POST to crossref", msg);
-			}
+		File crossRefTempFile = writeCrossRefToTempFile(crossRefXml);
+		ContentType contentType = ContentType.create(PubsConstants.MEDIA_TYPE_CROSSREF_VALUE, PubsConstants.DEFAULT_ENCODING);
+		FileBody file = new FileBody(crossRefTempFile, contentType);
+		HttpEntity httpEntity = MultipartEntityBuilder.create()
+			.addPart("fname", file)
+			.build();
+		httpPost.setEntity(httpEntity);
+		return httpPost;
+	}
+	
+	protected File writeCrossRefToTempFile(String crossRefXml) {
+		File crossRefTempFile = null;
+		try {
+			crossRefTempFile = File.createTempFile("crossref", "xml");
+			FileUtils.writeStringToFile(crossRefTempFile, crossRefXml);
+		} catch (IOException ex) {
+			LOG.error("Error writing crossref xml to temp file", ex);
+		}
+		return crossRefTempFile;
+	}
+	
+	protected void handleResponse(HttpResponse response) {
+		if (null == response || null == response.getStatusLine()
+			|| HttpStatus.SC_OK != response.getStatusLine().getStatusCode()) {
+			String msg = null == response ? "rtn is null" : response.getStatusLine().toString();
+			LOG.error("not cool" + msg);
+			pubsEMailer.sendMail("Unexpected error in POST to crossref", msg);
 		}
 	}
 }

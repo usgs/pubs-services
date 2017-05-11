@@ -14,14 +14,20 @@ import org.junit.experimental.categories.Category;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
+import com.google.common.collect.ImmutableMap;
 
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.PublicationDaoTest;
+import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationLink;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import static org.junit.Assert.assertEquals;
 
 @Category(IntegrationTest.class)
 @DatabaseSetup("classpath:/testCleanup/clearAll.xml")
@@ -220,6 +226,52 @@ public class PwPublicationDaoTest extends BaseSpringTest {
 		assertFalse(pubs.get(0).getLinks().isEmpty());
 		PublicationLink<?> publicationLink = (PublicationLink<?>)pubs.get(0).getLinks().toArray()[0];
 		assertEquals("Abstract",publicationLink.getLinkType().getText());
+	}
+	
+	@Test
+	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testData/publicationType.xml"),
+		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+		@DatabaseSetup("classpath:/testData/crossrefDataset.xml")
+	})
+	public void selectByPublicationSubtype(){
+		//get exactly one unnumbered usgs series pubs with a doi
+		Map<String, Object> filters = ImmutableMap.of(
+			PwPublicationDao.SUBTYPE_ID, new int[]{PublicationSubtype.USGS_NUMBERED_SERIES}
+		);
+		List<PwPublication> pubs = PwPublication.getDao().getCrossrefPublications(filters);
+		assertEquals(1, pubs.size());
+		assertEquals("sir2", pubs.get(0).getIndexId());
+		
+		//get exactly one numbered usgs series pubs with a doi
+		filters = ImmutableMap.of(
+			PwPublicationDao.SUBTYPE_ID, new int[]{PublicationSubtype.USGS_UNNUMBERED_SERIES}
+		);
+		pubs = PwPublication.getDao().getCrossrefPublications(filters);
+		assertEquals(1, pubs.size());
+		assertEquals("sir3", pubs.get(0).getIndexId());
+		
+		//get exactly two usgs series pubs with dois
+		filters = ImmutableMap.of(
+			PwPublicationDao.SUBTYPE_ID, new int[]{
+				PublicationSubtype.USGS_NUMBERED_SERIES,
+				PublicationSubtype.USGS_UNNUMBERED_SERIES
+			}
+		);
+		
+		pubs = PwPublication.getDao().getCrossrefPublications(filters);
+		assertEquals(2, pubs.size());
+		List<String> actualIndexIds = pubs.stream().map((pub) -> pub.getIndexId()).sorted().collect(Collectors.toList());
+		List<String> expectedIndexIds = Arrays.asList("sir2", "sir3").stream().sorted().collect(Collectors.toList());
+		assertEquals(expectedIndexIds, actualIndexIds);
+		
+		//verify that none of an unknown subtype ID are returned
+		filters = ImmutableMap.of(
+			PwPublicationDao.SUBTYPE_ID, new int[]{-999}
+		);
+		pubs = PwPublication.getDao().getCrossrefPublications(filters);
+		assertEquals(0, pubs.size());
 	}
 
 }

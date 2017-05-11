@@ -401,6 +401,7 @@
 					</foreach>
 				    )
 			</if>
+			
 
 			<if test="seriesName != null and seriesName.length > 0">
 				and pub.publication_series_id in (select publication_series_id

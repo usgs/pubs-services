@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.google.common.collect.ImmutableMap;
 
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
@@ -53,11 +54,11 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	
 	@Autowired
 	public PwPublicationMvcService(@Qualifier("pwPublicationBusService")
-			final IPwPublicationBusService busService,
+			IPwPublicationBusService busService,
 			@Qualifier("warehouseEndpoint")
-			final String warehouseEndpoint,
-			final ContentNegotiationStrategy contentStrategy,
-			final TransformerFactory transformerFactory
+			String warehouseEndpoint,
+			ContentNegotiationStrategy contentStrategy,
+			TransformerFactory transformerFactory
 	) {
 		this.busService = busService;
 		this.warehouseEndpoint = warehouseEndpoint;
@@ -193,6 +194,38 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		} else {
 			return getPwPublicationJSON(indexId, response);
 		}
+	}
+	/**
+	 * Get all USGS Numbered and Unnumbered Series with DOIs and Contributors
+	 * as Crossref XML.
+	 * @param request
+	 * @param response
+	 * @throws IOException 
+	 */
+	@GetMapping(
+		value = "/bulk-crossref",
+		produces = { MediaType.APPLICATION_XML_VALUE }
+	)
+	public void getBulkCrossref(HttpServletRequest request,
+		HttpServletResponse response) throws IOException{
+		String statement = PwPublicationDao.NS + PwPublicationDao.GET_CROSSREF_PUBLICATIONS;
+		
+		Map<String, Object> filters = ImmutableMap.of(
+			PwPublicationDao.SUBTYPE_ID, new int[]{
+				PublicationSubtype.USGS_NUMBERED_SERIES,
+				PublicationSubtype.USGS_UNNUMBERED_SERIES
+			}
+		);
+		try (OutputStream outputStream = response.getOutputStream()) {
+			response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
+			
+			response.setContentType(MediaType.APPLICATION_XML_VALUE);
+			response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + PubsConstants.MEDIA_TYPE_XML_EXTENSION);
+			ITransformer transformer = transformerFactory.getTransformer(PubsConstants.MEDIA_TYPE_XML_EXTENSION, outputStream, null);
+			busService.stream(statement, filters, new StreamingResultHandler<>(transformer));
+			transformer.end();
+		}
+		
 	}
 	
 	/**

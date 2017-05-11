@@ -1,6 +1,8 @@
 package gov.usgs.cida.pubs.dao.intfc;
 
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
+import java.util.List;
+import java.util.Map;
 
 public interface IPwPublicationDao extends IDao<PwPublication>, IStreamingDao<PwPublication> {
 
@@ -18,4 +20,10 @@ public interface IPwPublicationDao extends IDao<PwPublication>, IStreamingDao<Pw
 	 */
 	PwPublication getByIpdsId(String ipdsId);
 
+	/**
+	 * Get publications eligible for conversion to Crossref
+	 * @param filters
+	 * @return eligible publications
+	 */
+	public List<PwPublication> getCrossrefPublications(Map<String, Object> filters);
 }

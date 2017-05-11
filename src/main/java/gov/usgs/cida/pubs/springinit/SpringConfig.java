@@ -29,6 +29,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import com.fasterxml.jackson.databind.SerializationFeature;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.TemplateException;
+import freemarker.template.TemplateExceptionHandler;
 
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.utility.CustomStringToArrayConverter;
@@ -159,6 +160,14 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
 			templateConfig.setTemplateLoader(
 				new ClassTemplateLoader(this.getClass().getClassLoader(), "templates")
 			);
+			//we will choose whether TemplateExceptions should halt the program
+			templateConfig.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+			
+			//Associate ".ftlx" file extensions with XML auto-escaping,
+			//and ".ftlh" extensions with HTML auto-escaping
+			templateConfig.setRecognizeStandardFileExtensions(true);
+			//we will choose whether TemplateExceptions should be logged
+			templateConfig.setLogTemplateExceptions(false);
 		} catch (IOException | TemplateException ex) {
 			throw new RuntimeException("could not create freemarker template configuration", ex);
 		}

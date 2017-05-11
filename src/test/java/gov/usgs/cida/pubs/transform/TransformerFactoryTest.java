@@ -52,43 +52,49 @@ public class TransformerFactoryTest extends BaseSpringTest {
 	}
 
 	@Test
-	public void testTSVTransformer () {
+	public void testTSVTransformer () throws IOException {
 		ITransformer transformer = factory.getTransformer(PubsConstants.MEDIA_TYPE_TSV_EXTENSION, outputStream, searchResults);
 		assertThat(transformer, is(instanceOf(DelimitedTransformer.class)));
 		DelimitedTransformer dt = (DelimitedTransformer)transformer;
 		assertThat(dt.delimiter, is("\t"));
+		dt.close();
 	}
 	
 	@Test
-	public void testXLSXTransformer () {
+	public void testXLSXTransformer () throws IOException {
 		ITransformer transformer = factory.getTransformer(PubsConstants.MEDIA_TYPE_XLSX_EXTENSION, outputStream, searchResults);
 		assertThat(transformer, is(instanceOf(XlsxTransformer.class)));
+		((XlsxTransformer)transformer).close();
 	}
 	
 	@Test
-	public void testCSV() {
+	public void testCSV() throws IOException {
 		ITransformer transformer = factory.getTransformer(PubsConstants.MEDIA_TYPE_CSV_EXTENSION, outputStream, searchResults);
 		assertThat(transformer, is(instanceOf(DelimitedTransformer.class)));
 		DelimitedTransformer dt = (DelimitedTransformer)transformer;
 		assertThat(dt.delimiter, is(","));
+		dt.close();
 	}
 	
 	@Test
-	public void testCrossref() {
+	public void testCrossref() throws IOException {
 		ITransformer transformer = factory.getTransformer(PubsConstants.MEDIA_TYPE_XML_EXTENSION, outputStream, searchResults);
 		assertThat(transformer, is(instanceOf(CrossrefTransformer.class)));
+		((CrossrefTransformer)transformer).close();
 	}
 	
 	@Test
-	public void testJsonTransformer() {
+	public void testJsonTransformer() throws IOException {
 		ITransformer transformer = factory.getTransformer(PubsConstants.MEDIA_TYPE_JSON_EXTENSION, outputStream, searchResults);
 		assertThat(transformer, is(instanceOf(JsonTransformer.class)));
+		((JsonTransformer)transformer).close();
 	}
 	
 	@Test
-	public void testDefaultToJsonTransformer() {
+	public void testDefaultToJsonTransformer() throws IOException {
 		ITransformer transformer = factory.getTransformer("", outputStream, searchResults);
 		assertThat(transformer, is(instanceOf(JsonTransformer.class)));
+		((JsonTransformer)transformer).close();
 	}
 
 }

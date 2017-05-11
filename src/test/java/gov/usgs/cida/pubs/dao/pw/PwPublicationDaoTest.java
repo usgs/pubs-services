@@ -1,13 +1,16 @@
 package gov.usgs.cida.pubs.dao.pw;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -20,14 +23,10 @@ import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.PublicationDaoTest;
-import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
-import java.util.Arrays;
-import java.util.stream.Collectors;
-import static org.junit.Assert.assertEquals;
 
 @Category(IntegrationTest.class)
 @DatabaseSetup("classpath:/testCleanup/clearAll.xml")
@@ -226,6 +225,22 @@ public class PwPublicationDaoTest extends BaseSpringTest {
 		assertFalse(pubs.get(0).getLinks().isEmpty());
 		PublicationLink<?> publicationLink = (PublicationLink<?>)pubs.get(0).getLinks().toArray()[0];
 		assertEquals("Abstract",publicationLink.getLinkType().getText());
+	}
+
+	@Test
+	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testData/publicationType.xml"),
+		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+		@DatabaseSetup("classpath:/testData/dataset.xml")
+	})
+	public void testGetByNoLinkType() {
+		Map<String, Object> filters = new HashMap<>();
+		filters.put(PublicationDao.NO_LINK_TYPE, new String[] {"Abstract"});
+		List<PwPublication> pubs = PwPublication.getDao().getByMap(filters);
+		assertNotNull(pubs);
+		assertFalse(pubs.isEmpty());
+		assertTrue(pubs.get(0).getLinks().isEmpty());
 	}
 	
 	@Test

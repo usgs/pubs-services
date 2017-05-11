@@ -84,7 +84,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 
 		Map<String, Object> filters = buildFilters(null, contributingOffice, contributor, null, null, endYear, null, global,
 				indexId, ipdsId, listId, null, null, null, null, null, pageRowStart,
-				pageSize, prodId, pubAbstract, null, null, null, q, null, reportNumber,
+				pageSize, prodId, pubAbstract, null, null, null, q, null, null, reportNumber,
 				seriesName, startYear, subtypeName, title, typeName, year);
 
 		List<Publication<?>> pubs = pubBusService.getObjects(filters);

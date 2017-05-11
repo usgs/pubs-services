@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.dao.pw;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertFalse;
@@ -19,6 +20,7 @@ import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.PublicationDaoTest;
+import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
@@ -230,7 +232,6 @@ public class PwPublicationDaoTest extends BaseSpringTest {
 	@DatabaseSetups({
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/contributor.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
 		@DatabaseSetup("classpath:/testData/crossrefDataset.xml")
 	})

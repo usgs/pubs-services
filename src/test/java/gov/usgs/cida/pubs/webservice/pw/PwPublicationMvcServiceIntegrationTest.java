@@ -17,10 +17,14 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
 import org.apache.http.entity.mime.MIME;
 import org.json.JSONObject;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import org.springframework.http.MediaType;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
 
 @Category(IntegrationTest.class)
@@ -114,6 +118,15 @@ public class PwPublicationMvcServiceIntegrationTest extends BaseSpringTest {
 				new JSONObject(getCompareFile(CROSSREF_PUB_JSON_FILE))
 			).allowingAnyArrayOrdering()
 		);
+	}
+	
+	@Test
+	public void notFoundTest() throws Exception {
+		MvcResult rtn = mockMvc.perform(get("/publication/nonExistentPubId?mimetype=json").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound())
+				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+				.andReturn();
+		assertEquals(0, rtn.getResponse().getContentAsString().length());
 	}
 	
 	@Test

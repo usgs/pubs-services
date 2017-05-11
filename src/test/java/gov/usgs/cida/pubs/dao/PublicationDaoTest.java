@@ -16,7 +16,6 @@ import org.junit.experimental.categories.Category;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
-import com.google.common.collect.ImmutableMap;
 
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;

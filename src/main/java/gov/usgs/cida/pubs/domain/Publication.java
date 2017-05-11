@@ -660,7 +660,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 				rtn.get(key).add(contributor);
 			}
 			Comparator<Integer> nullSafeIntegerComparator = Comparator.nullsLast(Integer::compareTo);
-			Comparator<PublicationContributor> publicationRankComparator = Comparator.comparing(PublicationContributor::getRank, nullSafeIntegerComparator);
+			Comparator<PublicationContributor<?>> publicationRankComparator = Comparator.comparing(PublicationContributor<?>::getRank, nullSafeIntegerComparator);
 			//now sort all lists in-place
 			rtn.values().forEach((contributorList) -> {
 				contributorList.sort(publicationRankComparator);

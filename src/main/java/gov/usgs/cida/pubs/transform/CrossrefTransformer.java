@@ -108,24 +108,25 @@ public class CrossrefTransformer extends Transformer {
 
 	@Override
 	public void write(Object result) throws IOException {
-		writeResult(result);
+		//We do not catch any ClassCastExceptions because we want loud, 
+		//early failure.
+		writeResult((Publication<?>)result);
 	}
 	
 	/**
 	 * 
-	 * @param result
-	 * @return true if result was written succesfully, false otherwise.
+	 * @param pub
+	 * @return true if result was written successfully, false otherwise.
 	 * @throws IOException 
 	 */
-	protected boolean writeResult(Object result) throws IOException {
+	protected boolean writeResult(Publication<?> pub) throws IOException {
 		boolean success = false;
 		try {
-			Publication<?> pub = (Publication)result;
 			LOG.trace("Writing crossref report entry for publication with indexId = '" + pub.getIndexId() + "'");
 
 			List<PublicationContributor<?>> contributors = this.getContributors(pub);
 			if (contributors.isEmpty()) {
-				String message = getExcludedErrorMessage(result);
+				String message = getExcludedErrorMessage(pub);
 				LOG.error(message + ". Publication had no contributors.");
 				writeComment(message);
 			} else {
@@ -151,7 +152,7 @@ public class CrossrefTransformer extends Transformer {
 			 * erroneous publications and continue on to the next
 			 * publication.
 			 */
-			String message = getExcludedErrorMessage(result);
+			String message = getExcludedErrorMessage(pub);
 			LOG.error("Error transforming object into Crossref XML. "
 				+ message, e);
 
@@ -177,15 +178,14 @@ public class CrossrefTransformer extends Transformer {
 	
 	/**
 	 * 
-	 * @param result
-	 * @return a generic message if 'result' is not a pub, else return a
-	 * message that helps identify a problematic pub.
+	 * @param pub
+	 * @return a message that helps identify a problematic pub.
 	 */
-	protected String getExcludedErrorMessage(Object result) {
+	protected String getExcludedErrorMessage(Publication<?> pub) {
 		String message = "Excluded Problematic Publication";
-		if (result instanceof Publication) {
+		if (null != pub) {
 			message += " with Index Id: " 
-				+ ((Publication) result).getIndexId();
+				+ pub.getIndexId();
 		}
 		return message;
 	}
@@ -210,6 +210,8 @@ public class CrossrefTransformer extends Transformer {
 	 *
 	 * @param model
 	 * @param templatePath a classpath relative path
+	 * @throws java.io.IOException
+	 * @throws freemarker.template.TemplateException
 	 */
 	protected void writeModelToTemplate(Map<?, ?> model, String templatePath) throws IOException, TemplateException{
 		Template t;

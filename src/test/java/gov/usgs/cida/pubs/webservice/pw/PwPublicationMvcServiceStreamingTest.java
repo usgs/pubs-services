@@ -93,19 +93,6 @@ public class PwPublicationMvcServiceStreamingTest extends BaseSpringTest {
 	}
 
 	@Test
-	public void getPwPublicationPeriodTest() throws Exception {
-		//dot in index
-		MvcResult rtn = mockMvc.perform(get("/publication/6.1?mimetype=json").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-		.andReturn();
-
-		assertThat(getRtnAsJSONObject(rtn),
-				sameJSONObjectAs(new JSONObject(getCompareFile("pwPublication/indexDot.json"))).allowingAnyArrayOrdering());
-	}
-
-	@Test
 	public void getPwPublicationNotFoundTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/publication/3?mimetype=json").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())

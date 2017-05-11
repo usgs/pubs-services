@@ -77,7 +77,7 @@ public class TransformerFactoryTest extends BaseSpringTest {
 	}
 	
 	@Test
-	public void testCrossref() {
+	public void testCrossref() throws IOException {
 		ITransformer transformer = factory.getTransformer(PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION, outputStream, searchResults);
 		assertThat(transformer, is(instanceOf(CrossrefTransformer.class)));
 		((CrossrefTransformer)transformer).close();

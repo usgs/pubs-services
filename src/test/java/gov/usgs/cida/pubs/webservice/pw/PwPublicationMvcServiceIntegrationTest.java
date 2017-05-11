@@ -17,9 +17,11 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
 import org.apache.http.entity.mime.MIME;
 import org.json.JSONObject;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import org.springframework.http.MediaType;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
 
 @Category(IntegrationTest.class)
 @DatabaseSetups({
@@ -34,10 +36,12 @@ public class PwPublicationMvcServiceIntegrationTest extends BaseSpringTest {
 
 	private MockMvc mockMvc;
 	private static final String CROSSREF_PUB_ID = "sir2";
+	private static final String CROSSREF_PUB_JSON_FILE = "pwPublication/sir2.json";
 	@Before
 	public void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 	}
+	
 	@Test
 	public void getJSONWhenNoAcceptHeaderIsSpecified () throws Exception {
 		MvcResult result = mockMvc.perform(get("/publication/" + CROSSREF_PUB_ID))
@@ -47,6 +51,11 @@ public class PwPublicationMvcServiceIntegrationTest extends BaseSpringTest {
 			.andReturn();
 		JSONObject content = getRtnAsJSONObject(result);
 		assertTrue("expects non-empty response",  0 < content.length());
+		assertThat(getRtnAsJSONObject(result),
+			sameJSONObjectAs(
+				new JSONObject(getCompareFile(CROSSREF_PUB_JSON_FILE))
+			).allowingAnyArrayOrdering()
+		);
 	}
 	
 	@Test
@@ -65,6 +74,11 @@ public class PwPublicationMvcServiceIntegrationTest extends BaseSpringTest {
 			.andReturn();
 		JSONObject content = getRtnAsJSONObject(result);
 		assertTrue("expects non-empty response",  0 < content.length());
+		assertThat(getRtnAsJSONObject(result),
+			sameJSONObjectAs(
+				new JSONObject(getCompareFile(CROSSREF_PUB_JSON_FILE))
+			).allowingAnyArrayOrdering()
+		);
 	}
 	
 	@Test
@@ -79,6 +93,11 @@ public class PwPublicationMvcServiceIntegrationTest extends BaseSpringTest {
 			.andReturn();
 		JSONObject content = getRtnAsJSONObject(result);
 		assertTrue("expects non-empty response",  0 < content.length());
+		assertThat(getRtnAsJSONObject(result),
+			sameJSONObjectAs(
+				new JSONObject(getCompareFile(CROSSREF_PUB_JSON_FILE))
+			).allowingAnyArrayOrdering()
+		);
 	}
 	
 	@Test
@@ -90,6 +109,11 @@ public class PwPublicationMvcServiceIntegrationTest extends BaseSpringTest {
 			.andReturn();
 		JSONObject content = getRtnAsJSONObject(result);
 		assertTrue("expects non-empty response",  0 < content.length());
+		assertThat(getRtnAsJSONObject(result),
+			sameJSONObjectAs(
+				new JSONObject(getCompareFile(CROSSREF_PUB_JSON_FILE))
+			).allowingAnyArrayOrdering()
+		);
 	}
 	
 	@Test

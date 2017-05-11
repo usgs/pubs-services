@@ -188,23 +188,10 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	public PwPublication getPwPublication(
 		HttpServletRequest request,
 		HttpServletResponse response,
-		@PathVariable("indexId") String indexId,
-		@ApiParam(allowableValues=PubsConstants.MEDIA_TYPE_JSON_EXTENSION + "," + PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION)
-		@RequestParam(value=PubsConstants.CONTENT_PARAMETER_NAME, required=false) String mimeType
+		@PathVariable("indexId") String indexId
 		) throws HttpMediaTypeNotAcceptableException, IOException {
 		setHeaders(response);
-		List<MediaType> mediaTypes;
-		if(null == mimeType){
-			mediaTypes = contentStrategy.resolveMediaTypes(new ServletWebRequest(request));
-		} else {
-			MediaType knownMediaType = EXTENSION_TO_MEDIA_TYPE.get(mimeType);
-			if(null != knownMediaType) {
-				mediaTypes = Arrays.asList(knownMediaType);
-			} else {
-				mediaTypes = Collections.EMPTY_LIST;
-			}
-		}
-		
+		List<MediaType> mediaTypes = contentStrategy.resolveMediaTypes(new ServletWebRequest(request));
 		if(isCrossRefRequest(mediaTypes)) {
 			getPwPublicationCrossRef(indexId, response);
 			return null;

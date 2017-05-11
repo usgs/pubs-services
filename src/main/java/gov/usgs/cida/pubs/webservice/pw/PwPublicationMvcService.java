@@ -37,8 +37,6 @@ import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.webservice.MvcService;
 import io.swagger.annotations.ApiParam;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.accept.ContentNegotiationStrategy;
@@ -53,10 +51,6 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	private final String warehouseEndpoint;
 	private final ContentNegotiationStrategy contentStrategy;
 	private final TransformerFactory transformerFactory;
-	private final static Map<String, MediaType> EXTENSION_TO_MEDIA_TYPE = ImmutableMap.of(
-		PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION, PubsConstants.MEDIA_TYPE_CROSSREF,
-		PubsConstants.MEDIA_TYPE_JSON_EXTENSION, MediaType.APPLICATION_JSON_UTF8
-	);
 	@Autowired
 	public PwPublicationMvcService(@Qualifier("pwPublicationBusService")
 			IPwPublicationBusService busService,

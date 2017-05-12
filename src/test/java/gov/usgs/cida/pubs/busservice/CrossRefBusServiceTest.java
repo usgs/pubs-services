@@ -1,9 +1,6 @@
 package gov.usgs.cida.pubs.busservice;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -12,6 +9,7 @@ import java.util.Collection;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import static org.mockito.Mockito.*;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,9 +17,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.domain.ContributorType;
-import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.LinkType;
-import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationLink;
@@ -34,8 +30,17 @@ import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.transform.TransformerFactory;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
 import gov.usgs.cida.pubs.validation.xml.XMLValidator;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.protocol.HttpContext;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 public class CrossRefBusServiceTest extends BaseSpringTest {
 
@@ -192,6 +197,32 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		
 		assertTrue("special user characters should be escaped from url", actual.contains(encodedUser));
 		assertTrue("special password characters should be escaped from url", actual.contains(encodedPassword));
+	}
+	
+	@Test
+	public void performMockCrossRefPost() throws IOException{
+		//whitebox testing of posting to Crossref web services
+		HttpPost httpPost = mock(HttpPost.class);
+		CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
+		int expectedStatus = 200;
+		CloseableHttpResponse mockResponse = mock(CloseableHttpResponse.class);
+		StatusLine statusLine = mock(StatusLine.class);
+		when(statusLine.getStatusCode()).thenReturn(expectedStatus);
+		when(mockResponse.getStatusLine()).thenReturn(statusLine);
+		when(httpClient.execute(any(), eq(httpPost), any(HttpContext.class))).thenReturn(mockResponse);
+		HttpResponse response = busService.performCrossRefPost(httpPost, httpClient);
+		verify(httpClient).execute(any(), eq(httpPost), any(HttpContext.class));
+		assertEquals(expectedStatus, response.getStatusLine().getStatusCode());
+	}
+	
+	@Test(expected = IOException.class)
+	public void performFailingCrossRefPost() throws IOException{
+		//whitebox testing to ensure that implementation does not
+		//swallow expected Exception
+		HttpPost httpPost = mock(HttpPost.class);
+		CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
+		when(httpClient.execute(any(), eq(httpPost), any(HttpContext.class))).thenThrow(IOException.class);
+		busService.performCrossRefPost(httpPost, httpClient);
 	}
 	
 }

@@ -51,6 +51,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	private final String warehouseEndpoint;
 	private final ContentNegotiationStrategy contentStrategy;
 	private final TransformerFactory transformerFactory;
+	
 	@Autowired
 	public PwPublicationMvcService(@Qualifier("pwPublicationBusService")
 			IPwPublicationBusService busService,
@@ -88,6 +89,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 			@RequestParam(value=PublicationDao.SERIES_NAME, required=false) String[] seriesName,
 			@RequestParam(value=PublicationDao.REPORT_NUMBER, required=false) String[] reportNumber,
 			@RequestParam(value=PublicationDao.LINK_TYPE, required=false) String[] linkType,
+			@RequestParam(value=PublicationDao.NO_LINK_TYPE, required=false) String[] noLinkType,
 			@RequestParam(value=BaseDao.PAGE_ROW_START, required=false) String pageRowStart,
 			@RequestParam(value=BaseDao.PAGE_NUMBER, required=false) String pageNumber,
 			@RequestParam(value=BaseDao.PAGE_SIZE, required=false) String pageSize,
@@ -108,7 +110,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		//Note that paging is only applied to the json format
 		Map<String, Object> filters = buildFilters(chorus, contributingOffice, contributor, orcid, doi, endYear, g, null,
 				indexId, ipdsId, null, modDateHigh, modDateLow, modXDays, orderBy, null, null,
-				null, prodId, pubAbstract, pubDateHigh, pubDateLow, pubXDays, q, linkType, reportNumber,
+				null, prodId, pubAbstract, pubDateHigh, pubDateLow, pubXDays, q, linkType, noLinkType, reportNumber,
 				seriesName, startYear, subtypeName, title, typeName, year);
 
 		filters.put("url", warehouseEndpoint + "/publication/");
@@ -175,7 +177,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		value="{indexId}",
 		produces={
 			MediaType.APPLICATION_JSON_VALUE, 
-			PubsConstants.MEDIA_TYPE_CROSSREF_VALUE
+			MediaType.APPLICATION_XML_VALUE
 		}
 	)
 	@JsonView(View.PW.class)
@@ -186,7 +188,8 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		) throws HttpMediaTypeNotAcceptableException, IOException {
 		setHeaders(response);
 		List<MediaType> mediaTypes = contentStrategy.resolveMediaTypes(new ServletWebRequest(request));
-		if(isCrossRefRequest(mediaTypes)) {
+		
+		if(isCrossRefRequest(mediaTypes)){
 			getPwPublicationCrossRef(indexId, response);
 			return null;
 		} else {
@@ -233,7 +236,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	 */
 	protected boolean isCrossRefRequest(List<MediaType> mediaTypes){
 		boolean isCrossRefRequest = false;
-		if (null != mediaTypes && mediaTypes.contains(PubsConstants.MEDIA_TYPE_CROSSREF)) {
+		if (null != mediaTypes && mediaTypes.contains(MediaType.APPLICATION_XML)) {
 			isCrossRefRequest = true;
 		}
 		return isCrossRefRequest;
@@ -274,9 +277,9 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	protected void writeCrossrefForPub(HttpServletResponse response, PwPublication pub) throws IOException {
 		try (OutputStream outputStream = response.getOutputStream()) {
 			response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
-			response.setContentType(PubsConstants.MEDIA_TYPE_CROSSREF_VALUE);
+			response.setContentType(MediaType.APPLICATION_XML_VALUE);
 			response.setHeader(MIME.CONTENT_DISPOSITION, "inline");
-			ITransformer transformer = transformerFactory.getTransformer(PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION, outputStream, null);
+			ITransformer transformer = transformerFactory.getTransformer(PubsConstants.MEDIA_TYPE_XML_EXTENSION, outputStream, null);
 			transformer.write(pub);
 			transformer.end();
 		}

@@ -47,7 +47,7 @@ public class TransformerFactory {
 			case PubsConstants.MEDIA_TYPE_CSV_EXTENSION:
 				transformer = new DelimitedTransformer(outputStream, PublicationColumns.getMappings(), ",");
 				break;
-			case PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION:
+			case PubsConstants.MEDIA_TYPE_XML_EXTENSION:
 				transformer = new CrossrefTransformer(
 					outputStream,
 					templateConfiguration,

@@ -241,6 +241,11 @@ public class PwPublicationDaoTest extends BaseSpringTest {
 		assertNotNull(pubs);
 		assertFalse(pubs.isEmpty());
 		assertTrue(pubs.get(0).getLinks().isEmpty());
+		filters.put(PublicationDao.NO_LINK_TYPE, new String[] {"NoExistUniqueNotUsedTestValue"});
+		pubs = PwPublication.getDao().getByMap(filters);
+		assertNotNull(pubs);
+		assertFalse(pubs.isEmpty());
+		assertEquals(2, pubs.size());
 	}
 	
 	@Test

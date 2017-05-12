@@ -83,6 +83,7 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 			@RequestParam(value=PublicationDao.SERIES_NAME, required=false) String[] seriesName,
 			@RequestParam(value=PublicationDao.REPORT_NUMBER, required=false) String[] reportNumber,
 			@RequestParam(value=PublicationDao.LINK_TYPE, required=false) String[] linkType,
+			@RequestParam(value=PublicationDao.NO_LINK_TYPE, required=false) String[] noLinkType,
 			@RequestParam(value=PwPublicationDao.PUB_X_DAYS, required=false) String pubXDays,
 			@RequestParam(value=PwPublicationDao.PUB_DATE_LOW, required=false) String pubDateLow,
 			@RequestParam(value=PwPublicationDao.PUB_DATE_HIGH, required=false) String pubDateHigh,
@@ -106,7 +107,7 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 
 		Map<String, Object> filters = buildFilters(chorus, contributingOffice, contributor, orcid, null, endYear, g, null,
 				indexId, ipdsId, null, modDateHigh, modDateLow, modXDays, orderBy, null, null,
-				null, prodId, pubAbstract, pubDateHigh, pubDateLow, pubXDays, q, linkType, reportNumber,
+				null, prodId, pubAbstract, pubDateHigh, pubDateLow, pubXDays, q, linkType, noLinkType, reportNumber,
 				seriesName, startYear, subtypeName, title, typeName, year);
 
 		List<PwPublication> pubs = busService.getObjects(filters);

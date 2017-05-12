@@ -196,6 +196,7 @@ public class PwPublicationDaoStreamingTest extends BaseSpringTest {
 		filters.put(PublicationDao.SERIES_NAME, new String[] {"test","this","is"});
 		filters.put(PublicationDao.REPORT_NUMBER, new String[] {"test","this","is"});
 		filters.put(PublicationDao.LINK_TYPE, new String[] {"test","this","is"});
+		filters.put(PublicationDao.NO_LINK_TYPE, new String[] {"test","this","is"});
 		filters.put(BaseDao.PAGE_ROW_START, "1");
 		filters.put(BaseDao.PAGE_NUMBER, "1");
 		filters.put(BaseDao.PAGE_SIZE, "1");

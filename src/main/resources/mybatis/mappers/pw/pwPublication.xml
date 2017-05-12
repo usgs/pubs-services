@@ -111,6 +111,18 @@
 			           )
 		</if>
 
+		<if test="noLinkType != null and noLinkType.length > 0">
+			and not exists (select null
+			              from publication_link
+			                   join link_type
+			                     on publication_link.link_type_id = link_type.link_type_id 
+			             where pub.publication_id = publication_link.publication_id and
+			                   <foreach item="lt" collection="noLinkType" open="(" separator="or" close=")">
+			                       upper(link_type.name) = upper(#{lt})
+			                   </foreach>
+			           )
+		</if>
+
 		<if test="orcid != null and orcid.length > 0">
 			and exists (select null
 			              from publication_contributor

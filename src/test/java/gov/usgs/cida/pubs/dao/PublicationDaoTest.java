@@ -16,7 +16,6 @@ import org.junit.experimental.categories.Category;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
-import com.google.common.collect.ImmutableMap;
 
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
@@ -376,6 +375,7 @@ public class PublicationDaoTest extends BaseSpringTest {
 
 		
 		filters.put(PublicationDao.LINK_TYPE, new String[]{"linkType1", "linkType2"});
+		filters.put(PublicationDao.NO_LINK_TYPE, new String[]{"noLinkType1", "noLinkType2"});
 		filters.put(PublicationDao.REPORT_NUMBER, new String[]{"reportNumber1", "reportNumber2"});
 		filters.put(MpPublicationDao.SEARCH_TERMS, new String[]{"searchTerms1", "searchTerms2"});
 

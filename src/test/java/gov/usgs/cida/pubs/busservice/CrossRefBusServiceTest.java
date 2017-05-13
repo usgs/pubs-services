@@ -46,6 +46,7 @@ import org.apache.http.HttpEntity;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -178,6 +179,16 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		
 		assertTrue("special user characters should be escaped from url", actual.contains(encodedUser));
 		assertTrue("special password characters should be escaped from url", actual.contains(encodedPassword));
+	}
+	
+	@Test
+	public void verifyCrossrefUrlBuilderDoesNotSwallowURIProblems() throws UnsupportedEncodingException {
+		try{
+			String actual = busService.buildCrossRefUrl("", "", -2, "", "", "");
+			Assert.fail("Should have raised Exception");
+		} catch (RuntimeException ex) {
+			assertTrue(ex.getCause() instanceof URISyntaxException);
+		}
 	}
 	
 	@Test

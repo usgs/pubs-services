@@ -171,10 +171,9 @@ public class CrossRefBusService implements ICrossRefBusService {
 	
 	@Override
 	public void submitCrossRef(final MpPublication mpPublication) {
-		try {
+		try (CloseableHttpClient httpClient = HttpClients.createDefault()){
 			String crossRefXml = getCrossRefXml(mpPublication);
 			String url = buildCrossRefUrl(crossRefProtocol, crossRefHost, crossRefPort, crossRefUrl, crossRefUser, crossRefPwd);
-			CloseableHttpClient httpClient = HttpClients.createDefault();
 			HttpPost httpPost = buildCrossRefPost(crossRefXml, url);
 			HttpResponse response = performCrossRefPost(httpPost, httpClient);
 			handleResponse(response);

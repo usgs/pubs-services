@@ -31,6 +31,10 @@ import java.util.UUID;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 
+/**
+ * Transforms Publications into Crossref XML. One Transformer should be 
+ * instantiated for each batch.
+ */
 public class CrossrefTransformer extends Transformer {
 	private static final Logger LOG = LoggerFactory.getLogger(CrossrefTransformer.class);
 	
@@ -41,11 +45,14 @@ public class CrossrefTransformer extends Transformer {
 	protected IPublicationBusService pubBusService;
 	protected final String AUTHOR_KEY;
 	protected final String EDITOR_KEY;
+	protected final String batchId;
+	protected final String timestamp;
 	/**
-	 * 
+	 * Constructs and initializes a transformer with a particular batch id
+	 * and timestamp every time.
 	 * @param target
 	 * @param templateConfiguration
-	 * @param crossRefDepositorEmail String email used in crossref submission
+	 * @param crossRefDepositorEmail String email used in Crossref submission
 	 * @param pubBusService
 	 */
 	public CrossrefTransformer(
@@ -69,19 +76,23 @@ public class CrossrefTransformer extends Transformer {
 		//during the lifetime of the object
 		AUTHOR_KEY = PubsUtilities.getAuthorKey();
 		EDITOR_KEY = PubsUtilities.getEditorKey();
+		this.batchId = UUID.randomUUID().toString();
+		this.timestamp = String.valueOf(new Date().getTime());
 		init();
 	}
-	protected String getTimeStamp(){
-		String timestamp = String.valueOf(new Date().getTime());
+	
+	public String getTimestamp() {
 		return timestamp;
 	}
-	protected String getBatchId(){
-		return UUID.randomUUID().toString();
+	
+	public String getBatchId() {
+		return batchId;
 	}
+	
 	@Override
 	protected void init() {
 		
-		String timestamp = getTimeStamp();
+		String timestamp = getTimestamp();
 		String batchId = getBatchId();
 		Map<String, String> model = ImmutableMap.of(
 			"doi_batch_id", batchId,

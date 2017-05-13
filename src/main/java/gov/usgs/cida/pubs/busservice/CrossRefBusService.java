@@ -2,8 +2,12 @@ package gov.usgs.cida.pubs.busservice;
 
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
+import gov.usgs.cida.pubs.dao.CrossRefLogDao;
+import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.domain.CrossRefLog;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.transform.CrossrefTransformer;
 import gov.usgs.cida.pubs.transform.TransformerFactory;
 import gov.usgs.cida.pubs.transform.intfc.ITransformer;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
@@ -50,6 +54,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 	protected final String crossRefSchemaUrl;
 	protected final TransformerFactory transformerFactory;
 	protected final XMLValidator xmlValidator;
+	protected final IDao<CrossRefLog> crossRefLogDao;
 	@Autowired
 	public CrossRefBusService(
 			@Qualifier("crossRefProtocol")
@@ -68,18 +73,22 @@ public class CrossRefBusService implements ICrossRefBusService {
 			final String crossRefSchemaUrl,
 			final PubsEMailer pubsEMailer,
 			final TransformerFactory transformerFactory,
-			final XMLValidator xmlValidator
+			final XMLValidator xmlValidator,
+			final IDao<CrossRefLog> crossRefLogDao
 	) {
+		//url-related variables:
 		this.crossRefProtocol = crossRefProtocol;
 		this.crossRefHost = crossRefHost;
 		this.crossRefUrl = crossRefUrl;
 		this.crossRefPort = crossRefPort;
 		this.crossRefUser = crossRefUser;
 		this.crossRefPwd = crossRefPwd;
+		//non-url variables:
 		this.pubsEMailer = pubsEMailer;
 		this.crossRefSchemaUrl = crossRefSchemaUrl;
 		this.transformerFactory = transformerFactory;
 		this.xmlValidator = xmlValidator;
+		this.crossRefLogDao = crossRefLogDao;
 	}
 
 	/**
@@ -94,12 +103,16 @@ public class CrossRefBusService implements ICrossRefBusService {
 		String xml = null;
 		try{
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-			ITransformer transformer = transformerFactory.getTransformer(PubsConstants.MEDIA_TYPE_XML_EXTENSION, baos, null);
+			
+			CrossrefTransformer transformer = (CrossrefTransformer) transformerFactory.getTransformer(PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION, baos, null);
 			transformer.write(pub);
 			transformer.end();
-
+			
 			xml = new String(baos.toByteArray(), PubsConstants.DEFAULT_ENCODING);
+			
+			//it is important to log the XML, even if it is invalid
+			CrossRefLog logEntry = new CrossRefLog(transformer.getBatchId(), pub.getId(), xml);
+			crossRefLogDao.add(logEntry);
 			
 			xmlValidator.validate(crossRefSchemaUrl, xml);
 		} catch (XMLValidationException ex) {

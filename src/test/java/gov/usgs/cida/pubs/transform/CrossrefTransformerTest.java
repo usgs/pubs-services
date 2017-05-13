@@ -81,7 +81,7 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 			 * @return 
 			 */
 			@Override
-			protected String getBatchId() {
+			public String getBatchId() {
 				return TEST_BATCH_ID;
 			}
 			
@@ -91,14 +91,10 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 			 * @return 
 			 */
 			@Override
-			protected String getTimeStamp() {
+			public String getTimestamp() {
 				return TEST_TIMESTAMP;
 			}
 		};
-	}
-	
-	@After
-	public void tearDown() {
 	}
 	
 	private void assertWellFormed(String xml) {
@@ -115,70 +111,30 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 		assertEquals("The XML is not well-formed.", "", errorMsg);
 	}
 	
-	private Publication<?> buildNumberedSeriesPub() {
-		Publication<?> pub = PublicationTest.buildAPub(new Publication<>(), 42);
-		PublicationSubtype numbered = new PublicationSubtype();
-		numbered.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
-		pub.setPublicationSubtype(numbered);
-		PublicationSeries series = new PublicationSeries();
-		series.setCode("OFR");
-		series.setText("Open-File Report");
-		series.setOnlineIssn("2331-1258");
-		pub.setIndexId("numbered");
-		pub.setSeriesTitle(series);
-		pub.setPublicationYear("2013");
-		pub.setTitle("Postwildfire debris-flow hazard assessment of the area burned by the 2013 West Fork Fire Complex, southwestern Colorado");
-		pub.setSeriesNumber("2013-1259");
-		pub.setDoi("10.3133/ofr20131259");
-
-		Collection<PublicationContributor<?>> contributors = new ArrayList<>();
-		contributors.add(PublicationContributorTest.buildPersonPublicationAuthor());
-		contributors.add(PublicationContributorTest.buildPersonPublicationEditor());
-		contributors.add(PublicationContributorTest.buildCorporatePublicationAuthor());
-		contributors.add(PublicationContributorTest.buildCorporatePublicationEditor());
-		pub.setContributors(contributors);
-
-		pub.setStartPage("52");
-		pub.setEndPage("56");
-		
-		Collection<PublicationLink<?>> links = new ArrayList<>();
-		links.add(PublicationLinkTest.buildIndexLink());
-		pub.setLinks(links);
-
-		return pub;
+	/**
+	 * While in most test cases we override the getTimestamp() method to get
+	 * a consistent result over time, here we construct our own instance 
+	 * that does not override the default to ensure the value is being
+	 * initialized during instantiation.
+	 */
+	@Test
+	public void testTimestampIsInitialized() {
+		CrossrefTransformer myInstance = new CrossrefTransformer(this.target, templateConfig, "nobody@usgs.gov", publicationBusService);
+		assertNotNull(myInstance.getTimestamp());
+		assertTrue("timestamp should be of nonzero length", 0 < myInstance.getTimestamp().length());
 	}
-	protected Publication<?> buildUnNumberedSeriesPub() {
-		Publication<?> pub = PublicationTest.buildAPub(new Publication<>(), 42);
-		PublicationSubtype unnumbered = new PublicationSubtype();
-		unnumbered.setId(PublicationSubtype.USGS_UNNUMBERED_SERIES);
-		pub.setPublicationSubtype(unnumbered);
-		PublicationSeries series = new PublicationSeries();
-		series.setCode("GIP");
-		series.setText("General Information Product");
-		pub.setIndexId("unnumbered");
-		pub.setSeriesTitle(series);
-		pub.setPublicationYear("2013");
-		pub.setTitle("Postwildfire debris-flow hazard assessment of the area burned by the 2013 West Fork Fire Complex, southwestern Colorado");
-		pub.setDoi("10.3133/ofr20131259");
 	
-		pub.setStartPage("52");
-		pub.setEndPage("56");
-		
-		
-		Collection<PublicationContributor<?>> contributors = new ArrayList<>();
-		
-		contributors.add(PublicationContributorTest.buildPersonPublicationAuthor());
-		contributors.add(PublicationContributorTest.buildPersonPublicationEditor());
-		contributors.add(PublicationContributorTest.buildCorporatePublicationAuthor());
-		contributors.add(PublicationContributorTest.buildCorporatePublicationEditor());
-		
-		pub.setContributors(contributors);
-		
-		Collection<PublicationLink<?>> links = new ArrayList<>();
-		links.add(PublicationLinkTest.buildIndexLink());
-		pub.setLinks(links);
-		
-		return pub;
+	/**
+	 * While in most test cases we override the getBatchId() method to get
+	 * a consistent result over time, here we construct our own instance 
+	 * that does not override the method to ensure the value is being
+	 * initialized during instantiation.
+	 */
+	@Test
+	public void testBatchIdIsInitialized() {
+		CrossrefTransformer myInstance = new CrossrefTransformer(this.target, templateConfig, "nobody@usgs.gov", publicationBusService);
+		assertNotNull(myInstance.getBatchId());
+		assertTrue("batch id should be of nonzero length", 0 < myInstance.getBatchId().length());
 	}
 	
 	/**
@@ -195,7 +151,7 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 	
 	@Test
 	public void testPubWithoutContributors() throws IOException, UnsupportedEncodingException {
-		Publication<?> pub = buildUnNumberedSeriesPub();
+		Publication<?> pub = CrossrefTestPubBuilder.buildUnNumberedSeriesPub(new Publication<>());
 		pub.setContributors(Collections.EMPTY_LIST);
 		boolean success = instance.writeResult(pub);
 		assertFalse("A publication should not have an entry written if it has no contributors", success);
@@ -217,7 +173,7 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 	
 	@Test
 	public void testPubWithoutSeriesTitle() throws IOException, UnsupportedEncodingException {
-		Publication<?> pub = buildUnNumberedSeriesPub();
+		Publication<?> pub = CrossrefTestPubBuilder.buildUnNumberedSeriesPub(new Publication<>());
 		pub.setSeriesTitle(null);
 		boolean success = instance.writeResult(pub);
 		assertFalse("A publication should not have an entry written if it has no associated series", success);
@@ -242,7 +198,7 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 	 */
 	@Test
 	public void testOneUnNumberedSeriesPub() throws IOException {
-		Publication<?> pub = buildUnNumberedSeriesPub();
+		Publication<?> pub = CrossrefTestPubBuilder.buildUnNumberedSeriesPub(new Publication<>());
 		boolean success = instance.writeResult(pub);
 		assertTrue("should be able to write a valid publication", success);
 		instance.end();
@@ -260,7 +216,7 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 	 */
 	@Test
 	public void testOneNumberedSeriesPub() throws IOException {
-		Publication<?> pub = buildNumberedSeriesPub();
+		Publication<?> pub = CrossrefTestPubBuilder.buildNumberedSeriesPub(new Publication<>());
 		boolean success = instance.writeResult(pub);
 		assertTrue("should be able to write a valid publication", success);
 		instance.end();
@@ -286,7 +242,7 @@ public class CrossrefTransformerTest extends BaseSpringTest {
 		PublicationContributor<?> strangePublicationContributor = new PublicationContributor<>();
 		strangePublicationContributor.setContributorType(unknownContributorType);
 		
-		Publication<?> pub = buildNumberedSeriesPub();
+		Publication<?> pub = CrossrefTestPubBuilder.buildNumberedSeriesPub(new Publication<>());
 		
 		//add the contributor of unknown type to the publication
 		Collection<PublicationContributor<?>> contributors = pub.getContributors();

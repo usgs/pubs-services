@@ -16,7 +16,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
+import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.ContributorType;
+import gov.usgs.cida.pubs.domain.CrossRefLog;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
@@ -27,8 +29,11 @@ import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
+import gov.usgs.cida.pubs.transform.CrossrefTestPubBuilder;
+import gov.usgs.cida.pubs.transform.CrossrefTransformerTest;
 import gov.usgs.cida.pubs.transform.TransformerFactory;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
+import gov.usgs.cida.pubs.validation.xml.XMLValidationException;
 import gov.usgs.cida.pubs.validation.xml.XMLValidator;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -39,7 +44,10 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.protocol.HttpContext;
+import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 
 public class CrossRefBusServiceTest extends BaseSpringTest {
@@ -67,13 +75,14 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	protected PubsEMailer pubsEMailer;
 	@Mock
 	IPublicationBusService pubBusService;
-	@Mock
+	@Autowired
 	TransformerFactory transformerFactory;
 	@Mock
 	XMLValidator xmlValidator;
+	@Mock
+	IDao<CrossRefLog> crossRefDao;
 	
 	private CrossRefBusService busService;
-	
 	@Before
 	public void initTest() throws Exception {
 		MockitoAnnotations.initMocks(this);
@@ -87,73 +96,14 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 			crossRefSchemaUrl,
 			pubsEMailer,
 			transformerFactory,
-			xmlValidator
+			xmlValidator,
+			crossRefDao
 		);
-	}
-	private MpPublication buildNumberedSeriesPub() {
-		MpPublication pub = new MpPublication();
-		PublicationSubtype numbered = new PublicationSubtype();
-		numbered.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
-		pub.setPublicationSubtype(numbered);
-		PublicationSeries series = new PublicationSeries();
-		series.setCode("OFR");
-		series.setText("Open-File Report");
-		series.setOnlineIssn("2331-1258");
-		pub.setIndexId("numbered");
-		pub.setSeriesTitle(series);
-		pub.setPublicationYear("2013");
-		pub.setTitle("Postwildfire debris-flow hazard assessment of the area burned by the 2013 West Fork Fire Complex, southwestern Colorado");
-		pub.setSeriesNumber("2013-1259");
-		pub.setDoi("10.3133/ofr20131259");
-
-		Collection<PublicationContributor<?>> contributors = new ArrayList<>();
-		UsgsContributor contributor = new UsgsContributor();
-		contributor.setFamily("familyNameAuthor");
-		ContributorType contributorTypeAuthor = new ContributorType();
-		contributorTypeAuthor.setText("Authors");
-		PublicationContributor<?> pubContributor = new MpPublicationContributor();
-		pubContributor.setContributor(contributor);
-		pubContributor.setContributorType(contributorTypeAuthor);
-		contributors.add(pubContributor);
-		pub.setContributors(contributors);
-
-		pub.setStartPage("52");
-		pub.setEndPage("56");
-		
-		Collection<PublicationLink<?>> links = new ArrayList<>();
-		PublicationLink<?> link = new MpPublicationLink();
-		LinkType linkType = new LinkType();
-		linkType.setId(LinkType.INDEX_PAGE);
-		link.setLinkType(linkType);
-		link.setUrl("http://pubs.usgs.gov/of/2013/1259/");
-		links.add(link);
-		pub.setLinks(links);
-
-		return pub;
-	}
-
-	protected MpPublication buildUnNumberedSeriesPub() {
-		MpPublication pub = new MpPublication();
-		PublicationSubtype unnumbered = new PublicationSubtype();
-		unnumbered.setId(PublicationSubtype.USGS_UNNUMBERED_SERIES);
-		pub.setPublicationSubtype(unnumbered);
-		PublicationSeries series = new PublicationSeries();
-		series.setCode("GIP");
-		series.setText("General Information Product");
-		pub.setIndexId("unnumbered");
-		pub.setSeriesTitle(series);
-		pub.setPublicationYear("2013");
-		pub.setTitle("Postwildfire debris-flow hazard assessment of the area burned by the 2013 West Fork Fire Complex, southwestern Colorado");
-		pub.setDoi("10.3133/ofr20131259");
-	
-		pub.setStartPage("52");
-		pub.setEndPage("56");
-		return pub;
 	}
 	
 	@Test
 	public void submitCrossRefTest() {
-		MpPublication pub = buildNumberedSeriesPub();
+		MpPublication pub = (MpPublication) CrossrefTestPubBuilder.buildNumberedSeriesPub(new MpPublication());
 		busService.submitCrossRef(pub);
 	}
 	
@@ -224,5 +174,35 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		when(httpClient.execute(any(), eq(httpPost), any(HttpContext.class))).thenThrow(IOException.class);
 		busService.performCrossRefPost(httpPost, httpClient);
 	}
+	
+	@Test
+	public void getGoodCrossrefXml() throws XMLValidationException, IOException {
+		Publication<?> pub = CrossrefTestPubBuilder.buildUnNumberedSeriesPub(new Publication<>());
+		String xml = busService.getCrossRefXml(pub);
+		
+		//verify that the attempt was logged
+		verify(crossRefDao).add(any());
+		
+		assertNotNull(xml);
+		assertTrue("should get some XML", 0 < xml.length());
+
+	}	
+	 
+	@Test
+	public void verifyInvalidXmlAttemptIsLogged() throws XMLValidationException, IOException {
+		Publication<?> pub = CrossrefTestPubBuilder.buildNumberedSeriesPub(new Publication<>());
+		Mockito.doThrow(new XMLValidationException())
+			.when(xmlValidator).validate(anyString(), anyString());
+		try{
+			busService.getCrossRefXml(pub);
+			Assert.fail("XMLValidationException should have been raised");
+		} catch (XMLValidationException ex) {
+			//verify that the attempt was logged even if the xml
+			//was invalid
+			verify(crossRefDao).add(any());
+		}
+		
+	}
+	
 	
 }

@@ -2,14 +2,12 @@ package gov.usgs.cida.pubs.busservice;
 
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
-import gov.usgs.cida.pubs.dao.CrossRefLogDao;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.CrossRefLog;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.transform.CrossrefTransformer;
 import gov.usgs.cida.pubs.transform.TransformerFactory;
-import gov.usgs.cida.pubs.transform.intfc.ITransformer;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
 import gov.usgs.cida.pubs.validation.xml.XMLValidationException;
 import gov.usgs.cida.pubs.validation.xml.XMLValidator;

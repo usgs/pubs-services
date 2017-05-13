@@ -262,9 +262,15 @@ public class CrossRefBusService implements ICrossRefBusService {
 	 * @param response 
 	 */
 	protected void handleResponse(HttpResponse response) {
-		if (null == response || null == response.getStatusLine()
-			|| HttpStatus.SC_OK != response.getStatusLine().getStatusCode()) {
-			String msg = null == response ? "rtn is null" : response.getStatusLine().toString();
+		String msg = null;
+		if (null == response) {
+			msg = "response was null";
+		} else if (null == response.getStatusLine()) {
+			msg = "response status line was null";
+		} else if (HttpStatus.SC_OK != response.getStatusLine().getStatusCode()) {
+			msg = response.getStatusLine().toString();
+		}
+		if (null != msg) {
 			LOG.error("Error in response from Crossref Submission: " + msg);
 			pubsEMailer.sendMail("Error in response from Crossref Submission", msg);
 		}

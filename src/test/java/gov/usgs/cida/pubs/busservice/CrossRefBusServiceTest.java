@@ -56,6 +56,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
+import org.springframework.http.HttpStatus;
 
 public class CrossRefBusServiceTest extends BaseSpringTest {
 
@@ -242,8 +243,39 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 			//was invalid
 			verify(crossRefDao).add(any());
 		}
-		
 	}
 	
+	@Test
+	public void testHandleGoodResponse() {
+		StatusLine statusLine = mock(StatusLine.class);
+		when(statusLine.getStatusCode()).thenReturn(HttpStatus.OK.value());
+		HttpResponse response = mock(HttpResponse.class);
+		when(response.getStatusLine()).thenReturn(statusLine);
+		busService.handleResponse(response);
+		verify(pubsEMailer, never()).sendMail(any(), any());
+	}
 	
+	@Test
+	public void testHandleNullResponse() {
+		busService.handleResponse(null);
+		verify(pubsEMailer).sendMail(anyString(), anyString());
+	}
+	
+	@Test
+	public void testEmptyStatusLineResponse() {
+		HttpResponse response = mock(HttpResponse.class);
+		when(response.getStatusLine()).thenReturn(null);
+		busService.handleResponse(response);
+		verify(pubsEMailer).sendMail(anyString(), anyString());
+	}
+	
+	@Test
+	public void testHandleNotFoundResponse() {
+		StatusLine statusLine = mock(StatusLine.class);
+		when(statusLine.getStatusCode()).thenReturn(HttpStatus.NOT_FOUND.value());
+		HttpResponse response = mock(HttpResponse.class);
+		when(response.getStatusLine()).thenReturn(statusLine);
+		busService.handleResponse(response);
+		verify(pubsEMailer).sendMail(anyString(), anyString());
+	}
 }

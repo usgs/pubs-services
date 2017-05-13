@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.ContributorType;
@@ -35,15 +36,21 @@ import gov.usgs.cida.pubs.transform.TransformerFactory;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
 import gov.usgs.cida.pubs.validation.xml.XMLValidationException;
 import gov.usgs.cida.pubs.validation.xml.XMLValidator;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -181,6 +188,32 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
 		when(httpClient.execute(any(), eq(httpPost), any(HttpContext.class))).thenThrow(IOException.class);
 		busService.performCrossRefPost(httpPost, httpClient);
+	}
+	
+	@Test
+	public void tetBuildCrossRefPost() throws IOException {
+		String expectedBody = "expectedBody";
+		String expectedUrl = "http://pubs.er.usgs.gov/";
+		HttpPost post = busService.buildCrossRefPost(expectedBody, expectedUrl);
+		HttpEntity entity = post.getEntity();
+		assertNotNull(entity);
+		EntityUtils.consume(entity);
+		
+		/**
+		 * Apache does not provide an easy way to extract a 
+		 * MultiPartEntity from an HttpPost's Entity, so instead we 
+		 * extract a String and make some loose assertions on the String
+		 */
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		InputStream content = entity.getContent();
+		assertNotNull(content);
+		IOUtils.copy(content, baos);
+		String requestBody = baos.toString(PubsConstants.DEFAULT_ENCODING);
+		assertNotNull(requestBody);
+		assertTrue(0 < requestBody.length());
+		assertTrue(requestBody.contains(PubsConstants.DEFAULT_ENCODING));
+		assertTrue(requestBody.contains(PubsConstants.MEDIA_TYPE_CROSSREF_VALUE));
+		assertTrue(requestBody.contains(expectedBody));
 	}
 	
 	@Test

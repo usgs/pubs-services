@@ -43,6 +43,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -57,6 +61,10 @@ import static org.junit.Assert.assertNotNull;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import org.springframework.http.HttpStatus;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.protocol.HttpContext;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 public class CrossRefBusServiceTest extends BaseSpringTest {
 

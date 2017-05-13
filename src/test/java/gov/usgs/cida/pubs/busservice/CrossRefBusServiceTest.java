@@ -107,6 +107,14 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		busService.submitCrossRef(pub);
 	}
 	
+	@Test
+	public void verifyEmailSentOnSubmissionError() throws XMLValidationException {
+		//create an error during the submission process
+		Mockito.doThrow(Exception.class).when(xmlValidator).validate(any(), any());
+		MpPublication pub = (MpPublication) CrossrefTestPubBuilder.buildNumberedSeriesPub(new MpPublication());
+		busService.submitCrossRef(pub);
+		Mockito.verify(pubsEMailer).sendMail(any(), any());
+	}
 	
 	@Test
 	public void getIndexIdMessageForNullPub() {

@@ -17,8 +17,8 @@ import java.util.Collection;
  */
 public class CrossrefTestPubBuilder {
 
-	public static Publication<?> buildUnNumberedSeriesPub(Publication<?> pub) {
-		pub = PublicationTest.buildAPub(pub, 42);
+	public static Publication<?> buildUnNumberedSeriesPub(Publication<?> inPub) {
+		Publication<?> pub = PublicationTest.buildAPub(inPub, 42);
 		PublicationSubtype unnumbered = new PublicationSubtype();
 		unnumbered.setId(PublicationSubtype.USGS_UNNUMBERED_SERIES);
 		pub.setPublicationSubtype(unnumbered);
@@ -50,8 +50,8 @@ public class CrossrefTestPubBuilder {
 		return pub;
 	}
 
-	public static Publication<?> buildNumberedSeriesPub(Publication<?> pub) {
-		pub = PublicationTest.buildAPub(pub, 42);
+	public static Publication<?> buildNumberedSeriesPub(Publication<?> inPub) {
+		Publication<?> pub = PublicationTest.buildAPub(inPub, 42);
 		PublicationSubtype numbered = new PublicationSubtype();
 		numbered.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
 		pub.setPublicationSubtype(numbered);

@@ -144,6 +144,13 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	}
 	
 	@Test
+	public void getIndexIdMessageForPubWithEmptyIndexId() {
+		Publication<?> pub = new Publication<>();
+		pub.setIndexId("");
+		assertEquals("", busService.getIndexIdMessage(pub));
+	}
+	
+	@Test
 	public void getIndexIdForPubWithIndexId() {
 		String indexId = "greatPubIndexId07";
 		Publication<?> pub = new Publication<>();

@@ -46,7 +46,14 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.protocol.HttpContext;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import org.springframework.test.annotation.DirtiesContext;
 
+/**
+ * In this class we're overriding CrossRefBusService's ICrossRefLogDao member with
+ * a mock. We don't want subsequent tests to have the opportunity to access the
+ * mock, so we tell Spring to invalidate the Context cache via @DirtiesContext.
+ */
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class CrossRefBusServiceTest extends BaseSpringTest {
 
 	@Autowired
@@ -77,7 +84,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	@Mock
 	XMLValidator xmlValidator;
 	@Mock
-	IDao<CrossRefLog> crossRefDao;
+	IDao<CrossRefLog> crossRefLogDao;
 	
 	private CrossRefBusService busService;
 	@Before
@@ -93,9 +100,10 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 			crossRefSchemaUrl,
 			pubsEMailer,
 			transformerFactory,
-			xmlValidator,
-			crossRefDao
+			xmlValidator
 		);
+		//override the default ICrossRefLogDao with a mock.
+		busService.setCrossRefLogDao(crossRefLogDao);
 	}
 	
 	@Test
@@ -229,7 +237,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		String xml = busService.getCrossRefXml(pub);
 		
 		//verify that the attempt was logged
-		verify(crossRefDao).add(any());
+		verify(crossRefLogDao).add(any());
 		
 		assertNotNull(xml);
 		assertTrue("should get some XML", 0 < xml.length());
@@ -247,7 +255,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		} catch (XMLValidationException ex) {
 			//verify that the attempt was logged even if the xml
 			//was invalid
-			verify(crossRefDao).add(any());
+			verify(crossRefLogDao).add(any());
 		}
 	}
 	

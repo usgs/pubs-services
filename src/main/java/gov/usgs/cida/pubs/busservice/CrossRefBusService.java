@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.busservice;
 
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
+import gov.usgs.cida.pubs.dao.CrossRefLogDao;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.CrossRefLog;
 import gov.usgs.cida.pubs.domain.Publication;
@@ -52,7 +53,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 	protected final String crossRefSchemaUrl;
 	protected final TransformerFactory transformerFactory;
 	protected final XMLValidator xmlValidator;
-	protected final IDao<CrossRefLog> crossRefLogDao;
+	private IDao<CrossRefLog> crossRefLogDao;
 	@Autowired
 	public CrossRefBusService(
 			@Qualifier("crossRefProtocol")
@@ -71,8 +72,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 			final String crossRefSchemaUrl,
 			final PubsEMailer pubsEMailer,
 			final TransformerFactory transformerFactory,
-			final XMLValidator xmlValidator,
-			final IDao<CrossRefLog> crossRefLogDao
+			final XMLValidator xmlValidator
 	) {
 		//url-related variables:
 		this.crossRefProtocol = crossRefProtocol;
@@ -86,7 +86,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 		this.crossRefSchemaUrl = crossRefSchemaUrl;
 		this.transformerFactory = transformerFactory;
 		this.xmlValidator = xmlValidator;
-		this.crossRefLogDao = crossRefLogDao;
+		this.crossRefLogDao = CrossRefLog.getDao();
 	}
 
 	/**
@@ -264,5 +264,13 @@ public class CrossRefBusService implements ICrossRefBusService {
 			LOG.error("Error in response from Crossref Submission: " + msg);
 			pubsEMailer.sendMail("Error in response from Crossref Submission", msg);
 		}
+	}
+	
+	/**
+	 * This should mostly be used by tests injecting a mock DAO
+	 * @param crossRefLogDao the crossRefLogDao to set
+	 */
+	public void setCrossRefLogDao(IDao<CrossRefLog> crossRefLogDao) {
+		this.crossRefLogDao = crossRefLogDao;
 	}
 }

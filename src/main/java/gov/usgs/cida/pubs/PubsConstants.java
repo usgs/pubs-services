@@ -6,6 +6,22 @@ public final class PubsConstants {
 
 	public static final String DEFAULT_ENCODING = "UTF-8";
 
+	/**
+	 * The URL_ENCODING constant should only be used when calling 
+	 * URLEncoder.encode. In ALL other cases, use PubsConstants.DEFAULT_ENCODING.
+	 * Example:
+	 * URLEncoder.encode("someValue", PubsConstants.URL_ENCODING);
+	 * 
+	 * URL_ENCODING should always equal UTF-8 because that is what W3C specs
+	 * mandate. Even if the document that contains the URL is in a different
+	 * encoding, we still need to pass UTF-8 to URLEncoder.encode.
+	 * 
+	 * Details:
+	 * https://www.w3.org/TR/html40/appendix/notes.html#non-ascii-chars
+	 * http://www.ietf.org/rfc/rfc2141.txt
+	 * https://tools.ietf.org/html/rfc3986#section-2.5
+	 */
+	public static final String URL_ENCODING = "UTF-8";
 
 	public static final String MEDIA_TYPE_RSS_VALUE = MediaType.TEXT_XML_VALUE;
 	public static final String MEDIA_TYPE_CSV_VALUE = "text/csv";

@@ -157,18 +157,10 @@ public class CrossRefBusService implements ICrossRefBusService {
 	protected String buildCrossRefUrl(String protocol, String host, int port, String base, String user, String password) throws UnsupportedEncodingException {
 		String url = null;
 		try {
-			/*
-			  Java docs strongly recommend that we encode URL components
-			  using UTF-8. PubsConstants.DEFAULT_ENCODING may or 
-			  may not be UTF-8 over time.
-			  https://docs.oracle.com/javase/8/docs/api/java/net/URLEncoder.html#encode-java.lang.String-java.lang.String-
-			*/
-			
-			final String UTF8 = "UTF-8";
 			String query = "?operation=doMDUpload&login_id=" +
-			URLEncoder.encode(user, UTF8) +
+			URLEncoder.encode(user, PubsConstants.URL_ENCODING) +
 			"&login_passwd=" +
-			URLEncoder.encode(password, UTF8) +
+			URLEncoder.encode(password, PubsConstants.URL_ENCODING) +
 			"&area=live";
 			URI uri = new URI(protocol, null, host, port, base, null, null);
 			url = uri.toString() + query;

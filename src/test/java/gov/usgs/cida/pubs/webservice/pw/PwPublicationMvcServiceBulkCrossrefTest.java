@@ -31,8 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 })
 public class PwPublicationMvcServiceBulkCrossrefTest extends BaseSpringTest {
 	private MockMvc mockMvc;
-	private static final String CROSSREF_PUB_ID = "sir2";
-	private static final String CROSSREF_PUB_JSON_FILE = "pwPublication/sir2.json";
 	private static final String URL = "/publication/crossref";
 	@Before
 	public void setup() {

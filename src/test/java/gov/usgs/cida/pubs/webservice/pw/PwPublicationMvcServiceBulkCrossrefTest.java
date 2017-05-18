@@ -32,6 +32,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class PwPublicationMvcServiceBulkCrossrefTest extends BaseSpringTest {
 	private MockMvc mockMvc;
 	private static final String URL = "/publication/crossref";
+	
+	@Autowired
+	@Qualifier("crossRefSchemaUrl")
+	protected String crossrefSchemaUrl;
 	@Before
 	public void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();

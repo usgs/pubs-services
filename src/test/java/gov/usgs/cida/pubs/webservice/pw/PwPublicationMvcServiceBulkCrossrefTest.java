@@ -5,12 +5,22 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.PubsConstants;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.entity.mime.MIME;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -19,6 +29,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.xmlunit.input.NormalizedSource;
+import org.xmlunit.validation.Languages;
+import org.xmlunit.validation.ValidationResult;
+import org.xmlunit.validation.Validator;
 
 @Category(IntegrationTest.class)
 @DatabaseSetups({
@@ -36,11 +50,29 @@ public class PwPublicationMvcServiceBulkCrossrefTest extends BaseSpringTest {
 	@Autowired
 	@Qualifier("crossRefSchemaUrl")
 	protected String crossrefSchemaUrl;
+	
+	protected Validator validator = null;
+	
 	@Before
-	public void setup() {
+	public void setup() throws UnsupportedEncodingException, IOException, IOException {
 		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+
+		validator = Validator.forLanguage(Languages.W3C_XML_SCHEMA_NS_URI);
+		StreamSource schemaSource = new StreamSource(crossrefSchemaUrl);
+		
+//		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//		IOUtils.copy(schemaSource.getInputStream(), baos);
+//		String schemaStr = baos.toString(PubsConstants.DEFAULT_ENCODING);
+//		System.out.println(schemaStr);
+		validator.setSchemaSource(schemaSource);
 	}
 	
+	@Test
+	public void schemaIsValid() {
+		//basic sanity check
+		ValidationResult r = validator.validateSchema();
+		assertTrue(r.isValid());
+	}
 	
 	@Test
 	public void getBulkCrossRefWithNoContentTypeSpecified() throws Exception{
@@ -62,6 +94,8 @@ public class PwPublicationMvcServiceBulkCrossrefTest extends BaseSpringTest {
 		String resultText = result.getResponse().getContentAsString();
 		assertNotNull(resultText);
 		assertTrue("expects non-empty response", 0 < resultText.length());
+		ValidationResult r = validator.validateInstance(new StreamSource(new StringReader(resultText)));
+		assertTrue(r.isValid());
 	}
 	
 	@Test
@@ -78,6 +112,8 @@ public class PwPublicationMvcServiceBulkCrossrefTest extends BaseSpringTest {
 		String resultText = result.getResponse().getContentAsString();
 		assertNotNull(resultText);
 		assertTrue("expects non-empty response", 0 < resultText.length());
+		ValidationResult r = validator.validateInstance(new StreamSource(new StringReader(resultText)));
+		assertTrue(r.isValid());
 	}
 	
 }

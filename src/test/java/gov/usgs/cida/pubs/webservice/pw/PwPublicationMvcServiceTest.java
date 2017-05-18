@@ -55,8 +55,6 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 	
 	@Mock
 	private TransformerFactory transformerFactory;
-	@Mock
-	private TransformerFactory mockTransformerFactory;
 	
 	@Before
 	public void setup() {

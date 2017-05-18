@@ -118,6 +118,11 @@ public class TestSpringConfig {
 	}
 
 	@Bean
+	public String crossRefSchemaUrl() {
+		return "http://www.crossref.org/schema/deposit/crossref4.4.0.xsd";
+	}
+	
+	@Bean
 	public String pubsEmailList() {
 		return "drsteini@usgs.gov";
 	}

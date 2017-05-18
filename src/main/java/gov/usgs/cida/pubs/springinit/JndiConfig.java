@@ -45,11 +45,6 @@ public class JndiConfig {
 		return (String) ctx.lookup("java:comp/env/jms/ipdsQueueName");
 	}
 
-//	@Bean
-//	public String costCenterQueueName() throws NamingException {
-//		return (String) ctx.lookup("java:comp/env/jms/costCenterQueueName");
-//	}
-
 	@Bean
 	public String ipdsEndpoint() throws NamingException {
 		return (String) ctx.lookup("java:comp/env/pubs/ipds/endpoint");
@@ -69,7 +64,7 @@ public class JndiConfig {
 	public String crossRefUrl() throws NamingException {
 		return (String) ctx.lookup("java:comp/env/pubs/crossRef/url");
 	}
-
+	
 	@Bean
 	public Integer crossRefPort() throws NamingException {
 		return (Integer) ctx.lookup("java:comp/env/pubs/crossRef/port");
@@ -83,6 +78,11 @@ public class JndiConfig {
 	@Bean
 	public String crossRefPwd() throws NamingException {
 		return (String) ctx.lookup("java:comp/env/pubs/crossRef/pwd");
+	}
+	
+	@Bean
+	public String crossRefSchemaUrl() throws NamingException {
+		return (String) ctx.lookup("java:comp/env/pubs/crossRef/schema/url");
 	}
 	
 	@Bean

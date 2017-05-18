@@ -57,7 +57,7 @@ import org.springframework.test.annotation.DirtiesContext;
 public class CrossRefBusServiceTest extends BaseSpringTest {
 
 	@Autowired
-	public String warehouseEndpoint;
+	protected String warehouseEndpoint;
 	@Autowired
 	protected String crossRefProtocol;
 	@Autowired
@@ -78,15 +78,16 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	@Mock
 	protected PubsEMailer pubsEMailer;
 	@Mock
-	IPublicationBusService pubBusService;
+	protected IPublicationBusService pubBusService;
 	@Autowired
-	TransformerFactory transformerFactory;
+	protected TransformerFactory transformerFactory;
 	@Mock
-	XMLValidator xmlValidator;
+	protected XMLValidator xmlValidator;
 	@Mock
-	IDao<CrossRefLog> crossRefLogDao;
+	protected IDao<CrossRefLog> crossRefLogDao;
 	
-	private CrossRefBusService busService;
+	protected CrossRefBusService busService;
+	
 	@Before
 	public void initTest() throws Exception {
 		MockitoAnnotations.initMocks(this);

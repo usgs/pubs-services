@@ -252,6 +252,7 @@ public class PwPublicationDaoTest extends BaseSpringTest {
 	@DatabaseSetups({
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+		@DatabaseSetup("classpath:/testData/contributor.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
 		@DatabaseSetup("classpath:/testData/crossrefDataset.xml")
 	})

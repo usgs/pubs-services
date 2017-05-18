@@ -51,7 +51,6 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	private final String warehouseEndpoint;
 	private final ContentNegotiationStrategy contentStrategy;
 	private final TransformerFactory transformerFactory;
-	
 	@Autowired
 	public PwPublicationMvcService(@Qualifier("pwPublicationBusService")
 			IPwPublicationBusService busService,
@@ -177,7 +176,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		value="{indexId}",
 		produces={
 			MediaType.APPLICATION_JSON_VALUE, 
-			MediaType.APPLICATION_XML_VALUE
+			PubsConstants.MEDIA_TYPE_CROSSREF_VALUE
 		}
 	)
 	@JsonView(View.PW.class)
@@ -188,8 +187,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		) throws HttpMediaTypeNotAcceptableException, IOException {
 		setHeaders(response);
 		List<MediaType> mediaTypes = contentStrategy.resolveMediaTypes(new ServletWebRequest(request));
-		
-		if(isCrossRefRequest(mediaTypes)){
+		if(isCrossRefRequest(mediaTypes)) {
 			getPwPublicationCrossRef(indexId, response);
 			return null;
 		} else {
@@ -236,7 +234,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	 */
 	protected boolean isCrossRefRequest(List<MediaType> mediaTypes){
 		boolean isCrossRefRequest = false;
-		if (null != mediaTypes && mediaTypes.contains(MediaType.APPLICATION_XML)) {
+		if (null != mediaTypes && mediaTypes.contains(PubsConstants.MEDIA_TYPE_CROSSREF)) {
 			isCrossRefRequest = true;
 		}
 		return isCrossRefRequest;
@@ -277,9 +275,9 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	protected void writeCrossrefForPub(HttpServletResponse response, PwPublication pub) throws IOException {
 		try (OutputStream outputStream = response.getOutputStream()) {
 			response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
-			response.setContentType(MediaType.APPLICATION_XML_VALUE);
+			response.setContentType(PubsConstants.MEDIA_TYPE_CROSSREF_VALUE);
 			response.setHeader(MIME.CONTENT_DISPOSITION, "inline");
-			ITransformer transformer = transformerFactory.getTransformer(PubsConstants.MEDIA_TYPE_XML_EXTENSION, outputStream, null);
+			ITransformer transformer = transformerFactory.getTransformer(PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION, outputStream, null);
 			transformer.write(pub);
 			transformer.end();
 		}

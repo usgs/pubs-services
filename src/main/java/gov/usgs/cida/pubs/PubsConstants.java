@@ -41,7 +41,7 @@ public final class PubsConstants {
 	public static final String MEDIA_TYPE_XML_EXTENSION = "xml";
 	public static final String MEDIA_TYPE_JSON_EXTENSION = "json";
 	public static final String MEDIA_TYPE_RSS_EXTENSION = "rss";
-	public static final String MEDIA_TYPE_CROSSREF_EXTENSION = "crossref/xml";
+	public static final String MEDIA_TYPE_CROSSREF_EXTENSION = "crossref.xml";
 	
 	public static final String CONTENT_PARAMETER_NAME = "mimeType";
 	public static final String ACCEPT_HEADER = "Accept";

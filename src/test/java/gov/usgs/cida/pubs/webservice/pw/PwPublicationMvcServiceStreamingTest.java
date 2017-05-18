@@ -104,14 +104,4 @@ public class PwPublicationMvcServiceStreamingTest extends BaseSpringTest {
 		assertThat(getRtnAsJSONObject(rtn),
 				sameJSONObjectAs(new JSONObject(getCompareFile("pwPublication/indexDot.json"))).allowingAnyArrayOrdering());
 	}
-
-	@Test
-	public void getPwPublicationNotFoundTest() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/publication/3?mimetype=json").accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound())
-				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-				.andReturn();
-		assertEquals(0, rtn.getResponse().getContentAsString().length());
-	}
-
 }

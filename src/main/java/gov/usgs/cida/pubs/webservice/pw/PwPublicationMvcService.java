@@ -202,8 +202,8 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	 * @throws IOException 
 	 */
 	@GetMapping(
-		value = "/bulk-crossref",
-		produces = { MediaType.APPLICATION_XML_VALUE }
+		value = "/crossref",
+		produces = { PubsConstants.MEDIA_TYPE_CROSSREF_VALUE }
 	)
 	public void getBulkCrossref(HttpServletRequest request,
 		HttpServletResponse response) throws IOException{
@@ -218,13 +218,12 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		try (OutputStream outputStream = response.getOutputStream()) {
 			response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
 			
-			response.setContentType(MediaType.APPLICATION_XML_VALUE);
-			response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + PubsConstants.MEDIA_TYPE_XML_EXTENSION);
-			ITransformer transformer = transformerFactory.getTransformer(PubsConstants.MEDIA_TYPE_XML_EXTENSION, outputStream, null);
+			response.setContentType(PubsConstants.MEDIA_TYPE_CROSSREF_VALUE);
+			response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION);
+			ITransformer transformer = transformerFactory.getTransformer(PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION, outputStream, null);
 			busService.stream(statement, filters, new StreamingResultHandler<>(transformer));
 			transformer.end();
 		}
-		
 	}
 	
 	/**

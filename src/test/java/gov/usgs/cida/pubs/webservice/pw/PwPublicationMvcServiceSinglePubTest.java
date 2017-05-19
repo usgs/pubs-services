@@ -33,7 +33,7 @@ import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
 	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
 	@DatabaseSetup("classpath:/testData/crossrefDataset.xml")
 })
-public class PwPublicationMvcServiceIntegrationTest extends BaseSpringTest {
+public class PwPublicationMvcServiceSinglePubTest extends BaseSpringTest {
 
 	private MockMvc mockMvc;
 	private static final String CROSSREF_PUB_ID = "sir2";

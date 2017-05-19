@@ -5,10 +5,17 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.PubsConstants;
+import java.io.IOException;
+import java.io.StringReader;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.http.entity.mime.MIME;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,6 +26,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 @Category(IntegrationTest.class)
 @DatabaseSetups({
@@ -32,10 +43,41 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class PwPublicationMvcServiceBulkCrossrefTest extends BaseSpringTest {
 	private MockMvc mockMvc;
 	private static final String URL = "/publication/crossref";
+	private static DocumentBuilder docBuilder;
+	
+	@BeforeClass
+	public static void setUpClass() {
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		dbf.setValidating(false);
+		try {
+			docBuilder = dbf.newDocumentBuilder();
+		} catch (ParserConfigurationException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
 	
 	@Before
 	public void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+	}
+	
+	
+	/**
+	 * TODO: replace this with more robust XML schema validation
+	 * @param xml 
+	 */
+	private void assertWellFormed(String xml) {
+		String errorMsg = "";
+		
+		try{
+			Document doc = docBuilder.parse(new InputSource(new StringReader(xml)));
+		} catch(SAXParseException e){
+			errorMsg = e.getMessage();
+		} catch (SAXException | IOException ex) {
+			throw new RuntimeException(ex);
+		}
+		//assert there are no error messages
+		assertEquals("The XML is not well-formed.", "", errorMsg);
 	}
 	
 	@Test
@@ -58,6 +100,7 @@ public class PwPublicationMvcServiceBulkCrossrefTest extends BaseSpringTest {
 		String resultText = result.getResponse().getContentAsString();
 		assertNotNull(resultText);
 		assertTrue("expects non-empty response", 0 < resultText.length());
+		assertWellFormed(resultText);
 	}
 	
 	@Test
@@ -74,6 +117,7 @@ public class PwPublicationMvcServiceBulkCrossrefTest extends BaseSpringTest {
 		String resultText = result.getResponse().getContentAsString();
 		assertNotNull(resultText);
 		assertTrue("expects non-empty response", 0 < resultText.length());
+		assertWellFormed(resultText);
 	}
 	
 }

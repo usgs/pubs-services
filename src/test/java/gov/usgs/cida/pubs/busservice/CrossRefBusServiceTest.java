@@ -23,7 +23,6 @@ import gov.usgs.cida.pubs.transform.CrossrefTestPubBuilder;
 import gov.usgs.cida.pubs.transform.TransformerFactory;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
 import gov.usgs.cida.pubs.validation.xml.XMLValidationException;
-import gov.usgs.cida.pubs.validation.xml.XMLValidator;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
@@ -82,8 +81,6 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	@Autowired
 	protected TransformerFactory transformerFactory;
 	@Mock
-	protected XMLValidator xmlValidator;
-	@Mock
 	protected IDao<CrossRefLog> crossRefLogDao;
 	
 	protected CrossRefBusService busService;
@@ -100,8 +97,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 			crossRefPwd,
 			crossRefSchemaUrl,
 			pubsEMailer,
-			transformerFactory,
-			xmlValidator
+			transformerFactory
 		);
 		//override the default ICrossRefLogDao with a mock.
 		busService.setCrossRefLogDao(crossRefLogDao);
@@ -111,15 +107,6 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	public void submitCrossRefTest() {
 		MpPublication pub = (MpPublication) CrossrefTestPubBuilder.buildNumberedSeriesPub(new MpPublication());
 		busService.submitCrossRef(pub);
-	}
-	
-	@Test
-	public void verifyEmailSentOnSubmissionError() throws XMLValidationException {
-		//create an error during the submission process
-		Mockito.doThrow(Exception.class).when(xmlValidator).validate(any(), any());
-		MpPublication pub = (MpPublication) CrossrefTestPubBuilder.buildNumberedSeriesPub(new MpPublication());
-		busService.submitCrossRef(pub);
-		Mockito.verify(pubsEMailer).sendMail(any(), any());
 	}
 	
 	@Test
@@ -244,21 +231,6 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		assertTrue("should get some XML", 0 < xml.length());
 
 	}	
-	 
-	@Test
-	public void verifyInvalidXmlAttemptIsLogged() throws XMLValidationException, IOException {
-		Publication<?> pub = CrossrefTestPubBuilder.buildNumberedSeriesPub(new Publication<>());
-		Mockito.doThrow(new XMLValidationException())
-			.when(xmlValidator).validate(anyString(), anyString());
-		try{
-			busService.getCrossRefXml(pub);
-			Assert.fail("XMLValidationException should have been raised");
-		} catch (XMLValidationException ex) {
-			//verify that the attempt was logged even if the xml
-			//was invalid
-			verify(crossRefLogDao).add(any());
-		}
-	}
 	
 	@Test
 	public void testHandleGoodResponse() {

@@ -5,15 +5,12 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.validation.xml.XMLValidator;
 import org.apache.http.entity.mime.MIME;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -35,14 +32,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class PwPublicationMvcServiceBulkCrossrefTest extends BaseSpringTest {
 	private MockMvc mockMvc;
 	private static final String URL = "/publication/crossref";
-	private XMLValidator validator;
+	
 	@Autowired
 	@Qualifier("crossRefSchemaUrl")
 	protected String crossrefSchemaUrl;
 	@Before
 	public void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		validator = new XMLValidator();
 	}
 	
 	
@@ -66,7 +62,6 @@ public class PwPublicationMvcServiceBulkCrossrefTest extends BaseSpringTest {
 		String resultText = result.getResponse().getContentAsString();
 		assertNotNull(resultText);
 		assertTrue("expects non-empty response", 0 < resultText.length());
-		validator.validate(crossrefSchemaUrl, resultText);
 	}
 	
 	@Test
@@ -83,7 +78,6 @@ public class PwPublicationMvcServiceBulkCrossrefTest extends BaseSpringTest {
 		String resultText = result.getResponse().getContentAsString();
 		assertNotNull(resultText);
 		assertTrue("expects non-empty response", 0 < resultText.length());
-		validator.validate(crossrefSchemaUrl, resultText);
 	}
 	
 }

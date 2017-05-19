@@ -33,14 +33,10 @@ public class PwPublicationMvcServiceBulkCrossrefTest extends BaseSpringTest {
 	private MockMvc mockMvc;
 	private static final String URL = "/publication/crossref";
 	
-	@Autowired
-	@Qualifier("crossRefSchemaUrl")
-	protected String crossrefSchemaUrl;
 	@Before
 	public void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 	}
-	
 	
 	@Test
 	public void getBulkCrossRefWithNoContentTypeSpecified() throws Exception{

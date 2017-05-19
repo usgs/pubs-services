@@ -10,7 +10,6 @@ import gov.usgs.cida.pubs.transform.CrossrefTransformer;
 import gov.usgs.cida.pubs.transform.TransformerFactory;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
 import gov.usgs.cida.pubs.validation.xml.XMLValidationException;
-import gov.usgs.cida.pubs.validation.xml.XMLValidator;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -51,7 +50,6 @@ public class CrossRefBusService implements ICrossRefBusService {
 	protected final PubsEMailer pubsEMailer;
 	protected final String crossRefSchemaUrl;
 	protected final TransformerFactory transformerFactory;
-	protected final XMLValidator xmlValidator;
 	private IDao<CrossRefLog> crossRefLogDao;
 	@Autowired
 	public CrossRefBusService(
@@ -70,8 +68,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 			@Qualifier("crossRefSchemaUrl")
 			final String crossRefSchemaUrl,
 			final PubsEMailer pubsEMailer,
-			final TransformerFactory transformerFactory,
-			final XMLValidator xmlValidator
+			final TransformerFactory transformerFactory
 	) {
 		//url-related variables:
 		this.crossRefProtocol = crossRefProtocol;
@@ -84,7 +81,6 @@ public class CrossRefBusService implements ICrossRefBusService {
 		this.pubsEMailer = pubsEMailer;
 		this.crossRefSchemaUrl = crossRefSchemaUrl;
 		this.transformerFactory = transformerFactory;
-		this.xmlValidator = xmlValidator;
 		this.crossRefLogDao = CrossRefLog.getDao();
 	}
 
@@ -111,10 +107,6 @@ public class CrossRefBusService implements ICrossRefBusService {
 			CrossRefLog logEntry = new CrossRefLog(transformer.getBatchId(), pub.getId(), xml);
 			crossRefLogDao.add(logEntry);
 			
-			xmlValidator.validate(crossRefSchemaUrl, xml);
-		} catch (XMLValidationException ex) {
-			String msg = "The Crossref XML generated for the publication did not validate against the Crossref schema. " + getIndexIdMessage(pub);
-			throw new XMLValidationException(msg, ex);
 		} catch (UnsupportedEncodingException ex){
 			throw ex;
 		} catch (IOException ex) {

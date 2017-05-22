@@ -170,7 +170,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 			String url = buildCrossRefUrl(crossRefProtocol, crossRefHost, crossRefPort, crossRefUrl, crossRefUser, crossRefPwd);
 			HttpPost httpPost = buildCrossRefPost(crossRefXml, url);
 			HttpResponse response = performCrossRefPost(httpPost, httpClient);
-			handleResponse(response);
+			handleResponse(response, getIndexIdMessage(mpPublication));
 		} catch (Exception ex) {
 			/**
 			 * There's a lot of I/O going on here, and this isn't a
@@ -241,17 +241,22 @@ public class CrossRefBusService implements ICrossRefBusService {
 	/**
 	 * Emails alerts if a bad response was received from Crossref web services.
 	 * @param response 
+	 * @param publicationMessage information to identify the publication.
+	 *	This information will be logged and/or emailed.
 	 */
-	protected void handleResponse(HttpResponse response) {
+	protected void handleResponse(HttpResponse response, String publicationMessage) {
 		String msg = null;
 		if (null == response) {
-			msg = "response was null";
+			msg = "Response was null.";
 		} else if (null == response.getStatusLine()) {
-			msg = "response status line was null";
+			msg = "Response status line was null.";
 		} else if (HttpStatus.SC_OK != response.getStatusLine().getStatusCode()) {
 			msg = response.getStatusLine().toString();
 		}
-		if (null != msg) {
+		if(null == msg) {
+			LOG.info("Publication successfully published. " + publicationMessage);
+		} else {
+			msg += " " + publicationMessage;
 			LOG.error("Error in response from Crossref Submission: " + msg);
 			pubsEMailer.sendMail("Error in response from Crossref Submission", msg);
 		}

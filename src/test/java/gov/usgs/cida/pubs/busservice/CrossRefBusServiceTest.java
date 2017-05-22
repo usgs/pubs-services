@@ -238,31 +238,34 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		when(statusLine.getStatusCode()).thenReturn(HttpStatus.OK.value());
 		HttpResponse response = mock(HttpResponse.class);
 		when(response.getStatusLine()).thenReturn(statusLine);
-		busService.handleResponse(response);
+		busService.handleResponse(response, "");
 		verify(pubsEMailer, never()).sendMail(any(), any());
 	}
 	
 	@Test
 	public void testHandleNullResponse() {
-		busService.handleResponse(null);
-		verify(pubsEMailer).sendMail(anyString(), anyString());
+		String pubMessage = "mock response message";
+		busService.handleResponse(null, pubMessage);
+		verify(pubsEMailer).sendMail(anyString(), Mockito.contains(pubMessage));
 	}
 	
 	@Test
 	public void testEmptyStatusLineResponse() {
+		String pubMessage = "mock response message";
 		HttpResponse response = mock(HttpResponse.class);
 		when(response.getStatusLine()).thenReturn(null);
-		busService.handleResponse(response);
-		verify(pubsEMailer).sendMail(anyString(), anyString());
+		busService.handleResponse(response, pubMessage);
+		verify(pubsEMailer).sendMail(anyString(), Mockito.contains(pubMessage));
 	}
 	
 	@Test
 	public void testHandleNotFoundResponse() {
+		String pubMessage = "mock response message";
 		StatusLine statusLine = mock(StatusLine.class);
 		when(statusLine.getStatusCode()).thenReturn(HttpStatus.NOT_FOUND.value());
 		HttpResponse response = mock(HttpResponse.class);
 		when(response.getStatusLine()).thenReturn(statusLine);
-		busService.handleResponse(response);
-		verify(pubsEMailer).sendMail(anyString(), anyString());
+		busService.handleResponse(response, pubMessage);
+		verify(pubsEMailer).sendMail(anyString(), Mockito.contains(pubMessage));
 	}
 }

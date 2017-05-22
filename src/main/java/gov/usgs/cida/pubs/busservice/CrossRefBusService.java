@@ -236,7 +236,12 @@ public class CrossRefBusService implements ICrossRefBusService {
 		
 		File crossRefTempFile = writeCrossRefToTempFile(crossRefXml);
 		ContentType contentType = ContentType.create(PubsConstants.MEDIA_TYPE_CROSSREF_VALUE, PubsConstants.DEFAULT_ENCODING);
-		FileBody fileBody = new FileBody(crossRefTempFile, contentType, indexId + "." + PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION);
+		
+		//The filename is displayed in Crossref's dashboard, so put some
+		//useful info in it
+		String filename = indexId + "." + PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION;
+		
+		FileBody fileBody = new FileBody(crossRefTempFile, contentType, filename);
 		HttpEntity httpEntity = MultipartEntityBuilder.create()
 			.addPart("fname", fileBody)
 			.build();

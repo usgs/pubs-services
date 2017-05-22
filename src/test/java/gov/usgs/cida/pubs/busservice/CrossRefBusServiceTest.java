@@ -20,7 +20,9 @@ import gov.usgs.cida.pubs.domain.CrossRefLog;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.transform.CrossrefTestPubBuilder;
+import gov.usgs.cida.pubs.transform.CrossrefTransformer;
 import gov.usgs.cida.pubs.transform.TransformerFactory;
+import gov.usgs.cida.pubs.transform.intfc.ITransformer;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
 import gov.usgs.cida.pubs.validation.xml.XMLValidationException;
 import java.io.ByteArrayOutputStream;
@@ -78,8 +80,6 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	protected String crossRefSchemaUrl;
 	@Mock
 	protected PubsEMailer pubsEMailer;
-	@Mock
-	protected IPublicationBusService pubBusService;
 	@Autowired
 	protected TransformerFactory transformerFactory;
 	@Mock
@@ -232,8 +232,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		
 		assertNotNull(xml);
 		assertTrue("should get some XML", 0 < xml.length());
-
-	}	
+	}
 	
 	@Test
 	public void testHandleGoodResponse() throws HttpException {
@@ -272,5 +271,31 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		HttpResponse response = mock(HttpResponse.class);
 		when(response.getStatusLine()).thenReturn(statusLine);
 		busService.handleResponse(response);
+	}
+	
+	@Test
+	public void testThatSubmitCrossrefSwallowsAndEmailsExceptions () {
+		//construct a mock transformer factory that causes the 
+		//submission to fail early
+		
+		String msg = "very good reason";
+		TransformerFactory mockTransformerFactory = mock(TransformerFactory.class);
+		when(mockTransformerFactory.getTransformer(any(), any(), any())).thenThrow(new RuntimeException(msg));
+		
+		busService = new CrossRefBusService(
+			crossRefProtocol,
+			crossRefHost,
+			crossRefUrl,
+			crossRefPort,
+			crossRefUser,
+			crossRefPwd,
+			crossRefSchemaUrl,
+			pubsEMailer,
+			mockTransformerFactory
+		);
+		MpPublication pub = (MpPublication) CrossrefTestPubBuilder.buildNumberedSeriesPub(new MpPublication());
+		
+		busService.submitCrossRef(pub);
+		verify(pubsEMailer).sendMail(anyString(), Mockito.contains(msg));
 	}
 }

@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -42,6 +43,7 @@ import static org.junit.Assert.assertNotNull;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.protocol.HttpContext;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -104,9 +106,11 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	}
 	
 	@Test
-	public void submitCrossRefTest() {
+	public void submitCrossRefTest() throws IOException, XMLValidationException, UnsupportedEncodingException, HttpException, URISyntaxException {
 		MpPublication pub = (MpPublication) CrossrefTestPubBuilder.buildNumberedSeriesPub(new MpPublication());
-		busService.submitCrossRef(pub);
+		try (CloseableHttpClient httpClient = HttpClients.createDefault()){
+			busService.submitCrossRef(pub, httpClient);
+		}
 	}
 	
 	@Test
@@ -136,7 +140,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	}
 	
 	@Test
-	public void testBuildCrossrefUrl() throws UnsupportedEncodingException {
+	public void testBuildCrossrefUrl() throws UnsupportedEncodingException, URISyntaxException {
 		String protocol = "https";
 		String host = "test.crossref.org";
 		int port = 443;
@@ -158,12 +162,17 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	}
 	
 	@Test
-	public void verifyCrossrefUrlBuilderDoesNotSwallowURIProblems() throws UnsupportedEncodingException {
+	public void verifyCrossrefUrlBuilderDoesNotSwallowURIProblems() throws UnsupportedEncodingException, URISyntaxException {
+		//do not specify characters that need %-encoding
+		String password = "MockPassword";
 		try{
-			String actual = busService.buildCrossRefUrl("", "", -2, "", "", "");
+			busService.buildCrossRefUrl("", "", -2, "", "", password);
 			Assert.fail("Should have raised Exception");
-		} catch (RuntimeException ex) {
-			assertTrue(ex.getCause() instanceof URISyntaxException);
+		} catch (URISyntaxException ex) {
+			assertFalse(ex.getMessage().contains(password));
+			if(null != ex.getCause()){
+				assertFalse(ex.getCause().getMessage().contains(password));
+			}
 		}
 	}
 	
@@ -197,7 +206,8 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	public void tetBuildCrossRefPost() throws IOException {
 		String expectedBody = "expectedBody";
 		String expectedUrl = "http://pubs.er.usgs.gov/";
-		HttpPost post = busService.buildCrossRefPost(expectedBody, expectedUrl);
+		String expectedIndexId = "sir123456789";
+		HttpPost post = busService.buildCrossRefPost(expectedBody, expectedUrl, expectedIndexId);
 		HttpEntity entity = post.getEntity();
 		assertNotNull(entity);
 		EntityUtils.consume(entity);
@@ -217,6 +227,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		assertTrue(requestBody.contains(PubsConstants.DEFAULT_ENCODING));
 		assertTrue(requestBody.contains(PubsConstants.MEDIA_TYPE_CROSSREF_VALUE));
 		assertTrue(requestBody.contains(expectedBody));
+		assertTrue(requestBody.contains(expectedIndexId));
 	}
 	
 	@Test
@@ -233,39 +244,41 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	}	
 	
 	@Test
-	public void testHandleGoodResponse() {
+	public void testHandleGoodResponse() throws HttpException {
 		StatusLine statusLine = mock(StatusLine.class);
 		when(statusLine.getStatusCode()).thenReturn(HttpStatus.OK.value());
 		HttpResponse response = mock(HttpResponse.class);
 		when(response.getStatusLine()).thenReturn(statusLine);
-		busService.handleResponse(response, "");
-		verify(pubsEMailer, never()).sendMail(any(), any());
+		busService.handleResponse(response);
 	}
 	
-	@Test
-	public void testHandleNullResponse() {
-		String pubMessage = "mock response message";
-		busService.handleResponse(null, pubMessage);
-		verify(pubsEMailer).sendMail(anyString(), Mockito.contains(pubMessage));
+	@Test(expected = HttpException.class)
+	public void testHandleNullResponse() throws HttpException {
+		busService.handleResponse(null);
 	}
 	
-	@Test
-	public void testEmptyStatusLineResponse() {
-		String pubMessage = "mock response message";
+	@Test(expected = HttpException.class)
+	public void testEmptyStatusLineResponse() throws HttpException {
 		HttpResponse response = mock(HttpResponse.class);
 		when(response.getStatusLine()).thenReturn(null);
-		busService.handleResponse(response, pubMessage);
-		verify(pubsEMailer).sendMail(anyString(), Mockito.contains(pubMessage));
+		busService.handleResponse(response);
 	}
 	
-	@Test
-	public void testHandleNotFoundResponse() {
-		String pubMessage = "mock response message";
+	@Test(expected = HttpException.class)
+	public void testHandleNotFoundResponse() throws HttpException {
 		StatusLine statusLine = mock(StatusLine.class);
 		when(statusLine.getStatusCode()).thenReturn(HttpStatus.NOT_FOUND.value());
 		HttpResponse response = mock(HttpResponse.class);
 		when(response.getStatusLine()).thenReturn(statusLine);
-		busService.handleResponse(response, pubMessage);
-		verify(pubsEMailer).sendMail(anyString(), Mockito.contains(pubMessage));
+		busService.handleResponse(response);
+	}
+	
+	@Test(expected = HttpException.class)
+	public void testHandleUnauthorizedResponse() throws HttpException {
+		StatusLine statusLine = mock(StatusLine.class);
+		when(statusLine.getStatusCode()).thenReturn(HttpStatus.UNAUTHORIZED.value());
+		HttpResponse response = mock(HttpResponse.class);
+		when(response.getStatusLine()).thenReturn(statusLine);
+		busService.handleResponse(response);
 	}
 }

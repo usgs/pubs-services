@@ -106,14 +106,6 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	}
 	
 	@Test
-	public void submitCrossRefTest() throws IOException, XMLValidationException, UnsupportedEncodingException, HttpException, URISyntaxException {
-		MpPublication pub = (MpPublication) CrossrefTestPubBuilder.buildNumberedSeriesPub(new MpPublication());
-		try (CloseableHttpClient httpClient = HttpClients.createDefault()){
-			busService.submitCrossRef(pub, httpClient);
-		}
-	}
-	
-	@Test
 	public void getIndexIdMessageForNullPub() {
 		assertEquals("", busService.getIndexIdMessage(null));
 	}

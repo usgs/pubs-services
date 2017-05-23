@@ -9,7 +9,6 @@ import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.transform.CrossrefTransformer;
 import gov.usgs.cida.pubs.transform.TransformerFactory;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
-import gov.usgs.cida.pubs.validation.xml.XMLValidationException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -20,6 +19,7 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -49,7 +49,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 	protected final String crossRefPwd;
 	protected final PubsEMailer pubsEMailer;
 	protected final String crossRefSchemaUrl;
-	protected final TransformerFactory transformerFactory;
+	protected TransformerFactory transformerFactory;
 	private IDao<CrossRefLog> crossRefLogDao;
 	@Autowired
 	public CrossRefBusService(
@@ -88,11 +88,10 @@ public class CrossRefBusService implements ICrossRefBusService {
 	 * 
 	 * @param pub
 	 * @return String XML in Crossref Format
-	 * @throws XMLValidationException
 	 * @throws UnsupportedEncodingException
 	 * @throws IOException 
 	 */
-	protected String getCrossRefXml(Publication<?> pub) throws XMLValidationException, UnsupportedEncodingException, IOException {
+	protected String getCrossRefXml(Publication<?> pub) throws UnsupportedEncodingException, IOException {
 		String xml = null;
 		try{
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -110,7 +109,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 		} catch (UnsupportedEncodingException ex){
 			throw ex;
 		} catch (IOException ex) {
-			String msg = "Error converting pub to Crossref XML before submitting to Crossref webservices. " + getIndexIdMessage(pub);
+			String msg = "Error converting pub to Crossref XML before submitting to Crossref webservices.";
 			throw new IOException(msg, ex);
 		}
 		return xml;
@@ -144,8 +143,9 @@ public class CrossRefBusService implements ICrossRefBusService {
 	 * @param password the value of the "login_passwd" parameter
 	 * @return String URL with safely-encoded parameters
 	 * @throws java.io.UnsupportedEncodingException
+	 * @throws java.net.URISyntaxException
 	 */
-	protected String buildCrossRefUrl(String protocol, String host, int port, String base, String user, String password) throws UnsupportedEncodingException {
+	protected String buildCrossRefUrl(String protocol, String host, int port, String base, String user, String password) throws UnsupportedEncodingException, URISyntaxException {
 		String url = null;
 		try {
 			String query = "?operation=doMDUpload&login_id=" +
@@ -156,7 +156,12 @@ public class CrossRefBusService implements ICrossRefBusService {
 			URI uri = new URI(protocol, null, host, port, base, null, null);
 			url = uri.toString() + query;
 		}catch (URISyntaxException ex) {
-			throw new RuntimeException("Could not construct Crossref submission url", ex);
+			/**
+			 * we omit the original exception because the URI could
+			 * contain passwords that we do not want logged or 
+			 * emailed.
+			 */
+			throw new URISyntaxException(String.join(",", protocol, host, ""+port, base, user, "password omitted"), "Could not construct Crossref submission url");
 		} catch (UnsupportedEncodingException ex) {
 			throw ex;
 		}
@@ -165,12 +170,11 @@ public class CrossRefBusService implements ICrossRefBusService {
 	
 	@Override
 	public void submitCrossRef(final MpPublication mpPublication) {
+		String publicationMessage = ""; 
 		try (CloseableHttpClient httpClient = HttpClients.createDefault()){
-			String crossRefXml = getCrossRefXml(mpPublication);
-			String url = buildCrossRefUrl(crossRefProtocol, crossRefHost, crossRefPort, crossRefUrl, crossRefUser, crossRefPwd);
-			HttpPost httpPost = buildCrossRefPost(crossRefXml, url);
-			HttpResponse response = performCrossRefPost(httpPost, httpClient);
-			handleResponse(response);
+			publicationMessage = getIndexIdMessage(mpPublication);
+			submitCrossRef(mpPublication, httpClient);
+			LOG.info("Publication successfully published. " + publicationMessage);
 		} catch (Exception ex) {
 			/**
 			 * There's a lot of I/O going on here, and this isn't a
@@ -179,9 +183,25 @@ public class CrossRefBusService implements ICrossRefBusService {
 			 * callers
 			 */
 			String subject = "Error submitting publication to Crossref";
-			LOG.info(subject, ex);
-			pubsEMailer.sendMail(subject, ex.getMessage());
+			LOG.error(subject + " " + publicationMessage, ex);
+			pubsEMailer.sendMail(subject, ex.getMessage() + "\n" + publicationMessage);
 		}
+	}
+	
+	/**
+	 * @param mpPublication
+	 * @param httpClient
+	 * @throws UnsupportedEncodingException
+	 * @throws IOException 
+	 * @throws org.apache.http.HttpException 
+	 * @throws java.net.URISyntaxException 
+	 */
+	protected void submitCrossRef(final MpPublication mpPublication, CloseableHttpClient httpClient) throws UnsupportedEncodingException, IOException, HttpException, URISyntaxException {
+		String crossRefXml = getCrossRefXml(mpPublication);
+		String url = buildCrossRefUrl(crossRefProtocol, crossRefHost, crossRefPort, crossRefUrl, crossRefUser, crossRefPwd);
+		HttpPost httpPost = buildCrossRefPost(crossRefXml, url, mpPublication.getIndexId());
+		HttpResponse response = performCrossRefPost(httpPost, httpClient);
+		handleResponse(response);
 	}
 	
 	/**
@@ -206,15 +226,21 @@ public class CrossRefBusService implements ICrossRefBusService {
 	 * 
 	 * @param crossRefXml
 	 * @param url
+	 * @param indexId the index ID of the publication
 	 * @return an HttpPost that is ready to send to Crossref web services
 	 * @throws IOException 
 	 */
-	protected HttpPost buildCrossRefPost(String crossRefXml, String url) throws IOException {
+	protected HttpPost buildCrossRefPost(String crossRefXml, String url, String indexId) throws IOException {
 		HttpPost httpPost = new HttpPost(url);
 		
 		File crossRefTempFile = writeCrossRefToTempFile(crossRefXml);
 		ContentType contentType = ContentType.create(PubsConstants.MEDIA_TYPE_CROSSREF_VALUE, PubsConstants.DEFAULT_ENCODING);
-		FileBody fileBody = new FileBody(crossRefTempFile, contentType);
+		
+		//The filename is displayed in Crossref's dashboard, so put some
+		//useful info in it
+		String filename = indexId + "." + PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION;
+		
+		FileBody fileBody = new FileBody(crossRefTempFile, contentType, filename);
 		HttpEntity httpEntity = MultipartEntityBuilder.create()
 			.addPart("fname", fileBody)
 			.build();
@@ -239,21 +265,22 @@ public class CrossRefBusService implements ICrossRefBusService {
 	}
 	
 	/**
-	 * Emails alerts if a bad response was received from Crossref web services.
+	 * Check the response from Crossref web services, throw a 
+	 * RuntimeException if anything is wrong.
 	 * @param response 
+	 * @throws HttpException when the Crossref web services return an error
 	 */
-	protected void handleResponse(HttpResponse response) {
+	protected void handleResponse(HttpResponse response) throws HttpException {
 		String msg = null;
 		if (null == response) {
-			msg = "response was null";
+			msg = "Response was null.";
 		} else if (null == response.getStatusLine()) {
-			msg = "response status line was null";
+			msg = "Response status line was null.";
 		} else if (HttpStatus.SC_OK != response.getStatusLine().getStatusCode()) {
 			msg = response.getStatusLine().toString();
 		}
-		if (null != msg) {
-			LOG.error("Error in response from Crossref Submission: " + msg);
-			pubsEMailer.sendMail("Error in response from Crossref Submission", msg);
+		if(null != msg) {
+			throw new HttpException("Error in response from Crossref Submission: " + msg);
 		}
 	}
 	

@@ -89,7 +89,7 @@ public class TestSpringConfig {
 
 	@Bean
 	public String crossRefProtocol() {
-		return "http";
+		return "https";
 	}
 
 	@Bean
@@ -104,7 +104,7 @@ public class TestSpringConfig {
 
 	@Bean
 	public Integer crossRefPort() {
-		return 80;
+		return 443;
 	}
 
 	@Bean

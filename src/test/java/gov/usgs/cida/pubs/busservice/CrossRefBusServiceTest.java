@@ -14,8 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.dao.intfc.IDao;
-import gov.usgs.cida.pubs.domain.CrossRefLog;
+import gov.usgs.cida.pubs.dao.intfc.ICrossRefLogDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.transform.CrossrefTestPubBuilder;
@@ -79,7 +78,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	@Autowired
 	protected TransformerFactory transformerFactory;
 	@Mock
-	protected IDao<CrossRefLog> crossRefLogDao;
+	protected ICrossRefLogDao crossRefLogDao;
 	
 	protected CrossRefBusService busService;
 	
@@ -95,10 +94,9 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 			crossRefPwd,
 			crossRefSchemaUrl,
 			pubsEMailer,
-			transformerFactory
+			transformerFactory,
+			crossRefLogDao
 		);
-		//override the default ICrossRefLogDao with a mock.
-		busService.setCrossRefLogDao(crossRefLogDao);
 	}
 	
 	@Test
@@ -287,7 +285,8 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 			crossRefPwd,
 			crossRefSchemaUrl,
 			pubsEMailer,
-			mockTransformerFactory
+			mockTransformerFactory,
+			crossRefLogDao
 		);
 		MpPublication pub = (MpPublication) CrossrefTestPubBuilder.buildNumberedSeriesPub(new MpPublication());
 		

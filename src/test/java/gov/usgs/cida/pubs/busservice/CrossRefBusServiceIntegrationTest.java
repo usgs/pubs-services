@@ -4,8 +4,7 @@ import static org.mockito.Mockito.*;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
-import gov.usgs.cida.pubs.dao.intfc.IDao;
-import gov.usgs.cida.pubs.domain.CrossRefLog;
+import gov.usgs.cida.pubs.dao.intfc.ICrossRefLogDao;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.transform.CrossrefTestPubBuilder;
 import gov.usgs.cida.pubs.transform.TransformerFactory;
@@ -55,7 +54,7 @@ public class CrossRefBusServiceIntegrationTest extends BaseSpringTest {
 	@Autowired
 	protected TransformerFactory transformerFactory;
 	@Autowired
-	protected IDao<CrossRefLog> crossRefLogDao;
+	protected ICrossRefLogDao crossRefLogDao;
 	
 	protected CrossRefBusService busService;
 	
@@ -71,7 +70,8 @@ public class CrossRefBusServiceIntegrationTest extends BaseSpringTest {
 			crossRefPwd,
 			crossRefSchemaUrl,
 			pubsEMailer,
-			transformerFactory
+			transformerFactory,
+			crossRefLogDao
 		);
 	}
 	

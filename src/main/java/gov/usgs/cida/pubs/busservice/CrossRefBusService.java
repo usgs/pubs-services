@@ -2,7 +2,7 @@ package gov.usgs.cida.pubs.busservice;
 
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
-import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.dao.intfc.ICrossRefLogDao;
 import gov.usgs.cida.pubs.domain.CrossRefLog;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
@@ -49,8 +49,8 @@ public class CrossRefBusService implements ICrossRefBusService {
 	protected final String crossRefPwd;
 	protected final PubsEMailer pubsEMailer;
 	protected final String crossRefSchemaUrl;
-	protected TransformerFactory transformerFactory;
-	private IDao<CrossRefLog> crossRefLogDao;
+	protected final TransformerFactory transformerFactory;
+	protected final ICrossRefLogDao crossRefLogDao;
 	@Autowired
 	public CrossRefBusService(
 			@Qualifier("crossRefProtocol")
@@ -68,7 +68,8 @@ public class CrossRefBusService implements ICrossRefBusService {
 			@Qualifier("crossRefSchemaUrl")
 			final String crossRefSchemaUrl,
 			final PubsEMailer pubsEMailer,
-			final TransformerFactory transformerFactory
+			final TransformerFactory transformerFactory,
+			final ICrossRefLogDao crossRefLogDao
 	) {
 		//url-related variables:
 		this.crossRefProtocol = crossRefProtocol;
@@ -81,7 +82,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 		this.pubsEMailer = pubsEMailer;
 		this.crossRefSchemaUrl = crossRefSchemaUrl;
 		this.transformerFactory = transformerFactory;
-		this.crossRefLogDao = CrossRefLog.getDao();
+		this.crossRefLogDao = crossRefLogDao;
 	}
 
 	/**
@@ -282,13 +283,5 @@ public class CrossRefBusService implements ICrossRefBusService {
 		if(null != msg) {
 			throw new HttpException("Error in response from Crossref Submission: " + msg);
 		}
-	}
-	
-	/**
-	 * This should mostly be used by tests injecting a mock DAO
-	 * @param crossRefLogDao the crossRefLogDao to set
-	 */
-	public void setCrossRefLogDao(IDao<CrossRefLog> crossRefLogDao) {
-		this.crossRefLogDao = crossRefLogDao;
 	}
 }

@@ -17,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.util.UUID;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
@@ -47,8 +48,9 @@ public class CrossRefBusService implements ICrossRefBusService {
 	protected final Integer crossRefPort;
 	protected final String crossRefUser;
 	protected final String crossRefPwd;
-	protected final PubsEMailer pubsEMailer;
 	protected final String crossRefSchemaUrl;
+	protected final String displayHost;
+	protected final PubsEMailer pubsEMailer;
 	protected final TransformerFactory transformerFactory;
 	protected final ICrossRefLogDao crossRefLogDao;
 	@Autowired
@@ -67,6 +69,8 @@ public class CrossRefBusService implements ICrossRefBusService {
 			final String crossRefPwd,
 			@Qualifier("crossRefSchemaUrl")
 			final String crossRefSchemaUrl,
+			@Qualifier("displayHost")
+			final String displayHost,
 			final PubsEMailer pubsEMailer,
 			final TransformerFactory transformerFactory,
 			final ICrossRefLogDao crossRefLogDao
@@ -78,6 +82,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 		this.crossRefPort = crossRefPort;
 		this.crossRefUser = crossRefUser;
 		this.crossRefPwd = crossRefPwd;
+		this.displayHost = displayHost;
 		//non-url variables:
 		this.pubsEMailer = pubsEMailer;
 		this.crossRefSchemaUrl = crossRefSchemaUrl;
@@ -126,7 +131,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 		if (null != pub) {
 			String indexId = pub.getIndexId();
 			if (null != indexId && 0 != indexId.length()) {
-				msg = "Publication Index Id '" + indexId + "'";
+				msg = "Publication Index Id: '" + indexId + "'";
 			}
 		}
 		return msg;
@@ -171,11 +176,11 @@ public class CrossRefBusService implements ICrossRefBusService {
 	
 	@Override
 	public void submitCrossRef(final MpPublication mpPublication) {
-		String publicationMessage = ""; 
+		String publicationIndexIdMessage = ""; 
 		try (CloseableHttpClient httpClient = HttpClients.createDefault()){
-			publicationMessage = getIndexIdMessage(mpPublication);
+			publicationIndexIdMessage = getIndexIdMessage(mpPublication);
 			submitCrossRef(mpPublication, httpClient);
-			LOG.info("Publication successfully published. " + publicationMessage);
+			LOG.info("Publication successfully published. " + publicationIndexIdMessage);
 		} catch (Exception ex) {
 			/**
 			 * There's a lot of I/O going on here, and this isn't a
@@ -183,9 +188,18 @@ public class CrossRefBusService implements ICrossRefBusService {
 			 * catch to prevent interruption of control flow in 
 			 * callers
 			 */
+			String errorId = UUID.randomUUID().toString();
 			String subject = "Error submitting publication to Crossref";
-			LOG.error(subject + " " + publicationMessage, ex);
-			pubsEMailer.sendMail(subject, ex.getMessage() + "\n" + publicationMessage);
+			String logMessage = subject + ". Error ID#:" + errorId + ". "+ publicationIndexIdMessage;
+			LOG.error(logMessage, ex);
+			String emailMessage = subject + ".\n" + 
+				"Error Message: " + ex.getMessage() + "\n" +
+				publicationIndexIdMessage + "\n" +
+				"More information is available in the server logs\n." +
+				"Host: " + displayHost + ".\n" +
+				"Error ID#: " + errorId + ".\n";
+
+			pubsEMailer.sendMail(subject, emailMessage);
 		}
 	}
 	

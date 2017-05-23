@@ -47,6 +47,9 @@ public class CrossRefBusServiceIntegrationTest extends BaseSpringTest {
 	protected String depositorEmail;
 	@Autowired
 	protected String crossRefSchemaUrl;
+	@Autowired
+	protected String displayHost;
+	
 	@Mock
 	protected PubsEMailer pubsEMailer;
 	@Autowired
@@ -69,6 +72,7 @@ public class CrossRefBusServiceIntegrationTest extends BaseSpringTest {
 			crossRefUser,
 			crossRefPwd,
 			crossRefSchemaUrl,
+			displayHost,
 			pubsEMailer,
 			transformerFactory,
 			crossRefLogDao

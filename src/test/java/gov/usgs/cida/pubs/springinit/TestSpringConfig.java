@@ -123,8 +123,13 @@ public class TestSpringConfig {
 	}
 	
 	@Bean
+	public String displayHost() {
+		return "localhost";
+	}
+	
+	@Bean
 	public String pubsEmailList() {
-		return "drsteini@usgs.gov";
+		return env.getProperty("pubs.emailList");
 	}
 
 	@Bean

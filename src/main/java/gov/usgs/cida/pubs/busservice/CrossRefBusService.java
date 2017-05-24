@@ -204,8 +204,9 @@ public class CrossRefBusService implements ICrossRefBusService {
 	}
 	
 	/**
-	 * @param mpPublication
-	 * @param httpClient
+	 * Builds Crossref XML for a publication and then submits it to Crossref web services.
+	 * @param mpPublication Crossref XML is generated from this publication
+	 * @param httpClient used to submit the publication's Crossref XML to Crossref web services
 	 * @throws UnsupportedEncodingException
 	 * @throws IOException 
 	 * @throws org.apache.http.HttpException 
@@ -280,22 +281,22 @@ public class CrossRefBusService implements ICrossRefBusService {
 	}
 	
 	/**
-	 * Check the response from Crossref web services, throw a 
-	 * RuntimeException if anything is wrong.
+	 * Check the response from Crossref web services, throw an 
+	 * HttpException with a descriptive message if anything is wrong.
 	 * @param response 
 	 * @throws HttpException when the Crossref web services return an error
 	 */
 	protected void handleResponse(HttpResponse response) throws HttpException {
-		String msg = null;
+		String exceptionMessage = null;
 		if (null == response) {
-			msg = "Response was null.";
+			exceptionMessage = "Response was null.";
 		} else if (null == response.getStatusLine()) {
-			msg = "Response status line was null.";
+			exceptionMessage = "Response status line was null.";
 		} else if (HttpStatus.SC_OK != response.getStatusLine().getStatusCode()) {
-			msg = response.getStatusLine().toString();
+			exceptionMessage = response.getStatusLine().toString();
 		}
-		if(null != msg) {
-			throw new HttpException("Error in response from Crossref Submission: " + msg);
+		if(null != exceptionMessage) {
+			throw new HttpException("Error in response from Crossref Submission: " + exceptionMessage);
 		}
 	}
 }

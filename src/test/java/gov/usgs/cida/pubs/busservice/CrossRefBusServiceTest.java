@@ -301,9 +301,9 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		
 		busService.submitCrossRef(pub);
 		verify(pubsEMailer).sendMail(anyString(), captor.capture());
-		String msg = captor.getValue();
-		assertTrue(msg.contains(causeMessage));
-		assertTrue(msg.contains(displayHost));
-		assertTrue(msg.contains(pub.getIndexId()));
+		String emailBody = captor.getValue();
+		assertTrue(emailBody.contains(causeMessage));
+		assertTrue(emailBody.contains(displayHost));
+		assertTrue(emailBody.contains(pub.getIndexId()));
 	}
 }

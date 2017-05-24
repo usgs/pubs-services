@@ -2,7 +2,7 @@ package gov.usgs.cida.pubs.busservice;
 
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
-import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.dao.intfc.ICrossRefLogDao;
 import gov.usgs.cida.pubs.domain.CrossRefLog;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
@@ -17,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.util.UUID;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
@@ -47,10 +48,11 @@ public class CrossRefBusService implements ICrossRefBusService {
 	protected final Integer crossRefPort;
 	protected final String crossRefUser;
 	protected final String crossRefPwd;
-	protected final PubsEMailer pubsEMailer;
 	protected final String crossRefSchemaUrl;
-	protected TransformerFactory transformerFactory;
-	private IDao<CrossRefLog> crossRefLogDao;
+	protected final String displayHost;
+	protected final PubsEMailer pubsEMailer;
+	protected final TransformerFactory transformerFactory;
+	protected final ICrossRefLogDao crossRefLogDao;
 	@Autowired
 	public CrossRefBusService(
 			@Qualifier("crossRefProtocol")
@@ -67,8 +69,11 @@ public class CrossRefBusService implements ICrossRefBusService {
 			final String crossRefPwd,
 			@Qualifier("crossRefSchemaUrl")
 			final String crossRefSchemaUrl,
+			@Qualifier("displayHost")
+			final String displayHost,
 			final PubsEMailer pubsEMailer,
-			final TransformerFactory transformerFactory
+			final TransformerFactory transformerFactory,
+			final ICrossRefLogDao crossRefLogDao
 	) {
 		//url-related variables:
 		this.crossRefProtocol = crossRefProtocol;
@@ -77,11 +82,12 @@ public class CrossRefBusService implements ICrossRefBusService {
 		this.crossRefPort = crossRefPort;
 		this.crossRefUser = crossRefUser;
 		this.crossRefPwd = crossRefPwd;
+		this.displayHost = displayHost;
 		//non-url variables:
 		this.pubsEMailer = pubsEMailer;
 		this.crossRefSchemaUrl = crossRefSchemaUrl;
 		this.transformerFactory = transformerFactory;
-		this.crossRefLogDao = CrossRefLog.getDao();
+		this.crossRefLogDao = crossRefLogDao;
 	}
 
 	/**
@@ -125,7 +131,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 		if (null != pub) {
 			String indexId = pub.getIndexId();
 			if (null != indexId && 0 != indexId.length()) {
-				msg = "Publication Index Id '" + indexId + "'";
+				msg = "Publication Index Id: '" + indexId + "'";
 			}
 		}
 		return msg;
@@ -170,11 +176,11 @@ public class CrossRefBusService implements ICrossRefBusService {
 	
 	@Override
 	public void submitCrossRef(final MpPublication mpPublication) {
-		String publicationMessage = ""; 
+		String publicationIndexIdMessage = ""; 
 		try (CloseableHttpClient httpClient = HttpClients.createDefault()){
-			publicationMessage = getIndexIdMessage(mpPublication);
+			publicationIndexIdMessage = getIndexIdMessage(mpPublication);
 			submitCrossRef(mpPublication, httpClient);
-			LOG.info("Publication successfully published. " + publicationMessage);
+			LOG.info("Publication successfully published. " + publicationIndexIdMessage);
 		} catch (Exception ex) {
 			/**
 			 * There's a lot of I/O going on here, and this isn't a
@@ -182,15 +188,25 @@ public class CrossRefBusService implements ICrossRefBusService {
 			 * catch to prevent interruption of control flow in 
 			 * callers
 			 */
+			String errorId = UUID.randomUUID().toString();
 			String subject = "Error submitting publication to Crossref";
-			LOG.error(subject + " " + publicationMessage, ex);
-			pubsEMailer.sendMail(subject, ex.getMessage() + "\n" + publicationMessage);
+			String logMessage = subject + ". Error ID#:" + errorId + ". "+ publicationIndexIdMessage;
+			LOG.error(logMessage, ex);
+			String emailMessage = subject + ".\n" + 
+				"Error Message: " + ex.getMessage() + "\n" +
+				publicationIndexIdMessage + "\n" +
+				"More information is available in the server logs.\n" +
+				"Host: " + displayHost + ".\n" +
+				"Error ID#: " + errorId + ".\n";
+
+			pubsEMailer.sendMail(subject, emailMessage);
 		}
 	}
 	
 	/**
-	 * @param mpPublication
-	 * @param httpClient
+	 * Builds Crossref XML for a publication and then submits it to Crossref web services.
+	 * @param mpPublication Crossref XML is generated from this publication
+	 * @param httpClient used to submit the publication's Crossref XML to Crossref web services
 	 * @throws UnsupportedEncodingException
 	 * @throws IOException 
 	 * @throws org.apache.http.HttpException 
@@ -265,30 +281,22 @@ public class CrossRefBusService implements ICrossRefBusService {
 	}
 	
 	/**
-	 * Check the response from Crossref web services, throw a 
-	 * RuntimeException if anything is wrong.
+	 * Check the response from Crossref web services, throw an 
+	 * HttpException with a descriptive message if anything is wrong.
 	 * @param response 
 	 * @throws HttpException when the Crossref web services return an error
 	 */
 	protected void handleResponse(HttpResponse response) throws HttpException {
-		String msg = null;
+		String exceptionMessage = null;
 		if (null == response) {
-			msg = "Response was null.";
+			exceptionMessage = "Response was null.";
 		} else if (null == response.getStatusLine()) {
-			msg = "Response status line was null.";
+			exceptionMessage = "Response status line was null.";
 		} else if (HttpStatus.SC_OK != response.getStatusLine().getStatusCode()) {
-			msg = response.getStatusLine().toString();
+			exceptionMessage = response.getStatusLine().toString();
 		}
-		if(null != msg) {
-			throw new HttpException("Error in response from Crossref Submission: " + msg);
+		if(null != exceptionMessage) {
+			throw new HttpException("Error in response from Crossref Submission: " + exceptionMessage);
 		}
-	}
-	
-	/**
-	 * This should mostly be used by tests injecting a mock DAO
-	 * @param crossRefLogDao the crossRefLogDao to set
-	 */
-	public void setCrossRefLogDao(IDao<CrossRefLog> crossRefLogDao) {
-		this.crossRefLogDao = crossRefLogDao;
 	}
 }

@@ -11,6 +11,8 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
+import gov.usgs.cida.pubs.dao.intfc.ICrossRefLogDao;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Category(IntegrationTest.class)
 @DatabaseSetups({
@@ -22,6 +24,9 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 })
 public class CrossRefLogDaoTest extends BaseSpringTest {
 
+	@Autowired
+	protected ICrossRefLogDao crossRefLogDao;
+	
 	@Test
 	@ExpectedDatabase(assertionMode=DatabaseAssertionMode.NON_STRICT,
 		table="CROSS_REF_LOG",
@@ -32,10 +37,10 @@ public class CrossRefLogDaoTest extends BaseSpringTest {
 		log.setBatchId("123");
 		log.setProdId("456");
 		log.setCrossrefXml("<root/>");
-		CrossRefLog.getDao().add(log);
+		crossRefLogDao.add(log);
 		
 		log = new CrossRefLog("abc", 666, "<root2/>");
-		CrossRefLog.getDao().add(log);
+		crossRefLogDao.add(log);
 	}
 
 }

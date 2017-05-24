@@ -14,8 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.dao.intfc.IDao;
-import gov.usgs.cida.pubs.domain.CrossRefLog;
+import gov.usgs.cida.pubs.dao.intfc.ICrossRefLogDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.transform.CrossrefTestPubBuilder;
@@ -44,6 +43,8 @@ import org.springframework.http.HttpStatus;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.protocol.HttpContext;
 import static org.junit.Assert.assertEquals;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import static org.mockito.Mockito.mock;
 import org.springframework.test.annotation.DirtiesContext;
 
@@ -54,7 +55,10 @@ import org.springframework.test.annotation.DirtiesContext;
  */
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class CrossRefBusServiceTest extends BaseSpringTest {
-
+	
+	@Captor
+	protected ArgumentCaptor<String> captor;
+	
 	@Autowired
 	protected String warehouseEndpoint;
 	@Autowired
@@ -74,12 +78,14 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 	protected String depositorEmail;
 	@Autowired
 	protected String crossRefSchemaUrl;
+	@Autowired
+	protected String displayHost;
 	@Mock
 	protected PubsEMailer pubsEMailer;
 	@Autowired
 	protected TransformerFactory transformerFactory;
 	@Mock
-	protected IDao<CrossRefLog> crossRefLogDao;
+	protected ICrossRefLogDao crossRefLogDao;
 	
 	protected CrossRefBusService busService;
 	
@@ -94,11 +100,11 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 			crossRefUser,
 			crossRefPwd,
 			crossRefSchemaUrl,
+			displayHost,
 			pubsEMailer,
-			transformerFactory
+			transformerFactory,
+			crossRefLogDao
 		);
-		//override the default ICrossRefLogDao with a mock.
-		busService.setCrossRefLogDao(crossRefLogDao);
 	}
 	
 	@Test
@@ -274,9 +280,9 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		//construct a mock transformer factory that causes the 
 		//submission to fail early
 		
-		String msg = "very good reason";
+		String causeMessage = "very good reason";
 		TransformerFactory mockTransformerFactory = mock(TransformerFactory.class);
-		when(mockTransformerFactory.getTransformer(any(), any(), any())).thenThrow(new RuntimeException(msg));
+		when(mockTransformerFactory.getTransformer(any(), any(), any())).thenThrow(new RuntimeException(causeMessage));
 		
 		busService = new CrossRefBusService(
 			crossRefProtocol,
@@ -286,12 +292,18 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 			crossRefUser,
 			crossRefPwd,
 			crossRefSchemaUrl,
+			displayHost,
 			pubsEMailer,
-			mockTransformerFactory
+			mockTransformerFactory,
+			crossRefLogDao
 		);
 		MpPublication pub = (MpPublication) CrossrefTestPubBuilder.buildNumberedSeriesPub(new MpPublication());
 		
 		busService.submitCrossRef(pub);
-		verify(pubsEMailer).sendMail(anyString(), Mockito.contains(msg));
+		verify(pubsEMailer).sendMail(anyString(), captor.capture());
+		String emailBody = captor.getValue();
+		assertTrue(emailBody.contains(causeMessage));
+		assertTrue(emailBody.contains(displayHost));
+		assertTrue(emailBody.contains(pub.getIndexId()));
 	}
 }

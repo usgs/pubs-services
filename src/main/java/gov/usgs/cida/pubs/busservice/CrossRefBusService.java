@@ -195,7 +195,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 			String emailMessage = subject + ".\n" + 
 				"Error Message: " + ex.getMessage() + "\n" +
 				publicationIndexIdMessage + "\n" +
-				"More information is available in the server logs\n." +
+				"More information is available in the server logs.\n" +
 				"Host: " + displayHost + ".\n" +
 				"Error ID#: " + errorId + ".\n";
 

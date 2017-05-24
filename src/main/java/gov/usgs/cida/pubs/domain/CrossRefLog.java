@@ -1,13 +1,9 @@
 package gov.usgs.cida.pubs.domain;
 
-import gov.usgs.cida.pubs.dao.intfc.ICrossRefLogDao;
 import org.springframework.stereotype.Component;
-
 
 @Component
 public class CrossRefLog extends BaseDomain<CrossRefLog> {
-
-	private static ICrossRefLogDao crossRefLogDao;
 
 	private String batchId;
 	private String prodId;

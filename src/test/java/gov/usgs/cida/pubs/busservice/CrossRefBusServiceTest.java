@@ -38,7 +38,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.util.EntityUtils;
 import org.junit.Assert;
 import static org.junit.Assert.assertNotNull;
-import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.protocol.HttpContext;
@@ -46,14 +45,7 @@ import static org.junit.Assert.assertEquals;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import static org.mockito.Mockito.mock;
-import org.springframework.test.annotation.DirtiesContext;
 
-/**
- * In this class we're overriding CrossRefBusService's ICrossRefLogDao member with
- * a mock. We don't want subsequent tests to have the opportunity to access the
- * mock, so we tell Spring to invalidate the Context cache via @DirtiesContext.
- */
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class CrossRefBusServiceTest extends BaseSpringTest {
 	
 	@Captor

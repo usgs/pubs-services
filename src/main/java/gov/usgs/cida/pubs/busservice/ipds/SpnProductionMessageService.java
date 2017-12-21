@@ -1,7 +1,6 @@
 package gov.usgs.cida.pubs.busservice.ipds;
 
-import java.time.LocalDate;
-
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,21 +39,31 @@ public class SpnProductionMessageService implements IIpdsService {
 	 */
 	@Override
 	@Transactional
-	public void processIpdsMessage(final String targetDate) {
-		LocalDate asOf = (null == targetDate || 0 == targetDate.length()) ? LocalDate.now() : LocalDate.parse(targetDate);
-		String atomFeed = requester.getSpnProduction(asOf.toString());
+	public void processIpdsMessage(final String message) {
 		IpdsMessageLog newMessage = new IpdsMessageLog();
-		newMessage.setMessageText(PubsEscapeXML10.ESCAPE_XML10.translate(atomFeed));
 		newMessage.setProcessType(ProcessType.SPN_PRODUCTION);
-		IpdsMessageLog msg = IpdsMessageLog.getDao().getById(IpdsMessageLog.getDao().add(newMessage));
+		
+		String date = null;
+		String context = null;
 
-		String processingDetails = ipdsProcess.processLog(ProcessType.SPN_PRODUCTION, msg.getId());
-
-		if (processingDetails.contains("ERROR")) {
-			pubsEMailer.sendMail("Bad Errors processing SPN Production - log:" + msg.getId(), processingDetails);
+		try {
+			JSONObject json = new JSONObject(message);
+			date = json.getString("date");
+			context = json.getString("context");
+			String atomFeed = requester.getIpdsProductXml(date, context);
+			newMessage.setMessageText(PubsEscapeXML10.ESCAPE_XML10.translate(atomFeed));
+			IpdsMessageLog msg = IpdsMessageLog.getDao().getById(IpdsMessageLog.getDao().add(newMessage));
+			String processingDetails = ipdsProcess.processLog(ProcessType.SPN_PRODUCTION, msg.getId(), context);
+			if (processingDetails.contains("ERROR")) {
+				pubsEMailer.sendMail("Bad Errors processing SPN Production - log:" + msg.getId(), processingDetails);
+			}
+			msg.setProcessingDetails(processingDetails);
+			IpdsMessageLog.getDao().update(msg);
+		} catch (Exception e) {
+			String errorMessage = "<root>Error parsing JSON from message: " + e.getMessage() + "</root>";
+			newMessage.setMessageText(PubsEscapeXML10.ESCAPE_XML10.translate(errorMessage));
+			IpdsMessageLog.getDao().add(newMessage);
 		}
-		msg.setProcessingDetails(processingDetails);
-		IpdsMessageLog.getDao().update(msg);
 	}
 
 }

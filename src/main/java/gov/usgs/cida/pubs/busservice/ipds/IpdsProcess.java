@@ -49,6 +49,8 @@ public class IpdsProcess implements IIpdsProcess {
 	private final IMpPublicationBusService pubBusService;
 
 	protected PlatformTransactionManager txnMgr;
+	
+	private String context;
 
 	@Autowired
 	public IpdsProcess(final ICrossRefBusService crossRefBusService,
@@ -63,10 +65,12 @@ public class IpdsProcess implements IIpdsProcess {
 		this.txnMgr = transactionManager;
 	}
 
-	public String processLog(final ProcessType inProcessType, final int logId) {
+	public String processLog(final ProcessType inProcessType, final int logId, String context) {
 		setStringBuilder(new StringBuilder());
 		setAdditions(0);
 		setErrors(0);
+		
+		this.context = context;
 
 		List<PubMap> ipdsPubs = IpdsMessageLog.getDao().getFromIpds(logId);
 
@@ -243,9 +247,9 @@ public class IpdsProcess implements IIpdsProcess {
 	protected Collection<PublicationContributor<?>> getContributors(MpPublication newMpPub) {
 		// get contributors from web service
 		Collection<PublicationContributor<?>> contributors = null;
-		String contributorXml = requester.getContributors(newMpPub.getIpdsId());
+		String contributorXml = requester.getContributors(newMpPub.getIpdsId(), context);
 		try {
-			contributors = binder.bindContributors(contributorXml);
+			contributors = binder.bindContributors(contributorXml, context);
 		} catch (Exception e) {
 			String msg = "Trouble getting authors/editors: ";
 			LOG.info(msg, e);
@@ -278,7 +282,7 @@ public class IpdsProcess implements IIpdsProcess {
 	protected String getNotes(MpPublication newMpPub) {
 		StringBuilder notes = new StringBuilder(null == newMpPub.getNotes() ? "" : newMpPub.getNotes());
 		//get notes from web service
-		String notesXml = requester.getNotes(newMpPub.getIpdsId());
+		String notesXml = requester.getNotes(newMpPub.getIpdsId(), context);
 		Set<String> notesTags = new HashSet<String>();
 		notesTags.add("NoteComment");
 		try {
@@ -299,7 +303,7 @@ public class IpdsProcess implements IIpdsProcess {
 	}
 
 	protected void updateIpdsWithDoi(final MpPublication inPub) {
-		String result = requester.updateIpdsDoi(inPub);
+		String result = requester.updateIpdsDoi(inPub, context);
 		if (null == result || result.contains("ERROR")) {
 			setErrors(getErrors() + 1);
 		}

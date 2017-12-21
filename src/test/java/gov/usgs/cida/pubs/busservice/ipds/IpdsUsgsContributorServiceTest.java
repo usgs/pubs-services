@@ -60,9 +60,9 @@ public class IpdsUsgsContributorServiceTest extends BaseIpdsTest {
 
 	@Test
 	public void createUsgsContributorTest() throws SAXException, IOException {
-		when(ipdsWsRequester.getContributor(anyString())).thenReturn(usgsContributorXml);
+		when(ipdsWsRequester.getContributor(anyString(), null)).thenReturn(usgsContributorXml);
 		Document d = ipdsParser.makeDocument("<root><d:AuthorNameId>1</d:AuthorNameId></root>");
-		UsgsContributor contributor = ipdsUsgsContributorService.createContributor(d.getDocumentElement());
+		UsgsContributor contributor = ipdsUsgsContributorService.createContributor(d.getDocumentElement(), null);
 		assertNotNull(contributor);
 		assertNotNull(contributor.getId());
 		assertUsgsContributorData(contributor);

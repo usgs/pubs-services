@@ -64,9 +64,9 @@ public class IpdsUsgsContributorService {
 		return contributor;
 	}
 
-	public UsgsContributor createContributor(final Element element) throws SAXException, IOException {
+	public UsgsContributor createContributor(final Element element, String context) throws SAXException, IOException {
 		String ipdsContributorId = parser.getFirstNodeText(element, "d:AuthorNameId");
-		String contributorXml = requester.getContributor(ipdsContributorId);
+		String contributorXml = requester.getContributor(ipdsContributorId, context);
 		UsgsContributor contributor = bindContributor(contributorXml);
 		String orcid = parser.formatOrcid(parser.getFirstNodeText(element, "d:ORCID"));
 		contributor.setOrcid(orcid);;

@@ -75,14 +75,14 @@ public class IpdsBinding {
 		return notes;
 	}
 
-	public Collection<PublicationContributor<?>> bindContributors(String contributorsXml) throws SAXException, IOException {
+	public Collection<PublicationContributor<?>> bindContributors(String contributorsXml, String context) throws SAXException, IOException {
 		List<MpPublicationContributor> authors = new ArrayList<>();
 		List<MpPublicationContributor> editors = new ArrayList<>();
 		Document doc = parser.makeDocument(contributorsXml);
 
 		NodeList entries = doc.getElementsByTagName("m:properties");
 		for (int n=0; n<entries.getLength(); n++) {
-			MpPublicationContributor pubContributor = ipdsContributorService.buildPublicationContributor(entries.item(n));
+			MpPublicationContributor pubContributor = ipdsContributorService.buildPublicationContributor(entries.item(n), context);
 			if (ContributorType.AUTHORS.equals(pubContributor.getContributorType().getId())) {
 				authors.add(pubContributor);
 			} else {

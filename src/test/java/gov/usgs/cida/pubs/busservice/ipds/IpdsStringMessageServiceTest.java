@@ -44,24 +44,28 @@ public class IpdsStringMessageServiceTest extends BaseSpringTest {
 
 	@Resource(name="badXml")
 	public String badXml;
+	
+	private static final String DATEVAR = "DATEVAR";
+	private static final String CONTEXTVAR = "CONTEXTVAR";
+	private static final String JSON = "{\"date\":\"DATEVAR\",\"context\":\"CONTEXTVAR\"}";
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		when(requester.getIpdsProductXml(anyString())).thenAnswer(new Answer<String>() {
+		when(requester.getIpdsProductXml(anyString(), null)).thenAnswer(new Answer<String>() {
 			@Override
 			public String answer(InvocationOnMock invocation) throws Throwable {
 				Object[] args = invocation.getArguments();
 				return "<root>" + (String) args[0] + "</root>";
 			}
 		});
-		when(ipdsProcess.processLog(any(ProcessType.class), anyInt())).thenReturn("Did Processing");
+		when(ipdsProcess.processLog(any(ProcessType.class), anyInt(), null)).thenReturn("Did Processing");
 		service = new IpdsStringMessageService(ipdsProcess, requester);
 	}
 
 	@Test
 	public void quickAndDirty() throws Exception {
-		when(requester.getIpdsProductXml(anyString())).thenReturn(badXml);
+		when(requester.getIpdsProductXml(anyString(), null)).thenReturn(badXml);
 		service.processIpdsMessage(null);
 	}
 
@@ -96,7 +100,7 @@ public class IpdsStringMessageServiceTest extends BaseSpringTest {
 	@Test
 	public void testADate() {
 		try {
-			service.processIpdsMessage("2013-10-31");
+			service.processIpdsMessage(JSON.replace(DATEVAR, "2013-10-31").replace(CONTEXTVAR, "Content0"));
 			List<IpdsMessageLog> logs = IpdsMessageLog.getDao().getByMap(null);
 			assertNotNull(logs);
 			assertEquals(1, logs.size());

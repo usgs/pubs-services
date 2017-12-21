@@ -45,7 +45,7 @@ public class IpdsContributorService {
 		this.ipdsOutsideContributorService = ipdsOutsideContributorService;
 	}
 
-	protected MpPublicationContributor buildPublicationContributor(final Node entry) throws SAXException, IOException {
+	protected MpPublicationContributor buildPublicationContributor(final Node entry, String context) throws SAXException, IOException {
 		MpPublicationContributor rtn = new MpPublicationContributor();
 		LOG.debug("\nCurrent Element :" + entry.getNodeName());
 
@@ -63,7 +63,7 @@ public class IpdsContributorService {
 			} else {
 				contributor = ipdsUsgsContributorService.getContributor(element);
 				if (null == contributor) {
-					contributor = ipdsUsgsContributorService.createContributor(element);
+					contributor = ipdsUsgsContributorService.createContributor(element, context);
 					updateContributor = false;
 				} else {
 					String costCenterId = parser.getFirstNodeText(element, "d:CostCenterId");

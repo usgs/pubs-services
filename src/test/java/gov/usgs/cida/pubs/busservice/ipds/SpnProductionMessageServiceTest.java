@@ -56,14 +56,14 @@ public class SpnProductionMessageServiceTest extends BaseSpringTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		when(requester.getSpnProduction(anyString())).thenAnswer(new Answer<String>() {
+		when(requester.getSpnProduction(anyString(), null)).thenAnswer(new Answer<String>() {
 			@Override
 			public String answer(InvocationOnMock invocation) throws Throwable {
 				Object[] args = invocation.getArguments();
 				return "<root>" + (String) args[0] + "</root>";
 			}
 		});
-		when(ipdsProcess.processLog(any(ProcessType.class), anyInt())).thenReturn("Did Processing");
+		when(ipdsProcess.processLog(any(ProcessType.class), anyInt(), null)).thenReturn("Did Processing");
 		service = new SpnProductionMessageService(ipdsProcess, requester, pubsEMailer);
 	}
 
@@ -111,7 +111,7 @@ public class SpnProductionMessageServiceTest extends BaseSpringTest {
 
 	@Test
 	public void testErrors() throws Exception {
-		when(ipdsProcess.processLog(any(ProcessType.class), anyInt())).thenReturn("Did ERROR Processing");
+		when(ipdsProcess.processLog(any(ProcessType.class), anyInt(), null)).thenReturn("Did ERROR Processing");
 		try {
 			service.processIpdsMessage("2013-10-31");
 			List<IpdsMessageLog> logs = IpdsMessageLog.getDao().getByMap(null);
@@ -127,7 +127,7 @@ public class SpnProductionMessageServiceTest extends BaseSpringTest {
 
 	@Test
 	public void quickAndDirty() throws Exception {
-		when(requester.getSpnProduction(anyString())).thenReturn(badXml);
+		when(requester.getSpnProduction(anyString(), null)).thenReturn(badXml);
 		service.processIpdsMessage(null);		
 	}
 

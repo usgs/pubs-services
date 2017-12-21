@@ -321,7 +321,7 @@ public class IpdsProcessTest extends BaseSpringTest {
 
 	@Test
 	public void updateIpdsWithDoiTest() {
-		when(requester.updateIpdsDoi(any(MpPublication.class))).thenReturn(null, "ERROR", "Cool");
+		when(requester.updateIpdsDoi(any(MpPublication.class), null)).thenReturn(null, "ERROR", "Cool");
 		MpPublication pub = new MpPublication();
 		IpdsProcess.setErrors(0);
 		IpdsProcess.setStringBuilder(new StringBuilder(""));
@@ -329,28 +329,28 @@ public class IpdsProcessTest extends BaseSpringTest {
 
 		//updateIpdsDoi returned null
 		ipdsProcess.updateIpdsWithDoi(pub);
-		verify(requester).updateIpdsDoi(any(MpPublication.class));
+		verify(requester).updateIpdsDoi(any(MpPublication.class), null);
 		assertEquals(1, IpdsProcess.getErrors().intValue());
 		assertEquals("\n\tnull", IpdsProcess.getStringBuilder().toString());
 
 		//updateIpdsDoi returned ERROR & added to stringBuilder
 		ipdsProcess.updateIpdsWithDoi(pub);
-		verify(requester, times(2)).updateIpdsDoi(any(MpPublication.class));
+		verify(requester, times(2)).updateIpdsDoi(any(MpPublication.class), null);
 		assertEquals(2, IpdsProcess.getErrors().intValue());
 		assertEquals("\n\tnull\n\tERROR", IpdsProcess.getStringBuilder().toString());
 
 		//updateIpdsDoi returned Cool - errors not changed and added to stringBuilder
 		ipdsProcess.updateIpdsWithDoi(pub);
-		verify(requester, times(3)).updateIpdsDoi(any(MpPublication.class));
+		verify(requester, times(3)).updateIpdsDoi(any(MpPublication.class), null);
 		assertEquals(2, IpdsProcess.getErrors().intValue());
 		assertEquals("\n\tnull\n\tERROR\n\tCool", IpdsProcess.getStringBuilder().toString());
 	}
 
 	@Test
 	public void getNotesTest() throws SAXException, IOException {
-		when(requester.getNotes(null)).thenReturn("<xml></xml>");
+		when(requester.getNotes(null, null)).thenReturn("<xml></xml>");
 		when(binder.bindNotes(anyString(), anySet())).thenReturn(getPublicationMapEmpty(), getPublicationMapNullNotes(), getPublicationMapZeroLengthNotes(), getPublicationMapActualNotes());
-		when(requester.getNotes("IPDS-101")).thenReturn("<xml>1</xml>");
+		when(requester.getNotes("IPDS-101", null)).thenReturn("<xml>1</xml>");
 		when(binder.bindNotes(eq("<xml>1</xml>"), anySet())).thenThrow(new RuntimeException("oops!!"));
 		MpPublication pub = new MpPublication();
 		IpdsProcess.setErrors(0);
@@ -359,28 +359,28 @@ public class IpdsProcessTest extends BaseSpringTest {
 
 		//nulls everywhere
 		assertEquals("", ipdsProcess.getNotes(pub));
-		verify(requester).getNotes(null);
+		verify(requester).getNotes(null, null);
 		verify(binder).bindNotes(anyString(), anySet());
 
 		//null from ipds
 		assertEquals("", ipdsProcess.getNotes(pub));
-		verify(requester, times(2)).getNotes(null);
+		verify(requester, times(2)).getNotes(null, null);
 		verify(binder, times(2)).bindNotes(anyString(), anySet());
 
 		//empty from ipds
 		assertEquals("", ipdsProcess.getNotes(pub));
-		verify(requester, times(3)).getNotes(null);
+		verify(requester, times(3)).getNotes(null, null);
 		verify(binder, times(3)).bindNotes(anyString(), anySet());
 
 		//real stuff from ipds
 		assertEquals("Wow, we have this!", ipdsProcess.getNotes(pub));
-		verify(requester, times(4)).getNotes(null);
+		verify(requester, times(4)).getNotes(null, null);
 		verify(binder, times(4)).bindNotes(anyString(), anySet());
 
 		//real stuff from ipds & data in pub
 		pub.setNotes("Plus me!");
 		assertEquals("Plus me!\n\tWow, we have this!", ipdsProcess.getNotes(pub));
-		verify(requester, times(5)).getNotes(null);
+		verify(requester, times(5)).getNotes(null, null);
 		verify(binder, times(5)).bindNotes(anyString(), anySet());
 
 		//problems in binder
@@ -388,7 +388,7 @@ public class IpdsProcessTest extends BaseSpringTest {
 		assertEquals("Plus me!", ipdsProcess.getNotes(pub));
 		assertEquals(1, IpdsProcess.getErrors().intValue());
 		assertEquals("\n\tTrouble getting comment: oops!!", IpdsProcess.getStringBuilder().toString());
-		verify(requester).getNotes("IPDS-101");
+		verify(requester).getNotes("IPDS-101", null);
 		verify(binder).bindNotes(eq("<xml>1</xml>"), anySet());
 	}
 
@@ -451,8 +451,8 @@ public class IpdsProcessTest extends BaseSpringTest {
 	@Test
 	public void getContributorsTest() throws SAXException, IOException {
 		Collection<PublicationContributor<?>> contribs = new ArrayList<>();
-		when(requester.getContributors(null)).thenReturn(null);
-		when(binder.bindContributors(null)).thenThrow(new RuntimeException("oops!!")).thenReturn(contribs);
+		when(requester.getContributors(null, null)).thenReturn(null);
+		when(binder.bindContributors(null, null)).thenThrow(new RuntimeException("oops!!")).thenReturn(contribs);
 		IpdsProcess.setErrors(0);
 		IpdsProcess.setStringBuilder(new StringBuilder(""));
 		IpdsProcess.setAdditions(0);
@@ -462,15 +462,15 @@ public class IpdsProcessTest extends BaseSpringTest {
 		assertNull(ipdsProcess.getContributors(mpPub));
 		assertEquals("\n\tTrouble getting authors/editors: oops!!", IpdsProcess.getStringBuilder().toString());
 		assertEquals(1, IpdsProcess.getErrors().intValue());
-		verify(requester).getContributors(null);
-		verify(binder).bindContributors(null);
+		verify(requester).getContributors(null, null);
+		verify(binder).bindContributors(null, null);
 
 		//A-OK
 		assertEquals(contribs, ipdsProcess.getContributors(mpPub));
 		assertEquals("\n\tTrouble getting authors/editors: oops!!", IpdsProcess.getStringBuilder().toString());
 		assertEquals(1, IpdsProcess.getErrors().intValue());
-		verify(requester, times(2)).getContributors(null);
-		verify(binder, times(2)).bindContributors(null);
+		verify(requester, times(2)).getContributors(null, null);
+		verify(binder, times(2)).bindContributors(null, null);
 	}
 
 	@Test
@@ -478,7 +478,7 @@ public class IpdsProcessTest extends BaseSpringTest {
 		MpPublication newMpPub = new MpPublication();
 		when(pubBusService.deleteObject(null)).thenReturn(null);
 		when(pubBusService.createObject(newMpPub)).thenReturn(getInvalidPub(), newMpPub);
-		when(requester.updateIpdsDoi(any(MpPublication.class))).thenReturn("");
+		when(requester.updateIpdsDoi(any(MpPublication.class), null)).thenReturn("");
 		IpdsProcess.setErrors(0);
 		IpdsProcess.setStringBuilder(new StringBuilder(""));
 		IpdsProcess.setAdditions(0);
@@ -489,7 +489,7 @@ public class IpdsProcessTest extends BaseSpringTest {
 		assertEquals(2, IpdsProcess.getErrors().intValue());
 		verify(pubBusService, never()).deleteObject(null);
 		verify(pubBusService).createObject(newMpPub);
-		verify(requester, never()).updateIpdsDoi(any(MpPublication.class));
+		verify(requester, never()).updateIpdsDoi(any(MpPublication.class), null);
 		verify(crossRefBusService, never()).submitCrossRef(any(MpPublication.class));
 
 		//What is this process type?
@@ -502,7 +502,7 @@ public class IpdsProcessTest extends BaseSpringTest {
 		assertEquals(1, IpdsProcess.getAdditions().intValue());
 		verify(pubBusService, never()).deleteObject(null);
 		verify(pubBusService, times(2)).createObject(newMpPub);
-		verify(requester, never()).updateIpdsDoi(any(MpPublication.class));
+		verify(requester, never()).updateIpdsDoi(any(MpPublication.class), null);
 		verify(crossRefBusService, never()).submitCrossRef(any(MpPublication.class));
 
 		//Delete
@@ -515,7 +515,7 @@ public class IpdsProcessTest extends BaseSpringTest {
 		assertEquals(1, IpdsProcess.getAdditions().intValue());
 		verify(pubBusService).deleteObject(null);
 		verify(pubBusService, times(3)).createObject(newMpPub);
-		verify(requester, never()).updateIpdsDoi(any(MpPublication.class));
+		verify(requester, never()).updateIpdsDoi(any(MpPublication.class), null);
 		verify(crossRefBusService, never()).submitCrossRef(any(MpPublication.class));
 	}
 
@@ -524,7 +524,7 @@ public class IpdsProcessTest extends BaseSpringTest {
 		MpPublication newMpPub = new MpPublication();
 		when(pubBusService.deleteObject(null)).thenReturn(null);
 		when(pubBusService.createObject(newMpPub)).thenReturn(newMpPub);
-		when(requester.updateIpdsDoi(any(MpPublication.class))).thenReturn("");
+		when(requester.updateIpdsDoi(any(MpPublication.class), null)).thenReturn("");
 		IpdsProcess.setErrors(0);
 		IpdsProcess.setStringBuilder(new StringBuilder(""));
 		IpdsProcess.setAdditions(0);
@@ -535,7 +535,7 @@ public class IpdsProcessTest extends BaseSpringTest {
 		assertEquals(1, IpdsProcess.getAdditions().intValue());
 		verify(pubBusService, never()).deleteObject(null);
 		verify(pubBusService).createObject(newMpPub);
-		verify(requester).updateIpdsDoi(any(MpPublication.class));
+		verify(requester).updateIpdsDoi(any(MpPublication.class), null);
 		verify(crossRefBusService, never()).submitCrossRef(any(MpPublication.class));
 	}
 
@@ -544,7 +544,7 @@ public class IpdsProcessTest extends BaseSpringTest {
 		MpPublication newMpPub = new MpPublication();
 		when(pubBusService.deleteObject(null)).thenReturn(null);
 		when(pubBusService.createObject(newMpPub)).thenReturn(newMpPub);
-		when(requester.updateIpdsDoi(any(MpPublication.class))).thenReturn("");
+		when(requester.updateIpdsDoi(any(MpPublication.class), null)).thenReturn("");
 		IpdsProcess.setErrors(0);
 		IpdsProcess.setStringBuilder(new StringBuilder(""));
 		IpdsProcess.setAdditions(0);
@@ -556,7 +556,7 @@ public class IpdsProcessTest extends BaseSpringTest {
 		assertEquals(1, IpdsProcess.getAdditions().intValue());
 		verify(pubBusService, never()).deleteObject(null);
 		verify(pubBusService).createObject(newMpPub);
-		verify(requester, never()).updateIpdsDoi(any(MpPublication.class));
+		verify(requester, never()).updateIpdsDoi(any(MpPublication.class), null);
 		verify(crossRefBusService, never()).submitCrossRef(any(MpPublication.class));
 
 		//Is USGS Numbered, null doi
@@ -572,7 +572,7 @@ public class IpdsProcessTest extends BaseSpringTest {
 		assertEquals(1, IpdsProcess.getAdditions().intValue());
 		verify(pubBusService, never()).deleteObject(null);
 		verify(pubBusService, times(2)).createObject(newMpPub);
-		verify(requester, never()).updateIpdsDoi(any(MpPublication.class));
+		verify(requester, never()).updateIpdsDoi(any(MpPublication.class), null);
 		verify(crossRefBusService, never()).submitCrossRef(any(MpPublication.class));
 
 		//Is USGS Numbered, emptyString doi
@@ -586,7 +586,7 @@ public class IpdsProcessTest extends BaseSpringTest {
 		assertEquals(1, IpdsProcess.getAdditions().intValue());
 		verify(pubBusService, never()).deleteObject(null);
 		verify(pubBusService, times(3)).createObject(newMpPub);
-		verify(requester, never()).updateIpdsDoi(any(MpPublication.class));
+		verify(requester, never()).updateIpdsDoi(any(MpPublication.class), null);
 		verify(crossRefBusService, never()).submitCrossRef(any(MpPublication.class));
 
 		//Is USGS Numbered, "real" doi
@@ -600,7 +600,7 @@ public class IpdsProcessTest extends BaseSpringTest {
 		assertEquals(1, IpdsProcess.getAdditions().intValue());
 		verify(pubBusService, never()).deleteObject(null);
 		verify(pubBusService, times(4)).createObject(newMpPub);
-		verify(requester, never()).updateIpdsDoi(any(MpPublication.class));
+		verify(requester, never()).updateIpdsDoi(any(MpPublication.class), null);
 		verify(crossRefBusService).submitCrossRef(any(MpPublication.class));
 
 		//Is USGS UnNumbered, null doi
@@ -617,7 +617,7 @@ public class IpdsProcessTest extends BaseSpringTest {
 		assertEquals(1, IpdsProcess.getAdditions().intValue());
 		verify(pubBusService, never()).deleteObject(null);
 		verify(pubBusService, times(5)).createObject(newMpPub);
-		verify(requester, never()).updateIpdsDoi(any(MpPublication.class));
+		verify(requester, never()).updateIpdsDoi(any(MpPublication.class), null);
 		verify(crossRefBusService).submitCrossRef(any(MpPublication.class));
 
 		//Is USGS UnNumbered, emptyString doi
@@ -631,7 +631,7 @@ public class IpdsProcessTest extends BaseSpringTest {
 		assertEquals(1, IpdsProcess.getAdditions().intValue());
 		verify(pubBusService, never()).deleteObject(null);
 		verify(pubBusService, times(6)).createObject(newMpPub);
-		verify(requester, never()).updateIpdsDoi(any(MpPublication.class));
+		verify(requester, never()).updateIpdsDoi(any(MpPublication.class), null);
 		verify(crossRefBusService).submitCrossRef(any(MpPublication.class));
 
 		//Is USGS UnNumbered, "real" doi
@@ -645,7 +645,7 @@ public class IpdsProcessTest extends BaseSpringTest {
 		assertEquals(1, IpdsProcess.getAdditions().intValue());
 		verify(pubBusService, never()).deleteObject(null);
 		verify(pubBusService, times(7)).createObject(newMpPub);
-		verify(requester, never()).updateIpdsDoi(any(MpPublication.class));
+		verify(requester, never()).updateIpdsDoi(any(MpPublication.class), null);
 		verify(crossRefBusService, times(2)).submitCrossRef(any(MpPublication.class));	}
 
 	protected MpPublication getInvalidPub() {
@@ -662,7 +662,7 @@ public class IpdsProcessTest extends BaseSpringTest {
 		when(binder.bindPublication(any(PubMap.class))).thenReturn(existingMpPub9);
 		when(pubBusService.getObjects(anyMap())).thenThrow(new RuntimeException("test")).thenReturn(null);
 		when(pubBusService.createObject(existingMpPub9)).thenReturn(existingMpPub9);
-		when(requester.getNotes(null)).thenReturn("<xml></xml>");
+		when(requester.getNotes(null, null)).thenReturn("<xml></xml>");
 		when(binder.bindNotes(anyString(), anySet())).thenReturn(getPublicationMapEmpty());
 		when(transactionManager.getTransaction(any(TransactionDefinition.class))).thenReturn(new DefaultTransactionStatus(null, false, false, false, false, null));
 		IpdsProcess.setErrors(0);
@@ -709,10 +709,10 @@ public class IpdsProcessTest extends BaseSpringTest {
 		String expectedMsg = "Summary:\n\tTotal Entries: 2\n\tPublications Added: 0\n\tErrors Encountered: 2\n\nnull:\n\tERROR: Trouble processing pub: null - test\n\nnull:\n\tERROR: Trouble processing pub: null - test\n\n";
 		when(binder.bindPublication(any(PubMap.class))).thenThrow(new RuntimeException("test"));
 		when(ipdsMessageLogDao.getFromIpds(1)).thenReturn(getPubMapList());
-		assertEquals(expectedMsg, ipdsProcess.processLog(ProcessType.COST_CENTER, 1));
+		assertEquals(expectedMsg, ipdsProcess.processLog(ProcessType.COST_CENTER, 1, null));
 
 		//Should be the same message as the ThreadLocals are reset at start of method
-		assertEquals(expectedMsg, ipdsProcess.processLog(ProcessType.COST_CENTER, 1));
+		assertEquals(expectedMsg, ipdsProcess.processLog(ProcessType.COST_CENTER, 1, null));
 	}
 
 	protected List<PubMap> getPubMapList() {

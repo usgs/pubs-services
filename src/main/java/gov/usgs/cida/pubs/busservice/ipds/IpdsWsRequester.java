@@ -34,16 +34,17 @@ public class IpdsWsRequester {
 
 	private static final Logger LOG = LoggerFactory.getLogger(IpdsWsRequester.class);
 
-	public static final String URL_PREFIX = "/_vti_bin/listdata.svc/";
-	public static final String DOI_XML_PREFIX = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" +
+	protected static final String DOI_XML_PREFIX = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" +
 					"<DigitalObjectIdentifier xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" " +
 					"xmlns=\"http://schemas.microsoft.com/ado/2007/08/dataservices\"";
-	public static final String DOI_XML_SUFFIX = "</DigitalObjectIdentifier>";
-	public static final String NULL_DOI = " m:null=\"true\"/>";
+	protected static final String DOI_XML_SUFFIX = "</DigitalObjectIdentifier>";
+	protected static final String NULL_DOI = " m:null=\"true\"/>";
+	protected static final String URL_PREFIX = "/_vti_bin/listdata.svc/";
+
 	private static final String IPDS_PROTOCOL = "https";
 	private static final int IPDS_PORT = 443;
 	private static final String ERROR = "ERROR: ";
-
+	private static final String ADMIN = "admin";
 
 	private final String ipdsEndpoint;
 	private final NTCredentials credentials;
@@ -52,33 +53,31 @@ public class IpdsWsRequester {
 	private BasicHttpContext httpContext;
 
 	@Autowired
-	public IpdsWsRequester(final String ipdsEndpoint,
-			final NTCredentials credentials,
-			final PubsEMailer pubsEMailer) {
+	public IpdsWsRequester(final String ipdsEndpoint, final NTCredentials credentials, final PubsEMailer pubsEMailer) {
 		this.ipdsEndpoint = ipdsEndpoint;
 		this.credentials = credentials;
 		this.pubsEMailer = pubsEMailer;
 	}
 
-	public String getIpdsProductXml(final String asOf) {
-		StringBuilder url = new StringBuilder(URL_PREFIX)
-		.append("InformationProductsArchive()?$filter=Modified+ge+datetime'")
+	public String getIpdsProductXml(final String asOf, String context) {
+		StringBuilder url = getContextPrefix(context)
+		.append("InformationProducts()?$filter=Modified+ge+datetime'")
 		.append(asOf)
 		.append("'");
 
 		return getIpdsXml(url.toString(), null);
 	}
 
-	protected String getContributors(final String ipds) {
-		StringBuilder url = new StringBuilder(URL_PREFIX)
-		.append("IPDSAuthors()?$filter=startswith(IPNumber,'")
+	protected String getContributors(final String ipds, String context) {
+		StringBuilder url = getContextPrefix(context)
+		.append("Authors()?$filter=startswith(IPNumber,'")
 		.append(ipds).append("')");
 
 		return getIpdsXml(url.toString(), ipds);
 	}
 
-	protected String getContributor(final String ipds) {
-		StringBuilder url = new StringBuilder(URL_PREFIX)
+	protected String getContributor(final String ipds, String context) {
+		StringBuilder url = getContextPrefix(context)
 		.append("UserInformationList(")
 		.append(ipds).append(")");
 
@@ -86,29 +85,46 @@ public class IpdsWsRequester {
 	}
 
 	protected String getCostCenter(final String costCenterId, final String ipds) {
-		StringBuilder url = new StringBuilder(URL_PREFIX)
+		StringBuilder url = getAdminPrefix()
 		.append("CostCenters(").append(costCenterId).append(")");
-
 		return getIpdsXml(url.toString(), ipds);
 	}
 
-	protected String getNotes(final String ipds) {
-		StringBuilder url = new StringBuilder(URL_PREFIX)
-		.append("IPDSNotes()?$filter=startswith(IPNumber,'")
+	public String getIpdsCostCenterXml() {
+		StringBuilder url = getAdminPrefix()
+		.append("CostCenters()");
+		return getIpdsXml(url.toString(), null);
+	}
+
+	protected String getNotes(final String ipds, String context) {
+		StringBuilder url = getContextPrefix(context)
+		.append("Notes()?$filter=startswith(IPNumber,'")
 		.append(ipds).append("')");
 
 		return getIpdsXml(url.toString(), ipds);
 	}
 
-	public String getSpnProduction(final String asOf) {
-		StringBuilder url = new StringBuilder(URL_PREFIX)
-		.append("InformationProduct()?$filter=(((IPDSReviewProcessStateValue%20eq%20'")
+	public String getSpnProduction(final String asOf, String context) {
+		StringBuilder url = getContextPrefix(context)
+		.append("InformationProducts()?$filter=(((IPDSReviewProcessStateValue%20eq%20'")
 		.append(ProcessType.SPN_PRODUCTION.getIpdsValueEncoded()).append("')")
 		.append("%20and%20(ProductTypeValue%20eq%20'USGS%20Series'))%20and%20(DigitalObjectIdentifier%20eq%20null))")
 		.append("%20and%20(Modified+ge+datetime'")
 		.append(asOf)
 		.append("')");
 		return getIpdsXml(url.toString(), null);
+	}
+
+	private StringBuilder getAdminPrefix() {
+		StringBuilder url = new StringBuilder("/");
+		url.append(ADMIN).append(URL_PREFIX);
+		return url;
+	}
+
+	private StringBuilder getContextPrefix(String context) {
+		StringBuilder url = new StringBuilder("/");
+		url.append(context).append(URL_PREFIX);
+		return url;
 	}
 
 	protected String getIpdsXml(final String url, final String ipdsId)  {
@@ -167,10 +183,10 @@ public class IpdsWsRequester {
 		return new HttpHost(ipdsEndpoint, IPDS_PORT, IPDS_PROTOCOL);
 	}
 
-	protected String updateIpdsDoi(MpPublication inPub) {
+	protected String updateIpdsDoi(MpPublication inPub, String context) {
 		StringBuilder rtn = new StringBuilder("");
-		StringBuilder url = new StringBuilder(URL_PREFIX)
-		.append("InformationProduct(")
+		StringBuilder url = getContextPrefix(context)
+		.append("InformationProducts(")
 		.append(inPub.getIpdsInternalId()).append(")/DigitalObjectIdentifier");
 
 		HttpResponse getResponse = doGet(url.toString());
@@ -240,11 +256,5 @@ public class IpdsWsRequester {
 			rtn.append("\n\t").append(ERROR).append(e.getMessage());
 		}
 		return rtn.toString();
-	}
-
-	public String getIpdsCostCenterXml() {
-		StringBuilder url = new StringBuilder(URL_PREFIX)
-		.append("CostCenters()");
-		return getIpdsXml(url.toString(), null);
 	}
 }

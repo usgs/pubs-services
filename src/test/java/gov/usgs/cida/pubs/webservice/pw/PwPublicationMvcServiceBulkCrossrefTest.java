@@ -1,19 +1,21 @@
 package gov.usgs.cida.pubs.webservice.pw;
 
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseSetups;
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.IntegrationTest;
-import gov.usgs.cida.pubs.PubsConstants;
-import java.io.IOException;
-import java.io.StringReader;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import org.apache.http.entity.mime.MIME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.io.IOException;
+import java.io.StringReader;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.http.entity.mime.MIME;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,15 +23,16 @@ import org.junit.experimental.categories.Category;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseSetups;
+
+import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.IntegrationTest;
+import gov.usgs.cida.pubs.PubsConstants;
 
 @Category(IntegrationTest.class)
 @DatabaseSetups({
@@ -44,7 +47,7 @@ public class PwPublicationMvcServiceBulkCrossrefTest extends BaseSpringTest {
 	private MockMvc mockMvc;
 	private static final String URL = "/publication/crossref";
 	private static DocumentBuilder docBuilder;
-	
+
 	@BeforeClass
 	public static void setUpClass() {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -55,13 +58,12 @@ public class PwPublicationMvcServiceBulkCrossrefTest extends BaseSpringTest {
 			throw new RuntimeException(ex);
 		}
 	}
-	
+
 	@Before
 	public void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 	}
-	
-	
+
 	/**
 	 * TODO: replace this with more robust XML schema validation
 	 * @param xml 
@@ -70,7 +72,7 @@ public class PwPublicationMvcServiceBulkCrossrefTest extends BaseSpringTest {
 		String errorMsg = "";
 		
 		try{
-			Document doc = docBuilder.parse(new InputSource(new StringReader(xml)));
+			docBuilder.parse(new InputSource(new StringReader(xml)));
 		} catch(SAXParseException e){
 			errorMsg = e.getMessage();
 		} catch (SAXException | IOException ex) {
@@ -79,13 +81,13 @@ public class PwPublicationMvcServiceBulkCrossrefTest extends BaseSpringTest {
 		//assert there are no error messages
 		assertEquals("The XML is not well-formed.", "", errorMsg);
 	}
-	
+
 	@Test
 	public void getBulkCrossRefWithNoContentTypeSpecified() throws Exception{
 		mockMvc.perform(get(URL))
 			.andExpect(status().isNotFound());
 	}
-	
+
 	@Test
 	public void getBulkCrossRefWithAcceptHeaderSpecified() throws Exception {
 		MvcResult result = mockMvc.perform(
@@ -102,7 +104,7 @@ public class PwPublicationMvcServiceBulkCrossrefTest extends BaseSpringTest {
 		assertTrue("expects non-empty response", 0 < resultText.length());
 		assertWellFormed(resultText);
 	}
-	
+
 	@Test
 	public void getBulkCrossrefXMLWhenQueryStringAsksForCrossref() throws Exception {
 		MvcResult result = mockMvc.perform(
@@ -119,5 +121,5 @@ public class PwPublicationMvcServiceBulkCrossrefTest extends BaseSpringTest {
 		assertTrue("expects non-empty response", 0 < resultText.length());
 		assertWellFormed(resultText);
 	}
-	
+
 }

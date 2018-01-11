@@ -3,536 +3,539 @@
 
 <mapper namespace="publication">
 
-	<resultMap id="result" type="Publication" extends="base.result">
-		<id property="id" column="publication_id"/>
-		<result property="indexId" column="index_id"/>
-		<result property="displayToPublicDate" column="display_to_public_date"/>
-		<result property="publicationYear" column="publication_year"/>
-		<result property="noYear" column="no_year"/>
-		<result property="seriesNumber" column="series_number"/>
-		<result property="subseriesTitle" column="subseries_title"/>
-		<result property="chapter" column="chapter"/>
-		<result property="subchapterNumber" column="subchapter"/>
-                <result property="displayTitle" column="display_title"/>
-		<result property="title" column="title"/>
-		<result property="docAbstract" column="abstract"/>
-		<result property="largerWorkTitle" column="larger_work_title"/>
-		<result property="conferenceTitle" column="conference_title"/>
-		<result property="conferenceDate" column="conference_date"/>
-		<result property="conferenceLocation" column="conference_location"/>
-		<result property="language" column="language"/>
-		<result property="publisher" column="publisher"/>
-		<result property="publisherLocation" column="publisher_location"/>
-		<result property="doi" column="doi_name"/>
-		<result property="issn" column="issn"/>
-		<result property="isbn" column="isbn"/>
-		<result property="collaboration" column="collaboration"/>
-		<result property="usgsCitation" column="usgs_citation"/>
-		<result property="productDescription" column="product_description"/>
-		<result property="startPage" column="start_page"/>
-		<result property="endPage" column="end_page"/>
-		<result property="numberOfPages" column="number_of_pages"/>
-		<result property="onlineOnly" column="online_only"/>
-		<result property="additionalOnlineFiles" column="additional_online_files"/>
-		<result property="temporalStart" column="temporal_start"/>
-		<result property="temporalEnd" column="temporal_end"/>
-		<result property="notes" column="notes"/>
-		<result property="ipdsId" column="ipds_id"/>
-		<result property="updateDate" column="update_date"/>
-		<result property="ipdsReviewProcessState" column="ipds_review_process_state"/>
-		<result property="scale" column="scale"/>
-		<result property="projection" column="projection"/>
-		<result property="datum" column="datum"/>
-		<result property="country" column="country"/>
-		<result property="state" column="state"/>
-		<result property="county" column="county"/>
-		<result property="city" column="city"/>
-		<result property="otherGeospatial" column="other_geospatial"/>
-		<result property="geographicExtents" column="geographic_extents"/>
-		<result property="volume" column="volume"/>
-		<result property="issue" column="issue"/>
-		<result property="edition" column="edition"/>
-		<result property="comments" column="public_comments"/>
-		<result property="contact" column="contact_info"/>
-		<result property="tableOfContents" column="table_of_contents"/>
-		<result property="publishedDate" column="published_date"/>
-		<result property="revisedDate" column="revised_date"/>
-		<result property="sourceDatabase" column="sourceDatabase"/>
-		<result property="published" column="published"/>
-		<result property="noUsgsAuthors" column="no_usgs_authors"/>
-		<association property="publicationType" column="publication_type_id" select="publicationType.getById"/>
-		<association property="publicationSubtype" column="publication_subtype_id" select="publicationSubtype.getById"/>
-		<association property="largerWorkType" column="larger_work_type_id" select="publicationType.getById"/>
-		<association property="largerWorkSubtype" column="larger_work_subtype_id" select="publicationSubtype.getById"/>
-		<association property="seriesTitle" column="publication_series_id" select="publicationSeries.getById"/>
-		<association property="publishingServiceCenter" column="publishing_service_center_id" select="publishingServiceCenter.getById"/>
-		<association property="isPartOf" column="is_part_of_id" select="publication.getLookupById"/>
-		<association property="supersededBy" column="superseded_by_id" select="publication.getLookupById"/>
-	</resultMap>
+    <resultMap id="result" type="Publication" extends="base.result">
+        <id property="id" column="publication_id"/>
+        <result property="indexId" column="index_id"/>
+        <result property="displayToPublicDate" column="display_to_public_date"/>
+        <result property="publicationYear" column="publication_year"/>
+        <result property="noYear" column="no_year"/>
+        <result property="seriesNumber" column="series_number"/>
+        <result property="subseriesTitle" column="subseries_title"/>
+        <result property="chapter" column="chapter"/>
+        <result property="subchapterNumber" column="subchapter"/>
+        <result property="displayTitle" column="display_title"/>
+        <result property="title" column="title"/>
+        <result property="docAbstract" column="abstract"/>
+        <result property="largerWorkTitle" column="larger_work_title"/>
+        <result property="conferenceTitle" column="conference_title"/>
+        <result property="conferenceDate" column="conference_date"/>
+        <result property="conferenceLocation" column="conference_location"/>
+        <result property="language" column="language"/>
+        <result property="publisher" column="publisher"/>
+        <result property="publisherLocation" column="publisher_location"/>
+        <result property="doi" column="doi_name"/>
+        <result property="issn" column="issn"/>
+        <result property="isbn" column="isbn"/>
+        <result property="collaboration" column="collaboration"/>
+        <result property="usgsCitation" column="usgs_citation"/>
+        <result property="productDescription" column="product_description"/>
+        <result property="startPage" column="start_page"/>
+        <result property="endPage" column="end_page"/>
+        <result property="numberOfPages" column="number_of_pages"/>
+        <result property="onlineOnly" column="online_only"/>
+        <result property="additionalOnlineFiles" column="additional_online_files"/>
+        <result property="temporalStart" column="temporal_start"/>
+        <result property="temporalEnd" column="temporal_end"/>
+        <result property="notes" column="notes"/>
+        <result property="ipdsId" column="ipds_id"/>
+        <result property="updateDate" column="update_date"/>
+        <result property="ipdsReviewProcessState" column="ipds_review_process_state"/>
+        <result property="scale" column="scale"/>
+        <result property="projection" column="projection"/>
+        <result property="datum" column="datum"/>
+        <result property="country" column="country"/>
+        <result property="state" column="state"/>
+        <result property="county" column="county"/>
+        <result property="city" column="city"/>
+        <result property="otherGeospatial" column="other_geospatial"/>
+        <result property="geographicExtents" column="geographic_extents"/>
+        <result property="volume" column="volume"/>
+        <result property="issue" column="issue"/>
+        <result property="edition" column="edition"/>
+        <result property="comments" column="public_comments"/>
+        <result property="contact" column="contact_info"/>
+        <result property="tableOfContents" column="table_of_contents"/>
+        <result property="publishedDate" column="published_date"/>
+        <result property="revisedDate" column="revised_date"/>
+        <result property="sourceDatabase" column="sourceDatabase"/>
+        <result property="published" column="published"/>
+        <result property="noUsgsAuthors" column="no_usgs_authors"/>
+        <result property="ipdsContext" column="ipds_context"/>
+        <association property="publicationType" column="publication_type_id" select="publicationType.getById"/>
+        <association property="publicationSubtype" column="publication_subtype_id" select="publicationSubtype.getById"/>
+        <association property="largerWorkType" column="larger_work_type_id" select="publicationType.getById"/>
+        <association property="largerWorkSubtype" column="larger_work_subtype_id" select="publicationSubtype.getById"/>
+        <association property="seriesTitle" column="publication_series_id" select="publicationSeries.getById"/>
+        <association property="publishingServiceCenter" column="publishing_service_center_id" select="publishingServiceCenter.getById"/>
+        <association property="isPartOf" column="is_part_of_id" select="publication.getLookupById"/>
+        <association property="supersededBy" column="superseded_by_id" select="publication.getLookupById"/>
+    </resultMap>
 
-	<resultMap id="genericResult" type="Publication" extends="result">
-		<discriminator javaType="String" column="sourceDatabase">
-			<case value="mypubs" resultMap="mpResult"/>
-			<case value="pubs warehouse" resultMap="pwResult"/>
-		</discriminator>
-	</resultMap>
+    <resultMap id="genericResult" type="Publication" extends="result">
+        <discriminator javaType="String" column="sourceDatabase">
+            <case value="mypubs" resultMap="mpResult"/>
+            <case value="pubs warehouse" resultMap="pwResult"/>
+        </discriminator>
+    </resultMap>
 
-	<resultMap id="mpResult" type="Publication" extends="genericResult">
-		<collection property="costCenters" column="publication_id" select="mpPublicationCostCenter.getByPublication"/>
-		<collection property="contributors" column="publication_id" select="mpPublicationContributor.getByPublication"/>
-		<collection property="links" column="publication_id" select="mpPublicationLink.getByPublication"/>
-		<collection property="interactions" column="publication_id" select="publicationInteraction.getByMpPublication"/>
-	</resultMap>
+    <resultMap id="mpResult" type="Publication" extends="genericResult">
+        <collection property="costCenters" column="publication_id" select="mpPublicationCostCenter.getByPublication"/>
+        <collection property="contributors" column="publication_id" select="mpPublicationContributor.getByPublication"/>
+        <collection property="links" column="publication_id" select="mpPublicationLink.getByPublication"/>
+        <collection property="interactions" column="publication_id" select="publicationInteraction.getByMpPublication"/>
+    </resultMap>
 
-	<resultMap id="pwResult" type="Publication" extends="genericResult">
-		<collection property="costCenters" column="publication_id" select="pwPublicationCostCenter.getByPublication"/>
-		<collection property="contributors" column="publication_id" select="pwPublicationContributor.getByPublication"/>
-		<collection property="links" column="publication_id" select="pwPublicationLink.getByPublication"/>
-		<collection property="interactions" column="publication_id" select="publicationInteraction.getByPwPublication"/>
-	</resultMap>
+    <resultMap id="pwResult" type="Publication" extends="genericResult">
+        <collection property="costCenters" column="publication_id" select="pwPublicationCostCenter.getByPublication"/>
+        <collection property="contributors" column="publication_id" select="pwPublicationContributor.getByPublication"/>
+        <collection property="links" column="publication_id" select="pwPublicationLink.getByPublication"/>
+        <collection property="interactions" column="publication_id" select="publicationInteraction.getByPwPublication"/>
+    </resultMap>
 
-	<resultMap id="lookupResult" type="Publication">
-		<id property="id" column="publication_id"/>
-		<result property="indexId" column="index_id"/>
-		<result property="publicationYear" column="publication_year"/>
-		<result property="title" column="title"/>
-	</resultMap>
+    <resultMap id="lookupResult" type="Publication">
+        <id property="id" column="publication_id"/>
+        <result property="indexId" column="index_id"/>
+        <result property="publicationYear" column="publication_year"/>
+        <result property="title" column="title"/>
+    </resultMap>
 
-	<sql id="cols">
-		publication_id,
-		index_id,
-		display_to_public_date,
-		publication_year,
-		no_year,
-		publication_type_id,
-		publication_subtype_id,
-		publication_series_id,
-		series_number,
-		subseries_title,
-		chapter,
-		subchapter,
-                display_title,
-		title,
-		larger_work_type_id,
-		larger_work_title,
-		larger_work_subtype_id,
-		conference_title,
-		conference_date,
-		conference_location,
-		language,
-		publisher,
-		publisher_location,
-		doi_name,
-		issn,
-		isbn,
-		collaboration,
-		usgs_citation,
-		product_description,
-		start_page,
-		end_page,
-		number_of_pages,
-		online_only,
-		additional_online_files,
-		temporal_start,
-		temporal_end,
-		ipds_id,
-		ipds_review_process_state,
-		ipds_internal_id,
-		scale,
-		projection,
-		datum,
-		country,
-		state,
-		county,
-		city,
-		other_geospatial,
-		volume,
-		issue,
-		edition,
-		public_comments,
-		contact_info,
-		table_of_contents,
-		publishing_service_center_id,
-		published_date,
-		is_part_of_id,
-		superseded_by_id,
-		revised_date,
-		<include refid="base.auditCols"/>,
-		abstract,
-		notes,
-		geographic_extents,
-		no_usgs_authors
-	</sql>
+    <sql id="cols">
+        publication_id,
+        index_id,
+        display_to_public_date,
+        publication_year,
+        no_year,
+        publication_type_id,
+        publication_subtype_id,
+        publication_series_id,
+        series_number,
+        subseries_title,
+        chapter,
+        subchapter,
+        display_title,
+        title,
+        larger_work_type_id,
+        larger_work_title,
+        larger_work_subtype_id,
+        conference_title,
+        conference_date,
+        conference_location,
+        language,
+        publisher,
+        publisher_location,
+        doi_name,
+        issn,
+        isbn,
+        collaboration,
+        usgs_citation,
+        product_description,
+        start_page,
+        end_page,
+        number_of_pages,
+        online_only,
+        additional_online_files,
+        temporal_start,
+        temporal_end,
+        ipds_id,
+        ipds_review_process_state,
+        ipds_internal_id,
+        scale,
+        projection,
+        datum,
+        country,
+        state,
+        county,
+        city,
+        other_geospatial,
+        volume,
+        issue,
+        edition,
+        public_comments,
+        contact_info,
+        table_of_contents,
+        publishing_service_center_id,
+        published_date,
+        is_part_of_id,
+        superseded_by_id,
+        revised_date,
+        <include refid="base.auditCols"/>,
+        abstract,
+        notes,
+        geographic_extents,
+        no_usgs_authors,
+        ipds_context
+    </sql>
 
-	<sql id="hosts">
-		#{id,jdbcType=NUMERIC},
-		nvl(#{indexId,jdbcType=VARCHAR},#{id,jdbcType=NUMERIC}),
-		#{displayToPublicDate,jdbcType=DATE},
-		#{publicationYear,jdbcType=VARCHAR},
-		#{noYear,jdbcType=VARCHAR},
-		#{publicationType.id,jdbcType=NUMERIC},
-		#{publicationSubtype.id,jdbcType=NUMERIC},
-		#{seriesTitle.id,jdbcType=NUMERIC},
-		#{seriesNumber,jdbcType=VARCHAR},
-		#{subseriesTitle,jdbcType=VARCHAR},
-		#{chapter,jdbcType=VARCHAR},
-		#{subchapterNumber,jdbcType=VARCHAR},
-                #{displayTitle,jdbcType=VARCHAR},
-		#{title,jdbcType=VARCHAR},
-		#{largerWorkType.id,jdbcType=NUMERIC},
-		#{largerWorkTitle,jdbcType=VARCHAR},
-		#{largerWorkSubtype.id,jdbcType=NUMERIC},
-		#{conferenceTitle,jdbcType=VARCHAR},
-		#{conferenceDate,jdbcType=VARCHAR},
-		#{conferenceLocation,jdbcType=VARCHAR},
-		#{language,jdbcType=VARCHAR},
-		#{publisher,jdbcType=VARCHAR},
-		#{publisherLocation,jdbcType=VARCHAR},
-		#{doi,jdbcType=VARCHAR},
-		#{issn,jdbcType=VARCHAR},
-		#{isbn,jdbcType=VARCHAR},
-		#{collaboration,jdbcType=VARCHAR},
-		#{usgsCitation,jdbcType=VARCHAR},
-		#{productDescription,jdbcType=VARCHAR},
-		#{startPage,jdbcType=NUMERIC},
-		#{endPage,jdbcType=NUMERIC},
-		#{numberOfPages,jdbcType=NUMERIC},
-		#{onlineOnly,jdbcType=VARCHAR},
-		#{additionalOnlineFiles,jdbcType=VARCHAR},
-		#{temporalStart,jdbcType=DATE},
-		#{temporalEnd,jdbcType=DATE},
-		#{ipdsId,jdbcType=VARCHAR},
-		#{ipdsReviewProcessState,jdbcType=VARCHAR},
-		#{ipdsInternalId,jdbcType=NUMERIC},
-		#{scale,jdbcType=NUMERIC},
-		#{projection,jdbcType=VARCHAR},
-		#{datum,jdbcType=VARCHAR},
-		#{country,jdbcType=VARCHAR},
-		#{state,jdbcType=VARCHAR},
-		#{county,jdbcType=VARCHAR},
-		#{city,jdbcType=VARCHAR},
-		#{otherGeospatial,jdbcType=VARCHAR},
-		#{volume,jdbcType=VARCHAR},
-		#{issue,jdbcType=VARCHAR},
-		#{edition,jdbcType=VARCHAR},
-		#{comments,jdbcType=VARCHAR},
-		#{contact,jdbcType=VARCHAR},
-		#{tableOfContents,jdbcType=VARCHAR},
-		#{publishingServiceCenter.id,jdbcType=NUMERIC},
-		#{publishedDate,jdbcType=VARCHAR},
-		#{isPartOf.id,jdbcType=NUMERIC},
-		#{supersededBy.id,jdbcType=NUMERIC},
-		#{revisedDate,jdbcType=VARCHAR},
-		<include refid="base.auditHosts"/>,
-		#{docAbstract,jdbcType=CLOB},
-		#{notes,jdbcType=VARCHAR},
-		#{geographicExtents,jdbcType=VARCHAR},
-		#{noUsgsAuthors,jdbcType=VARCHAR}
-	</sql>
+    <sql id="hosts">
+        #{id,jdbcType=NUMERIC},
+        nvl(#{indexId,jdbcType=VARCHAR},#{id,jdbcType=NUMERIC}),
+        #{displayToPublicDate,jdbcType=DATE},
+        #{publicationYear,jdbcType=VARCHAR},
+        #{noYear,jdbcType=VARCHAR},
+        #{publicationType.id,jdbcType=NUMERIC},
+        #{publicationSubtype.id,jdbcType=NUMERIC},
+        #{seriesTitle.id,jdbcType=NUMERIC},
+        #{seriesNumber,jdbcType=VARCHAR},
+        #{subseriesTitle,jdbcType=VARCHAR},
+        #{chapter,jdbcType=VARCHAR},
+        #{subchapterNumber,jdbcType=VARCHAR},
+        #{displayTitle,jdbcType=VARCHAR},
+        #{title,jdbcType=VARCHAR},
+        #{largerWorkType.id,jdbcType=NUMERIC},
+        #{largerWorkTitle,jdbcType=VARCHAR},
+        #{largerWorkSubtype.id,jdbcType=NUMERIC},
+        #{conferenceTitle,jdbcType=VARCHAR},
+        #{conferenceDate,jdbcType=VARCHAR},
+        #{conferenceLocation,jdbcType=VARCHAR},
+        #{language,jdbcType=VARCHAR},
+        #{publisher,jdbcType=VARCHAR},
+        #{publisherLocation,jdbcType=VARCHAR},
+        #{doi,jdbcType=VARCHAR},
+        #{issn,jdbcType=VARCHAR},
+        #{isbn,jdbcType=VARCHAR},
+        #{collaboration,jdbcType=VARCHAR},
+        #{usgsCitation,jdbcType=VARCHAR},
+        #{productDescription,jdbcType=VARCHAR},
+        #{startPage,jdbcType=NUMERIC},
+        #{endPage,jdbcType=NUMERIC},
+        #{numberOfPages,jdbcType=NUMERIC},
+        #{onlineOnly,jdbcType=VARCHAR},
+        #{additionalOnlineFiles,jdbcType=VARCHAR},
+        #{temporalStart,jdbcType=DATE},
+        #{temporalEnd,jdbcType=DATE},
+        #{ipdsId,jdbcType=VARCHAR},
+        #{ipdsReviewProcessState,jdbcType=VARCHAR},
+        #{ipdsInternalId,jdbcType=NUMERIC},
+        #{scale,jdbcType=NUMERIC},
+        #{projection,jdbcType=VARCHAR},
+        #{datum,jdbcType=VARCHAR},
+        #{country,jdbcType=VARCHAR},
+        #{state,jdbcType=VARCHAR},
+        #{county,jdbcType=VARCHAR},
+        #{city,jdbcType=VARCHAR},
+        #{otherGeospatial,jdbcType=VARCHAR},
+        #{volume,jdbcType=VARCHAR},
+        #{issue,jdbcType=VARCHAR},
+        #{edition,jdbcType=VARCHAR},
+        #{comments,jdbcType=VARCHAR},
+        #{contact,jdbcType=VARCHAR},
+        #{tableOfContents,jdbcType=VARCHAR},
+        #{publishingServiceCenter.id,jdbcType=NUMERIC},
+        #{publishedDate,jdbcType=VARCHAR},
+        #{isPartOf.id,jdbcType=NUMERIC},
+        #{supersededBy.id,jdbcType=NUMERIC},
+        #{revisedDate,jdbcType=VARCHAR},
+        <include refid="base.auditHosts"/>,
+        #{docAbstract,jdbcType=CLOB},
+        #{notes,jdbcType=VARCHAR},
+        #{geographicExtents,jdbcType=VARCHAR},
+        #{noUsgsAuthors,jdbcType=VARCHAR},
+        #{ipdsContext,jdbcType=VARCHAR}
+    </sql>
 
-	<sql id="sets">
-		index_id = nvl(#{indexId,jdbcType=VARCHAR},#{id,jdbcType=NUMERIC}),
-		display_to_public_date = #{displayToPublicDate,jdbcType=DATE},
-		publication_year = #{publicationYear,jdbcType=VARCHAR},
-		no_year = #{noYear,jdbcType=VARCHAR},
-		publication_type_id = #{publicationType.id,jdbcType=NUMERIC},
-		publication_subtype_id = #{publicationSubtype.id,jdbcType=NUMERIC},
-		publication_series_id = #{seriesTitle.id,jdbcType=NUMERIC},
-		series_number = #{seriesNumber,jdbcType=VARCHAR},
-		subseries_title = #{subseriesTitle,jdbcType=VARCHAR},
-		chapter = #{chapter,jdbcType=VARCHAR},
-		subchapter = #{subchapterNumber,jdbcType=VARCHAR},
-                display_title = #{displayTitle,jdbcType=VARCHAR},
-		title = #{title,jdbcType=VARCHAR},
-		larger_work_type_id = #{largerWorkType.id,jdbcType=NUMERIC},
-		larger_work_title = #{largerWorkTitle,jdbcType=VARCHAR},
-		larger_work_subtype_id = #{largerWorkSubtype.id,jdbcType=NUMERIC},
-		conference_title = #{conferenceTitle,jdbcType=VARCHAR},
-		conference_date = #{conferenceDate,jdbcType=VARCHAR},
-		conference_location = #{conferenceLocation,jdbcType=VARCHAR},
-		language = #{language,jdbcType=VARCHAR},
-		publisher = #{publisher,jdbcType=VARCHAR},
-		publisher_location = #{publisherLocation,jdbcType=VARCHAR},
-		doi_name = #{doi,jdbcType=VARCHAR},
-		issn = #{issn,jdbcType=VARCHAR},
-		isbn = #{isbn,jdbcType=VARCHAR},
-		collaboration = #{collaboration,jdbcType=VARCHAR},
-		usgs_citation = #{usgsCitation,jdbcType=VARCHAR},
-		product_description = #{productDescription,jdbcType=VARCHAR},
-		start_page = #{startPage,jdbcType=NUMERIC},
-		end_page = #{endPage,jdbcType=NUMERIC},
-		number_of_pages = #{numberOfPages,jdbcType=NUMERIC},
-		online_only = #{onlineOnly,jdbcType=VARCHAR},
-		additional_online_files = #{additionalOnlineFiles,jdbcType=VARCHAR},
-		temporal_start = #{temporalStart,jdbcType=DATE},
-		temporal_end = #{temporalEnd,jdbcType=DATE},
-		ipds_id = #{ipdsId,jdbcType=VARCHAR},
-		ipds_review_process_state = #{ipdsReviewProcessState,jdbcType=VARCHAR},
-		ipds_internal_id = #{ipdsInternalId,jdbcType=NUMERIC},
-		scale = #{scale,jdbcType=NUMERIC},
-		projection = #{projection,jdbcType=VARCHAR},
-		datum = #{datum,jdbcType=VARCHAR},
-		country = #{country,jdbcType=VARCHAR},
-		state = #{state,jdbcType=VARCHAR},
-		county = #{county,jdbcType=VARCHAR},
-		city = #{city,jdbcType=VARCHAR},
-		other_geospatial = #{otherGeospatial,jdbcType=VARCHAR},
-		volume = #{volume,jdbcType=VARCHAR},
-		issue = #{issue,jdbcType=VARCHAR},
-		edition = #{edition,jdbcType=VARCHAR},
-		public_comments = #{comments,jdbcType=VARCHAR},
-		contact_info = #{contact,jdbcType=VARCHAR},
-		table_of_contents = #{tableOfContents,jdbcType=VARCHAR},
-		publishing_service_center_id = #{publishingServiceCenter.id,jdbcType=NUMERIC},
-		published_date = #{publishedDate,jdbcType=VARCHAR},
-		is_part_of_id = #{isPartOf.id,jdbcType=NUMERIC},
-		superseded_by_id = #{supersededBy.id,jdbcType=NUMERIC},
-		revised_date = #{revisedDate,jdbcType=VARCHAR},
-		<include refid="base.auditSets"/>,
-		abstract = #{docAbstract,jdbcType=CLOB},
-		notes = #{notes,jdbcType=VARCHAR},
-		geographic_extents = #{geographicExtents,jdbcType=CLOB},
-		no_usgs_authors = #{noUsgsAuthors,jdbcType=VARCHAR}
-	</sql>
+    <sql id="sets">
+        index_id = nvl(#{indexId,jdbcType=VARCHAR},#{id,jdbcType=NUMERIC}),
+        display_to_public_date = #{displayToPublicDate,jdbcType=DATE},
+        publication_year = #{publicationYear,jdbcType=VARCHAR},
+        no_year = #{noYear,jdbcType=VARCHAR},
+        publication_type_id = #{publicationType.id,jdbcType=NUMERIC},
+        publication_subtype_id = #{publicationSubtype.id,jdbcType=NUMERIC},
+        publication_series_id = #{seriesTitle.id,jdbcType=NUMERIC},
+        series_number = #{seriesNumber,jdbcType=VARCHAR},
+        subseries_title = #{subseriesTitle,jdbcType=VARCHAR},
+        chapter = #{chapter,jdbcType=VARCHAR},
+        subchapter = #{subchapterNumber,jdbcType=VARCHAR},
+        display_title = #{displayTitle,jdbcType=VARCHAR},
+        title = #{title,jdbcType=VARCHAR},
+        larger_work_type_id = #{largerWorkType.id,jdbcType=NUMERIC},
+        larger_work_title = #{largerWorkTitle,jdbcType=VARCHAR},
+        larger_work_subtype_id = #{largerWorkSubtype.id,jdbcType=NUMERIC},
+        conference_title = #{conferenceTitle,jdbcType=VARCHAR},
+        conference_date = #{conferenceDate,jdbcType=VARCHAR},
+        conference_location = #{conferenceLocation,jdbcType=VARCHAR},
+        language = #{language,jdbcType=VARCHAR},
+        publisher = #{publisher,jdbcType=VARCHAR},
+        publisher_location = #{publisherLocation,jdbcType=VARCHAR},
+        doi_name = #{doi,jdbcType=VARCHAR},
+        issn = #{issn,jdbcType=VARCHAR},
+        isbn = #{isbn,jdbcType=VARCHAR},
+        collaboration = #{collaboration,jdbcType=VARCHAR},
+        usgs_citation = #{usgsCitation,jdbcType=VARCHAR},
+        product_description = #{productDescription,jdbcType=VARCHAR},
+        start_page = #{startPage,jdbcType=NUMERIC},
+        end_page = #{endPage,jdbcType=NUMERIC},
+        number_of_pages = #{numberOfPages,jdbcType=NUMERIC},
+        online_only = #{onlineOnly,jdbcType=VARCHAR},
+        additional_online_files = #{additionalOnlineFiles,jdbcType=VARCHAR},
+        temporal_start = #{temporalStart,jdbcType=DATE},
+        temporal_end = #{temporalEnd,jdbcType=DATE},
+        ipds_id = #{ipdsId,jdbcType=VARCHAR},
+        ipds_review_process_state = #{ipdsReviewProcessState,jdbcType=VARCHAR},
+        ipds_internal_id = #{ipdsInternalId,jdbcType=NUMERIC},
+        scale = #{scale,jdbcType=NUMERIC},
+        projection = #{projection,jdbcType=VARCHAR},
+        datum = #{datum,jdbcType=VARCHAR},
+        country = #{country,jdbcType=VARCHAR},
+        state = #{state,jdbcType=VARCHAR},
+        county = #{county,jdbcType=VARCHAR},
+        city = #{city,jdbcType=VARCHAR},
+        other_geospatial = #{otherGeospatial,jdbcType=VARCHAR},
+        volume = #{volume,jdbcType=VARCHAR},
+        issue = #{issue,jdbcType=VARCHAR},
+        edition = #{edition,jdbcType=VARCHAR},
+        public_comments = #{comments,jdbcType=VARCHAR},
+        contact_info = #{contact,jdbcType=VARCHAR},
+        table_of_contents = #{tableOfContents,jdbcType=VARCHAR},
+        publishing_service_center_id = #{publishingServiceCenter.id,jdbcType=NUMERIC},
+        published_date = #{publishedDate,jdbcType=VARCHAR},
+        is_part_of_id = #{isPartOf.id,jdbcType=NUMERIC},
+        superseded_by_id = #{supersededBy.id,jdbcType=NUMERIC},
+        revised_date = #{revisedDate,jdbcType=VARCHAR},
+        <include refid="base.auditSets"/>,
+        abstract = #{docAbstract,jdbcType=CLOB},
+        notes = #{notes,jdbcType=VARCHAR},
+        geographic_extents = #{geographicExtents,jdbcType=CLOB},
+        no_usgs_authors = #{noUsgsAuthors,jdbcType=VARCHAR},
+        ipds_context = #{ipdsContext,jdbcType=VARCHAR}
+    </sql>
 
-	<sql id="likeTerm">
-		like '%' || upper(#{term}) || '%'
-	</sql>
+    <sql id="likeTerm">
+        like '%' || upper(#{term}) || '%'
+    </sql>
 
-	<sql id="singleSearchTermFilter">
-				   upper(pub.title) <include refid="publication.likeTerm"/>
-				or upper(pub.abstract) <include refid="publication.likeTerm"/>
-				or upper(pub.subseries_title) <include refid="publication.likeTerm"/>
-				or upper(pub.series_number) <include refid="publication.likeTerm"/>
-				or upper(pub.index_id) <include refid="publication.likeTerm"/>
-				or to_char(pub.publication_id) = #{term}
-				or upper(pub.ipds_id) <include refid="publication.likeTerm"/>
-				or upper(pub.publication_year) <include refid="publication.likeTerm"/>
+    <sql id="singleSearchTermFilter">
+                   upper(pub.title) <include refid="publication.likeTerm"/>
+                or upper(pub.abstract) <include refid="publication.likeTerm"/>
+                or upper(pub.subseries_title) <include refid="publication.likeTerm"/>
+                or upper(pub.series_number) <include refid="publication.likeTerm"/>
+                or upper(pub.index_id) <include refid="publication.likeTerm"/>
+                or to_char(pub.publication_id) = #{term}
+                or upper(pub.ipds_id) <include refid="publication.likeTerm"/>
+                or upper(pub.publication_year) <include refid="publication.likeTerm"/>
 
-				<!-- publication type name -->
-				or pub.publication_type_id in (select publication_type_id
-				                                 from publication_type
-				                                where upper(name) <include refid="publication.likeTerm"/>)
+                <!-- publication type name -->
+                or pub.publication_type_id in (select publication_type_id
+                                                 from publication_type
+                                                where upper(name) <include refid="publication.likeTerm"/>)
 
-				<!-- publication subtype name -->
-				or pub.publication_subtype_id in (select publication_subtype_id
-				                                    from publication_subtype
-				                                   where upper(name) <include refid="publication.likeTerm"/>)
+                <!-- publication subtype name -->
+                or pub.publication_subtype_id in (select publication_subtype_id
+                                                    from publication_subtype
+                                                   where upper(name) <include refid="publication.likeTerm"/>)
 
-				<!-- series name -->
-				or pub.publication_series_id in (select publication_series_id
-				                                   from publication_series
-				                                  where upper(name) <include refid="publication.likeTerm"/>)
-	</sql>
+                <!-- series name -->
+                or pub.publication_series_id in (select publication_series_id
+                                                   from publication_series
+                                                  where upper(name) <include refid="publication.likeTerm"/>)
+    </sql>
 
-	<sql id="filters">
-			<if test="title != null and title.length > 0">
-				and (
-				<foreach item="t" collection="title" open="" separator="or" close="">
-					upper(pub.title) like '%' || upper(#{t}) || '%'
-				</foreach>
-				)
-			</if>
+    <sql id="filters">
+            <if test="title != null and title.length > 0">
+                and (
+                <foreach item="t" collection="title" open="" separator="or" close="">
+                    upper(pub.title) like '%' || upper(#{t}) || '%'
+                </foreach>
+                )
+            </if>
 
-			<if test="abstract != null and abstract.length > 0">
-				and (
-				<foreach item="a" collection="abstract" open="" separator="or" close="">
-					upper(pub.abstract) like '%' || upper(#{a}) || '%'
-				</foreach>
-				)
-			</if>
+            <if test="abstract != null and abstract.length > 0">
+                and (
+                <foreach item="a" collection="abstract" open="" separator="or" close="">
+                    upper(pub.abstract) like '%' || upper(#{a}) || '%'
+                </foreach>
+                )
+            </if>
 
-			<if test="prodId != null and prodId.length > 0">
-				and (
-				<foreach item="i" collection="prodId" open="" separator="or" close="">
-					pub.publication_id = #{i}
-				</foreach>
-				)
-			</if>
+            <if test="prodId != null and prodId.length > 0">
+                and (
+                <foreach item="i" collection="prodId" open="" separator="or" close="">
+                    pub.publication_id = #{i}
+                </foreach>
+                )
+            </if>
 
-			<if test="indexId != null and indexId.length > 0">
-				and (
-				<foreach item="i" collection="indexId" open="" separator="or" close="">
-					upper(pub.index_id) = upper(#{i,jdbcType=VARCHAR})
-				</foreach>
-				)
-			</if>
+            <if test="indexId != null and indexId.length > 0">
+                and (
+                <foreach item="i" collection="indexId" open="" separator="or" close="">
+                    upper(pub.index_id) = upper(#{i,jdbcType=VARCHAR})
+                </foreach>
+                )
+            </if>
 
-			<if test="ipdsId != null and ipdsId.length > 0">
-				and (
-				<foreach item="i" collection="ipdsId" open="" separator="or" close="">
-					pub.ipds_id = #{i,jdbcType=VARCHAR}
-				</foreach>
-				)
-			</if>
+            <if test="ipdsId != null and ipdsId.length > 0">
+                and (
+                <foreach item="i" collection="ipdsId" open="" separator="or" close="">
+                    pub.ipds_id = #{i,jdbcType=VARCHAR}
+                </foreach>
+                )
+            </if>
 
-			<if test="year != null and year.length > 0">
-				and (
-				<foreach item="y" collection="year" open="" separator="or" close="">
-					pub.publication_year = #{y}
-				</foreach>
-				)
-			</if>
+            <if test="year != null and year.length > 0">
+                and (
+                <foreach item="y" collection="year" open="" separator="or" close="">
+                    pub.publication_year = #{y}
+                </foreach>
+                )
+            </if>
 
-			<if test="startYear != null">
-				and pub.publication_year &gt;= #{startYear}
-			</if>
+            <if test="startYear != null">
+                and pub.publication_year &gt;= #{startYear}
+            </if>
 
-			<if test="endYear != null">
-				and pub.publication_year &lt;= #{endYear}
-			</if>
+            <if test="endYear != null">
+                and pub.publication_year &lt;= #{endYear}
+            </if>
 
-			<if test="typeName != null and typeName.length > 0">
-				and pub.publication_type_id in (select publication_type_id
-				                                  from publication_type
-				                                 where
-					<foreach item="r" collection="typeName" open="" separator="or" close="">
-						upper(name) like '%' || upper(#{r}) || '%'
-					</foreach>
-				    )
-			</if>
+            <if test="typeName != null and typeName.length > 0">
+                and pub.publication_type_id in (select publication_type_id
+                                                  from publication_type
+                                                 where
+                    <foreach item="r" collection="typeName" open="" separator="or" close="">
+                        upper(name) like '%' || upper(#{r}) || '%'
+                    </foreach>
+                    )
+            </if>
 
-			<if test="subtypeName != null and subtypeName.length > 0">
-				and pub.publication_subtype_id in (select publication_subtype_id
-													 from publication_subtype
-													where
-					<foreach item="r" collection="subtypeName" open="" separator="or" close="">
-						upper(name) like '%' || upper(#{r}) || '%'
-					</foreach>
-				    )
-			</if>
-			
+            <if test="subtypeName != null and subtypeName.length > 0">
+                and pub.publication_subtype_id in (select publication_subtype_id
+                                                     from publication_subtype
+                                                    where
+                    <foreach item="r" collection="subtypeName" open="" separator="or" close="">
+                        upper(name) like '%' || upper(#{r}) || '%'
+                    </foreach>
+                    )
+            </if>
 
-			<if test="seriesName != null and seriesName.length > 0">
-				and pub.publication_series_id in (select publication_series_id
-				                                    from publication_series
-				                                   where
-					<foreach item="r" collection="seriesName" open="" separator="or" close="">
-						upper(name) like '%' || upper(#{r}) || '%'
-					</foreach>
-				    )
-			</if>
+            <if test="seriesName != null and seriesName.length > 0">
+                and pub.publication_series_id in (select publication_series_id
+                                                    from publication_series
+                                                   where
+                    <foreach item="r" collection="seriesName" open="" separator="or" close="">
+                        upper(name) like '%' || upper(#{r}) || '%'
+                    </foreach>
+                    )
+            </if>
 
-			<if test="reportNumber != null and reportNumber.length > 0">
-				and (
-					<foreach item="r" collection="reportNumber" open="" separator="or" close="">
-						upper(pub.series_number) like '%' || upper(#{r}) || '%'
-					</foreach>
-				    )
-			</if>
-			
-			<if test="null != doi">
-			<choose>
-				<when test="doi">
-					and pub.doi_name is not null
-				</when>
-				<otherwise>
-					and pub.doi_name is null
-				</otherwise>
-			</choose>
-		</if>
+            <if test="reportNumber != null and reportNumber.length > 0">
+                and (
+                    <foreach item="r" collection="reportNumber" open="" separator="or" close="">
+                        upper(pub.series_number) like '%' || upper(#{r}) || '%'
+                    </foreach>
+                    )
+            </if>
 
-			<if test="publicationSeriesId != null">
-				and pub.publication_series_id = #{publicationSeriesId}
-			</if>
-	</sql>
+            <if test="null != doi">
+            <choose>
+                <when test="doi">
+                    and pub.doi_name is not null
+                </when>
+                <otherwise>
+                    and pub.doi_name is null
+                </otherwise>
+            </choose>
+        </if>
 
-	<sql id="orderBy">
-		order by
-		<choose>
-			<when test="orderBy == 'title'">
-				pub.title asc,
-			</when>
-			<when test="orderBy == 'mpNewest'">
-				case when pub.insert_date = pub.update_date then 1 else 2 end,
-				pub.update_date desc,
-			</when>
-		</choose>
-		replace(pub.publication_year, 'noyr', '0000') desc nulls last,
-		pub.no_year,
-		pub.display_to_public_date desc,
-		pub.publication_id desc
-	</sql>
+            <if test="publicationSeriesId != null">
+                and pub.publication_series_id = #{publicationSeriesId}
+            </if>
+    </sql>
 
-	<sql id="globalSelect">
-		select <include refid="base.pagingHint"/> *
-		  from (select <include refid="cols"/>, 'mypubs' sourceDatabase, published
-		          from mp_publication pub
-				<include refid="mpPublication.filters"/>
-				<if test="global != null and global == 'true'">
-					union all
-					select <include refid="cols"/>, 'pubs warehouse' sourceDatabase, 'Y' published
-					  from publication pub
-					 where publication_id in (select publication_id from publication
-					                          minus
-					                          select publication_id from mp_publication)
-					<include refid="pwPublication.filters"/>
-				</if>
-			   ) pub
-	</sql>
+    <sql id="orderBy">
+        order by
+        <choose>
+            <when test="orderBy == 'title'">
+                pub.title asc,
+            </when>
+            <when test="orderBy == 'mpNewest'">
+                case when pub.insert_date = pub.update_date then 1 else 2 end,
+                pub.update_date desc,
+            </when>
+        </choose>
+        replace(pub.publication_year, 'noyr', '0000') desc nulls last,
+        pub.no_year,
+        pub.display_to_public_date desc,
+        pub.publication_id desc
+    </sql>
 
-	<sql id="allSelect">
-		select *
-		  from (select <include refid="cols"/>, 'mypubs' sourceDatabase, published
-		          from mp_publication pub
-		        <include refid="mpPublication.filters"/>
-		        union all
-		        select <include refid="cols"/>, 'pubs warehouse' sourceDatabase, 'Y' published
-		          from publication pub
-		         where publication_id in (select publication_id from publication
-		                                  minus
-		                                  select publication_id from mp_publication)
-		        <include refid="pwPublication.filters"/>
-		       ) pub
-	</sql>
+    <sql id="globalSelect">
+        select <include refid="base.pagingHint"/> *
+          from (select <include refid="cols"/>, 'mypubs' sourceDatabase, published
+                  from mp_publication pub
+                <include refid="mpPublication.filters"/>
+                <if test="global != null and global == 'true'">
+                    union all
+                    select <include refid="cols"/>, 'pubs warehouse' sourceDatabase, 'Y' published
+                      from publication pub
+                     where publication_id in (select publication_id from publication
+                                              minus
+                                              select publication_id from mp_publication)
+                    <include refid="pwPublication.filters"/>
+                </if>
+               ) pub
+    </sql>
 
-	<select id="getById" parameterType="Integer" resultMap="genericResult">
-		select *
-		  from (select <include refid="cols"/>, 'mypubs' sourceDatabase, published
-		          from mp_publication
-		        union all
-		        select <include refid="cols"/>, 'pubs warehouse' sourceDatabase, 'Y' published
-		          from publication
-		         where publication_id in (select publication_id from publication
-		                                  minus
-		                                  select publication_id from mp_publication)
-		       )
-		   where publication_id = #{value,jdbcType=VARCHAR}
-	</select>
+    <sql id="allSelect">
+        select *
+          from (select <include refid="cols"/>, 'mypubs' sourceDatabase, published
+                  from mp_publication pub
+                <include refid="mpPublication.filters"/>
+                union all
+                select <include refid="cols"/>, 'pubs warehouse' sourceDatabase, 'Y' published
+                  from publication pub
+                 where publication_id in (select publication_id from publication
+                                          minus
+                                          select publication_id from mp_publication)
+                <include refid="pwPublication.filters"/>
+               ) pub
+    </sql>
 
-	<select id="validateByMap" parameterType="map" resultMap="genericResult">
-		<include refid="allSelect"/>
-	</select>
+    <select id="getById" parameterType="Integer" resultMap="genericResult">
+        select *
+          from (select <include refid="cols"/>, 'mypubs' sourceDatabase, published
+                  from mp_publication
+                union all
+                select <include refid="cols"/>, 'pubs warehouse' sourceDatabase, 'Y' published
+                  from publication
+                 where publication_id in (select publication_id from publication
+                                          minus
+                                          select publication_id from mp_publication)
+               )
+           where publication_id = #{value,jdbcType=VARCHAR}
+    </select>
 
-	<select id="getByMap" parameterType="map" resultMap="genericResult">
-		<include refid="globalSelect"/>
-		<include refid="orderBy"/>
-		<include refid="base.pagingRowLimit"/>
-	</select>
+    <select id="validateByMap" parameterType="map" resultMap="genericResult">
+        <include refid="allSelect"/>
+    </select>
 
-	<select id="getCount" parameterType="map" resultType="Integer">
-		select count(*)
-		  from (<include refid="globalSelect"/>)
-	</select>
+    <select id="getByMap" parameterType="map" resultMap="genericResult">
+        <include refid="globalSelect"/>
+        <include refid="orderBy"/>
+        <include refid="base.pagingRowLimit"/>
+    </select>
 
-	<sql id="baseLookupSelect">
-		select publication_id,
-		       index_id,
-		       publication_year,
-		       no_year,
-		       title
-		  from all_publication_lookup
-	</sql>
+    <select id="getCount" parameterType="map" resultType="Integer">
+        select count(*)
+          from (<include refid="globalSelect"/>)
+    </select>
 
-	<select id="getLookupById" parameterType="Integer" resultMap="lookupResult">
-		<include refid="baseLookupSelect"/>
-		   where publication_id = #{value,jdbcType=VARCHAR}
-	</select>
+    <sql id="baseLookupSelect">
+        select publication_id,
+               index_id,
+               publication_year,
+               no_year,
+               title
+          from all_publication_lookup
+    </sql>
 
-	<select id="filterLookupByIndexId" parameterType="String" resultMap="lookupResult">
-		<include refid="baseLookupSelect"/>
-		   where upper(index_id) like upper(#{value,jdbcType=VARCHAR}) || '%' and
-		         rownum &lt; 31
-	</select>
+    <select id="getLookupById" parameterType="Integer" resultMap="lookupResult">
+        <include refid="baseLookupSelect"/>
+           where publication_id = #{value,jdbcType=VARCHAR}
+    </select>
+
+    <select id="filterLookupByIndexId" parameterType="String" resultMap="lookupResult">
+        <include refid="baseLookupSelect"/>
+           where upper(index_id) like upper(#{value,jdbcType=VARCHAR}) || '%' and
+                 rownum &lt; 31
+    </select>
 
 </mapper>

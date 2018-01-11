@@ -1,26 +1,25 @@
 package gov.usgs.cida.pubs.domain;
 
-import gov.usgs.cida.pubs.dao.intfc.IPersonContributorDao;
-import gov.usgs.cida.pubs.domain.intfc.ILookup;
-import gov.usgs.cida.pubs.json.View;
-import gov.usgs.cida.pubs.validation.constraint.ParentExists;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+
+import gov.usgs.cida.pubs.dao.intfc.IPersonContributorDao;
+import gov.usgs.cida.pubs.domain.intfc.ILookup;
+import gov.usgs.cida.pubs.json.View;
+import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 
 @Component
 @ParentExists
@@ -59,8 +58,9 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 	@JsonView(View.PW.class)
 	private Set<Affiliation<? extends Affiliation<?>>> affiliations;
 
-	@JsonIgnore
-	private Integer ipdsContributorId;
+	@JsonProperty("preferred")
+	@JsonView({View.PW.class, View.Lookup.class})
+	private Boolean preferred;
 
 	public String getFamily() {
 		return family;
@@ -113,12 +113,12 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 		this.affiliations = affiliations;
 	}
 
-	public Integer getIpdsContributorId() {
-		return ipdsContributorId;
+	public Boolean isPreferred() {
+		return preferred;
 	}
 
-	public void setIpdsContributorId(final Integer inIpdsContributorId) {
-		ipdsContributorId = inIpdsContributorId;
+	public void setPreferred(final Boolean inPreferred) {
+		preferred = inPreferred;
 	}
 
 	@Override

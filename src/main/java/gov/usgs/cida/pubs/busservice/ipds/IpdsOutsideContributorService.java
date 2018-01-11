@@ -40,31 +40,31 @@ public class IpdsOutsideContributorService {
 		this.personContributorBusService = personContributorBusService;
 	}
 
-	public OutsideContributor getContributor(final Element element) {
-		String orcid = parser.formatOrcid(parser.getFirstNodeText(element, "d:ORCID"));
+	public OutsideContributor getContributor(final Element authorsItem) {
+		String orcid = parser.formatOrcid(parser.getFirstNodeText(authorsItem, Schema.ORCID));
 		OutsideContributor contributor = null;
 		if (null != orcid) {
 			contributor = getByOrcid(orcid);
 		}
 		if (null == contributor) {
-			String contributorName = parser.getFirstNodeText(element, "d:AuthorNameText");
+			String contributorName = parser.getFirstNodeText(authorsItem, Schema.AUTHOR_NAME_TEXT);
 			contributor = getByName(splitFullName(contributorName));
 		}
 		return contributor;
 	}
 
-	public OutsideContributor createContributor(final Element element) {
+	public OutsideContributor createContributor(final Element authorsItem) {
 		OutsideContributor contributor = new OutsideContributor();
-		String contributorName = parser.getFirstNodeText(element, "d:AuthorNameText");
+		String contributorName = parser.getFirstNodeText(authorsItem, Schema.AUTHOR_NAME_TEXT);
 		String[] familyGiven = splitFullName(contributorName);
 		contributor.setFamily(familyGiven[0]);
 		contributor.setGiven(familyGiven[1]);
-		String orcid = parser.formatOrcid(parser.getFirstNodeText(element, "d:ORCID"));
+		String orcid = parser.formatOrcid(parser.getFirstNodeText(authorsItem, Schema.ORCID));
 		contributor.setOrcid(orcid);
 		
 		contributor = (OutsideContributor) personContributorBusService.createObject(contributor);
 		
-		String affiliationName = parser.getFirstNodeText(element, "d:NonUSGSAffiliation");
+		String affiliationName = parser.getFirstNodeText(authorsItem, Schema.AFFILIATION_NAME);
 		OutsideAffiliation outsideAffiliation = getOutsideAffiliation(affiliationName);
 		if (null == outsideAffiliation) {
 			outsideAffiliation = createOutsideAffiliation(affiliationName);

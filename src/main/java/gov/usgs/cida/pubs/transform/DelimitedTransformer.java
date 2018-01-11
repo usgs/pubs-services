@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import gov.usgs.cida.pubs.PubsConstants;

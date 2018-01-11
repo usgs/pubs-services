@@ -100,7 +100,7 @@ public class IpdsWsRequesterTest extends BaseSpringTest {
 			fail("Didn't fail without a host name.");
 		} catch (Exception e) {
 			assertTrue(e instanceof IllegalArgumentException);
-			assertEquals("Host name may not be null", e.getMessage());
+			assertEquals("Host name must not be null", e.getMessage());
 		}
 
 		HttpHost host = requester.getHttpHost();

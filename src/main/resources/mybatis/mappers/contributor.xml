@@ -23,7 +23,7 @@
         <result property="suffix" column="suffix"/>
         <result property="email" column="email"/>
         <result property="orcid" column="orcid"/>
-        <result property="ipdsContributorId" column="ipds_contributor_id"/>
+        <result property="preferred" column="is_preferred"/>
         <collection property="affiliations" column="contributor_id" select="affiliation.getByContributor"/>
         <discriminator javaType="String" column="is_usgs">
             <case value="Y" resultMap="usgsResult"/>
@@ -45,7 +45,7 @@
     </sql>
 
     <sql id="personCols">
-        family, given, suffix, email, orcid, ipds_contributor_id
+        family, given, suffix, email, orcid, is_preferred
     </sql>
 
     <sql id="baseHosts">
@@ -67,7 +67,7 @@
         #{suffix,jdbcType=VARCHAR},
         #{email,jdbcType=VARCHAR},
         #{orcid,jdbcType=VARCHAR},
-        #{ipdsContributorId,jdbcType=NUMERIC}
+        #{preferred,jdbcType=VARCHAR}
     </sql>
 
     <sql id="baseSets">
@@ -88,15 +88,15 @@
         suffix = #{suffix,jdbcType=VARCHAR},
         email = #{email,jdbcType=VARCHAR},
         orcid = #{orcid,jdbcType=VARCHAR},
-        ipds_contributor_id = #{ipdsContributorId,jdbcType=NUMERIC}
+        is_preferred = #{preferred,jdbcType=VARCHAR}
     </sql>
 
     <sql id="filters">
         <if test="id != null">
             and contributor_id = #{id}
         </if>
-        <if test="ipdsContributorId != null">
-            and ipds_contributor_id = #{ipdsContributorId}
+        <if test="preferred != null">
+            and is_preferred = #{preferred}
         </if>
         <if test="text != null">
             and contains(text, #{text}) > 0
@@ -176,6 +176,26 @@
         where is_corporation = 'Y'
         <include refid="filters"/>
         <include refid="defaultOrderBy"/>
+    </select>
+
+    <select id="getByPreferred" resultMap="result">
+        <include refid="baseSelect"/>
+        <where>
+            <if test="corporation != null">
+                and is_corporation = #{corporation,jdbcType=VARCHAR}
+            </if>
+            <if test="usgs != null">
+                and is_usgs = #{usgs,jdbcType=VARCHAR}
+            </if>
+            <if test="orcid != null">
+                and orcid = #{orcid,jdbcType=VARCHAR}
+            </if>
+            <if test="email != null">
+                and email = #{email,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by is_preferred desc,
+                 text
     </select>
 
     <insert id="addPersonContributor" parameterType="PersonContributor">

@@ -48,7 +48,7 @@ public class PersonContributorBusServiceTest extends BaseSpringTest {
 		person.setSuffix("suffix");
 		person.setEmail("email@usgs.gov");
 		person.setOrcid("http://orcid.org/0000-0002-1825-0097");
-		person.setIpdsContributorId(12);
+		person.setPreferred(true);
 		busService.createObject(person);
 		assertNotNull(person.getId());
 		UsgsContributor persisted = (UsgsContributor) Contributor.getDao().getById(person.getId());
@@ -61,7 +61,7 @@ public class PersonContributorBusServiceTest extends BaseSpringTest {
 		outperson.setSuffix("outsuffix");
 		outperson.setEmail("outemail@usgs.gov");
 		outperson.setOrcid("http://orcid.org/0000-0002-1825-0097");
-		outperson.setIpdsContributorId(13);
+		outperson.setPreferred(true);
 		busService.createObject(outperson);
 		assertNotNull(outperson.getId());
 		OutsideContributor outpersisted = (OutsideContributor) Contributor.getDao().getById(outperson.getId());

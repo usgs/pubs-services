@@ -44,7 +44,8 @@
 					"id": 1,
 					"text": "Authors"
 				},
-				"rank": 1
+				"rank": 1,
+				"preferred": true
 			}, {
 				"text": "US Geological Survey Ice Survey Team",
 				"contributorId": 2,

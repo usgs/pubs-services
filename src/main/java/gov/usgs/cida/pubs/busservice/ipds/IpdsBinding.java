@@ -80,7 +80,7 @@ public class IpdsBinding {
 		List<MpPublicationContributor> editors = new ArrayList<>();
 		Document doc = parser.makeDocument(contributorsXml);
 
-		NodeList entries = doc.getElementsByTagName("m:properties");
+		NodeList entries = doc.getElementsByTagName(Schema.PROPERTIES);
 		for (int n=0; n<entries.getLength(); n++) {
 			MpPublicationContributor pubContributor = ipdsContributorService.buildPublicationContributor(entries.item(n), context);
 			if (ContributorType.AUTHORS.equals(pubContributor.getContributorType().getId())) {

@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.dao;
 import gov.usgs.cida.pubs.aop.ISetDbContext;
 import gov.usgs.cida.pubs.dao.intfc.IPersonContributorDao;
 import gov.usgs.cida.pubs.domain.Contributor;
+import gov.usgs.cida.pubs.domain.PersonContributor;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +23,8 @@ public class PersonContributorDao extends ContributorDao implements IPersonContr
 	}
 
 	private static final String PERSON = "PersonContributor";
-	
+	private static final String GET_BY_PREFERRED = ".getByPreferred";
+
 	private static final String REMOVE = ".remove";
 	private static final String AFFILIATION = "Affiliation";
 	private static final String AFFILIATIONS = "Affiliations";
@@ -85,5 +87,12 @@ public class PersonContributorDao extends ContributorDao implements IPersonContr
 	@ISetDbContext
 	public void removeAffiliations(Integer contributorId) {
 		getSqlSession().delete(NS + REMOVE + AFFILIATIONS, contributorId);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	@ISetDbContext
+	public List<Contributor<?>> getByPreferred(PersonContributor<?> filter) {
+		return getSqlSession().selectList(NS + GET_BY_PREFERRED, filter);
 	}
 }

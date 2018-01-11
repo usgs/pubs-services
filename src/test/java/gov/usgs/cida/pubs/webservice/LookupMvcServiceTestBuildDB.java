@@ -83,7 +83,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 
 		assertThat(rtnAsJSONArray,
 				sameJSONArrayAs(
-						new JSONArray("[{\"id\":3,\"text\":\"outerfamily, outerGiven outerSuffix outer@gmail.com\"}]"))
+						new JSONArray("[{\"id\":3,\"text\":\"outerfamily, outerGiven outerSuffix outer@gmail.com\",\"preferred\":false}]"))
 								.allowingAnyArrayOrdering());
 
 		rtn = mockLookup.perform(get("/lookup/people?orcid=http://orcid.org/0000-0000-0000-0004").accept(MediaType.APPLICATION_JSON))
@@ -98,7 +98,7 @@ public class LookupMvcServiceTestBuildDB extends BaseSpringTest {
 
 		assertThat(rtnAsJSONArray,
 				sameJSONArrayAs(
-						new JSONArray("[{\"id\":4,\"text\":\"4Family, 4Given 4Suffix con4@usgs.gov\"}]"))
+						new JSONArray("[{\"id\":4,\"text\":\"4Family, 4Given 4Suffix con4@usgs.gov\",\"preferred\":true}]"))
 				.allowingAnyArrayOrdering());
 
 		mockLookup.perform(get("/lookup/people").accept(MediaType.APPLICATION_JSON))

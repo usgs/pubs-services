@@ -21,9 +21,7 @@ import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 @Service
 public class IpdsContributorService {
-
 	private static final Logger LOG = LoggerFactory.getLogger(IpdsContributorService.class);
-
 
 	private final IpdsParserService parser;
 	private final IpdsCostCenterService ipdsCostCenterService;
@@ -50,23 +48,23 @@ public class IpdsContributorService {
 		LOG.debug("\nCurrent Element :" + entry.getNodeName());
 
 		if (entry.getNodeType() == Node.ELEMENT_NODE) {
-			Element element = (Element) entry;
+			Element authorsItem = (Element) entry;
 			PersonContributor<?> contributor;
 			boolean updateContributor = true;
-			String ipdsContributorId = parser.getFirstNodeText(element, "d:AuthorNameId");
+			String ipdsContributorId = parser.getFirstNodeText(authorsItem, Schema.AUTHOR_NAME_ID);
 			if (null == ipdsContributorId) {
-				contributor = ipdsOutsideContributorService.getContributor(element);
+				contributor = ipdsOutsideContributorService.getContributor(authorsItem);
 				if (null == contributor) {
-					contributor = ipdsOutsideContributorService.createContributor(element);
+					contributor = ipdsOutsideContributorService.createContributor(authorsItem);
 					updateContributor = false;
 				}
 			} else {
-				contributor = ipdsUsgsContributorService.getContributor(element);
+				contributor = ipdsUsgsContributorService.getContributor(authorsItem, context);
 				if (null == contributor) {
-					contributor = ipdsUsgsContributorService.createContributor(element, context);
+					contributor = ipdsUsgsContributorService.createContributor(authorsItem, context);
 					updateContributor = false;
 				} else {
-					String costCenterId = parser.getFirstNodeText(element, "d:CostCenterId");
+					String costCenterId = parser.getFirstNodeText(authorsItem, Schema.COST_CENTER_ID);
 					if (null != costCenterId) {
 						CostCenter costCenter = ipdsCostCenterService.getCostCenter(costCenterId);
 						if (null == costCenter) {
@@ -80,12 +78,12 @@ public class IpdsContributorService {
 				contributor = personContributorBusService.updateObject(contributor);
 			}
 			rtn.setContributor(contributor);
-			if ("Author".equalsIgnoreCase(parser.getFirstNodeText(element, "d:ContentType"))) {
+			if ("Author".equalsIgnoreCase(parser.getFirstNodeText(authorsItem, Schema.CONTENT_TYPE))) {
 				rtn.setContributorType(ContributorType.getDao().getById(ContributorType.AUTHORS));
 			} else {
 				rtn.setContributorType(ContributorType.getDao().getById(ContributorType.EDITORS));
 			}
-			Integer rank = PubsUtilities.parseInteger(element.getElementsByTagName("d:Rank").item(0).getTextContent());
+			Integer rank = PubsUtilities.parseInteger(authorsItem.getElementsByTagName(Schema.RANK).item(0).getTextContent());
 			if (null == rank) {
 				rtn.setRank(1);
 			} else {

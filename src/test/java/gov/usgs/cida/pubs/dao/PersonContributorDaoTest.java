@@ -2,14 +2,7 @@ package gov.usgs.cida.pubs.dao;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.IntegrationTest;
-import gov.usgs.cida.pubs.domain.Contributor;
-import gov.usgs.cida.pubs.domain.OutsideContributor;
-import gov.usgs.cida.pubs.domain.PersonContributor;
-import gov.usgs.cida.pubs.domain.UsgsContributor;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,15 +13,20 @@ import org.junit.experimental.categories.Category;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+
+import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.IntegrationTest;
+import gov.usgs.cida.pubs.domain.Contributor;
+import gov.usgs.cida.pubs.domain.OutsideContributor;
+import gov.usgs.cida.pubs.domain.PersonContributor;
+import gov.usgs.cida.pubs.domain.UsgsContributor;
 
 @Category(IntegrationTest.class)
 @DatabaseSetups({
 	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 	@DatabaseSetup("classpath:/testData/affiliation.xml"),
-	@DatabaseSetup("classpath:/testData/contributor.xml")
+	@DatabaseSetup("classpath:/testData/ipdsUsgsContributorService.xml")
 })
-@DatabaseTearDown("classpath:/testCleanup/clearAll.xml")
 public class PersonContributorDaoTest extends BaseSpringTest {
 
 	@Test
@@ -56,7 +54,7 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 	@Test
 	public void getByMap() {
 		List<Contributor<?>> contributors = PersonContributor.getDao().getByMap(null);
-		assertEquals(ContributorDaoTest.PERSON_CONTRIBUTOR_CNT, contributors.size());
+		assertEquals(11, contributors.size());
 
 		Map<String, Object> filters = new HashMap<>();
 		filters.put(PersonContributorDao.ID_SEARCH, "1");
@@ -67,38 +65,42 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 		filters.clear();
 		filters.put(PersonContributorDao.TEXT_SEARCH, "con%");
 		contributors = PersonContributor.getDao().getByMap(filters);
-		assertEquals(2, contributors.size());
-		boolean got1 = false;
-		boolean got4 = false;
+		assertEquals(10, contributors.size());
 		for (Contributor<?> contributor : contributors) {
-			if (1 == contributor.getId()) {
-				got1 = true;
-			} else if (4 == contributor.getId()) {
-				got4 = true;
-			} else {
-				fail("Got wrong contributor" + contributor.getId());
+			if (!((PersonContributor<?>)contributor).getEmail().substring(0, 3).equalsIgnoreCase("con")) {
+				fail("Got wrong contributor(Text) ID: " + contributor.getId());
 			}
 		}
-		assertTrue("Got 1", got1);
-		assertTrue("Got 4", got4);
 
 		filters.clear();
 		filters.put(PersonContributorDao.GIVEN, "con");
 		contributors = PersonContributor.getDao().getByMap(filters);
-		assertEquals(1, contributors.size());
-		assertEquals(1, contributors.get(0).getId().intValue());
+		assertEquals(3, contributors.size());
+		for (Contributor<?> contributor : contributors) {
+			if (!((PersonContributor<?>)contributor).getGiven().substring(0, 3).equalsIgnoreCase("con")) {
+				fail("Got wrong contributor Given: " + ((PersonContributor<?>)contributor).getGiven());
+			}
+		}
 
 		filters.clear();
 		filters.put(PersonContributorDao.FAMILY, "con");
 		contributors = PersonContributor.getDao().getByMap(filters);
-		assertEquals(1, contributors.size());
-		assertEquals(1, contributors.get(0).getId().intValue());
+		assertEquals(3, contributors.size());
+		for (Contributor<?> contributor : contributors) {
+			if (!((PersonContributor<?>)contributor).getFamily().substring(0, 3).equalsIgnoreCase("con")) {
+				fail("Got wrong contributor Family: " + ((PersonContributor<?>)contributor).getFamily());
+			}
+		}
 
 		filters.clear();
 		filters.put(PersonContributorDao.ORCID, new String[]{"http://orcid.org/0000-0000-0000-0004"});
 		contributors = PersonContributor.getDao().getByMap(filters);
-		assertEquals(1, contributors.size());
-		assertEquals(4, contributors.get(0).getId().intValue());
+		assertEquals(5, contributors.size());
+		for (Contributor<?> contributor : contributors) {
+			if (!((PersonContributor<?>)contributor).getOrcid().equalsIgnoreCase("http://orcid.org/0000-0000-0000-0004")) {
+				fail("Got wrong contributor ORCID: " + ((PersonContributor<?>)contributor).getOrcid());
+			}
+		}
 
 		filters.clear();
 		filters.put(PersonContributorDao.FAMILY, "out");
@@ -113,12 +115,9 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 		filters.put(PersonContributorDao.ID_SEARCH, 3);
 		contributors = PersonContributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
-		filters.put(PersonContributorDao.IPDS_CONTRIBUTOR_ID, 1);
-		contributors = PersonContributor.getDao().getByMap(filters);
-		assertEquals(0, contributors.size());
 		filters.put(PersonContributorDao.ORCID, new String[]{"http://orcid.org/0000-0000-0000-0001"});
 		contributors = PersonContributor.getDao().getByMap(filters);
-		assertEquals(0, contributors.size());
+		assertEquals(1, contributors.size());
 	}
 
 	@Test
@@ -130,7 +129,7 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 		person.setSuffix("suffix");
 		person.setEmail("email");
 		person.setOrcid("0000-0002-1825-0097");
-		person.setIpdsContributorId(12);
+		person.setPreferred(true);
 		UsgsContributor.getDao().add(person);
 		UsgsContributor persisted = (UsgsContributor) UsgsContributor.getDao().getById(person.getId());
 		assertDaoTestResults(UsgsContributor.class, person, persisted, ContributorDaoTest.IGNORE_PROPERTIES_PERSON, true, true);
@@ -140,7 +139,7 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 		person.setSuffix("suffix2");
 		person.setEmail("email2");
 		person.setOrcid("0000-0002-1825-009X");
-		person.setIpdsContributorId(122);
+		person.setPreferred(false);
 		UsgsContributor.getDao().update(person);
 		persisted = (UsgsContributor) UsgsContributor.getDao().getById(person.getId());
 		assertDaoTestResults(UsgsContributor.class, person, persisted, ContributorDaoTest.IGNORE_PROPERTIES_PERSON, true, true);
@@ -152,7 +151,7 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 		outperson.setSuffix("outsuffix");
 		outperson.setEmail("outemail");
 		outperson.setOrcid("0000-0002-1825-0097");
-		outperson.setIpdsContributorId(13);
+		outperson.setPreferred(true);
 		OutsideContributor.getDao().add(outperson);
 		OutsideContributor outpersisted = (OutsideContributor) OutsideContributor.getDao().getById(outperson.getId());
 		assertDaoTestResults(OutsideContributor.class, outperson, outpersisted, ContributorDaoTest.IGNORE_PROPERTIES_PERSON, true, true);
@@ -162,7 +161,7 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 		outperson.setSuffix("outsuffix2");
 		outperson.setEmail("outemail2");
 		outperson.setOrcid("0000-0002-1825-009X");
-		outperson.setIpdsContributorId(123);
+		outperson.setPreferred(false);
 		OutsideContributor.getDao().update(outperson);
 		outpersisted = (OutsideContributor) OutsideContributor.getDao().getById(outperson.getId());
 		assertDaoTestResults(OutsideContributor.class, outperson, outpersisted, ContributorDaoTest.IGNORE_PROPERTIES_PERSON, true, true);
@@ -176,6 +175,48 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put(PersonContributorDao.ID_SEARCH, 1);
 		assertEquals("One contrib with id = 1", 1, PersonContributor.getDao().getObjectCount(params).intValue());
+	}
+
+	@Test
+	public void getByPreferredAll() {
+		List<Contributor<?>> contributors = PersonContributor.getDao().getByPreferred(null);
+		assertEquals(12, contributors.size());
+		assertEquals(101, contributors.get(0).getId().intValue());
+		assertEquals(104, contributors.get(1).getId().intValue());
+		assertEquals(4, contributors.get(2).getId().intValue());
+		assertEquals(1, contributors.get(3).getId().intValue());
+		assertEquals(44, contributors.get(4).getId().intValue());
+		assertEquals(34, contributors.get(5).getId().intValue());
+		assertEquals(24, contributors.get(6).getId().intValue());
+		assertEquals(14, contributors.get(7).getId().intValue());
+		assertEquals(11, contributors.get(8).getId().intValue());
+		assertEquals(21, contributors.get(9).getId().intValue());
+		assertEquals(2, contributors.get(10).getId().intValue());
+		assertEquals(3, contributors.get(11).getId().intValue());
+	}
+
+	@Test
+	public void getByPreferredByOrcid() {
+		UsgsContributor filter = new UsgsContributor();
+		filter.setOrcid("http://orcid.org/0000-0000-0000-0004");
+		List<Contributor<?>> contributors = PersonContributor.getDao().getByPreferred(filter);
+		assertEquals(5, contributors.size());
+		assertEquals(4, contributors.get(0).getId().intValue());
+		assertEquals(44, contributors.get(1).getId().intValue());
+		assertEquals(34, contributors.get(2).getId().intValue());
+		assertEquals(24, contributors.get(3).getId().intValue());
+		assertEquals(14, contributors.get(4).getId().intValue());
+	}
+
+	@Test
+	public void getByPreferredByEmail() {
+		UsgsContributor filter = new UsgsContributor();
+		filter.setEmail("con@usgs.gov");;
+		List<Contributor<?>> contributors = PersonContributor.getDao().getByPreferred(filter);
+		assertEquals(3, contributors.size());
+		assertEquals(1, contributors.get(0).getId().intValue());
+		assertEquals(11, contributors.get(1).getId().intValue());
+		assertEquals(21, contributors.get(2).getId().intValue());
 	}
 
 	public static PersonContributor<?> buildAPerson(final Integer personId, final String type) {

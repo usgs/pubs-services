@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.springinit;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.http.auth.NTCredentials;
@@ -18,25 +19,24 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
+
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
-
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.utility.CustomStringToArrayConverter;
 import gov.usgs.cida.pubs.utility.CustomStringToStringConverter;
 import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
-import java.io.IOException;
-import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
 
 @Configuration
 @ComponentScan(basePackages={
@@ -54,7 +54,7 @@ import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
 @EnableTransactionManagement
 @EnableAspectJAutoProxy
 @Import({BusServiceConfig.class, MybatisConfig.class})
-public class SpringConfig extends WebMvcConfigurerAdapter {
+public class SpringConfig implements WebMvcConfigurer {
 
 	@Autowired
 	CustomStringToArrayConverter customStringToArrayConverter;

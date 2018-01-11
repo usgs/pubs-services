@@ -42,6 +42,7 @@ public class IpdsProcess implements IIpdsProcess {
 	private static ThreadLocal<StringBuilder> stringBuilder = new ThreadLocal<>();
 	private static ThreadLocal<Integer> additions = new ThreadLocal<>();
 	private static ThreadLocal<Integer> errors = new ThreadLocal<>();
+	private static ThreadLocal<String> context = new ThreadLocal<>();
 
 	private final ICrossRefBusService crossRefBusService;
 	private final IpdsBinding binder;
@@ -49,8 +50,7 @@ public class IpdsProcess implements IIpdsProcess {
 	private final IMpPublicationBusService pubBusService;
 
 	protected PlatformTransactionManager txnMgr;
-	
-	private String context;
+
 
 	@Autowired
 	public IpdsProcess(final ICrossRefBusService crossRefBusService,
@@ -69,8 +69,7 @@ public class IpdsProcess implements IIpdsProcess {
 		setStringBuilder(new StringBuilder());
 		setAdditions(0);
 		setErrors(0);
-		
-		this.context = context;
+		setContext(context);
 
 		List<PubMap> ipdsPubs = IpdsMessageLog.getDao().getFromIpds(logId);
 
@@ -247,9 +246,9 @@ public class IpdsProcess implements IIpdsProcess {
 	protected Collection<PublicationContributor<?>> getContributors(MpPublication newMpPub) {
 		// get contributors from web service
 		Collection<PublicationContributor<?>> contributors = null;
-		String contributorXml = requester.getContributors(newMpPub.getIpdsId(), context);
+		String contributorXml = requester.getContributors(newMpPub.getIpdsId(), getContext());
 		try {
-			contributors = binder.bindContributors(contributorXml, context);
+			contributors = binder.bindContributors(contributorXml, getContext());
 		} catch (Exception e) {
 			String msg = "Trouble getting authors/editors: ";
 			LOG.info(msg, e);
@@ -282,7 +281,7 @@ public class IpdsProcess implements IIpdsProcess {
 	protected String getNotes(MpPublication newMpPub) {
 		StringBuilder notes = new StringBuilder(null == newMpPub.getNotes() ? "" : newMpPub.getNotes());
 		//get notes from web service
-		String notesXml = requester.getNotes(newMpPub.getIpdsId(), context);
+		String notesXml = requester.getNotes(newMpPub.getIpdsId(), getContext());
 		Set<String> notesTags = new HashSet<String>();
 		notesTags.add("NoteComment");
 		try {
@@ -303,7 +302,7 @@ public class IpdsProcess implements IIpdsProcess {
 	}
 
 	protected void updateIpdsWithDoi(final MpPublication inPub) {
-		String result = requester.updateIpdsDoi(inPub, context);
+		String result = requester.updateIpdsDoi(inPub, getContext());
 		if (null == result || result.contains("ERROR")) {
 			setErrors(getErrors() + 1);
 		}
@@ -332,6 +331,14 @@ public class IpdsProcess implements IIpdsProcess {
 
 	public static void setErrors(Integer inErrors) {
 		errors.set(inErrors);
+	}
+
+	public static String getContext() {
+		return context.get();
+	}
+
+	public static void setContext(String inContext) {
+		context.set(inContext);
 	}
 
 }

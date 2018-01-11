@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <CONTRIBUTOR CONTRIBUTOR_ID="1" FAMILY="ConFamily" GIVEN="ConGiven" SUFFIX="ConSuffix" EMAIL="con@usgs.gov" IS_CORPORATION="N" IS_USGS="Y" text="ConFamily, ConGiven ConSuffix con@usgs.gov" IS_PREFERRED="Y" />
+    <CONTRIBUTOR CONTRIBUTOR_ID="11" FAMILY="Con11Family" GIVEN="ConGiven" SUFFIX="ConSuffix" EMAIL="con@usgs.gov" IS_CORPORATION="N" IS_USGS="Y" text="Con11Family, ConGiven ConSuffix con@usgs.gov" IS_PREFERRED="N" />
+    <CONTRIBUTOR CONTRIBUTOR_ID="21" FAMILY="Con21Family" GIVEN="ConGiven" SUFFIX="ConSuffix" EMAIL="con@usgs.gov" IS_CORPORATION="N" IS_USGS="Y" text="Con21Family, ConGiven ConSuffix con@usgs.gov" IS_PREFERRED="N" />
+
+    <CONTRIBUTOR CONTRIBUTOR_ID="4" FAMILY="4Family" GIVEN="4Given" SUFFIX="4Suffix" EMAIL="con4@usgs.gov" IS_CORPORATION="N" IS_USGS="Y" text="4Family 4Given 4Suffix con4@usgs.gov" orcid="http://orcid.org/0000-0000-0000-0004" IS_PREFERRED="Y" />
+    <CONTRIBUTOR CONTRIBUTOR_ID="14" FAMILY="14Family" GIVEN="14Given" SUFFIX="4Suffix" EMAIL="con4@usgs.goy" IS_CORPORATION="N" IS_USGS="Y" text="4Family 4Given 4Suffix con4@usgs.goy" orcid="http://orcid.org/0000-0000-0000-0004" IS_PREFERRED="N" />
+    <CONTRIBUTOR CONTRIBUTOR_ID="24" FAMILY="24Family" GIVEN="24Given" SUFFIX="4Suffix" EMAIL="con4@usgs.gox" IS_CORPORATION="N" IS_USGS="Y" text="4Family 4Given 4Suffix con4@usgs.gox" orcid="http://orcid.org/0000-0000-0000-0004" IS_PREFERRED="N" />
+    <CONTRIBUTOR CONTRIBUTOR_ID="34" FAMILY="34Family" GIVEN="34Given" SUFFIX="4Suffix" EMAIL="con4@usgs.gow" IS_CORPORATION="N" IS_USGS="Y" text="4Family 4Given 4Suffix con4@usgs.gow" orcid="http://orcid.org/0000-0000-0000-0004" IS_PREFERRED="N" />
+    <CONTRIBUTOR CONTRIBUTOR_ID="44" FAMILY="44Family" GIVEN="44Given" SUFFIX="4Suffix" EMAIL="con4@usgs.gou" IS_CORPORATION="N" IS_USGS="Y" text="4Family 4Given 4Suffix con4@usgs.gou" orcid="http://orcid.org/0000-0000-0000-0004" IS_PREFERRED="N" />
+
+    <CONTRIBUTOR CONTRIBUTOR_ID="101" FAMILY="101Family" GIVEN="101Given" SUFFIX="101Suffix" EMAIL="con101@usgs.gov" IS_CORPORATION="N" IS_USGS="Y" text="101Family, 101Given 101Suffix con101@usgs.gov" IS_PREFERRED="Y" />
+
+    <CONTRIBUTOR CONTRIBUTOR_ID="104" FAMILY="104Family" GIVEN="104Given" SUFFIX="104Suffix" EMAIL="con104@usgs.gov" IS_CORPORATION="N" IS_USGS="Y" text="104Family 104Given 104Suffix con104@usgs.gov" orcid="http://orcid.org/0000-0000-0000-0104" IS_PREFERRED="Y" />
+
+    <CONTRIBUTOR CONTRIBUTOR_ID="2" LITERAL="US Geological Survey Ice Survey Team" IS_CORPORATION="Y" IS_USGS="N" text="US Geological Survey Ice Survey Team" IS_PREFERRED="N" />
+    <CONTRIBUTOR CONTRIBUTOR_ID="3" FAMILY="outerfamily" GIVEN="outerGiven" SUFFIX="outerSuffix" EMAIL="outer@gmail.com" IS_CORPORATION="N" IS_USGS="N" text="outerfamily, outerGiven outerSuffix outer@gmail.com" orcid="http://orcid.org/0000-0000-0000-0001" IS_PREFERRED="N" />
+</dataset>

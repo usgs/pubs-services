@@ -4,9 +4,9 @@
 	<AFFILIATION AFFILIATION_ID="2" NAME="Affiliation Cost Center 2" AFFILIATION_IPDS_ID="3" IS_COST_CENTER="Y" IS_ACTIVE="Y"/>
 	<AFFILIATION AFFILIATION_ID="5" NAME="Outside Affiliation 1" IS_COST_CENTER="N" IS_ACTIVE="Y"/>
 
-	<CONTRIBUTOR CONTRIBUTOR_ID="1" FAMILY="ConFamily" GIVEN="ConGiven" SUFFIX="ConSuffix" EMAIL="con@usgs.gov" IPDS_CONTRIBUTOR_ID="3" IS_CORPORATION="N" IS_USGS="Y" text="ConFamily, ConGiven ConSuffix con@usgs.gov"/>
-	<CONTRIBUTOR CONTRIBUTOR_ID="2" LITERAL="US Geological Survey Ice Survey Team" IS_CORPORATION="Y" IS_USGS="N" text="US Geological Survey Ice Survey Team"/>
-	<CONTRIBUTOR CONTRIBUTOR_ID="3" FAMILY="outerfamily" GIVEN="outerGiven" SUFFIX="outerSuffix" EMAIL="outer@gmail.com" IS_CORPORATION="N" IS_USGS="N" text="outerfamily, outerGiven outerSuffix outer@gmail.com"/>
+	<CONTRIBUTOR CONTRIBUTOR_ID="1" FAMILY="ConFamily" GIVEN="ConGiven" SUFFIX="ConSuffix" EMAIL="con@usgs.gov" IS_CORPORATION="N" IS_USGS="Y" text="ConFamily, ConGiven ConSuffix con@usgs.gov" IS_PREFERRED="Y" />
+	<CONTRIBUTOR CONTRIBUTOR_ID="2" LITERAL="US Geological Survey Ice Survey Team" IS_CORPORATION="Y" IS_USGS="N" text="US Geological Survey Ice Survey Team" IS_PREFERRED="N" />
+	<CONTRIBUTOR CONTRIBUTOR_ID="3" FAMILY="outerfamily" GIVEN="outerGiven" SUFFIX="outerSuffix" EMAIL="outer@gmail.com" IS_CORPORATION="N" IS_USGS="N" text="outerfamily, outerGiven outerSuffix outer@gmail.com" IS_PREFERRED="N" />
 
 	<PUBLICATION_SERIES PUBLICATION_SERIES_ID="332" PUBLICATION_SUBTYPE_ID="5" NAME="Resource Publication" CODE="RP" IS_ACTIVE="N" DOI_NAME="seriesDoi" PRINT_ISSN="spIssn" ONLINE_ISSN="soIssn"/>
 

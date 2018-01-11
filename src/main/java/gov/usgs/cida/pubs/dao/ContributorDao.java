@@ -21,7 +21,6 @@ public class ContributorDao extends BaseDao<Contributor<?>> {
 	}
 
 	protected static final String NS = "contributor";
-	public static final String IPDS_CONTRIBUTOR_ID = "ipdsContributorId";
 
 	/** 
 	 * {@inheritDoc}

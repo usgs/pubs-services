@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.busservice.ipds.IpdsProcessTest;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
@@ -25,11 +26,12 @@ import org.slf4j.LoggerFactory;
 
 public class PublicationTest extends BaseSpringTest {
 	private static final Logger LOG = LoggerFactory.getLogger(PublicationTest.class);
+
 	@Test
 	public void testMappingContributors() {
 		MpPublication pub = new MpPublication();
 		assertNull(pub.getContributorsToMap());
-		
+
 		Collection<PublicationContributor<?>> cl = new ArrayList<>();
 		pub.setContributors(cl);
 		assertNull(pub.getContributorsToMap());
@@ -42,7 +44,7 @@ public class PublicationTest extends BaseSpringTest {
 		author.setContributorType(new ContributorType());
 		hm = pub.getContributorsToMap();
 		assertTrue(hm.containsKey("unknown"));
-		
+
 		ContributorType act = new ContributorType();
 		act.setId(ContributorType.AUTHORS);
 		author.setContributorType(act);
@@ -67,39 +69,40 @@ public class PublicationTest extends BaseSpringTest {
 		assertTrue(hm.containsKey("unknown"));
 		assertEquals(2, hm.get("unknown").size());
 	}
+
 	@Test
 	public void testGetMappingContributorsSorted() {
 		Publication<?> pub = new Publication<>();
-		
+
 		ContributorType authorType = new ContributorType();
 		authorType.setId(ContributorType.AUTHORS);
-		
+
 		ContributorType editorType = new ContributorType();
 		editorType.setId(ContributorType.EDITORS);
-		
+
 		PublicationContributor<?> firstAuthor = new PublicationContributor<>();
 		firstAuthor.setContributorType(authorType);
 		firstAuthor.setRank(1);
-		
+
 		PublicationContributor<?> secondAuthor = new PublicationContributor<>();
 		secondAuthor.setContributorType(authorType);
 		secondAuthor.setRank(2);
-		
+
 		PublicationContributor<?> firstEditor = new PublicationContributor<>();
 		firstEditor.setContributorType(editorType);
 		firstEditor.setRank(3);
-		
+
 		PublicationContributor<?> secondEditor = new PublicationContributor<>();
 		secondEditor.setContributorType(editorType);
 		secondEditor.setRank(4);
-		
+
 		List<PublicationContributor<?>> contributors = Arrays.asList(
 			//purposefully not in order
 			secondEditor,
 			firstAuthor,
 			firstEditor,
 			secondAuthor
-		
+
 		);
 		Map<String, List<PublicationContributor<?>>> expected = ImmutableMap.of(
 			"authors", Arrays.asList(firstAuthor, secondAuthor),
@@ -114,16 +117,17 @@ public class PublicationTest extends BaseSpringTest {
 			assertEquals(expected, actual);
 		}
 	}
+
 	@Test
 	public void testSetMappingContributors() {
 		MpPublication pub = new MpPublication();
 		pub.setContributorsFromMap(null);
 		assertTrue(pub.getContributors().isEmpty());
-		
+
 		Map<String, List<PublicationContributor<?>>> cm = new HashMap<>();
 		pub.setContributorsFromMap(cm);
 		assertTrue(pub.getContributors().isEmpty());
-		
+
 		cm.put("unknown", null);
 		pub.setContributorsFromMap(cm);
 		assertTrue(pub.getContributors().isEmpty());
@@ -175,7 +179,7 @@ public class PublicationTest extends BaseSpringTest {
 		newPub.setSubseriesTitle("subseries");
 		newPub.setChapter("chapter");
 		newPub.setSubchapterNumber("subchapter");
-                newPub.setDisplayTitle("Display Title");
+		newPub.setDisplayTitle("Display Title");
 		newPub.setTitle("Title");
 		newPub.setDocAbstract("Abstract Text");
 		newPub.setLanguage("Language");
@@ -198,6 +202,7 @@ public class PublicationTest extends BaseSpringTest {
 		newPub.setIpdsId("ipds_id" + pubId);
 		newPub.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
 		newPub.setIpdsInternalId("12");
+		newPub.setIpdsContext(IpdsProcessTest.TEST_IPDS_CONTEXT); 
 		newPub.setId(pubId);
 		newPub.setPublicationYear("2001");
 		newPub.setNoYear(false);

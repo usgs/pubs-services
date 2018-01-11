@@ -67,19 +67,11 @@ public class CorporateContributorDaoTest extends BaseSpringTest {
 		assertEquals(2, contributors.get(0).getId().intValue());
 
 		filters.clear();
-		filters.put(CorporateContributorDao.IPDS_CONTRIBUTOR_ID, 2);
-		contributors = CorporateContributor.getDao().getByMap(filters);
-		assertEquals(0, contributors.size());
-
-		filters.clear();
 		filters.put("id", "2");
 		filters.put("text", "us%");
 		contributors = CorporateContributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(2, contributors.get(0).getId().intValue());
-		filters.put(CorporateContributorDao.IPDS_CONTRIBUTOR_ID, 2);
-		contributors = CorporateContributor.getDao().getByMap(filters);
-		assertEquals(0, contributors.size());
 	}
 
 	@Test

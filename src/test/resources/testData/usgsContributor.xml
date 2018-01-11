@@ -7,9 +7,9 @@
     <name />
   </author>
   <link rel="edit" title="UserInformationListItem" href="UserInformationList(1)" />
-  <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/CreatedBy" type="application/atom+xml;type=entry" title="CreatedBy" href="UserInformationList(1)/CreatedBy" />
-  <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ModifiedBy" type="application/atom+xml;type=entry" title="ModifiedBy" href="UserInformationList(1)/ModifiedBy" />
-  <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Attachments" type="application/atom+xml;type=feed" title="Attachments" href="UserInformationList(1)/Attachments" />
+  <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/CreatedBy" type="application/atom+xml;type=entry" title="CreatedBy" href="UserInformationList(123)/CreatedBy" />
+  <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ModifiedBy" type="application/atom+xml;type=entry" title="ModifiedBy" href="UserInformationList(123)/ModifiedBy" />
+  <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Attachments" type="application/atom+xml;type=feed" title="Attachments" href="UserInformationList(123)/Attachments" />
   <category term="Microsoft.SharePoint.DataService.UserInformationListItem" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
   <content type="application/xml">
     <m:properties>

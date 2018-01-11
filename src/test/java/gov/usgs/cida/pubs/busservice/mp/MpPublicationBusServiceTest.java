@@ -37,6 +37,7 @@ import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 import gov.usgs.cida.pubs.utility.PubsUtilitiesTest;
+import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 import gov.usgs.cida.pubs.webservice.security.PubsRoles;
@@ -151,7 +152,7 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
 		assertEquals("Two required fields", 2, validationErrors.getValidationErrors().size());
 		for (ValidatorResult result : validationErrors.getValidationErrors()) {
 			assertEquals(SeverityLevel.FATAL, result.getLevel());
-			assertEquals("may not be null", result.getMessage());
+			assertEquals(BaseValidatorTest.NOT_NULL_MSG, result.getMessage());
 		}
 	}
 

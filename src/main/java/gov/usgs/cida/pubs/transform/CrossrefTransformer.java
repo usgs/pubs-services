@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * Transforms Publications into Crossref XML. One Transformer should be 

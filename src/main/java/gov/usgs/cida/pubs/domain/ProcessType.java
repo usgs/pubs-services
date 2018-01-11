@@ -3,8 +3,7 @@ package gov.usgs.cida.pubs.domain;
 public enum ProcessType {
 
 	DISSEMINATION ("Dissemination"),
-	SPN_PRODUCTION ("SPN Production"), 
-	COST_CENTER ("Cost Center");
+	SPN_PRODUCTION ("SPN Production");
 
 	private String ipdsValue;
 

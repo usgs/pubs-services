@@ -254,15 +254,18 @@ public class LookupMvcService extends MvcService<PublicationType> {
 	@JsonView(View.Lookup.class)
 	public @ResponseBody Collection<Contributor<?>> getContributorsPeople(HttpServletRequest request, HttpServletResponse response,
 			@ApiParam("The ORCID to search for. Include the entire URI - for example: http://orcid.org/0000-0000-0000-0000") @RequestParam(value=PersonContributorDao.ORCID, required=false) String[] orcid,
-			@ApiParam("A 'contains' search value which if provided, must be at least 2 characters long.") @RequestParam(value=TEXT_SEARCH, required=false) String[] text) {
+			@ApiParam("A 'contains' search value which if provided, must be at least 2 characters long.") @RequestParam(value=TEXT_SEARCH, required=false) String[] text,
+			@ApiParam("If provided, will limit to either preferred or not preferred contributor information.") @RequestParam(value="preferred", required=false) Boolean preferred) {
 		LOG.debug("Contributor - People");
 			Collection<Contributor<?>> rtn = new ArrayList<>();
 		if ((null != text && text.length > 0 && text[0].length() > 1)
-				|| (null != orcid && orcid.length > 0)) {
+				|| (null != orcid && orcid.length > 0)
+				|| (null != preferred)) {
 			if (validateParametersSetHeaders(request, response)) {
 				Map<String, Object> filters = new HashMap<>();
 				filters.put(BaseDao.TEXT_SEARCH, configureContributorFilter(text));
 				filters.put(PersonContributorDao.ORCID, orcid);
+				filters.put("preferred", preferred);
 				rtn = PersonContributor.getDao().getByMap(filters);
 			}
 		} else {

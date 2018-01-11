@@ -3,7 +3,8 @@ package gov.usgs.cida.pubs.utility;
 import java.io.IOException;
 import java.io.Writer;
 
-import org.apache.commons.lang3.text.translate.CodePointTranslator;
+import org.apache.commons.text.translate.CodePointTranslator;
+
 /**
  * A combination of NumericEntityEscaper and UnicodeUnpairedSurrogateRemover. See other notes in PubsEscapeXML10.
  * @author drsteini

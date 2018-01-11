@@ -1,9 +1,7 @@
 package gov.usgs.cida.pubs.busservice.ipds;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,15 +13,12 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
-import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 @Service
 public class IpdsUsgsContributorService {
-
 	private static final Logger LOG = LoggerFactory.getLogger(IpdsUsgsContributorService.class);
 
 	private final IpdsParserService parser;
@@ -37,50 +32,74 @@ public class IpdsUsgsContributorService {
 		this.personContributorBusService = personContributorBusService;
 	}
 
-	public UsgsContributor getContributor(final Element element) throws SAXException, IOException {
-		String ipdsContributorId = parser.getFirstNodeText(element, "d:AuthorNameId");
-		UsgsContributor contributor = getByIpdsId(ipdsContributorId);
-		if (null != contributor && null == contributor.getOrcid()) {
-			String orcid = parser.formatOrcid(parser.getFirstNodeText(element, "d:ORCID"));
-			contributor.setOrcid(orcid);
+	public UsgsContributor getContributor(final Element authorsItem, String context) throws SAXException, IOException {
+		String orcid = parser.formatOrcid(parser.getFirstNodeText(authorsItem, Schema.ORCID));
+		UsgsContributor contributor = null;
+		if (null != orcid) {
+			contributor = getByORCID(orcid);
+		}
+		if (null == contributor) {
+			contributor = getByEmail(authorsItem, context);
 		}
 		return contributor;
 	}
 
-	private UsgsContributor getByIpdsId(String ipdsContributorId) {
-		Map<String, Object> filters = new HashMap<>();
-		filters.put(PersonContributorDao.IPDS_CONTRIBUTOR_ID, ipdsContributorId);
-		filters.put(PersonContributorDao.USGS, true);
-		List<Contributor<?>> contributors = UsgsContributor.getDao().getByMap(filters);
+	protected UsgsContributor getByORCID(final String orcid) {
+		UsgsContributor filter = new UsgsContributor();
+		filter.setOrcid(orcid);
+		List<Contributor<?>> contributors = UsgsContributor.getDao().getByPreferred(filter);
 		UsgsContributor contributor = null;
 		if (contributors.isEmpty()) {
-			LOG.debug("No UsgsContributors found for ipdsId: " + filters.get(PersonContributorDao.IPDS_CONTRIBUTOR_ID));
+			LOG.debug("No UsgsContributors found for ORCID: " + filter.getOrcid());
 		} else {
 			if (contributors.size() > 1) {
-				LOG.warn("Multiple UsgsContributors found for ipdsId: " + filters.get(PersonContributorDao.IPDS_CONTRIBUTOR_ID));
+				LOG.warn("Multiple UsgsContributors found for ORCID: " + filter.getOrcid());
 			}
 			contributor = (UsgsContributor) contributors.get(0);
 		}
 		return contributor;
 	}
 
-	public UsgsContributor createContributor(final Element element) throws SAXException, IOException {
-		String ipdsContributorId = parser.getFirstNodeText(element, "d:AuthorNameId");
-		String contributorXml = requester.getContributor(ipdsContributorId);
-		UsgsContributor contributor = bindContributor(contributorXml);
-		String orcid = parser.formatOrcid(parser.getFirstNodeText(element, "d:ORCID"));
-		contributor.setOrcid(orcid);;
+	protected UsgsContributor getByEmail(final Element authorsItem, final String context) throws SAXException, IOException {
+		UsgsContributor contributor = null;
+		UsgsContributor filter = bindContributor(authorsItem, context);
+		if (null != filter.getEmail()) {
+			//save off the orcid & clear it from the filer - otherwise we get get no results.
+			String orcid = filter.getOrcid();
+			filter.setOrcid(null);
+			List<Contributor<?>> contributors = UsgsContributor.getDao().getByPreferred(filter);
+			if (contributors.isEmpty()) {
+				LOG.debug("No UsgsContributors found for email: " + filter.getEmail());
+			} else {
+				if (contributors.size() > 1) {
+					LOG.warn("Multiple UsgsContributors found for email: " + filter.getEmail());
+				}
+				contributor = (UsgsContributor) contributors.get(0);
+			}
+			if (null != contributor && null == contributor.getOrcid() && null != orcid) {
+				contributor.setOrcid(orcid);
+			}
+		}
+		return contributor;
+	}
+
+	public UsgsContributor createContributor(final Element authorsItem, final String context) throws SAXException, IOException {
+		UsgsContributor contributor = bindContributor(authorsItem, context);
+		contributor.setPreferred(true);
 		contributor = (UsgsContributor) personContributorBusService.createObject(contributor);
 		return contributor;
 	}
 
-	protected UsgsContributor bindContributor(String contributorXml) throws SAXException, IOException {
+	protected UsgsContributor bindContributor(final Element authorsItem, final String context) throws SAXException, IOException {
+		String orcid = parser.formatOrcid(parser.getFirstNodeText(authorsItem, Schema.ORCID));
+		String ipdsContributorId = parser.getFirstNodeText(authorsItem, Schema.AUTHOR_NAME_ID);
+		String contributorXml = requester.getContributor(ipdsContributorId, context);
 		UsgsContributor contributor = new UsgsContributor();
 		Document doc = parser.makeDocument(contributorXml);
-		contributor.setIpdsContributorId(PubsUtilities.parseInteger(parser.getFirstNodeText(doc.getDocumentElement(), "d:Id")));
-		contributor.setFamily(parser.getFirstNodeText(doc.getDocumentElement(), "d:LastName"));
-		contributor.setGiven(parser.getFirstNodeText(doc.getDocumentElement(), "d:FirstName"));
-		contributor.setEmail(parser.getFirstNodeText(doc.getDocumentElement(), "d:WorkEMail"));
+		contributor.setFamily(parser.getFirstNodeText(doc.getDocumentElement(), Schema.LAST_NAME));
+		contributor.setGiven(parser.getFirstNodeText(doc.getDocumentElement(), Schema.FIRST_NAME));
+		contributor.setEmail(parser.getFirstNodeText(doc.getDocumentElement(), Schema.WORK_EMAIL));
+		contributor.setOrcid(orcid);
 		return contributor;
 	}
 }

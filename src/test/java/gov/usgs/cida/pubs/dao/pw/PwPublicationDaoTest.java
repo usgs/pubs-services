@@ -29,11 +29,11 @@ import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 
 @Category(IntegrationTest.class)
-@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
 public class PwPublicationDaoTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
@@ -48,6 +48,7 @@ public class PwPublicationDaoTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
@@ -62,6 +63,7 @@ public class PwPublicationDaoTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
@@ -92,7 +94,10 @@ public class PwPublicationDaoTest extends BaseSpringTest {
 	}
 
 	@Test
-	@DatabaseSetup("classpath:/testData/publicationOrderBy.xml")
+	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
+		@DatabaseSetup("classpath:/testData/publicationOrderBy.xml")
+	})
 	public void getByMapOrderByTest() {
 		Map<String, Object> filters = new HashMap<>();
 		List<PwPublication> pubs = PwPublication.getDao().getByMap(filters);
@@ -167,6 +172,7 @@ public class PwPublicationDaoTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
@@ -185,6 +191,7 @@ public class PwPublicationDaoTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
@@ -211,6 +218,7 @@ public class PwPublicationDaoTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
@@ -229,6 +237,7 @@ public class PwPublicationDaoTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
@@ -250,6 +259,7 @@ public class PwPublicationDaoTest extends BaseSpringTest {
 	
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/contributor.xml"),

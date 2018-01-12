@@ -25,7 +25,6 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 @Category(IntegrationTest.class)
-@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
 public class PwPublicationDaoStreamingTest extends BaseSpringTest {
 
 	private class TestResultHandler<T> implements ResultHandler<T> {
@@ -39,6 +38,7 @@ public class PwPublicationDaoStreamingTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationStream.xml")
@@ -67,7 +67,7 @@ public class PwPublicationDaoStreamingTest extends BaseSpringTest {
 		assertEquals("4", pub.get("INDEX_ID"));
 		assertEquals("Book chapter", pub.get("PUBLICATION_TYPE"));
 		assertEquals("Abstract or summary", pub.get("PUBLICATION_SUBTYPE"));
-        assertEquals("display title", pub.get("DISPLAY_TITLE"));
+		assertEquals("display title", pub.get("DISPLAY_TITLE"));
 		assertEquals("title", pub.get("TITLE"));
 		assertEquals("Resource Publication", pub.get("SERIES_TITLE"));
 		assertEquals("series number", pub.get("SERIES_NUMBER"));
@@ -130,6 +130,7 @@ public class PwPublicationDaoStreamingTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationStream.xml")
@@ -142,6 +143,7 @@ public class PwPublicationDaoStreamingTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationOrderBy.xml")
 	})
 	public void streamOrderByTest() {

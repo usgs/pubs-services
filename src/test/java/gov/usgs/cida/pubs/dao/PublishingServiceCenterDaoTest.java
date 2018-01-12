@@ -13,13 +13,9 @@ import java.util.Map;
 
 import org.junit.Test;
 
-/**
- * @author drsteini
- *
- */
 public class PublishingServiceCenterDaoTest extends BaseSpringTest {
 
-	public static final int PSC_CNT = 14;
+	public static final int PSC_CNT = 15;
 	public static final int PSC_R_CNT = 3;
 
 	@Test
@@ -33,7 +29,7 @@ public class PublishingServiceCenterDaoTest extends BaseSpringTest {
 
 	@Test
 	public void getByIdString() {
-	   	String nil = null;
+		String nil = null;
 		PublishingServiceCenter.getDao().getById(nil);
 		PublishingServiceCenter psc = PublishingServiceCenter.getDao().getById("2");
 		assertNotNull(psc);

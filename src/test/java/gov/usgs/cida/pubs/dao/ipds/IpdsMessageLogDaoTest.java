@@ -129,7 +129,7 @@ public class IpdsMessageLogDaoTest extends BaseSpringTest {
 		pubMap.put(IpdsMessageLog.VOLUME, "V2");
 		pubMap.put(IpdsMessageLog.ISSUE, "I2");
 		pubMap.put(IpdsMessageLog.EDITIONNUMBER, "E2");
-		pubMap.put(IpdsMessageLog.PUBLISHINGSERVICECENTERID, "3");
+		pubMap.put(IpdsMessageLog.PUBLISHINGSERVICECENTERID, "4");
 
 		return pubMap;
 	}
@@ -158,7 +158,7 @@ public class IpdsMessageLogDaoTest extends BaseSpringTest {
 		pubMap.put(IpdsMessageLog.VOLUME, "V3");
 		pubMap.put(IpdsMessageLog.ISSUE, "I3");
 		pubMap.put(IpdsMessageLog.EDITIONNUMBER, "E3");
-		pubMap.put(IpdsMessageLog.PUBLISHINGSERVICECENTERID, "4");
+		pubMap.put(IpdsMessageLog.PUBLISHINGSERVICECENTERID, "11");
 
 		return pubMap;
 	}
@@ -187,7 +187,7 @@ public class IpdsMessageLogDaoTest extends BaseSpringTest {
 		pubMap.put(IpdsMessageLog.VOLUME, "V4");
 		pubMap.put(IpdsMessageLog.ISSUE, "I4");
 		pubMap.put(IpdsMessageLog.EDITIONNUMBER, "E4");
-		pubMap.put(IpdsMessageLog.PUBLISHINGSERVICECENTERID, "5");
+		pubMap.put(IpdsMessageLog.PUBLISHINGSERVICECENTERID, "6");
 
 		return pubMap;
 	}

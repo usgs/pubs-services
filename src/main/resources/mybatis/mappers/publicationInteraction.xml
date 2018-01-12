@@ -25,7 +25,7 @@
     </resultMap>
 
 	<sql id="warehouseData">
-        select rownum fake_id,
+        select row_number() over (order by subject_publication_id, object_publication_id) fake_id,
                subj.publication_id subject_publication_id,
                subj.index_id subject_index_id,
                subj.publication_year subject_publication_year,

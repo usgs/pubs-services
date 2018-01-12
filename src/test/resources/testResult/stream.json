@@ -17,13 +17,13 @@
 				"subchapterNumber": "subchapter",
 				"title": "title"
 			},
-			"predicate": "SUPERSEDED_BY",
+			"predicate": "IS_PART_OF",
 			"object": {
-				"id": 6,
-				"text": "6.1 - null - mostly null",
-				"indexId": "6.1",
+				"id": 5,
+				"text": "9 - null -  future title",
+				"indexId": "9",
 				"noYear": false,
-				"title": "mostly null"
+				"title": " future title"
 			},
 			"id": 1
 		}, {
@@ -37,13 +37,13 @@
 				"subchapterNumber": "subchapter",
 				"title": "title"
 			},
-			"predicate": "IS_PART_OF",
+			"predicate": "SUPERSEDED_BY",
 			"object": {
-				"id": 5,
-				"text": "9 - null -  future title",
-				"indexId": "9",
+				"id": 6,
+				"text": "6.1 - null - mostly null",
+				"indexId": "6.1",
 				"noYear": false,
-				"title": " future title"
+				"title": "mostly null"
 			},
 			"id": 2
 		}],

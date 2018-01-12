@@ -16,7 +16,6 @@ import org.junit.experimental.categories.Category;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
@@ -32,7 +31,6 @@ import gov.usgs.cida.pubs.domain.UsgsContributor;
 	@DatabaseSetup("classpath:/testData/affiliation.xml"),
 	@DatabaseSetup("classpath:/testData/contributor.xml")
 })
-@DatabaseTearDown("classpath:/testCleanup/clearAll.xml")
 public class ContributorDaoTest extends BaseSpringTest {
 
 	public static final int CONTRIBUTOR_CNT = 4;

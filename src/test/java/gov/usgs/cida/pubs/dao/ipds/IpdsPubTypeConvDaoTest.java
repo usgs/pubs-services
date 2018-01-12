@@ -7,18 +7,22 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.domain.ipds.IpdsPubTypeConv;
 
 @Category(IntegrationTest.class)
-@DatabaseTearDown("classpath:/testCleanup/clearAll.xml")
 public class IpdsPubTypeConvDaoTest extends BaseSpringTest {
 
 	@Test
-	@DatabaseSetup("classpath:/testData/ipdsPubsTypeConv.xml")
+	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
+		@DatabaseSetup("classpath:/testData/publicationType.xml"),
+		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+		@DatabaseSetup("classpath:/testData/ipdsPubsTypeConv.xml")
+	})
 	public void getByIpdsValueTest() {
 		assertNull(IpdsPubTypeConv.getDao().getByIpdsValue(null));
 

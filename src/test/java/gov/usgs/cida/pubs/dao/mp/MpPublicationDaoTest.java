@@ -35,7 +35,6 @@ import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 
 @Category(IntegrationTest.class)
-@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
 public class MpPublicationDaoTest extends BaseSpringTest {
 
 	//TODO contributors, links, & CostCenters in test.
@@ -43,9 +42,10 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 
 	public static final String MPPUB1_INDEXID = "sir20145083";
 	public static final String MPPUB1_LOCKEDBY = "drsteini";
-	
+
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
@@ -83,7 +83,10 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 	}
 
 	@Test
-   	@DatabaseSetup("classpath:/testData/mpPublicationOrderBy.xml")
+	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
+		@DatabaseSetup("classpath:/testData/mpPublicationOrderBy.xml")
+	})
 	public void getByMapTest() {
 		Map<String, Object> filters = new HashMap<>();
 		List<MpPublication> pubs = MpPublication.getDao().getByMap(filters);
@@ -141,9 +144,10 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 		assertEquals(500, pubs.get(22).getId().intValue());
 		assertEquals(540, pubs.get(23).getId().intValue());
 	}
-	
+
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
@@ -158,6 +162,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
@@ -168,9 +173,10 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 		MpPublication mpPub = MpPublication.getDao().getById(3);
 		assertEquals(PubsConstants.ANONYMOUS_USER, mpPub.getLockUsername());
 	}
-	
+
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
@@ -181,11 +187,11 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 		MpPublication.getDao().releaseLocksUser(PubsConstants.ANONYMOUS_USER);
 		mpPub = MpPublication.getDao().getById(mpPub.getId());
 		assertNull(mpPub.getLockUsername());
-		
+
 		//this one was also anonymous
 		mpPub = MpPublication.getDao().getById(2);
 		assertNull(mpPub.getLockUsername());
-		
+
 		//this should still be locked
 		mpPub = MpPublication.getDao().getById(1);
 		assertEquals("drsteini", mpPub.getLockUsername());
@@ -194,9 +200,10 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 		mpPub = MpPublication.getDao().getById(1);
 		assertNull(mpPub.getLockUsername());
 	}
-	
+
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
@@ -207,10 +214,10 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 		MpPublication.getDao().releaseLocksPub(mpPub.getId());
 		mpPub = MpPublication.getDao().getById(mpPub.getId());
 		assertNull(mpPub.getLockUsername());
-		
+
 		mpPub = MpPublication.getDao().getById(2);
 		assertEquals(PubsConstants.ANONYMOUS_USER,mpPub.getLockUsername());
-		
+
 		mpPub = MpPublication.getDao().getById(1);
 		assertEquals("drsteini", mpPub.getLockUsername());
 
@@ -218,9 +225,10 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 		mpPub = MpPublication.getDao().getById(1);
 		assertNull(mpPub.getLockUsername());
 	}
-	
+
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
@@ -238,9 +246,10 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 		MpPublication.getDao().publishToPw(4);
 		PwPublicationTest.assertPwPub4(PwPublication.getDao().getById(4));
 	}
-	
+
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
@@ -249,7 +258,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 	public void getByIndexIdTest() {
 		MpPublication pub = MpPublication.getDao().getByIndexId(MPPUB1_INDEXID);
 		assertMpPub1(pub, MPPUB1_LOCKEDBY);
-		
+
 		//This one is only in Publication, so we shouldn't frind it
 		assertNull(MpPublication.getDao().getByIndexId("9"));
 	}
@@ -261,7 +270,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 	}
 
 	public static void assertPwPub1(Publication<?> pub) {
-	   	assertTrue(pub instanceof PwPublication);
+		assertTrue(pub instanceof PwPublication);
 		assertPub1(pub);
 	}
 
@@ -339,7 +348,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 	}
 
 	public static void assertPwPub2(Publication<?> pub) {
-	   	assertTrue(pub instanceof PwPublication);
+		assertTrue(pub instanceof PwPublication);
 		assertPub2(pub);
 	}
 
@@ -354,7 +363,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 		assertEquals("subseries title", pub.getSubseriesTitle());
 		assertEquals("chapter", pub.getChapter());
 		assertEquals("subchapter title", pub.getSubchapterNumber());
-                assertEquals("display title", pub.getDisplayTitle());
+		assertEquals("display title", pub.getDisplayTitle());
 		assertEquals("title", pub.getTitle());
 		assertEquals("the abstract", pub.getDocAbstract());
 		assertEquals("language", pub.getLanguage());
@@ -395,12 +404,12 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 		assertNull(pub.getCity());
 		assertNull(pub.getOtherGeospatial());
 		assertNull(pub.getGeographicExtents());
-		
+
 		assertNull(pub.getContact());
 		assertNull(pub.getEdition());
 		assertNull(pub.getComments());
 		assertNull(pub.getTableOfContents());
-		
+
 		assertEquals(7, pub.getPublishingServiceCenter().getId().intValue());
 		assertEquals("2003-03-03", pub.getPublishedDate().toString());
 		assertEquals(4, pub.getIsPartOf().getId().intValue());
@@ -419,7 +428,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 		newPub.setLockUsername(PubsConstants.ANONYMOUS_USER);
 		return newPub;
 	}
-	
+
 	public static MpPublication addAPub(final Integer pubId) {
 		MpPublication newPub = buildAPub(pubId);
 		MpPublication.getDao().add(newPub);
@@ -444,7 +453,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 		updatedPub.setSubseriesTitle("subseries2");
 		updatedPub.setChapter("chapter2");
 		updatedPub.setSubchapterNumber("subchapter2");
-                updatedPub.setDisplayTitle("display title 2");
+		updatedPub.setDisplayTitle("display title 2");
 		updatedPub.setTitle("Title2");
 		updatedPub.setDocAbstract("Abstract Text2");
 		updatedPub.setLanguage("Language2");

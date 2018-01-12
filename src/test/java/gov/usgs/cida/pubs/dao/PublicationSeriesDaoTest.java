@@ -16,7 +16,6 @@ import org.junit.experimental.categories.Category;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
@@ -29,8 +28,6 @@ import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.validation.unique.UniqueKeyValidatorForPublicationSeries;
 
 @Category(IntegrationTest.class)
-@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
-@DatabaseTearDown("classpath:/testCleanup/clearAll.xml")
 public class PublicationSeriesDaoTest extends BaseSpringTest {
 
 	public static final int pubSeriesCnt = 16;
@@ -38,6 +35,7 @@ public class PublicationSeriesDaoTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml")
@@ -66,6 +64,7 @@ public class PublicationSeriesDaoTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml")
@@ -77,6 +76,7 @@ public class PublicationSeriesDaoTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml")
@@ -134,6 +134,7 @@ public class PublicationSeriesDaoTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml")
@@ -150,6 +151,7 @@ public class PublicationSeriesDaoTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml")
 	})
@@ -161,6 +163,7 @@ public class PublicationSeriesDaoTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml")
@@ -173,6 +176,7 @@ public class PublicationSeriesDaoTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml")
@@ -221,6 +225,7 @@ public class PublicationSeriesDaoTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml")
@@ -262,6 +267,7 @@ public class PublicationSeriesDaoTest extends BaseSpringTest {
 	}
 
 	@Test
+	@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
 	public void uniqueCheckEmptyReturnTest() {
 		Map<BigDecimal, Map<String, Object>> dups = PublicationSeries.getDao().uniqueCheck(new PublicationSeries());
 		assertNotNull(dups);

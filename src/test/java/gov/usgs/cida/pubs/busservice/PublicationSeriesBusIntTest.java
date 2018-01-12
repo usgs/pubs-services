@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
@@ -29,8 +28,6 @@ import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSeriesTest;
 
 @Category(IntegrationTest.class)
-@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
-@DatabaseTearDown("classpath:/testCleanup/clearAll.xml")
 public class PublicationSeriesBusIntTest extends BaseSpringTest {
 
 	@Autowired
@@ -45,6 +42,7 @@ public class PublicationSeriesBusIntTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml")
@@ -59,6 +57,7 @@ public class PublicationSeriesBusIntTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml")
@@ -83,6 +82,7 @@ public class PublicationSeriesBusIntTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml")
 	})
@@ -96,6 +96,7 @@ public class PublicationSeriesBusIntTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml")
@@ -111,6 +112,7 @@ public class PublicationSeriesBusIntTest extends BaseSpringTest {
 
 	@Test
 	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml")

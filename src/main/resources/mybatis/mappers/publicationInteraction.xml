@@ -55,6 +55,7 @@
                  on subject_publication_id = subj.publication_id
                join all_publication_lookup obj
                  on object_publication_id = obj.publication_id
+             order by subject_publication_id, object_publication_id
     </sql>
 
     <select id="getByPwPublication" parameterType="Integer" resultMap="result">

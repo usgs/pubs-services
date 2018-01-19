@@ -70,7 +70,11 @@ public class IpdsContributorService {
 						if (null == costCenter) {
 							costCenter = ipdsCostCenterService.createCostCenter(costCenterId);
 						}
-						addAffiliation(contributor, costCenter);
+						if (costCenter.isValid()) {
+							addAffiliation(contributor, costCenter);
+						} else {
+							LOG.info("Unable to get cost center: " + costCenter.getIpdsId());
+						}
 					}
 				}
 			}

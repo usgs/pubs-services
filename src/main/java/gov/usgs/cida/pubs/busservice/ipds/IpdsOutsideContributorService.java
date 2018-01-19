@@ -64,7 +64,7 @@ public class IpdsOutsideContributorService {
 		
 		contributor = (OutsideContributor) personContributorBusService.createObject(contributor);
 		
-		String affiliationName = parser.getFirstNodeText(authorsItem, Schema.AFFILIATION_NAME);
+		String affiliationName = parser.getFirstNodeText(authorsItem, Schema.NON_USGS_AFFILIATION_NAME);
 		OutsideAffiliation outsideAffiliation = getOutsideAffiliation(affiliationName);
 		if (null == outsideAffiliation) {
 			outsideAffiliation = createOutsideAffiliation(affiliationName);

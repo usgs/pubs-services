@@ -239,10 +239,13 @@
          where contributor_id = #{value,jdbcType=NUMERIC}
     </delete>
 
-    <insert id="addAffiliation" parameterType="map" useGeneratedKeys="true" keyProperty="id" keyColumn="contributor_affiliation_id">
+    <insert id="addAffiliation" parameterType="map">
+        <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
+            select contributor_affiliation_seq.nextval id from dual
+        </selectKey>
         insert into contributor_affiliation (<include refid="base.auditCols"/>,
-                                             contributor_id, affiliation_id)
-            values (<include refid="base.auditHosts"/>,#{contributorId,jdbcType=NUMERIC}, #{affiliationId,jdbcType=NUMERIC})
+                                             contributor_id, affiliation_id, contributor_affiliation_id)
+            values (<include refid="base.auditHosts"/>,#{contributorId,jdbcType=NUMERIC}, #{affiliationId,jdbcType=NUMERIC}, #{id})
     </insert>
 
     <delete id="removeAffiliations" parameterType="Integer">

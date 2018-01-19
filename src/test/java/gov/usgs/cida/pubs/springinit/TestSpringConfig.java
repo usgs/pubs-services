@@ -166,63 +166,56 @@ public class TestSpringConfig {
 		return new String(FileCopyUtils.copyToByteArray(rssPub.getInputStream()));
 	}
 
-	@Value("classpath:testData/contributors.xml")
+	@Value("classpath:testData/ipds/contributors.xml")
 	private Resource contributors;
 	@Bean
 	public String contributorsXml() throws IOException {
 		return new String(FileCopyUtils.copyToByteArray(contributors.getInputStream()));
 	}
 
-	@Value("classpath:testData/usgsContributor.xml")
+	@Value("classpath:testData/ipds/usgsContributor.xml")
 	private Resource usgsContributor;
 	@Bean
 	public String usgsContributorXml() throws IOException {
 		return new String(FileCopyUtils.copyToByteArray(usgsContributor.getInputStream()));
 	}
 
-	@Value("classpath:testData/newOutsideContributor.xml")
+	@Value("classpath:testData/ipds/newOutsideContributor.xml")
 	private Resource newOutsideContributor;
 	@Bean
 	public String newOutsideContributorXml() throws IOException {
 		return new String(FileCopyUtils.copyToByteArray(newOutsideContributor.getInputStream()));
 	}
 
-	@Value("classpath:testData/newOutsideContributorUsgsAffiliation.xml")
+	@Value("classpath:testData/ipds/newOutsideContributorUsgsAffiliation.xml")
 	private Resource newOutsideContributorUsgsAffiliation;
 	@Bean
 	public String newOutsideContributorUsgsAffiliationXml() throws IOException {
 		return new String(FileCopyUtils.copyToByteArray(newOutsideContributorUsgsAffiliation.getInputStream()));
 	}
 
-	@Value("classpath:testData/existingOutsideContributor.xml")
+	@Value("classpath:testData/ipds/existingOutsideContributor.xml")
 	private Resource existingOutsideContributor;
 	@Bean
 	public String existingOutsideContributorXml() throws IOException {
 		return new String(FileCopyUtils.copyToByteArray(existingOutsideContributor.getInputStream()));
 	}
 
-	@Value("classpath:testData/costCenter.xml")
+	@Value("classpath:testData/ipds/costCenter.xml")
 	private Resource costCenter;
 	@Bean
 	public String costCenterXml() throws IOException {
 		return new String(FileCopyUtils.copyToByteArray(costCenter.getInputStream()));
 	}
 
-	@Value("classpath:testData/feed.xml")
+	@Value("classpath:testData/ipds/feed.xml")
 	private Resource feed;
 	@Bean
 	public String feedXml() throws IOException {
 		return new String(FileCopyUtils.copyToByteArray(feed.getInputStream()));
 	}
 
-	@Value("classpath:testData/bad.xml")
-	private Resource bad;
-	@Bean
-	public String badXml() throws IOException {
-		return new String(FileCopyUtils.copyToByteArray(bad.getInputStream()));
-	}
-
-	@Value("classpath:testData/notes.xml")
+	@Value("classpath:testData/ipds/notes.xml")
 	private Resource notes;
 	@Bean
 	public String notesXml() throws IOException {

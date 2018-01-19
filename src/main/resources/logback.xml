@@ -14,7 +14,7 @@
             <pattern>%d{ISO8601} %p %t %c{40}.%M - %m%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${catalina.base}/logs/wqp.%d{yyyy-MM-dd}.log
+            <fileNamePattern>${catalina.base}/logs/pubs-services.%d{yyyy-MM-dd}.log
             </fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
@@ -31,7 +31,7 @@
             <pattern>%d{ISO8601} %p %t %c{40}.%M - %m%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${catalina.base}/logs/wqp.%d{yyyy-MM-dd}.log
+            <fileNamePattern>${catalina.base}/logs/ipdsLog.%d{yyyy-MM-dd}.log
             </fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>

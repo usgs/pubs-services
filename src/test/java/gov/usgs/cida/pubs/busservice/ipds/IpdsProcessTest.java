@@ -586,7 +586,7 @@ public class IpdsProcessTest extends BaseSpringTest {
 	public void processIpdsPublicationTest() throws SAXException, IOException {
 		PubMap pm = new PubMap();
 		pm.put(IpdsMessageLog.IPNUMBER, "IP-123");
-		when(binder.bindPublication(any(PubMap.class))).thenReturn(existingMpPub9);
+		when(binder.bindPublication(any(PubMap.class), anyString())).thenReturn(existingMpPub9);
 		when(pubBusService.getObjects(anyMap())).thenThrow(new RuntimeException("test")).thenReturn(null);
 		when(pubBusService.createObject(existingMpPub9)).thenReturn(existingMpPub9);
 		when(requester.getNotes(null, TEST_IPDS_CONTEXT)).thenReturn("<xml></xml>");
@@ -616,12 +616,12 @@ public class IpdsProcessTest extends BaseSpringTest {
 	@Test
 	public void processLogTest() {
 		String expectedMsg = "Summary:\n\tTotal Entries: 2\n\tPublications Added: 0\n\tErrors Encountered: 2\n\nnull:\n\tERROR: Trouble processing pub: null - test\n\nnull:\n\tERROR: Trouble processing pub: null - test\n\n";
-		when(binder.bindPublication(any(PubMap.class))).thenThrow(new RuntimeException("test"));
+		when(binder.bindPublication(any(PubMap.class), anyString())).thenThrow(new RuntimeException("test"));
 		when(ipdsMessageLogDao.getFromIpds(1)).thenReturn(getPubMapList());
-		assertEquals(expectedMsg, ipdsProcess.processLog(ProcessType.DISSEMINATION, 1, null));
+		assertEquals(expectedMsg, ipdsProcess.processLog(ProcessType.DISSEMINATION, 1, TEST_IPDS_CONTEXT));
 
 		//Should be the same message as the ThreadLocals are reset at start of method
-		assertEquals(expectedMsg, ipdsProcess.processLog(ProcessType.DISSEMINATION, 1, null));
+		assertEquals(expectedMsg, ipdsProcess.processLog(ProcessType.DISSEMINATION, 1, TEST_IPDS_CONTEXT));
 	}
 
 	protected List<PubMap> getPubMapList() {
@@ -664,12 +664,14 @@ public class IpdsProcessTest extends BaseSpringTest {
 	protected MpPublication buildMpPub(Integer id) {
 		MpPublication mpPub = new MpPublication();
 		mpPub.setId(id);
+		mpPub.setIpdsContext(TEST_IPDS_CONTEXT);
 		return mpPub;
 	}
 
 	protected PwPublication buildPwPub(Integer id) {
 		PwPublication pwPub = new PwPublication();
 		pwPub.setId(id);
+		pwPub.setIpdsContext(TEST_IPDS_CONTEXT);
 		return pwPub;
 	}
 

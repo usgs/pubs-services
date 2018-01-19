@@ -14,6 +14,7 @@ public class MessagePayload {
 		this.type = type;
 	}
 	public LocalDate getAsOfDate() {
+		//Default to today.
 		return null == asOfDate ? LocalDate.now() : asOfDate;
 	}
 	public String getAsOfString() {

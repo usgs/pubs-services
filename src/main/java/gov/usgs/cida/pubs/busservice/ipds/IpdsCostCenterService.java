@@ -56,7 +56,7 @@ public class IpdsCostCenterService {
 			String costCenterXml = requester.getCostCenter(ipdsId, ipdsId);
 			Document doc = parser.makeDocument(costCenterXml);
 			costCenter = new CostCenter();
-			costCenter.setText(parser.getFirstNodeText(doc.getDocumentElement(), Schema.NAME));
+			costCenter.setText(parser.getFirstNodeText(doc.getDocumentElement(), Schema.TITLE));
 			costCenter.setIpdsId(ipdsId);
 			costCenter = costCenterBusService.createObject(costCenter);
 		}

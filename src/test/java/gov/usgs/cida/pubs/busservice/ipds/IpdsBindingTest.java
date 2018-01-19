@@ -38,8 +38,7 @@ import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 	@DatabaseSetup("classpath:/testData/publicationType.xml"),
 	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-	@DatabaseSetup("classpath:/testData/ipdsPubsTypeConv.xml"),
-	@DatabaseSetup("classpath:/testData/dataset.xml")
+	@DatabaseSetup("classpath:/testData/ipdsPubsTypeConv.xml")
 })
 public class IpdsBindingTest extends BaseIpdsTest {
 
@@ -167,10 +166,10 @@ public class IpdsBindingTest extends BaseIpdsTest {
 		subtype.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
 		assertNull(binding.getSeriesTitle(subtype, pubMap));
 
-		pubMap.put(IpdsMessageLog.USGSSERIESVALUE, "");
+		pubMap.put(IpdsMessageLog.USGSSERIESTYPEVALUE, "");
 		assertNull(binding.getSeriesTitle(subtype, pubMap));
 
-		pubMap.put(IpdsMessageLog.USGSSERIESVALUE, "Coal Map");
+		pubMap.put(IpdsMessageLog.USGSSERIESTYPEVALUE, "Coal Map");
 		assertEquals(309, binding.getSeriesTitle(subtype, pubMap).getId().intValue());
 	}
 
@@ -194,23 +193,23 @@ public class IpdsBindingTest extends BaseIpdsTest {
 	@Test
 	public void bindPublicationTest() {
 		PubMap pubMap = new PubMap();
-		assertNull(binding.bindPublication(null));
-		assertNull(binding.bindPublication(pubMap));
+		assertNull(binding.bindPublication(null, IpdsProcessTest.TEST_IPDS_CONTEXT));
+		assertNull(binding.bindPublication(pubMap, IpdsProcessTest.TEST_IPDS_CONTEXT));
 
 		pubMap = IpdsMessageLogDaoTest.createPubMap1();
-		MpPublication pub1 = binding.bindPublication(pubMap);
+		MpPublication pub1 = binding.bindPublication(pubMap, IpdsProcessTest.TEST_IPDS_CONTEXT);
 		assertPub1(pub1);
 
 		pubMap = IpdsMessageLogDaoTest.createPubMap2();
-		MpPublication pub2 = binding.bindPublication(pubMap);
+		MpPublication pub2 = binding.bindPublication(pubMap, IpdsProcessTest.TEST_IPDS_CONTEXT);
 		assertPub2(pub2);
 
 		pubMap = IpdsMessageLogDaoTest.createPubMap3();
-		MpPublication pub3 = binding.bindPublication(pubMap);
+		MpPublication pub3 = binding.bindPublication(pubMap, IpdsProcessTest.TEST_IPDS_CONTEXT);
 		assertPub3(pub3);
 
 		pubMap = IpdsMessageLogDaoTest.createPubMap4();
-		MpPublication pub4 = binding.bindPublication(pubMap);
+		MpPublication pub4 = binding.bindPublication(pubMap, IpdsProcessTest.TEST_IPDS_CONTEXT);
 		assertPub4(pub4);
 	}
 
@@ -246,7 +245,6 @@ public class IpdsBindingTest extends BaseIpdsTest {
 		assertEquals("Reston VA", pub.getPublisherLocation());
 
 		assertEquals("doi", pub.getDoi());
-		assertEquals("isbn234", pub.getIsbn());
 		assertEquals("I really want to cooperate", pub.getCollaboration());
 
 		assertEquals("A short citation", pub.getUsgsCitation());
@@ -259,13 +257,14 @@ public class IpdsBindingTest extends BaseIpdsTest {
 
 		assertEquals("453228", pub.getIpdsInternalId());
 		assertEquals("A Journal", pub.getLargerWorkTitle());
-		assertEquals("2014", pub.getPublicationYear());
-		
+		assertEquals(currentYear, pub.getPublicationYear());
+
 		assertEquals("V1", pub.getVolume());
 		assertEquals("I1", pub.getIssue());
 		assertEquals("E1", pub.getEdition());
-		
+
 		assertEquals(2, pub.getPublishingServiceCenter().getId().intValue());
+		assertEquals(IpdsProcessTest.TEST_IPDS_CONTEXT, pub.getIpdsContext());
 	}
 
 	protected void assertPub2(MpPublication pub) {
@@ -284,7 +283,6 @@ public class IpdsBindingTest extends BaseIpdsTest {
 		assertNull(pub.getPublisherLocation());
 
 		assertEquals("doi", pub.getDoi());
-		assertEquals("isbn234", pub.getIsbn());
 		assertEquals("I really want to cooperate", pub.getCollaboration());
 
 		assertEquals("A short citation", pub.getUsgsCitation());
@@ -292,18 +290,18 @@ public class IpdsBindingTest extends BaseIpdsTest {
 		assertEquals("pages 1-5", pub.getStartPage());
 
 		assertEquals("what a summary", pub.getNotes());
-		assertEquals("IP1234", pub.getIpdsId());
 		assertEquals(ProcessType.SPN_PRODUCTION.getIpdsValue(), pub.getIpdsReviewProcessState());
 
 		assertEquals("453228", pub.getIpdsInternalId());
 		assertEquals("A Journal Title", pub.getLargerWorkTitle());
-		assertEquals("1994", pub.getPublicationYear());
-		
+		assertEquals(currentYear, pub.getPublicationYear());
+
 		assertEquals("V2", pub.getVolume());
 		assertEquals("I2", pub.getIssue());
 		assertEquals("E2", pub.getEdition());
 
 		assertEquals(3, pub.getPublishingServiceCenter().getId().intValue());
+		assertEquals(IpdsProcessTest.TEST_IPDS_CONTEXT, pub.getIpdsContext());
 	}
 
 	protected void assertPub3(MpPublication pub) {
@@ -322,7 +320,6 @@ public class IpdsBindingTest extends BaseIpdsTest {
 		assertEquals("Reston VA", pub.getPublisherLocation());
 
 		assertEquals("doi", pub.getDoi());
-		assertEquals("isbn234", pub.getIsbn());
 		assertEquals("I really want to cooperate", pub.getCollaboration());
 
 		assertEquals("A short citation", pub.getUsgsCitation());
@@ -335,13 +332,14 @@ public class IpdsBindingTest extends BaseIpdsTest {
 
 		assertEquals("453228", pub.getIpdsInternalId());
 		//TODO pub.setLargerWorkTitle(getStringValue(inPub, IpdsMessageLog.JOURNALTITLE));
-		assertEquals("1857", pub.getPublicationYear());
-		
+		assertEquals(currentYear, pub.getPublicationYear());
+
 		assertEquals("V3", pub.getVolume());
 		assertEquals("I3", pub.getIssue());
 		assertEquals("E3", pub.getEdition());
 
 		assertEquals(4, pub.getPublishingServiceCenter().getId().intValue());
+		assertEquals(IpdsProcessTest.TEST_IPDS_CONTEXT, pub.getIpdsContext());
 	}
 
 	private void assertPub4(MpPublication pub) {
@@ -360,7 +358,6 @@ public class IpdsBindingTest extends BaseIpdsTest {
 		assertNull(pub.getPublisherLocation());
 
 		assertEquals("doi", pub.getDoi());
-		assertEquals("isbn234", pub.getIsbn());
 		assertEquals("I really want to cooperate", pub.getCollaboration());
 
 		assertEquals("A short citation", pub.getUsgsCitation());
@@ -373,13 +370,14 @@ public class IpdsBindingTest extends BaseIpdsTest {
 
 		assertEquals("453228", pub.getIpdsInternalId());
 		assertEquals("A Journal", pub.getLargerWorkTitle());
-		assertEquals("2014", pub.getPublicationYear());
-		
+		assertEquals(currentYear, pub.getPublicationYear());
+
 		assertEquals("V4", pub.getVolume());
 		assertEquals("I4", pub.getIssue());
 		assertEquals("E4", pub.getEdition());
 
 		assertEquals(5, pub.getPublishingServiceCenter().getId().intValue());
+		assertEquals(IpdsProcessTest.TEST_IPDS_CONTEXT, pub.getIpdsContext());
 	}
 
 	private void assertPubCommon(MpPublication pub) {
@@ -414,6 +412,6 @@ public class IpdsBindingTest extends BaseIpdsTest {
 		assertNull(pub.getContact());
 
 		assertNull(pub.getComments());
-		assertNull(pub.getTableOfContents());	
+		assertNull(pub.getTableOfContents());
 	}
 }

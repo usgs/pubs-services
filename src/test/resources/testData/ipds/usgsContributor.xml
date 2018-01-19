@@ -1,16 +1,16 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<entry xml:base="https://ipds.usgs.gov/_vti_bin/listdata.svc/" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" m:etag="W/&quot;5&quot;" xmlns="http://www.w3.org/2005/Atom">
-  <id>https://ipds.usgs.gov/_vti_bin/listdata.svc/UserInformationList(1)</id>
-  <title type="text">Doe, Jane M.</title>
-  <updated>2014-07-25T04:01:01-06:00</updated>
+<?xml version="1.0" encoding="UTF-8" standalone='yes'?>
+<entry xml:base="https://ipdsv2test.usgs.gov/sites/Content4/_vti_bin/listdata.svc/" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" m:etag="W/&quot;3&quot;" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://ipdsv2test.usgs.gov/sites/Content4/_vti_bin/listdata.svc/UserInformationList(1)</id>
+  <title type="text">Symstad, Amy</title>
+  <updated>2017-09-22T12:00:04-05:00</updated>
   <author>
-    <name />
+    <name/>
   </author>
-  <link rel="edit" title="UserInformationListItem" href="UserInformationList(1)" />
-  <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/CreatedBy" type="application/atom+xml;type=entry" title="CreatedBy" href="UserInformationList(123)/CreatedBy" />
-  <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ModifiedBy" type="application/atom+xml;type=entry" title="ModifiedBy" href="UserInformationList(123)/ModifiedBy" />
-  <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Attachments" type="application/atom+xml;type=feed" title="Attachments" href="UserInformationList(123)/Attachments" />
-  <category term="Microsoft.SharePoint.DataService.UserInformationListItem" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme" />
+  <link rel="edit" title="UserInformationListItem" href="UserInformationList(2498)"/>
+  <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/CreatedBy" type="application/atom+xml;type=entry" title="CreatedBy" href="UserInformationList(1)/CreatedBy"/>
+  <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/ModifiedBy" type="application/atom+xml;type=entry" title="ModifiedBy" href="UserInformationList(1)/ModifiedBy"/>
+  <link rel="http://schemas.microsoft.com/ado/2007/08/dataservices/related/Attachments" type="application/atom+xml;type=feed" title="Attachments" href="UserInformationList(1)/Attachments"/>
+  <category term="Microsoft.SharePoint.DataService.UserInformationListItem" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme"/>
   <content type="application/xml">
     <m:properties>
       <d:ContentTypeID>0x010A002060376214AD34479634A4245722BE59</d:ContentTypeID>
@@ -22,28 +22,27 @@
       <d:SIPAddress>jmdoe@usgs.gov</d:SIPAddress>
       <d:IsSiteAdmin m:type="Edm.Boolean">false</d:IsSiteAdmin>
       <d:Deleted m:type="Edm.Boolean">false</d:Deleted>
+      <d:Hidden m:type="Edm.Boolean">false</d:Hidden>
       <d:Picture m:null="true" />
       <d:Department>NORTH CAROLINA WATER SCI CTR</d:Department>
       <d:Title>Hydro Tech (STEP)</d:Title>
       <d:FirstName>Jane</d:FirstName>
       <d:LastName>Doe</d:LastName>
       <d:WorkPhone>555-123-4567</d:WorkPhone>
-      <d:JobTitle>Hydro Tech (STEP)</d:JobTitle>
-      <d:Manager>gs\jrdoe</d:Manager>
       <d:UserName>jmdoe</d:UserName>
       <d:WebSite m:null="true" />
       <d:AskMeAbout m:null="true" />
-      <d:Fax>555-765-4321</d:Fax>
-      <d:Skills m:null="true" />
+      <d:Office>No Prairie Wildlife Rsrch Ctr,NPWRC - Admin/Library Bldg</d:Office>
+      <d:PictureTimestamp m:null="true"/>
+      <d:PicturePlaceholderState m:type="Edm.Int32" m:null="true"/>
+      <d:PictureExchangeSyncState m:type="Edm.Int32" m:null="true"/>
       <d:FullName>Jane M Doe</d:FullName>
       <d:ShortName>jmdoe</d:ShortName>
       <d:EmployeeID>96669</d:EmployeeID>
-      <d:GenerationQualifier m:null="true" />
-      <d:PersonalTitle m:null="true" />
-      <d:ITAdminRole>,,</d:ITAdminRole>
       <d:OrgCode>GGESMH0000</d:OrgCode>
       <d:SubBureauCode>AL</d:SubBureauCode>
       <d:Company>SOUTHEAST REGION</d:Company>
+      <d:SectionName m:null="true" />
       <d:BuildingCode>AVB</d:BuildingCode>
       <d:OfficeMailStop m:null="true" />
       <d:MailAddress>123 West Road, Raleigh, NC, 27607, US</d:MailAddress>
@@ -52,24 +51,30 @@
       <d:State>NC</d:State>
       <d:Zip>27607-4321</d:Zip>
       <d:Country>US</d:Country>
+      <d:LocationBuildingNames>Geological Surv Bldg,</d:LocationBuildingNames>
+      <d:FacilitiesCode>10000290/20000000</d:FacilitiesCode>
       <d:RoomNumber m:null="true" />
       <d:LatitudeLongitude>35.812868,-78.705891</d:LatitudeLongitude>
       <d:c_2ndOfficePhone m:null="true" />
       <d:Pager m:null="true" />
       <d:TDDPhone m:null="true" />
-      <d:LockType m:null="true" />
-      <d:Assistant m:null="true" />
-      <d:AbbreviatedName>Jane M Doe/WRD/USGS/DOI</d:AbbreviatedName>
-      <d:SectionName m:null="true" />
       <d:EmployeeType>EMPLOYEE</d:EmployeeType>
-      <d:LocationBuildingNames>Geological Surv Bldg,</d:LocationBuildingNames>
-      <d:FacilitiesCode>10000290/20000000</d:FacilitiesCode>
       <d:AffiliationDOIAccess>EMPLOYEE</d:AffiliationDOIAccess>
       <d:AffiliationUSGS>EMPLOYEE</d:AffiliationUSGS>
       <d:Description m:null="true" />
+      <d:UsersCOUA>male@usgs.gov,female@usgs.gov</d:UsersCOUA>
       <d:FBMSPropertyNumber>10000290/20000000</d:FBMSPropertyNumber>
       <d:SubBureauName>SOUTHEAST REGION</d:SubBureauName>
-      <d:UsersCOUA>male@usgs.gov,female@usgs.gov</d:UsersCOUA>
+      <d:JobTitle>Hydro Tech (STEP)</d:JobTitle>
+      <d:Manager>gs\jrdoe</d:Manager>
+      <d:Fax>555-765-4321</d:Fax>
+      <d:Skills m:null="true" />
+      <d:GenerationQualifier m:null="true" />
+      <d:PersonalTitle m:null="true" />
+      <d:ITAdminRole>,,</d:ITAdminRole>
+      <d:LockType m:null="true" />
+      <d:Assistant m:null="true" />
+      <d:AbbreviatedName>Jane M Doe/WRD/USGS/DOI</d:AbbreviatedName>
       <d:Id m:type="Edm.Int32">123</d:Id>
       <d:ContentType>Person</d:ContentType>
       <d:Modified m:type="Edm.DateTime">2014-07-25T04:01:01</d:Modified>
@@ -78,7 +83,7 @@
       <d:ModifiedById m:type="Edm.Int32">1073741823</d:ModifiedById>
       <d:Owshiddenversion m:type="Edm.Int32">5</d:Owshiddenversion>
       <d:Version>1.0</d:Version>
-      <d:Path>/_catalogs/users</d:Path>
+      <d:Path>/sites/Content4/_catalogs/users</d:Path>
     </m:properties>
   </content>
 </entry>

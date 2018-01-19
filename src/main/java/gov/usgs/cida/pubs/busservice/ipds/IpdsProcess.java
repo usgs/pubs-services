@@ -90,7 +90,7 @@ public class IpdsProcess implements IIpdsProcess {
 		TransactionStatus txStatus = txnMgr.getTransaction(txDef);
 
 		try {
-			MpPublication newMpPub = binder.bindPublication(ipdsPub);
+			MpPublication newMpPub = binder.bindPublication(ipdsPub, getContext());
 
 			MpPublication existingMpPub = getFromMp(newMpPub);
 
@@ -264,10 +264,14 @@ public class IpdsProcess implements IIpdsProcess {
 		try {
 			Affiliation<?> costCenter = binder.getOrCreateCostCenter(ipdsPub);
 			if (null != costCenter) {
-				PublicationCostCenter<?> pubCostCenter = new MpPublicationCostCenter();
-				pubCostCenter.setCostCenter((CostCenter) costCenter);
-				costCenters = new ArrayList<>();
-				costCenters.add(pubCostCenter);
+				if (costCenter.isValid()) {
+					PublicationCostCenter<?> pubCostCenter = new MpPublicationCostCenter();
+					pubCostCenter.setCostCenter((CostCenter) costCenter);
+					costCenters = new ArrayList<>();
+					costCenters.add(pubCostCenter);
+				} else {
+					throw new RuntimeException("Cost Center invalid: " + costCenter.getValidationErrors());
+				}
 			}
 		} catch (Exception e) {
 			String msg = "Trouble getting cost center: ";

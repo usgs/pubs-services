@@ -106,7 +106,7 @@ public class IpdsWsRequester {
 
 	public String getSpnProduction(final String asOf, String context) {
 		StringBuilder url = getContextPrefix(context)
-		.append("InformationProducts()?$filter=(((IPDSReviewProcessStateValue%20eq%20'")
+		.append("InformationProducts()?$filter=(((Task%20eq%20'")
 		.append(ProcessType.SPN_PRODUCTION.getIpdsValueEncoded()).append("')")
 		.append("%20and%20(ProductTypeValue%20eq%20'USGS%20Series'))%20and%20(DigitalObjectIdentifier%20eq%20null))")
 		.append("%20and%20(Modified+ge+datetime'")
@@ -122,8 +122,9 @@ public class IpdsWsRequester {
 	}
 
 	private StringBuilder getContextPrefix(String context) {
-		StringBuilder url = new StringBuilder("/");
-		url.append(context).append(URL_PREFIX);
+		StringBuilder url = new StringBuilder("/sites/")
+				.append(context)
+				.append(URL_PREFIX);
 		return url;
 	}
 

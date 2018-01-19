@@ -9,6 +9,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -196,4 +197,5 @@ public abstract class BaseSpringTest {
 
 	}
 
+	public String currentYear = String.valueOf(LocalDate.now().getYear());
 }

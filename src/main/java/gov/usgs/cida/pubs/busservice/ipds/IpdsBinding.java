@@ -1,6 +1,7 @@
 package gov.usgs.cida.pubs.busservice.ipds;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -114,7 +115,7 @@ public class IpdsBinding {
 		return contributors;
 	}
 
-	public MpPublication bindPublication(PubMap inPub) {
+	public MpPublication bindPublication(PubMap inPub, String context) {
 		if (null != inPub && !inPub.isEmpty()) {
 			MpPublication pub = new MpPublication();
 			//Not from IPDS - pub.setId()
@@ -162,7 +163,7 @@ public class IpdsBinding {
 
 			pub.setDoi(getStringValue(inPub, IpdsMessageLog.DIGITALOBJECTIDENTIFIER));
 			//Not from IPDS - pub.setIssn();
-			pub.setIsbn(getStringValue(inPub, IpdsMessageLog.ISBN));
+			//Not from IPDS - pub.setIsbn();
 			pub.setCollaboration(getStringValue(inPub, IpdsMessageLog.COOPERATORS));
 			pub.setUsgsCitation(getStringValue(inPub, IpdsMessageLog.CITATION));
 			pub.setProductDescription(getStringValue(inPub, IpdsMessageLog.PHYSICALDESCRIPTION));
@@ -179,7 +180,7 @@ public class IpdsBinding {
 			pub.setNotes(getStringValue(inPub, IpdsMessageLog.PRODUCTSUMMARY));
 
 			pub.setIpdsId(getStringValue(inPub, IpdsMessageLog.IPNUMBER));
-			pub.setIpdsReviewProcessState(getStringValue(inPub, IpdsMessageLog.IPDSREVIEWPROCESSSTATEVALUE));
+			pub.setIpdsReviewProcessState(getStringValue(inPub, IpdsMessageLog.TASK));
 			pub.setIpdsInternalId(getStringValue(inPub, IpdsMessageLog.IPDS_INTERNAL_ID));
 
 			//Not from IPDS - pub.setLargerWorkType()
@@ -192,10 +193,8 @@ public class IpdsBinding {
 					pub.setLargerWorkTitle(getStringValue(inPub, IpdsMessageLog.JOURNALTITLE));
 				}
 			}
-			String publicationYear = getStringValue(inPub, IpdsMessageLog.DISEMINATIONDATE);
-			if (null != publicationYear && 3 < publicationYear.length()) {
-				pub.setPublicationYear(getStringValue(inPub, IpdsMessageLog.DISEMINATIONDATE).substring(0, 4));
-			}
+			pub.setPublicationYear(String.valueOf(LocalDate.now().getYear()));
+
 			//Not from IPDS - pub.setConferenceTitle();
 			//Not from IPDS - pub.setConferenceDate();
 			//Not from IPDS - pub.setConferenceLocation();
@@ -218,9 +217,10 @@ public class IpdsBinding {
 			//Not from IPDS - pub.setContact();
 			//Not from IPDS - pub.setTableOfContents();
 			PublishingServiceCenter psc = PublishingServiceCenter.getDao().getByIpdsId(
-					PubsUtilities.parseInteger(getStringValue(inPub, IpdsMessageLog.PUBLISHINGSERVICECENTERID)));
+					PubsUtilities.parseInteger(getStringValue(inPub, IpdsMessageLog.PUBLISHINGSERVICECENTER)));
 			pub.setPublishingServiceCenter(psc);
 			//Not from IPDS - pub.setPublishedDateStatement();
+			pub.setIpdsContext(context);
 			return pub;
 		}
 		return null;
@@ -245,7 +245,7 @@ public class IpdsBinding {
 	}
 	
 	public CostCenter getOrCreateCostCenter(final PubMap inPub) throws SAXException, IOException {
-		String ipdsId = getStringValue(inPub, IpdsMessageLog.COSTCENTERID);
+		String ipdsId = getStringValue(inPub, IpdsMessageLog.COSTCENTER);
 		CostCenter costCenter = null;
 		if (null != ipdsId) {
 			costCenter = ipdsCostCenterService.getCostCenter(ipdsId);
@@ -257,7 +257,7 @@ public class IpdsBinding {
 	}
 
 	protected PublicationSeries getSeriesTitle(PublicationSubtype pubSubtype, PubMap inPub) {
-		String usgsSeriesValue = getStringValue(inPub, IpdsMessageLog.USGSSERIESVALUE);
+		String usgsSeriesValue = getStringValue(inPub, IpdsMessageLog.USGSSERIESTYPEVALUE);
 		return getSeriesTitle(pubSubtype, usgsSeriesValue);
 	}
 

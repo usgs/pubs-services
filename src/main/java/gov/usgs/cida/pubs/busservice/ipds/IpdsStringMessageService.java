@@ -27,7 +27,7 @@ public class IpdsStringMessageService implements IIpdsService {
 	@Override
 	@Transactional
 	public void processIpdsMessage(final MessagePayload messagePayload) {
-		String messageText = requester.getIpdsProductXml(messagePayload.getAsOfString(), messagePayload.getContext());
+		String messageText = requester.getIpdsProductXml(messagePayload);
 
 		IpdsMessageLog newMessage = new IpdsMessageLog();
 		newMessage.setProcessType(ProcessType.DISSEMINATION);

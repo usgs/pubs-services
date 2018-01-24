@@ -7,8 +7,8 @@ public final class Schema {
 	public static final String NON_USGS_AFFILIATION_NAME = "d:NonUSGSAffiliation";
 	public static final String AUTHOR_NAME_ID = "d:AuthorNameId";
 	public static final String AUTHOR_NAME_TEXT = "d:AuthorNameText";
-	public static final String CONTENT_TYPE = "d:ContentType";
-	public static final String COST_CENTER_ID = "d:CostCenterId";
+	public static final String CONTRIBUTOR_ROLE = "d:ContributorRole";
+	public static final String COST_CENTER = "d:CostCenter";
 	public static final String FIRST_NAME = "d:FirstName";
 	public static final String ID = "d:Id";
 	public static final String LAST_NAME = "d:LastName";

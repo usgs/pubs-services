@@ -71,6 +71,9 @@
         <if test="ipdsId != null">
             and affiliation_ipds_id = #{ipdsId}
         </if>
+        <if test="exactText != null">
+            and upper(name) = upper(#{exactText})
+        </if>
     </sql>
 
     <sql id="baseSelect">

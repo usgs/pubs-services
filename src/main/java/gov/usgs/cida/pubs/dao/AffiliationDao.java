@@ -23,6 +23,7 @@ public class AffiliationDao<D extends Affiliation<D>> extends BaseDao<D> {
 	protected static final String NS = "affiliation";
 	public static final String ACTIVE_SEARCH = "active";
 	public static final String USGS_SEARCH = "usgs";
+	public static final String EXACT_SEARCH = "exactText";
 
 	/** 
 	 * {@inheritDoc}

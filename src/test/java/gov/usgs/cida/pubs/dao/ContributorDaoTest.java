@@ -33,8 +33,8 @@ import gov.usgs.cida.pubs.domain.UsgsContributor;
 })
 public class ContributorDaoTest extends BaseSpringTest {
 
-	public static final int CONTRIBUTOR_CNT = 4;
-	public static final int PERSON_CONTRIBUTOR_CNT = 3;
+	public static final int CONTRIBUTOR_CNT = 5;
+	public static final int PERSON_CONTRIBUTOR_CNT = 4;
 	public static final int CORPORATE_CONTRIBUTOR_CNT = 1;
 
 	public static final List<String> IGNORE_PROPERTIES_PERSON = Arrays.asList("validationErrors", "valErrors", "organization", "affiliations");
@@ -132,7 +132,8 @@ public class ContributorDaoTest extends BaseSpringTest {
 		assertEquals(PERSON_CONTRIBUTOR_CNT, contributors.size());
 		assertEquals(4, contributors.get(0).getId().intValue());
 		assertEquals(1, contributors.get(1).getId().intValue());
-		assertEquals(3, contributors.get(2).getId().intValue());
+		assertEquals(5, contributors.get(2).getId().intValue());
+		assertEquals(3, contributors.get(3).getId().intValue());
 		filters.put(ContributorDao.TEXT_SEARCH, "out%");
 		contributors = Contributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
@@ -171,7 +172,7 @@ public class ContributorDaoTest extends BaseSpringTest {
 		Map<String, Object> filters = new HashMap<>();
 		filters.put("preferred", true);
 		List<Contributor<?>> contributors = Contributor.getDao().getByMap(filters);
-		assertEquals(2, contributors.size());
+		assertEquals(3, contributors.size());
 	}
 
 	@Test

@@ -52,7 +52,7 @@ public class IpdsBindingTest extends BaseIpdsTest {
 	private IpdsCostCenterService ipdsCostCenterService;
 
 	@Autowired
-	private IpdsContributorService ipdsContributorService;
+	private IpdsPubContributorService ipdsContributorService;
 
 	private IpdsBinding binding;
 
@@ -151,6 +151,11 @@ public class IpdsBindingTest extends BaseIpdsTest {
 		for (int i=0; i<fixed.size(); i++) {
 			assertEquals(i+1, ((MpPublicationContributor) fixed.toArray()[i]).getRank().intValue());
 		}
+	}
+
+	@Test
+	public void bindContributorsTest() {
+		
 	}
 
 	@Test

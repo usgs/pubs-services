@@ -84,7 +84,7 @@ public class TestSpringConfig {
 
 	@Bean
 	public String ipdsEndpoint() {
-		return "ipdsdev.usgs.gov";
+		return "bad.usgs.gov";//"ipdsv2test.usgs.gov";
 	}
 
 	@Bean
@@ -180,11 +180,32 @@ public class TestSpringConfig {
 		return new String(FileCopyUtils.copyToByteArray(usgsContributor.getInputStream()));
 	}
 
-	@Value("classpath:testData/ipds/newOutsideContributor.xml")
-	private Resource newOutsideContributor;
+	@Value("classpath:testData/ipds/newUsgsAuthor.xml")
+	private Resource newUsgsAuthor;
 	@Bean
-	public String newOutsideContributorXml() throws IOException {
-		return new String(FileCopyUtils.copyToByteArray(newOutsideContributor.getInputStream()));
+	public String newUsgsAuthor() throws IOException {
+		return new String(FileCopyUtils.copyToByteArray(newUsgsAuthor.getInputStream()));
+	}
+
+	@Value("classpath:testData/ipds/newUsgsEditor.xml")
+	private Resource newUsgsEditor;
+	@Bean
+	public String newUsgsEditor() throws IOException {
+		return new String(FileCopyUtils.copyToByteArray(newUsgsEditor.getInputStream()));
+	}
+
+	@Value("classpath:testData/ipds/newOutsideAuthor.xml")
+	private Resource newOutsideAuthor;
+	@Bean
+	public String newOutsideAuthor() throws IOException {
+		return new String(FileCopyUtils.copyToByteArray(newOutsideAuthor.getInputStream()));
+	}
+
+	@Value("classpath:testData/ipds/newOutsideEditor.xml")
+	private Resource newOutsideEditor;
+	@Bean
+	public String newOutsideEditor() throws IOException {
+		return new String(FileCopyUtils.copyToByteArray(newOutsideEditor.getInputStream()));
 	}
 
 	@Value("classpath:testData/ipds/newOutsideContributorUsgsAffiliation.xml")
@@ -194,11 +215,11 @@ public class TestSpringConfig {
 		return new String(FileCopyUtils.copyToByteArray(newOutsideContributorUsgsAffiliation.getInputStream()));
 	}
 
-	@Value("classpath:testData/ipds/existingOutsideContributor.xml")
-	private Resource existingOutsideContributor;
+	@Value("classpath:testData/ipds/existingOutsideAuthor.xml")
+	private Resource existingOutsideAuthor;
 	@Bean
-	public String existingOutsideContributorXml() throws IOException {
-		return new String(FileCopyUtils.copyToByteArray(existingOutsideContributor.getInputStream()));
+	public String existingOutsideAuthor() throws IOException {
+		return new String(FileCopyUtils.copyToByteArray(existingOutsideAuthor.getInputStream()));
 	}
 
 	@Value("classpath:testData/ipds/costCenter.xml")

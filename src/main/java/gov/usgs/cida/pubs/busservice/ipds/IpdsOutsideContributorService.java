@@ -13,7 +13,6 @@ import org.w3c.dom.Element;
 
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.dao.AffiliationDao;
-import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.Contributor;
@@ -23,7 +22,7 @@ import gov.usgs.cida.pubs.domain.PersonContributor;
 
 @Service
 public class IpdsOutsideContributorService {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(IpdsOutsideContributorService.class);
 
 	private final IpdsParserService parser;
@@ -53,26 +52,6 @@ public class IpdsOutsideContributorService {
 		return contributor;
 	}
 
-	public OutsideContributor createContributor(final Element authorsItem) {
-		OutsideContributor contributor = new OutsideContributor();
-		String contributorName = parser.getFirstNodeText(authorsItem, Schema.AUTHOR_NAME_TEXT);
-		String[] familyGiven = splitFullName(contributorName);
-		contributor.setFamily(familyGiven[0]);
-		contributor.setGiven(familyGiven[1]);
-		String orcid = parser.formatOrcid(parser.getFirstNodeText(authorsItem, Schema.ORCID));
-		contributor.setOrcid(orcid);
-		
-		contributor = (OutsideContributor) personContributorBusService.createObject(contributor);
-		
-		String affiliationName = parser.getFirstNodeText(authorsItem, Schema.NON_USGS_AFFILIATION_NAME);
-		OutsideAffiliation outsideAffiliation = getOutsideAffiliation(affiliationName);
-		if (null == outsideAffiliation) {
-			outsideAffiliation = createOutsideAffiliation(affiliationName);
-		}
-		contributor.getAffiliations().add(outsideAffiliation);
-		return contributor;
-	}
-
 	private OutsideContributor getByOrcid(String orcid) {
 		Map<String, Object> filters = new HashMap<>();
 		filters.put(PersonContributorDao.USGS, false);
@@ -88,19 +67,6 @@ public class IpdsOutsideContributorService {
 			contributor = (OutsideContributor) contributors.get(0);
 		}
 		return contributor;
-	}
-
-	private String[] splitFullName(String contributorName) {
-		String[] familyGiven = new String[] {null, null};
-		String[] nameParts = contributorName.split(",");
-		
-		if (0 < nameParts.length) {
-			familyGiven[0] = nameParts[0].trim();
-		}
-		if (1 < nameParts.length) {
-			familyGiven[1] = nameParts[1].trim();
-		}
-		return familyGiven;
 	}
 
 	private OutsideContributor getByName(String[] name) {
@@ -121,11 +87,46 @@ public class IpdsOutsideContributorService {
 		return contributor;
 	}
 
+	public OutsideContributor createContributor(final Element authorsItem) {
+		OutsideContributor contributor = new OutsideContributor();
+		String contributorName = parser.getFirstNodeText(authorsItem, Schema.AUTHOR_NAME_TEXT);
+		String[] familyGiven = splitFullName(contributorName);
+		contributor.setFamily(familyGiven[0]);
+		contributor.setGiven(familyGiven[1]);
+		String orcid = parser.formatOrcid(parser.getFirstNodeText(authorsItem, Schema.ORCID));
+		contributor.setOrcid(orcid);
+
+		String affiliationName = parser.getFirstNodeText(authorsItem, Schema.NON_USGS_AFFILIATION_NAME);
+		OutsideAffiliation outsideAffiliation = getOutsideAffiliation(affiliationName);
+		if (null == outsideAffiliation) {
+			outsideAffiliation = createOutsideAffiliation(affiliationName);
+		}
+		if (null != outsideAffiliation && outsideAffiliation.isValid()) {
+			contributor.getAffiliations().add(outsideAffiliation);
+		}
+		contributor = (OutsideContributor) personContributorBusService.createObject(contributor);
+
+		return contributor;
+	}
+
+	private String[] splitFullName(String contributorName) {
+		String[] familyGiven = new String[] {null, null};
+		String[] nameParts = contributorName.split(",");
+
+		if (0 < nameParts.length) {
+			familyGiven[0] = nameParts[0].trim();
+		}
+		if (1 < nameParts.length) {
+			familyGiven[1] = nameParts[1].trim();
+		}
+		return familyGiven;
+	}
+
 	protected OutsideAffiliation getOutsideAffiliation(final String affiliationName) {
 		OutsideAffiliation affiliation = null;
 		if (null != affiliationName) {
 			Map<String, Object> filters = new HashMap<>();
-			filters.put(BaseDao.TEXT_SEARCH, affiliationName);
+			filters.put(AffiliationDao.EXACT_SEARCH, affiliationName);
 			filters.put(AffiliationDao.USGS_SEARCH, false);
 			List<? extends Affiliation<?>> affiliations = Affiliation.getDao().getByMap(filters);
 			if (!affiliations.isEmpty()) {

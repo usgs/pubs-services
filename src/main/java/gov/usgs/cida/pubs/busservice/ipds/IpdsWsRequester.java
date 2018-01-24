@@ -44,7 +44,7 @@ public class IpdsWsRequester {
 	private static final String IPDS_PROTOCOL = "https";
 	private static final int IPDS_PORT = 443;
 	private static final String ERROR = "ERROR: ";
-	private static final String ADMIN = "admin";
+	private static final String ADMIN = "sites/Admin";
 
 	private final String ipdsEndpoint;
 	private final NTCredentials credentials;

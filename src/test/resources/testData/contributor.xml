@@ -4,4 +4,5 @@
 	<CONTRIBUTOR CONTRIBUTOR_ID="2" LITERAL="US Geological Survey Ice Survey Team" IS_CORPORATION="Y" IS_USGS="N" text="US Geological Survey Ice Survey Team" IS_PREFERRED="N" />
 	<CONTRIBUTOR CONTRIBUTOR_ID="3" FAMILY="outerfamily" GIVEN="outerGiven" SUFFIX="outerSuffix" EMAIL="outer@gmail.com" IS_CORPORATION="N" IS_USGS="N" text="outerfamily, outerGiven outerSuffix outer@gmail.com" orcid="http://orcid.org/0000-0000-0000-0001" IS_PREFERRED="N" />
 	<CONTRIBUTOR CONTRIBUTOR_ID="4" FAMILY="4Family" GIVEN="4Given" SUFFIX="4Suffix" EMAIL="con4@usgs.gov" IS_CORPORATION="N" IS_USGS="Y" text="4Family 4Given 4Suffix con4@usgs.gov" orcid="http://orcid.org/0000-0000-0000-0004" IS_PREFERRED="Y" />
+    <CONTRIBUTOR CONTRIBUTOR_ID="5" FAMILY="Doe" GIVEN="Jane" EMAIL="jmdoe@usgs.gov" IS_CORPORATION="N" IS_USGS="Y" text="Doe jane   jmdoe@usgs.gov" orcid="http://orcid.org/0000-0000-0000-0000" IS_PREFERRED="Y" />
 </dataset>

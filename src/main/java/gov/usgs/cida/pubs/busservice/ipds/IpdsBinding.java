@@ -43,10 +43,10 @@ public class IpdsBinding {
 
 	private final IpdsParserService parser;
 	private final IpdsCostCenterService ipdsCostCenterService;
-	private final IpdsContributorService ipdsContributorService;
+	private final IpdsPubContributorService ipdsContributorService;
 
 	@Autowired
-	public IpdsBinding(IpdsParserService parser, IpdsCostCenterService ipdsCostCenterService, IpdsContributorService ipdsContributorService) throws ParserConfigurationException {
+	public IpdsBinding(IpdsParserService parser, IpdsCostCenterService ipdsCostCenterService, IpdsPubContributorService ipdsContributorService) throws ParserConfigurationException {
 		this.parser = parser;
 		this.ipdsCostCenterService = ipdsCostCenterService;
 		this.ipdsContributorService = ipdsContributorService;

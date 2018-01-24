@@ -23,6 +23,7 @@ import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.dao.AffiliationDaoTest;
 import gov.usgs.cida.pubs.dao.ContributorDaoTest;
 import gov.usgs.cida.pubs.domain.Affiliation;
+import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
@@ -37,16 +38,16 @@ import gov.usgs.cida.pubs.domain.PersonContributor;
 	@DatabaseSetup("classpath:/testData/dataset.xml")
 })
 public class IpdsOutsideContributorServiceTest extends BaseIpdsTest {
-	
+
 	@Autowired
-	public String existingOutsideContributorXml;
+	public String existingOutsideAuthor;
 
 	@Autowired
 	public String newOutsideContributorUsgsAffiliationXml;
-	
+
 	@Autowired
-	public String newOutsideContributorXml;
-	
+	public String newOutsideAuthor;
+
 	@Autowired
 	@Qualifier("outsideAffiliationBusService")
 	private IBusService<OutsideAffiliation> outsideAffiliationBusService;
@@ -64,20 +65,14 @@ public class IpdsOutsideContributorServiceTest extends BaseIpdsTest {
 
 	@Test
 	public void createOutsideContributorTest() throws SAXException, IOException {
-		Document d = ipdsParser.makeDocument(newOutsideContributorXml);
+		Document d = ipdsParser.makeDocument(newOutsideAuthor);
 		OutsideContributor contributor = ipdsOutsideContributorService.createContributor(d.getDocumentElement());
-		assertNotNull(contributor);
-		assertNotNull(contributor.getId());
-		assertEquals("ODoe", contributor.getFamily());
-		assertEquals("Jane", contributor.getGiven());
-		assertEquals("http://orcid.org/1234-1234-1234-1234", contributor.getOrcid());
-		assertNull(contributor.getEmail());
-		assertEquals("7", contributor.getAffiliations().toArray(new OutsideAffiliation[1])[0].getId().toString());
+		assertJaneODoe(contributor);
 	}
 
 	@Test
 	public void getOutsideContributorTest() throws SAXException, IOException {
-		Document d = ipdsParser.makeDocument(existingOutsideContributorXml);
+		Document d = ipdsParser.makeDocument(existingOutsideAuthor);
 		OutsideContributor contributor = ipdsOutsideContributorService.getContributor(d.getDocumentElement());
 		ContributorDaoTest.assertContributor3(contributor);
 	}
@@ -86,7 +81,7 @@ public class IpdsOutsideContributorServiceTest extends BaseIpdsTest {
 	public void getOutsideAffiliationTest() {
 		Affiliation<?> affiliation = ipdsOutsideContributorService.getOutsideAffiliation("Outside Affiliation 1");
 		AffiliationDaoTest.assertAffiliation5(affiliation);
-		
+
 		affiliation = ipdsOutsideContributorService.getOutsideAffiliation("Affiliation Cost Center 1");
 		assertNull(affiliation);
 	}
@@ -99,4 +94,29 @@ public class IpdsOutsideContributorServiceTest extends BaseIpdsTest {
 		assertTrue(affiliation.isActive());
 		assertFalse(affiliation.isUsgs());
 	}
+
+	public static void assertJaneODoe(Contributor<?> contrib) {
+		assertNotNull(contrib);
+		assertNotNull(contrib.getId());
+		assertTrue(contrib instanceof OutsideContributor);
+		OutsideContributor contributor = (OutsideContributor) contrib;
+		assertEquals("ODoe", contributor.getFamily());
+		assertEquals("Jane", contributor.getGiven());
+		assertEquals("http://orcid.org/1234-1234-1234-1234", contributor.getOrcid());
+		assertNull(contributor.getEmail());
+		assertEquals("7", contributor.getAffiliations().toArray(new OutsideAffiliation[1])[0].getId().toString());
+	}
+
+	public static void assertJillODoe(Contributor<?> contrib) {
+		assertNotNull(contrib);
+		assertNotNull(contrib.getId());
+		assertTrue(contrib instanceof OutsideContributor);
+		OutsideContributor contributor = (OutsideContributor) contrib;
+		assertEquals("ODoe", contributor.getFamily());
+		assertEquals("Jill", contributor.getGiven());
+		assertEquals("http://orcid.org/1234-1234-1234-1234", contributor.getOrcid());
+		assertNull(contributor.getEmail());
+		assertEquals("7", contributor.getAffiliations().toArray(new OutsideAffiliation[1])[0].getId().toString());
+	}
+
 }

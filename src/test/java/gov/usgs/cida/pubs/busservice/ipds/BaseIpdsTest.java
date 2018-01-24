@@ -16,12 +16,13 @@ public abstract class BaseIpdsTest extends BaseSpringTest {
 
 	@Mock
 	protected IpdsWsRequester ipdsWsRequester;
-	
+
 	@Autowired
 	protected IpdsParserService ipdsParser;
-	
+
 	@Before
 	public void baseIdpsSetup() throws Exception {
 		MockitoAnnotations.initMocks(this);
 	}
+
 }

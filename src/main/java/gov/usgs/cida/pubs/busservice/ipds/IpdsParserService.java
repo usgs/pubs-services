@@ -20,7 +20,7 @@ public class IpdsParserService {
 
 	public static final String ORCID_PREFIX = "http://orcid.org/";
 	private DocumentBuilder builder;
-	
+
 	public IpdsParserService() throws ParserConfigurationException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(false);

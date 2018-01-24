@@ -14,6 +14,7 @@ import org.xml.sax.SAXException;
 
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.domain.Contributor;
+import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 
@@ -24,11 +25,16 @@ public class IpdsUsgsContributorService {
 	private final IpdsParserService parser;
 	private final IpdsWsRequester requester;
 	private final IBusService<PersonContributor<?>> personContributorBusService;
+	private final IpdsCostCenterService ipdsCostCenterService;
 
 	@Autowired
-	public IpdsUsgsContributorService(IpdsParserService parser, IpdsWsRequester requester, @Qualifier("personContributorBusService") IBusService<PersonContributor<?>> personContributorBusService) {
+	public IpdsUsgsContributorService(IpdsParserService parser,
+			IpdsWsRequester requester,
+			IpdsCostCenterService ipdsCostCenterService,
+			@Qualifier("personContributorBusService") IBusService<PersonContributor<?>> personContributorBusService) {
 		this.parser = parser;
 		this.requester = requester;
+		this.ipdsCostCenterService = ipdsCostCenterService;
 		this.personContributorBusService = personContributorBusService;
 	}
 
@@ -40,6 +46,12 @@ public class IpdsUsgsContributorService {
 		}
 		if (null == contributor) {
 			contributor = getByEmail(authorsItem, context);
+		}
+		if (null != contributor) {
+			CostCenter costCenter = getCostCenter(authorsItem);
+			if (null != costCenter && costCenter.isValid()) {
+				contributor = updateAffiliations(contributor, costCenter);
+			}
 		}
 		return contributor;
 	}
@@ -85,7 +97,10 @@ public class IpdsUsgsContributorService {
 
 	public UsgsContributor createContributor(final Element authorsItem, final String context) throws SAXException, IOException {
 		UsgsContributor contributor = bindContributor(authorsItem, context);
-		contributor.setPreferred(true);
+		CostCenter costCenter = getCostCenter(authorsItem);
+		if (null != costCenter && costCenter.isValid()) {
+			contributor.getAffiliations().add(costCenter);
+		}
 		contributor = (UsgsContributor) personContributorBusService.createObject(contributor);
 		return contributor;
 	}
@@ -100,6 +115,29 @@ public class IpdsUsgsContributorService {
 		contributor.setGiven(parser.getFirstNodeText(doc.getDocumentElement(), Schema.FIRST_NAME));
 		contributor.setEmail(parser.getFirstNodeText(doc.getDocumentElement(), Schema.WORK_EMAIL));
 		contributor.setOrcid(orcid);
+		contributor.setPreferred(true);
 		return contributor;
 	}
+
+	protected CostCenter getCostCenter(final Element authorsItem) throws SAXException, IOException {
+		CostCenter costCenter = null;
+		String costCenterId = parser.getFirstNodeText(authorsItem, Schema.COST_CENTER);
+		if (null != costCenterId) {
+			costCenter = ipdsCostCenterService.getCostCenter(costCenterId);
+			if (null == costCenter) {
+				costCenter = ipdsCostCenterService.createCostCenter(costCenterId);
+			}
+		}
+		return costCenter;
+	}
+
+	protected UsgsContributor updateAffiliations(UsgsContributor contributor, CostCenter costCenter) {
+		if (!contributor.getAffiliations().contains(costCenter)) {
+			contributor.getAffiliations().add(costCenter);
+			return (UsgsContributor) personContributorBusService.updateObject(contributor);
+		} else {
+			return contributor;
+		}
+	}
+
 }

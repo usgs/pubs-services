@@ -32,7 +32,7 @@ public class SpnProductionMessageService implements IIpdsService {
 	@Override
 	@Transactional
 	public void processIpdsMessage(final MessagePayload messagePayload) {
-		String atomFeed = requester.getSpnProduction(messagePayload.getAsOfString(), messagePayload.getContext());
+		String atomFeed = requester.getSpnProduction(messagePayload);
 
 		IpdsMessageLog newMessage = new IpdsMessageLog();
 		newMessage.setMessageText(PubsEscapeXML10.ESCAPE_XML10.translate(atomFeed));

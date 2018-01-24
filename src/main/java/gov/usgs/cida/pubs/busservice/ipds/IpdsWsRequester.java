@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.busservice.ipds;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.ipds.IpdsProcessLog;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.jms.MessagePayload;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
 import gov.usgs.cida.pubs.utility.PubsEscapeXML10;
 
@@ -59,11 +60,13 @@ public class IpdsWsRequester {
 		this.pubsEMailer = pubsEMailer;
 	}
 
-	public String getIpdsProductXml(final String asOf, String context) {
-		StringBuilder url = getContextPrefix(context)
-		.append("InformationProducts()?$filter=Modified+ge+datetime'")
-		.append(asOf)
-		.append("'");
+	public String getIpdsProductXml(MessagePayload messagePayload) {
+		StringBuilder url = getContextPrefix(messagePayload.getContext())
+		.append("InformationProducts()?$filter=((Modified+ge+datetime'")
+		.append(messagePayload.getAsOfString())
+		.append("'))%20and%20(Modified+lt+datetime'")
+		.append(messagePayload.getPriorToString())
+		.append("'))");
 
 		return getIpdsXml(url.toString(), null);
 	}
@@ -104,14 +107,16 @@ public class IpdsWsRequester {
 		return getIpdsXml(url.toString(), ipds);
 	}
 
-	public String getSpnProduction(final String asOf, String context) {
-		StringBuilder url = getContextPrefix(context)
+	public String getSpnProduction(MessagePayload messagePayload) {
+		StringBuilder url = getContextPrefix(messagePayload.getContext())
 		.append("InformationProducts()?$filter=(((Task%20eq%20'")
 		.append(ProcessType.SPN_PRODUCTION.getIpdsValueEncoded()).append("')")
 		.append("%20and%20(ProductTypeValue%20eq%20'USGS%20Series'))%20and%20(DigitalObjectIdentifier%20eq%20null))")
-		.append("%20and%20(Modified+ge+datetime'")
-		.append(asOf)
-		.append("')");
+		.append("%20and%20((Modified+ge+datetime'")
+		.append(messagePayload.getAsOfString())
+		.append("'))%20and%20(Modified+lt+datetime'")
+		.append(messagePayload.getPriorToString())
+		.append("'))");
 		return getIpdsXml(url.toString(), null);
 	}
 

@@ -6,6 +6,7 @@ public class MessagePayload {
 
 	private String type;
 	private LocalDate asOfDate;
+	private LocalDate priorToDate;
 	private String context;
 	public String getType() {
 		return type;
@@ -22,6 +23,16 @@ public class MessagePayload {
 	}
 	public void setAsOfDate(String asOfDate) {
 		this.asOfDate = LocalDate.parse(asOfDate);
+	}
+	public LocalDate getPriorToDate() {
+		//Default to tomorrow.
+		return null == priorToDate ? LocalDate.now().plusDays(1) : priorToDate;
+	}
+	public String getPriorToString() {
+		return getPriorToDate().toString();
+	}
+	public void setPriorToDate(String priorToDate) {
+		this.priorToDate = LocalDate.parse(priorToDate);
 	}
 	public String getContext() {
 		return context;

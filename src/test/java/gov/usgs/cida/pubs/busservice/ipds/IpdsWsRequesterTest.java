@@ -5,13 +5,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
 import org.apache.http.auth.NTCredentials;
-import org.apache.http.util.EntityUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -20,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
 
-//TODO
-@Ignore
 public class IpdsWsRequesterTest extends BaseSpringTest {
 
 	@Autowired
@@ -35,27 +29,27 @@ public class IpdsWsRequesterTest extends BaseSpringTest {
 
 	@Before
 	public void setUp() throws Exception {
-	   MockitoAnnotations.initMocks(this);
+		MockitoAnnotations.initMocks(this);
 
-	   requester = new IpdsWsRequester(ipdsEndpoint, credentials, pubsEMailer);
+		requester = new IpdsWsRequester(ipdsEndpoint, credentials, pubsEMailer);
 	}
 
-	@Test
-	public void doGetTest() {
-		//This might be brittle, but hopefully they don't delete costCenter 1.
-		HttpResponse response = requester.doGet(IpdsWsRequester.URL_PREFIX + "CostCenters(1)");
-		String xml = null;
-		try {
-			HttpEntity entity = response.getEntity();
-			xml = EntityUtils.toString(entity);
-			EntityUtils.consume(response.getEntity());
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-		assertTrue(xml.contains("<id>https://" + ipdsEndpoint + IpdsWsRequester.URL_PREFIX + "CostCenters(1)</id>"));
-		assertTrue(xml.contains("<d:Id m:type=\"Edm.Int32\">1</d:Id>"));
-	}
+//	@Test
+//	public void doGetTest() {
+//		//This might be brittle, but hopefully they don't delete costCenter 1.
+//		HttpResponse response = requester.doGet(IpdsWsRequester.URL_PREFIX + "CostCenters(1)");
+//		String xml = null;
+//		try {
+//			HttpEntity entity = response.getEntity();
+//			xml = EntityUtils.toString(entity);
+//			EntityUtils.consume(response.getEntity());
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			fail(e.getMessage());
+//		}
+//		assertTrue(xml.contains("<id>https://" + ipdsEndpoint + IpdsWsRequester.URL_PREFIX + "CostCenters(1)</id>"));
+//		assertTrue(xml.contains("<d:Id m:type=\"Edm.Int32\">1</d:Id>"));
+//	}
 
 	//TODO Activate this Test?
 //  @Test
@@ -100,7 +94,7 @@ public class IpdsWsRequesterTest extends BaseSpringTest {
 			fail("Didn't fail without a host name.");
 		} catch (Exception e) {
 			assertTrue(e instanceof IllegalArgumentException);
-			assertEquals("Host name must not be null", e.getMessage());
+			assertEquals("Host name may not be null", e.getMessage());
 		}
 
 		HttpHost host = requester.getHttpHost();

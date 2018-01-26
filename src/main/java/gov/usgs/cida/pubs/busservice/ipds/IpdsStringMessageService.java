@@ -9,7 +9,6 @@ import gov.usgs.cida.pubs.busservice.intfc.IIpdsService;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
 import gov.usgs.cida.pubs.jms.MessagePayload;
-import gov.usgs.cida.pubs.utility.PubsEscapeXML10;
 
 @Service
 public class IpdsStringMessageService implements IIpdsService {
@@ -31,7 +30,7 @@ public class IpdsStringMessageService implements IIpdsService {
 
 		IpdsMessageLog newMessage = new IpdsMessageLog();
 		newMessage.setProcessType(ProcessType.DISSEMINATION);
-		newMessage.setMessageText(PubsEscapeXML10.ESCAPE_XML10.translate(messageText));
+		newMessage.setMessageText(messageText);
 		IpdsMessageLog msg = IpdsMessageLog.getDao().getById(IpdsMessageLog.getDao().add(newMessage));
 
 		String processingDetails = ipdsProcess.processLog(ProcessType.DISSEMINATION, msg.getId(), messagePayload.getContext());

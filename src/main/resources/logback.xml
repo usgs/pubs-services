@@ -41,16 +41,16 @@
         </timeBasedFileNamingAndTriggeringPolicy>
     </appender>
 
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="stdout" />
         <appender-ref ref="appLog" />
         <appender-ref ref="ipdsLog" />
     </root>
 
-    <logger name="gov.usgs.cida.pubs.busservice.ipds" level="INFO" appender-ref="ipdsLog" additive="false" />
+    <logger name="gov.usgs.cida.pubs.busservice.ipds" level="DEBUG" appender-ref="ipdsLog" additive="false" />
 
     <logger name="java.sql" level="INFO" />
-    <logger name="gov.usgs" level="INFO" />
+    <logger name="gov.usgs" level="DEBUG" />
     <logger name="org.apache.activemq" level="INFO" />
     <logger name="org.apache.ibatis" level="INFO" />
     <logger name="org.hibernate" level="INFO" />

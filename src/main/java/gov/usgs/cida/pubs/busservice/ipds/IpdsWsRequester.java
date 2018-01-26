@@ -1,12 +1,5 @@
 package gov.usgs.cida.pubs.busservice.ipds;
 
-import gov.usgs.cida.pubs.domain.ProcessType;
-import gov.usgs.cida.pubs.domain.ipds.IpdsProcessLog;
-import gov.usgs.cida.pubs.domain.mp.MpPublication;
-import gov.usgs.cida.pubs.jms.MessagePayload;
-import gov.usgs.cida.pubs.utility.PubsEMailer;
-import gov.usgs.cida.pubs.utility.PubsEscapeXML10;
-
 import java.io.IOException;
 
 import org.apache.http.HttpEntity;
@@ -29,6 +22,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+
+import gov.usgs.cida.pubs.domain.ProcessType;
+import gov.usgs.cida.pubs.domain.ipds.IpdsProcessLog;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.jms.MessagePayload;
+import gov.usgs.cida.pubs.utility.PubsEMailer;
 
 @Service
 public class IpdsWsRequester {
@@ -114,7 +113,7 @@ public class IpdsWsRequester {
 		.append("%20and%20(ProductTypeValue%20eq%20'USGS%20Series'))%20and%20(DigitalObjectIdentifier%20eq%20null))")
 		.append("%20and%20((Modified+ge+datetime'")
 		.append(messagePayload.getAsOfString())
-		.append("'))%20and%20(Modified+lt+datetime'")
+		.append("')%20and%20(Modified+lt+datetime'")
 		.append(messagePayload.getPriorToString())
 		.append("'))");
 		return getIpdsXml(url.toString(), null);
@@ -154,7 +153,7 @@ public class IpdsWsRequester {
 		if (null != ipdsId) {
 			IpdsProcessLog log = new IpdsProcessLog();
 			log.setIpdsNumber(ipdsId);
-			log.setMessage(PubsEscapeXML10.ESCAPE_XML10.translate(xml));
+			log.setMessage(xml);
 			log.setUri(url);
 			IpdsProcessLog.getDao().add(log);
 		}

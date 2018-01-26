@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.domain.ipds;
 import gov.usgs.cida.pubs.dao.intfc.IIpdsMessageLogDao;
 import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.domain.ProcessType;
+import gov.usgs.cida.pubs.utility.PubsEscapeXML10;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -108,7 +109,7 @@ public class IpdsMessageLog extends BaseDomain <IpdsMessageLog> {
 	 * @param inMessageText the messageText to set
 	 */
 	public void setMessageText(final String inMessageText) {
-		messageText = inMessageText;
+		messageText = PubsEscapeXML10.cleanseXml(inMessageText);
 	}
 
 	public String getProcessingDetails() {

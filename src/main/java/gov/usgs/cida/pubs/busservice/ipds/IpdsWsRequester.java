@@ -63,7 +63,7 @@ public class IpdsWsRequester {
 		StringBuilder url = getContextPrefix(messagePayload.getContext())
 		.append("InformationProducts()?$filter=((Modified+ge+datetime'")
 		.append(messagePayload.getAsOfString())
-		.append("'))%20and%20(Modified+lt+datetime'")
+		.append("')%20and%20(Modified+lt+datetime'")
 		.append(messagePayload.getPriorToString())
 		.append("'))");
 

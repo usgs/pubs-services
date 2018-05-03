@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.busservice.ipds;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -98,7 +99,7 @@ public class IpdsPubContributorServiceTest extends BaseIpdsTest {
 	@Test
 	public void createUsgsAuthorContributor() throws SAXException, IOException {
 		when(requester.getContributor(anyString(), anyString())).thenReturn(usgsContributorXml);
-		when(requester.getCostCenter(anyString(), anyString())).thenReturn(costCenterXml);
+		when(requester.getCostCenter(anyInt(), anyInt())).thenReturn(costCenterXml);
 		Document d = ipdsParser.makeDocument(newUsgsAuthor);
 		MpPublicationContributor pubContributor = service.buildPublicationContributor(d.getDocumentElement(), IpdsProcessTest.TEST_IPDS_CONTEXT);
 		IpdsUsgsContributorServiceTest.assertUsgsContributorData((UsgsContributor) pubContributor.getContributor());
@@ -109,7 +110,7 @@ public class IpdsPubContributorServiceTest extends BaseIpdsTest {
 	@Test
 	public void createUsgsEditorContributor() throws SAXException, IOException {
 		when(requester.getContributor(anyString(), anyString())).thenReturn(usgsContributorXml);
-		when(requester.getCostCenter(anyString(), anyString())).thenReturn(costCenterXml);
+		when(requester.getCostCenter(anyInt(), anyInt())).thenReturn(costCenterXml);
 		Document d = ipdsParser.makeDocument(newUsgsEditor);
 		MpPublicationContributor pubContributor = service.buildPublicationContributor(d.getDocumentElement(), IpdsProcessTest.TEST_IPDS_CONTEXT);
 		IpdsUsgsContributorServiceTest.assertUsgsContributorData((UsgsContributor) pubContributor.getContributor());
@@ -121,7 +122,7 @@ public class IpdsPubContributorServiceTest extends BaseIpdsTest {
 	@Test
 	public void getUsgsContributor() throws SAXException, IOException {
 		when(requester.getContributor(anyString(), anyString())).thenReturn(usgsContributorXml);
-		when(requester.getCostCenter(anyString(), anyString())).thenReturn(costCenterXml);
+		when(requester.getCostCenter(anyInt(), anyInt())).thenReturn(costCenterXml);
 		Document d = ipdsParser.makeDocument(newUsgsAuthor);
 		MpPublicationContributor pubContributor = service.buildPublicationContributor(d.getDocumentElement(), IpdsProcessTest.TEST_IPDS_CONTEXT);
 		IpdsUsgsContributorServiceTest.assertUsgsContributorData((UsgsContributor) pubContributor.getContributor());

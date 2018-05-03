@@ -23,17 +23,17 @@ public class MpList extends BaseDomain<MpList>  implements Serializable {
 
 	private static IDao<MpList> mpListDao;
 
-	public static final String IPDS_JOURNAL_ARTICLES = "3";
+	public static final int IPDS_JOURNAL_ARTICLES = 3;
 
-	public static final String IPDS_OTHER_PUBS = "4";
+	public static final int IPDS_OTHER_PUBS = 4;
 
-	public static final String USGS_DATA_RELEASES = "6";
+	public static final int USGS_DATA_RELEASES = 6;
 
-	public static final String PENDING_USGS_SERIES = "9";
+	public static final int PENDING_USGS_SERIES = 9;
 
-	public static final String USGS_WEBSITE = "24";
+	public static final int USGS_WEBSITE = 24;
 
-	public static final String IPDS_USGS_NUMBERED_SERIES = "275";
+	public static final int IPDS_USGS_NUMBERED_SERIES = 275;
 
 	public enum MpListType {
 		PUBS,

@@ -4,18 +4,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+
+import org.junit.Test;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.webservice.security.PubsRoles;
-
-import java.util.Arrays;
-
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 public class PubsUtilitiesTest extends BaseSpringTest {
 
@@ -119,34 +119,6 @@ public class PubsUtilitiesTest extends BaseSpringTest {
 		assertEquals("is {0} from {1}", PubsUtilities.buildErrorMsg("is {0} from {1}", null));
 		assertEquals("is abc from def", PubsUtilities.buildErrorMsg("is {0} from {1}", messageArguments));
 		assertEquals("abc from def not", PubsUtilities.buildErrorMsg("{0} from {1} not", messageArguments));
-	}
-
-	@Test
-	public void removeStopWordsTest() {
-		assertTrue(PubsUtilities.removeStopWords(null).isEmpty());
-		assertTrue(PubsUtilities.removeStopWords("").isEmpty());
-		assertTrue(PubsUtilities.removeStopWords("   ").isEmpty());
-		assertEquals("red and fox and jumped and over and fence",
-				StringUtils.join(PubsUtilities.removeStopWords("The red fox jumped over THE fence or not"), " and "));
-		assertEquals("turtles and loggerhead", StringUtils.join(PubsUtilities.removeStopWords("Turtles Loggerhead"), " and "));
-		assertTrue(PubsUtilities.removeStopWords("~`!@#$%^&*()_+{}|:\"<>?`-=[]\\;',./").isEmpty());
-		assertEquals("1234567890qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnm",
-				StringUtils.join(PubsUtilities.removeStopWords("1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"), " and "));
-		assertEquals("a1 and b and c and dd and e and f and g and h and ii and j and k and l and m and n and o and p and q and r and ss and tt and u and v and w and x and y and z"
-				+ " and 1 and 2 and 3 and 4 and 5 and 6 and 7 and 8",
-				StringUtils.join(PubsUtilities.removeStopWords("a1~b`c!dd@e#f$g%h^ii&j*k(l)m_n+o{p}q|r:ss\"tt<u>v?w`x-y=z[1]2\\3;4'5,6.7/8"), " and "));
-		assertEquals("new and analysis and mars and  and special and regions and  and  and findings and second and mepag and special and regions and science and analysis and group and  and sr and sag2", 
-				StringUtils.join(PubsUtilities.removeStopWords("A new analysis of Mars \"Special Regions\": findings of the Second MEPAG Special Regions Science Analysis Group (SR-SAG2)"), " and "));
-	}
-
-	@Test
-	public void escapeReservedWordTest() {
-		assertNull(PubsUtilities.escapeReservedWord(null));
-		assertEquals("", PubsUtilities.escapeReservedWord(""));
-		assertEquals("   ", PubsUtilities.escapeReservedWord("   "));
-		assertEquals("red", PubsUtilities.escapeReservedWord("red"));
-		assertEquals("{within}", PubsUtilities.escapeReservedWord("within"));
-		assertEquals("{\\}", PubsUtilities.escapeReservedWord("\\"));
 	}
 
 	@Test

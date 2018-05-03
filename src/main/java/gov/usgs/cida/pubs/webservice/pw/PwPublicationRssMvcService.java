@@ -48,7 +48,7 @@ import gov.usgs.cida.pubs.webservice.MvcService;
 @RequestMapping(value = "publication/rss", produces={PubsConstants.MEDIA_TYPE_RSS_VALUE, MediaType.APPLICATION_JSON_VALUE})
 public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 	private static final String DEFAULT_RECORDS = "30";
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(PwPublicationRssMvcService.class);
 
 	private final IPwPublicationBusService busService;

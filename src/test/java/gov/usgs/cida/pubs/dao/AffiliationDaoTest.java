@@ -66,7 +66,7 @@ public class AffiliationDaoTest extends BaseSpringTest {
 	@Test
 	public void getByMapId() {
 		Map<String, Object> filters = new HashMap<>();
-		filters.put(AffiliationDao.ID_SEARCH, "1");
+		filters.put(AffiliationDao.ID_SEARCH, 1);
 		List<? extends Affiliation<?>> results = Affiliation.getDao().getByMap(filters);
 		assertAffiliation1(results.get(0));
 	}
@@ -74,10 +74,10 @@ public class AffiliationDaoTest extends BaseSpringTest {
 	@Test
 	public void getByMapActive() {
 		Map<String, Object> filters = new HashMap<>();
-		filters.put(AffiliationDao.ACTIVE_SEARCH, "Y");
+		filters.put(AffiliationDao.ACTIVE_SEARCH, true);
 		List<? extends Affiliation<?>> results = Affiliation.getDao().getByMap(filters);
 		assertEquals(5, results.size());
-		filters.put(AffiliationDao.ACTIVE_SEARCH, "N");
+		filters.put(AffiliationDao.ACTIVE_SEARCH, false);
 		results = Affiliation.getDao().getByMap(filters);
 		assertEquals(2, results.size());
 	}
@@ -85,10 +85,10 @@ public class AffiliationDaoTest extends BaseSpringTest {
 	@Test
 	public void getByMapUsgs() {
 		Map<String, Object> filters = new HashMap<>();
-		filters.put(AffiliationDao.USGS_SEARCH, "Y");
+		filters.put(AffiliationDao.USGS_SEARCH, true);
 		List<? extends Affiliation<?>> results = Affiliation.getDao().getByMap(filters);
 		assertEquals(4, results.size());
-		filters.put(AffiliationDao.USGS_SEARCH, "N");
+		filters.put(AffiliationDao.USGS_SEARCH, false);
 		results = Affiliation.getDao().getByMap(filters);
 		assertEquals(3, results.size());
 	}
@@ -96,7 +96,7 @@ public class AffiliationDaoTest extends BaseSpringTest {
 	@Test
 	public void getByMapIpds() {
 		Map<String, Object> filters = new HashMap<>();
-		filters.put(PublicationDao.IPDS_ID, "4");
+		filters.put(PublicationDao.IPDS_ID, 4);
 		List<? extends Affiliation<?>> results = Affiliation.getDao().getByMap(filters);
 		assertEquals(1, results.size());
 		assertAffiliation1(results.get(0));
@@ -116,9 +116,9 @@ public class AffiliationDaoTest extends BaseSpringTest {
 		Map<String, Object> filters = new HashMap<>();
 		filters.put(AffiliationDao.TEXT_SEARCH, "Affiliation Cost Center");
 		filters.put(AffiliationDao.EXACT_SEARCH, "Affiliation Cost Center 1");
-		filters.put(PublicationDao.IPDS_ID, "4");
-		filters.put(AffiliationDao.USGS_SEARCH, "Y");
-		filters.put(AffiliationDao.ACTIVE_SEARCH, "Y");
+		filters.put(PublicationDao.IPDS_ID, 4);
+		filters.put(AffiliationDao.USGS_SEARCH, true);
+		filters.put(AffiliationDao.ACTIVE_SEARCH, true);
 		List<? extends Affiliation<?>> results = Affiliation.getDao().getByMap(filters);
 		assertEquals(1, results.size());
 		assertAffiliation1(results.get(0));

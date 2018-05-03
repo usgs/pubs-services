@@ -24,6 +24,7 @@ import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
+import gov.usgs.cida.pubs.webservice.MvcService;
 
 @Category(IntegrationTest.class)
 @DatabaseSetups({
@@ -83,13 +84,13 @@ public class ContributorDaoTest extends BaseSpringTest {
 		assertEquals(CONTRIBUTOR_CNT, contributors.size());
 
 		Map<String, Object> filters = new HashMap<>();
-		filters.put(ContributorDao.ID_SEARCH, "1");
+		filters.put(ContributorDao.ID_SEARCH, 1);
 		contributors = Contributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(1, contributors.get(0).getId().intValue());
 
 		filters.clear();
-		filters.put(ContributorDao.TEXT_SEARCH, "con%");
+		filters.put(ContributorDao.TEXT_SEARCH, "con" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX);
 		contributors = Contributor.getDao().getByMap(filters);
 		assertEquals(2, contributors.size());
 		boolean got1 = false;
@@ -107,7 +108,7 @@ public class ContributorDaoTest extends BaseSpringTest {
 		assertTrue("Got 4", got4);
 
 		filters.clear();
-		filters.put(ContributorDao.TEXT_SEARCH, "us% and ge%");
+		filters.put(ContributorDao.TEXT_SEARCH, "us" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX + MvcService.TEXT_SEARCH_AND + "ge" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX);
 		contributors = Contributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(2, contributors.get(0).getId().intValue());
@@ -134,7 +135,7 @@ public class ContributorDaoTest extends BaseSpringTest {
 		assertEquals(1, contributors.get(1).getId().intValue());
 		assertEquals(5, contributors.get(2).getId().intValue());
 		assertEquals(3, contributors.get(3).getId().intValue());
-		filters.put(ContributorDao.TEXT_SEARCH, "out%");
+		filters.put(ContributorDao.TEXT_SEARCH, "oute" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX);
 		contributors = Contributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(3, contributors.get(0).getId().intValue());
@@ -161,7 +162,7 @@ public class ContributorDaoTest extends BaseSpringTest {
 		contributors = Contributor.getDao().getByMap(filters);
 		assertEquals(CORPORATE_CONTRIBUTOR_CNT, contributors.size());
 		assertEquals(2, contributors.get(0).getId().intValue());
-		filters.put(ContributorDao.TEXT_SEARCH, "us%");
+		filters.put(ContributorDao.TEXT_SEARCH, "us:*");
 		contributors = Contributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(2, contributors.get(0).getId().intValue());

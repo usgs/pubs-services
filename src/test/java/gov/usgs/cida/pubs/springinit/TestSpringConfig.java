@@ -3,7 +3,9 @@ package gov.usgs.cida.pubs.springinit;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import org.dbunit.ext.oracle.OracleDataTypeFactory;
+import javax.sql.DataSource;
+
+import org.postgresql.ds.PGSimpleDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +17,6 @@ import org.springframework.util.FileCopyUtils;
 
 import com.github.springtestdbunit.bean.DatabaseConfigBean;
 import com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean;
-
-import oracle.jdbc.pool.OracleDataSource;
 
 @PropertySource(value = "classpath:test.properties")
 public class TestSpringConfig {
@@ -30,19 +30,19 @@ public class TestSpringConfig {
 	}
 
 	@Bean
-	public OracleDataSource dataSource() throws SQLException {
-		OracleDataSource ds = new OracleDataSource();
+	public DataSource dataSource() throws SQLException {
+		PGSimpleDataSource ds = new PGSimpleDataSource();
 		ds.setURL(env.getProperty("jdbc.mypubs.url"));
 		ds.setUser(env.getProperty("jdbc.mypubs.username"));
 		ds.setPassword(env.getProperty("jdbc.mypubs.password"));
 		return ds;
 	}
 
-	//Beans to support DBunit for unit testing with Oracle.
+	//Bean to support DBunit for unit testing with PostgrSQL.
 	@Bean
 	public DatabaseConfigBean dbUnitDatabaseConfig() {
 		DatabaseConfigBean dbUnitDbConfig = new DatabaseConfigBean();
-		dbUnitDbConfig.setDatatypeFactory(new OracleDataTypeFactory());
+		dbUnitDbConfig.setDatatypeFactory(new PubsDataTypeFactory());
 		dbUnitDbConfig.setSkipOracleRecyclebinTables(true);
 		dbUnitDbConfig.setQualifiedTableNames(false);
 		return dbUnitDbConfig;
@@ -53,7 +53,7 @@ public class TestSpringConfig {
 		DatabaseDataSourceConnectionFactoryBean dbUnitDatabaseConnection = new DatabaseDataSourceConnectionFactoryBean();
 		dbUnitDatabaseConnection.setDatabaseConfig(dbUnitDatabaseConfig());
 		dbUnitDatabaseConnection.setDataSource(dataSource());
-		dbUnitDatabaseConnection.setSchema("PUBS");
+		dbUnitDatabaseConnection.setSchema("pubs");
 		return dbUnitDatabaseConnection;
 	}
 
@@ -84,7 +84,7 @@ public class TestSpringConfig {
 
 	@Bean
 	public String ipdsEndpoint() {
-		return "bad.usgs.gov";//"ipdsv2test.usgs.gov";
+		return "bad.usgs.gov";
 	}
 
 	@Bean

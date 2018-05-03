@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.busservice.ipds;
 
 import java.io.IOException;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -75,7 +76,7 @@ public class IpdsWsRequester {
 		.append("Authors()?$filter=startswith(IPNumber,'")
 		.append(ipds).append("')");
 
-		return getIpdsXml(url.toString(), ipds);
+		return getIpdsXml(url.toString(), NumberUtils.toInt(ipds));
 	}
 
 	protected String getContributor(final String ipds, String context) {
@@ -83,10 +84,10 @@ public class IpdsWsRequester {
 		.append("UserInformationList(")
 		.append(ipds).append(")");
 
-		return getIpdsXml(url.toString(), ipds);
+		return getIpdsXml(url.toString(), NumberUtils.toInt(ipds));
 	}
 
-	protected String getCostCenter(final String costCenterId, final String ipds) {
+	protected String getCostCenter(final int costCenterId, final int ipds) {
 		StringBuilder url = getAdminPrefix()
 		.append("CostCenters(").append(costCenterId).append(")");
 		return getIpdsXml(url.toString(), ipds);
@@ -103,7 +104,7 @@ public class IpdsWsRequester {
 		.append("Notes()?$filter=startswith(IPNumber,'")
 		.append(ipds).append("')");
 
-		return getIpdsXml(url.toString(), ipds);
+		return getIpdsXml(url.toString(), NumberUtils.toInt(ipds));
 	}
 
 	public String getSpnProduction(MessagePayload messagePayload) {
@@ -132,9 +133,9 @@ public class IpdsWsRequester {
 		return url;
 	}
 
-	protected String getIpdsXml(final String url, final String ipdsId)  {
+	protected String getIpdsXml(final String url, final Integer ipdsId)  {
 		String xml = null;
-		
+
 		LOG.debug("requesting url: " + url);
 
 		HttpResponse response = doGet(url);

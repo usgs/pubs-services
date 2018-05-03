@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,6 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.IntegrationTest;
-import gov.usgs.cida.pubs.dao.typehandler.StringBooleanTypeHandler;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSeriesTest;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
@@ -125,7 +123,7 @@ public class PublicationSeriesDaoTest extends BaseSpringTest {
 		assertEquals(1, PublicationSeries.getDao().getObjectCount(filters).intValue());
 
 		filters.clear();
-		filters.put("active", "Y");
+		filters.put("active", true);
 		pubSeries = PublicationSeries.getDao().getByMap(filters);
 		assertEquals(activePubSeriesCnt, pubSeries.size());
 		assertEquals(activePubSeriesCnt, PublicationSeries.getDao().getObjectCount(filters).intValue());
@@ -190,37 +188,37 @@ public class PublicationSeriesDaoTest extends BaseSpringTest {
 		publicationSeries.setCode("ofr");
 		publicationSeries.setPrintIssn("2328-031x");
 		publicationSeries.setOnlineIssn("2329-132x");
-		Map<BigDecimal, Map<String, Object>> dups = PublicationSeries.getDao().uniqueCheck(publicationSeries);
+		Map<Integer, Map<String, Object>> dups = PublicationSeries.getDao().uniqueCheck(publicationSeries);
 		assertNotNull(dups);
 		assertEquals(4, dups.size());
-		assertTrue(dups.containsKey(BigDecimal.valueOf(133)));
-		assertTrue(dups.containsKey(BigDecimal.valueOf(330)));
-		assertTrue(dups.containsKey(BigDecimal.valueOf(333)));
-		assertTrue(dups.containsKey(BigDecimal.valueOf(334)));
-		Map<String, Object> dup133 = dups.get(BigDecimal.valueOf(133));
-		assertEquals(StringBooleanTypeHandler.TRUE, dup133.get(UniqueKeyValidatorForPublicationSeries.NAME_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup133.get(UniqueKeyValidatorForPublicationSeries.CODE_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup133.get(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup133.get(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup133.get(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH));
-		Map<String, Object> dup330 = dups.get(BigDecimal.valueOf(330));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup330.get(UniqueKeyValidatorForPublicationSeries.NAME_MATCH));
-		assertEquals(StringBooleanTypeHandler.TRUE, dup330.get(UniqueKeyValidatorForPublicationSeries.CODE_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup330.get(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup330.get(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup330.get(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH));
-		Map<String, Object> dup333 = dups.get(BigDecimal.valueOf(333));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup333.get(UniqueKeyValidatorForPublicationSeries.NAME_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup333.get(UniqueKeyValidatorForPublicationSeries.CODE_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup333.get(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup333.get(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH));
-		assertEquals(StringBooleanTypeHandler.TRUE, dup333.get(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH));
-		Map<String, Object> dup334 = dups.get(BigDecimal.valueOf(334));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup334.get(UniqueKeyValidatorForPublicationSeries.NAME_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup334.get(UniqueKeyValidatorForPublicationSeries.CODE_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup334.get(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH));
-		assertEquals(StringBooleanTypeHandler.TRUE, dup334.get(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup334.get(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH));
+		assertTrue(dups.containsKey(133));
+		assertTrue(dups.containsKey(330));
+		assertTrue(dups.containsKey(333));
+		assertTrue(dups.containsKey(334));
+		Map<String, Object> dup133 = dups.get(133);
+		assertTrue((Boolean)dup133.get(UniqueKeyValidatorForPublicationSeries.NAME_MATCH));
+		assertFalse((Boolean)dup133.get(UniqueKeyValidatorForPublicationSeries.CODE_MATCH));
+		assertFalse((Boolean)dup133.get(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH));
+		assertFalse((Boolean)dup133.get(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH));
+		assertFalse((Boolean)dup133.get(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH));
+		Map<String, Object> dup330 = dups.get(330);
+		assertFalse((Boolean)dup330.get(UniqueKeyValidatorForPublicationSeries.NAME_MATCH));
+		assertTrue((Boolean)dup330.get(UniqueKeyValidatorForPublicationSeries.CODE_MATCH));
+		assertFalse((Boolean)dup330.get(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH));
+		assertFalse((Boolean)dup330.get(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH));
+		assertFalse((Boolean)dup330.get(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH));
+		Map<String, Object> dup333 = dups.get(333);
+		assertFalse((Boolean)dup333.get(UniqueKeyValidatorForPublicationSeries.NAME_MATCH));
+		assertFalse((Boolean)dup333.get(UniqueKeyValidatorForPublicationSeries.CODE_MATCH));
+		assertFalse((Boolean)dup333.get(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH));
+		assertFalse((Boolean)dup333.get(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH));
+		assertTrue((Boolean)dup333.get(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH));
+		Map<String, Object> dup334 = dups.get(334);
+		assertFalse((Boolean)dup334.get(UniqueKeyValidatorForPublicationSeries.NAME_MATCH));
+		assertFalse((Boolean)dup334.get(UniqueKeyValidatorForPublicationSeries.CODE_MATCH));
+		assertFalse((Boolean)dup334.get(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH));
+		assertTrue((Boolean)dup334.get(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH));
+		assertFalse((Boolean)dup334.get(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH));
 	}
 
 	@Test
@@ -240,36 +238,36 @@ public class PublicationSeriesDaoTest extends BaseSpringTest {
 		publicationSeries.setCode("ofr");
 		publicationSeries.setPrintIssn("2328-031x");
 		publicationSeries.setOnlineIssn("2329-132x");
-		Map<BigDecimal, Map<String, Object>> dups = PublicationSeries.getDao().uniqueCheck(publicationSeries);
+		Map<Integer, Map<String, Object>> dups = PublicationSeries.getDao().uniqueCheck(publicationSeries);
 		assertNotNull(dups);
 		assertEquals(3, dups.size());
-		assertTrue(dups.containsKey(BigDecimal.valueOf(133)));
-		assertTrue(dups.containsKey(BigDecimal.valueOf(333)));
-		assertTrue(dups.containsKey(BigDecimal.valueOf(334)));
-		Map<String, Object> dup133 = dups.get(BigDecimal.valueOf(133));
-		assertEquals(StringBooleanTypeHandler.TRUE, dup133.get(UniqueKeyValidatorForPublicationSeries.NAME_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup133.get(UniqueKeyValidatorForPublicationSeries.CODE_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup133.get(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup133.get(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup133.get(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH));
-		Map<String, Object> dup333 = dups.get(BigDecimal.valueOf(333));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup333.get(UniqueKeyValidatorForPublicationSeries.NAME_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup333.get(UniqueKeyValidatorForPublicationSeries.CODE_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup333.get(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup333.get(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH));
-		assertEquals(StringBooleanTypeHandler.TRUE, dup333.get(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH));
-		Map<String, Object> dup334 = dups.get(BigDecimal.valueOf(334));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup334.get(UniqueKeyValidatorForPublicationSeries.NAME_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup334.get(UniqueKeyValidatorForPublicationSeries.CODE_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup334.get(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH));
-		assertEquals(StringBooleanTypeHandler.TRUE, dup334.get(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH));
-		assertEquals(StringBooleanTypeHandler.FALSE, dup334.get(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH));
+		assertTrue(dups.containsKey(133));
+		assertTrue(dups.containsKey(333));
+		assertTrue(dups.containsKey(334));
+		Map<String, Object> dup133 = dups.get(133);
+		assertTrue((Boolean)dup133.get(UniqueKeyValidatorForPublicationSeries.NAME_MATCH));
+		assertFalse((Boolean)dup133.get(UniqueKeyValidatorForPublicationSeries.CODE_MATCH));
+		assertFalse((Boolean)dup133.get(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH));
+		assertFalse((Boolean)dup133.get(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH));
+		assertFalse((Boolean)dup133.get(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH));
+		Map<String, Object> dup333 = dups.get(333);
+		assertFalse((Boolean)dup333.get(UniqueKeyValidatorForPublicationSeries.NAME_MATCH));
+		assertFalse((Boolean)dup333.get(UniqueKeyValidatorForPublicationSeries.CODE_MATCH));
+		assertFalse((Boolean)dup333.get(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH));
+		assertFalse((Boolean)dup333.get(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH));
+		assertTrue((Boolean)dup333.get(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH));
+		Map<String, Object> dup334 = dups.get(334);
+		assertFalse((Boolean)dup334.get(UniqueKeyValidatorForPublicationSeries.NAME_MATCH));
+		assertFalse((Boolean)dup334.get(UniqueKeyValidatorForPublicationSeries.CODE_MATCH));
+		assertFalse((Boolean)dup334.get(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH));
+		assertTrue((Boolean)dup334.get(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH));
+		assertFalse((Boolean)dup334.get(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH));
 	}
 
 	@Test
 	@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
 	public void uniqueCheckEmptyReturnTest() {
-		Map<BigDecimal, Map<String, Object>> dups = PublicationSeries.getDao().uniqueCheck(new PublicationSeries());
+		Map<Integer, Map<String, Object>> dups = PublicationSeries.getDao().uniqueCheck(new PublicationSeries());
 		assertNotNull(dups);
 		assertTrue(dups.isEmpty());
 	}

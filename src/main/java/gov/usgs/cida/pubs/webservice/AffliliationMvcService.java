@@ -111,16 +111,16 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 	public CostCenter updateCostCenter(@RequestBody CostCenter costCenter, @PathVariable String id, HttpServletResponse response) {
 		LOG.debug("updateCostCenter");
 		setHeaders(response);
-		
+
 		CostCenter result = costCenter;
 		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(id, costCenter);
-		
-		if (null != idNotMatched) {
+
+		if (null == idNotMatched) {
 			result = costCenterBusService.updateObject(costCenter);
 		} else {
 			result.addValidatorResult(idNotMatched);
 		}
-		
+
 		if (null != result && result.isValid()) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
@@ -128,7 +128,6 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		}
 		return result;
 	}
-
 
 	@GetMapping(value={"/outsideaffiliation"})
 	@JsonView(View.MP.class)

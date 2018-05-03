@@ -83,9 +83,7 @@ public class PwPublicationDaoTest extends BaseSpringTest {
 		PwPublicationTest.assertPwPub4(pubs.get(0));
 		PwPublicationTest.assertPwPub4Children(pubs.get(0));
 
-		String[] polygon = {"-122.3876953125","37.80869897600677","-122.3876953125","36.75979104322286","-123.55224609375","36.75979104322286",
-							"-123.55224609375","37.80869897600677","-122.3876953125","37.80869897600677"};
-		filters.put(PwPublicationDao.G, polygon);
+		filters.put(PwPublicationDao.G, SEARCH_POLYGON);
 		pubs = PwPublication.getDao().getByMap(filters);
 
 		//This only checks that the final query is syntactically correct, not that it is logically correct!

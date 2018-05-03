@@ -68,7 +68,7 @@ public class PwPublicationTest extends BaseSpringTest {
 		assertEquals("subseries title", pub.getSubseriesTitle());
 		assertEquals("chapter", pub.getChapter());
 		assertEquals("subchapter", pub.getSubchapterNumber());
-                assertEquals("display title", pub.getDisplayTitle());
+		assertEquals("display title", pub.getDisplayTitle());
 		assertEquals("title", pub.getTitle());
 		assertEquals("abstract", pub.getDocAbstract());
 		assertEquals("language", pub.getLanguage());
@@ -99,7 +99,7 @@ public class PwPublicationTest extends BaseSpringTest {
 		assertEquals("DANE", pub.getCounty());
 		assertEquals("MIDDLETON", pub.getCity());
 		assertEquals("On the moon", pub.getOtherGeospatial());
-		assertEquals("{ \"json\": \"extents\" }", pub.getGeographicExtents());
+		assertEquals(GEOGRAPHIC_EXTENTS, pub.getGeographicExtents());
 		assertEquals("contact for the pub4", pub.getContact());
 		assertEquals("edition4", pub.getEdition());
 		assertEquals("comments on this4", pub.getComments());

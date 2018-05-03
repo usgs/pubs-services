@@ -1,6 +1,5 @@
 package gov.usgs.cida.pubs.dao;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import gov.usgs.cida.pubs.aop.ISetDbContext;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 
@@ -37,7 +35,6 @@ public class PublicationSeriesDao extends BaseDao<PublicationSeries> {
 	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#getByMap(java.lang.Integer)
 	 */
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	@Override
 	public List<PublicationSeries> getByMap(Map<String, Object> filters) {
 		return getSqlSession().selectList(NS + GET_BY_MAP, filters);
@@ -48,7 +45,6 @@ public class PublicationSeriesDao extends BaseDao<PublicationSeries> {
 	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
 	 */
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	@Override
 	public PublicationSeries getById(Integer domainID) {
 		return (PublicationSeries) getSqlSession().selectOne(NS + GET_BY_ID, domainID);
@@ -59,7 +55,6 @@ public class PublicationSeriesDao extends BaseDao<PublicationSeries> {
 	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.String)
 	 */
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	@Override
 	public PublicationSeries getById(String domainID) {
 		return getById(PubsUtilities.parseInteger(domainID));
@@ -70,11 +65,9 @@ public class PublicationSeriesDao extends BaseDao<PublicationSeries> {
 	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#add(java.lang.Object)
 	 */
 	@Transactional
-	@ISetDbContext
 	@Override
 	public Integer add(PublicationSeries domainObject) {
-		getSqlSession().insert(NS + ADD, domainObject);
-		return domainObject.getId();
+		return insert(NS + ADD, domainObject);
 	}
 
 	/** {@inheritDoc}
@@ -82,7 +75,6 @@ public class PublicationSeriesDao extends BaseDao<PublicationSeries> {
 	 */
 	@Override
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	public Integer getObjectCount(Map<String, Object> filters) {
 		return getSqlSession().selectOne(NS + GET_COUNT, filters);
 	}
@@ -91,17 +83,15 @@ public class PublicationSeriesDao extends BaseDao<PublicationSeries> {
 	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#update(java.lang.Object)
 	 */
 	@Transactional
-	@ISetDbContext
 	@Override
 	public void update(PublicationSeries domainObject) {
-		getSqlSession().update(NS + UPDATE, domainObject);
+		update(NS + UPDATE, domainObject);
 	}
 
 	/** {@inheritDoc}
 	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#delete(java.lang.Object)
 	 */
 	@Transactional
-	@ISetDbContext
 	@Override
 	public void delete(PublicationSeries domainObject) {
 		deleteById(domainObject.getId());
@@ -111,7 +101,6 @@ public class PublicationSeriesDao extends BaseDao<PublicationSeries> {
 	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#deleteById(java.lang.Integer)
 	 */
 	@Transactional
-	@ISetDbContext
 	@Override
 	public void deleteById(Integer domainID) {
 		getSqlSession().delete(NS + DELETE, domainID);
@@ -122,16 +111,14 @@ public class PublicationSeriesDao extends BaseDao<PublicationSeries> {
 	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#deleteByParent(java.lang.Integer)
 	 */
 	@Transactional
-	@ISetDbContext
 	@Override
 	public void deleteByParent(Integer domainID) {
 		getSqlSession().delete(NS + DELETE_BY_PARENT, domainID);
 	}
 
 	@Transactional(readOnly = true)
-	@ISetDbContext
-	public Map<BigDecimal, Map<String, Object>> uniqueCheck(PublicationSeries domainObject) {
-		return getSqlSession().selectMap(NS + UNIQUE_CHECK, domainObject, "ID");
+	public Map<Integer, Map<String, Object>> uniqueCheck(PublicationSeries domainObject) {
+		return getSqlSession().selectMap(NS + UNIQUE_CHECK, domainObject, "id");
 	}
 
 }

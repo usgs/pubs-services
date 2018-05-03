@@ -43,7 +43,7 @@ public abstract class BaseValidatorTest extends BaseSpringTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		context = new ConstraintValidatorContextImpl(methodParameterNames, DefaultClockProvider.INSTANCE, propertyPath, constraintDescriptor);
+		context = new ConstraintValidatorContextImpl(methodParameterNames, DefaultClockProvider.INSTANCE, propertyPath, constraintDescriptor, null);
 	}
 
 	public void assertValidationResults(List<ValidatorResult> actual, String... expected) {

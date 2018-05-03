@@ -28,7 +28,7 @@ public class IpdsProcessLogDaoTest extends BaseSpringTest {
 	public void testAddGet() {
 		IpdsProcessLog log = new IpdsProcessLog();
 		log.setUri("inUri");
-		log.setIpdsNumber("ipdsNumber");
+		log.setIpdsNumber(656);
 		log.setMessage("<message/>");
 		IpdsProcessLog persisted = IpdsProcessLog.getDao().getById(IpdsProcessLog.getDao().add(log));
 		assertNotNull(persisted);

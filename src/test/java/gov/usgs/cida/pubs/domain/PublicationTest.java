@@ -230,7 +230,7 @@ public class PublicationTest extends BaseSpringTest {
 		newPub.setCounty("DANE");
 		newPub.setCity("MIDDLETON");
 		newPub.setOtherGeospatial("On the moon");
-		newPub.setGeographicExtents("{ \"json\": \"extents\" }");
+		newPub.setGeographicExtents(GEOGRAPHIC_EXTENTS);
 		newPub.setVolume("VOL12");
 		newPub.setIssue("ISIV");
 		newPub.setContact("My Contact Info");

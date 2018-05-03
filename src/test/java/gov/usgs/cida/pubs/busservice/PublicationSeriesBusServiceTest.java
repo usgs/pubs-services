@@ -8,7 +8,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -87,7 +86,7 @@ public class PublicationSeriesBusServiceTest extends BaseSpringTest {
 	@Test
 	public void createObjectTest() {
 		when(publicationSubtypeDao.getById(any(Integer.class))).thenReturn(new PublicationSubtype());
-		when(publicationSeriesDao.uniqueCheck(any(PublicationSeries.class))).thenReturn(new HashMap<BigDecimal, Map<String, Object>>());
+		when(publicationSeriesDao.uniqueCheck(any(PublicationSeries.class))).thenReturn(new HashMap<Integer, Map<String, Object>>());
 
 		when(publicationSeriesDao.add(any(PublicationSeries.class))).thenReturn(1);
 		when(publicationSeriesDao.getById(any(Integer.class))).thenReturn(pubSeries);
@@ -263,7 +262,7 @@ public class PublicationSeriesBusServiceTest extends BaseSpringTest {
 	@Test
 	public void updateObjectTest() {
 		when(publicationSubtypeDao.getById(any(Integer.class))).thenReturn(new PublicationSubtype());
-		when(publicationSeriesDao.uniqueCheck(any(PublicationSeries.class))).thenReturn(new HashMap<BigDecimal, Map<String, Object>>());
+		when(publicationSeriesDao.uniqueCheck(any(PublicationSeries.class))).thenReturn(new HashMap<Integer, Map<String, Object>>());
 
 		when(publicationSeriesDao.getById(any(Integer.class))).thenReturn(pubSeries);
 		pubSeries.setId(1);

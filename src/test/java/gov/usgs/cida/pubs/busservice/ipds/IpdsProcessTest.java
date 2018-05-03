@@ -18,7 +18,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +35,6 @@ import org.springframework.transaction.support.DefaultTransactionStatus;
 import org.xml.sax.SAXException;
 
 import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.PubMap;
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
@@ -583,10 +584,11 @@ public class IpdsProcessTest extends BaseSpringTest {
 	}
 
 	@Test
+	@SuppressWarnings("unchecked")
 	public void processIpdsPublicationTest() throws SAXException, IOException {
-		PubMap pm = new PubMap();
+		Map<String, Object> pm = new HashMap<>();
 		pm.put(IpdsMessageLog.IPNUMBER, "IP-123");
-		when(binder.bindPublication(any(PubMap.class), anyString())).thenReturn(existingMpPub9);
+		when(binder.bindPublication(any(Map.class), anyString())).thenReturn(existingMpPub9);
 		when(pubBusService.getObjects(anyMap())).thenThrow(new RuntimeException("test")).thenReturn(null);
 		when(pubBusService.createObject(existingMpPub9)).thenReturn(existingMpPub9);
 		when(requester.getNotes(null, TEST_IPDS_CONTEXT)).thenReturn("<xml></xml>");
@@ -614,9 +616,10 @@ public class IpdsProcessTest extends BaseSpringTest {
 	}
 
 	@Test
+	@SuppressWarnings("unchecked")
 	public void processLogTest() {
 		String expectedMsg = "Summary:\n\tTotal Entries: 2\n\tPublications Added: 0\n\tErrors Encountered: 2\n\nnull:\n\tERROR: Trouble processing pub: null - test\n\nnull:\n\tERROR: Trouble processing pub: null - test\n\n";
-		when(binder.bindPublication(any(PubMap.class), anyString())).thenThrow(new RuntimeException("test"));
+		when(binder.bindPublication(any(Map.class), anyString())).thenThrow(new RuntimeException("test"));
 		when(ipdsMessageLogDao.getFromIpds(1)).thenReturn(getPubMapList());
 		assertEquals(expectedMsg, ipdsProcess.processLog(ProcessType.DISSEMINATION, 1, TEST_IPDS_CONTEXT));
 
@@ -624,10 +627,10 @@ public class IpdsProcessTest extends BaseSpringTest {
 		assertEquals(expectedMsg, ipdsProcess.processLog(ProcessType.DISSEMINATION, 1, TEST_IPDS_CONTEXT));
 	}
 
-	protected List<PubMap> getPubMapList() {
-		List<PubMap> rtn = new ArrayList<>();
-		rtn.add(new PubMap());
-		rtn.add(new PubMap());
+	protected List<Map<String, Object>> getPubMapList() {
+		List<Map<String, Object>> rtn = new ArrayList<>();
+		rtn.add(new HashMap<>());
+		rtn.add(new HashMap<>());
 		return rtn;
 	}
 

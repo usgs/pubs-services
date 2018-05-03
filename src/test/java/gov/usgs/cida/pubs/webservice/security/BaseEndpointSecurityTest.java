@@ -42,7 +42,8 @@ import org.springframework.web.accept.ContentNegotiationStrategy;
 public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 
 	private static final String CONTENT_ID_1_JSON = "{\"id\":\"1\"}";
-	
+	private static final String CONTRIBUTOR_ID_1_JSON = "{\"contributorId\":\"1\"}";
+
 	@Autowired
 	protected FilterChainProxy springSecurityFilter;
 	@Autowired
@@ -61,14 +62,14 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 	protected IBusService<Publication<?>> busSvcForPub;
 	private MpPublicationMvcService mpPubMvc;
 	private MockMvc mockMpPub;
-	
+
 	@Mock
 	protected IPwPublicationBusService pwPubBusService;
 	private PwPublicationMvcService pwPubMvc;
 	private MockMvc mockPwPub;
 	private PwPublicationRssMvcService pwPubRssMvc;
 	private MockMvc mockPwPubRss;
-	
+
 	@Mock
 	protected IBusService<CorporateContributor> corpBusService;
 	@Mock
@@ -89,10 +90,10 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 	private MockMvc mockVersion;
 
 	private MockMvc mockLookup;
-	
+
 	@Autowired
 	private TransformerFactory transformerFactory;
-	
+
 	@Autowired
 	private ContentNegotiationStrategy contentStrategy;
 	public void preSetup() {
@@ -110,7 +111,7 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 		mockPwPub = MockMvcBuilders.standaloneSetup(pwPubMvc).addFilters(springSecurityFilter).build();
 		pwPubRssMvc = new PwPublicationRssMvcService(pwPubBusService, warehouseEndpoint);
 		mockPwPubRss = MockMvcBuilders.standaloneSetup(pwPubRssMvc).addFilters(springSecurityFilter).build();
-		
+
 		contribMvc = new ContributorMvcService(corpBusService, personBusService);
 		mockContrib = MockMvcBuilders.standaloneSetup(contribMvc).addFilters(springSecurityFilter).build();
 
@@ -129,48 +130,48 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 		//Lookups
 		mockLookup.perform(get("/lookup/publicationtypes?text=b").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		mockLookup.perform(get("/lookup/publicationtype/4/publicationsubtypes?text=b").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		mockLookup.perform(get("/lookup/publicationsubtypes?text=b&publicationtypeid=4").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		mockLookup.perform(get("/lookup/publicationtype/"
 			+ PublicationType.REPORT + "/publicationsubtype/1/publicationseries?text=a").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		mockLookup.perform(get("/lookup/publicationseries?text=a&publicationsubtypeid=1").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		mockLookup.perform(get("/lookup/costcenters?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		mockLookup.perform(get("/lookup/outsideaffiliates?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		mockLookup.perform(get("/lookup/contributortypes?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		mockLookup.perform(get("/lookup/linktypes?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		mockLookup.perform(get("/lookup/linkfiletypes?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		mockLookup.perform(get("/lookup/people?mimetype=json&text=out").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		mockLookup.perform(get("/lookup/corporations?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		mockLookup.perform(get("/lookup/publishingServiceCenters?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		//Version
 		mockVersion.perform(get("/version?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		//Auth
 		mockAuth.perform(options("/auth/token").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
@@ -181,16 +182,16 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 		//Publication
 		mockPwPub.perform(get("/publication?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		mockPwPub.perform(get("/publication/1?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		mockPwPubRss.perform(get("/publication/rss?orderby=dispPubDate").secure(true).headers(httpHeaders).accept(PubsConstants.MEDIA_TYPE_RSS))
 			.andExpect(expectedStatus);
 	}
-	
+
 	public void authenticatedTest(HttpHeaders httpHeaders, ResultMatcher expectedStatus) throws Exception {
-		
+
 		//Auth
 		mockAuth.perform(post("/auth/logout").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
@@ -201,18 +202,19 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 		//Contributor
 		mockContrib.perform(get("/corporation/-1").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		//These two endpoints are hard to mock, so we'll fudge it for now...
+		// (hard to mock the PersonBusService - is it a PersonContributor<UsgsContributor> or PersonContributor<OutsideContributor>)
 		if (fudge) {
 			mockContrib.perform(get("/contributor/-1").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
-	
+
 			mockContrib.perform(get("/person/-1").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
 		} else {
 			mockContrib.perform(get("/contributor/-1").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 				.andExpect(expectedStatus);
-	
+
 			mockContrib.perform(get("/person/-1").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 				.andExpect(expectedStatus);
 		}
@@ -220,44 +222,45 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 		//MpList
 		mockList.perform(get("/lists?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		//MpListPublication
 		mockListPub.perform(delete("/lists/66/pubs/12")
 			.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		//MpPublication
 		mockMpPub.perform(delete("/mppublications/1").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		mockMpPub.perform(get("/mppublications/1?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		mockMpPub.perform(get("/mppublications?mimetype=json").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		//These two are posts, but they return the same codes as a get when successful...
 		mockMpPub.perform(post("/mppublications/publish").content("{\"id\":1}").contentType(MediaType.APPLICATION_JSON)
 			.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-				
+
 		mockMpPub.perform(post("/mppublications/release").content("{}").contentType(MediaType.APPLICATION_JSON)
 			.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
 	}
-	
+
 	public void pubsAuthorizedTestPosts(HttpHeaders httpHeaders, ResultMatcher expectedStatus, boolean fudge) throws Exception {
 		//Contributor
 		mockContrib.perform(post("/corporation").content("{}").contentType(MediaType.APPLICATION_JSON)
 			.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		//These two endpoints are hard to mock, so we'll fudge it for now...
+		// (hard to mock the PersonBusService - is it a PersonContributor<UsgsContributor> or PersonContributor<OutsideContributor>)
 		if (fudge) {
 			mockContrib.perform(post("/outsidecontributor").content("{}").contentType(MediaType.APPLICATION_JSON)
 				.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
-					
+
 			mockContrib.perform(post("/usgscontributor").content("{}").contentType(MediaType.APPLICATION_JSON)
 				.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
@@ -265,7 +268,7 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 			mockContrib.perform(post("/outsidecontributor").content("{}").contentType(MediaType.APPLICATION_JSON)
 				.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 				.andExpect(expectedStatus);
-						
+
 			mockContrib.perform(post("/usgscontributor").content("{}").contentType(MediaType.APPLICATION_JSON)
 				.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 				.andExpect(expectedStatus);
@@ -275,7 +278,7 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 		mockListPub.perform(post("/lists/66/pubs?publicationId=12")
 			.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
-		
+
 		//MpPublication
 		mockMpPub.perform(post("/mppublications").content("{}").contentType(MediaType.APPLICATION_JSON)
 			.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
@@ -284,25 +287,26 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 	
 	public void pubsAuthorizedTestPuts(HttpHeaders httpHeaders, ResultMatcher expectedStatus, boolean fudge) throws Exception {
 		//Contributor
-		mockContrib.perform(put("/corporation/1").content(CONTENT_ID_1_JSON).contentType(MediaType.APPLICATION_JSON)
+		mockContrib.perform(put("/corporation/1").content(CONTRIBUTOR_ID_1_JSON).contentType(MediaType.APPLICATION_JSON)
 			.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
 
 		//These two endpoints are hard to mock, so we'll fudge it for now...
+		// (hard to mock the PersonBusService - is it a PersonContributor<UsgsContributor> or PersonContributor<OutsideContributor>)
 		if (fudge) {
 			mockContrib.perform(put("/outsidecontributor/1").content(CONTENT_ID_1_JSON).contentType(MediaType.APPLICATION_JSON)
 				.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
-	
+
 			mockContrib.perform(put("/usgscontributor/1").content(CONTENT_ID_1_JSON).contentType(MediaType.APPLICATION_JSON)
 				.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
 		} else {
-			mockContrib.perform(put("/outsidecontributor/1").content(CONTENT_ID_1_JSON).contentType(MediaType.APPLICATION_JSON)
+			mockContrib.perform(put("/outsidecontributor/1").content(CONTRIBUTOR_ID_1_JSON).contentType(MediaType.APPLICATION_JSON)
 				.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 				.andExpect(expectedStatus);
-		
-			mockContrib.perform(put("/usgscontributor/1").content(CONTENT_ID_1_JSON).contentType(MediaType.APPLICATION_JSON)
+
+			mockContrib.perform(put("/usgscontributor/1").content(CONTRIBUTOR_ID_1_JSON).contentType(MediaType.APPLICATION_JSON)
 				.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 				.andExpect(expectedStatus);
 		}
@@ -312,10 +316,10 @@ public abstract class BaseEndpointSecurityTest extends BaseSpringTest {
 			.secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
 			.andExpect(expectedStatus);
 	}
-	
+
 	public void adAuthenticatedOrPubsAuthorizedTest(HttpHeaders httpHeaders, ResultMatcher expectedStatus) throws Exception {
 		mockMpPub.perform(get("/mppublications/1/preview").secure(true).headers(httpHeaders).accept(MediaType.APPLICATION_JSON))
-		   	.andExpect(expectedStatus);
+			.andExpect(expectedStatus);
 	}
 
 }

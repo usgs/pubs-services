@@ -51,7 +51,7 @@ public class OutsideAffiliationDaoTest extends BaseSpringTest {
 		assertEquals(OUTSIDE_AFFILIATES_CNT, outsideAffiliations.size());
 
 		Map<String, Object> filters = new HashMap<>();
-		filters.put(OutsideAffiliationDao.ID_SEARCH, "5");
+		filters.put(OutsideAffiliationDao.ID_SEARCH, 5);
 		outsideAffiliations = OutsideAffiliation.getDao().getByMap(filters);
 		assertEquals(1, outsideAffiliations.size());
 		AffiliationDaoTest.assertAffiliation5(outsideAffiliations.get(0));
@@ -81,7 +81,7 @@ public class OutsideAffiliationDaoTest extends BaseSpringTest {
 		outsideAffiliations = OutsideAffiliation.getDao().getByMap(filters);
 		assertEquals(3, outsideAffiliations.size());
 
-		filters.put(OutsideAffiliationDao.ID_SEARCH, "5");
+		filters.put(OutsideAffiliationDao.ID_SEARCH, 5);
 		filters.put(OutsideAffiliationDao.TEXT_SEARCH, "out");
 		filters.put(OutsideAffiliationDao.ACTIVE_SEARCH, true);
 		outsideAffiliations = OutsideAffiliation.getDao().getByMap(filters);

@@ -1,8 +1,18 @@
 package gov.usgs.cida.pubs.springinit;
 
-import gov.usgs.cida.pubs.PubMap;
-import gov.usgs.cida.pubs.dao.typehandler.PubMapTypeHandler;
-import gov.usgs.cida.pubs.dao.typehandler.StringBooleanTypeHandler;
+import javax.sql.DataSource;
+
+import org.apache.ibatis.type.EnumOrdinalTypeHandler;
+import org.apache.ibatis.type.TypeAliasRegistry;
+import org.apache.ibatis.type.TypeHandlerRegistry;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.domain.Contributor;
@@ -19,7 +29,6 @@ import gov.usgs.cida.pubs.domain.Predicate;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
-import gov.usgs.cida.pubs.domain.PublicationIndex;
 import gov.usgs.cida.pubs.domain.PublicationInteraction;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
@@ -41,19 +50,6 @@ import gov.usgs.cida.pubs.domain.pw.PwPublicationContributor;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationCostCenter;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationLink;
 import gov.usgs.cida.pubs.domain.pw.PwStore;
-
-import javax.sql.DataSource;
-
-import org.apache.ibatis.type.EnumOrdinalTypeHandler;
-import org.apache.ibatis.type.TypeAliasRegistry;
-import org.apache.ibatis.type.TypeHandlerRegistry;
-import org.mybatis.spring.SqlSessionFactoryBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.transaction.PlatformTransactionManager;
 
 public class MybatisConfig {
 
@@ -95,7 +91,6 @@ public class MybatisConfig {
 	private void registerAliases(TypeAliasRegistry registry) {
 		registry.registerAlias("baseDomain", BaseDomain.class);
 		registry.registerAlias("crossRefLog", CrossRefLog.class);
-		registry.registerAlias("pubMap", PubMap.class);
 
 		registry.registerAlias("mpList", MpList.class);
 		registry.registerAlias("mpListPublication", MpListPublication.class);
@@ -123,7 +118,6 @@ public class MybatisConfig {
 		registry.registerAlias("publication", Publication.class);
 		registry.registerAlias("publicationContributor", PublicationContributor.class);
 		registry.registerAlias("publicationCostCenter", PublicationCostCenter.class);
-		registry.registerAlias("publicationIndex", PublicationIndex.class);
 		registry.registerAlias("publicationInteraction", PublicationInteraction.class);
 		registry.registerAlias("publicationLink", PublicationLink.class);
 		registry.registerAlias("publicationSeries", PublicationSeries.class);
@@ -138,8 +132,6 @@ public class MybatisConfig {
 	}
 
 	private void registerTypeHandlers(TypeHandlerRegistry registry) {
-		registry.register(Boolean.class, StringBooleanTypeHandler.class);
-		registry.register(PubMap.class, PubMapTypeHandler.class);
 		registry.register(Predicate.class, EnumOrdinalTypeHandler.class);
 	}
 }

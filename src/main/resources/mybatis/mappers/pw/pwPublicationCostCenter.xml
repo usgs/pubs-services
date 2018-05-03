@@ -30,13 +30,9 @@
 
     <sql id="baseSelect">
         select <include refid="cols"/>
-          from (select publication_cost_center_id,
-                       publication_id,
-                       publication_cost_center.cost_center_id,
-                       name
-                  from publication_cost_center
-                       join affiliation
-                         on publication_cost_center.cost_center_id = affiliation.affiliation_id)
+          from publication_cost_center
+               join affiliation
+                 on publication_cost_center.cost_center_id = affiliation.affiliation_id
     </sql>
 
     <select id="getById" parameterType="Integer" resultMap="result">

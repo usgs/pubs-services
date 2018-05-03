@@ -57,13 +57,13 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 		assertEquals(11, contributors.size());
 
 		Map<String, Object> filters = new HashMap<>();
-		filters.put(PersonContributorDao.ID_SEARCH, "1");
+		filters.put(PersonContributorDao.ID_SEARCH, 1);
 		contributors = PersonContributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(1, contributors.get(0).getId().intValue());
 
 		filters.clear();
-		filters.put(PersonContributorDao.TEXT_SEARCH, "con%");
+		filters.put(PersonContributorDao.TEXT_SEARCH, "con:*");
 		contributors = PersonContributor.getDao().getByMap(filters);
 		assertEquals(10, contributors.size());
 		for (Contributor<?> contributor : contributors) {
@@ -109,7 +109,7 @@ public class PersonContributorDaoTest extends BaseSpringTest {
 		filters.put(PersonContributorDao.GIVEN, "out");
 		contributors = PersonContributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
-		filters.put(PersonContributorDao.TEXT_SEARCH, "out%");
+		filters.put(PersonContributorDao.TEXT_SEARCH, "oute:*");
 		contributors = PersonContributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		filters.put(PersonContributorDao.ID_SEARCH, 3);

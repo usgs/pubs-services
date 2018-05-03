@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +15,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
-import gov.usgs.cida.pubs.dao.typehandler.StringBooleanTypeHandler;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
@@ -58,7 +56,7 @@ public class UniqueKeyValidatorForPublicationSeriesTest extends BaseValidatorTes
 
 	@Test
 	public void isValidTrueTest() {
-		when(publicationSeriesDao.uniqueCheck(any(PublicationSeries.class))).thenReturn(new HashMap<BigDecimal, Map<String, Object>>());
+		when(publicationSeriesDao.uniqueCheck(any(PublicationSeries.class))).thenReturn(new HashMap<Integer, Map<String, Object>>());
 		assertTrue(validator.isValid(series, context));
 	}
 
@@ -98,81 +96,81 @@ public class UniqueKeyValidatorForPublicationSeriesTest extends BaseValidatorTes
 		assertFalse(validator.isValid(series, context));
 	}
 
-	public static Map<BigDecimal, Map<String, Object>> allDup() {
-		Map<BigDecimal, Map<String, Object>> rtn = new HashMap<>();
+	public static Map<Integer, Map<String, Object>> allDup() {
+		Map<Integer, Map<String, Object>> rtn = new HashMap<>();
 		Map<String, Object> entry = new HashMap<>();
-		entry.put(UniqueKeyValidatorForPublicationSeries.ID, BigDecimal.ONE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.NAME_MATCH, StringBooleanTypeHandler.TRUE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.CODE_MATCH, StringBooleanTypeHandler.TRUE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH, StringBooleanTypeHandler.TRUE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH, StringBooleanTypeHandler.TRUE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH, StringBooleanTypeHandler.TRUE);
-		rtn.put(BigDecimal.ONE, entry);
+		entry.put(UniqueKeyValidatorForPublicationSeries.ID, 1);
+		entry.put(UniqueKeyValidatorForPublicationSeries.NAME_MATCH, true);
+		entry.put(UniqueKeyValidatorForPublicationSeries.CODE_MATCH, true);
+		entry.put(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH, true);
+		entry.put(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH, true);
+		entry.put(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH, true);
+		rtn.put(1, entry);
 		return rtn;
 	}
 
-	public static Map<BigDecimal, Map<String, Object>> nameDup() {
-		Map<BigDecimal, Map<String, Object>> rtn = new HashMap<>();
+	public static Map<Integer, Map<String, Object>> nameDup() {
+		Map<Integer, Map<String, Object>> rtn = new HashMap<>();
 		Map<String, Object> entry = new HashMap<>();
-		entry.put(UniqueKeyValidatorForPublicationSeries.ID, BigDecimal.ONE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.NAME_MATCH, StringBooleanTypeHandler.TRUE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.CODE_MATCH, StringBooleanTypeHandler.FALSE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH, StringBooleanTypeHandler.FALSE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH, StringBooleanTypeHandler.FALSE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH, StringBooleanTypeHandler.FALSE);
-		rtn.put(BigDecimal.ONE, entry);
+		entry.put(UniqueKeyValidatorForPublicationSeries.ID, 1);
+		entry.put(UniqueKeyValidatorForPublicationSeries.NAME_MATCH, true);
+		entry.put(UniqueKeyValidatorForPublicationSeries.CODE_MATCH, false);
+		entry.put(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH, false);
+		entry.put(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH, false);
+		entry.put(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH, false);
+		rtn.put(1, entry);
 		return rtn;
 	}
 
-	public static Map<BigDecimal, Map<String, Object>> codeDup() {
-		Map<BigDecimal, Map<String, Object>> rtn = new HashMap<>();
+	public static Map<Integer, Map<String, Object>> codeDup() {
+		Map<Integer, Map<String, Object>> rtn = new HashMap<>();
 		Map<String, Object> entry = new HashMap<>();
-		entry.put(UniqueKeyValidatorForPublicationSeries.ID, BigDecimal.ONE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.NAME_MATCH, StringBooleanTypeHandler.FALSE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.CODE_MATCH, StringBooleanTypeHandler.TRUE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH, StringBooleanTypeHandler.FALSE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH, StringBooleanTypeHandler.FALSE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH, StringBooleanTypeHandler.FALSE);
-		rtn.put(BigDecimal.ONE, entry);
+		entry.put(UniqueKeyValidatorForPublicationSeries.ID, 1);
+		entry.put(UniqueKeyValidatorForPublicationSeries.NAME_MATCH, false);
+		entry.put(UniqueKeyValidatorForPublicationSeries.CODE_MATCH, true);
+		entry.put(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH, false);
+		entry.put(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH, false);
+		entry.put(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH, false);
+		rtn.put(1, entry);
 		return rtn;
 	}
 
-	public static Map<BigDecimal, Map<String, Object>> doiDup() {
-		Map<BigDecimal, Map<String, Object>> rtn = new HashMap<>();
+	public static Map<Integer, Map<String, Object>> doiDup() {
+		Map<Integer, Map<String, Object>> rtn = new HashMap<>();
 		Map<String, Object> entry = new HashMap<>();
-		entry.put(UniqueKeyValidatorForPublicationSeries.ID, BigDecimal.ONE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.NAME_MATCH, StringBooleanTypeHandler.TRUE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.CODE_MATCH, StringBooleanTypeHandler.FALSE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH, StringBooleanTypeHandler.TRUE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH, StringBooleanTypeHandler.FALSE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH, StringBooleanTypeHandler.FALSE);
-		rtn.put(BigDecimal.ONE, entry);
+		entry.put(UniqueKeyValidatorForPublicationSeries.ID, 1);
+		entry.put(UniqueKeyValidatorForPublicationSeries.NAME_MATCH, true);
+		entry.put(UniqueKeyValidatorForPublicationSeries.CODE_MATCH, false);
+		entry.put(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH, true);
+		entry.put(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH, false);
+		entry.put(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH, false);
+		rtn.put(1, entry);
 		return rtn;
 	}
 
-	public static Map<BigDecimal, Map<String, Object>> printIssnDup() {
-		Map<BigDecimal, Map<String, Object>> rtn = new HashMap<>();
+	public static Map<Integer, Map<String, Object>> printIssnDup() {
+		Map<Integer, Map<String, Object>> rtn = new HashMap<>();
 		Map<String, Object> entry = new HashMap<>();
-		entry.put(UniqueKeyValidatorForPublicationSeries.ID, BigDecimal.ONE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.NAME_MATCH, StringBooleanTypeHandler.FALSE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.CODE_MATCH, StringBooleanTypeHandler.FALSE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH, StringBooleanTypeHandler.FALSE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH, StringBooleanTypeHandler.TRUE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH, StringBooleanTypeHandler.FALSE);
-		rtn.put(BigDecimal.ONE, entry);
+		entry.put(UniqueKeyValidatorForPublicationSeries.ID, 1);
+		entry.put(UniqueKeyValidatorForPublicationSeries.NAME_MATCH, false);
+		entry.put(UniqueKeyValidatorForPublicationSeries.CODE_MATCH, false);
+		entry.put(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH, false);
+		entry.put(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH, true);
+		entry.put(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH, false);
+		rtn.put(1, entry);
 		return rtn;
 	}
 
-	public static Map<BigDecimal, Map<String, Object>> onlineIssnDup() {
-		Map<BigDecimal, Map<String, Object>> rtn = new HashMap<>();
+	public static Map<Integer, Map<String, Object>> onlineIssnDup() {
+		Map<Integer, Map<String, Object>> rtn = new HashMap<>();
 		Map<String, Object> entry = new HashMap<>();
-		entry.put(UniqueKeyValidatorForPublicationSeries.ID, BigDecimal.ONE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.NAME_MATCH, StringBooleanTypeHandler.FALSE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.CODE_MATCH, StringBooleanTypeHandler.FALSE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH, StringBooleanTypeHandler.FALSE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH, StringBooleanTypeHandler.FALSE);
-		entry.put(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH, StringBooleanTypeHandler.TRUE);
-		rtn.put(BigDecimal.ONE, entry);
+		entry.put(UniqueKeyValidatorForPublicationSeries.ID, 1);
+		entry.put(UniqueKeyValidatorForPublicationSeries.NAME_MATCH, false);
+		entry.put(UniqueKeyValidatorForPublicationSeries.CODE_MATCH, false);
+		entry.put(UniqueKeyValidatorForPublicationSeries.DOI_NAME_MATCH, false);
+		entry.put(UniqueKeyValidatorForPublicationSeries.PRINT_ISSN_MATCH, false);
+		entry.put(UniqueKeyValidatorForPublicationSeries.ONLINE_ISSN_MATCH, true);
+		rtn.put(1, entry);
 		return rtn;
 	}
 

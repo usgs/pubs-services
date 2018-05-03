@@ -8,7 +8,7 @@
 
     <insert id="add" parameterType="MpPublicationContributor">
         <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
-            select publication_contributor_seq.nextval id from dual
+            select nextval('publication_contributor_seq')
         </selectKey>
         insert into mp_pub_contributor (<include refid="publicationContributor.cols"/>)
              values (<include refid="publicationContributor.hosts"/>)
@@ -48,19 +48,19 @@
            where publication_contributor_id = #{id,jdbcType=NUMERIC}
     </update>
 
-	<insert id="publish" parameterType="Integer">
-		insert into publication_contributor (<include refid="publicationContributor.cols"/>) 
-		select publication_contributor_id, 	publication_id, 	contributor_id,
-			   contributor_type_id,			rank,
-			   insert_date, 				insert_username, 	sysdate, 			audit_trail_util.get_username
-		  from mp_pub_contributor
+    <insert id="publish">
+        insert into publication_contributor (<include refid="publicationContributor.cols"/>) 
+        select publication_contributor_id,     publication_id,      contributor_id,
+               contributor_type_id,            rank,
+               insert_date,                    insert_username,     now() at time zone 'UTC',             #{updateUsername,jdbcType=VARCHAR}
+          from mp_pub_contributor
+         where publication_id = #{publicationId,jdbcType=NUMERIC}
+    </insert>
+    
+    <delete id="publishDelete" parameterType="Integer">
+        delete from publication_contributor
          where publication_id = #{value,jdbcType=NUMERIC}
-	</insert>
-	
-	<delete id="publishDelete" parameterType="Integer">
-		delete from publication_contributor
-		 where publication_id = #{value,jdbcType=NUMERIC}
-	</delete>
+    </delete>
 
     <delete id="delete" parameterType="Integer">
         delete from mp_pub_contributor

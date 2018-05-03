@@ -8,6 +8,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -44,6 +45,14 @@ public class IpdsParserService {
 					rtn = null;
 				}
 			}
+		}
+		return rtn;
+	}
+
+	protected Integer getFirstNodeInteger(final Element element, final String tagName) {
+		Integer rtn = NumberUtils.toInt(getFirstNodeText(element, tagName));
+		if (rtn < 1) {
+			rtn = null;
 		}
 		return rtn;
 	}

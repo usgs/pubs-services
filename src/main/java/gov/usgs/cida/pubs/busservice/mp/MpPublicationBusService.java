@@ -1,5 +1,21 @@
 package gov.usgs.cida.pubs.busservice.mp;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+import javax.validation.groups.Default;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
@@ -9,7 +25,6 @@ import gov.usgs.cida.pubs.dao.mp.MpPublicationLinkDao;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
-import gov.usgs.cida.pubs.domain.PublicationIndex;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.mp.MpList;
@@ -24,22 +39,6 @@ import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
 import gov.usgs.cida.pubs.validation.constraint.PublishChecks;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
-import javax.validation.groups.Default;
-
-import org.apache.commons.lang3.StringUtils;
-import java.time.LocalDateTime;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MpPublicationBusService extends MpBusService<MpPublication> implements IMpPublicationBusService {
@@ -233,7 +232,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 
 	protected MpPublication publicationPostProcessing(final MpPublication inPublication) {
 		MpPublication outPublication = null;
-		if (null != inPublication) {
+		if (null != inPublication && null != inPublication.getId()) {
 
 			setList(inPublication);
 			contributorBusService.merge(inPublication.getId(), inPublication.getContributors());
@@ -269,7 +268,6 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 						crossRefBusService.submitCrossRef(mpPub);
 					}
 					deleteObject(publicationId);
-					PublicationIndex.getDao().publish(publicationId);
 					if (PubsUtilities.isSpnUser()) {
 						//Pubs published by this role should be put back in MyPubs and in the USGS Series list
 						beginPublicationEdit(publicationId);
@@ -312,7 +310,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 
 	protected void setList(MpPublication inPublication) {
 		if (null != inPublication && null == PwPublication.getDao().getById(inPublication.getId()) ) {
-			String listId = MpList.IPDS_OTHER_PUBS;
+			int listId = MpList.IPDS_OTHER_PUBS;
 			if (PubsUtilities.isPublicationTypeArticle(inPublication.getPublicationType())) {
 				listId = MpList.IPDS_JOURNAL_ARTICLES;
 			} else if (PubsUtilities.isSpnProduction(inPublication.getIpdsReviewProcessState())) {
@@ -329,8 +327,8 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 		}
 	}
 
-	protected void setList(MpPublication inPublication, String listId) {
-		if (null != inPublication && null != inPublication.getId() && null != listId) {
+	protected void setList(MpPublication inPublication, int listId) {
+		if (null != inPublication && null != inPublication.getId()) {
 			MpListPublication newListEntry = new MpListPublication();
 			newListEntry.setMpPublication(inPublication);
 			newListEntry.setMpList(MpList.getDao().getById(listId));

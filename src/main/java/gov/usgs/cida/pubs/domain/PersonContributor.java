@@ -60,7 +60,7 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 
 	@JsonProperty("preferred")
 	@JsonView({View.PW.class, View.Lookup.class})
-	private Boolean preferred;
+	protected Boolean preferred;
 
 	public String getFamily() {
 		return family;

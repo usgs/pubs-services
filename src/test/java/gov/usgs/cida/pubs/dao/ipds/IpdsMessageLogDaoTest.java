@@ -4,15 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.IntegrationTest;
-import gov.usgs.cida.pubs.PubMap;
-import gov.usgs.cida.pubs.domain.ProcessType;
-import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -21,6 +17,11 @@ import org.junit.experimental.categories.Category;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
+
+import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.IntegrationTest;
+import gov.usgs.cida.pubs.domain.ProcessType;
+import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
 
 @Category(IntegrationTest.class)
 @DatabaseSetups({
@@ -67,7 +68,7 @@ public class IpdsMessageLogDaoTest extends BaseSpringTest {
 		IpdsMessageLog ipdsMessageLogSeries = new IpdsMessageLog();
 		String ipdsMessage = feedXml;
 		ipdsMessageLogSeries.setMessageText(ipdsMessage);
-		List<PubMap> pubMaps = IpdsMessageLog.getDao().getFromIpds(IpdsMessageLog.getDao().add(ipdsMessageLogSeries));
+		List<Map<String, Object>> pubMaps = IpdsMessageLog.getDao().getFromIpds(IpdsMessageLog.getDao().add(ipdsMessageLogSeries));
 		assertNotNull(pubMaps);
 		assertEquals(37, pubMaps.size());
 		assertEquals(IpdsMessageLog.IPDS_LOG_PROPERTIES.size(), pubMaps.get(0).keySet().size());
@@ -75,16 +76,16 @@ public class IpdsMessageLogDaoTest extends BaseSpringTest {
 			assertTrue(pubMaps.get(0).containsKey(property));
 		}
 
-		for (PubMap pub : pubMaps) {
+		for (Map<String, Object> pub : pubMaps) {
 			if (pub.get(IpdsMessageLog.IPDS_INTERNAL_ID).toString().contentEquals("81817")) {
 				assertEquals("My Abstract", pub.get(IpdsMessageLog.ABSTRACT));
 				assertEquals("Eddy-Miller, C.A., Bartos, T.T., and Taylor, M.L., 2013, Pesticides in Wyoming Groundwater, 2008–10: U.S. Geological Survey Scientific Investigations Report 2013–5064, 45 p.", pub.get(IpdsMessageLog.CITATION));
-				assertEquals(BigDecimal.valueOf(52), pub.get(IpdsMessageLog.COSTCENTER));
+				assertEquals(52, pub.get(IpdsMessageLog.COSTCENTER));
 				assertEquals("Wyoming Department of Agriculture", pub.get(IpdsMessageLog.COOPERATORS));
 				assertEquals("XXX", pub.get(IpdsMessageLog.DIGITALOBJECTIDENTIFIER));
 				assertEquals("12", pub.get(IpdsMessageLog.EDITIONNUMBER));
 				assertEquals("Pesticides in Wyoming Groundwater, 2008–10", pub.get(IpdsMessageLog.FINALTITLE));
-				assertEquals(BigDecimal.valueOf(81817), pub.get(IpdsMessageLog.IPDS_INTERNAL_ID));
+				assertEquals(81817, pub.get(IpdsMessageLog.IPDS_INTERNAL_ID));
 				assertEquals("IP-035570", pub.get(IpdsMessageLog.IPNUMBER));
 				assertEquals("c", pub.get(IpdsMessageLog.ISSUE));
 				assertEquals("Larger Work Title", pub.get(IpdsMessageLog.JOURNALTITLE));
@@ -94,7 +95,7 @@ public class IpdsMessageLogDaoTest extends BaseSpringTest {
 				assertEquals("A synthesis of pesticides in groundwater data collected from 1995 through 2010 in Wyoming, examining changes in use and trends in concentrations", pub.get(IpdsMessageLog.PRODUCTSUMMARY));
 				assertEquals("USGS series", pub.get(IpdsMessageLog.PRODUCTTYPEVALUE));
 				assertEquals("http://pubs.usgs.gov/sir/2013/5064/, http://pubs.usgs.gov/sir/2013/5064/", pub.get(IpdsMessageLog.PUBLISHEDURL));
-				assertEquals(BigDecimal.valueOf(4), pub.get(IpdsMessageLog.PUBLISHINGSERVICECENTER));
+				assertEquals(4, pub.get(IpdsMessageLog.PUBLISHINGSERVICECENTER));
 				assertEquals("Dissemination", pub.get(IpdsMessageLog.TASK));
 				assertEquals("q", pub.get(IpdsMessageLog.USGSSERIESLETTER));
 				assertEquals("2013-5064", pub.get(IpdsMessageLog.USGSSERIESNUMBER));
@@ -105,8 +106,8 @@ public class IpdsMessageLogDaoTest extends BaseSpringTest {
 		}
 	}
 
-	public static PubMap createPubMap1() {
-		PubMap pubMap = new PubMap();
+	public static Map<String, Object> createPubMap1() {
+		Map<String, Object> pubMap = new HashMap<>();
 		pubMap.put(IpdsMessageLog.PRODUCTTYPEVALUE, "USGS series");
 		pubMap.put(IpdsMessageLog.USGSSERIESTYPEVALUE, "Open-File Report");//"Journal of Crustacean Biology")480;
 		pubMap.put(IpdsMessageLog.USGSSERIESNUMBER, "12.1");
@@ -133,8 +134,8 @@ public class IpdsMessageLogDaoTest extends BaseSpringTest {
 		return pubMap;
 	}
 
-	public static PubMap createPubMap2() {
-		PubMap pubMap = new PubMap();
+	public static Map<String, Object> createPubMap2() {
+		Map<String, Object> pubMap = new HashMap<>();
 		pubMap.put(IpdsMessageLog.PRODUCTTYPEVALUE, "New");
 		pubMap.put(IpdsMessageLog.USGSSERIESTYPEVALUE, "Series Value");//"Journal of Crustacean Biology")480;
 		pubMap.put(IpdsMessageLog.USGSSERIESNUMBER, ".");
@@ -160,8 +161,8 @@ public class IpdsMessageLogDaoTest extends BaseSpringTest {
 		return pubMap;
 	}
 
-	public static PubMap createPubMap3() {
-		PubMap pubMap = new PubMap();
+	public static Map<String, Object> createPubMap3() {
+		Map<String, Object> pubMap = new HashMap<>();
 		pubMap.put(IpdsMessageLog.PRODUCTTYPEVALUE, "USGS periodical");
 		pubMap.put(IpdsMessageLog.USGSSERIESTYPEVALUE, "Open-File Report");
 		pubMap.put(IpdsMessageLog.USGSSERIESLETTER, "a");
@@ -187,8 +188,8 @@ public class IpdsMessageLogDaoTest extends BaseSpringTest {
 		return pubMap;
 	}
 
-	public static PubMap createPubMap4() {
-		PubMap pubMap = new PubMap();
+	public static Map<String, Object> createPubMap4() {
+		Map<String, Object> pubMap = new HashMap<>();
 		pubMap.put(IpdsMessageLog.PRODUCTTYPEVALUE, "Thesis");
 		pubMap.put(IpdsMessageLog.USGSSERIESTYPEVALUE, "Open-File Report");
 		pubMap.put(IpdsMessageLog.USGSSERIESLETTER, "a");

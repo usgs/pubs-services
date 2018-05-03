@@ -1,9 +1,5 @@
 package gov.usgs.cida.pubs.dao;
 
-import gov.usgs.cida.pubs.aop.ISetDbContext;
-import gov.usgs.cida.pubs.domain.PublicationSubtype;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
-
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +7,9 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 /**
  * @author drsteini
@@ -31,7 +30,6 @@ public class PublicationSubtypeDao extends BaseDao<PublicationSubtype> {
 	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
 	 */
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	@Override
 	public PublicationSubtype getById(Integer domainID) {
 		return (PublicationSubtype) getSqlSession().selectOne(NS + GET_BY_ID, domainID);
@@ -42,7 +40,6 @@ public class PublicationSubtypeDao extends BaseDao<PublicationSubtype> {
 	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.String)
 	 */
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	@Override
 	public PublicationSubtype getById(String domainID) {
 		return getById(PubsUtilities.parseInteger(domainID));
@@ -53,7 +50,6 @@ public class PublicationSubtypeDao extends BaseDao<PublicationSubtype> {
 	 * @see gov.usgs.cida.pubs.dao.BaseDao#getByMap(Map)
 	 */
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	@Override
 	public List<PublicationSubtype> getByMap(Map<String, Object> filters) {
 		return getSqlSession().selectList(NS + GET_BY_MAP, filters);

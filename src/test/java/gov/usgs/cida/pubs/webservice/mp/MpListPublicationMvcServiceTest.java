@@ -39,7 +39,10 @@ public class MpListPublicationMvcServiceTest extends BaseSpringTest {
 	private MockMvc mockMvc;
 
 	private MpListPublicationMvcService mvcService;
-	
+
+	private String expected = "[{\"mpList\":{\"id\":66,\"text\":\"List 66\",\"description\":\"Description 66\",\"type\":\"SPN\"},\"mpPublication\":"
+			+ "{\"id\":12,\"validationErrors\":[],\"text\":\"null - null - null\",\"noYear\":false,\"noUsgsAuthors\":false,\"published\":false}}]";
+
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
@@ -59,7 +62,7 @@ public class MpListPublicationMvcServiceTest extends BaseSpringTest {
 		.andReturn();
 
 		assertThat(getRtnAsJSONArray(rtn),
-				sameJSONArrayAs(new JSONArray("[{\"mpList\":{\"id\":66,\"text\":\"List 66\",\"description\":\"Description 66\",\"type\":\"SPN\"},\"mpPublication\":{\"id\":12,\"validationErrors\":[],\"text\":\"null - null - null\",\"noYear\":false}}]")));
+				sameJSONArrayAs(new JSONArray(expected)));
 	}
 
 	@Test

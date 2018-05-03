@@ -2,7 +2,7 @@ package gov.usgs.cida.pubs.busservice.ipds;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -46,23 +46,23 @@ public class IpdsCostCenterServiceTest extends BaseIpdsTest {
 
 	@Test
 	public void testGetCostCenter() throws SAXException, IOException {
-		when(ipdsWsRequester.getCostCenter(anyString(), anyString())).thenReturn(costCenterXml);
+		when(ipdsWsRequester.getCostCenter(anyInt(), anyInt())).thenReturn(costCenterXml);
 		
-		CostCenter affiliation = ipdsCostCenterService.getCostCenter("4");
+		CostCenter affiliation = ipdsCostCenterService.getCostCenter(4);
 		AffiliationDaoTest.assertAffiliation1(affiliation);
 	}
 
 	@Test
 	public void createCostCenterTest() throws SAXException, IOException {
-		when(ipdsWsRequester.getCostCenter(anyString(), anyString())).thenReturn(costCenterXml);
-		
-		String ipdsId = String.valueOf(randomPositiveInt());
+		when(ipdsWsRequester.getCostCenter(anyInt(), anyInt())).thenReturn(costCenterXml);
+
+		Integer ipdsId = randomPositiveInt();
 		CostCenter costCenter = ipdsCostCenterService.createCostCenter(ipdsId);
 
 		assertNotNull(costCenter.getId());
 		assertEquals("CostCenter Test", costCenter.getText());
 		assertTrue(costCenter.isActive());
 		assertTrue(costCenter.isUsgs());
-		assertEquals(ipdsId, costCenter.getIpdsId().toString());
+		assertEquals(ipdsId, costCenter.getIpdsId());
 	}
 }

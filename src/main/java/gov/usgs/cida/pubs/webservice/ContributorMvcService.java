@@ -36,7 +36,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 public class ContributorMvcService extends MvcService<Contributor<?>> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ContributorMvcService.class);
-	
+
 	private IBusService<CorporateContributor> corporateContributorBusService;
 	private IBusService<PersonContributor<?>> personContributorBusService;
 
@@ -92,16 +92,16 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	public @ResponseBody UsgsContributor updateUsgsContributor(@RequestBody UsgsContributor person, @PathVariable("id") String id, HttpServletResponse response) {
 		LOG.debug("updateUsgsContributor");
 		setHeaders(response);
-		
+
 		UsgsContributor result = person;
 		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(id, person);
-		
+
 		if (null == idNotMatched) {
 			result = (UsgsContributor) personContributorBusService.updateObject(person);
 		} else {
 			result.addValidatorResult(idNotMatched);
 		}
-		
+
 		if (null != result && result.isValid()) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
@@ -132,10 +132,10 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	public @ResponseBody OutsideContributor updateOutsideContributor(@RequestBody OutsideContributor person, @PathVariable String id, HttpServletResponse response) {
 		LOG.debug("updateOutsideContributor");
 		setHeaders(response);
-		
+
 		OutsideContributor result = person;
 		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(id, person);
-		
+
 		if (null == idNotMatched) {
 			result = (OutsideContributor) personContributorBusService.updateObject(person);
 		} else {
@@ -184,7 +184,16 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	public @ResponseBody CorporateContributor updateCorporation(@RequestBody CorporateContributor corporation, @PathVariable String id, HttpServletResponse response) {
 		LOG.debug("updateCorporation");
 		setHeaders(response);
-		CorporateContributor result = corporateContributorBusService.updateObject(corporation);
+
+		CorporateContributor result = corporation;
+		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(id, corporation);
+
+		if (null == idNotMatched) {
+			result = (CorporateContributor) corporateContributorBusService.updateObject(corporation);
+		} else {
+			result.addValidatorResult(idNotMatched);
+		}
+
 		if (null != result && result.isValid()) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {

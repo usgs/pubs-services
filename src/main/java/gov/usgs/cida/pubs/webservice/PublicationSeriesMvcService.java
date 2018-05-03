@@ -64,7 +64,7 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 		setHeaders(response);
 		Map<String, Object> filters = new HashMap<>();
 		if (null != publicationSubtypeId && 0 < publicationSubtypeId.length) {
-			filters.put(PublicationSeriesDao.SUBTYPE_SEARCH, publicationSubtypeId[0]);
+			filters.put(PublicationSeriesDao.SUBTYPE_SEARCH, PubsUtilities.parseInteger(publicationSubtypeId[0]));
 		}
 		if (null != text && 0 < text.length) {
 			filters.put(PublicationSeriesDao.TEXT_SEARCH, text[0]);
@@ -116,22 +116,22 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 	public @ResponseBody PublicationSeries updatePublicationSeries(@RequestBody PublicationSeries pubSeries, @PathVariable String id, HttpServletResponse response) {
 		LOG.debug("updateUsgsContributor");
 		setHeaders(response);
-		
+
 		PublicationSeries result = pubSeries;
 		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(id, pubSeries);
-		
+
 		if (null == idNotMatched) {
 			result = busService.updateObject(pubSeries);
 		} else {
 			result.addValidatorResult(idNotMatched);
 		}
-		
+
 		if (null != result && result.isValid()) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
-		
+
 		return result;
 	}
 

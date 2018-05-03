@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,32 +33,28 @@ public class IpdsCostCenterService {
 		this.costCenterBusService = costCenterBusService;
 	}
 
-	public CostCenter getCostCenter(final String ipdsId) throws SAXException, IOException {
+	public CostCenter getCostCenter(final int ipdsId) throws SAXException, IOException {
 		CostCenter costCenter = null;
-		if (!StringUtils.isBlank(ipdsId)) {
-			Map<String, Object> filters = new HashMap<>();
-			filters.put(PublicationDao.IPDS_ID, ipdsId);
-			List<CostCenter> costCenters = CostCenter.getDao().getByMap(filters);
-			if (costCenters.size() > 1) {
-				LOG.warn("Multiple costCenters found for ipdsId: " + ipdsId);
-			}
-			if (!costCenters.isEmpty()) {
-				costCenter = costCenters.get(0);
-			}
+		Map<String, Object> filters = new HashMap<>();
+		filters.put(PublicationDao.IPDS_ID, ipdsId);
+		List<CostCenter> costCenters = CostCenter.getDao().getByMap(filters);
+		if (costCenters.size() > 1) {
+			LOG.warn("Multiple costCenters found for ipdsId: " + ipdsId);
+		}
+		if (!costCenters.isEmpty()) {
+			costCenter = costCenters.get(0);
 		}
 		return costCenter;
 	}
 
-	public CostCenter createCostCenter(final String ipdsId) throws SAXException, IOException {
+	public CostCenter createCostCenter(final int ipdsId) throws SAXException, IOException {
 		CostCenter costCenter = null;
-		if (!StringUtils.isBlank(ipdsId)) {
-			String costCenterXml = requester.getCostCenter(ipdsId, ipdsId);
-			Document doc = parser.makeDocument(costCenterXml);
-			costCenter = new CostCenter();
-			costCenter.setText(parser.getFirstNodeText(doc.getDocumentElement(), Schema.TITLE));
-			costCenter.setIpdsId(ipdsId);
-			costCenter = costCenterBusService.createObject(costCenter);
-		}
+		String costCenterXml = requester.getCostCenter(ipdsId, ipdsId);
+		Document doc = parser.makeDocument(costCenterXml);
+		costCenter = new CostCenter();
+		costCenter.setText(parser.getFirstNodeText(doc.getDocumentElement(), Schema.TITLE));
+		costCenter.setIpdsId(ipdsId);
+		costCenter = costCenterBusService.createObject(costCenter);
 		return costCenter;
 	}
 }

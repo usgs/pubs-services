@@ -64,6 +64,13 @@ import gov.usgs.cida.pubs.webservice.security.PubsRoles;
 	})
 @DbUnitConfiguration(dataSetLoader = ColumnSensingFlatXMLDataSetLoader.class)
 public abstract class BaseSpringTest {
+	public static final Log LOG = LogFactory.getLog(BaseSpringTest.class);
+
+	public static final String SEARCH_POLYGON = "polygon((-122.3876953125 37.80869897600677,-122.3876953125 36.75979104322286,-123.55224609375 36.75979104322286," +
+			"-123.55224609375 37.80869897600677,-122.3876953125 37.80869897600677))";
+	public static final String GEOGRAPHIC_EXTENTS = "{\"type\": \"FeatureCollection\",\"features\": [{\"type\": \"Feature\",\"properties\": {},\"geometry\": {"
+			+ "\"type\": \"Polygon\",\"coordinates\": [[[-91.91162109375,45.69850658738846],[-91.91162109375,47.16730970131578],"
+			+ "[-90.3955078125,47.16730970131578],[-90.3955078125,45.69850658738846],[-91.91162109375,45.69850658738846]]]}}]}";
 
 	@Autowired
 	protected WebApplicationContext wac;
@@ -82,9 +89,6 @@ public abstract class BaseSpringTest {
 	}
 
 	protected Integer id;
-
-	/** Log for errors etc. */
-	public static final Log LOG = LogFactory.getLog(BaseSpringTest.class);
 
 	@Before
 	public void baseSpringSetup() {

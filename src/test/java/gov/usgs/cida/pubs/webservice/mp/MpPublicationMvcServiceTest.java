@@ -58,9 +58,9 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 			+ "},\"id\": 110,\"rank\": 1}]"
 			+ "}";
 	public static final String LOCK_MSG = "{\"validationErrors\":[{\"field\":\"Publication\",\"message\":\"This Publication is being edited by somebody\",\"level\":\"FATAL\",\"value\":\"somebody\"}]}\"";
-	public static final String LOCK_MSG2 = LOCK_MSG.replace("}]}", "}],\"text\":\"null - null - null\",\"noYear\":false}");
+	public static final String LOCK_MSG2 = LOCK_MSG.replace("}]}", "}],\"text\":\"null - null - null\",\"noYear\":false,\"published\":false,\"noUsgsAuthors\":false}");
 	public static final String LOCK_MSG3 = LOCK_MSG.replace("}]}", "}],\"id\":2,\"indexId\":\"abc\",\"publicationType\":{\"id\":18,\"text\":\"abc\"},"
-			+"\"text\":\"abc - null - null\",\"noYear\":false}");
+			+"\"text\":\"abc - null - null\",\"noYear\":false,\"published\":false,\"noUsgsAuthors\":false}");
 
 	public static final ValidatorResult VR_LOCKED = new ValidatorResult("Publication", "This Publication is being edited by somebody", SeverityLevel.FATAL, "somebody");
 	public static final ValidatorResult VR_NOT_LOCKED = null;
@@ -76,11 +76,11 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 	public String expectedGetMpPub1;
 
 	public String expectedGetPubsDefault;
-	
+
 	private MockMvc mockMvc;
 
 	private MpPublicationMvcService mvcService;
-	
+
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
@@ -103,7 +103,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 		//Happy Path
 		when(pubBusService.getObjects(anyMap())).thenReturn(buildAPubList());
 		when(pubBusService.getObjectCount(anyMap())).thenReturn(Integer.valueOf(12));
-		
+
 		MvcResult rtn = mockMvc.perform(get("/mppublications?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -112,12 +112,12 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(expectedGetPubsDefault)));
 	}
-	
+
 	@Test
 	public void getPreviewTest() throws Exception {
 		//Happy Path
 		when(busService.getByIndexId(anyString())).thenReturn(buildAPub(1));
-		
+
 		MvcResult rtn = mockMvc.perform(get("/mppublications/" + MpPublicationDaoTest.MPPUB1_INDEXID
 				+ "/preview").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
@@ -139,7 +139,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 		.andReturn();
 
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
-		
+
 		//Not available (locked by somebody)
 		rtn = mockMvc.perform(get("/mppublications/2?mimetype=json").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isConflict())
@@ -147,7 +147,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 				.andReturn();
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(LOCK_MSG2)));
-		
+
 		//Pub not found
 		rtn = mockMvc.perform(get("/mppublications/3?mimetype=json").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())
@@ -199,7 +199,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
 	}
-	
+
 	@Test
 	public void updateMpPublicationTest() throws Exception {
 		when(busService.checkAvailability(anyInt())).thenReturn(VR_LOCKED, VR_NOT_LOCKED);
@@ -235,7 +235,8 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 	@Test
 	public void updateMpPublicationIdNotMatchingTest() throws Exception {
 		String pubJson = "{\"id\":1,\"indexId\":\"abc\",\"publicationType\":{\"id\":18,\"text\":\"abc\"},\"noYear\":false,\"text\":\"abc - null - null\"}";
-		String pubJsonWithError = "{\"id\":1," + PubsUtilitiesTest.ID_NOT_MATCH_VALIDATION_JSON + ",\"indexId\":\"abc\",\"publicationType\":{\"id\":18,\"text\":\"abc\"},\"noYear\":false,\"text\":\"abc - null - null\"}";
+		String pubJsonWithError = "{\"id\":1," + PubsUtilitiesTest.ID_NOT_MATCH_VALIDATION_JSON + ",\"indexId\":\"abc\",\"publicationType\":{\"id\":18,\"text\":\"abc\"},\"noYear\":false,\"text\":\"abc - null - null\","
+				+ "\"published\":false,\"noUsgsAuthors\":false}";
 		MvcResult rtn = mockMvc.perform(put("/mppublications/30").content(pubJson).contentType(MediaType.APPLICATION_JSON)
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isBadRequest())
@@ -255,7 +256,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
-		
+
 		//Not available (locked by somebody)
 		rtn = mockMvc.perform(delete("/mppublications/2").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isConflict())
@@ -264,7 +265,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 				.andReturn();
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(LOCK_MSG)));
 	}
-	
+
 	@Test
 	public void publishPubTest() throws Exception {
 		//Happy Path
@@ -276,7 +277,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 		.andReturn();
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
-		
+
 		//Not available (locked by somebody)
 		rtn = mockMvc.perform(post("/mppublications/publish").content("{\"id\":2}}").contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
@@ -285,7 +286,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 				.andReturn();
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(LOCK_MSG)));
-		
+
 		//Pub not found
 		ValidationResults vr = new ValidationResults();
 		vr.addValidatorResult(new ValidatorResult("Publication", "Publication does not exist.", SeverityLevel.FATAL, "3"));
@@ -296,9 +297,9 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
 				.andReturn();
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject("{\"validationErrors\":[{\"field\":\"Publication\",\"message\":\"Publication does not exist.\",\"level\":\"FATAL\",\"value\":\"3\"}]}")));
-		
+
 	}
-	
+
 	@Test
 	public void releasePubTest() throws Exception {
 		//Happy Path/Pub not found
@@ -310,7 +311,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 		.andReturn();
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
 		verify(busService, times(1)).releaseLocksPub(anyInt());
-		
+
 		//Not available (locked by somebody)
 		rtn = mockMvc.perform(post("/mppublications/release").content("{\"id\":2}}").contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
@@ -322,7 +323,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 		//We executed the releaseLocksPub above - this would be 2 if we also hit it in the locked test.
 		verify(busService, times(1)).releaseLocksPub(anyInt());
 	}
-	
+
 	public MpPublication buildAPub(Integer id) {
 		MpPublication pub = MpPublicationDaoTest.buildAPub(id);
 		return pub;

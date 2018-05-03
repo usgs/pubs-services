@@ -1,10 +1,5 @@
 package gov.usgs.cida.pubs.dao;
 
-import gov.usgs.cida.pubs.aop.ISetDbContext;
-import gov.usgs.cida.pubs.dao.intfc.IPublishingServiceCenterDao;
-import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
-
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +7,10 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import gov.usgs.cida.pubs.dao.intfc.IPublishingServiceCenterDao;
+import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 /**
  * @author drsteini
@@ -33,7 +32,6 @@ public class PublishingServiceCenterDao extends BaseDao<PublishingServiceCenter>
 	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
 	 */
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	@Override
 	public PublishingServiceCenter getById(Integer domainID) {
 		return (PublishingServiceCenter) getSqlSession().selectOne(NS + GET_BY_ID, domainID);
@@ -44,7 +42,6 @@ public class PublishingServiceCenterDao extends BaseDao<PublishingServiceCenter>
 	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.String)
 	 */
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	@Override
 	public PublishingServiceCenter getById(String domainID) {
 		return getById(PubsUtilities.parseInteger(domainID));
@@ -55,14 +52,12 @@ public class PublishingServiceCenterDao extends BaseDao<PublishingServiceCenter>
 	 * @see gov.usgs.cida.pubs.dao.BaseDao#getByMap(Map)
 	 */
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	@Override
 	public List<PublishingServiceCenter> getByMap(Map<String, Object> filters) {
 		return getSqlSession().selectList(NS + GET_BY_MAP, filters);
 	}
 
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	@Override
 	public PublishingServiceCenter getByIpdsId(Integer ipdsId) {
 		return getSqlSession().selectOne(NS + GET_BY_IPDS_ID, ipdsId);

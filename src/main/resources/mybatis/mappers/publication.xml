@@ -158,17 +158,17 @@
         is_part_of_id,
         superseded_by_id,
         revised_date,
-        <include refid="base.auditCols"/>,
         abstract,
         notes,
         geographic_extents,
         no_usgs_authors,
-        ipds_context
+        ipds_context,
+        <include refid="base.auditCols"/>
     </sql>
 
     <sql id="hosts">
         #{id,jdbcType=NUMERIC},
-        nvl(#{indexId,jdbcType=VARCHAR},#{id,jdbcType=NUMERIC}),
+        coalesce(#{indexId,jdbcType=VARCHAR}::VARCHAR,#{id,jdbcType=VARCHAR}::VARCHAR),
         #{displayToPublicDate,jdbcType=DATE},
         #{publicationYear,jdbcType=VARCHAR},
         #{noYear,jdbcType=VARCHAR},
@@ -198,15 +198,15 @@
         #{productDescription,jdbcType=VARCHAR},
         #{startPage,jdbcType=NUMERIC},
         #{endPage,jdbcType=NUMERIC},
-        #{numberOfPages,jdbcType=NUMERIC},
+        #{numberOfPages,jdbcType=NUMERIC}::int,
         #{onlineOnly,jdbcType=VARCHAR},
         #{additionalOnlineFiles,jdbcType=VARCHAR},
         #{temporalStart,jdbcType=DATE},
         #{temporalEnd,jdbcType=DATE},
         #{ipdsId,jdbcType=VARCHAR},
         #{ipdsReviewProcessState,jdbcType=VARCHAR},
-        #{ipdsInternalId,jdbcType=NUMERIC},
-        #{scale,jdbcType=NUMERIC},
+        #{ipdsInternalId,jdbcType=NUMERIC}::int,
+        #{scale,jdbcType=NUMERIC}::int,
         #{projection,jdbcType=VARCHAR},
         #{datum,jdbcType=VARCHAR},
         #{country,jdbcType=VARCHAR},
@@ -221,20 +221,20 @@
         #{contact,jdbcType=VARCHAR},
         #{tableOfContents,jdbcType=VARCHAR},
         #{publishingServiceCenter.id,jdbcType=NUMERIC},
-        #{publishedDate,jdbcType=VARCHAR},
+        #{publishedDate,jdbcType=DATE},
         #{isPartOf.id,jdbcType=NUMERIC},
         #{supersededBy.id,jdbcType=NUMERIC},
-        #{revisedDate,jdbcType=VARCHAR},
-        <include refid="base.auditHosts"/>,
+        #{revisedDate,jdbcType=DATE},
         #{docAbstract,jdbcType=CLOB},
         #{notes,jdbcType=VARCHAR},
-        #{geographicExtents,jdbcType=VARCHAR},
-        #{noUsgsAuthors,jdbcType=VARCHAR},
-        #{ipdsContext,jdbcType=VARCHAR}
+        #{geographicExtents,jdbcType=VARCHAR}::JSON,
+        #{noUsgsAuthors,jdbcType=BOOLEAN},
+        #{ipdsContext,jdbcType=VARCHAR},
+        <include refid="base.auditHosts"/>
     </sql>
 
     <sql id="sets">
-        index_id = nvl(#{indexId,jdbcType=VARCHAR},#{id,jdbcType=NUMERIC}),
+        index_id = coalesce(#{indexId,jdbcType=VARCHAR}::VARCHAR,#{id,jdbcType=VARCHAR}::VARCHAR),
         display_to_public_date = #{displayToPublicDate,jdbcType=DATE},
         publication_year = #{publicationYear,jdbcType=VARCHAR},
         no_year = #{noYear,jdbcType=VARCHAR},
@@ -264,15 +264,15 @@
         product_description = #{productDescription,jdbcType=VARCHAR},
         start_page = #{startPage,jdbcType=NUMERIC},
         end_page = #{endPage,jdbcType=NUMERIC},
-        number_of_pages = #{numberOfPages,jdbcType=NUMERIC},
+        number_of_pages = #{numberOfPages,jdbcType=NUMERIC}::int,
         online_only = #{onlineOnly,jdbcType=VARCHAR},
         additional_online_files = #{additionalOnlineFiles,jdbcType=VARCHAR},
         temporal_start = #{temporalStart,jdbcType=DATE},
         temporal_end = #{temporalEnd,jdbcType=DATE},
         ipds_id = #{ipdsId,jdbcType=VARCHAR},
         ipds_review_process_state = #{ipdsReviewProcessState,jdbcType=VARCHAR},
-        ipds_internal_id = #{ipdsInternalId,jdbcType=NUMERIC},
-        scale = #{scale,jdbcType=NUMERIC},
+        ipds_internal_id = #{ipdsInternalId,jdbcType=NUMERIC}::int,
+        scale = #{scale,jdbcType=NUMERIC}::int,
         projection = #{projection,jdbcType=VARCHAR},
         datum = #{datum,jdbcType=VARCHAR},
         country = #{country,jdbcType=VARCHAR},
@@ -287,16 +287,16 @@
         contact_info = #{contact,jdbcType=VARCHAR},
         table_of_contents = #{tableOfContents,jdbcType=VARCHAR},
         publishing_service_center_id = #{publishingServiceCenter.id,jdbcType=NUMERIC},
-        published_date = #{publishedDate,jdbcType=VARCHAR},
+        published_date = #{publishedDate,jdbcType=DATE},
         is_part_of_id = #{isPartOf.id,jdbcType=NUMERIC},
         superseded_by_id = #{supersededBy.id,jdbcType=NUMERIC},
-        revised_date = #{revisedDate,jdbcType=VARCHAR},
-        <include refid="base.auditSets"/>,
+        revised_date = #{revisedDate,jdbcType=DATE},
         abstract = #{docAbstract,jdbcType=CLOB},
         notes = #{notes,jdbcType=VARCHAR},
-        geographic_extents = #{geographicExtents,jdbcType=CLOB},
-        no_usgs_authors = #{noUsgsAuthors,jdbcType=VARCHAR},
-        ipds_context = #{ipdsContext,jdbcType=VARCHAR}
+        geographic_extents = #{geographicExtents,jdbcType=VARCHAR}::JSON,
+        no_usgs_authors = #{noUsgsAuthors,jdbcType=BOOLEAN},
+        ipds_context = #{ipdsContext,jdbcType=VARCHAR},
+        <include refid="base.auditSets"/>
     </sql>
 
     <sql id="likeTerm">
@@ -309,7 +309,7 @@
                 or upper(pub.subseries_title) <include refid="publication.likeTerm"/>
                 or upper(pub.series_number) <include refid="publication.likeTerm"/>
                 or upper(pub.index_id) <include refid="publication.likeTerm"/>
-                or to_char(pub.publication_id) = #{term}
+                or to_char(pub.publication_id, '9999999999') = #{term}
                 or upper(pub.ipds_id) <include refid="publication.likeTerm"/>
                 or upper(pub.publication_year) <include refid="publication.likeTerm"/>
 
@@ -458,64 +458,56 @@
     </sql>
 
     <sql id="globalSelect">
-        select <include refid="base.pagingHint"/> *
-          from (select <include refid="cols"/>, 'mypubs' sourceDatabase, published
-                  from mp_publication pub
-                <include refid="mpPublication.filters"/>
-                <if test="global != null and global == 'true'">
-                    union all
-                    select <include refid="cols"/>, 'pubs warehouse' sourceDatabase, 'Y' published
-                      from publication pub
-                     where publication_id in (select publication_id from publication
-                                              minus
-                                              select publication_id from mp_publication)
-                    <include refid="pwPublication.filters"/>
-                </if>
-               ) pub
-    </sql>
-
-    <sql id="allSelect">
-        select *
-          from (select <include refid="cols"/>, 'mypubs' sourceDatabase, published
-                  from mp_publication pub
-                <include refid="mpPublication.filters"/>
-                union all
-                select <include refid="cols"/>, 'pubs warehouse' sourceDatabase, 'Y' published
-                  from publication pub
-                 where publication_id in (select publication_id from publication
-                                          minus
-                                          select publication_id from mp_publication)
-                <include refid="pwPublication.filters"/>
-               ) pub
+        select <include refid="cols"/>, 'mypubs' sourceDatabase, published
+          from mp_publication pub
+               <include refid="mpPublication.filters"/>
+        <if test="global != null and global == 'true'">
+            union all
+            select <include refid="cols"/>, 'pubs warehouse' sourceDatabase, 'Y' published
+              from publication pub
+             where publication_id in (select publication_id from publication
+                                      except
+                                      select publication_id from mp_publication)
+                   <include refid="pwPublication.filters"/>
+        </if>
     </sql>
 
     <select id="getById" parameterType="Integer" resultMap="genericResult">
-        select *
-          from (select <include refid="cols"/>, 'mypubs' sourceDatabase, published
-                  from mp_publication
-                union all
-                select <include refid="cols"/>, 'pubs warehouse' sourceDatabase, 'Y' published
-                  from publication
-                 where publication_id in (select publication_id from publication
-                                          minus
-                                          select publication_id from mp_publication)
-               )
-           where publication_id = #{value,jdbcType=VARCHAR}
+        select <include refid="cols"/>, 'mypubs' sourceDatabase, published
+          from mp_publication
+         where publication_id = #{value,jdbcType=INTEGER}::int
+        union all
+        select <include refid="cols"/>, 'pubs warehouse' sourceDatabase, 'Y' published
+          from publication
+         where publication_id in (select publication_id from publication
+                                  except
+                                  select publication_id from mp_publication) and
+               publication_id = #{value,jdbcType=INTEGER}::int
     </select>
 
     <select id="validateByMap" parameterType="map" resultMap="genericResult">
-        <include refid="allSelect"/>
+        select <include refid="cols"/>, 'mypubs' sourceDatabase, published
+          from mp_publication pub
+               <include refid="mpPublication.filters"/>
+        union all
+        select <include refid="cols"/>, 'pubs warehouse' sourceDatabase, 'Y' published
+          from publication pub
+         where publication_id in (select publication_id from publication
+                                  except
+                                  select publication_id from mp_publication)
+               <include refid="pwPublication.filters"/>
     </select>
 
     <select id="getByMap" parameterType="map" resultMap="genericResult">
-        <include refid="globalSelect"/>
+        select *
+          from (<include refid="globalSelect"/>) pub
         <include refid="orderBy"/>
         <include refid="base.pagingRowLimit"/>
     </select>
 
     <select id="getCount" parameterType="map" resultType="Integer">
         select count(*)
-          from (<include refid="globalSelect"/>)
+          from (<include refid="globalSelect"/>) pub
     </select>
 
     <sql id="baseLookupSelect">
@@ -529,13 +521,15 @@
 
     <select id="getLookupById" parameterType="Integer" resultMap="lookupResult">
         <include refid="baseLookupSelect"/>
-           where publication_id = #{value,jdbcType=VARCHAR}
+           where publication_id = #{value,jdbcType=INTEGER}::int
     </select>
 
     <select id="filterLookupByIndexId" parameterType="String" resultMap="lookupResult">
         <include refid="baseLookupSelect"/>
-           where upper(index_id) like upper(#{value,jdbcType=VARCHAR}) || '%' and
-                 rownum &lt; 31
+        <if test="value != null">
+           where upper(index_id) like upper(#{value,jdbcType=VARCHAR}) || '%'
+        </if>
+           limit 31
     </select>
 
 </mapper>

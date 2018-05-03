@@ -38,7 +38,7 @@ public class LinkFileTypeDaoTest extends BaseSpringTest {
 		assertEquals(LINK_FILE_TYPES_CNT, linkFileTypes.size());
 
 		Map<String, Object> filters = new HashMap<>();
-		filters.put(LinkFileTypeDao.ID_SEARCH, "1");
+		filters.put(LinkFileTypeDao.ID_SEARCH, 1);
 		linkFileTypes = LinkFileType.getDao().getByMap(filters);
 		assertEquals(1, linkFileTypes.size());
 		assertLinkFileType1(linkFileTypes.get(0));
@@ -47,7 +47,7 @@ public class LinkFileTypeDaoTest extends BaseSpringTest {
 		filters.put(LinkFileTypeDao.TEXT_SEARCH, "s");
 		linkFileTypes = LinkFileType.getDao().getByMap(filters);
 		assertEquals(LINK_FILE_TYPES_S_CNT, linkFileTypes.size());
-		filters.put(LinkFileTypeDao.ID_SEARCH, "4");
+		filters.put(LinkFileTypeDao.ID_SEARCH, 4);
 		linkFileTypes = LinkFileType.getDao().getByMap(filters);
 		assertEquals(1, linkFileTypes.size());
 		assertLinkFileType4(linkFileTypes.get(0));

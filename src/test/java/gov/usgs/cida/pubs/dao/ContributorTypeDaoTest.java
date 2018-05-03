@@ -36,7 +36,7 @@ public class ContributorTypeDaoTest extends BaseSpringTest {
 		assertEquals(contributorTypeCnt, contributorTypes.size());
 
 		Map<String, Object> filters = new HashMap<>();
-		filters.put("id", "1");
+		filters.put("id", 1);
 		contributorTypes = ContributorType.getDao().getByMap(filters);
 		assertEquals(1, contributorTypes.size());
 		assertEquals(1, contributorTypes.get(0).getId().intValue());

@@ -8,9 +8,9 @@
         <result property="text" column="name"/>
         <result property="active" column="is_active"/>
         <result property="usgs" column="is_cost_center"/>
-        <discriminator javaType="String" column="is_cost_center">
-            <case value="Y" resultMap="costCenterResult"/>
-            <case value="N" resultMap="outsideAffiliationResult"/>
+        <discriminator javaType="boolean" column="is_cost_center">
+            <case value="true" resultMap="costCenterResult"/>
+            <case value="false" resultMap="outsideAffiliationResult"/>
         </discriminator>
     </resultMap>
 
@@ -32,8 +32,8 @@
     <sql id="baseHosts">
         #{id,jdbcType=NUMERIC},
         #{text,jdbcType=VARCHAR},
-        #{usgs,jdbcType=VARCHAR},
-        #{active,jdbcType=VARCHAR},
+        #{usgs,jdbcType=BOOLEAN},
+        #{active,jdbcType=BOOLEAN},
         <include refid="base.auditHosts"/>
     </sql>
 
@@ -44,8 +44,8 @@
 
     <sql id="baseSets">
         name = #{text,jdbcType=VARCHAR},
-        is_cost_center = #{usgs,jdbcType=VARCHAR},
-        is_active = #{active,jdbcType=VARCHAR},
+        is_cost_center = #{usgs,jdbcType=BOOLEAN},
+        is_active = #{active,jdbcType=BOOLEAN},
         <include refid="base.auditSets"/>
     </sql>
 
@@ -97,13 +97,13 @@
     <select id="getByIdCostCenter" parameterType="Integer" resultMap="costCenterResult">
         <include refid="baseSelect"/>
          where affiliation_id = #{value,jdbcType=NUMERIC} and
-               is_cost_center = 'Y'
+               is_cost_center = true
     </select>
 
     <select id="getByIdOutsideAffiliation" parameterType="Integer" resultMap="outsideAffiliationResult">
         <include refid="baseSelect"/>
          where affiliation_id = #{value,jdbcType=NUMERIC} and
-               is_cost_center = 'N'
+               is_cost_center = false
     </select>
 
     <select id="getByMap" resultMap="result">
@@ -116,19 +116,19 @@
 
     <select id="getByMapCostCenter" resultMap="costCenterResult">
         <include refid="baseSelect"/>
-        where is_cost_center = 'Y'
+        where is_cost_center = true
         <include refid="filters"/>
     </select>
 
     <select id="getByMapOutsideAffiliation" resultMap="outsideAffiliationResult">
         <include refid="baseSelect"/>
-        where is_cost_center = 'N'
+        where is_cost_center = false
         <include refid="filters"/>
     </select>
 
     <insert id="addOutsideAffiliation" parameterType="OutsideAffiliation">
         <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
-            select affiliation_seq.nextval id from dual
+            select nextval('affiliation_seq')
         </selectKey>
         insert into affiliation (<include refid="baseCols"/>)
              values (<include refid="baseHosts"/>)
@@ -136,7 +136,7 @@
 
     <insert id="addCostCenter" parameterType="CostCenter">
         <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
-            select affiliation_seq.nextval id from dual
+            select nextval('affiliation_seq')
         </selectKey>
         insert into affiliation (<include refid="baseCols"/>,
                                  <include refid="costCenterCols"/>)

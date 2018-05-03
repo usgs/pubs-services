@@ -49,7 +49,7 @@ public class PublicationSubtypeDaoTest extends BaseSpringTest {
 		assertEquals(pubSubTypeCnt, pubSubtypes.size());
 
 		Map<String, Object> filters = new HashMap<>();
-		filters.put("id", "10");
+		filters.put("id", 10);
 		pubSubtypes = PublicationSubtype.getDao().getByMap(filters);
 		assertEquals(1, pubSubtypes.size());
 		assertEquals(10, pubSubtypes.get(0).getId().intValue());
@@ -57,7 +57,7 @@ public class PublicationSubtypeDaoTest extends BaseSpringTest {
 		assertEquals("Journal Article", pubSubtypes.get(0).getText());
 
 		filters.clear();
-		filters.put("publicationTypeId", "4");
+		filters.put("publicationTypeId", 4);
 		pubSubtypes = PublicationSubtype.getDao().getByMap(filters);
 		assertEquals(5, pubSubtypes.size());
 		for (PublicationSubtype pubSubtype : pubSubtypes) {

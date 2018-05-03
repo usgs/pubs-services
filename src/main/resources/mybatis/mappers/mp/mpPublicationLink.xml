@@ -8,7 +8,7 @@
 
     <insert id="add" parameterType="MpPublicationLink">
         <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
-            select publication_link_seq.nextval id from dual
+            select nextval('publication_link_seq')
         </selectKey>
         insert into mp_publication_link (<include refid="publicationLink.cols"/>)
              values (<include refid="publicationLink.hosts"/>)
@@ -47,21 +47,21 @@
            where publication_link_id = #{id,jdbcType=NUMERIC}
     </update>
 
-	<insert id="publish" parameterType="Integer">
-		insert into publication_link (<include refid="publicationLink.cols"/>)
-		select publication_link_id, 	publication_id, 	rank, 
-			   url,						text,		      	object_size,
-			   link_file_type_id,		link_type_id,		description,
-			   help_text,
-			   insert_date, 			insert_username, 	sysdate, 		audit_trail_util.get_username
-		  from mp_publication_link
-           where publication_id = #{value,jdbcType=NUMERIC}
-	</insert>
-	
-	<delete id="publishDelete" parameterType="Integer">
-		delete from publication_link
-		 where publication_id = #{value,jdbcType=NUMERIC}
-	</delete>
+    <insert id="publish">
+        insert into publication_link (<include refid="publicationLink.cols"/>)
+        select publication_link_id,        publication_id,     rank, 
+               url,                        text,               object_size,
+               link_file_type_id,          link_type_id,       description,
+               help_text,
+               insert_date,                insert_username,    now() at time zone 'UTC',         #{updateUsername,jdbcType=VARCHAR}
+          from mp_publication_link
+           where publication_id = #{publicationId,jdbcType=NUMERIC}
+    </insert>
+    
+    <delete id="publishDelete" parameterType="Integer">
+        delete from publication_link
+         where publication_id = #{value,jdbcType=NUMERIC}
+    </delete>
 
     <delete id="delete" parameterType="Integer">
         delete from mp_publication_link

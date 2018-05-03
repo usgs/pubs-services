@@ -20,6 +20,7 @@ import gov.usgs.cida.pubs.IntegrationTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
+import gov.usgs.cida.pubs.webservice.MvcService;
 
 @Category(IntegrationTest.class)
 @DatabaseSetups({
@@ -53,20 +54,20 @@ public class CorporateContributorDaoTest extends BaseSpringTest {
 		assertEquals(ContributorDaoTest.CORPORATE_CONTRIBUTOR_CNT, contributors.size());
 
 		Map<String, Object> filters = new HashMap<>();
-		filters.put(CorporateContributorDao.ID_SEARCH, "2");
+		filters.put(CorporateContributorDao.ID_SEARCH, 2);
 		contributors = CorporateContributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(2, contributors.get(0).getId().intValue());
 
 		filters.clear();
-		filters.put(CorporateContributorDao.TEXT_SEARCH, "us%");
+		filters.put(CorporateContributorDao.TEXT_SEARCH, "us" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX);
 		contributors = CorporateContributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(2, contributors.get(0).getId().intValue());
 
 		filters.clear();
-		filters.put("id", "2");
-		filters.put("text", "us%");
+		filters.put("id", 2);
+		filters.put("text", "us" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX);
 		contributors = CorporateContributor.getDao().getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(2, contributors.get(0).getId().intValue());

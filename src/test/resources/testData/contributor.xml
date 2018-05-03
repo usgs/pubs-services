@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-	<CONTRIBUTOR CONTRIBUTOR_ID="1" FAMILY="ConFamily" GIVEN="ConGiven" SUFFIX="ConSuffix" EMAIL="con@usgs.gov" IS_CORPORATION="N" IS_USGS="Y" text="ConFamily, ConGiven ConSuffix con@usgs.gov" IS_PREFERRED="Y" />
-	<CONTRIBUTOR CONTRIBUTOR_ID="2" LITERAL="US Geological Survey Ice Survey Team" IS_CORPORATION="Y" IS_USGS="N" text="US Geological Survey Ice Survey Team" IS_PREFERRED="N" />
-	<CONTRIBUTOR CONTRIBUTOR_ID="3" FAMILY="outerfamily" GIVEN="outerGiven" SUFFIX="outerSuffix" EMAIL="outer@gmail.com" IS_CORPORATION="N" IS_USGS="N" text="outerfamily, outerGiven outerSuffix outer@gmail.com" orcid="http://orcid.org/0000-0000-0000-0001" IS_PREFERRED="N" />
-	<CONTRIBUTOR CONTRIBUTOR_ID="4" FAMILY="4Family" GIVEN="4Given" SUFFIX="4Suffix" EMAIL="con4@usgs.gov" IS_CORPORATION="N" IS_USGS="Y" text="4Family 4Given 4Suffix con4@usgs.gov" orcid="http://orcid.org/0000-0000-0000-0004" IS_PREFERRED="Y" />
-    <CONTRIBUTOR CONTRIBUTOR_ID="5" FAMILY="Doe" GIVEN="Jane" EMAIL="jmdoe@usgs.gov" IS_CORPORATION="N" IS_USGS="Y" text="Doe jane   jmdoe@usgs.gov" orcid="http://orcid.org/0000-0000-0000-0000" IS_PREFERRED="Y" />
+    <CONTRIBUTOR CONTRIBUTOR_ID="1" FAMILY="ConFamily" GIVEN="ConGiven" SUFFIX="ConSuffix" EMAIL="con@usgs.gov" IS_CORPORATION="false" IS_USGS="true" text="ConFamily, ConGiven ConSuffix con@usgs.gov" IS_PREFERRED="true" />
+    <CONTRIBUTOR CONTRIBUTOR_ID="2" LITERAL="US Geological Survey Ice Survey Team" IS_CORPORATION="true" IS_USGS="false" text="US Geological Survey Ice Survey Team" IS_PREFERRED="false" />
+    <CONTRIBUTOR CONTRIBUTOR_ID="3" FAMILY="outerfamily" GIVEN="outerGiven" SUFFIX="outerSuffix" EMAIL="outer@gmail.com" IS_CORPORATION="false" IS_USGS="false" text="outerfamily, outerGiven outerSuffix outer@gmail.com" orcid="http://orcid.org/0000-0000-0000-0001" IS_PREFERRED="false" />
+    <CONTRIBUTOR CONTRIBUTOR_ID="4" FAMILY="4Family" GIVEN="4Given" SUFFIX="4Suffix" EMAIL="con4@usgs.gov" IS_CORPORATION="false" IS_USGS="true" text="4Family 4Given 4Suffix con4@usgs.gov" orcid="http://orcid.org/0000-0000-0000-0004" IS_PREFERRED="true" />
+    <CONTRIBUTOR CONTRIBUTOR_ID="5" FAMILY="Doe" GIVEN="Jane" EMAIL="jmdoe@usgs.gov" IS_CORPORATION="false" IS_USGS="true" text="Doe jane   jmdoe@usgs.gov" orcid="http://orcid.org/0000-0000-0000-0000" IS_PREFERRED="true" />
 </dataset>

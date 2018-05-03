@@ -194,6 +194,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 			return getPwPublicationJSON(indexId, response);
 		}
 	}
+
 	/**
 	 * Get all USGS Numbered and Unnumbered Series with DOIs and Contributors
 	 * as Crossref XML.
@@ -208,7 +209,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	public void getBulkCrossref(HttpServletRequest request,
 		HttpServletResponse response) throws IOException{
 		String statement = PwPublicationDao.NS + PwPublicationDao.GET_CROSSREF_PUBLICATIONS;
-		
+
 		Map<String, Object> filters = ImmutableMap.of(
 			PwPublicationDao.SUBTYPE_ID, new int[]{
 				PublicationSubtype.USGS_NUMBERED_SERIES,
@@ -225,7 +226,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 			transformer.end();
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param mediaTypes the media types as specified by the user in the request headers
@@ -238,7 +239,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		}
 		return isCrossRefRequest;
 	}
-	
+
 	public PwPublication getPwPublicationJSON(String indexId, HttpServletResponse response){
 		PwPublication rtn = busService.getByIndexId(indexId);
 		if (null == rtn) {
@@ -246,7 +247,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		}
 		return rtn;
 	}
-	
+
 	/**
 	 * If the specified publication exists and is a USGS Series, responds with Crossref XML.
 	 * Otherwise responds with a 404 Not Found.
@@ -263,7 +264,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 			writeCrossrefForPub(response, pub);
 		}
 	}
-	
+
 	/**
 	 * Writes the specified USGS Series Publication to Crossref XML.
 	 * This method will error if the specified publication is not a USGS Series.
@@ -281,7 +282,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 			transformer.end();
 		}
 	}
-	
+
 	protected boolean isUsgsSeries(PwPublication pub){
 		PublicationSubtype subtype = pub.getPublicationSubtype();
 		return PubsUtilities.isUsgsNumberedSeries(subtype) || PubsUtilities.isUsgsUnnumberedSeries(subtype);

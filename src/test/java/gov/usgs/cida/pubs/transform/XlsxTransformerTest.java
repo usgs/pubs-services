@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -133,7 +132,7 @@ public class XlsxTransformerTest {
 	}
 
 	public Map<String, Object> getTestRow() {
-		Map<String, Object> record = new LinkedHashMap<String, Object>();
+		Map<String, Object> record = new HashMap<String, Object>();
 		record.put("A", "data1");
 		record.put("B", "data2");
 		record.put("C", rowCount++);

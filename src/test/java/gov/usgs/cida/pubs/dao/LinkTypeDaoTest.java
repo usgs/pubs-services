@@ -38,7 +38,7 @@ public class LinkTypeDaoTest extends BaseSpringTest {
 		assertEquals(LINK_TYPES_CNT, linkTypes.size());
 
 		Map<String, Object> filters = new HashMap<>();
-		filters.put(LinkTypeDao.ID_SEARCH, "1");
+		filters.put(LinkTypeDao.ID_SEARCH, 1);
 		linkTypes = LinkType.getDao().getByMap(filters);
 		assertEquals(1, linkTypes.size());
 		assertLinkType1(linkTypes.get(0));
@@ -47,7 +47,7 @@ public class LinkTypeDaoTest extends BaseSpringTest {
 		filters.put(LinkTypeDao.TEXT_SEARCH, "r");
 		linkTypes = LinkType.getDao().getByMap(filters);
 		assertEquals(LINK_TYPES_R_CNT, linkTypes.size());
-		filters.put(LinkTypeDao.ID_SEARCH, "19");
+		filters.put(LinkTypeDao.ID_SEARCH, 19);
 		linkTypes = LinkType.getDao().getByMap(filters);
 		assertEquals(1, linkTypes.size());
 		assertLinkType19(linkTypes.get(0));

@@ -23,6 +23,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.context.request.WebRequest;
 
+import gov.usgs.cida.pubs.BaseSpringTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.PersonContributorDao;
@@ -56,7 +57,7 @@ public class MvcServiceTest {
 		String endYear = "2020";
 		String g = "polygon((-122.3876953125 37.80869897600677,-122.3876953125 36.75979104322286,-123.55224609375 36.75979104322286," +
 				"-123.55224609375 37.80869897600677,-122.3876953125 37.80869897600677))";
-		String global = "";
+		String global = "false";
 		String[] indexId = new String[]{"index1", "index2"};
 		String[] ipdsId = new String[]{"ipds1", "ipds2"};
 		String[] listId = new String[]{"list1", "list2"};
@@ -94,15 +95,14 @@ public class MvcServiceTest {
 		assertTrue(filters.containsKey(PublicationDao.CONTRIBUTING_OFFICE));
 		assertEquals(contributingOffice, filters.get(PublicationDao.CONTRIBUTING_OFFICE));
 		assertTrue(filters.containsKey(PublicationDao.CONTRIBUTOR));
-		assertEquals("rebecca% and b.% and carvin% and c2%", filters.get(PublicationDao.CONTRIBUTOR));
+		assertEquals("rebecca:* & b.:* & carvin:* & c2:*", filters.get(PublicationDao.CONTRIBUTOR));
 		assertTrue(filters.containsKey(PersonContributorDao.ORCID));
 		assertEquals(orcid, filters.get(PersonContributorDao.ORCID));
 		assertEquals(doi, filters.get(PublicationDao.DOI));
 		assertTrue(filters.containsKey(PublicationDao.END_YEAR));
 		assertEquals(endYear, filters.get(PublicationDao.END_YEAR));
 		assertTrue(filters.containsKey(PwPublicationDao.G));
-		assertArrayEquals(new String[]{"-122.3876953125","37.80869897600677","-122.3876953125","36.75979104322286","-123.55224609375","36.75979104322286",
-				"-123.55224609375","37.80869897600677","-122.3876953125","37.80869897600677"}, (Object[])filters.get(PwPublicationDao.G));
+		assertEquals(BaseSpringTest.SEARCH_POLYGON, filters.get(PwPublicationDao.G));
 		assertTrue(filters.containsKey(MpPublicationDao.GLOBAL));
 		assertEquals(global, filters.get(MpPublicationDao.GLOBAL));
 		assertTrue(filters.containsKey(PublicationDao.INDEX_ID));
@@ -134,7 +134,7 @@ public class MvcServiceTest {
 		assertTrue(filters.containsKey(PwPublicationDao.PUB_X_DAYS));
 		assertEquals(pubXDays, filters.get(PwPublicationDao.PUB_X_DAYS));
 		assertTrue(filters.containsKey(PublicationDao.Q));
-		assertEquals("$turtles and $loggerhead", filters.get(PublicationDao.Q));
+		assertEquals("turtles:* & loggerhead:*", filters.get(PublicationDao.Q));
 		assertTrue(filters.containsKey(MpPublicationDao.SEARCH_TERMS));
 		assertArrayEquals(new String[]{"turtles","loggerhead"}, (Object[])filters.get(MpPublicationDao.SEARCH_TERMS));
 		assertTrue(filters.containsKey(PublicationDao.LINK_TYPE));
@@ -155,6 +155,14 @@ public class MvcServiceTest {
 		assertEquals(typeName, filters.get(PublicationDao.TYPE_NAME));
 		assertTrue(filters.containsKey(PublicationDao.YEAR));
 		assertEquals(year, filters.get(PublicationDao.YEAR));
+	}
+
+	@Test
+	public void buildFiltersBadGTest() {
+		Map<String, Object> filters = testMvcService.buildFilters(null, null, null, null, null, null, "abc", null, null,
+				null, null, null, null, null, null, null, null, null, null, null,
+				null, null, null, null, null, null, null, null, null, null, null, null, null);
+		assertFalse(filters.containsKey(PwPublicationDao.G));
 	}
 
 	@Test
@@ -199,7 +207,7 @@ public class MvcServiceTest {
 		assertNull(testMvcService.buildQ(list));
 		
 		list.add("test");
-		assertEquals("$test", testMvcService.buildQ(list));
+		assertEquals("test:*", testMvcService.buildQ(list));
 		
 		list.add("turtles");
 		list.add(" ");
@@ -207,7 +215,7 @@ public class MvcServiceTest {
 		list.add(null);
 		list.add("loggerhead");
 		list.add("within");
-		assertEquals("$test and $turtles and $loggerhead and ${within}",  testMvcService.buildQ(list));
+		assertEquals("test:* & turtles:* & loggerhead:* & within:*",  testMvcService.buildQ(list));
 	}
 
 	@Test
@@ -234,32 +242,11 @@ public class MvcServiceTest {
 		//An empty value should return a null
 		assertNull(testMvcService.configureContributorFilter(new String[]{"", null}));
 
-		assertEquals(".%", testMvcService.configureContributorFilter(new String[]{"   .  "}));
+		assertEquals(".:*", testMvcService.configureContributorFilter(new String[]{"   .  "}));
 
-		assertEquals("rebecca% and b.% and carvin%", testMvcService.configureContributorFilter(new String[]{"Rebecca B. Carvin"}));
-		
-		assertEquals("carvin% and rebecca% and b.%", testMvcService.configureContributorFilter(new String[]{"Carvin", " Rebecca B."}));
-	}
+		assertEquals("rebecca:* & b.:* & carvin:*", testMvcService.configureContributorFilter(new String[]{"Rebecca B. Carvin"}));
 
-	@Test
-	public void configureGeospatialFilter() {
-		//A null value should return a null
-		assertNull(testMvcService.configureGeospatialFilter(null));
-		
-		//An empty value should return a null
-		assertNull(testMvcService.configureGeospatialFilter(""));
-
-		//non-conforming value should return a null
-		assertNull(testMvcService.configureGeospatialFilter("weryuiqwyer"));
-
-		String[] filter = testMvcService.configureGeospatialFilter("polygon((-122.3876953125 37.80869897600677,-122.3876953125 36.75979104322286,-123.55224609375 36.75979104322286," +
-				"-123.55224609375 37.80869897600677,-122.3876953125 37.80869897600677))");
-		
-		
-		String[] polygon = {"-122.3876953125","37.80869897600677","-122.3876953125","36.75979104322286","-123.55224609375","36.75979104322286",
-				"-123.55224609375","37.80869897600677","-122.3876953125","37.80869897600677"};
-
-		assertArrayEquals(polygon, filter);
+		assertEquals("carvin:* & rebecca:* & b.:*", testMvcService.configureContributorFilter(new String[]{"Carvin", " Rebecca B."}));
 	}
 
 	@Test
@@ -278,12 +265,13 @@ public class MvcServiceTest {
 		assertEquals(2, filters.keySet().size());
 		assertTrue(filters.containsKey(MpPublicationDao.SEARCH_TERMS));
 		Object[] searchTerms = (Object[]) filters.get(MpPublicationDao.SEARCH_TERMS);
-		assertEquals(2, searchTerms.length);
+		assertEquals(3, searchTerms.length);
 		assertEquals("turtles", searchTerms[0].toString());
-		assertEquals("loggerhead", searchTerms[1].toString());
+		assertEquals("and", searchTerms[1].toString());
+		assertEquals("loggerhead", searchTerms[2].toString());
 		assertTrue(filters.containsKey(MpPublicationDao.SEARCH_TERMS));
 		String q = (String) filters.get(PublicationDao.Q);
-		assertEquals("$turtles and $loggerhead", q);
+		assertEquals("turtles:* & and:* & loggerhead:*", q);
 
 		filters = testMvcService.configureSingleSearchFilters("turtles-loggerhead");
 		assertEquals(2, filters.keySet().size());
@@ -294,7 +282,7 @@ public class MvcServiceTest {
 		assertEquals("loggerhead", searchTerms[1].toString());
 		assertTrue(filters.containsKey(MpPublicationDao.SEARCH_TERMS));
 		q = (String) filters.get(PublicationDao.Q);
-		assertEquals("$turtles and $loggerhead", q);
+		assertEquals("turtles:* & loggerhead:*", q);
 	}
 
 	@Test

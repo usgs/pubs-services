@@ -46,7 +46,7 @@ public class PublicationTypeDaoTest extends BaseSpringTest {
 		assertEquals(pubTypeCnt, pubTypes.size());
 
 		Map<String, Object> filters = new HashMap<>();
-		filters.put("id", "16");
+		filters.put("id", 16);
 		pubTypes = PublicationType.getDao().getByMap(filters);
 		assertEquals(1, pubTypes.size());
 		assertEquals(16, pubTypes.get(0).getId().intValue());

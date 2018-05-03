@@ -7,9 +7,9 @@
         <id property="id" column="contributor_id"/>
         <result property="corporation" column="is_corporation"/>
         <result property="usgs" column="is_usgs"/>
-        <discriminator javaType="String" column="is_corporation">
-            <case value="Y" resultMap="corporateResult"/>
-            <case value="N" resultMap="personResult"/>
+        <discriminator javaType="boolean" column="is_corporation">
+            <case value="true" resultMap="corporateResult"/>
+            <case value="false" resultMap="personResult"/>
         </discriminator>
     </resultMap>
 
@@ -25,9 +25,9 @@
         <result property="orcid" column="orcid"/>
         <result property="preferred" column="is_preferred"/>
         <collection property="affiliations" column="contributor_id" select="affiliation.getByContributor"/>
-        <discriminator javaType="String" column="is_usgs">
-            <case value="Y" resultMap="usgsResult"/>
-            <case value="N" resultMap="outsideResult"/>
+        <discriminator javaType="boolean" column="is_usgs">
+            <case value="true" resultMap="usgsResult"/>
+            <case value="false" resultMap="outsideResult"/>
         </discriminator>
     </resultMap>
 
@@ -50,8 +50,8 @@
 
     <sql id="baseHosts">
         #{id,jdbcType=NUMERIC},
-        #{corporation,jdbcType=VARCHAR},
-        #{usgs,jdbcType=VARCHAR},
+        #{corporation,jdbcType=BOOLEAN},
+        #{usgs,jdbcType=BOOLEAN},
         <include refid="base.auditHosts"/>
     </sql>
 
@@ -67,12 +67,12 @@
         #{suffix,jdbcType=VARCHAR},
         #{email,jdbcType=VARCHAR},
         #{orcid,jdbcType=VARCHAR},
-        #{preferred,jdbcType=VARCHAR}
+        #{preferred,jdbcType=BOOLEAN}
     </sql>
 
     <sql id="baseSets">
-        is_corporation = #{corporation,jdbcType=VARCHAR},
-        is_usgs = #{usgs,jdbcType=VARCHAR},
+        is_corporation = #{corporation,jdbcType=BOOLEAN},
+        is_usgs = #{usgs,jdbcType=BOOLEAN},
         <include refid="base.auditSets"/>
     </sql>
 
@@ -88,7 +88,7 @@
         suffix = #{suffix,jdbcType=VARCHAR},
         email = #{email,jdbcType=VARCHAR},
         orcid = #{orcid,jdbcType=VARCHAR},
-        is_preferred = #{preferred,jdbcType=VARCHAR}
+        is_preferred = #{preferred,jdbcType=BOOLEAN}
     </sql>
 
     <sql id="filters">
@@ -99,7 +99,7 @@
             and is_preferred = #{preferred}
         </if>
         <if test="text != null">
-            and contains(text, #{text}) > 0
+            and to_tsvector(text) @@ to_tsquery(#{text})
         </if>
         <if test="given != null">
             and upper(given) like upper(#{given}) || '%'
@@ -147,13 +147,13 @@
     <select id="getByIdPersonContributor" parameterType="Integer" resultMap="result">
         <include refid="baseSelect"/>
          where contributor_id = #{value,jdbcType=NUMERIC} and
-               is_corporation = 'N'
+               not is_corporation
     </select>
 
     <select id="getByIdCorporateContributor" parameterType="Integer" resultMap="result">
         <include refid="baseSelect"/>
          where contributor_id = #{value,jdbcType=NUMERIC} and
-               is_corporation = 'Y'
+               is_corporation
     </select>
 
     <select id="getByMap" resultMap="result">
@@ -166,14 +166,14 @@
 
     <select id="getByMapPersonContributor" resultMap="result">
         <include refid="baseSelect"/>
-        where is_corporation = 'N'
+        where not is_corporation
         <include refid="filters"/>
         <include refid="defaultOrderBy"/>
     </select>
 
     <select id="getByMapCorporateContributor" resultMap="result">
         <include refid="baseSelect"/>
-        where is_corporation = 'Y'
+        where is_corporation
         <include refid="filters"/>
         <include refid="defaultOrderBy"/>
     </select>
@@ -182,10 +182,10 @@
         <include refid="baseSelect"/>
         <where>
             <if test="corporation != null">
-                and is_corporation = #{corporation,jdbcType=VARCHAR}
+                and is_corporation = #{corporation,jdbcType=BOOLEAN}
             </if>
             <if test="usgs != null">
-                and is_usgs = #{usgs,jdbcType=VARCHAR}
+                and is_usgs = #{usgs,jdbcType=BOOLEAN}
             </if>
             <if test="orcid != null">
                 and orcid = #{orcid,jdbcType=VARCHAR}
@@ -200,7 +200,7 @@
 
     <insert id="addPersonContributor" parameterType="PersonContributor">
         <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
-            select contributor_seq.nextval id from dual
+            select nextval('contributor_seq')
         </selectKey>
         insert into contributor (<include refid="baseCols"/>,
                                  <include refid="personCols"/>,
@@ -211,7 +211,7 @@
 
     <insert id="addCorporateContributor" parameterType="CorporateContributor">
         <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
-            select contributor_seq.nextval id from dual
+            select nextval('contributor_seq')
         </selectKey>
         insert into contributor (<include refid="baseCols"/>,
                                  <include refid="corpCols"/>,
@@ -239,10 +239,13 @@
          where contributor_id = #{value,jdbcType=NUMERIC}
     </delete>
 
-    <insert id="addAffiliation" parameterType="map" useGeneratedKeys="true" keyProperty="id" keyColumn="contributor_affiliation_id">
+    <insert id="addAffiliation" parameterType="map">
+        <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
+            select nextval('contributor_affiliation_seq')
+        </selectKey>
         insert into contributor_affiliation (<include refid="base.auditCols"/>,
-                                             contributor_id, affiliation_id)
-            values (<include refid="base.auditHosts"/>,#{contributorId,jdbcType=NUMERIC}, #{affiliationId,jdbcType=NUMERIC})
+                                             contributor_affiliation_id, contributor_id, affiliation_id)
+            values (<include refid="base.auditHosts"/>,#{id,jdbcType=NUMERIC},#{contributorId,jdbcType=NUMERIC}, #{affiliationId,jdbcType=NUMERIC})
     </insert>
 
     <delete id="removeAffiliations" parameterType="Integer">

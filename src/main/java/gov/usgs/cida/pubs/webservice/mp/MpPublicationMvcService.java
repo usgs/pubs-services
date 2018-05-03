@@ -156,7 +156,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 	
 		MpPublication rtn = pub;
 		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(publicationId, pub);
-		
+
 		if (null == idNotMatched) {
 			Integer id = PubsUtilities.parseInteger(publicationId);
 			ValidatorResult locked = busService.checkAvailability(id);

@@ -37,7 +37,7 @@
 	"subseriesTitle": "subseries",
 	"chapter": "chapter",
 	"subchapterNumber": "subchapter",
-        "displayTitle": "Display Title",
+	"displayTitle": "Display Title",
 	"title": "Title",
 	"docAbstract": "Abstract Text",
 	"largerWorkType": {
@@ -83,7 +83,7 @@
 	"county": "DANE",
 	"city": "MIDDLETON",
 	"otherGeospatial": "On the moon",
-	"geographicExtents": "{ \"json\": \"extents\" }",
+	"geographicExtents": "{\"type\": \"FeatureCollection\",\"features\": [{\"type\": \"Feature\",\"properties\": {},\"geometry\": {\"type\": \"Polygon\",\"coordinates\": [[[-91.91162109375,45.69850658738846],[-91.91162109375,47.16730970131578],[-90.3955078125,47.16730970131578],[-90.3955078125,45.69850658738846],[-91.91162109375,45.69850658738846]]]}}]}",
 	"volume": "VOL12",
 	"issue": "ISIV",
 	"edition": "Edition X",

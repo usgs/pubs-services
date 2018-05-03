@@ -24,6 +24,7 @@ import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
+import gov.usgs.cida.pubs.webservice.MvcService;
 
 @Category(IntegrationTest.class)
 @DatabaseSetup("classpath:/testCleanup/clearAll.xml")
@@ -61,7 +62,7 @@ public class PublicationDaoTest extends BaseSpringTest {
 		assertEquals(2, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
 
 		filters.clear();
-		filters.put(PublicationDao.INDEX_ID, new int[] { 4 });
+		filters.put(PublicationDao.INDEX_ID, new String[] { "4" });
 		pubs = Publication.getPublicationDao().getByMap(filters);
 		assertEquals(0, pubs.size());
 
@@ -73,7 +74,7 @@ public class PublicationDaoTest extends BaseSpringTest {
 
 		filters.clear();
 		filters.put(PublicationDao.PROD_ID, new int[] { 4 });
-		filters.put(PublicationDao.INDEX_ID, new int[] { 4 });
+		filters.put(PublicationDao.INDEX_ID, new String[] { "4" });
 		filters.put(PublicationDao.IPDS_ID, new String[] {"ipds_id"});
 		pubs = Publication.getPublicationDao().getByMap(filters);
 		assertEquals(0, pubs.size());
@@ -90,7 +91,7 @@ public class PublicationDaoTest extends BaseSpringTest {
 
 		filters.clear();
 		filters.put(MpPublicationDao.GLOBAL, "true");
-		filters.put(PublicationDao.INDEX_ID, new int[] { 4 });
+		filters.put(PublicationDao.INDEX_ID, new String[] { "4" });
 		pubs = Publication.getPublicationDao().getByMap(filters);
 		assertEquals(1, pubs.size());
 		assertEquals(4, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
@@ -105,7 +106,7 @@ public class PublicationDaoTest extends BaseSpringTest {
 		filters.clear();
 		filters.put(MpPublicationDao.GLOBAL, "true");
 		filters.put(PublicationDao.PROD_ID, new int[] { 4 });
-		filters.put(PublicationDao.INDEX_ID, new int[] { 4 });
+		filters.put(PublicationDao.INDEX_ID, new String[] { "4"});
 		filters.put(PublicationDao.IPDS_ID, new String[] {"ipds_id"});
 		pubs = Publication.getPublicationDao().getByMap(filters);
 		assertEquals(1, pubs.size());
@@ -347,33 +348,32 @@ public class PublicationDaoTest extends BaseSpringTest {
 		filters.put(PublicationDao.PUB_ABSTRACT, new String[]{"abstract1", "abstractp"});
 		filters.put(PwPublicationDao.CHORUS, true);
 		filters.put(PublicationDao.CONTRIBUTING_OFFICE, new String[]{"contributingOffice1", "contributingOffice2"});
-		filters.put(PublicationDao.CONTRIBUTOR, "contributor1% and contributor2%");
+		filters.put(PublicationDao.CONTRIBUTOR, "contributor1" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX + MvcService.TEXT_SEARCH_AND + "contributor2" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX);
 		
 		filters.put(PublicationDao.DOI, true);
 
 		filters.put(PublicationDao.END_YEAR, "yearEnd");
-		filters.put(PwPublicationDao.G, new String[]{"polygon"});
+		filters.put(PwPublicationDao.G, SEARCH_POLYGON);
 		filters.put(MpPublicationDao.GLOBAL, "yes");
 		filters.put(PublicationDao.INDEX_ID, new String[]{"indexId1", "indexId2"});
 		filters.put(PublicationDao.IPDS_ID, new String[]{"ipdsId1", "ipdsId2"});
 
-		filters.put(MpPublicationDao.LIST_ID, new String[]{"listId1", "listId2"});
+		filters.put(MpPublicationDao.LIST_ID, new int[]{1, 2});
 		filters.put(PwPublicationDao.MOD_DATE_HIGH, "2012-12-12");
 		filters.put(PwPublicationDao.MOD_DATE_LOW, "2010-10-10");
-		filters.put(PwPublicationDao.MOD_X_DAYS, "3");
+		filters.put(PwPublicationDao.MOD_X_DAYS, 3);
 		filters.put(PublicationDao.ORDER_BY, "title");
 
 		filters.put(BaseDao.PAGE_NUMBER, "66");
-		filters.put(PublicationDao.PAGE_ROW_START, "19");
-		filters.put(PublicationDao.PAGE_SIZE, "54");
-		filters.put(PublicationDao.PROD_ID, new String[]{"1", "2"});
+		filters.put(PublicationDao.PAGE_ROW_START, 19);
+		filters.put(PublicationDao.PAGE_SIZE, 54);
+		filters.put(PublicationDao.PROD_ID, new int[]{1, 2});
 		filters.put(PwPublicationDao.PUB_DATE_HIGH, "2012-12-12");
 
 		filters.put(PwPublicationDao.PUB_DATE_LOW, "2010-10-10");
-		filters.put(PwPublicationDao.PUB_X_DAYS, "1");
+		filters.put(PwPublicationDao.PUB_X_DAYS, 1);
 		filters.put(PublicationDao.Q, "$turtles");
 
-		
 		filters.put(PublicationDao.LINK_TYPE, new String[]{"linkType1", "linkType2"});
 		filters.put(PublicationDao.NO_LINK_TYPE, new String[]{"noLinkType1", "noLinkType2"});
 		filters.put(PublicationDao.REPORT_NUMBER, new String[]{"reportNumber1", "reportNumber2"});
@@ -432,7 +432,7 @@ public class PublicationDaoTest extends BaseSpringTest {
 		assertEquals(2, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
 
 		filters.clear();
-		filters.put(PublicationDao.INDEX_ID, new int[] { 4 });
+		filters.put(PublicationDao.INDEX_ID, new String[] { "4" });
 		pubs = Publication.getPublicationDao().validateByMap(filters);
 		assertEquals(1, pubs.size());
 		assertEquals(4, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
@@ -453,7 +453,7 @@ public class PublicationDaoTest extends BaseSpringTest {
 		filters.clear();
 		filters.put(MpPublicationDao.GLOBAL, "false");
 		filters.put(PublicationDao.PROD_ID, new int[] { 4 });
-		filters.put(PublicationDao.INDEX_ID, new int[] { 4 });
+		filters.put(PublicationDao.INDEX_ID, new String[] { "4" });
 		filters.put(PublicationDao.IPDS_ID, new String[] {"ipds_id"});
 		pubs = Publication.getPublicationDao().validateByMap(filters);
 		assertEquals(1, pubs.size());

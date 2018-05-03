@@ -50,7 +50,7 @@ public class PublishingServiceCenterDaoTest extends BaseSpringTest {
 		assertEquals(PSC_CNT, pscs.size());
 
 		Map<String, Object> filters = new HashMap<>();
-		filters.put(PublishingServiceCenterDao.ID_SEARCH, "1");
+		filters.put(PublishingServiceCenterDao.ID_SEARCH, 1);
 		pscs = PublishingServiceCenter.getDao().getByMap(filters);
 		assertEquals(1, pscs.size());
 		assertPsc1(pscs.get(0));
@@ -59,7 +59,7 @@ public class PublishingServiceCenterDaoTest extends BaseSpringTest {
 		filters.put(PublishingServiceCenterDao.TEXT_SEARCH, "r");
 		pscs = PublishingServiceCenter.getDao().getByMap(filters);
 		assertEquals(PSC_R_CNT, pscs.size());
-		filters.put(PublishingServiceCenterDao.ID_SEARCH, "8");
+		filters.put(PublishingServiceCenterDao.ID_SEARCH, 8);
 		pscs = PublishingServiceCenter.getDao().getByMap(filters);
 		assertEquals(1, pscs.size());
 		assertPsc8(pscs.get(0));

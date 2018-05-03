@@ -325,7 +325,7 @@ public class MpPublicationDaoTest extends BaseSpringTest {
 		assertEquals("On the moon", pub.getOtherGeospatial());
 		assertEquals("VOL123", pub.getVolume());
 		assertEquals("IS IIVI", pub.getIssue());
-		assertEquals("{ \"json\": \"extents\" }", pub.getGeographicExtents());
+		assertEquals(GEOGRAPHIC_EXTENTS, pub.getGeographicExtents());
 		assertEquals("My Contact Info", pub.getContact());
 		assertEquals("Edition X", pub.getEdition());
 		assertEquals("just a little comment", pub.getComments());

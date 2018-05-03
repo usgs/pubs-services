@@ -64,7 +64,7 @@
 	"county": "DANE",
 	"city": "MIDDLETON",
 	"otherGeospatial": "On the moon",
-	"geographicExtents": "{ \"json\": \"extents\" }",
+	"geographicExtents": "{\"type\": \"FeatureCollection\",\"features\": [{\"type\": \"Feature\",\"properties\": {},\"geometry\": {\"type\": \"Polygon\",\"coordinates\": [[[-91.91162109375,45.69850658738846],[-91.91162109375,47.16730970131578],[-90.3955078125,47.16730970131578],[-90.3955078125,45.69850658738846],[-91.91162109375,45.69850658738846]]]}}]}",
 	"validationErrors": [],
 	"indexId": "indexid1",
 	"volume": "VOL12",
@@ -96,5 +96,6 @@
 	"text": "indexid1 - 2001 - Title",
 	"lastModifiedDate": "2015-12-31T12:01:02",
 	"published": true,
-	"sourceDatabase": "mypubs"
+	"sourceDatabase": "mypubs",
+	"noUsgsAuthors": false
 }

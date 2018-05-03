@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import gov.usgs.cida.pubs.aop.ISetDbContext;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.intfc.IPwPublicationDao;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
@@ -49,7 +48,6 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	 * @see gov.usgs.cida.pubs.core.dao.BaseDao#getById(java.lang.Integer)
 	 */
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	@Override
 	public PwPublication getById(Integer domainID) {
 		return (PwPublication) getSqlSession().selectOne(NS + GET_BY_ID, domainID);
@@ -60,7 +58,6 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	 * @see gov.usgs.cida.pubs.dao.BaseDao#getByMap(java.util.Map)
 	 */
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	@Override
 	public PwPublication getByIpdsId(String ipdsId) {
 		return getSqlSession().selectOne(NS + GET_BY_IPDS_ID, ipdsId);
@@ -71,7 +68,6 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	 * @see gov.usgs.cida.pubs.dao.BaseDao#getByMap(java.util.Map)
 	 */
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	@Override
 	public List<PwPublication> getByMap(Map<String, Object> filters) {
 		return getSqlSession().selectList(NS + GET_BY_MAP, filters);
@@ -82,7 +78,6 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	 */
 	@Override
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	public Integer getObjectCount(Map<String, Object> filters) {
 		return getSqlSession().selectOne(NS + GET_COUNT, filters);
 	}
@@ -92,7 +87,6 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	 * @see gov.usgs.cida.pubs.core.dao.intfc.IPwPublicationDao#getByIndexId(java.lang.String)
 	 */
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	@Override
 	public PwPublication getByIndexId(String indexId) {
 		return (PwPublication) getSqlSession().selectOne(NS + GET_BY_INDEX_ID, indexId);

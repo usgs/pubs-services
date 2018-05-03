@@ -30,7 +30,7 @@ public class CrossRefLogDaoTest extends BaseSpringTest {
 	@Test
 	@ExpectedDatabase(assertionMode=DatabaseAssertionMode.NON_STRICT,
 		table="CROSS_REF_LOG",
-		query="select batch_id,prod_id,xmlserialize(content cross_ref_xml no indent) cross_ref_xml from cross_ref_log order by 1",
+		query="select batch_id,prod_id,xmlserialize(content cross_ref_xml as text) cross_ref_xml from cross_ref_log order by 1",
 		value="classpath:/testResult/xrefLog.xml")
 	public void testCreate() {
 		CrossRefLog log = new CrossRefLog();
@@ -38,7 +38,7 @@ public class CrossRefLogDaoTest extends BaseSpringTest {
 		log.setProdId("456");
 		log.setCrossrefXml("<root/>");
 		crossRefLogDao.add(log);
-		
+
 		log = new CrossRefLog("abc", 666, "<root2/>");
 		crossRefLogDao.add(log);
 	}

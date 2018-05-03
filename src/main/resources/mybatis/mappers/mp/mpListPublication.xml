@@ -3,78 +3,78 @@
 
 <mapper namespace="mpListPublication">
 
-	<resultMap id="mpListPublicationResult" type="mpListPublication" extends="base.result">
-		<id property="id" column="mp_list_publication_id"/>
+    <resultMap id="mpListPublicationResult" type="mpListPublication" extends="base.result">
+        <id property="id" column="mp_list_publication_id"/>
         <association property="mpList" column="mp_list_id" select="mpList.getById"/>
         <association property="mpPublication" column="publication_id" select="mpPublication.getById"/>
-	</resultMap>
+    </resultMap>
 
-	<sql id="cols">
-		mp_list_publication_id, mp_list_id, publication_id,
+    <sql id="cols">
+        mp_list_publication_id, mp_list_id, publication_id,
         <include refid="base.auditCols"/>
-	</sql>
+    </sql>
 
-	<sql id="hosts">
-		#{id,jdbcType=NUMERIC},
-		#{mpList.id,jdbcType=NUMERIC},
-		#{mpPublication.id,jdbcType=NUMERIC},
+    <sql id="hosts">
+        #{id,jdbcType=INTEGER},
+        #{mpList.id,jdbcType=INTEGER},
+        #{mpPublication.id,jdbcType=INTEGER},
         <include refid="base.auditHosts"/>
-	</sql>
+    </sql>
 
-	<sql id="sets">
-		mp_list_id = #{mpList.id,jdbcType=NUMERIC},
-		publication_id = #{mpPublication.id,jdbcType=NUMERIC},
+    <sql id="sets">
+        mp_list_id = #{mpList.id,jdbcType=INTEGER},
+        publication_id = #{mpPublication.id,jdbcType=INTEGER},
         <include refid="base.auditSets"/>
-	</sql>
+    </sql>
 
-	<insert id="add" parameterType="mpListPublication">
-		<selectKey keyProperty="id" resultType="Integer" order="BEFORE">
-			select mp_list_publication_seq.nextval id from dual
-		</selectKey>
-		insert into mp_list_publication (<include refid="cols"/>)
-			values (<include refid="hosts"/>)
-	</insert>
+    <insert id="add" parameterType="mpListPublication">
+        <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
+            select nextval('mp_list_publication_seq')
+        </selectKey>
+        insert into mp_list_publication (<include refid="cols"/>)
+            values (<include refid="hosts"/>)
+    </insert>
 
-	<sql id="baseSelect">
-		select <include refid="cols"/>
-		  from mp_list_publication
-	</sql>
+    <sql id="baseSelect">
+        select <include refid="cols"/>
+          from mp_list_publication
+    </sql>
 
-	<sql id="filters">
-		<where>
-			<if test="publicationId != null">
-				and publication_id = #{publicationId}
-			</if>
-			<if test="mpListId != null">
-				and mp_list_id = #{mpListId}
-			</if>
-		</where>
-	</sql>
+    <sql id="filters">
+        <where>
+            <if test="publicationId != null">
+                and publication_id = #{publicationId}
+            </if>
+            <if test="mpListId != null">
+                and mp_list_id = #{mpListId}
+            </if>
+        </where>
+    </sql>
 
-	<select id="getById" parameterType="Integer" resultMap="mpListPublicationResult">
-		<include refid="baseSelect"/>
-		 where mp_list_publication_id = #{id,jdbcType=NUMERIC}
-	</select>
+    <select id="getById" parameterType="Integer" resultMap="mpListPublicationResult">
+        <include refid="baseSelect"/>
+         where mp_list_publication_id = #{id,jdbcType=INTEGER}
+    </select>
 
-	<select id="getByMap" parameterType="Integer" resultMap="mpListPublicationResult">
-		<include refid="baseSelect"/>
-		<include refid="filters"/>
-	</select>
+    <select id="getByMap" parameterType="Integer" resultMap="mpListPublicationResult">
+        <include refid="baseSelect"/>
+        <include refid="filters"/>
+    </select>
 
-	<update id="update" parameterType="mpListPublication">
-		update mp_list_publication
-		   set <include refid="sets"/>
-		 where mp_list_publication_id = #{id,jdbcType=NUMERIC}
-	</update>
-	
-	<delete id="delete" parameterType="Integer">
-		delete from mp_list_publication
-		 where mp_list_publication_id = #{value,jdbcType=NUMERIC}
-	</delete>
+    <update id="update" parameterType="mpListPublication">
+        update mp_list_publication
+           set <include refid="sets"/>
+         where mp_list_publication_id = #{id,jdbcType=INTEGER}
+    </update>
+    
+    <delete id="delete" parameterType="Integer">
+        delete from mp_list_publication
+         where mp_list_publication_id = #{value,jdbcType=INTEGER}
+    </delete>
 
-	<delete id="deleteByParent" parameterType="Integer">
-		delete from mp_list_publication
-		 where publication_id = #{value,jdbcType=NUMERIC}
-	</delete>
+    <delete id="deleteByParent" parameterType="Integer">
+        delete from mp_list_publication
+         where publication_id = #{value,jdbcType=INTEGER}
+    </delete>
 
 </mapper>

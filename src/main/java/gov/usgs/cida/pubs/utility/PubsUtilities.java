@@ -1,9 +1,17 @@
 package gov.usgs.cida.pubs.utility;
 
+import java.text.MessageFormat;
+import java.util.Iterator;
+import java.util.Properties;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.SeverityLevel;
-import gov.usgs.cida.pubs.StopWords;
-import gov.usgs.cida.pubs.TextReservedWords;
 import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.ProcessType;
@@ -12,19 +20,6 @@ import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 import gov.usgs.cida.pubs.webservice.security.PubsAuthentication;
 import gov.usgs.cida.pubs.webservice.security.PubsRoles;
-
-import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 
 public final class PubsUtilities {
 
@@ -99,7 +94,7 @@ public final class PubsUtilities {
 	public static Integer parseInteger(final String intString) {
 		return isInteger(intString) ? Integer.parseInt(intString) : null;
 	}
-	
+
 	/**
 	 * @param intString
 	 * @param domainObject
@@ -191,25 +186,6 @@ public final class PubsUtilities {
 			rtn = true;
 		}
 		return rtn;
-	}
-
-	public static List<String> removeStopWords(final String q) {
-		List<String> cleanList = new LinkedList<>();
-		if (StringUtils.isNotBlank(q)) {
-			//Arrays.asList returns a fixed size java.util.Arrays$ArrayList, so we actually need to create a real list to 
-			//be able to remove entries from it.
-			cleanList = new LinkedList<>(Arrays.asList(q.trim().toLowerCase().split(PubsConstants.SEARCH_TERMS_SPLIT_REGEX)));
-			cleanList.removeAll(StopWords.STOP_WORD_LIST);
-		}
-		return cleanList;
-	}
-
-	public static String escapeReservedWord(final String q) {
-		if (null != q && TextReservedWords.WORDLIST.contains(q)) {
-			return "{" + q + "}";
-		} else {
-			return q;
-		}
 	}
 
 	public static String getAuthorKey() {

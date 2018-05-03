@@ -5,42 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.IntegrationTest;
-import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.SeverityLevel;
-import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
-import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
-import gov.usgs.cida.pubs.dao.PublicationDao;
-import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
-import gov.usgs.cida.pubs.dao.mp.MpPublicationLinkDao;
-import gov.usgs.cida.pubs.domain.Contributor;
-import gov.usgs.cida.pubs.domain.ContributorType;
-import gov.usgs.cida.pubs.domain.CostCenter;
-import gov.usgs.cida.pubs.domain.LinkType;
-import gov.usgs.cida.pubs.domain.ProcessType;
-import gov.usgs.cida.pubs.domain.Publication;
-import gov.usgs.cida.pubs.domain.PublicationContributor;
-import gov.usgs.cida.pubs.domain.PublicationCostCenter;
-import gov.usgs.cida.pubs.domain.PublicationIndex;
-import gov.usgs.cida.pubs.domain.PublicationLink;
-import gov.usgs.cida.pubs.domain.PublicationSeries;
-import gov.usgs.cida.pubs.domain.PublicationSubtype;
-import gov.usgs.cida.pubs.domain.PublicationType;
-import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
-import gov.usgs.cida.pubs.domain.mp.MpList;
-import gov.usgs.cida.pubs.domain.mp.MpListPublication;
-import gov.usgs.cida.pubs.domain.mp.MpPublication;
-import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
-import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
-import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
-import gov.usgs.cida.pubs.domain.pw.PwPublication;
-import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
-import gov.usgs.cida.pubs.utility.PubsUtilitiesTest;
-import gov.usgs.cida.pubs.validation.BaseValidatorTest;
-import gov.usgs.cida.pubs.validation.ValidationResults;
-import gov.usgs.cida.pubs.validation.ValidatorResult;
-import gov.usgs.cida.pubs.webservice.security.PubsRoles;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,6 +24,42 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
+
+import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.IntegrationTest;
+import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.SeverityLevel;
+import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
+import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
+import gov.usgs.cida.pubs.dao.PublicationDao;
+import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
+import gov.usgs.cida.pubs.dao.mp.MpPublicationLinkDao;
+import gov.usgs.cida.pubs.domain.Contributor;
+import gov.usgs.cida.pubs.domain.ContributorType;
+import gov.usgs.cida.pubs.domain.CostCenter;
+import gov.usgs.cida.pubs.domain.LinkType;
+import gov.usgs.cida.pubs.domain.ProcessType;
+import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.PublicationContributor;
+import gov.usgs.cida.pubs.domain.PublicationCostCenter;
+import gov.usgs.cida.pubs.domain.PublicationLink;
+import gov.usgs.cida.pubs.domain.PublicationSeries;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
+import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
+import gov.usgs.cida.pubs.domain.mp.MpList;
+import gov.usgs.cida.pubs.domain.mp.MpListPublication;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
+import gov.usgs.cida.pubs.domain.pw.PwPublication;
+import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
+import gov.usgs.cida.pubs.utility.PubsUtilitiesTest;
+import gov.usgs.cida.pubs.validation.BaseValidatorTest;
+import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
+import gov.usgs.cida.pubs.webservice.security.PubsRoles;
 
 @Category(IntegrationTest.class)
 @DatabaseSetups({
@@ -653,12 +653,11 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
 	@Test
 	public void setList2Test() {
 		//NPE tests
-		busService.setList(null, null);
-		MpPublication mpPub = new MpPublication();
-		busService.setList(mpPub, null);
-		mpPub.setId(1);
-		busService.setList(mpPub, null);
 		busService.setList(null, MpList.IPDS_OTHER_PUBS);
+		MpPublication mpPub = new MpPublication();
+		busService.setList(mpPub, MpList.IPDS_OTHER_PUBS);
+		mpPub.setId(1);
+		busService.setList(mpPub, MpList.IPDS_OTHER_PUBS);
 
 		//New List
 		mpPub = MpPublicationDaoTest.addAPub(MpPublication.getDao().getNewProdId());
@@ -691,15 +690,15 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
 		boolean got_website = false;
 
 		for (MpListPublication list : lists) {
-			if (MpList.IPDS_JOURNAL_ARTICLES.contentEquals(list.getMpList().getId().toString())) {
+			if (MpList.IPDS_JOURNAL_ARTICLES == list.getMpList().getId()) {
 				got_journal = true;
-			} else 	if (MpList.IPDS_OTHER_PUBS.contentEquals(list.getMpList().getId().toString())) {
+			} else if (MpList.IPDS_OTHER_PUBS == list.getMpList().getId()) {
 				got_other = true;
-			} else 	if (MpList.PENDING_USGS_SERIES.contentEquals(list.getMpList().getId().toString())) {
+			} else if (MpList.PENDING_USGS_SERIES == list.getMpList().getId()) {
 				got_pending = true;
-			} else 	if (MpList.IPDS_USGS_NUMBERED_SERIES.contentEquals(list.getMpList().getId().toString())) {
+			} else if (MpList.IPDS_USGS_NUMBERED_SERIES == list.getMpList().getId()) {
 				got_numbered = true;
-			} else 	if (MpList.USGS_DATA_RELEASES.contentEquals(list.getMpList().getId().toString())) {
+			} else if (MpList.USGS_DATA_RELEASES == list.getMpList().getId()) {
 				got_website = true;
 			}
 		}
@@ -763,9 +762,6 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
 		//Link count is one more than in the dataset.xml because a default thumbnail is added by the service.
 		assertEquals(2, pub.getLinks().size());
 		assertEquals(1, pub.getCostCenters().size());
-		PublicationIndex pi = PublicationIndex.getDao().getById(2);
-		assertNotNull(pi);
-		assertEquals("display title title the abstract subseries title series number 2 ipdsid Report USGS Numbered Series Professional Paper PP ConFamily, ConGiven, ConSuffix US Geological Survey Ice Survey Team xAffiliation Cost Center 4    ", pi.getQ());
 
 		assertMpPublicationDeleted(2);
 	}
@@ -782,9 +778,6 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
 		//Link count is one more than in the dataset.xml because a default thumbnail is added by the service.
 		assertEquals(2, pub.getLinks().size());
 		assertEquals(1, pub.getCostCenters().size());
-		PublicationIndex pi = PublicationIndex.getDao().getById(2);
-		assertNotNull(pi);
-		assertEquals("display title title the abstract subseries title series number 2 ipdsid Report USGS Numbered Series Professional Paper PP ConFamily, ConGiven, ConSuffix US Geological Survey Ice Survey Team xAffiliation Cost Center 4    ", pi.getQ());
 
 		//Still in MP
 		MpPublication mpPub = MpPublication.getDao().getById(2);

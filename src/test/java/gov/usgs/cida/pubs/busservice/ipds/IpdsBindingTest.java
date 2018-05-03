@@ -6,9 +6,11 @@ import static org.junit.Assert.assertNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Before;
@@ -21,7 +23,6 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.IntegrationTest;
-import gov.usgs.cida.pubs.PubMap;
 import gov.usgs.cida.pubs.dao.ipds.IpdsMessageLogDaoTest;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.ProcessType;
@@ -102,7 +103,7 @@ public class IpdsBindingTest extends BaseIpdsTest {
 
 	@Test
 	public void bindPublishedURLTest() {
-		PubMap pubMap = new PubMap();
+		Map<String, Object> pubMap = new HashMap<>();
 		assertNull(binding.bindPublishedURL(null));
 		assertNull(binding.bindPublishedURL(pubMap));
 		pubMap.put(IpdsMessageLog.PUBLISHEDURL, null);
@@ -160,11 +161,11 @@ public class IpdsBindingTest extends BaseIpdsTest {
 
 	@Test
 	public void getSeriesTitlePubMapTest() {
-		PubMap pubMap = null;
+		Map<String, Object> pubMap = null;
 		PublicationSubtype subtype = new PublicationSubtype();
 		assertNull(binding.getSeriesTitle(null, pubMap));
 		assertNull(binding.getSeriesTitle(subtype, pubMap));
-		pubMap = new PubMap();
+		pubMap = new HashMap<>();
 		assertNull(binding.getSeriesTitle(subtype, pubMap));
 		assertNull(binding.getSeriesTitle(null, pubMap));
 
@@ -197,7 +198,7 @@ public class IpdsBindingTest extends BaseIpdsTest {
 
 	@Test
 	public void bindPublicationTest() {
-		PubMap pubMap = new PubMap();
+		Map<String, Object> pubMap = new HashMap<>();
 		assertNull(binding.bindPublication(null, IpdsProcessTest.TEST_IPDS_CONTEXT));
 		assertNull(binding.bindPublication(pubMap, IpdsProcessTest.TEST_IPDS_CONTEXT));
 
@@ -220,7 +221,7 @@ public class IpdsBindingTest extends BaseIpdsTest {
 
 	@Test
 	public void getStringValueTest() {
-		PubMap pubMap = new PubMap();
+		Map<String, Object> pubMap = new HashMap<>();
 		assertNull(binding.getStringValue(null, null));
 		assertNull(binding.getStringValue(pubMap, null));
 		assertNull(binding.getStringValue(pubMap, "xx"));

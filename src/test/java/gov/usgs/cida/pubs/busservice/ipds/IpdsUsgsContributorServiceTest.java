@@ -6,7 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -211,13 +211,13 @@ public class IpdsUsgsContributorServiceTest extends BaseIpdsTest {
 		ipdsUsgsContributorService = new IpdsUsgsContributorService(ipdsParser, ipdsWsRequester, mockCostCenterService, personContributorBusService);
 		CostCenter ccOne = new CostCenter();
 		ccOne.setId(1);
-		when(mockCostCenterService.getCostCenter(anyString())).thenReturn(null);
-		when(mockCostCenterService.createCostCenter(anyString())).thenReturn(ccOne);
+		when(mockCostCenterService.getCostCenter(anyInt())).thenReturn(null);
+		when(mockCostCenterService.createCostCenter(anyInt())).thenReturn(ccOne);
 		Document d = ipdsParser.makeDocument("<root><d:CostCenter>1</d:CostCenter></root>");
 		CostCenter costCenter = ipdsUsgsContributorService.getCostCenter(d.getDocumentElement());
 		assertEquals(1, costCenter.getId().intValue());
-		verify(mockCostCenterService).getCostCenter(anyString());
-		verify(mockCostCenterService).createCostCenter(anyString());
+		verify(mockCostCenterService).getCostCenter(anyInt());
+		verify(mockCostCenterService).createCostCenter(anyInt());
 	}
 
 
@@ -226,12 +226,12 @@ public class IpdsUsgsContributorServiceTest extends BaseIpdsTest {
 		ipdsUsgsContributorService = new IpdsUsgsContributorService(ipdsParser, ipdsWsRequester, mockCostCenterService, personContributorBusService);
 		CostCenter ccOne = new CostCenter();
 		ccOne.setId(1);
-		when(mockCostCenterService.getCostCenter(anyString())).thenReturn(ccOne);
+		when(mockCostCenterService.getCostCenter(anyInt())).thenReturn(ccOne);
 		Document d = ipdsParser.makeDocument("<root><d:CostCenter>1</d:CostCenter></root>");
 		CostCenter costCenter = ipdsUsgsContributorService.getCostCenter(d.getDocumentElement());
 		assertEquals(1, costCenter.getId().intValue());
-		verify(mockCostCenterService).getCostCenter(anyString());
-		verify(mockCostCenterService, never()).createCostCenter(anyString());
+		verify(mockCostCenterService).getCostCenter(anyInt());
+		verify(mockCostCenterService, never()).createCostCenter(anyInt());
 	}
 
 	@Test
@@ -240,8 +240,8 @@ public class IpdsUsgsContributorServiceTest extends BaseIpdsTest {
 		Document d = ipdsParser.makeDocument("<root></root>");
 		CostCenter costCenter = ipdsUsgsContributorService.getCostCenter(d.getDocumentElement());
 		assertNull(costCenter);
-		verify(mockCostCenterService, never()).getCostCenter(anyString());
-		verify(mockCostCenterService, never()).createCostCenter(anyString());
+		verify(mockCostCenterService, never()).getCostCenter(anyInt());
+		verify(mockCostCenterService, never()).createCostCenter(anyInt());
 	}
 
 	@Test

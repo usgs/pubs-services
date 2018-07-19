@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +13,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.validation.Validator;
 
@@ -404,7 +406,16 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
 		//Check CostCenters merged
 		pub = busService.getObject(1);
 		Collection<PublicationCostCenter<?>> costCenters = pub.getCostCenters();
-		costCenters.remove(costCenters.toArray()[0]);
+
+		Optional<PublicationCostCenter<?>> cc1 = costCenters.parallelStream()
+				.filter(x -> x.getId() == 1)
+				.findFirst();
+		if (cc1.isPresent()) {
+			costCenters.remove(cc1.get());
+		} else {
+			fail("database not set up properly - missing coster center 1");
+		}
+
 		MpPublicationCostCenter cc = new MpPublicationCostCenter();
 		cc.setCostCenter((CostCenter) CostCenter.getDao().getById(4));
 		costCenters.add(cc);

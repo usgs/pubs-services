@@ -278,7 +278,7 @@
                  on pub.larger_work_type_id = larger_work_type.publication_type_id
                left join publication_subtype larger_work_subtype
                  on pub.larger_work_subtype_id = larger_work_subtype.publication_subtype_id
-               left join (select publication_id, string_agg(name, '; ')cost_centers
+               left join (select publication_id, string_agg(name, '; ' order by name)cost_centers
                             from publication_cost_center
                                  join affiliation
                                    on publication_cost_center.cost_center_id = affiliation.affiliation_id

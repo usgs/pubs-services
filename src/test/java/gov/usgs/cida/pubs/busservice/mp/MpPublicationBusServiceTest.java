@@ -438,7 +438,16 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
 		//Check Links merged
 		pub = busService.getObject(1);
 		Collection<PublicationLink<?>> links = pub.getLinks();
-		links.remove(links.toArray()[0]);
+
+		Optional<PublicationLink<?>> pl1 = links.parallelStream()
+				.filter(x -> x.getRank() == 1)
+				.findFirst();
+		if (pl1.isPresent()) {
+			links.remove(pl1.get());
+		} else {
+			fail("database not set up properly - missing publication link with rank 1");
+		}
+
 		MpPublicationLink link = new MpPublicationLink();
 		link.setPublicationId(1);
 		link.setRank(3);
@@ -466,7 +475,16 @@ public class MpPublicationBusServiceTest extends BaseSpringTest {
 		//Check Contributors merged
 		pub = busService.getObject(1);
 		Collection<PublicationContributor<?>> contributors = pub.getContributors();
-		contributors.remove(contributors.toArray()[0]);
+
+		Optional<PublicationContributor<?>> pc1 = contributors.parallelStream()
+				.filter(x -> x.getContributor().getId() == 1)
+				.findFirst();
+		if (pc1.isPresent()) {
+			contributors.remove(pc1.get());
+		} else {
+			fail("database not set up properly - missing publication contributor 1");
+		}
+
 		MpPublicationContributor author = new MpPublicationContributor();
 		author.setPublicationId(1);
 		author.setContributorType(ContributorType.getDao().getById(ContributorType.AUTHORS));

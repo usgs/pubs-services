@@ -281,13 +281,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <configuration>
-                    <environmentVariables>
-                        <wqpUrl>${wqpCore.url}</wqpUrl>
-                        <wqpOwnerUsername>${wqpCore.username}</wqpOwnerUsername>
-                        <wqpOwnerPassword>${wqpCore.password}</wqpOwnerPassword>
-                    </environmentVariables>
-                </configuration>
+<!--                 <configuration> -->
+<!--                     <environmentVariables> -->
+<!--                     </environmentVariables> -->
+<!--                 </configuration> -->
                 <executions>
                     <execution>
                         <goals>

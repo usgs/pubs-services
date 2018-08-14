@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
@@ -43,8 +44,7 @@ import gov.usgs.cida.pubs.validation.constraint.PublishChecks;
 @Service
 public class MpPublicationBusService extends MpBusService<MpPublication> implements IMpPublicationBusService {
 
-	//This can/should be overridden from JNDI. 
-	protected Integer lockTimeoutHours = PubsConstants.DEFAULT_LOCK_TIMEOUT_HOURS;
+	protected ConfigurationService configurationService;
 
 	private final ICrossRefBusService crossRefBusService;
 
@@ -54,28 +54,22 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 
 	protected final IListBusService<PublicationContributor<MpPublicationContributor>> contributorBusService;
 
-	protected final String warehouseEndpoint;
-
 	@Autowired
 	MpPublicationBusService(final Validator validator,
-			@Qualifier("lockTimeoutHours")
-			final Integer lockTimeoutHours,
+			final ConfigurationService configurationService,
 			final ICrossRefBusService crossRefBusService,
 			@Qualifier("mpPublicationCostCenterBusService")
 			IListBusService<PublicationCostCenter<MpPublicationCostCenter>> costCenterBusService,
 			@Qualifier("mpPublicationLinkBusService")
 			IListBusService<PublicationLink<MpPublicationLink>> linkBusService,
 			@Qualifier("mpPublicationContributorBusService")
-			IListBusService<PublicationContributor<MpPublicationContributor>> contributorBusService,
-			@Qualifier("warehouseEndpoint")
-			final String warehouseEndpoint) {
-		this.lockTimeoutHours = lockTimeoutHours;
+			IListBusService<PublicationContributor<MpPublicationContributor>> contributorBusService) {
+		this.configurationService = configurationService;
 		this.validator = validator;
 		this.crossRefBusService = crossRefBusService;
 		this.costCenterBusService = costCenterBusService;
 		this.linkBusService = linkBusService;
 		this.contributorBusService = contributorBusService;
-		this.warehouseEndpoint = warehouseEndpoint;
 	}
 
 	@Override
@@ -299,9 +293,9 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 				thumbnail.setLinkType(LinkType.getDao().getById(LinkType.THUMBNAIL.toString()));
 				if (PubsUtilities.isUsgsNumberedSeries(mpPub.getPublicationSubtype())
 						|| PubsUtilities.isUsgsUnnumberedSeries(mpPub.getPublicationSubtype())) {
-					thumbnail.setUrl(warehouseEndpoint + MpPublicationLink.USGS_THUMBNAIL);
+					thumbnail.setUrl(configurationService.getWarehouseEndpoint() + MpPublicationLink.USGS_THUMBNAIL);
 				} else {
-					thumbnail.setUrl(warehouseEndpoint + MpPublicationLink.EXTERNAL_THUMBNAIL);
+					thumbnail.setUrl(configurationService.getWarehouseEndpoint() + MpPublicationLink.EXTERNAL_THUMBNAIL);
 				}
 				MpPublicationLink.getDao().add(thumbnail);
 			}
@@ -362,7 +356,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 				if (PubsUtilities.getUsername().equalsIgnoreCase(mpPub.getLockUsername())) {
 					//Yes, this user locked it so we are ok to edit.
 					available = true;
-				} else if (null == mpPub.getUpdateDate() || 0 < now.compareTo(mpPub.getUpdateDate().plusHours(lockTimeoutHours))) {
+				} else if (null == mpPub.getUpdateDate() || 0 < now.compareTo(mpPub.getUpdateDate().plusHours(configurationService.getLockTimeoutHours()))) {
 					//The lock has expired, so let this person edit it.
 					available = true;
 				}

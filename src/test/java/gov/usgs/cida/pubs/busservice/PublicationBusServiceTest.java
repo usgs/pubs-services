@@ -1,22 +1,28 @@
 package gov.usgs.cida.pubs.busservice;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
-import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.BaseTest;
+import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.Publication;
@@ -24,26 +30,25 @@ import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
-import java.util.ArrayList;
-import java.util.Collection;
-import static org.junit.Assert.assertEquals;
 
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={ConfigurationService.class})
 //The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
 //for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
-public class PublicationBusServiceTest extends BaseSpringTest {
+@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+public class PublicationBusServiceTest extends BaseTest {
 
+	@Autowired
+	protected ConfigurationService configurationService;
 	protected PublicationBusService service;
 	protected Publication<?> pub;
 	protected Map<String, Object> filters = new HashMap<>();
-	protected final String WAREHOUSE_ENDPOINT = "https://pubs.er.usgs.gov/";
-	@Mock
+	@MockBean
 	protected IPublicationDao publicationDao;
 
 	@Before
 	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
-		service = new PublicationBusService(WAREHOUSE_ENDPOINT);
+		service = new PublicationBusService(configurationService);
 		pub = PwPublicationTest.buildAPub(1);
 		pub.setPublicationDao(publicationDao);
 	}
@@ -72,7 +77,7 @@ public class PublicationBusServiceTest extends BaseSpringTest {
 		assertEquals("", service.getIndexPage(pub));
 		
 		pub.setIndexId("abcdef123");
-		String newUrl = WAREHOUSE_ENDPOINT+"/publication/abcdef123";
+		String newUrl = configurationService.getWarehouseEndpoint()+"/publication/abcdef123";
 		assertEquals(newUrl, service.getIndexPage(pub));
 		
 		Collection<PublicationLink<?>> links = new ArrayList<>();

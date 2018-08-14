@@ -5,10 +5,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.domain.Publication;
-import gov.usgs.cida.pubs.domain.PublicationTest;
-import gov.usgs.cida.pubs.json.View;
 
 import org.json.JSONObject;
 import org.junit.Test;
@@ -17,7 +13,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-public class PwPublicationTest extends BaseSpringTest {
+import gov.usgs.cida.pubs.BaseTest;
+import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.PublicationIT;
+import gov.usgs.cida.pubs.json.View;
+
+public class PwPublicationTest extends BaseTest {
 
 	@Test
 	public void serializePWTest() {
@@ -36,7 +37,7 @@ public class PwPublicationTest extends BaseSpringTest {
 	}
 
 	public static PwPublication buildAPub(final Integer pubId) {
-		PwPublication pub = (PwPublication) PublicationTest.buildAPub(new PwPublication(), pubId);
+		PwPublication pub = (PwPublication) PublicationIT.buildAPub(new PwPublication(), pubId);
 		pub.setScienceBaseUri("http://test.sciencebase.org");
 		Chorus chorus = new Chorus();
 		chorus.setDoi("myDoi");

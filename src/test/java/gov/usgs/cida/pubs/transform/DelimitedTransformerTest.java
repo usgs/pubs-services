@@ -11,7 +11,9 @@ import java.util.Map;
 
 import org.junit.Test;
 
-public class DelimitedTransformerTest {
+import gov.usgs.cida.pubs.BaseTest;
+
+public class DelimitedTransformerTest extends BaseTest {
 
 	@Test
 	public void writeDataTest() {

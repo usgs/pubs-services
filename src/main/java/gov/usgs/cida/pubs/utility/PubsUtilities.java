@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.User;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.domain.BaseDomain;
-import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
@@ -188,11 +187,4 @@ public final class PubsUtilities {
 		return rtn;
 	}
 
-	public static String getAuthorKey() {
-		return ContributorType.getDao().getById(ContributorType.AUTHORS).getText().toLowerCase();
-	}
-
-	public static String getEditorKey() {
-		return ContributorType.getDao().getById(ContributorType.EDITORS).getText().toLowerCase();
-	}
 }

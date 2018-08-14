@@ -11,9 +11,9 @@ import java.util.Arrays;
 import org.springframework.http.HttpHeaders;
 
 import gov.usgs.cida.auth.model.AuthToken;
-import gov.usgs.cida.pubs.dao.CorporateContributorDaoTest;
-import gov.usgs.cida.pubs.dao.mp.MpListDaoTest;
-import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
+import gov.usgs.cida.pubs.dao.CorporateContributorDaoIT;
+import gov.usgs.cida.pubs.dao.mp.MpListDaoIT;
+import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoIT;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
@@ -21,7 +21,7 @@ import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.webservice.mp.MpListMvcServiceTest;
 
-public abstract class EndpointSecurityAuthTest extends BaseEndpointSecurityTest {
+public abstract class EndpointSecurityAuthTest extends BaseEndpointSecurityIT {
 
 	protected HttpHeaders httpHeaders;
 	protected AuthenticationService authService;
@@ -29,8 +29,6 @@ public abstract class EndpointSecurityAuthTest extends BaseEndpointSecurityTest 
 	private TokenSecurityFilter testFilter;
 
 	public void setup() {
-		preSetup();
-
 		//We want to override the TokenSecurityFilter with one that will have the authenticationService mocked to our needs
 		//This is relying on that filter being in the position hard-coded below...
 		authService = new AuthenticationService(mockAuthClient);
@@ -52,21 +50,21 @@ public abstract class EndpointSecurityAuthTest extends BaseEndpointSecurityTest 
 		when(pwPubBusService.getObjects(anyMap())).thenReturn(Arrays.asList(PwPublicationTest.buildAPub(1)));
 		when(pwPubBusService.getByIndexId(anyString())).thenReturn(PwPublicationTest.buildAPub(1));
 
-		when(mpPubBusService.getObject(anyInt())).thenReturn(MpPublicationDaoTest.buildAPub(1));
+		when(mpPubBusService.getObject(anyInt())).thenReturn(MpPublicationDaoIT.buildAPub(1));
 		when(mpPubBusService.checkAvailability(anyInt())).thenReturn(null);
 		when(mpPubBusService.deleteObject(anyInt())).thenReturn(new ValidationResults());
-		when(mpPubBusService.createObject(any(MpPublication.class))).thenReturn(MpPublicationDaoTest.buildAPub(1));
+		when(mpPubBusService.createObject(any(MpPublication.class))).thenReturn(MpPublicationDaoIT.buildAPub(1));
 		when(mpPubBusService.publish(anyInt())).thenReturn(new ValidationResults());
-		when(mpPubBusService.getByIndexId(anyString())).thenReturn(MpPublicationDaoTest.buildAPub(1));
-		when(mpPubBusService.updateObject(any(MpPublication.class))).thenReturn(MpPublicationDaoTest.buildAPub(1));
+		when(mpPubBusService.getByIndexId(anyString())).thenReturn(MpPublicationDaoIT.buildAPub(1));
+		when(mpPubBusService.updateObject(any(MpPublication.class))).thenReturn(MpPublicationDaoIT.buildAPub(1));
 
-		when(corpBusService.getObject(anyInt())).thenReturn(CorporateContributorDaoTest.buildACorp(1));
-		when(corpBusService.createObject(any(CorporateContributor.class))).thenReturn(CorporateContributorDaoTest.buildACorp(1));
-		when(corpBusService.updateObject(any(CorporateContributor.class))).thenReturn(CorporateContributorDaoTest.buildACorp(1));
+		when(corpBusService.getObject(anyInt())).thenReturn(CorporateContributorDaoIT.buildACorp(1));
+		when(corpBusService.createObject(any(CorporateContributor.class))).thenReturn(CorporateContributorDaoIT.buildACorp(1));
+		when(corpBusService.updateObject(any(CorporateContributor.class))).thenReturn(CorporateContributorDaoIT.buildACorp(1));
 
-		when(listBusService.updateObject(any(MpList.class))).thenReturn(MpListDaoTest.buildMpList(66));
+		when(listBusService.updateObject(any(MpList.class))).thenReturn(MpListDaoIT.buildMpList(66));
 		when(listBusService.getObjects(anyMap())).thenReturn(MpListMvcServiceTest.getListOfMpList());
-		when(listBusService.createObject(any(MpList.class))).thenReturn(MpListDaoTest.buildMpList(66));
+		when(listBusService.createObject(any(MpList.class))).thenReturn(MpListDaoIT.buildMpList(66));
 		when(listBusService.deleteObject(anyInt())).thenReturn(new ValidationResults());
 
 		//This gets tricky because the TokeSecurityFilter's AuthenticationService and the

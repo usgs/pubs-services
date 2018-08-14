@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.mp.MpDao;
 
-
 /**
  * @author jrschoen (back in biodata - copied here by drsteini)
  *
@@ -114,7 +113,7 @@ public class DaoAnnotationsTest {
 			}
 		}
 	}
-	
+
 	/**
 	 * Method gets all the classes for a specific package.
 	 * Note: The method changes the path to look at classes not test-classes 

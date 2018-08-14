@@ -15,10 +15,13 @@ import javax.validation.Validator;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.dao.PersonContributorDao;
@@ -28,9 +31,11 @@ import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
 import gov.usgs.cida.pubs.validation.unique.UniqueKeyValidatorForAffiliationTest;
 
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={LocalValidatorFactoryBean.class})
 //The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
 //for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
+@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
 public class AffiliationValidationTest extends BaseValidatorTest {
 
 	public static final String DUPLICATE_TEXT = new ValidatorResult("text", "Affiliation \"abc\" is already in use: id 1.", SeverityLevel.FATAL, null).toString();
@@ -41,9 +46,9 @@ public class AffiliationValidationTest extends BaseValidatorTest {
 	@Autowired
 	public Validator validator;
 
-	@Mock
+	@MockBean
 	protected IDao<CostCenter> affiliationDao;
-	@Mock
+	@MockBean
 	protected PersonContributorDao personContributorDao;
 	protected UsgsContributor contributor;
 

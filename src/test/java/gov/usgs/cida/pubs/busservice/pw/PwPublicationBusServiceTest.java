@@ -13,30 +13,29 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
+import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.dao.intfc.IPwPublicationDao;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 
 //The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
 //for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
-public class PwPublicationBusServiceTest {
+@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+public class PwPublicationBusServiceTest extends BaseTest {
 
 	private PwPublicationBusService service;
 	protected PwPublication pub;
 	protected Map<String, Object> filters = new HashMap<>();
 
-	@Mock
+	@MockBean
 	protected IPwPublicationDao pwPubDao;
 
 	@Before
 	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
 		service = new PwPublicationBusService();
 		pub = PwPublicationTest.buildAPub(1);
 		pub.setPwPublicationDao(pwPubDao);

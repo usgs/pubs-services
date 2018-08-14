@@ -9,6 +9,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.domain.LinkType;
@@ -16,6 +19,8 @@ import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={LocalValidatorFactoryBean.class})
 public class MpPublicationLinkValidationTest extends BaseValidatorTest {
 
 	public static final String NOT_NULL_LINK_TYPE = new ValidatorResult("linkType", NOT_NULL_MSG, SeverityLevel.FATAL, null).toString();

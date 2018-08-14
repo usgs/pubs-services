@@ -24,8 +24,7 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -34,7 +33,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionStatus;
 import org.xml.sax.SAXException;
 
-import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
@@ -56,22 +55,22 @@ import gov.usgs.cida.pubs.validation.ValidatorResult;
 
 //The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
 //for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
-public class IpdsProcessTest extends BaseSpringTest {
+@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+public class IpdsProcessTest extends BaseTest {
 
-	@Mock
+	@MockBean
 	protected ICrossRefBusService crossRefBusService;
-	@Mock
+	@MockBean
 	protected IpdsBinding binder;
-	@Mock
+	@MockBean
 	protected IpdsWsRequester requester;
-	@Mock
+	@MockBean
 	protected IMpPublicationBusService pubBusService;
-	@Mock
+	@MockBean
 	protected IPwPublicationDao publicationDao;
-	@Mock
+	@MockBean
 	protected PlatformTransactionManager transactionManager;
-	@Mock
+	@MockBean
 	protected IpdsMessageLogDao ipdsMessageLogDao;
 
 	protected IpdsProcess ipdsProcess;
@@ -89,7 +88,6 @@ public class IpdsProcessTest extends BaseSpringTest {
 
 	@Before
 	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
 		ipdsProcess = new IpdsProcess(crossRefBusService, binder, requester, pubBusService, transactionManager);
 		resetThreadLocals();
 		pubType = buildPublicationType();

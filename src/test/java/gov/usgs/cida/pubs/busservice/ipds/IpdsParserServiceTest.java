@@ -7,15 +7,23 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import gov.usgs.cida.pubs.IntegrationTest;
+import gov.usgs.cida.pubs.BaseTest;
+import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 
-@Category(IntegrationTest.class)
-public class IpdsParserServiceTest extends BaseIpdsTest {
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={TestSpringConfig.class, IpdsParserService.class//, ConfigurationService.class//DbTestConfig.class, , LocalValidatorFactoryBean.class
+			})
+public class IpdsParserServiceTest extends BaseTest {
+
+	@Autowired
+	protected IpdsParserService ipdsParser;
 
 	@Test
 	public void makeDocumentTest() throws SAXException, IOException {

@@ -12,10 +12,13 @@ import javax.validation.Validator;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
@@ -27,9 +30,11 @@ import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
 import gov.usgs.cida.pubs.validation.unique.UniqueKeyValidatorForPublicationSeriesTest;
 
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={LocalValidatorFactoryBean.class})
 //The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
 //for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
+@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
 public class PublicationSeriesValidationTest extends BaseValidatorTest {
 	@Autowired
 	public Validator validator;
@@ -47,11 +52,11 @@ public class PublicationSeriesValidationTest extends BaseValidatorTest {
 	public static final String INVALID_ONLINE_ISSN_LENGTH = new ValidatorResult("onlineIssn", LENGTH_0_TO_XXX_MSG + "9", SeverityLevel.FATAL, null).toString();
 	public static final String INVALID_PRINT_ISSN_LENGTH = new ValidatorResult("printIssn", LENGTH_0_TO_XXX_MSG + "9", SeverityLevel.FATAL, null).toString();
 
-	@Mock
+	@MockBean
 	protected IDao<PublicationSeries> pubSeriesDao;
-	@Mock
+	@MockBean
 	protected IDao<PublicationSubtype> publicationSubtypeDao;
-	@Mock
+	@MockBean
 	protected IPublicationDao pubDao;
 
 	private PublicationSeries pubSeries;

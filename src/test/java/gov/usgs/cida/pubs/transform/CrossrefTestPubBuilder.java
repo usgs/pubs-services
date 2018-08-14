@@ -1,15 +1,16 @@
 package gov.usgs.cida.pubs.transform;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationContributorTest;
+import gov.usgs.cida.pubs.domain.PublicationIT;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationLinkTest;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
-import gov.usgs.cida.pubs.domain.PublicationTest;
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * Methods in this class generate test Publications that are have sufficient 
@@ -18,7 +19,7 @@ import java.util.Collection;
 public class CrossrefTestPubBuilder {
 
 	public static Publication<?> buildUnNumberedSeriesPub(Publication<?> inPub) {
-		Publication<?> pub = PublicationTest.buildAPub(inPub, 42);
+		Publication<?> pub = PublicationIT.buildAPub(inPub, 42);
 		PublicationSubtype unnumbered = new PublicationSubtype();
 		unnumbered.setId(PublicationSubtype.USGS_UNNUMBERED_SERIES);
 		pub.setPublicationSubtype(unnumbered);
@@ -51,7 +52,7 @@ public class CrossrefTestPubBuilder {
 	}
 
 	public static Publication<?> buildNumberedSeriesPub(Publication<?> inPub) {
-		Publication<?> pub = PublicationTest.buildAPub(inPub, 42);
+		Publication<?> pub = PublicationIT.buildAPub(inPub, 42);
 		PublicationSubtype numbered = new PublicationSubtype();
 		numbered.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
 		pub.setPublicationSubtype(numbered);

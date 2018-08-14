@@ -1,6 +1,5 @@
 package gov.usgs.cida.pubs.webservice.mp;
 
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -17,19 +16,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.SeverityLevel;
-import gov.usgs.cida.pubs.busservice.intfc.IBusService;
-import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
-import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoTest;
-import gov.usgs.cida.pubs.domain.Publication;
-import gov.usgs.cida.pubs.domain.PublicationSubtype;
-import gov.usgs.cida.pubs.domain.PublicationType;
-import gov.usgs.cida.pubs.domain.mp.MpPublication;
-import gov.usgs.cida.pubs.utility.PubsUtilitiesTest;
-import gov.usgs.cida.pubs.validation.ValidationResults;
-import gov.usgs.cida.pubs.validation.ValidatorResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,14 +25,39 @@ import javax.annotation.Resource;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-public class MpPublicationMvcServiceTest extends BaseSpringTest {
+import gov.usgs.cida.pubs.BaseTest;
+import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.SeverityLevel;
+import gov.usgs.cida.pubs.busservice.intfc.IBusService;
+import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoIT;
+import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
+import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.springinit.SpringConfig;
+import gov.usgs.cida.pubs.springinit.TestSpringConfig;
+import gov.usgs.cida.pubs.utility.CustomStringToArrayConverter;
+import gov.usgs.cida.pubs.utility.CustomStringToStringConverter;
+import gov.usgs.cida.pubs.utility.PubsUtilitiesTest;
+import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
+import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
+
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={TestSpringConfig.class, SpringConfig.class, CustomStringToArrayConverter.class,
+			StringArrayCleansingConverter.class, CustomStringToStringConverter.class})
+public class MpPublicationMvcServiceTest extends BaseTest {
 
 	private static final String MP_PUB_1_JSON = "{"
 			+ "\"publicationType\":{\"id\":" + PublicationType.REPORT + "}"
@@ -67,9 +78,12 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 
 	public static final String NO_RECORDS = "{\"pageSize\":\"25\",\"pageRowStart\":\"0\",\"pageNumber\":null,\"recordCount\":0,\"records\":[]}";
 
-	@Mock
+	@Autowired
+	protected MappingJackson2HttpMessageConverter jackson2HttpMessageConverter;
+
+	@MockBean
 	private IBusService<Publication<?>> pubBusService;
-	@Mock
+	@MockBean
 	private IMpPublicationBusService busService;
 
 	@Resource(name="expectedGetMpPub1")
@@ -83,7 +97,6 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 
 	@Before
 	public void setup() {
-		MockitoAnnotations.initMocks(this);
 		mvcService = new MpPublicationMvcService(pubBusService, busService);
 		mockMvc = MockMvcBuilders.standaloneSetup(mvcService).setMessageConverters(jackson2HttpMessageConverter).build();
 
@@ -118,7 +131,7 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 		//Happy Path
 		when(busService.getByIndexId(anyString())).thenReturn(buildAPub(1));
 
-		MvcResult rtn = mockMvc.perform(get("/mppublications/" + MpPublicationDaoTest.MPPUB1_INDEXID
+		MvcResult rtn = mockMvc.perform(get("/mppublications/" + MpPublicationDaoIT.MPPUB1_INDEXID
 				+ "/preview").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -325,13 +338,13 @@ public class MpPublicationMvcServiceTest extends BaseSpringTest {
 	}
 
 	public MpPublication buildAPub(Integer id) {
-		MpPublication pub = MpPublicationDaoTest.buildAPub(id);
+		MpPublication pub = MpPublicationDaoIT.buildAPub(id);
 		return pub;
 	}
 
 	public List<Publication<?>> buildAPubList() {
 		List<Publication<?>> rtn = new ArrayList<>();
-		rtn.add(MpPublicationDaoTest.buildAPub(1));
+		rtn.add(MpPublicationDaoIT.buildAPub(1));
 		return rtn;
 	}
 }

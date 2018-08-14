@@ -1,28 +1,20 @@
 package gov.usgs.cida.pubs.busservice.ipds;
-import org.junit.Before;
-import org.junit.experimental.categories.Category;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.IntegrationTest;
+import gov.usgs.cida.pubs.BaseIT;
 
-@Category(IntegrationTest.class)
-public abstract class BaseIpdsTest extends BaseSpringTest {
+public abstract class BaseIpdsTest extends BaseIT {
 
 	@Autowired
+	@Qualifier("costCenterXml")
 	public String costCenterXml;
 
-	@Mock
+	@MockBean
 	protected IpdsWsRequester ipdsWsRequester;
 
 	@Autowired
 	protected IpdsParserService ipdsParser;
-
-	@Before
-	public void baseIdpsSetup() throws Exception {
-		MockitoAnnotations.initMocks(this);
-	}
 
 }

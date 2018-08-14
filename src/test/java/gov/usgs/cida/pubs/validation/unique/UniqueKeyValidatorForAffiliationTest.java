@@ -6,28 +6,29 @@ import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import gov.usgs.cida.pubs.dao.intfc.IDao;
-import gov.usgs.cida.pubs.domain.CostCenter;
-import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
+import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.domain.CostCenter;
+import gov.usgs.cida.pubs.validation.BaseValidatorTest;
+
 //The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
 //for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
+@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
 public class UniqueKeyValidatorForAffiliationTest extends BaseValidatorTest {
 	
 	protected UniqueKeyValidatorForAffiliation validator;
 	protected CostCenter affiliation;
 
-	@Mock
+	@MockBean
 	protected IDao<CostCenter> affiliationDao;
 
 	@Before

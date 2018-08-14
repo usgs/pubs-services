@@ -56,7 +56,7 @@
         </if>
 
         <if test="null != pub_x_days">
-            and display_to_public_date::date &gt;= (current_date - #{pub_x_days})
+            and display_to_public_date::date &gt;= (current_date - (#{pub_x_days} ||' day')::interval)
         </if>
 
         <if test="null != pub_date_low">
@@ -68,7 +68,7 @@
         </if>
         
         <if test="null != mod_x_days">
-            and display_to_public_date::date &gt;= (current_date - #{mod_x_days})
+            and display_to_public_date::date &gt;= (current_date - (#{mod_x_days} ||' day')::interval)
         </if>
 
         <if test="null != mod_date_low">

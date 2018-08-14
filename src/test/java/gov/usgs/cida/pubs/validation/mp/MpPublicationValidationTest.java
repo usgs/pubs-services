@@ -16,10 +16,13 @@ import javax.validation.groups.Default;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.dao.PublicationDao;
@@ -45,9 +48,11 @@ import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
 import gov.usgs.cida.pubs.validation.constraint.PublishChecks;
 import gov.usgs.cida.pubs.validation.mp.unique.UniqueKeyValidatorForMpPublicationTest;
 
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={LocalValidatorFactoryBean.class})
 //The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
 //for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
+@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
 public class MpPublicationValidationTest extends BaseValidatorTest {
 
 	public static final String NOT_NULL_DISPLAY_TO_PUBLIC_DATE = new ValidatorResult("displayToPublicDate", NOT_NULL_MSG, SeverityLevel.FATAL, null).toString();
@@ -88,7 +93,7 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 	public static final String INVALID_START_PAGE_LENGTH = new ValidatorResult("startPage", LENGTH_0_TO_XXX_MSG + "20", SeverityLevel.FATAL, null).toString();
 	public static final String INVALID_STATE_LENGTH = new ValidatorResult("state", LENGTH_0_TO_XXX_MSG + "500", SeverityLevel.FATAL, null).toString();
 	public static final String INVALID_SUBSERIES_TITLE_LENGTH = new ValidatorResult("subseriesTitle", LENGTH_0_TO_XXX_MSG + "255", SeverityLevel.FATAL, null).toString();
-        public static final String INVALID_DISPLAY_TITLE_LENGTH = new ValidatorResult("displayTitle", LENGTH_1_TO_XXX_MSG + "2000", SeverityLevel.FATAL, null).toString();
+	public static final String INVALID_DISPLAY_TITLE_LENGTH = new ValidatorResult("displayTitle", LENGTH_1_TO_XXX_MSG + "2000", SeverityLevel.FATAL, null).toString();
 	public static final String INVALID_TITLE_LENGTH = new ValidatorResult("title", LENGTH_1_TO_XXX_MSG + "2000", SeverityLevel.FATAL, null).toString();
 	public static final String INVALID_USGS_CITATION_LENGTH = new ValidatorResult("usgsCitation", LENGTH_0_TO_XXX_MSG + "4000", SeverityLevel.FATAL, null).toString();
 	public static final String INVALID_VOLUME_LENGTH = new ValidatorResult("volume", LENGTH_0_TO_XXX_MSG + "50", SeverityLevel.FATAL, null).toString();
@@ -126,15 +131,15 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 	protected Publication<?> sb;
 	protected PublishingServiceCenter psc;
 
-	@Mock
+	@MockBean
 	protected PublicationTypeDao publicationTypeDao;
-	@Mock
+	@MockBean
 	protected PublicationSubtypeDao publicationSubtypeDao;
-	@Mock
+	@MockBean
 	protected PublicationSeriesDao publicationSeriesDao;
-	@Mock
+	@MockBean
 	protected PublicationDao publicationDao;
-	@Mock
+	@MockBean
 	protected PublishingServiceCenterDao publishingServiceCenterDao;
 
 	@Before

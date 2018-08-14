@@ -8,6 +8,7 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -51,6 +52,7 @@ import gov.usgs.cida.pubs.domain.pw.PwPublicationCostCenter;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationLink;
 import gov.usgs.cida.pubs.domain.pw.PwStore;
 
+@Configuration
 public class MybatisConfig {
 
 	@Autowired
@@ -64,7 +66,7 @@ public class MybatisConfig {
 	}
 
 	@Bean
-	public org.apache.ibatis.session.Configuration mybatisConfig() {
+	public org.apache.ibatis.session.Configuration mybatisConfiguration() {
 		org.apache.ibatis.session.Configuration config = new org.apache.ibatis.session.Configuration();
 		config.setCallSettersOnNulls(true);
 		config.setCacheEnabled(false);
@@ -81,7 +83,7 @@ public class MybatisConfig {
 	@Bean
 	public SqlSessionFactoryBean sqlSessionFactory() throws Exception {
 		SqlSessionFactoryBean sqlSessionFactory = new SqlSessionFactoryBean();
-		sqlSessionFactory.setConfiguration(mybatisConfig());
+		sqlSessionFactory.setConfiguration(mybatisConfiguration());
 		sqlSessionFactory.setDataSource(dataSource);
 		Resource[] mappers = new PathMatchingResourcePatternResolver().getResources("mybatis/mappers/**/*.xml");
 		sqlSessionFactory.setMapperLocations(mappers);

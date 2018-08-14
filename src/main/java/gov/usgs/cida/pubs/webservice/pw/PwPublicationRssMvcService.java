@@ -23,12 +23,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
 import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.domain.Contributor;
+import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.Publication;
@@ -36,7 +38,6 @@ import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.webservice.MvcService;
 
 /**
@@ -52,15 +53,14 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 	private static final Logger LOG = LoggerFactory.getLogger(PwPublicationRssMvcService.class);
 
 	private final IPwPublicationBusService busService;
-	private final String warehouseEndpoint;
+	private final ConfigurationService configurationService;
 
 	@Autowired
 	public PwPublicationRssMvcService(@Qualifier("pwPublicationBusService")
 			final IPwPublicationBusService busService,
-			@Qualifier("warehouseEndpoint")
-			final String warehouseEndpoint) {
+			final ConfigurationService configurationService) {
 		this.busService = busService;
-		this.warehouseEndpoint = warehouseEndpoint;
+		this.configurationService = configurationService;
 	}
 
 	@GetMapping
@@ -165,11 +165,11 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 		rssResults.append("<rss version=\"2.0\">\n");
 		rssResults.append("\t<channel>\n");
 		rssResults.append("\t\t<title>USGS Publications Warehouse</title>\n");
-		rssResults.append("\t\t<link>" + warehouseEndpoint + "</link>\n");
+		rssResults.append("\t\t<link>" + configurationService.getWarehouseEndpoint() + "</link>\n");
 		rssResults.append("\t\t<description>New publications of the USGS.</description>\n");
 		rssResults.append("\t\t<language>en-us</language>\n");
 		rssResults.append("\t\t<lastBuildDate>" + todayDate + "</lastBuildDate>\n");
-		rssResults.append("\t\t<webmaster>" + warehouseEndpoint + "/feedback</webmaster>\n");
+		rssResults.append("\t\t<webmaster>" + configurationService.getWarehouseEndpoint() + "/feedback</webmaster>\n");
 		rssResults.append("\t\t<pubDate>" + todayDate + "</pubDate>\n");
 
 		/**
@@ -197,7 +197,7 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 				rssResults.append("\t\t\t<author>");
 				StringBuffer authorship = new StringBuffer();
 				if (null != publication && null != publication.getContributors() && !publication.getContributors().isEmpty()) {
-					List<PublicationContributor<?>> contributors = (List<PublicationContributor<?>>) publication.getContributorsToMap().get(PubsUtilities.getAuthorKey());
+					List<PublicationContributor<?>> contributors = (List<PublicationContributor<?>>) publication.getContributorsToMap().get(ContributorType.AUTHOR_KEY);
 					try {
 						if(contributors != null) {
 							for(int i = 0; i < contributors.size(); i++) {
@@ -265,7 +265,7 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 				rssResults.append("\t\t\t<link>");
 				String pubId = publication.getIndexId();
 				if(pubId != null) {
-					rssResults.append(warehouseEndpoint + "/publication/" + pubId.trim());
+					rssResults.append(configurationService.getWarehouseEndpoint() + "/publication/" + pubId.trim());
 				}
 				rssResults.append("</link>\n");
 

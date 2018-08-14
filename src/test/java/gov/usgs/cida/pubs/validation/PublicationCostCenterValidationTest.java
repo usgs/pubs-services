@@ -10,10 +10,13 @@ import javax.validation.Validator;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
@@ -24,9 +27,11 @@ import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
 import gov.usgs.cida.pubs.validation.mp.unique.UniqueKeyValidatorForMpPublicationCostCenterTest;
 
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={LocalValidatorFactoryBean.class})
 //The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
 //for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
+@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
 public class PublicationCostCenterValidationTest extends BaseValidatorTest {
 	@Autowired
 	public Validator validator;
@@ -36,11 +41,11 @@ public class PublicationCostCenterValidationTest extends BaseValidatorTest {
 	public static final String INVALID_COST_CENTER = new ValidatorResult("costCenter", NO_PARENT_MSG, SeverityLevel.FATAL, null).toString();
 	public static final String NOT_NULL_COST_CENTER = new ValidatorResult("costCenter", NOT_NULL_MSG, SeverityLevel.FATAL, null).toString();
 
-	@Mock
+	@MockBean
 	protected IMpDao<MpPublicationCostCenter> pubCostCenterDao;
-	@Mock
+	@MockBean
 	protected IMpPublicationDao pubDao;
-	@Mock
+	@MockBean
 	protected IDao<CostCenter> costCenterDao;
 
 	private MpPublication pub;

@@ -10,11 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
-@Component
 public class TokenSecurityFilter extends GenericFilterBean {
 	private static final Logger LOG = LoggerFactory.getLogger(TokenSecurityFilter.class);
 
@@ -23,7 +20,6 @@ public class TokenSecurityFilter extends GenericFilterBean {
 	
 	protected final AuthenticationService authenticationService;
 
-	@Autowired
 	public TokenSecurityFilter(AuthenticationService authenticationService) {
 		this.authenticationService = authenticationService;
 	}

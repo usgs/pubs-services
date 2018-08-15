@@ -10,7 +10,7 @@ public class ConfigurationService {
 	private String ipdsPubsWsPwd;
 	@Value("${ipds.pubsWsUser}")
 	private String ipdsPubsWsUser;
-	@Value("${ipdsQueueName}")
+	@Value("${ipds.queueName}")
 	private String ipdsQueueName;
 	@Value("${ipds.endpoint}")
 	private String ipdsEndpoint;

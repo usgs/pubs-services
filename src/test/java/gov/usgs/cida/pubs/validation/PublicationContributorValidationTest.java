@@ -10,10 +10,13 @@ import javax.validation.Validator;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
@@ -26,9 +29,11 @@ import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.validation.mp.unique.UniqueKeyValidatorForMpPublicationContributorTest;
 
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={LocalValidatorFactoryBean.class})
 //The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
 //for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
+@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
 public class PublicationContributorValidationTest extends BaseValidatorTest {
 	@Autowired
 	public Validator validator;
@@ -39,13 +44,13 @@ public class PublicationContributorValidationTest extends BaseValidatorTest {
 	public static final String INVALID_CONTRIBUTOR_TYPE = new ValidatorResult("contributorType", NO_PARENT_MSG, SeverityLevel.FATAL, null).toString();
 	public static final String NOT_NULL_CONTRIBUTOR = new ValidatorResult("contributor", NOT_NULL_MSG, SeverityLevel.FATAL, null).toString();
 
-	@Mock
+	@MockBean
 	protected IDao<Contributor<?>> contributorDao;
-	@Mock
+	@MockBean
 	protected IDao<ContributorType> contributorTypeDao;
-	@Mock
+	@MockBean
 	protected IMpDao<MpPublicationContributor> pubContributorDao;
-	@Mock
+	@MockBean
 	protected IMpPublicationDao pubDao;
 
 	//Using OutsideContributor  because it works easier (all validations are the same via PersonContributor...)

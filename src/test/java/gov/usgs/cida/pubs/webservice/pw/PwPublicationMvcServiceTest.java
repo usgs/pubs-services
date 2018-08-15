@@ -4,11 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,65 +19,79 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.http.entity.mime.MIME;
 import org.apache.ibatis.session.ResultHandler;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.web.accept.ContentNegotiationStrategy;
 
-import gov.usgs.cida.pubs.BaseSpringTest;
+import freemarker.template.Configuration;
+import gov.usgs.cida.pubs.BaseTest;
+import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.dao.ContributorTypeDao;
+import gov.usgs.cida.pubs.dao.ContributorTypeDaoIT;
+import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
-import gov.usgs.cida.pubs.transform.TransformerFactory;
-import gov.usgs.cida.pubs.transform.intfc.ITransformer;
-import java.io.IOException;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import org.springframework.web.accept.ContentNegotiationStrategy;
+import gov.usgs.cida.pubs.springinit.FreemarkerConfig;
+import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 
-public class PwPublicationMvcServiceTest extends BaseSpringTest {
+@Ignore
+@SpringBootTest(webEnvironment=WebEnvironment.MOCK,
+	classes={TestSpringConfig.class, ConfigurationService.class, FreemarkerConfig.class})
+@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+public class PwPublicationMvcServiceTest extends BaseTest {
 
 	@Autowired
-	public String warehouseEndpoint;
-	@Mock
+	public ConfigurationService configurationService;
+
+	@MockBean
 	private IPwPublicationBusService busService;
-	@Mock
-	private PwPublicationMvcService mvcService;
 
+	private PwPublicationMvcService mvcService;
 	private Map<String, Object> filters;
-	
-	@Autowired
+
+	@MockBean
 	private ContentNegotiationStrategy contentStrategy;
-	
-	@Mock
-	private TransformerFactory transformerFactory;
-	
+	@Autowired
+	private Configuration templateConfiguration;
+	@MockBean
+	private IPublicationBusService publicationBusService;
+	private ContributorType contributorType;
+	@MockBean
+	private ContributorTypeDao contributorTypeDao;
+
+
 	@Before
 	public void setup() {
-		MockitoAnnotations.initMocks(this);
-		/**
-		 * Since we're testing the conditional logic of the MvcService,
-		 * rather than the transformation from pub to XML, CSV, etc., we
-		 * always return a no-op transformer from the transformer factory
-		 */
-		when(transformerFactory.getTransformer(anyString(), any(), any())).thenReturn(mock(ITransformer.class));
 		mvcService = new PwPublicationMvcService(
 			busService,
-			warehouseEndpoint,
+			configurationService,
 			contentStrategy,
-			transformerFactory
+			templateConfiguration,
+			publicationBusService
 		);
 
 		filters = new HashMap<>();
 		filters.put(BaseDao.PAGE_SIZE, "13");
 		filters.put(BaseDao.PAGE_ROW_START, "4");
 		filters.put(BaseDao.PAGE_NUMBER, "8");
+		contributorType = new ContributorType();
+		contributorType.setContributorTypeDao(contributorTypeDao);
+		when(contributorTypeDao.getById(ContributorType.AUTHORS)).thenReturn(getAuthor());
+		when(contributorTypeDao.getById(ContributorType.EDITORS)).thenReturn(getEditor());
 	}
 
 	@Test
@@ -149,7 +165,7 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 		verify(busService).stream(eq("pwPublication.getByMap"), anyMap(), any(ResultHandler.class));
 		verify(busService).getObjectCount(anyMap());
 	}
-	
+
 	@Test
 	public void testCrossrefPubNotFound() throws IOException {
 		when(busService.getByIndexId(anyString())).thenReturn(null);
@@ -157,12 +173,12 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 		mvcService.getPwPublicationCrossRef("non-existent pub", response);
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 	}
-	
+
 	@Test
 	public void testCrossrefNonUsgsSeriesPubFound() throws IOException {
 		PwPublication nonUsgsSeriesPub = new PwPublication();
 		PublicationSubtype subtype = new PublicationSubtype();
-		
+
 		//can use any PublicationSubtype other than USGS_NUMBERED_SERIES
 		//and USGS_UNNUMBERED_SERIES
 		subtype.setId(PublicationSubtype.USGS_DATA_RELEASE);
@@ -170,11 +186,11 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 		when(busService.getByIndexId(anyString())).thenReturn(nonUsgsSeriesPub);
 
 		HttpServletResponse response = new MockHttpServletResponse();
-		
+
 		mvcService.getPwPublicationCrossRef("existent non-USGS series pub", response);
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 	}
-	
+
 	@Test
 	public void testCrossrefUsgsSeriesPubFound() throws IOException {
 		/**
@@ -187,10 +203,23 @@ public class PwPublicationMvcServiceTest extends BaseSpringTest {
 		subtype.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
 		usgsSeriesPub.setPublicationSubtype(subtype);
 		when(busService.getByIndexId(anyString())).thenReturn(usgsSeriesPub);
-		
+
 		HttpServletResponse response = new MockHttpServletResponse();
 		mvcService.getPwPublicationCrossRef("existent non-USGS series pub", response);
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
 
+	private ContributorType getAuthor() {
+		ContributorType author = new ContributorType();
+		author.setId(ContributorType.AUTHORS);
+		author.setText(ContributorTypeDaoIT.AUTHOR_KEY);
+		return author;
+	}
+
+	private ContributorType getEditor() {
+		ContributorType editor = new ContributorType();
+		editor.setId(ContributorType.EDITORS);
+		editor.setText(ContributorTypeDaoIT.EDITOR_KEY);
+		return editor;
+	}
 }

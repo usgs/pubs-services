@@ -3,13 +3,13 @@ package gov.usgs.cida.pubs.validation.mp.parent;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
@@ -22,7 +22,7 @@ import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 
 //The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
 //for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
+@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
 public class ParentExistsValidatorForMpListPublicationTest extends BaseValidatorTest {
 
 	protected ParentExistsValidatorForMpListPublication validator;
@@ -30,9 +30,9 @@ public class ParentExistsValidatorForMpListPublicationTest extends BaseValidator
 	protected MpPublication mpPublication;
 	protected MpList mpList;
 
-	@Mock
+	@MockBean
 	protected MpPublicationDao mpPublicationDao;
-	@Mock
+	@MockBean
 	protected MpListDao mpListDao;
 
 	@Before

@@ -1,29 +1,26 @@
 package gov.usgs.cida.pubs.busservice;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationLink;
-import java.util.Collection;
-import java.util.Iterator;
-
-import java.util.List;
-import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
-import org.springframework.stereotype.Service;
 
 @Service
 public class PublicationBusService extends BusService<Publication<?>> implements IPublicationBusService {
-	protected final String warehouseEndpoint;
-	
+	protected final ConfigurationService configurationService;
+
 	@Autowired
-	PublicationBusService(
-		@Qualifier("warehouseEndpoint")
-		String warehouseEndpoint
-	){
-		this.warehouseEndpoint = warehouseEndpoint;
+	PublicationBusService(ConfigurationService configurationService){
+		this.configurationService = configurationService;
 	}
 	
 	@Override
@@ -50,7 +47,7 @@ public class PublicationBusService extends BusService<Publication<?>> implements
 				}
 			}
 			if (rtn.isEmpty() && null != pub.getIndexId()) {
-				rtn = warehouseEndpoint + "/publication/" + pub.getIndexId();
+				rtn = configurationService.getWarehouseEndpoint() + "/publication/" + pub.getIndexId();
 			}
 		}
 		return rtn;

@@ -4,20 +4,16 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
 
 import gov.usgs.cida.auth.client.IAuthClient;
 import gov.usgs.cida.auth.model.AuthToken;
 
-@Service
 public class AuthenticationService {
 	private static final Logger LOG = LoggerFactory.getLogger(AuthenticationService.class);
 
 	protected IAuthClient authClient;
-	
-	@Autowired
+
 	public AuthenticationService(final IAuthClient authClient) {
 		this.authClient = authClient;
 	}

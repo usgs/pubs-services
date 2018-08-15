@@ -10,10 +10,13 @@ import javax.validation.Validator;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
@@ -26,9 +29,11 @@ import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 import gov.usgs.cida.pubs.validation.mp.unique.UniqueKeyValidatorForMpListPublicationTest;
 
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={LocalValidatorFactoryBean.class})
 //The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
 //for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
+@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
 public class MpListPublicationValidationTest extends BaseValidatorTest {
 
 	public static final String DUPLICATE_TEXT = new ValidatorResult("", "Duplicates found", SeverityLevel.FATAL, null).toString();
@@ -38,13 +43,13 @@ public class MpListPublicationValidationTest extends BaseValidatorTest {
 	@Autowired
 	public Validator validator;
 
-	@Mock
+	@MockBean
 	protected IMpDao<MpListPublication> mpListPublicationDao;
-	@Mock
+	@MockBean
 	protected IDao<MpList> mpListDao;
-	@Mock
+	@MockBean
 	protected IMpPublicationDao mpPublicationDao;
-	
+
 	private MpListPublication mpListPublication;
 	private MpList mpList;
 	private MpPublication mpPublication;

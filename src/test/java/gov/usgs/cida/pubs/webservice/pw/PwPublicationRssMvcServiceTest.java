@@ -13,27 +13,32 @@ import javax.annotation.Resource;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.BaseTest;
+import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
+import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 
-public class PwPublicationRssMvcServiceTest extends BaseSpringTest {
-	@Mock
+@SpringBootTest(webEnvironment=WebEnvironment.MOCK,
+	classes={TestSpringConfig.class, ConfigurationService.class})
+public class PwPublicationRssMvcServiceTest extends BaseTest {
+	@MockBean
 	private IPwPublicationBusService busService;
 
 	@Resource(name="expectedGetRssPub")
 	public String expectedGetRssPub;
 
 	@Autowired
-	public String warehouseEndpoint;
+	public ConfigurationService configurationService;
 
 	public String expectedGetPwRssTitle;
 	public String expectedGetPwRssItemTitle;
@@ -45,8 +50,7 @@ public class PwPublicationRssMvcServiceTest extends BaseSpringTest {
 
 	@Before
 	public void setup() {
-		MockitoAnnotations.initMocks(this);
-		mvcRssService = new PwPublicationRssMvcService(busService, warehouseEndpoint);
+		mvcRssService = new PwPublicationRssMvcService(busService, configurationService);
 		mockMvc = MockMvcBuilders.standaloneSetup(mvcRssService).build();
 
 		int titleStart = expectedGetRssPub.indexOf("<title>") + "<title>".length();

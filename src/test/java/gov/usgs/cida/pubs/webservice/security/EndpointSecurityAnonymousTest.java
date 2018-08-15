@@ -4,8 +4,6 @@ import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import gov.usgs.cida.auth.model.AuthToken;
-import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 
 import java.util.Arrays;
 
@@ -13,13 +11,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpHeaders;
 
-public class EndpointSecurityAnonymousTest extends BaseEndpointSecurityTest {
+import gov.usgs.cida.auth.model.AuthToken;
+import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
+
+public class EndpointSecurityAnonymousTest extends BaseEndpointSecurityIT {
 
 	private HttpHeaders httpHeaders;
 
 	@Before
 	public void setup() {
-		preSetup();
 		postSetup();
 	}
 

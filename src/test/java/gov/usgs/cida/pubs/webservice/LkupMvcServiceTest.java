@@ -14,47 +14,54 @@ import java.util.List;
 import org.json.JSONArray;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.BaseTest;
+import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.dao.intfc.IPersonContributorDao;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 
+@EnableWebMvc
+@AutoConfigureMockMvc(secure=false)
+@SpringBootTest(webEnvironment=WebEnvironment.MOCK,
+	classes={ConfigurationService.class, LookupMvcService.class})
 //The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
 //for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
-public class LkupMvcServiceTest extends BaseSpringTest {
+@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+public class LkupMvcServiceTest extends BaseTest {
 
-	@Mock
+	@MockBean
 	IPersonContributorDao personContributorDao;
 	PersonContributor<?> personContributor;
-	MockMvc mockLookup;
+	@Autowired
+	MockMvc mockMvc;
 
 	@Before
 	public void setup() {
-		MockitoAnnotations.initMocks(this);
-		mockLookup = MockMvcBuilders.webAppContextSetup(wac).build();
 		personContributor = new UsgsContributor();
 		personContributor.setPersonContributorDao(personContributorDao);
 	}
 
 	@Test
 	public void getPeopleTest() throws Exception {
-		mockLookup.perform(get("/lookup/people").accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
-		mockLookup.perform(get("/lookup/people?text=a").accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
+		mockMvc.perform(get("/lookup/people").accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
+		mockMvc.perform(get("/lookup/people?text=a").accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
 		when(personContributorDao.getByMap(anyMap())).thenReturn(getPeople());
 
-		MvcResult rtn = mockLookup.perform(get("/lookup/people?text=kr").accept(MediaType.APPLICATION_JSON))
+		MvcResult rtn = mockMvc.perform(get("/lookup/people?text=kr").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))

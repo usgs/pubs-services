@@ -7,11 +7,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONArrayAs;
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.busservice.intfc.IBusService;
-import gov.usgs.cida.pubs.dao.mp.MpListDaoTest;
-import gov.usgs.cida.pubs.domain.mp.MpList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,16 +14,21 @@ import java.util.List;
 import org.json.JSONArray;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-public class MpListMvcServiceTest extends BaseSpringTest {
+import gov.usgs.cida.pubs.BaseTest;
+import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.busservice.intfc.IBusService;
+import gov.usgs.cida.pubs.dao.mp.MpListDaoIT;
+import gov.usgs.cida.pubs.domain.mp.MpList;
 
-	@Mock
+public class MpListMvcServiceTest extends BaseTest {
+
+	@MockBean
 	private IBusService<MpList> busService;
 
 	private MockMvc mockMvc;
@@ -37,7 +37,6 @@ public class MpListMvcServiceTest extends BaseSpringTest {
 	
 	@Before
 	public void setup() {
-		MockitoAnnotations.initMocks(this);
 		mvcService = new MpListMvcService(busService);
 		mockMvc = MockMvcBuilders.standaloneSetup(mvcService).build();
 	}
@@ -58,8 +57,8 @@ public class MpListMvcServiceTest extends BaseSpringTest {
 
 	public static List<MpList> getListOfMpList() {
 		List<MpList> rtn = new ArrayList<>();
-		rtn.add(MpListDaoTest.buildMpList(1));
-		rtn.add(MpListDaoTest.buildMpList(2));
+		rtn.add(MpListDaoIT.buildMpList(1));
+		rtn.add(MpListDaoIT.buildMpList(2));
 		return rtn;
 	}
 	

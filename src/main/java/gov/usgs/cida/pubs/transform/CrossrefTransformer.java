@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableMap;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.domain.ContributorType;
@@ -37,16 +38,17 @@ import org.apache.commons.text.StringEscapeUtils;
  */
 public class CrossrefTransformer extends Transformer {
 	private static final Logger LOG = LoggerFactory.getLogger(CrossrefTransformer.class);
-	
+
 	protected Configuration templateConfiguration;
 	protected OutputStreamWriter streamWriter;
 	protected BufferedWriter bufferedWriter;
-	protected String crossRefDepositorEmail;
+	protected ConfigurationService configurationService;
 	protected IPublicationBusService pubBusService;
-	protected final String AUTHOR_KEY;
-	protected final String EDITOR_KEY;
+	protected final String authorKey;
+	protected final String editorKey;
 	protected final String batchId;
 	protected final String timestamp;
+
 	/**
 	 * Constructs and initializes a transformer with a particular batch id
 	 * and timestamp every time.
@@ -58,12 +60,14 @@ public class CrossrefTransformer extends Transformer {
 	public CrossrefTransformer(
 		OutputStream target,
 		Configuration templateConfiguration,
-		String crossRefDepositorEmail,
-		IPublicationBusService pubBusService
+		ConfigurationService configurationService,
+		IPublicationBusService pubBusService,
+		String authorKey,
+		String editorKey
 	) {
 		super(target, null);
 		this.templateConfiguration = templateConfiguration;
-		this.crossRefDepositorEmail = crossRefDepositorEmail;
+		this.configurationService = configurationService;
 		try {
 			this.streamWriter = new OutputStreamWriter(target, PubsConstants.DEFAULT_ENCODING);
 		} catch (UnsupportedEncodingException ex) {
@@ -72,23 +76,21 @@ public class CrossrefTransformer extends Transformer {
 		}
 		this.bufferedWriter = new BufferedWriter(streamWriter);
 		this.pubBusService = pubBusService;
-		//these values from the database are unlikely to change
-		//during the lifetime of the object
-		AUTHOR_KEY = PubsUtilities.getAuthorKey();
-		EDITOR_KEY = PubsUtilities.getEditorKey();
+		this.authorKey = authorKey;
+		this.editorKey = editorKey;
 		this.batchId = UUID.randomUUID().toString();
 		this.timestamp = String.valueOf(new Date().getTime());
 		init();
 	}
-	
+
 	public String getTimestamp() {
 		return timestamp;
 	}
-	
+
 	public String getBatchId() {
 		return batchId;
 	}
-	
+
 	@Override
 	protected void init() {
 		
@@ -97,7 +99,7 @@ public class CrossrefTransformer extends Transformer {
 		Map<String, String> model = ImmutableMap.of(
 			"doi_batch_id", batchId,
 			"submission_timestamp", timestamp,
-			"depositor_email", crossRefDepositorEmail
+			"depositor_email", configurationService.getCrossrefDepositorEmail()
 		);
 		writeHeader(model);
 	}
@@ -123,7 +125,7 @@ public class CrossrefTransformer extends Transformer {
 		//early failure.
 		writeResult((Publication<?>)result);
 	}
-	
+
 	/**
 	 * 
 	 * @param pub
@@ -172,11 +174,11 @@ public class CrossrefTransformer extends Transformer {
 		}
 		return success;
 	}
-	
+
 	protected String wrapInComment(String message) {
 		return "<!-- " + StringEscapeUtils.escapeXml11(message) + " -->\n";
 	}
-	
+
 	/**
 	 * Writes the given string as an XML comment
 	 * @param message
@@ -200,7 +202,7 @@ public class CrossrefTransformer extends Transformer {
 		}
 		return message;
 	}
-	
+
 	/** output the closing tags and close stuff as appropriate. */
 	@Override
 	public void end() {
@@ -216,7 +218,7 @@ public class CrossrefTransformer extends Transformer {
 			IOUtils.closeQuietly(streamWriter);
 		}
 	}
-	
+
 	/**
 	 *
 	 * @param model
@@ -251,18 +253,18 @@ public class CrossrefTransformer extends Transformer {
 			IOUtils.closeQuietly(bais);
 		}
 	}
-	
+
 	protected List<PublicationContributor<?>> getContributors(Publication<?> pub) {
 		List<PublicationContributor<?>> rtn = new ArrayList<>();
 		//This process requires that the contributors are in rank order.
 		//And that the contributor is valid.
 		if (null != pub && null != pub.getContributors() && !pub.getContributors().isEmpty()) {
 			Map<String, List<PublicationContributor<?>>> contributors = pub.getContributorsToMap();
-			List<PublicationContributor<?>> authors = contributors.get(AUTHOR_KEY);
+			List<PublicationContributor<?>> authors = contributors.get(authorKey);
 			if (null != authors && !authors.isEmpty()) {
 				rtn.addAll(authors);
 			}
-			List<PublicationContributor<?>> editors = contributors.get(EDITOR_KEY);
+			List<PublicationContributor<?>> editors = contributors.get(editorKey);
 			if (null != editors && !editors.isEmpty()) {
 				rtn.addAll(editors);
 			}

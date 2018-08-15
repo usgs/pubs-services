@@ -17,13 +17,15 @@ import javax.validation.Validator;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
 import gov.usgs.cida.pubs.dao.PublicationSubtypeDao;
@@ -34,10 +36,12 @@ import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.unique.UniqueKeyValidatorForPublicationSeriesTest;
 
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={LocalValidatorFactoryBean.class})
 //The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
 //for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
-public class PublicationSeriesBusServiceTest extends BaseSpringTest {
+@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+public class PublicationSeriesBusServiceTest extends BaseTest {
 
 	@Autowired
 	public Validator validator;
@@ -48,16 +52,15 @@ public class PublicationSeriesBusServiceTest extends BaseSpringTest {
 	private PublicationSeries pubSeries;
 	protected Map<String, Object> filters = new HashMap<>();
 
-	@Mock
+	@MockBean
 	protected PublicationSubtypeDao publicationSubtypeDao;
-	@Mock
+	@MockBean
 	protected PublicationSeriesDao publicationSeriesDao;
-	@Mock
+	@MockBean
 	protected PublicationDao publicationDao;
 
 	@Before
 	public void initTest() throws Exception {
-		MockitoAnnotations.initMocks(this);
 		busService = new PublicationSeriesBusService(validator);
 
 		pubSeries = PublicationSeriesTest.buildAPubSeries(null);

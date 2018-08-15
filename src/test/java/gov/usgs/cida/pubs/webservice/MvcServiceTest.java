@@ -14,16 +14,14 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.context.request.WebRequest;
 
-import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.PersonContributorDao;
@@ -33,7 +31,7 @@ import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
 
 public class MvcServiceTest {
 
-	@Mock
+	@MockBean
 	WebRequest request;
 
 	private class TestMvcService extends MvcService<MvcServiceTest> {
@@ -41,11 +39,6 @@ public class MvcServiceTest {
 	}
 
 	private TestMvcService testMvcService = new TestMvcService();
-
-	@Before
-	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
-	}
 
 	@Test
 	public void buildFiltersTest() {
@@ -102,7 +95,7 @@ public class MvcServiceTest {
 		assertTrue(filters.containsKey(PublicationDao.END_YEAR));
 		assertEquals(endYear, filters.get(PublicationDao.END_YEAR));
 		assertTrue(filters.containsKey(PwPublicationDao.G));
-		assertEquals(BaseSpringTest.SEARCH_POLYGON, filters.get(PwPublicationDao.G));
+		assertEquals(BaseTest.SEARCH_POLYGON, filters.get(PwPublicationDao.G));
 		assertTrue(filters.containsKey(MpPublicationDao.GLOBAL));
 		assertEquals(global, filters.get(MpPublicationDao.GLOBAL));
 		assertTrue(filters.containsKey(PublicationDao.INDEX_ID));

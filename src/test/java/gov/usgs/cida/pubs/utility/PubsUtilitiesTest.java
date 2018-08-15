@@ -10,14 +10,14 @@ import java.util.Arrays;
 import org.junit.Test;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.webservice.security.PubsRoles;
 
-public class PubsUtilitiesTest extends BaseSpringTest {
+public class PubsUtilitiesTest extends BaseTest {
 
 	public static final String ID_NOT_MATCH_VALIDATION_JSON = "\"validationErrors\":[{\"field\":\"id\",\"level\":\"FATAL\",\"message\":\"The id in the URL does not match the id in the request.\",\"value\":\"30\"}]";
 

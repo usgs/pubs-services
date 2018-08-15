@@ -1,0 +1,36 @@
+spring:
+  activemq:
+    broker-url: vm://localhost?broker.persistent=false
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: changeMe
+    username: changeMe
+    password: changeMe
+
+ipds:
+  pubsWsPwd: changeMe
+  pubsWsUser: changeMe
+  endpoint: bad.usgs.gov
+
+
+crossref:
+  protocol: https
+  host: test.crossref.org
+  url: /servlet/deposit
+  port: 443
+  username: changeMe
+  password: changeMe
+  schema:
+    url: http://www.crossref.org/schema/deposit/crossref4.4.0.xsd
+  depositorEmail: nobody@usgs.gov
+
+displayProtocol: https
+displayHost: localhost:8443
+displayPath: /pubs-services
+emailList: changeMe
+mailHost: changeMe
+lockTimeoutHours: 3
+warehouseEndpoint: http://pubs.er.usgs.gov
+authServiceUrl: https://cida-test.er.usgs.gov/auth-webservice/
+
+ipdsQueueName: dummy

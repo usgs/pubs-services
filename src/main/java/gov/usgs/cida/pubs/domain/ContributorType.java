@@ -50,7 +50,7 @@ public class ContributorType extends BaseDomain<ContributorType> implements ILoo
 
 	@EventListener
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-		//This code will not be executed until the entire Sping Context is loaded.
+		//This code will not be executed until the entire Spring Context is loaded.
 		AUTHOR_KEY = contributorTypeDao.getById(AUTHORS).getText().toLowerCase();
 		EDITOR_KEY = contributorTypeDao.getById(EDITORS).getText().toLowerCase();
 	}

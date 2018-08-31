@@ -167,11 +167,14 @@
 
     <!-- NOTE - the remaining queries DO use the VPD -->
     <sql id="baseSelectPublic">
+        select * from (
         select <include refid="pwPublication.cols"/>
-          from public_publication pub
+          from publication
+         where display_to_public_date is null or
+               display_to_public_date &lt;= timezone('US/Eastern'::text, now())
+         ) pub
     </sql>
 
-    
     <select id="getByIndexId" parameterType="String" resultMap="result">
         <include refid="baseSelectPublic"/>
          where index_id = #{value,jdbcType=VARCHAR}
@@ -187,8 +190,12 @@
     </select>
 
     <select id="getCount" parameterType="map" resultType="Integer">
-        select count(*)
-          from public_publication pub
+        select count(*) from (
+        select *
+          from publication
+         where display_to_public_date is null or
+               display_to_public_date &lt;= timezone('US/Eastern'::text, now())
+         ) pub
         <where>
             <include refid="filters"/>
         </where>

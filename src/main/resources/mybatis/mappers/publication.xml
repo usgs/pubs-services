@@ -161,6 +161,7 @@
         abstract,
         notes,
         geographic_extents,
+        geom,
         no_usgs_authors,
         ipds_context,
         <include refid="base.auditCols"/>
@@ -228,6 +229,7 @@
         #{docAbstract,jdbcType=CLOB},
         #{notes,jdbcType=VARCHAR},
         #{geographicExtents,jdbcType=VARCHAR}::JSON,
+        st_geomfromgeojson(#{geographicExtents,jdbcType=VARCHAR}::json#>'{features,0}'->>'geometry'),
         #{noUsgsAuthors,jdbcType=BOOLEAN},
         #{ipdsContext,jdbcType=VARCHAR},
         <include refid="base.auditHosts"/>
@@ -294,6 +296,7 @@
         abstract = #{docAbstract,jdbcType=CLOB},
         notes = #{notes,jdbcType=VARCHAR},
         geographic_extents = #{geographicExtents,jdbcType=VARCHAR}::JSON,
+        geom = st_geomfromgeojson(#{geographicExtents,jdbcType=VARCHAR}::json#>'{features,0}'->>'geometry'),
         no_usgs_authors = #{noUsgsAuthors,jdbcType=BOOLEAN},
         ipds_context = #{ipdsContext,jdbcType=VARCHAR},
         <include refid="base.auditSets"/>

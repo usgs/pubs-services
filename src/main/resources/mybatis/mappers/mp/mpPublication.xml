@@ -93,13 +93,13 @@
     </sql>
 
     <insert id="add" parameterType="MpPublication">
-        insert into mp_publication (<include refid="cols"/>, geom)
-             values (<include refid="hosts"/>, st_geomfromgeojson(#{geographicExtents,jdbcType=VARCHAR}::json#>'{features,0}'->>'geometry'))
+        insert into mp_publication (<include refid="cols"/>)
+             values (<include refid="hosts"/>)
     </insert>
 
     <insert id="copyMpFromPw" parameterType="Integer">
-        insert into mp_publication (<include refid="publication.cols"/>, published, geom)
-            select <include refid="publication.cols"/>, 'Y', geom
+        insert into mp_publication (<include refid="publication.cols"/>, published)
+            select <include refid="publication.cols"/>, 'Y'
               from publication
              where publication_id = #{value,jdbcType=INTEGER}::int
     </insert>
@@ -137,8 +137,7 @@
 
     <update id="update" parameterType="MpPublication">
         update mp_publication
-           set <include refid="sets"/>,
-               geom = st_geomfromgeojson(#{geographicExtents,jdbcType=VARCHAR}::json#>'{features,0}'->>'geometry')
+           set <include refid="sets"/>
            where publication_id = #{id,jdbcType=NUMERIC}
     </update>
 
@@ -166,8 +165,8 @@
     </update>
 
     <update id="publish">
-        insert into publication (<include refid="publication.cols"/>, geom)
-            select <include refid="publication.cols"/>, geom
+        insert into publication (<include refid="publication.cols"/>)
+            select <include refid="publication.cols"/>
                       from mp_publication
                      where publication_id = #{publicationId,jdbcType=NUMERIC}
             on conflict (publication_id)

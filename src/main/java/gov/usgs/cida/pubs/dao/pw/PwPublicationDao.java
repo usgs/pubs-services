@@ -15,8 +15,8 @@ import gov.usgs.cida.pubs.domain.pw.PwPublication;
 
 /**
  * @author drsteini
- * NOTE: getbyId hits the base table to avoid the VPD - this method should only be used for business logic related to MyPubs
- * NOTE: all of the other methods use the VIEW so that the VPD will not show publications before the displayToPublicDate - they should be 
+ * NOTE: getbyId shows ALL data - this method should only be used for business logic related to MyPubs
+ * NOTE: all of the other methods will not show publications before the displayToPublicDate - they should be 
  *	   used when dealing with the warehouse.
  */
 @Repository
@@ -42,6 +42,11 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	public static final String PUB_DATE_HIGH = "pub_date_high";
 	public static final String PUB_DATE_LOW = "pub_date_low";
 	public static final String PUB_X_DAYS = "pub_x_days";
+
+	@Transactional
+	public void refreshTextIndex() {
+		getSqlSession().update(NS + ".refreshTextIndex");
+	}
 
 	/** 
 	 * {@inheritDoc}

@@ -149,37 +149,46 @@
         </if>
     </sql>
 
-    <!-- NOTE - these queries DO NOT use the VPD -->
-    <select id="getById" parameterType="Integer" resultMap="result">
+    <sql id="baseSelect">
         select <include refid="pwPublication.cols"/>
-          from publication
+          from publication pub
+    </sql>
+
+    <update id="refreshTextIndex">
+        select refresh_publication_index()
+    </update>
+
+    <!-- NOTE - these queries show all data -->
+    <select id="getById" parameterType="Integer" resultMap="result">
+        <include refid="baseSelect"/>
          where publication_id = #{value,jdbcType=INTEGER}
     </select>
 
     <select id="getByIpdsId" parameterType="String" resultMap="result">
-        select <include refid="pwPublication.cols"/>
-          from publication
+        <include refid="baseSelect"/>
          where ipds_id = #{value,jdbcType=VARCHAR}
     </select>
-    <!-- END_NOTE - these queries DO NOT use the VPD -->
+    <!-- END_NOTE - these queries show all data -->
 
 
 
-    <!-- NOTE - the remaining queries DO use the VPD -->
-    <sql id="baseSelectPublic">
-        select <include refid="pwPublication.cols"/>
-          from public_publication pub
+    <!-- NOTE - the remaining queries only show public data -->
+    <sql id="wherePublic">
+        (display_to_public_date is null or
+         display_to_public_date &lt;= timezone('US/Eastern'::text, now())
+         )
     </sql>
 
-    
     <select id="getByIndexId" parameterType="String" resultMap="result">
-        <include refid="baseSelectPublic"/>
-         where index_id = #{value,jdbcType=VARCHAR}
+        <include refid="baseSelect"/>
+         where <include refid="pwPublication.wherePublic"/> and
+               index_id = #{value,jdbcType=VARCHAR}
     </select>
 
     <select id="getByMap" parameterType="map" resultMap="result">
-        <include refid="baseSelectPublic"/>
+        <include refid="baseSelect"/>
         <where>
+            <include refid="pwPublication.wherePublic"/>
             <include refid="filters"/>
         </where>
         <include refid="publication.orderBy"/>
@@ -188,20 +197,22 @@
 
     <select id="getCount" parameterType="map" resultType="Integer">
         select count(*)
-          from public_publication pub
+          from publication pub
         <where>
+            <include refid="pwPublication.wherePublic"/>
             <include refid="filters"/>
         </where>
     </select>
 
     <select id="getCrossrefPubs" parameterType="map" resultMap="eagerResult" fetchSize="100">
-        <include refid="baseSelectPublic"/>
+        <include refid="baseSelect"/>
         <where>
+            <include refid="pwPublication.wherePublic"/> and
             pub.publication_subtype_id in 
                 <foreach item="r" collection="subtypeId" open="(" separator="," close=")">
                 #{r}
-                </foreach>
-            and pub.doi_name is not null
+                </foreach> and
+            pub.doi_name is not null
         </where>
     </select>
 
@@ -267,7 +278,7 @@
                pub.chrs_publication_date,
                pub.chrs_audited_on,
                pub.chrs_pblclly_access_date
-          from public_publication pub
+          from publication pub
                left join publication_type
                  on pub.publication_type_id = publication_type.publication_type_id
                left join publication_subtype
@@ -311,6 +322,7 @@
                               group by publication_id) pub_link
                  on pub.publication_id = pub_link.publication_id
         <where>
+            <include refid="pwPublication.wherePublic"/>
             <include refid="filters"/>
         </where>
         <include refid="publication.orderBy"/>

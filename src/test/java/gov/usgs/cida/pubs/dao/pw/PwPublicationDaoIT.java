@@ -76,11 +76,7 @@ public class PwPublicationDaoIT extends BaseIT {
 		@DatabaseSetup("classpath:/testData/dataset.xml")
 	})
 	public void getByMapTest() {
-		//This test uses the VPD. If it fails because record counts are off:
-		// - No rows returned probably means the publication_index_00 table does not have the correct data in it.
-		//   see the <changeSet author="drsteini" id="testPublicationIndex" context="citrans" runOnChange="true"> in schema-pubs
-		// - Too many rows returned probably means the VPD got hosed.
-		//   see the changeLogVpd.xml file in schema-pubs
+		pwPublicationDao.refreshTextIndex();
 		Map<String, Object> filters = new HashMap<>();
 		filters.put(PublicationDao.Q, "title");
 		List<PwPublication> pubs = pwPublicationDao.getByMap(filters);
@@ -202,11 +198,7 @@ public class PwPublicationDaoIT extends BaseIT {
 		@DatabaseSetup("classpath:/testData/dataset.xml")
 	})
 	public void getByIndexIdTest() {
-		//This test uses the VPD. If it fails because record counts are off:
-		// - Not getting 4 probably means the publication_index_00 table does not have the correct data in it.
-		//   see the <changeSet author="drsteini" id="testPublicationIndex" context="citrans" runOnChange="true"> in schema-pubs
-		// - Getting 5 via getByIndexId means the VPD got hosed.
-		//   see the changeLogVpd.xml file in schema-pubs
+		pwPublicationDao.refreshTextIndex();
 		//We can get 4
 		PwPublication pub = pwPublicationDao.getByIndexId("4");
 		assertNotNull(pub);
@@ -307,6 +299,11 @@ public class PwPublicationDaoIT extends BaseIT {
 		);
 		pubs = pwPublicationDao.getCrossrefPublications(filters);
 		assertEquals(0, pubs.size());
+	}
+
+	@Test
+	public void refreshIndexTest() {
+		pwPublicationDao.refreshTextIndex();
 	}
 
 }

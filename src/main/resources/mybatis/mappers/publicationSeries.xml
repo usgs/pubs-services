@@ -101,12 +101,12 @@
     </update>
     
     <delete id="delete">
-        delete from publication_series
+        delete from publication_series <include refid="base.deleteAuditHack"/>
          where publication_series_id = #{value,jdbcType=NUMERIC}
     </delete>
 
     <delete id="deleteByParent">
-        delete from publication_series
+        delete from publication_series <include refid="base.deleteAuditHack"/>
          where publication_subtype_id = #{value,jdbcType=NUMERIC}
     </delete>
 

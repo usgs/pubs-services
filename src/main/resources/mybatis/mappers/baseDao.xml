@@ -30,6 +30,10 @@
         update_username = #{updateUsername,jdbcType=VARCHAR}
     </sql>
 
+    <sql id="deleteAuditHack">
+        /* update_username=#{updateUsername,jdbcType=VARCHAR} */ 
+    </sql>
+
     <sql id="pagingRowLimit">
         <if test="page_size != null">
             limit #{page_size}

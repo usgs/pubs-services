@@ -68,12 +68,12 @@
     </update>
     
     <delete id="delete" parameterType="Integer">
-        delete from mp_list_publication
+        delete from mp_list_publication <include refid="base.deleteAuditHack"/>
          where mp_list_publication_id = #{value,jdbcType=INTEGER}
     </delete>
 
     <delete id="deleteByParent" parameterType="Integer">
-        delete from mp_list_publication
+        delete from mp_list_publication <include refid="base.deleteAuditHack"/>
          where publication_id = #{value,jdbcType=INTEGER}
     </delete>
 

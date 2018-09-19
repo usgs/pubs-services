@@ -59,17 +59,17 @@
     </insert>
     
     <delete id="publishDelete" parameterType="Integer">
-        delete from publication_link
+        delete from publication_link <include refid="base.deleteAuditHack"/>
          where publication_id = #{value,jdbcType=NUMERIC}
     </delete>
 
     <delete id="delete" parameterType="Integer">
-        delete from mp_publication_link
+        delete from mp_publication_link <include refid="base.deleteAuditHack"/>
          where publication_link_id = #{value,jdbcType=NUMERIC}
     </delete>
 
     <delete id="deleteByParent" parameterType="Integer">
-        delete from mp_publication_link
+        delete from mp_publication_link <include refid="base.deleteAuditHack"/>
          where publication_id = #{value,jdbcType=NUMERIC}
     </delete>
 

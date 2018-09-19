@@ -55,17 +55,17 @@
     </insert>
     
     <delete id="publishDelete" parameterType="Integer">
-        delete from publication_cost_center
+        delete from publication_cost_center <include refid="base.deleteAuditHack"/>
          where publication_id = #{value,jdbcType=NUMERIC}
     </delete>
 
     <delete id="delete" parameterType="Integer">
-        delete from mp_pub_cost_center
+        delete from mp_pub_cost_center <include refid="base.deleteAuditHack"/>
          where publication_cost_center_id = #{value,jdbcType=NUMERIC}
     </delete>
 
     <delete id="deleteByParent" parameterType="Integer">
-        delete from mp_pub_cost_center
+        delete from mp_pub_cost_center <include refid="base.deleteAuditHack"/>
          where publication_id = #{value,jdbcType=NUMERIC}
     </delete>
 

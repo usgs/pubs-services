@@ -241,7 +241,7 @@
     </update>
 
     <delete id="delete" parameterType="Integer">
-        delete from mp_publication
+        delete from mp_publication <include refid="base.deleteAuditHack"/>
          where publication_id = #{value,jdbcType=INTEGER}::int
     </delete>
 

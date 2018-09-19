@@ -235,7 +235,7 @@
     </update>
 
     <delete id="delete" parameterType="Integer">
-        delete from contributor
+        delete from contributor <include refid="base.deleteAuditHack"/>
          where contributor_id = #{value,jdbcType=NUMERIC}
     </delete>
 
@@ -249,7 +249,7 @@
     </insert>
 
     <delete id="removeAffiliations" parameterType="Integer">
-        delete from contributor_affiliation
+        delete from contributor_affiliation <include refid="base.deleteAuditHack"/>
          where contributor_id = #{value,jdbcType=NUMERIC}
     </delete>
 </mapper>

@@ -156,7 +156,7 @@
     </update>
 
     <delete id="delete" parameterType="Integer">
-        delete from affiliation
+        delete from affiliation <include refid="base.deleteAuditHack"/>
          where affiliation_id = #{value,jdbcType=NUMERIC}
     </delete>
 

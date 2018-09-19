@@ -14,11 +14,11 @@
              values (<include refid="publicationContributor.hosts"/>)
     </insert>
 
-    <insert id="copyMpFromPw" parameterType="Integer">
+    <insert id="copyMpFromPw">
         insert into mp_pub_contributor (<include refid="publicationContributor.cols"/>)
             (select <include refid="publicationContributor.cols"/>
                from publication_contributor
-              where publication_id = #{value,jdbcType=NUMERIC})
+              where publication_id = #{id,jdbcType=NUMERIC})
     </insert>
 
     <sql id="baseSelect">
@@ -57,19 +57,19 @@
          where publication_id = #{publicationId,jdbcType=NUMERIC}
     </insert>
     
-    <delete id="publishDelete" parameterType="Integer">
+    <delete id="publishDelete">
         delete from publication_contributor <include refid="base.deleteAuditHack"/>
-         where publication_id = #{value,jdbcType=NUMERIC}
+         where publication_id = #{id,jdbcType=NUMERIC}
     </delete>
 
-    <delete id="delete" parameterType="Integer">
+    <delete id="delete">
         delete from mp_pub_contributor <include refid="base.deleteAuditHack"/>
-         where publication_contributor_id = #{value,jdbcType=NUMERIC}
+         where publication_contributor_id = #{id,jdbcType=NUMERIC}
     </delete>
 
-    <delete id="deleteByParent" parameterType="Integer">
+    <delete id="deleteByParent">
         delete from mp_pub_contributor <include refid="base.deleteAuditHack"/>
-         where publication_id = #{value,jdbcType=NUMERIC}
+         where publication_id = #{id,jdbcType=NUMERIC}
     </delete>
 
 </mapper>

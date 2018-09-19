@@ -86,7 +86,7 @@ public class MpPublicationContributorDao extends MpDao<MpPublicationContributor>
 	@Transactional
 	@Override
 	public void deleteById(Integer domainID) {
-		getSqlSession().delete(NS + DELETE, domainID);
+		delete(NS + DELETE, domainID);
 	}
 
 	/** 
@@ -96,7 +96,7 @@ public class MpPublicationContributorDao extends MpDao<MpPublicationContributor>
 	@Transactional
 	@Override
 	public void deleteByParent(Integer domainID) {
-		getSqlSession().delete(NS + DELETE_BY_PARENT, domainID);
+		delete(NS + DELETE_BY_PARENT, domainID);
 	}
 
 	/** {@inheritDoc}
@@ -105,7 +105,7 @@ public class MpPublicationContributorDao extends MpDao<MpPublicationContributor>
 	@Transactional
 	@Override
 	public void copyFromPw(Integer prodID) {
-		getSqlSession().insert(NS + COPY_FROM_PW, prodID);
+		insert(NS + COPY_FROM_PW, prodID);
 	}
 
 	/** {@inheritDoc}
@@ -114,7 +114,7 @@ public class MpPublicationContributorDao extends MpDao<MpPublicationContributor>
 	@Transactional
 	@Override
 	public void publishToPw(Integer prodID) {
-		getSqlSession().delete(NS + PUBLISH_DELETE, prodID);
+		delete(NS + PUBLISH_DELETE, prodID);
 		Map<String, Object> params = new HashMap<>();
 		params.put("publicationId", prodID);
 		params.put("updateUsername", PubsUtilities.getUsername());

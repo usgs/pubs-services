@@ -1,6 +1,7 @@
 package gov.usgs.cida.pubs.dao;
 
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +37,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
 
 	public static final String INSERT_USERNAME = "insertUsername";
 	public static final String UPDATE_USERNAME = "updateUsername";
+	public static final String DELETE_USERNAME = "deleteUsername";
 
 	public BaseDao(SqlSessionFactory sqlSessionFactory) {
 		setSqlSessionFactory(sqlSessionFactory);
@@ -142,9 +144,32 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
 		return domainObject.getId();
 	}
 
+	protected void insert(String statement, Integer id) {
+		Map<String, Object> parameters = buildMap(id, INSERT_USERNAME, UPDATE_USERNAME);
+		getSqlSession().insert(statement, parameters);
+	}
+
 	protected void update(String statement, BaseDomain<D> domainObject) {
-		domainObject.setInsertUsername(PubsUtilities.getUsername());
 		domainObject.setUpdateUsername(PubsUtilities.getUsername());
 		getSqlSession().update(statement, domainObject);
+	}
+
+	protected void update(String statement, Integer id) {
+		Map<String, Object> parameters = buildMap(id, UPDATE_USERNAME);
+		getSqlSession().update(statement, parameters);
+	}
+
+	protected void delete(String statement, Integer id) {
+		Map<String, Object> parameters = buildMap(id, DELETE_USERNAME);
+		getSqlSession().delete(statement, parameters);
+	}
+
+	protected Map<String, Object> buildMap(Integer id, String... usernameType) {
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put(ID_SEARCH, id);
+		for (String type:usernameType) {
+			parameters.put(type, PubsUtilities.getUsername());
+		}
+		return parameters;
 	}
 }

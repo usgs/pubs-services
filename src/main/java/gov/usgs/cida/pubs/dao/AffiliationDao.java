@@ -69,6 +69,6 @@ public class AffiliationDao<D extends Affiliation<D>> extends BaseDao<D> {
 	@Transactional
 	@Override
 	public void deleteById(Integer domainID) {
-		getSqlSession().delete(NS + DELETE, domainID);
+		delete(NS + DELETE, domainID);
 	}
 }

@@ -88,7 +88,7 @@ public class MpPublicationLinkDao extends MpDao<MpPublicationLink> {
 	@Transactional
 	@Override
 	public void deleteById(Integer domainID) {
-		getSqlSession().delete(NS + DELETE, domainID);
+		delete(NS + DELETE, domainID);
 	}
 
 	/** 
@@ -98,7 +98,7 @@ public class MpPublicationLinkDao extends MpDao<MpPublicationLink> {
 	@Transactional
 	@Override
 	public void deleteByParent(Integer domainID) {
-		getSqlSession().delete(NS + DELETE_BY_PARENT, domainID);
+		delete(NS + DELETE_BY_PARENT, domainID);
 	}
 
 	/** {@inheritDoc}
@@ -107,7 +107,7 @@ public class MpPublicationLinkDao extends MpDao<MpPublicationLink> {
 	@Transactional
 	@Override
 	public void copyFromPw(Integer prodID) {
-		getSqlSession().insert(NS + COPY_FROM_PW, prodID);
+		insert(NS + COPY_FROM_PW, prodID);
 	}
 
 	/** {@inheritDoc}
@@ -116,8 +116,8 @@ public class MpPublicationLinkDao extends MpDao<MpPublicationLink> {
 	@Transactional
 	@Override
 	public void publishToPw(Integer prodID) {
-		getSqlSession().delete(NS + PUBLISH_DELETE, prodID);
-		getSqlSession().insert(NS + PUBLISH, prodID);
+		delete(NS + PUBLISH_DELETE, prodID);
+		insert(NS + PUBLISH, prodID);
 	}
 
 }

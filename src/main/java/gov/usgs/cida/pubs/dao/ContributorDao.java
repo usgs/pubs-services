@@ -66,7 +66,7 @@ public class ContributorDao extends BaseDao<Contributor<?>> {
 	@Transactional
 	@Override
 	public void deleteById(Integer domainID) {
-		getSqlSession().delete(NS + DELETE, domainID);
+		delete(NS + DELETE, domainID);
 	}
 
 	protected Integer insert(String statement, Contributor<?> domainObject) {

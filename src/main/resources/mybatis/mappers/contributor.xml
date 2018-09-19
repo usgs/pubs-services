@@ -234,9 +234,9 @@
            where contributor_id = #{id,jdbcType=NUMERIC}
     </update>
 
-    <delete id="delete" parameterType="Integer">
+    <delete id="delete">
         delete from contributor <include refid="base.deleteAuditHack"/>
-         where contributor_id = #{value,jdbcType=NUMERIC}
+         where contributor_id = #{id,jdbcType=NUMERIC}
     </delete>
 
     <insert id="addAffiliation" parameterType="map">
@@ -248,8 +248,8 @@
             values (<include refid="base.auditHosts"/>,#{id,jdbcType=NUMERIC},#{contributorId,jdbcType=NUMERIC}, #{affiliationId,jdbcType=NUMERIC})
     </insert>
 
-    <delete id="removeAffiliations" parameterType="Integer">
+    <delete id="removeAffiliations">
         delete from contributor_affiliation <include refid="base.deleteAuditHack"/>
-         where contributor_id = #{value,jdbcType=NUMERIC}
+         where contributor_id = #{id,jdbcType=NUMERIC}
     </delete>
 </mapper>

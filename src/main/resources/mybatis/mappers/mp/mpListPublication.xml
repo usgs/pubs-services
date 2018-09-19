@@ -67,14 +67,14 @@
          where mp_list_publication_id = #{id,jdbcType=INTEGER}
     </update>
     
-    <delete id="delete" parameterType="Integer">
+    <delete id="delete">
         delete from mp_list_publication <include refid="base.deleteAuditHack"/>
-         where mp_list_publication_id = #{value,jdbcType=INTEGER}
+         where mp_list_publication_id = #{id,jdbcType=INTEGER}
     </delete>
 
-    <delete id="deleteByParent" parameterType="Integer">
+    <delete id="deleteByParent">
         delete from mp_list_publication <include refid="base.deleteAuditHack"/>
-         where publication_id = #{value,jdbcType=INTEGER}
+         where publication_id = #{id,jdbcType=INTEGER}
     </delete>
 
 </mapper>

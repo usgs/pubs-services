@@ -81,7 +81,7 @@ public class PersonContributorDao extends ContributorDao implements IPersonContr
 	@Override
 	@Transactional
 	public void removeAffiliations(Integer contributorId) {
-		getSqlSession().delete(NS + REMOVE + AFFILIATIONS, contributorId);
+		delete(NS + REMOVE + AFFILIATIONS, contributorId);
 	}
 
 	@Override

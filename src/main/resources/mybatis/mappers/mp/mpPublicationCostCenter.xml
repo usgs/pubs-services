@@ -13,11 +13,11 @@
              values (<include refid="publicationCostCenter.hosts"/>)
     </insert>
 
-    <insert id="copyMpFromPw" parameterType="Integer">
+    <insert id="copyMpFromPw">
         insert into mp_pub_cost_center (<include refid="publicationCostCenter.cols"/>)
             (select <include refid="publicationCostCenter.cols"/>
                from publication_cost_center
-              where publication_id = #{value,jdbcType=NUMERIC})
+              where publication_id = #{id,jdbcType=NUMERIC})
     </insert>
 
     <sql id="baseSelect">
@@ -51,22 +51,22 @@
         select publication_cost_center_id,      publication_id,      cost_center_id, 
                insert_date,                     insert_username,     now() at time zone 'UTC',             #{updateUsername,jdbcType=VARCHAR}
           from mp_pub_cost_center
-         where publication_id = #{publicationId,jdbcType=NUMERIC}
+         where publication_id = #{id,jdbcType=NUMERIC}
     </insert>
     
-    <delete id="publishDelete" parameterType="Integer">
+    <delete id="publishDelete">
         delete from publication_cost_center <include refid="base.deleteAuditHack"/>
-         where publication_id = #{value,jdbcType=NUMERIC}
+         where publication_id = #{id,jdbcType=NUMERIC}
     </delete>
 
-    <delete id="delete" parameterType="Integer">
+    <delete id="delete">
         delete from mp_pub_cost_center <include refid="base.deleteAuditHack"/>
-         where publication_cost_center_id = #{value,jdbcType=NUMERIC}
+         where publication_cost_center_id = #{id,jdbcType=NUMERIC}
     </delete>
 
-    <delete id="deleteByParent" parameterType="Integer">
+    <delete id="deleteByParent">
         delete from mp_pub_cost_center <include refid="base.deleteAuditHack"/>
-         where publication_id = #{value,jdbcType=NUMERIC}
+         where publication_id = #{id,jdbcType=NUMERIC}
     </delete>
 
 </mapper>

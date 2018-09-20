@@ -101,13 +101,13 @@
     </update>
     
     <delete id="delete">
-        delete from publication_series
-         where publication_series_id = #{value,jdbcType=NUMERIC}
+        delete from publication_series <include refid="base.deleteAuditHack"/>
+         where publication_series_id = #{id,jdbcType=NUMERIC}
     </delete>
 
     <delete id="deleteByParent">
-        delete from publication_series
-         where publication_subtype_id = #{value,jdbcType=NUMERIC}
+        delete from publication_series <include refid="base.deleteAuditHack"/>
+         where publication_subtype_id = #{id,jdbcType=NUMERIC}
     </delete>
 
     <select id="uniqueCheck" resultType="HashMap">

@@ -24,12 +24,27 @@ public class DbTestConfig {
 	@Value("${spring.datasource.password}")
 	private String datasourcePassword;
 
+	@Value("${pubsOwner.username}")
+	private String datasourceOwnerUsername;
+
+	@Value("${pubsOwner.password}")
+	private String datasourceOwnerPassword;
+
 	@Bean
 	public DataSource dataSource() throws Exception {
 		PGSimpleDataSource ds = new PGSimpleDataSource();
 		ds.setUrl(datasourceUrl);
 		ds.setUser(datasourceUsername);
 		ds.setPassword(datasourcePassword);
+		return ds;
+	}
+
+	@Bean
+	public DataSource dbUnitDataSource() throws Exception {
+		PGSimpleDataSource ds = new PGSimpleDataSource();
+		ds.setUrl(datasourceUrl);
+		ds.setUser(datasourceOwnerUsername);
+		ds.setPassword(datasourceOwnerPassword);
 		return ds;
 	}
 
@@ -47,7 +62,7 @@ public class DbTestConfig {
 	public DatabaseDataSourceConnectionFactoryBean dbUnitDatabaseConnection() throws Exception {
 		DatabaseDataSourceConnectionFactoryBean dbUnitDatabaseConnection = new DatabaseDataSourceConnectionFactoryBean();
 		dbUnitDatabaseConnection.setDatabaseConfig(dbUnitDatabaseConfig());
-		dbUnitDatabaseConnection.setDataSource(dataSource());
+		dbUnitDatabaseConnection.setDataSource(dbUnitDataSource());
 		dbUnitDatabaseConnection.setSchema("pubs");
 		return dbUnitDatabaseConnection;
 	}

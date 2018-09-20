@@ -155,9 +155,9 @@
            where affiliation_id = #{id,jdbcType=NUMERIC}
     </update>
 
-    <delete id="delete" parameterType="Integer">
-        delete from affiliation
-         where affiliation_id = #{value,jdbcType=NUMERIC}
+    <delete id="delete">
+        delete from affiliation <include refid="base.deleteAuditHack"/>
+         where affiliation_id = #{id,jdbcType=NUMERIC}
     </delete>
 
 </mapper>

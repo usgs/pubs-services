@@ -110,12 +110,12 @@ public class MpPublicationContributorDaoIT extends BaseIT {
 		newContrib.setContributorType(author);
 		newContrib.setRank(98);
 		mpPublicationContributorDao.add(newContrib);
-		
+
 		MpPublicationContributor persistedA = mpPublicationContributorDao.getById(newContrib.getId());
 		assertNotNull(persistedA);
 		assertNotNull(persistedA.getId());
 		assertDaoTestResults(MpPublicationContributor.class, newContrib, persistedA, IGNORE_PROPERTIES, true, true);
-	
+
 		Contributor<?> contrib1 = new UsgsContributor();
 		contrib1.setId(1);
 		persistedA.setContributor(contrib1);
@@ -124,25 +124,25 @@ public class MpPublicationContributorDaoIT extends BaseIT {
 		persistedA.setContributorType(editor);
 		persistedA.setRank(99);
 		mpPublicationContributorDao.update(persistedA);
-	
+
 		MpPublicationContributor persistedC = mpPublicationContributorDao.getById(newContrib.getId());
 		assertNotNull(persistedC);
 		assertNotNull(persistedC.getId());
 		assertDaoTestResults(MpPublicationContributor.class, persistedA, persistedC, IGNORE_PROPERTIES, true, true);
-	
+
 		mpPublicationContributorDao.delete(persistedC);
 		assertNull(mpPublicationContributorDao.getById(newContrib.getId()));
-	
+
 		mpPublicationContributorDao.deleteById(1);
 		assertNull(mpPublicationContributorDao.getById(1));
-	
+
 		mpPublicationContributorDao.deleteByParent(2);
 		Map<String, Object> filters = new HashMap<>();
 		filters.put("publicationId", 2);
 		List<MpPublicationContributor> mpContribs = mpPublicationContributorDao.getByMap(filters);
 		assertTrue(mpContribs.isEmpty());
 	}
-	
+
 	@Test
 	public void copyFromPwTest() {
 		mpPublicationDao.copyFromPw(4);
@@ -183,7 +183,7 @@ public class MpPublicationContributorDaoIT extends BaseIT {
 				fail("Got a bad contributor:" + contrib.getId());
 			}
 		}
-		
+
 		//this one should be a merge.
 		mpPublicationDao.copyFromPw(4);
 		mpPublicationContributorDao.copyFromPw(4);

@@ -100,7 +100,7 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
 	@Transactional
 	@Override
 	public void deleteById(Integer domainID) {
-		getSqlSession().delete(NS + DELETE, domainID);
+		delete(NS + DELETE, domainID);
 	}
 
 	/** {@inheritDoc}
@@ -109,7 +109,7 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
 	@Transactional
 	@Override
 	public void copyFromPw(Integer domainID) {
-		getSqlSession().insert(NS + COPY_FROM_PW, domainID);
+		insert(NS + COPY_FROM_PW, domainID);
 	}
 
 	/** {@inheritDoc}
@@ -118,7 +118,7 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
 	@Transactional
 	@Override
 	public void publishToPw(Integer domainID) {
-		getSqlSession().update(NS + PUBLISH, domainID);
+		update(NS + PUBLISH, domainID);
 	}
 
 	/**
@@ -144,7 +144,10 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
 	@Transactional
 	@Override
 	public void releaseLocksUser(String lockUsername) {
-		getSqlSession().update(NS + RELEASE_LOCKS_USER, lockUsername);
+		Map<String, Object> params = new HashMap<>();
+		params.put("lockUsername", lockUsername);
+		params.put("updateUsername", PubsUtilities.getUsername());
+		getSqlSession().update(NS + RELEASE_LOCKS_USER, params);
 	}
 
 	@Transactional

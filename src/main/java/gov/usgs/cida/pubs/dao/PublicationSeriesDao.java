@@ -103,7 +103,7 @@ public class PublicationSeriesDao extends BaseDao<PublicationSeries> {
 	@Transactional
 	@Override
 	public void deleteById(Integer domainID) {
-		getSqlSession().delete(NS + DELETE, domainID);
+		delete(NS + DELETE, domainID);
 	}
 
 	/** 
@@ -113,7 +113,7 @@ public class PublicationSeriesDao extends BaseDao<PublicationSeries> {
 	@Transactional
 	@Override
 	public void deleteByParent(Integer domainID) {
-		getSqlSession().delete(NS + DELETE_BY_PARENT, domainID);
+		delete(NS + DELETE_BY_PARENT, domainID);
 	}
 
 	@Transactional(readOnly = true)

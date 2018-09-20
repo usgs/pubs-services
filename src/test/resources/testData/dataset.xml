@@ -57,8 +57,4 @@
     <PUBLICATION_LINK PUBLICATION_LINK_ID="10" PUBLICATION_ID="4" RANK="1" LINK_TYPE_ID="1" URL="url" TEXT="text" OBJECT_SIZE="12 GB" LINK_FILE_TYPE_ID="1" DESCRIPTION="just a normal description" HELP_TEXT="Super Help" />
     <PUBLICATION_LINK PUBLICATION_LINK_ID="11" PUBLICATION_ID="5" RANK="1" LINK_TYPE_ID="1" URL="url" TEXT="text" OBJECT_SIZE="12 GB" LINK_FILE_TYPE_ID="1" DESCRIPTION="just a normal description" HELP_TEXT="Help Me!!!" />
 
-<!-- NOTE: This data must actually reside in the database (liquibase file /schema-pubs/changeLogData/test_publication_index.csv) - the context index only updates on a commit and we really don't want to commit during tests... 
-    <PUBLICATION_INDEX_00 PUBLICATION_ID="4" Q="title abstract subseries title series number 4 ipds_id 2014 Book chapter Abstract or summary Resource Publication ConFamily, ConGiven, ConSuffix; US Geological Survey Ice Survey Team; Affiliation Cost Center 2" />
-    <PUBLICATION_INDEX_00 PUBLICATION_ID="5" Q=" future title 9 ConFamily, ConGiven, ConSuffix;US Geological Survey Ice Survey Team; US Geological Survey Ice Survey Team; Affiliation Cost Center 2" />
- -->
 </dataset>

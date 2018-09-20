@@ -14,11 +14,11 @@
              values (<include refid="publicationLink.hosts"/>)
     </insert>
 
-    <insert id="copyMpFromPw" parameterType="Integer">
+    <insert id="copyMpFromPw">
         insert into mp_publication_link (<include refid="publicationLink.cols"/>)
             (select <include refid="publicationLink.cols"/>
                from publication_link
-              where publication_id = #{value,jdbcType=NUMERIC})
+              where publication_id = #{id,jdbcType=NUMERIC})
     </insert>
 
     <sql id="baseSelect">
@@ -55,22 +55,22 @@
                help_text,
                insert_date,                insert_username,    now() at time zone 'UTC',         #{updateUsername,jdbcType=VARCHAR}
           from mp_publication_link
-           where publication_id = #{publicationId,jdbcType=NUMERIC}
+           where publication_id = #{id,jdbcType=NUMERIC}
     </insert>
     
-    <delete id="publishDelete" parameterType="Integer">
-        delete from publication_link
-         where publication_id = #{value,jdbcType=NUMERIC}
+    <delete id="publishDelete">
+        delete from publication_link <include refid="base.deleteAuditHack"/>
+         where publication_id = #{id,jdbcType=NUMERIC}
     </delete>
 
-    <delete id="delete" parameterType="Integer">
-        delete from mp_publication_link
-         where publication_link_id = #{value,jdbcType=NUMERIC}
+    <delete id="delete">
+        delete from mp_publication_link <include refid="base.deleteAuditHack"/>
+         where publication_link_id = #{id,jdbcType=NUMERIC}
     </delete>
 
-    <delete id="deleteByParent" parameterType="Integer">
-        delete from mp_publication_link
-         where publication_id = #{value,jdbcType=NUMERIC}
+    <delete id="deleteByParent">
+        delete from mp_publication_link <include refid="base.deleteAuditHack"/>
+         where publication_id = #{id,jdbcType=NUMERIC}
     </delete>
 
 </mapper>

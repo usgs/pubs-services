@@ -97,11 +97,11 @@
              values (<include refid="hosts"/>)
     </insert>
 
-    <insert id="copyMpFromPw" parameterType="Integer">
+    <insert id="copyMpFromPw">
         insert into mp_publication (<include refid="publication.cols"/>, published)
             select <include refid="publication.cols"/>, 'Y'
               from publication
-             where publication_id = #{value,jdbcType=INTEGER}::int
+             where publication_id = #{id,jdbcType=INTEGER}::int
     </insert>
 
     <sql id="baseSelect">
@@ -154,21 +154,21 @@
                <include refid="base.auditSets"/>
     </sql>
 
-    <update id="releaseLocksUser" parameterType="String">
+    <update id="releaseLocksUser">
         <include refid="releaseLocks"/>
-           where lock_username = #{value,jdbcType=VARCHAR}
+           where lock_username = #{lockUsername,jdbcType=VARCHAR}
     </update>
 
-    <update id="releaseLocksPub" parameterType="Integer">
+    <update id="releaseLocksPub">
         <include refid="releaseLocks"/>
-           where publication_id = #{value,jdbcType=INTEGER}::int
+           where publication_id = #{id,jdbcType=INTEGER}::int
     </update>
 
     <update id="publish">
         insert into publication (<include refid="publication.cols"/>)
             select <include refid="publication.cols"/>
                       from mp_publication
-                     where publication_id = #{publicationId,jdbcType=NUMERIC}
+                     where publication_id = #{id,jdbcType=NUMERIC}
             on conflict (publication_id)
                do update
                   set index_id                     = excluded.index_id,
@@ -240,9 +240,9 @@
                       geom                         = excluded.geom
     </update>
 
-    <delete id="delete" parameterType="Integer">
-        delete from mp_publication
-         where publication_id = #{value,jdbcType=INTEGER}::int
+    <delete id="delete">
+        delete from mp_publication <include refid="base.deleteAuditHack"/>
+         where publication_id = #{id,jdbcType=INTEGER}::int
     </delete>
 
 </mapper>

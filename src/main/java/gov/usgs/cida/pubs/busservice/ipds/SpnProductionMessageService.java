@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.busservice.ipds;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,6 @@ import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
 import gov.usgs.cida.pubs.jms.MessagePayload;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
-import java.time.format.FormatStyle;
 
 @Service
 public class SpnProductionMessageService implements IIpdsService {

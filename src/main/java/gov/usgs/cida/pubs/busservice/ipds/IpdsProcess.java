@@ -79,6 +79,8 @@ public class IpdsProcess implements IIpdsProcess {
 		String counts = "Summary:\n\tTotal Entries: " + ipdsPubs.size() + "\n\tPublications Added: " + getAdditions() + "\n\tErrors Encountered: " + getErrors() + "\n\n";
 
 		getStringBuilder().insert(0, counts);
+		
+		getStringBuilder().append("Log: " + logId + "\n");
 
 		return getStringBuilder().toString();
 	}

@@ -3,29 +3,29 @@ package gov.usgs.cida.pubs.validation.parent;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 import gov.usgs.cida.pubs.dao.PublicationSubtypeDao;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 
-//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={PublicationSubtype.class})
 public class ParentExistsValidatorForPublicationSeriesTest extends BaseValidatorTest {
 
 	protected ParentExistsValidatorForPublicationSeries validator;
 	protected PublicationSubtype subtype;
 	protected PublicationSeries series;
 
-	@MockBean
+	@MockBean(name="publicationSubtypeDao")
 	protected PublicationSubtypeDao publicationSubtypeDao;
 
 	@Before
@@ -35,7 +35,8 @@ public class ParentExistsValidatorForPublicationSeriesTest extends BaseValidator
 		series = new PublicationSeries();
 		subtype = new PublicationSubtype();
 		subtype.setId(999);
-		subtype.setPublicationSubtypeDao(publicationSubtypeDao);
+
+		reset(publicationSubtypeDao);
 	}
 
 	@Test

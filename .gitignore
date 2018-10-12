@@ -8,3 +8,4 @@ nb-configuration.xml
 /bin/
 nbactions.xml
 /application-it.yml
+/application.yml

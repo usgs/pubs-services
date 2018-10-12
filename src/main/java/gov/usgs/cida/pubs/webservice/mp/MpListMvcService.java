@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 import gov.usgs.cida.pubs.webservice.MvcService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 
 @RestController
 @RequestMapping(value = "lists", produces="application/json")
@@ -29,6 +32,7 @@ public class MpListMvcService extends MvcService<MpList> {
 		this.busService = busService;
 	}
 
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
 	@GetMapping
 	public Collection<MpList> getLists(HttpServletResponse response) {
 		setHeaders(response);

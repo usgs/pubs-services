@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -20,8 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import gov.usgs.cida.pubs.SeverityLevel;
@@ -30,6 +29,7 @@ import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
 import gov.usgs.cida.pubs.dao.PublicationSubtypeDao;
 import gov.usgs.cida.pubs.dao.PublicationTypeDao;
 import gov.usgs.cida.pubs.dao.PublishingServiceCenterDao;
+import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
@@ -49,10 +49,9 @@ import gov.usgs.cida.pubs.validation.constraint.PublishChecks;
 import gov.usgs.cida.pubs.validation.mp.unique.UniqueKeyValidatorForMpPublicationTest;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
-	classes={LocalValidatorFactoryBean.class})
-//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+	classes={LocalValidatorFactoryBean.class, PublicationType.class, PublicationSubtype.class,
+			PublicationSeries.class, PublishingServiceCenter.class, MpPublication.class,
+			Publication.class})
 public class MpPublicationValidationTest extends BaseValidatorTest {
 
 	public static final String NOT_NULL_DISPLAY_TO_PUBLIC_DATE = new ValidatorResult("displayToPublicDate", NOT_NULL_MSG, SeverityLevel.FATAL, null).toString();
@@ -131,41 +130,39 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 	protected Publication<?> sb;
 	protected PublishingServiceCenter psc;
 
-	@MockBean
+	@MockBean(name="publicationTypeDao")
 	protected PublicationTypeDao publicationTypeDao;
-	@MockBean
+	@MockBean(name="publicationSubtypeDao")
 	protected PublicationSubtypeDao publicationSubtypeDao;
-	@MockBean
+	@MockBean(name="publicationSeriesDao")
 	protected PublicationSeriesDao publicationSeriesDao;
-	@MockBean
+	@MockBean(name="publicationDao")
 	protected PublicationDao publicationDao;
-	@MockBean
+	@MockBean(name="mpPublicationDao")
+	protected MpPublicationDao mpPublicationDao;
+	@MockBean(name="publishingServiceCenterDao")
 	protected PublishingServiceCenterDao publishingServiceCenterDao;
 
 	@Before
 	@Override
+	@SuppressWarnings("unchecked")
 	public void setUp() throws Exception {
 		super.setUp();
 		pubType = new PublicationType();
-		pubType.setPublicationTypeDao(publicationTypeDao);
 		pubType.setId(1);
 		largerWorkType = new PublicationType();
 		largerWorkType.setId(1);
 
 		pubSubtype = new PublicationSubtype();
-		pubSubtype.setPublicationSubtypeDao(publicationSubtypeDao);
 		pubSubtype.setId(5);
 
 		pubSeries = new PublicationSeries();
-		pubSeries.setPublicationSeriesDao(publicationSeriesDao);
 		pubSeries.setId(1);
 
 		psc = new PublishingServiceCenter();
-		psc.setPublishingServiceCenterDao(publishingServiceCenterDao);
 		psc.setId(1);
 
 		mpPub = new MpPublication();
-		mpPub.setPublicationDao(publicationDao);
 		mpPub.setPublicationType(pubType);
 		mpPub.setIndexId("123");
 		mpPub.setTitle("abc");
@@ -174,6 +171,8 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 		po.setId(1);
 		sb = new MpPublication();
 		sb.setId(1);
+
+		reset(publicationTypeDao, publicationSubtypeDao, publicationSeriesDao, publicationDao, publishingServiceCenterDao, mpPublicationDao);
 
 		when(publicationDao.getById(any(Integer.class))).thenReturn(null);
 		when(publicationDao.validateByMap(anyMap())).thenReturn(UniqueKeyValidatorForMpPublicationTest.buildList());

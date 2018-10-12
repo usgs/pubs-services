@@ -1,13 +1,27 @@
 package gov.usgs.cida.pubs.transform;
 
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
+
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -18,19 +32,6 @@ import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * Transforms Publications into Crossref XML. One Transformer should be 
@@ -214,8 +215,8 @@ public class CrossrefTransformer extends Transformer {
 		} catch (IOException | TemplateException e ) {
 			throw new RuntimeException("Error writing footer", e);
 		} finally {
-			IOUtils.closeQuietly(bufferedWriter);
-			IOUtils.closeQuietly(streamWriter);
+			closeQuietly(bufferedWriter);
+			closeQuietly(streamWriter);
 		}
 	}
 
@@ -248,9 +249,9 @@ public class CrossrefTransformer extends Transformer {
 		) {
 			t.process(model, reportWriter);
 			bais = new ByteArrayInputStream(baos.toByteArray());
-			IOUtils.copy(bais, bufferedWriter);
+			IOUtils.copy(bais, bufferedWriter, PubsConstants.DEFAULT_ENCODING);
 		} finally {
-			IOUtils.closeQuietly(bais);
+			closeQuietly(bais);
 		}
 	}
 
@@ -270,5 +271,16 @@ public class CrossrefTransformer extends Transformer {
 			}
 		}
 		return rtn;
+	}
+
+	protected void closeQuietly(final Closeable closeable) {
+		// per IOUTILS - deprecated with no replacement -  Please use the try-with-resources statement or handle suppressed exceptions manually.
+		try {
+			if (closeable != null) {
+				closeable.close();
+			}
+		} catch (final IOException ioe) {
+			// ignore
+		}
 	}
 }

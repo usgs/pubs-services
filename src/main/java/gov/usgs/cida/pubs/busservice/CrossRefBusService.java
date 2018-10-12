@@ -254,7 +254,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 	protected File writeCrossRefToTempFile(String crossRefXML) throws IOException {
 		try {
 			File crossRefTempFile = File.createTempFile("crossref", "xml");
-			FileUtils.writeStringToFile(crossRefTempFile, crossRefXML);
+			FileUtils.writeStringToFile(crossRefTempFile, crossRefXML, PubsConstants.DEFAULT_ENCODING);
 			return crossRefTempFile;
 		} catch (IOException ex) {
 			throw new IOException("Error writing crossref XML to temp file", ex);

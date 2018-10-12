@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -21,14 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.dao.PublicationDao;
-import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
-import gov.usgs.cida.pubs.dao.PublicationSubtypeDao;
+import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSeriesTest;
@@ -37,10 +35,8 @@ import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.unique.UniqueKeyValidatorForPublicationSeriesTest;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
-	classes={LocalValidatorFactoryBean.class})
-//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+	classes={LocalValidatorFactoryBean.class, PublicationSeries.class,
+			PublicationSubtype.class, Publication.class})
 public class PublicationSeriesBusServiceTest extends BaseTest {
 
 	@Autowired
@@ -52,26 +48,27 @@ public class PublicationSeriesBusServiceTest extends BaseTest {
 	private PublicationSeries pubSeries;
 	protected Map<String, Object> filters = new HashMap<>();
 
-	@MockBean
-	protected PublicationSubtypeDao publicationSubtypeDao;
-	@MockBean
-	protected PublicationSeriesDao publicationSeriesDao;
-	@MockBean
+	@MockBean(name="publicationSubtypeDao")
+	protected IDao<PublicationSubtype> publicationSubtypeDao;
+	@MockBean(name="publicationSeriesDao")
+	protected IDao<PublicationSeries> publicationSeriesDao;
+	@MockBean(name="publicationDao")
 	protected PublicationDao publicationDao;
 
 	@Before
+	@SuppressWarnings("unchecked")
 	public void initTest() throws Exception {
 		busService = new PublicationSeriesBusService(validator);
 
 		pubSeries = PublicationSeriesTest.buildAPubSeries(null);
-		pubSeries.setPublicationSeriesDao(publicationSeriesDao);
 
 		subtype = new PublicationSubtype();
 		subtype.setId(999);
-		subtype.setPublicationSubtypeDao(publicationSubtypeDao);
 
 		pub = new Publication<>();
 		pub.setPublicationDao(publicationDao);
+
+		reset(publicationSeriesDao, publicationSubtypeDao, publicationDao);
 	}
 
 	@Test

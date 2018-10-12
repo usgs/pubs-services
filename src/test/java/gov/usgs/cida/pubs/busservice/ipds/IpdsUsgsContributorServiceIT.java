@@ -47,7 +47,7 @@ import gov.usgs.cida.pubs.utility.PubsEMailer;
 			IpdsWsRequester.class, ConfigurationService.class, PubsEMailer.class,
 			CostCenterBusService.class, UsgsContributor.class, ContributorDao.class,
 			PersonContributorDao.class, CostCenter.class, CostCenterDao.class,
-			AffiliationDao.class})
+			AffiliationDao.class, PersonContributor.class, Contributor.class,})
 @DatabaseSetups({
 	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 	@DatabaseSetup("classpath:/testData/ipdsUsgsContributorService.xml"),

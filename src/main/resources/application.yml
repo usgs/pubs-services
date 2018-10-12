@@ -2,7 +2,6 @@ spring:
   activemq:
     broker-url: changeMe
   datasource:
-    driver-class-name: org.postgresql.Driver
     url: changeMe
     username: changeMe
     password: changeMe
@@ -11,7 +10,9 @@ ipds:
   pubsWsPwd: changeMe
   pubsWsUser: changeMe
   endpoint: changeMe
-
+  port: 80
+  protocol: https
+  queueName: changeMe
 
 crossref:
   protocol: changeMe
@@ -24,16 +25,26 @@ crossref:
     url: http://www.crossref.org/schema/deposit/crossref4.4.0.xsd
   depositorEmail: changeMe
 
-displayProtocol: https
-displayHost: localhost:8443
-displayPath: /pubs-services
-emailList: changeMe@usgs.gov
-mailHost: changeMe
-lockTimeoutHours: changeMe
-warehouseEndpoint: http://pubs.er.usgs.gov
-authServiceUrl: changeMe
+swagger:
+  displayProtocol: https
+  displayHost: localhost:8443
+  displayPath: /pubs-services
 
-ipdsQueueName: changeMe
+pubs:
+  emailList: changeMe@usgs.gov
+  mailHost: changeMe
+  lockTimeoutHours: changeMe
+  warehouseEndpoint: http://pubs.er.usgs.gov
+  authorities:
+    authorized: allPubsAdGroups
+    spn: allPubsSpnAdGroups
 
-#logging:
-#  config: classpath:/logback-spring.xml
+logging:
+  config: classpath:logback-spring.xml
+
+security:
+  oauth2:
+    resource:
+      id: changeMe
+      jwk:
+        keySetUri: changeMe

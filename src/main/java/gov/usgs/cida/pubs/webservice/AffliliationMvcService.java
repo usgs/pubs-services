@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.webservice;
 
+import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.CostCenter;
@@ -8,6 +9,8 @@ import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 
 import java.util.List;
 import java.util.Map;
@@ -39,7 +42,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AffliliationMvcService.class);
-	
+
 	private IBusService<CostCenter> costCenterBusService;
 	private IBusService<OutsideAffiliation> outsideAffiliationBusService;
 
@@ -50,6 +53,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		this.outsideAffiliationBusService = outsideAffiliationBusService;
 	}
 
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
 	@GetMapping(value={"/costcenter"})
 	@JsonView(View.MP.class)
 	public List<CostCenter> getCostCenters(HttpServletRequest request, HttpServletResponse response) {
@@ -63,6 +67,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		return rtn;
 	}
 
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
 	@GetMapping(value={"/costcenter/{id}"})
 	@JsonView(View.MP.class)
 	public CostCenter getCostCenter(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") String id) {
@@ -75,6 +80,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		return rtn;
 	}
 
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
 	@PostMapping(value={"/costcenter"})
 	@JsonView(View.MP.class)
 	@Transactional
@@ -90,6 +96,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		return result;
 	}
 
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
 	@DeleteMapping(value="/costcenter/{id}")
 	@Transactional
 	@JsonView(View.MP.class)
@@ -105,6 +112,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		return result;
 	}
 
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
 	@PutMapping(value="/costcenter/{id}")
 	@JsonView(View.MP.class)
 	@Transactional
@@ -129,6 +137,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		return result;
 	}
 
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
 	@GetMapping(value={"/outsideaffiliation"})
 	@JsonView(View.MP.class)
 	public List<OutsideAffiliation> getOutsideAffiliations(HttpServletRequest request, HttpServletResponse response) {
@@ -142,6 +151,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		return rtn;
 	}
 
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
 	@GetMapping(value={"/outsideaffiliation/{id}"})
 	@JsonView(View.MP.class)
 	public OutsideAffiliation getOutsideAffiliation(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") String id) {
@@ -154,6 +164,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		return rtn;
 	}
 
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
 	@PostMapping(value={"/outsideaffiliation"})
 	@JsonView(View.MP.class)
 	@Transactional
@@ -169,6 +180,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		return result;
 	}
 
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
 	@DeleteMapping(value="/outsideaffiliation/{id}")
 	@Transactional
 	@JsonView(View.MP.class)
@@ -184,6 +196,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		return result;
 	}
 
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
 	@PutMapping(value="/outsideaffiliation/{id}")
 	@JsonView(View.MP.class)
 	@Transactional

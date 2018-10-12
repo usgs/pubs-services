@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,8 +18,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -31,7 +30,6 @@ import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={TestSpringConfig.class, IpdsParserService.class})
-@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
 public class IpdsUsgsContributorServiceTest extends BaseTest {
 
 	@Autowired
@@ -69,6 +67,8 @@ public class IpdsUsgsContributorServiceTest extends BaseTest {
 		when(ipdsWsRequester.getContributor("101", IpdsProcessTest.TEST_IPDS_CONTEXT)).thenReturn(contributor101Xml);
 		when(ipdsWsRequester.getContributor("123", IpdsProcessTest.TEST_IPDS_CONTEXT)).thenReturn(usgsContributorXml);
 		ipdsUsgsContributorService = new IpdsUsgsContributorService(ipdsParser, ipdsWsRequester, mockCostCenterService, mockPersonContributorService);
+
+		reset(mockPersonContributorService, mockCostCenterService);
 	}
 
 	@Test

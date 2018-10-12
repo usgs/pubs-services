@@ -262,7 +262,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 						crossRefBusService.submitCrossRef(mpPub);
 					}
 					deleteObject(publicationId);
-					if (PubsUtilities.isSpnUser()) {
+					if (PubsUtilities.isSpnUser(configurationService)) {
 						//Pubs published by this role should be put back in MyPubs and in the USGS Series list
 						beginPublicationEdit(publicationId);
 						setList(MpPublication.getDao().getById(publicationId), MpList.IPDS_USGS_NUMBERED_SERIES);

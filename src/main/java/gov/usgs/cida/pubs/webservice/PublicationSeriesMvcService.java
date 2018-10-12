@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.webservice;
 
+import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
@@ -9,6 +10,8 @@ import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,6 +53,7 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 		this.busService = busService;
 	}
 
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
 	@GetMapping
 	@JsonView(View.PW.class)
 	public @ResponseBody SearchResults getPublicationSeries(HttpServletRequest request, HttpServletResponse response,
@@ -82,6 +86,7 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 		return results;
 	}
 
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
 	@GetMapping(value={"/{id}"})
 	@JsonView(View.PW.class)
 	public @ResponseBody PublicationSeries getPublicationSeries(HttpServletRequest request, HttpServletResponse response,
@@ -95,6 +100,7 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 		return rtn;
 	}
 
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
 	@PostMapping
 	@Transactional
 	@JsonView(View.LookupMaint.class)
@@ -110,6 +116,7 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 		return result;
 	}
 
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
 	@PutMapping(value="/{id}")
 	@Transactional
 	@JsonView(View.LookupMaint.class)
@@ -135,6 +142,7 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 		return result;
 	}
 
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
 	@DeleteMapping(value="/{id}")
 	@Transactional
 	@JsonView(View.LookupMaint.class)

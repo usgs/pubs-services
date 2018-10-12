@@ -41,7 +41,7 @@ import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 	classes={DbTestConfig.class, TestSpringConfig.class, LocalValidatorFactoryBean.class,
 			IpdsParserService.class, OutsideAffiliationBusService.class, PersonContributorBusService.class,
 			IpdsOutsideContributorService.class, Affiliation.class, AffiliationDao.class,
-			PersonContributor.class, PersonContributorDao.class, ContributorDao.class,
+			PersonContributor.class, Contributor.class, PersonContributorDao.class, ContributorDao.class,
 			OutsideAffiliation.class, OutsideAffiliationDao.class})
 @DatabaseSetups({
 	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),

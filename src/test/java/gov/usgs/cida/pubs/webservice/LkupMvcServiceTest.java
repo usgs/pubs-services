@@ -20,8 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -29,6 +27,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.dao.intfc.IPersonContributorDao;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
@@ -37,14 +36,13 @@ import gov.usgs.cida.pubs.domain.UsgsContributor;
 @EnableWebMvc
 @AutoConfigureMockMvc(secure=false)
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK,
-	classes={ConfigurationService.class, LookupMvcService.class})
-//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+	classes={ConfigurationService.class, LookupMvcService.class, PersonContributor.class, Contributor.class})
 public class LkupMvcServiceTest extends BaseTest {
 
-	@MockBean
+	@MockBean(name="personContributorDao")
 	IPersonContributorDao personContributorDao;
+	@MockBean(name="contributorDao")
+	IDao<Contributor<?>> contributorDao;
 	PersonContributor<?> personContributor;
 	@Autowired
 	MockMvc mockMvc;
@@ -52,7 +50,6 @@ public class LkupMvcServiceTest extends BaseTest {
 	@Before
 	public void setup() {
 		personContributor = new UsgsContributor();
-		personContributor.setPersonContributorDao(personContributorDao);
 	}
 
 	@Test

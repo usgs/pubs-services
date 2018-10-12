@@ -18,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
@@ -32,7 +30,6 @@ import gov.usgs.cida.pubs.utility.PubsEMailer;
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={DbTestConfig.class, IpdsMessageLog.class, IpdsMessageLogDao.class})
 @DatabaseSetup("classpath:/testCleanup/clearAll.xml")
-@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
 public class SpnProductionMessageServiceIT extends BaseMessageServiceTest {
 
 	@Autowired
@@ -45,8 +42,6 @@ public class SpnProductionMessageServiceIT extends BaseMessageServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
-		IpdsMessageLog bad = new IpdsMessageLog();
-		bad.setIpdsMessageLogDao(ipdsMessageLogDao);
 		service = new SpnProductionMessageService(ipdsProcess, requester, pubsEMailer);
 	}
 

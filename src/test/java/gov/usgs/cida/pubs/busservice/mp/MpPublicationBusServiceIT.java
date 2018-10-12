@@ -7,7 +7,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,6 +22,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.ReactorContextTestExecutionListener;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -32,6 +35,7 @@ import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.SeverityLevel;
+import gov.usgs.cida.pubs.TestOAuth;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
 import gov.usgs.cida.pubs.dao.AffiliationDao;
@@ -75,11 +79,9 @@ import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
-import gov.usgs.cida.pubs.utility.PubsUtilitiesTest;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
-import gov.usgs.cida.pubs.webservice.security.PubsRoles;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={DbTestConfig.class, LocalValidatorFactoryBean.class, ConfigurationService.class,
@@ -102,6 +104,8 @@ import gov.usgs.cida.pubs.webservice.security.PubsRoles;
 	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
 	@DatabaseSetup("classpath:/testData/dataset.xml")
 })
+//Needed to use @WithMockUser - @SecurityTestExecutionListeners and @ContextConfiguration interfere with @SpringBootTest
+@TestExecutionListeners({WithSecurityContextTestExecutionListener.class, ReactorContextTestExecutionListener.class})
 public class MpPublicationBusServiceIT extends BaseIT {
 
 	public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "contributors", "contributorsToMap", "links",
@@ -582,9 +586,12 @@ public class MpPublicationBusServiceIT extends BaseIT {
 
 		//Not expired = not OK
 		assertEquals("drsteini", busService.checkAvailability(1).getValue());
+	}
 
+	@Test
+	@WithMockUser("drsteini")
+	public void checkLocksTest_sameUser() {
 		//Same user = OK
-		PubsUtilitiesTest.buildTestAuthentication("drsteini");
 		assertNull(busService.checkAvailability(1));
 
 		//Expired = OK (We are testing by setting the timeout to 0 and -1 for these test)
@@ -826,9 +833,9 @@ public class MpPublicationBusServiceIT extends BaseIT {
 	}
 
 	@Test
+	@WithMockUser(username=TestOAuth.SPN_USER, authorities={TestOAuth.SPN_AUTHORITY})
 	public void publishSPNTest() {
 		//Stuff published by an SPN User should end up in both the warehouse and MyPubs on the USGS Series list.
-		buildTestAuthentication("dummy", new ArrayList<>(Arrays.asList(PubsRoles.PUBS_SPN_USER.name())));
 		ValidationResults valRes = busService.publish(2);
 		assertTrue(valRes.isEmpty());
 		Publication<?> pub = PwPublication.getDao().getById(2);
@@ -840,7 +847,7 @@ public class MpPublicationBusServiceIT extends BaseIT {
 
 		//Still in MP
 		MpPublication mpPub = MpPublication.getDao().getById(2);
-		MpPublicationDaoIT.assertMpPub2(mpPub, "dummy");
+		MpPublicationDaoIT.assertMpPub2(mpPub, TestOAuth.SPN_USER);
 
 		//On the list
 		Map<String, Object> filters = new HashMap<>();

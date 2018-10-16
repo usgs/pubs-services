@@ -38,6 +38,7 @@ public class SpnProductionMessageServiceIT extends BaseMessageServiceTest {
 	private PubsEMailer pubsEMailer;
 
 	private SpnProductionMessageService service;
+	private static final String PROCESSING_DETAILS = "Did ERROR Processing";
 
 	@Before
 	public void setUp() throws Exception {
@@ -62,15 +63,15 @@ public class SpnProductionMessageServiceIT extends BaseMessageServiceTest {
 
 	@Test
 	public void testErrors() throws Exception {
-		when(ipdsProcess.processLog(any(ProcessType.class), anyInt(), anyString())).thenReturn("Did ERROR Processing");
+		when(ipdsProcess.processLog(any(ProcessType.class), anyInt(), anyString())).thenReturn(PROCESSING_DETAILS);
 		try {
 			service.processIpdsMessage(getPayload());
 			List<IpdsMessageLog> logs = IpdsMessageLog.getDao().getByMap(null);
 			assertNotNull(logs);
 			assertEquals(1, logs.size());
 			assertEquals(EXPECTED_MESSAGE_TEXT, logs.get(0).getMessageText());
-			assertEquals("Did ERROR Processing", logs.get(0).getProcessingDetails());
-			verify(pubsEMailer, times(1)).sendMail(anyString(), anyString());
+			assertEquals(PROCESSING_DETAILS, logs.get(0).getProcessingDetails());
+			verify(pubsEMailer, times(1)).sendMail(service.buildSubject(), PROCESSING_DETAILS);
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}

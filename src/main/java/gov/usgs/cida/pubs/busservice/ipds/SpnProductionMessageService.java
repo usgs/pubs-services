@@ -23,7 +23,7 @@ public class SpnProductionMessageService implements IIpdsService {
 	private final IpdsWsRequester requester;
 
 	private final PubsEMailer pubsEMailer;
-	
+
 	private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
 
 	@Autowired
@@ -47,11 +47,14 @@ public class SpnProductionMessageService implements IIpdsService {
 		String processingDetails = ipdsProcess.processLog(ProcessType.SPN_PRODUCTION, msg.getId(), messagePayload.getContext());
 
 		if (processingDetails.contains("ERROR")) {
-			LocalDateTime now = LocalDateTime.now();
-			pubsEMailer.sendMail("Bad Errors processing SPN Production - " + now.format(formatter), processingDetails);
+			pubsEMailer.sendMail(buildSubject(), processingDetails);
 		}
 		msg.setProcessingDetails(processingDetails);
 		IpdsMessageLog.getDao().update(msg);
 	}
 
+	protected String buildSubject() {
+		LocalDateTime now = LocalDateTime.now();
+		return "Bad Errors processing SPN Production - " + now.format(formatter);
+	}
 }

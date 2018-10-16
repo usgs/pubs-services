@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.validation.mp.parent;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,13 +13,12 @@ import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-import gov.usgs.cida.pubs.dao.ContributorDao;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
-import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
+import gov.usgs.cida.pubs.dao.intfc.IMpDao;
+import gov.usgs.cida.pubs.dao.intfc.IMpPublicationDao;
+import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
@@ -27,10 +27,8 @@ import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
-	classes={LocalValidatorFactoryBean.class})
-//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+	classes={LocalValidatorFactoryBean.class, MpPublicationContributor.class,
+			Contributor.class, ContributorType.class, MpPublication.class})
 public class ParentExistsValidatorForMpPublicationContributorTest extends BaseValidatorTest {
 
 	protected ParentExistsValidatorForMpPublicationContributor validator;
@@ -39,24 +37,28 @@ public class ParentExistsValidatorForMpPublicationContributorTest extends BaseVa
 	protected Contributor<?> contributor;
 	protected ContributorType contributorType;
 
-	@MockBean
-	protected MpPublicationDao mpPublicationDao;
-	@MockBean
-	protected ContributorDao contributorDao;
-	@MockBean
+	@MockBean(name="mpPublicationDao")
+	protected IMpPublicationDao mpPublicationDao;
+	@MockBean(name="publicationDao")
+	protected IPublicationDao publicationDao;
+	@MockBean(name="contributorDao")
+	protected IDao<Contributor<?>> contributorDao;
+	@MockBean(name="contributorTypeDao")
 	protected IDao<ContributorType> contributorTypeDao;
+	@MockBean(name="mpPublicationContributorDao")
+	protected IMpDao<MpPublicationContributor> mpPublicationContributorDao;
 
 	@Before
+	@SuppressWarnings("unchecked")
 	public void setUp() throws Exception {
 		super.setUp();
 		validator = new ParentExistsValidatorForMpPublicationContributor();
 		mpPubContributor = new MpPublicationContributor();
 		mpPublication = new MpPublication();
-		mpPublication.setMpPublicationDao(mpPublicationDao);
 		contributor = new Contributor<>();
-		contributor.setContributorDao(contributorDao);
 		contributorType = new ContributorType();
-		contributorType.setContributorTypeDao(contributorTypeDao);
+
+		reset(mpPublicationDao, contributorDao, contributorTypeDao);
 	}
 
 	@Test

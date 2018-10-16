@@ -101,4 +101,18 @@ public class ContributorTypeDaoIT extends BaseIT {
 		}
 	}
 
+	public static ContributorType getAuthor() {
+		ContributorType author = new ContributorType();
+		author.setId(ContributorType.AUTHORS);
+		author.setText(ContributorTypeDaoIT.AUTHOR_KEY);
+		return author;
+	}
+
+	public static ContributorType getEditor() {
+		ContributorType editor = new ContributorType();
+		editor.setId(ContributorType.EDITORS);
+		editor.setText(ContributorTypeDaoIT.EDITOR_KEY);
+		return editor;
+	}
+
 }

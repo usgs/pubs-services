@@ -39,6 +39,7 @@ import gov.usgs.cida.pubs.dao.PublicationSubtypeDao;
 import gov.usgs.cida.pubs.dao.PublicationTypeDao;
 import gov.usgs.cida.pubs.dao.PublishingServiceCenterDao;
 import gov.usgs.cida.pubs.dao.PublishingServiceCenterDaoIT;
+import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
@@ -61,7 +62,7 @@ import gov.usgs.cida.pubs.springinit.DbTestConfig;
 			CorporateContributor.class, CorporateContributorDao.class, ContributorDao.class,
 			PublishingServiceCenter.class, PublishingServiceCenterDao.class,
 			OutsideAffiliation.class, OutsideAffiliationDao.class,
-			PersonContributor.class, PersonContributorDao.class})
+			PersonContributor.class, PersonContributorDao.class, Contributor.class})
 @DatabaseSetups({
 	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 	@DatabaseSetup("classpath:/testData/publicationType.xml"),

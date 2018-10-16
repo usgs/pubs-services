@@ -3,34 +3,33 @@ package gov.usgs.cida.pubs.busservice.mp;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.validation.Validator;
-
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.security.test.context.support.ReactorContextTestExecutionListener;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseIT;
+import gov.usgs.cida.pubs.ConfigurationService;
+import gov.usgs.cida.pubs.TestOAuth;
 import gov.usgs.cida.pubs.dao.mp.MpListDao;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
-import gov.usgs.cida.pubs.utility.PubsUtilitiesTest;
-import gov.usgs.cida.pubs.webservice.security.PubsRoles;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
-	classes={DbTestConfig.class, LocalValidatorFactoryBean.class,
-			MpList.class, MpListDao.class})
+	classes={DbTestConfig.class, LocalValidatorFactoryBean.class, ConfigurationService.class,
+			MpList.class, MpListDao.class, MpListBusService.class})
 @DatabaseSetups({
 	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 	@DatabaseSetup("classpath:/testData/publicationType.xml"),
@@ -38,20 +37,14 @@ import gov.usgs.cida.pubs.webservice.security.PubsRoles;
 	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
 	@DatabaseSetup("classpath:/testData/dataset.xml")
 })
+//Needed to use @WithMockUser - @SecurityTestExecutionListeners and @ContextConfiguration interfere with @SpringBootTest
+@TestExecutionListeners({WithSecurityContextTestExecutionListener.class, ReactorContextTestExecutionListener.class})
 public class MpListBusServiceIT extends BaseIT {
 
 	@Autowired
-	public Validator validator;
-
-	private MpListBusService busService;
+	public MpListBusService busService;
 
 	public static final int MP_LIST_CNT = 19;
-
-	@Before
-	public void initTest() throws Exception {
-		MockitoAnnotations.initMocks(this);
-		busService = new MpListBusService(validator);
-	}
 
 	@Test
 	public void getObjectsTest() {
@@ -85,13 +78,14 @@ public class MpListBusServiceIT extends BaseIT {
 		mpLists = busService.getObjects(filters);
 		assertNotNull(mpLists);
 		assertEquals(MP_LIST_CNT, mpLists.size());
-
-		//Now we want just spn...
-		PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_SPN_USER.name()));
-		mpLists = busService.getObjects(filters);
-		assertNotNull(mpLists);
-		assertEquals(1, mpLists.size());
-
 	}
 
+	@Test
+	@WithMockUser(username=TestOAuth.SPN_USER, authorities={TestOAuth.SPN_AUTHORITY})
+	public void getSpnObjectsTest() {
+		//Now we want just spn...
+		Collection<MpList> mpLists = busService.getObjects(new HashMap<>());
+		assertNotNull(mpLists);
+		assertEquals(1, mpLists.size());
+	}
 }

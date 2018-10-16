@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 import javax.validation.Validator;
@@ -14,14 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.dao.intfc.IMpDao;
 import gov.usgs.cida.pubs.dao.intfc.IMpPublicationDao;
+import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
+import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 import gov.usgs.cida.pubs.domain.mp.MpListPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
@@ -30,10 +31,8 @@ import gov.usgs.cida.pubs.validation.ValidatorResult;
 import gov.usgs.cida.pubs.validation.mp.unique.UniqueKeyValidatorForMpListPublicationTest;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
-	classes={LocalValidatorFactoryBean.class})
-//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+	classes={LocalValidatorFactoryBean.class, MpPublication.class, Publication.class, MpList.class,
+			MpListPublication.class})
 public class MpListPublicationValidationTest extends BaseValidatorTest {
 
 	public static final String DUPLICATE_TEXT = new ValidatorResult("", "Duplicates found", SeverityLevel.FATAL, null).toString();
@@ -43,12 +42,14 @@ public class MpListPublicationValidationTest extends BaseValidatorTest {
 	@Autowired
 	public Validator validator;
 
-	@MockBean
+	@MockBean(name="mpListPublicationDao")
 	protected IMpDao<MpListPublication> mpListPublicationDao;
-	@MockBean
+	@MockBean(name="mpListDao")
 	protected IDao<MpList> mpListDao;
-	@MockBean
+	@MockBean(name="mpPublicationDao")
 	protected IMpPublicationDao mpPublicationDao;
+	@MockBean(name="publicationDao")
+	protected IPublicationDao publicationDao;
 
 	private MpListPublication mpListPublication;
 	private MpList mpList;
@@ -56,18 +57,18 @@ public class MpListPublicationValidationTest extends BaseValidatorTest {
 
 	@Before
 	@Override
+	@SuppressWarnings("unchecked")
 	public void setUp() throws Exception {
 		super.setUp();
 		mpPublication = new MpPublication();
 		mpPublication.setId(1);
-		mpPublication.setMpPublicationDao(mpPublicationDao);
 		mpList = new MpList();
 		mpList.setId(1);
-		mpList.setMpListDao(mpListDao);
 		mpListPublication = new MpListPublication();
-		mpListPublication.setMpListPublicationDao(mpListPublicationDao);
 		mpListPublication.setMpList(mpList);
 		mpListPublication.setMpPublication(mpPublication);
+
+		reset(mpListPublicationDao, mpListDao, mpPublicationDao, publicationDao);
 
 		when(mpListPublicationDao.getByMap(anyMap())).thenReturn(UniqueKeyValidatorForMpListPublicationTest.buildList());
 		when(mpPublicationDao.getById(any(Integer.class))).thenReturn(null);

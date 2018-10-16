@@ -10,8 +10,6 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +23,6 @@ import org.json.JSONObject;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -36,8 +33,6 @@ import org.springframework.util.FileCopyUtils;
 import com.github.springtestdbunit.dataset.ReplacementDataSetModifier;
 
 import gov.usgs.cida.pubs.domain.BaseDomain;
-import gov.usgs.cida.pubs.webservice.security.PubsAuthentication;
-import gov.usgs.cida.pubs.webservice.security.PubsRoles;
 
 @RunWith(SpringRunner.class)
 @TestExecutionListeners({DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
@@ -69,16 +64,6 @@ public abstract class BaseTest {
 			dataSet.addReplacementSubstring("[id]", id.toString());
 		}
 
-	}
-
-	public static void buildTestAuthentication(String username) {
-		List<String> roles = new ArrayList<>(Arrays.asList(PubsRoles.PUBS_ADMIN.name()));
-		SecurityContextHolder.getContext().setAuthentication(new PubsAuthentication(username, roles));
-	}
-
-	public static void buildTestAuthentication(String username, List<String> roles) {
-		SecurityContextHolder.clearContext();
-		SecurityContextHolder.getContext().setAuthentication(new PubsAuthentication(username, roles));
 	}
 
 	public void assertDaoTestResults(final Class<?> inClass, final Object inObject, final Object resultObject) {

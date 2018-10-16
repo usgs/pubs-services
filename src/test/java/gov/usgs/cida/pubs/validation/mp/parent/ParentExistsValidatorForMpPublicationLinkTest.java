@@ -3,28 +3,30 @@ package gov.usgs.cida.pubs.validation.mp.parent;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 import gov.usgs.cida.pubs.dao.LinkFileTypeDao;
 import gov.usgs.cida.pubs.dao.LinkTypeDao;
+import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
 import gov.usgs.cida.pubs.domain.LinkFileType;
 import gov.usgs.cida.pubs.domain.LinkType;
+import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 
-//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={MpPublication.class, Publication.class, LinkType.class, LinkFileType.class})
 public class ParentExistsValidatorForMpPublicationLinkTest extends BaseValidatorTest {
 
 	protected ParentExistsValidatorForMpPublicationLink validator;
@@ -33,24 +35,26 @@ public class ParentExistsValidatorForMpPublicationLinkTest extends BaseValidator
 	protected LinkType linkType;
 	protected LinkFileType linkFileType;
 
-	@MockBean
+	@MockBean(name="mpPublicationDao")
 	protected MpPublicationDao mpPublicationDao;
-	@MockBean
+	@MockBean(name="publicationDao")
+	protected IPublicationDao publicationDao;
+	@MockBean(name="linkTypeDao")
 	protected LinkTypeDao linkTypeDao;
-	@MockBean
+	@MockBean(name="linkFileTypeDao")
 	protected LinkFileTypeDao linkFileTypeDao;
 
 	@Before
+	@SuppressWarnings("unchecked")
 	public void setUp() throws Exception {
 		super.setUp();
 		validator = new ParentExistsValidatorForMpPublicationLink();
 		mpPubLink = new PublicationLink<>();
 		mpPublication = new MpPublication();
-		mpPublication.setMpPublicationDao(mpPublicationDao);
 		linkType = new LinkType();
-		linkType.setLinkTypeDao(linkTypeDao);
 		linkFileType = new LinkFileType();
-		linkFileType.setLinkFileTypeDao(linkFileTypeDao);
+
+		reset(mpPublicationDao, publicationDao, linkTypeDao, linkFileTypeDao);
 	}
 
 	@Test

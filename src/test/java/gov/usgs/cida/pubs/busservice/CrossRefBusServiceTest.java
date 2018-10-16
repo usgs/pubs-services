@@ -39,8 +39,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 import freemarker.template.Configuration;
 import gov.usgs.cida.pubs.BaseTest;
@@ -61,8 +59,8 @@ import gov.usgs.cida.pubs.validation.xml.XMLValidationException;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={ConfigurationService.class, FreemarkerConfig.class,
-			PublicationBusService.class, TestSpringConfig.class})
-@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+			PublicationBusService.class, TestSpringConfig.class,
+			ContributorType.class})
 public class CrossRefBusServiceTest extends BaseTest {
 
 	@Captor
@@ -76,7 +74,7 @@ public class CrossRefBusServiceTest extends BaseTest {
 	protected PubsEMailer pubsEMailer;
 	@MockBean
 	protected ICrossRefLogDao crossRefLogDao;
-	@MockBean
+	@MockBean(name="contributorTypeDao")
 	protected IDao<ContributorType> contributorTypeDao;
 	@Autowired
 	protected Configuration templateConfiguration;
@@ -96,7 +94,6 @@ public class CrossRefBusServiceTest extends BaseTest {
 			publicationBusService
 		);
 		contributorType = new ContributorType();
-		contributorType.setContributorTypeDao(contributorTypeDao);
 	}
 
 	@Test

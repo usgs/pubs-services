@@ -12,8 +12,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -31,6 +29,7 @@ import gov.usgs.cida.pubs.dao.ContributorDaoIT;
 import gov.usgs.cida.pubs.dao.ContributorTypeDao;
 import gov.usgs.cida.pubs.dao.CostCenterDao;
 import gov.usgs.cida.pubs.dao.PersonContributorDao;
+import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
@@ -43,14 +42,13 @@ import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={DbTestConfig.class, TestSpringConfig.class, LocalValidatorFactoryBean.class,
 			IpdsParserService.class, IpdsOutsideContributorService.class, PersonContributorBusService.class,
-			CostCenterBusService.class, OutsideAffiliationBusService.class, OutsideContributor.class,
+			CostCenterBusService.class, OutsideAffiliationBusService.class, OutsideContributor.class, Contributor.class,
 			ContributorDao.class, PersonContributorDao.class, ContributorType.class, ContributorTypeDao.class,
 			CostCenter.class, CostCenterDao.class, AffiliationDao.class})
 @DatabaseSetups({
 	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 	@DatabaseSetup("classpath:/testData/affiliation.xml")
 })
-@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
 public class IpdsPubContributorServiceIT extends BaseIpdsTest {
 
 	@Autowired

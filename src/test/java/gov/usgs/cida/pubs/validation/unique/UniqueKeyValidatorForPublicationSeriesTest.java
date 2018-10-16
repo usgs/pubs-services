@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.validation.unique;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
@@ -10,25 +11,24 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 
-//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={PublicationSeries.class})
 public class UniqueKeyValidatorForPublicationSeriesTest extends BaseValidatorTest {
 
 	protected UniqueKeyValidatorForPublicationSeries validator;
 	protected PublicationSeries series;
 	protected PublicationSubtype st;
 
-	@MockBean
+	@MockBean(name="publicationSeriesDao")
 	protected PublicationSeriesDao publicationSeriesDao;
 
 	@Before
@@ -36,7 +36,6 @@ public class UniqueKeyValidatorForPublicationSeriesTest extends BaseValidatorTes
 		super.setUp();
 		validator = new UniqueKeyValidatorForPublicationSeries();
 		series = new PublicationSeries();
-		series.setPublicationSeriesDao(publicationSeriesDao);
 		series.setText("test");
 		series.setCode("tst");
 		series.setSeriesDoiName("doi");
@@ -45,6 +44,8 @@ public class UniqueKeyValidatorForPublicationSeriesTest extends BaseValidatorTes
 		st = new PublicationSubtype();
 		st.setId(1);
 		series.setPublicationSubtype(st);
+
+		reset(publicationSeriesDao);
 	}
 
 	@Test

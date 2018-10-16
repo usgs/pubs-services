@@ -26,7 +26,7 @@ import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
-	classes={DbTestConfig.class, LocalValidatorFactoryBean.class,
+	classes={DbTestConfig.class, LocalValidatorFactoryBean.class, Contributor.class,
 			PersonContributor.class, PersonContributorDao.class, ContributorDao.class})
 @DatabaseSetups({
 	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),

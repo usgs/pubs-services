@@ -1,15 +1,18 @@
 package gov.usgs.cida.pubs.utility;
 
 import java.text.MessageFormat;
-import java.util.Iterator;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
+import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.domain.BaseDomain;
@@ -17,8 +20,6 @@ import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
-import gov.usgs.cida.pubs.webservice.security.PubsAuthentication;
-import gov.usgs.cida.pubs.webservice.security.PubsRoles;
 
 public final class PubsUtilities {
 
@@ -45,7 +46,7 @@ public final class PubsUtilities {
 
 	public static String getUsername() {
 		String username = PubsConstants.ANONYMOUS_USER;
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Authentication auth = getAuthentication();
 
 		if (null != auth && auth.getPrincipal() instanceof User) {
 			username = ((User) auth.getPrincipal()).getUsername();
@@ -53,37 +54,37 @@ public final class PubsUtilities {
 		return username;
 	}
 
-	public static boolean isSpnUser() {
+	public static Authentication getAuthentication() {
+		return SecurityContextHolder.getContext().getAuthentication();
+	}
+
+	public static boolean isSpnUser(ConfigurationService configurationService) {
 		boolean rtn = false;
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (null != auth && null != auth.getAuthorities() && auth instanceof PubsAuthentication) {
-			Iterator<? extends GrantedAuthority> i = auth.getAuthorities().iterator();
-			while (i.hasNext() && !rtn) {
-				if (i.next().getAuthority().equalsIgnoreCase(PubsRoles.PUBS_SPN_USER.getSpringRole())) {
-					rtn = true;
-				}
+		Authentication auth =  getAuthentication();
+		if (null != auth && null != auth.getAuthorities()) {
+			Set<String> spnAuthorities = new HashSet<String>(Arrays.asList(configurationService.getSpnAuthorities()));
+			if (0 < auth.getAuthorities().stream().filter(z -> spnAuthorities.contains(z.getAuthority())).collect(Collectors.toList()).size()) {
+				rtn = true;
 			}
 		}
 		return rtn;
 	}
 
-	public static boolean isSpnOnly() {
-		boolean hasSpn = false;
-		boolean hasOther = false;
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (null != auth && null != auth.getAuthorities() && auth instanceof PubsAuthentication) {
-			Iterator<? extends GrantedAuthority> i = auth.getAuthorities().iterator();
-			while (i.hasNext()) {
-				GrantedAuthority gAuth = i.next();
-				if (gAuth.getAuthority().equalsIgnoreCase(PubsRoles.PUBS_SPN_USER.getSpringRole())) {
-					hasSpn = true;
-				} else if (gAuth.getAuthority().equalsIgnoreCase(PubsRoles.PUBS_ADMIN.getSpringRole())
-						|| gAuth.getAuthority().equalsIgnoreCase(PubsRoles.PUBS_CATALOGER_USER.getSpringRole())) {
-					hasOther = true;
-				}
+	public static boolean isOtherPubsUser(ConfigurationService configurationService) {
+		boolean rtn = false;
+		Authentication auth =  getAuthentication();
+		if (null != auth && null != auth.getAuthorities()) {
+			Set<String> pubsAuthorities = new HashSet<String>(Arrays.asList(configurationService.getAuthorizedAuthorities()));
+			pubsAuthorities.removeAll(Arrays.asList(configurationService.getSpnAuthorities()));
+			if (0 < auth.getAuthorities().stream().filter(z -> pubsAuthorities.contains(z.getAuthority())).collect(Collectors.toList()).size()) {
+				rtn = true;
 			}
 		}
-		return hasSpn && !hasOther;
+		return rtn;
+	}
+
+	public static boolean isSpnOnly(ConfigurationService configurationService) {
+		return isSpnUser(configurationService) && !isOtherPubsUser(configurationService);
 	}
 
 	/**

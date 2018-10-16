@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.validation.mp.unique;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,25 +13,24 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 import gov.usgs.cida.pubs.dao.mp.MpPublicationCostCenterDao;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 
-//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={MpPublicationCostCenter.class})
 public class UniqueKeyValidatorForMpPublicationCostCenterTest extends BaseValidatorTest {
 
 	protected UniqueKeyValidatorForMpPublicationCostCenter validator;
 	protected MpPublicationCostCenter mpPubCostCenter;
 	protected CostCenter costCenter;
 
-	@MockBean
+	@MockBean(name="mpPublicationCostCenterDao")
 	protected MpPublicationCostCenterDao mpPublicationCostCenterDao;
 
 	@Before
@@ -40,6 +40,8 @@ public class UniqueKeyValidatorForMpPublicationCostCenterTest extends BaseValida
 		mpPubCostCenter = new MpPublicationCostCenter();
 		mpPubCostCenter.setMpPublicationCostCenterDao(mpPublicationCostCenterDao);
 		costCenter = new CostCenter();
+
+		reset(mpPublicationCostCenterDao);
 	}
 
 	@Test

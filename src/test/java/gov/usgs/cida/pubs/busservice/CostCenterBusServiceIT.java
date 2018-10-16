@@ -23,6 +23,7 @@ import gov.usgs.cida.pubs.dao.CostCenterDao;
 import gov.usgs.cida.pubs.dao.CostCenterDaoIT;
 import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.domain.Affiliation;
+import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
@@ -30,7 +31,7 @@ import gov.usgs.cida.pubs.springinit.DbTestConfig;
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={DbTestConfig.class, LocalValidatorFactoryBean.class,
 			Affiliation.class, AffiliationDao.class, CostCenter.class, CostCenterDao.class,
-			PersonContributor.class, PersonContributorDao.class, ContributorDao.class})
+			PersonContributor.class, PersonContributorDao.class, ContributorDao.class, Contributor.class})
 @DatabaseSetups({
 	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 })

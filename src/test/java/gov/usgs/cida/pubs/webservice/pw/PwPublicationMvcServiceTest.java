@@ -28,8 +28,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.web.accept.ContentNegotiationStrategy;
 
 import freemarker.template.Configuration;
@@ -50,8 +48,7 @@ import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 
 @Ignore
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK,
-	classes={TestSpringConfig.class, ConfigurationService.class, FreemarkerConfig.class})
-@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+	classes={TestSpringConfig.class, ConfigurationService.class, FreemarkerConfig.class, ContributorType.class})
 public class PwPublicationMvcServiceTest extends BaseTest {
 
 	@Autowired
@@ -69,8 +66,7 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 	private Configuration templateConfiguration;
 	@MockBean
 	private IPublicationBusService publicationBusService;
-	private ContributorType contributorType;
-	@MockBean
+	@MockBean(name="contributorTypeDao")
 	private ContributorTypeDao contributorTypeDao;
 
 
@@ -88,10 +84,8 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 		filters.put(BaseDao.PAGE_SIZE, "13");
 		filters.put(BaseDao.PAGE_ROW_START, "4");
 		filters.put(BaseDao.PAGE_NUMBER, "8");
-		contributorType = new ContributorType();
-		contributorType.setContributorTypeDao(contributorTypeDao);
-		when(contributorTypeDao.getById(ContributorType.AUTHORS)).thenReturn(getAuthor());
-		when(contributorTypeDao.getById(ContributorType.EDITORS)).thenReturn(getEditor());
+		when(contributorTypeDao.getById(ContributorType.AUTHORS)).thenReturn(ContributorTypeDaoIT.getAuthor());
+		when(contributorTypeDao.getById(ContributorType.EDITORS)).thenReturn(ContributorTypeDaoIT.getEditor());
 	}
 
 	@Test
@@ -209,17 +203,4 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
 
-	private ContributorType getAuthor() {
-		ContributorType author = new ContributorType();
-		author.setId(ContributorType.AUTHORS);
-		author.setText(ContributorTypeDaoIT.AUTHOR_KEY);
-		return author;
-	}
-
-	private ContributorType getEditor() {
-		ContributorType editor = new ContributorType();
-		editor.setId(ContributorType.EDITORS);
-		editor.setText(ContributorTypeDaoIT.EDITOR_KEY);
-		return editor;
-	}
 }

@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.busservice.pw;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -13,65 +14,71 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 import gov.usgs.cida.pubs.BaseTest;
+import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
 import gov.usgs.cida.pubs.dao.intfc.IPwPublicationDao;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 
-//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={PwPublicationBusService.class, PwPublication.class})
 public class PwPublicationBusServiceTest extends BaseTest {
 
-	private PwPublicationBusService service;
+	@Autowired
+	protected PwPublicationBusService service;
 	protected PwPublication pub;
 	protected Map<String, Object> filters = new HashMap<>();
 
-	@MockBean
-	protected IPwPublicationDao pwPubDao;
+	@MockBean(name="pwPublicationDao")
+	protected IPwPublicationDao pwPublicationDao;
+	@MockBean(name="publicationDao")
+	protected IPublicationDao publicationDao;
 
 	@Before
+	@SuppressWarnings("unchecked")
 	public void setUp() throws Exception {
 		service = new PwPublicationBusService();
 		pub = PwPublicationTest.buildAPub(1);
-		pub.setPwPublicationDao(pwPubDao);
+
+		reset(pwPublicationDao, publicationDao);
 	}
 
 
 	@Test
 	public void getObjectTest() {
-		when(pwPubDao.getById(any(Integer.class))).thenReturn(pub);
+		when(pwPublicationDao.getById(any(Integer.class))).thenReturn(pub);
 		PwPublication pubTest = service.getObject(5);
 		assertEquals(pub, pubTest);
-		verify(pwPubDao).getById(5);
+		verify(pwPublicationDao).getById(5);
 	}
 
 	@Test
 	public void getObjectsTest() {
-		when(pwPubDao.getByMap(anyMap())).thenReturn(Arrays.asList(pub));
+		when(pwPublicationDao.getByMap(anyMap())).thenReturn(Arrays.asList(pub));
 		List<PwPublication> pubs = service.getObjects(filters);
 		assertEquals(1, pubs.size());
 		assertEquals(pub, pubs.get(0));
-		verify(pwPubDao).getByMap(anyMap());
+		verify(pwPublicationDao).getByMap(anyMap());
 	}
 
 	@Test
 	public void getObjectCountTest() {
-		when(pwPubDao.getObjectCount(anyMap())).thenReturn(15);
+		when(pwPublicationDao.getObjectCount(anyMap())).thenReturn(15);
 		assertEquals(15, service.getObjectCount(filters).intValue());
-		verify(pwPubDao).getObjectCount(anyMap());
+		verify(pwPublicationDao).getObjectCount(anyMap());
 	}
 
 	@Test
 	public void getByIndexIdTest() {
-		when(pwPubDao.getByIndexId(any(String.class))).thenReturn(pub);
+		when(pwPublicationDao.getByIndexId(any(String.class))).thenReturn(pub);
 		PwPublication pubTest = service.getByIndexId("ab123");
 		assertEquals(pub, pubTest);
-		verify(pwPubDao).getByIndexId("ab123");
+		verify(pwPublicationDao).getByIndexId("ab123");
 	}
 
 }

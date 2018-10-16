@@ -10,6 +10,7 @@ import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,9 +25,9 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -37,6 +38,7 @@ import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
 import gov.usgs.cida.pubs.dao.intfc.IPwPublicationDao;
 import gov.usgs.cida.pubs.dao.ipds.IpdsMessageLogDao;
 import gov.usgs.cida.pubs.domain.CostCenter;
@@ -53,9 +55,8 @@ import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 
-//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={PwPublication.class, IpdsMessageLog.class})
 public class IpdsProcessTest extends BaseTest {
 
 	@MockBean
@@ -66,8 +67,10 @@ public class IpdsProcessTest extends BaseTest {
 	protected IpdsWsRequester requester;
 	@MockBean
 	protected IMpPublicationBusService pubBusService;
-	@MockBean
-	protected IPwPublicationDao publicationDao;
+	@MockBean(name="pwPublicationDao")
+	protected IPwPublicationDao pwPublicationDao;
+	@MockBean(name="publicationDao")
+	protected IPublicationDao publicationDao;
 	@MockBean
 	protected PlatformTransactionManager transactionManager;
 	@MockBean
@@ -99,9 +102,7 @@ public class IpdsProcessTest extends BaseTest {
 		existingPwPub9 = buildPwPub(9);
 		existingPwPub11 = buildPwPub(11);
 
-		existingPwPub9.setPwPublicationDao(publicationDao);
-		IpdsMessageLog ipdsMessageLog = new IpdsMessageLog();
-		ipdsMessageLog.setIpdsMessageLogDao(ipdsMessageLogDao);
+		reset(pwPublicationDao, publicationDao, ipdsMessageLogDao, requester, binder, pubBusService);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -139,8 +140,8 @@ public class IpdsProcessTest extends BaseTest {
 
 	@Test
 	public void getFromPwTest() {
-		when(publicationDao.getByIpdsId(anyString())).thenReturn(null, null, existingPwPub9, null);
-		when(publicationDao.getByIndexId(anyString())).thenReturn(null, existingPwPub11);
+		when(pwPublicationDao.getByIpdsId(anyString())).thenReturn(null, null, existingPwPub9, null);
+		when(pwPublicationDao.getByIndexId(anyString())).thenReturn(null, existingPwPub11);
 		when(pubBusService.getUsgsNumberedSeriesIndexId(any(MpPublication.class))).thenReturn("sir1234a");
 		MpPublication newPub = new MpPublication();
 		newPub.setIpdsId("IPDS_123");
@@ -150,8 +151,8 @@ public class IpdsProcessTest extends BaseTest {
 
 		//This time we don't find it by IPDS ID and we do not attempt by index ID
 		assertNull(ipdsProcess.getFromPw(newPub));
-		verify(publicationDao).getByIpdsId(anyString());
-		verify(publicationDao, never()).getByIndexId(anyString());
+		verify(pwPublicationDao).getByIpdsId(anyString());
+		verify(pwPublicationDao, never()).getByIndexId(anyString());
 
 		//This time we don't find it by either ID
 		PublicationSubtype psub = new PublicationSubtype();
@@ -160,25 +161,25 @@ public class IpdsProcessTest extends BaseTest {
 		newPub.setSeriesTitle(pubSeries);
 		newPub.setSeriesNumber("456");
 		assertNull(ipdsProcess.getFromPw(newPub));
-		verify(publicationDao, times(2)).getByIpdsId(anyString());
-		verify(publicationDao).getByIndexId(anyString());
+		verify(pwPublicationDao, times(2)).getByIpdsId(anyString());
+		verify(pwPublicationDao).getByIndexId(anyString());
 
 		//This time is by IPDS ID
 		assertEquals(9, ipdsProcess.getFromPw(newPub).getId().intValue());
-		verify(publicationDao, times(3)).getByIpdsId(anyString());
-		verify(publicationDao).getByIndexId(anyString());
+		verify(pwPublicationDao, times(3)).getByIpdsId(anyString());
+		verify(pwPublicationDao).getByIndexId(anyString());
 
 		//This time is by Index ID
 		assertEquals(11, ipdsProcess.getFromPw(newPub).getId().intValue());
-		verify(publicationDao, times(4)).getByIpdsId(anyString());
-		verify(publicationDao, times(2)).getByIndexId(anyString());
+		verify(pwPublicationDao, times(4)).getByIpdsId(anyString());
+		verify(pwPublicationDao, times(2)).getByIndexId(anyString());
 	}
 
 	@Test
 	public void okToProcessTest() {
-		when(publicationDao.getByIpdsId(null)).thenReturn(null);
-		when(publicationDao.getByIndexId(null)).thenReturn(null);
-		when(publicationDao.getByIpdsId("IPDS-1")).thenReturn(new PwPublication());
+		when(pwPublicationDao.getByIpdsId(null)).thenReturn(null);
+		when(pwPublicationDao.getByIndexId(null)).thenReturn(null);
+		when(pwPublicationDao.getByIpdsId("IPDS-1")).thenReturn(new PwPublication());
 
 		//NPE tests
 		assertFalse(ipdsProcess.okToProcess(null, null, null));
@@ -213,9 +214,9 @@ public class IpdsProcessTest extends BaseTest {
 
 	@Test
 	public void okToProcessDisseminationTest() {
-		when(publicationDao.getByIpdsId(null)).thenReturn(null);
-		when(publicationDao.getByIndexId(null)).thenReturn(null);
-		when(publicationDao.getByIpdsId("IPDS-1")).thenReturn(new PwPublication());
+		when(pwPublicationDao.getByIpdsId(null)).thenReturn(null);
+		when(pwPublicationDao.getByIndexId(null)).thenReturn(null);
+		when(pwPublicationDao.getByIpdsId("IPDS-1")).thenReturn(new PwPublication());
 
 		//Do not process if new data is null
 		assertFalse(ipdsProcess.okToProcessDissemination(null, null));

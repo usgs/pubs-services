@@ -23,8 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -47,12 +45,11 @@ import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={DbTestConfig.class, ConfigurationService.class, TestSpringConfig.class, FreemarkerConfig.class,
 			PublicationBusService.class, ContributorType.class, ContributorTypeDao.class})
-@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
 public class CrossrefTransformerIT extends BaseIT {
 
 	@Autowired
 	private ConfigurationService configurationService;
-	
+
 	@Autowired
 	@Qualifier("freeMarkerConfiguration")
 	private Configuration templateConfig;

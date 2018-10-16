@@ -14,6 +14,7 @@ public class ConfigurationService {
 	private String ipdsQueueName;
 	@Value("${ipds.endpoint}")
 	private String ipdsEndpoint;
+
 	@Value("${crossref.protocol}")
 	private String crossrefProtocol;
 	@Value("${crossref.host}")
@@ -30,23 +31,29 @@ public class ConfigurationService {
 	private String crossrefSchemaUrl;
 	@Value("${crossref.depositorEmail}")
 	private String crossrefDepositorEmail;
-	@Value("${emailList}")
+
+	@Value("${pubs.authorities.spn}")
+	private String[] spnAuthorities;
+	@Value("${pubs.authorities.authorized}")
+	private String[] authorizedAuthorities;
+	@Value("${pubs.emailList}")
 	private String pubsEmailList;
-	@Value("${mailHost}")
+	@Value("${pubs.mailHost}")
 	private String mailHost;
-	//This can/should be overridden. 
-	@Value("${lockTimeoutHours:PubsConstants.DEFAULT_LOCK_TIMEOUT_HOURS}")
+	@Value("${pubs.lockTimeoutHours:PubsConstants.DEFAULT_LOCK_TIMEOUT_HOURS}")
 	private Integer lockTimeoutHours;
-	@Value("${warehouseEndpoint}")
+	@Value("${pubs.warehouseEndpoint}")
 	private String warehouseEndpoint;
-	@Value("${displayProtocol:https}")
+
+	@Value("${swagger.displayProtocol:https}")
 	private String displayProtocol;
-	@Value("${displayHost}")
+	@Value("${swagger.displayHost}")
 	private String displayHost;
-	@Value("${displayPath}")
+	@Value("${swagger.displayPath}")
 	private String displayPath;
-	@Value("${authServiceUrl}")
-	private String authServiceUrl;
+
+	@Value("${security.oauth2.resource.id}")
+	private String resourceId;
 
 	public String getIpdsPubsWsPwd() {
 		return ipdsPubsWsPwd;
@@ -124,7 +131,16 @@ public class ConfigurationService {
 		return displayPath;
 	}
 
-	public String getAuthServiceUrl() {
-		return authServiceUrl;
+	public String getResourceId() {
+		return resourceId;
 	}
+
+	public String[] getSpnAuthorities() {
+		return spnAuthorities;
+	}
+
+	public String[] getAuthorizedAuthorities() {
+		return authorizedAuthorities;
+	}
+
 }

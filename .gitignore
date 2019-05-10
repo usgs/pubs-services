@@ -9,3 +9,5 @@ nb-configuration.xml
 nbactions.xml
 /application-it.yml
 /application.yml
+/.idea/
+*.iml

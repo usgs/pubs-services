@@ -58,9 +58,9 @@ public class MvcServiceTest {
 		String modDateLow = "modDayLo";
 		String modXDays = "26";
 		String orderBy = "ordered";
-		String page_number = "3";
-		String page_row_start = "43";
-		String page_size = "18";
+		Integer page_number = 3;
+		Integer page_row_start = 43;
+		Integer page_size = 18;
 		String[] prodId = new String[]{"1234567","987654"};
 		String[] pubAbstract = new String[]{"abstract1", "abstract2"};
 		String pubDateHigh = "pubDateHi";
@@ -78,7 +78,8 @@ public class MvcServiceTest {
 		String[] year = new String[]{"year1","year2"};
 
 		Map<String, Object> filters = testMvcService.buildFilters(chorus, contributingOffice, contributor, orcid, doi, endYear, g, global, indexId,
-				ipdsId, listId, modDateHigh, modDateLow, modXDays, orderBy, page_number, page_row_start, page_size, prodId, pubAbstract,
+				ipdsId, listId, modDateHigh, modDateLow, modXDays, orderBy,
+				String.valueOf(page_number), String.valueOf(page_row_start), String.valueOf(page_size), prodId, pubAbstract,
 				pubDateHigh, pubDateLow, pubXDays, q, linkType, noLinkType, reportNumber, seriesName, startYear, subtypeName, title, typeName, year);
 
 		assertTrue(filters.containsKey(PublicationDao.PUB_ABSTRACT ));

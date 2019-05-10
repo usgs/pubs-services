@@ -10,7 +10,8 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 
-@Configuration
+//TODO Reactivate
+//@Configuration
 public class FreemarkerConfig {
 
 	@Bean

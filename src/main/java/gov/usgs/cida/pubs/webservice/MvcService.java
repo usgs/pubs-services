@@ -59,9 +59,9 @@ public abstract class MvcService<D> {
 		filters.put(PwPublicationDao.MOD_DATE_LOW, modDateLow);
 		filters.put(PwPublicationDao.MOD_X_DAYS, modXDays);
 		filters.put(PublicationDao.ORDER_BY, orderBy);
-		filters.put(BaseDao.PAGE_NUMBER, page_number);
-		filters.put(PublicationDao.PAGE_ROW_START, page_row_start);
-		filters.put(PublicationDao.PAGE_SIZE, page_size);
+		filters.put(BaseDao.PAGE_NUMBER, PubsUtilities.parseInteger(page_number));
+		filters.put(PublicationDao.PAGE_ROW_START, PubsUtilities.parseInteger(page_row_start));
+		filters.put(PublicationDao.PAGE_SIZE, PubsUtilities.parseInteger(page_size));
 		filters.put(PublicationDao.PROD_ID, prodId);
 		filters.put(PwPublicationDao.PUB_DATE_HIGH, pubDateHigh);
 		filters.put(PwPublicationDao.PUB_DATE_LOW, pubDateLow);

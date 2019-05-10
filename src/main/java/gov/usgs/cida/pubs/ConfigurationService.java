@@ -54,6 +54,8 @@ public class ConfigurationService {
 
 	@Value("${security.oauth2.resource.id}")
 	private String resourceId;
+	@Value("${security.oauth2.resource.jwk.keySetUri}")
+	private String keySetUri;
 
 	public String getIpdsPubsWsPwd() {
 		return ipdsPubsWsPwd;
@@ -133,6 +135,10 @@ public class ConfigurationService {
 
 	public String getResourceId() {
 		return resourceId;
+	}
+
+	public String getKeySetUri() {
+		return keySetUri;
 	}
 
 	public String[] getSpnAuthorities() {

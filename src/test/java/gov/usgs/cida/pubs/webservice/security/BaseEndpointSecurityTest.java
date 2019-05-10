@@ -60,6 +60,7 @@ import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
+import gov.usgs.cida.pubs.springinit.CustomUserAuthenticationConverter;
 import gov.usgs.cida.pubs.springinit.SecurityConfig;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.webservice.AffliliationMvcService;
@@ -83,7 +84,7 @@ import gov.usgs.cida.pubs.webservice.pw.PwPublicationRssMvcService;
 	PublicationSeries.class, CostCenter.class, OutsideAffiliation.class, ContributorType.class,
 	LinkType.class, LinkFileType.class, PersonContributor.class, CorporateContributor.class,
 	PublishingServiceCenter.class, Publication.class, Contributor.class, OutsideContributor.class,
-	UsgsContributor.class})
+	UsgsContributor.class, CustomUserAuthenticationConverter.class})
 public abstract class BaseEndpointSecurityTest extends BaseTest {
 
 	private static final String CONTENT_ID_1_JSON = "{\"id\":\"1\"}";

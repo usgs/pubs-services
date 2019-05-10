@@ -13,7 +13,6 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
@@ -29,7 +28,6 @@ import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@EnableResourceServer
 public class SpringConfig implements WebMvcConfigurer {
 
 	@Autowired

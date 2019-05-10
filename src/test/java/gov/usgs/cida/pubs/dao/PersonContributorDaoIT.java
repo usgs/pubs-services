@@ -197,8 +197,8 @@ public class PersonContributorDaoIT extends BaseIT {
 		assertEquals(14, contributors.get(7).getId().intValue());
 		assertEquals(11, contributors.get(8).getId().intValue());
 		assertEquals(21, contributors.get(9).getId().intValue());
-		assertEquals(2, contributors.get(10).getId().intValue());
-		assertEquals(3, contributors.get(11).getId().intValue());
+		assertEquals(3, contributors.get(10).getId().intValue());
+		assertEquals(2, contributors.get(11).getId().intValue());
 	}
 
 	@Test

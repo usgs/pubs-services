@@ -54,7 +54,7 @@ public abstract class MvcService<D> {
 		filters.put(MpPublicationDao.GLOBAL, global);
 		filters.put(PublicationDao.INDEX_ID, indexId);
 		filters.put(PublicationDao.IPDS_ID, ipdsId);
-		filters.put(MpPublicationDao.LIST_ID, listId);
+		filters.put(MpPublicationDao.LIST_ID, null == listId ? null : mapListId(listId));
 		filters.put(PwPublicationDao.MOD_DATE_HIGH, modDateHigh);
 		filters.put(PwPublicationDao.MOD_DATE_LOW, modDateLow);
 		filters.put(PwPublicationDao.MOD_X_DAYS, modXDays);
@@ -78,6 +78,22 @@ public abstract class MvcService<D> {
 		filters.put(PublicationDao.YEAR, year);
 
 		return filters;
+	}
+
+	protected Integer[] mapListId(String[] listId) {
+		if (null == listId) {
+			return null;
+		}
+		Integer[] listIdInt = new Integer[listId.length];
+		int index = 0;
+		for (int i=0; i < listId.length; i++) {
+			Integer x = PubsUtilities.parseInteger(listId[i]);
+			if (null != x) {
+				listIdInt[index] = x;
+				index++;
+			}
+		}
+		return Arrays.copyOf(listIdInt, index);
 	}
 
 	protected Map<String, Object> configureSingleSearchFilters(String searchTerms) {

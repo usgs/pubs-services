@@ -3,25 +3,21 @@
     <groupId>gov.usgs.cida</groupId>
     <artifactId>pubs-services</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <build.scm.version>${buildNumber}</build.scm.version>
-        <cida.maven.url>http://internal.cida.usgs.gov/maven</cida.maven.url>
-        <maven-compiler-plugin-version>3.7.0</maven-compiler-plugin-version>
-        <additionalparam>-Xdoclint:none</additionalparam>
+        <java.version>11</java.version>
 
         <!-- compile scope versions -->
         <springfox-version>2.9.2</springfox-version>
         <commons-io-version>2.6</commons-io-version>
         <commons-text-version>1.6</commons-text-version>
-        <poi-ooxml-version>4.0.0</poi-ooxml-version>
-        <mybatis-version>3.5.0</mybatis-version>
-        <mybatis-spring-version>2.0.0</mybatis-spring-version>
+        <poi-ooxml-version>4.1.0</poi-ooxml-version>
+        <mybatis-spring-boot-starter-version>2.1.0</mybatis-spring-boot-starter-version>
         <mybatis-typehandlers-jsr310-version>1.0.2</mybatis-typehandlers-jsr310-version>
-        <oauth2-autoconfigure-version>2.1.2.RELEASE</oauth2-autoconfigure-version>
-        <spring-security-oauth2-version>2.3.5.RELEASE</spring-security-oauth2-version>
+        <oauth2-autoconfigure-version>2.1.6.RELEASE</oauth2-autoconfigure-version>
+        <spring-security-oauth2-version>2.3.6.RELEASE</spring-security-oauth2-version>
         <spring-security-jwt-version>1.0.10.RELEASE</spring-security-jwt-version>
 
         <!-- test scope versions -->
@@ -37,74 +33,25 @@
         <tag>HEAD</tag>
     </scm>
 
-    <distributionManagement>
-        <repository>
-            <id>cida-releases</id>
-            <name>CIDA Releases</name>
-            <url>${cida.maven.url}/content/repositories/cida-releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>cida-snapshots</id>
-            <name>CIDA Snapshots</name>
-            <url>${cida.maven.url}/content/repositories/cida-snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <repositories>
-        <repository>
-            <id>Central</id>
-            <name>Maven Central</name>
-            <url>https://repo.maven.apache.org/maven2/</url>
-        </repository>
-        <repository>
-            <id>WMA</id>
-            <name>WMA Artifactory</name>
-            <url>${wma.maven.url}/wma-maven-centralized/</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>cida-public-plugin-nexus</id>
-            <name>CIDA Public Plugin repo</name>
-            <url>${cida.maven.url}/cida-public/</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>cida-plugin-nexus</id>
-            <name>CIDA Plugin repo</name>
-            <url>${cida.maven.url}/content/groups/public/</url>
-        </pluginRepository>
-    </pluginRepositories>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.4.RELEASE</version>
+        <version>2.1.6.RELEASE</version>
     </parent>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>jul-to-slf4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -117,12 +64,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.zaxxer</groupId>
-                    <artifactId>HikariCP</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -169,12 +110,6 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>commons-logging</artifactId>
-                    <groupId>commons-logging</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -183,14 +118,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-            <version>${mybatis-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis-spring</artifactId>
-            <version>${mybatis-spring-version}</version>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>${mybatis-spring-boot-starter-version}</version>
         </dependency>
         <dependency>
             <groupId>org.mybatis</groupId>
@@ -258,12 +188,6 @@
             <artifactId>dbunit</artifactId>
             <version>${dbunit-version}</version>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>uk.co.datumedge</groupId>
@@ -289,10 +213,44 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-<!--                 <configuration> -->
-<!--                     <environmentVariables> -->
-<!--                     </environmentVariables> -->
-<!--                 </configuration> -->
+                <configuration>
+                    <environmentVariables>
+                        <spring.profiles.active>IT</spring.profiles.active>
+                        <spring.activemq.broker-url>tcp://cidasddvasactmq.cr.usgs.gov:61616</spring.activemq.broker-url>
+
+                        <spring.datasource.url>jdbc:postgresql://${TESTING_DATABASE_ADDRESS}:${TESTING_DATABASE_PORT}/pubs_db_name</spring.datasource.url>
+                        <pring.datasource.username>user_name</pring.datasource.username>
+                        <spring.datasource.password>changeMe</spring.datasource.password>
+
+                        <crossref.protocol>changeMe</crossref.protocol>
+                        <crossref.host>changeMe</crossref.host>
+                        <crossref.url>changeMe</crossref.url>
+                        <crossref.port>changeMe</crossref.port>
+                        <crossref.username>changeMe</crossref.username>
+                        <crossref.password>changeMe</crossref.password>
+                        <crossref.depositorEmail>changeMe</crossref.depositorEmail>
+                        <crossref.schema.url>http://www.crossref.org/schema/deposit/crossref4.4.0.xsd</crossref.schema.url>
+
+                        <pubs.emailList>changeMe</pubs.emailList>
+                        <pubs.mailHost>changeMe</pubs.mailHost>
+                        <pubs.lockTimeoutHours>1</pubs.lockTimeoutHours>
+                        <pubs.warehouseEndpoint>http://pubs.er.usgs.gov</pubs.warehouseEndpoint>
+                        <pubs.authorities.spn>changeMe</pubs.authorities.spn>
+                        <pubs.authorities.authorized>changeMe</pubs.authorities.authorized>
+
+                        <ipds.endpoint>changeMe</ipds.endpoint>
+                        <ipds.pubsWsPwd>changeMe</ipds.pubsWsPwd>
+                        <ipds.pubsWsUser>changeMe</ipds.pubsWsUser>
+                        <ipds.queueName>changeMe</ipds.queueName>
+
+                        <swagger.displayHost>localhost:8444</swagger.displayHost>
+                        <swagger.displayPath>/pubs-services</swagger.displayPath>
+                        <swagger.displayProtocol>https</swagger.displayProtocol>
+
+                        <security.oauth2.resource.id>changeMe</security.oauth2.resource.id>
+                        <security.oauth2.resource.jwk.keySetUri>changeMe</security.oauth2.resource.jwk.keySetUri>
+                    </environmentVariables>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -301,6 +259,62 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.30.0</version>
+                <executions>
+                    <execution>
+                        <id>start</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stop</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+<!--                     Uncomment to see detailed container logs -->
+                    <showLogs>true</showLogs>
+                    <containerNamePattern>%a</containerNamePattern>
+                    <images>
+                        <image>
+                            <name>usgswma/pubs_db:ci</name>
+                            <alias>pubsDatabase</alias>
+                            <run>
+                                <network>
+                                    <mode>custom</mode>
+                                    <name>${TESTING_DATABASE_NETWORK}</name>
+                                </network>
+                                <ports>
+                                    <port>5445:5432</port>
+                                </ports>
+                                <env>
+                                    <POSTGRES_PASSWORD>changeMe</POSTGRES_PASSWORD>
+                                    <PUBS_DATABASE_ADDRESS>127.0.0.1</PUBS_DATABASE_ADDRESS>
+                                    <PUBS_DATABASE_NAME>pubs_db_name</PUBS_DATABASE_NAME>
+                                    <PUBS_OWNER_USERNAME>owner_name</PUBS_OWNER_USERNAME>
+                                    <PUBS_OWNER_PASSWORD>changeMe</PUBS_OWNER_PASSWORD>
+                                    <PUBS_USER_USERNAME>user_name</PUBS_USER_USERNAME>
+                                    <PUBS_USER_PASSWORD>changeMe</PUBS_USER_PASSWORD>
+                                    <PUBS_SCHEMA_NAME>pubs_schema</PUBS_SCHEMA_NAME>
+                                    <AUDIT_TRAIL_SCHEMA_NAME>audit_schema</AUDIT_TRAIL_SCHEMA_NAME>
+                                    <LOCAL_NETWORK_NAME>pubs</LOCAL_NETWORK_NAME>
+                                </env>
+                                <wait>
+                                    <time>100000</time>
+                                </wait>
+                            </run>
+                        </image>
+                    </images>
+                </configuration>
             </plugin>
         </plugins>
     </build>

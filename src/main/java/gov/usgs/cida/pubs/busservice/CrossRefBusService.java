@@ -140,7 +140,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 			URI uri = new URI(configurationService.getCrossrefProtocol(), null, configurationService.getCrossrefHost(),
 					configurationService.getCrossrefPort(), configurationService.getCrossrefUrl(), null, null);
 			url = uri.toString() + query;
-		}catch (URISyntaxException ex) {
+		} catch (URISyntaxException ex) {
 			/**
 			 * we omit the original exception because the URI could
 			 * contain passwords that we do not want logged or 

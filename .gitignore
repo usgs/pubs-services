@@ -11,3 +11,4 @@ nbactions.xml
 /application.yml
 /.idea/
 *.iml
+/.attach_*

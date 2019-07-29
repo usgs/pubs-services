@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +28,9 @@ public abstract class MvcService<D> {
 
 	public static final String TEXT_SEARCH = BaseDao.TEXT_SEARCH;
 	public static final String ACTIVE_SEARCH = "active";
+	public static final String TEXT_SEARCH_STARTS_WITH_SUFFIX = ":*";
+	public static final String TEXT_SEARCH_AND = " & ";
+
 	private static final Pattern G_PATTERN = Pattern.compile("^polygon\\(\\((-?\\d+\\.?\\d* -?\\d+\\.?\\d*,){3,}-?\\d+\\.?\\d* -?\\d+\\.?\\d*\\)\\)$");
 
 	protected Map<String, Object> buildFilters(Boolean chorus, String[] contributingOffice, String[] contributor,
@@ -44,18 +48,20 @@ public abstract class MvcService<D> {
 		filters.put(PublicationDao.ORCID, orcid);
 		filters.put(PublicationDao.DOI, doi);
 		filters.put(PublicationDao.END_YEAR, endYear);
-		filters.put(PwPublicationDao.G, configureGeospatialFilter(g));
+		if (null != g && G_PATTERN.matcher(g.toLowerCase()).matches()) {
+			filters.put(PwPublicationDao.G, g.toLowerCase());
+		}
 		filters.put(MpPublicationDao.GLOBAL, global);
 		filters.put(PublicationDao.INDEX_ID, indexId);
 		filters.put(PublicationDao.IPDS_ID, ipdsId);
-		filters.put(MpPublicationDao.LIST_ID, listId);
+		filters.put(MpPublicationDao.LIST_ID, null == listId ? null : mapListId(listId));
 		filters.put(PwPublicationDao.MOD_DATE_HIGH, modDateHigh);
 		filters.put(PwPublicationDao.MOD_DATE_LOW, modDateLow);
 		filters.put(PwPublicationDao.MOD_X_DAYS, modXDays);
 		filters.put(PublicationDao.ORDER_BY, orderBy);
-		filters.put(BaseDao.PAGE_NUMBER, page_number);
-		filters.put(PublicationDao.PAGE_ROW_START, page_row_start);
-		filters.put(PublicationDao.PAGE_SIZE, page_size);
+		filters.put(BaseDao.PAGE_NUMBER, PubsUtilities.parseInteger(page_number));
+		filters.put(PublicationDao.PAGE_ROW_START, PubsUtilities.parseInteger(page_row_start));
+		filters.put(PublicationDao.PAGE_SIZE, PubsUtilities.parseInteger(page_size));
 		filters.put(PublicationDao.PROD_ID, prodId);
 		filters.put(PwPublicationDao.PUB_DATE_HIGH, pubDateHigh);
 		filters.put(PwPublicationDao.PUB_DATE_LOW, pubDateLow);
@@ -74,12 +80,30 @@ public abstract class MvcService<D> {
 		return filters;
 	}
 
+	protected Integer[] mapListId(String[] listId) {
+		if (null == listId) {
+			return null;
+		}
+		Integer[] listIdInt = new Integer[listId.length];
+		int index = 0;
+		for (int i=0; i < listId.length; i++) {
+			Integer x = PubsUtilities.parseInteger(listId[i]);
+			if (null != x) {
+				listIdInt[index] = x;
+				index++;
+			}
+		}
+		return Arrays.copyOf(listIdInt, index);
+	}
+
 	protected Map<String, Object> configureSingleSearchFilters(String searchTerms) {
 		Map<String, Object> rtn = new HashMap<>();
 		//On the MP side, We split the input on spaces and commas to ultimately create an "and" query on each word
-		//On the warehouse side, we are doing Oracle Text queries and just cleanse the "stop words" from the input
+		//On the warehouse side, we are doing Text queries
 		if (StringUtils.isNotBlank(searchTerms)) {
-			List<String> splitTerms = PubsUtilities.removeStopWords(searchTerms);
+			List<String> splitTerms = Arrays.stream(searchTerms.trim().toLowerCase().split(PubsConstants.SEARCH_TERMS_SPLIT_REGEX))
+					.filter(x -> StringUtils.isNotEmpty(x))
+					.collect(Collectors.toList());
 			if (!splitTerms.isEmpty()) {
 				rtn.put(MpPublicationDao.SEARCH_TERMS, buildSearchTerms(splitTerms));
 
@@ -108,8 +132,8 @@ public abstract class MvcService<D> {
 	}
 
 	protected String buildQ(List<String> splitTerms) {
-		//The context search should append each term with a $ and join them with an and.
-		//This gives us a "stem" search with the a logical "and" applied to the terms. 
+		//The context search should suffix each term with TEXT_SEARCH_STARTS_WITH_SUFFIX and join them with TEXT_SEARCH_AND.
+		//This gives us a "stem" search with the logical "and" applied to the terms. 
 		if (null == splitTerms || splitTerms.isEmpty()) {
 			return null;
 		}
@@ -118,10 +142,10 @@ public abstract class MvcService<D> {
 		while (i.hasNext()) {
 			String term = i.next();
 			if (StringUtils.isNotBlank(term)) {
-				newList.add("$" + PubsUtilities.escapeReservedWord(term));
+				newList.add(term + TEXT_SEARCH_STARTS_WITH_SUFFIX);
 			}
 		}
-		return StringUtils.join(newList, " and ");
+		return StringUtils.join(newList, TEXT_SEARCH_AND);
 	}
 
 	protected String configureContributorFilter(String[] text) {
@@ -140,13 +164,13 @@ public abstract class MvcService<D> {
 					while (i.hasNext()) {
 						String term = i.next();
 						if (StringUtils.isNotBlank(term)) {
-							values.add(term + "%");
+							values.add(term + TEXT_SEARCH_STARTS_WITH_SUFFIX);
 						}
 					}					
 				}
 			}
 			if (!values.isEmpty()) {
-				rtn = StringUtils.join(values, " and ");
+				rtn = StringUtils.join(values, TEXT_SEARCH_AND);
 			}
 		}
 		return rtn;
@@ -194,14 +218,6 @@ public abstract class MvcService<D> {
 
 	protected void setHeaders(HttpServletResponse response) {
 		response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
-	}
-
-	protected String[] configureGeospatialFilter(String geospatial) {
-		if (null != geospatial && G_PATTERN.matcher(geospatial.toLowerCase()).matches()) {
-			return geospatial.toLowerCase().replace("polygon((", "").replace("))", "").split("[, ]");
-		} else {
-			return null;
-		}
 	}
 
 }

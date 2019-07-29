@@ -1,5 +1,9 @@
 package gov.usgs.cida.pubs.busservice.ipds;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +23,8 @@ public class SpnProductionMessageService implements IIpdsService {
 	private final IpdsWsRequester requester;
 
 	private final PubsEMailer pubsEMailer;
+
+	private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
 
 	@Autowired
 	SpnProductionMessageService(final IIpdsProcess ipdsProcess, final IpdsWsRequester requester,
@@ -41,10 +47,14 @@ public class SpnProductionMessageService implements IIpdsService {
 		String processingDetails = ipdsProcess.processLog(ProcessType.SPN_PRODUCTION, msg.getId(), messagePayload.getContext());
 
 		if (processingDetails.contains("ERROR")) {
-			pubsEMailer.sendMail("Bad Errors processing SPN Production - log:" + msg.getId(), processingDetails);
+			pubsEMailer.sendMail(buildSubject(), processingDetails);
 		}
 		msg.setProcessingDetails(processingDetails);
 		IpdsMessageLog.getDao().update(msg);
 	}
 
+	protected String buildSubject() {
+		LocalDateTime now = LocalDateTime.now();
+		return "Bad Errors processing SPN Production - " + now.format(formatter);
+	}
 }

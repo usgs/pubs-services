@@ -76,7 +76,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
 	@JsonView(View.Lookup.class)
 	public @ResponseBody Collection<PublicationSubtype> getPublicationSubtypesREST(HttpServletRequest request, HttpServletResponse response,
 				@RequestParam(value=TEXT_SEARCH, required=false) String[] text,
-				@PathVariable("publicationTypeId") String publicationTypeId) {
+				@PathVariable("publicationTypeId") Integer publicationTypeId) {
 		LOG.debug("publicationSubtype");
 		Collection<PublicationSubtype> rtn = new ArrayList<>();
 		if (validateParametersSetHeaders(request, response)) {
@@ -94,7 +94,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
 	@JsonView(View.Lookup.class)
 	public @ResponseBody Collection<PublicationSubtype> getPublicationSubtypesQuery(HttpServletRequest request, HttpServletResponse response,
 				@RequestParam(value=TEXT_SEARCH, required=false) String[] text,
-				@RequestParam(value="publicationtypeid", required=false) String[] publicationTypeId) {
+				@RequestParam(value="publicationtypeid", required=false) Integer[] publicationTypeId) {
 		LOG.debug("publicationSubtype");
 		Collection<PublicationSubtype> rtn = new ArrayList<>();
 		if (validateParametersSetHeaders(request, response)) {
@@ -113,8 +113,8 @@ public class LookupMvcService extends MvcService<PublicationType> {
 	@GetMapping("publicationtype/{publicationTypeId}/publicationsubtype/{publicationSubtypeId}/publicationseries")
 	@JsonView(View.Lookup.class)
 	public @ResponseBody Collection<PublicationSeries> getPublicationSeriesREST(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable("publicationTypeId") String publicationTypeId,
-			@PathVariable("publicationSubtypeId") String publicationSubtypeId,
+			@PathVariable("publicationTypeId") Integer publicationTypeId,
+			@PathVariable("publicationSubtypeId") Integer publicationSubtypeId,
 			@RequestParam(value=TEXT_SEARCH, required=false) String[] text,
 			@RequestParam(value=ACTIVE_SEARCH, required=false) String[] active) {
 		LOG.debug("publicationSeries");
@@ -137,7 +137,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
 	@JsonView(View.Lookup.class)
 	public @ResponseBody Collection<PublicationSeries> getPublicationSeriesQuery(HttpServletRequest request, HttpServletResponse response,
 				@RequestParam(value=TEXT_SEARCH, required=false) String[] text,
-				@RequestParam(value="publicationsubtypeid", required=false) String[] publicationSubtypeId,
+				@RequestParam(value="publicationsubtypeid", required=false) Integer[] publicationSubtypeId,
 				@RequestParam(value=ACTIVE_SEARCH, required=false) String[] active) {
 		LOG.debug("publicationSeries");
 		Collection<PublicationSeries> rtn = new ArrayList<>();
@@ -312,11 +312,11 @@ public class LookupMvcService extends MvcService<PublicationType> {
 		LOG.debug("publication");
 		Collection<Publication<?>> rtn = new ArrayList<>();
 		if (validateParametersSetHeaders(request, response)) {
-			String filters = null;
+			String filter = null;
 			if (null != text && 0 < text.length) {
-				filters = text[0];
+				filter = text[0];
 			}
-			rtn = Publication.getPublicationDao().filterByIndexId(filters);
+			rtn = Publication.getPublicationDao().filterByIndexId(filter);
 		}
 		return rtn;
 	}

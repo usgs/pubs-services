@@ -16,7 +16,7 @@
     <sql id="filters">
         <where>
             <if test="id != null">
-                and publication_type_id = #{id}
+                and publication_type_id = #{id,jdbcType=NUMERIC}
             </if>
             <if test="text != null">
                 and upper(name) like upper(#{text}) || '%'

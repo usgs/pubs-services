@@ -1,0 +1,50 @@
+#spring:
+#  activemq:
+#    broker-url: changeMe
+#  datasource:
+#    url: changeMe
+#    username: changeMe
+#    password: changeMe
+#
+#ipds:
+#  pubsWsPwd: changeMe
+#  pubsWsUser: changeMe
+#  endpoint: changeMe
+#  port: 80
+#  protocol: https
+#  queueName: changeMe
+#
+#crossref:
+#  protocol: changeMe
+#  host: changeMe
+#  url: changeMe
+#  port: changeMe
+#  username: changeMe
+#  password: changeMe
+#  schema:
+#    url: http://www.crossref.org/schema/deposit/crossref4.4.0.xsd
+#  depositorEmail: changeMe
+#
+#swagger:
+#  displayProtocol: https
+#  displayHost: localhost:8443
+#  displayPath: /pubs-services
+#
+#pubs:
+#  emailList: changeMe@usgs.gov
+#  mailHost: changeMe
+#  lockTimeoutHours: changeMe
+#  warehouseEndpoint: http://pubs.er.usgs.gov
+#  authorities:
+#    authorized: allPubsAdGroups
+#    spn: allPubsSpnAdGroups
+#
+#logging:
+#  config: classpath:logback-spring.xml
+#
+#security:
+#  oauth2:
+#    resource:
+#      id: changeMe
+#      jwk:
+#        keySetUri: changeMe

@@ -3,73 +3,46 @@
 
 <mapper namespace="base">
 
-	<resultMap type="BaseDomain" id="result">
-		<result property="insertDate" column="insert_date"/>
-		<result property="insertUsername" column="insert_username"/>
-		<result property="updateDate" column="update_date"/>
-		<result property="updateUsername" column="update_username"/>
-	</resultMap>
+    <resultMap type="BaseDomain" id="result">
+        <result property="insertDate" column="insert_date"/>
+        <result property="insertUsername" column="insert_username"/>
+        <result property="updateDate" column="update_date"/>
+        <result property="updateUsername" column="update_username"/>
+    </resultMap>
 
-	<sql id="dateFormat">
-		'YYYY-MM-DD'
-	</sql>
-	
-	<sql id="clientId">
-		sys_context( 'userenv', 'client_identifier')
-	</sql>
-	
-	<select id="getClientId" resultType="String" useCache="false" >
-		select <include refid="clientId"/>
-		  from dual
-	</select>
+    <sql id="dateFormat">
+        'YYYY-MM-DD'
+    </sql>
 
-	<sql id="auditCols">
-		insert_date, insert_username, update_date, update_username
-	</sql>
+    <sql id="auditCols">
+        insert_date, insert_username, update_date, update_username
+    </sql>
 
-	<sql id="auditHosts">
-		sysdate,
-		audit_trail_util.get_username,
-		sysdate,
-		audit_trail_util.get_username
-	</sql>
+    <sql id="auditHosts">
+        (now() at time zone 'UTC'),
+        #{insertUsername,jdbcType=VARCHAR},
+        (now() at time zone 'UTC'),
+        #{updateUsername,jdbcType=VARCHAR}
+    </sql>
 
-	<sql id="auditSets">
-		update_date = sysdate,
-		update_username = audit_trail_util.get_username
-	</sql>
+    <sql id="auditSets">
+        update_date = (now() at time zone 'UTC'),
+        update_username = #{updateUsername,jdbcType=VARCHAR}
+    </sql>
 
-	<sql id="pagingHint">
-		<if test="page_size != null">
-			/*+ first_rows(${page_size}) */
-		</if>
-	</sql>
+    <!--  This is using string substitution ${} rather than a parameter #{} because of issues getting the parameter into the comment.
+          NOTE that you SHOULD not do this unless you are certain the value is not suspect to SQL injection!!! -->
+    <sql id="deleteAuditHack">
+        /* delete_username=${deleteUsername} */ 
+    </sql>
 
-	<sql id="pagingRowLimit">
-		<if test="page_size != null">
-			<choose>
-				<when test="page_row_start != null">
-					offset #{page_row_start} rows fetch next
-				</when>
-				<otherwise>
-					fetch first
-				</otherwise>
-			</choose>
-			#{page_size} rows only
-		</if>
-	</sql>
-
-	<sql id="paging">
-		<if test="page_size != null and page_row_start != null">
-			<choose>
-				<when test="page_row_start > 0">
-					offset #{page_row_start} rows fetch next #{page_size} rows only
-				</when>
-				<otherwise>
-					fetch first #{page_size} rows only
-				</otherwise>
-			</choose>
-		</if>
-	</sql>
+    <sql id="pagingRowLimit">
+        <if test="page_size != null">
+            limit #{page_size}
+        </if>
+        <if test="page_row_start != null">
+           offset #{page_row_start}
+        </if>
+    </sql>
 
 </mapper>

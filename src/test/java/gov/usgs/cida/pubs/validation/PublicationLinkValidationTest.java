@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 import javax.validation.Validator;
@@ -11,23 +12,26 @@ import javax.validation.Validator;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.dao.intfc.IMpDao;
 import gov.usgs.cida.pubs.dao.intfc.IMpPublicationDao;
+import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
 import gov.usgs.cida.pubs.domain.LinkFileType;
 import gov.usgs.cida.pubs.domain.LinkType;
+import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 
-//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={LocalValidatorFactoryBean.class, LinkType.class, LinkFileType.class, MpPublication.class,
+			Publication.class})
 public class PublicationLinkValidationTest extends BaseValidatorTest {
 	@Autowired
 	public Validator validator;
@@ -42,14 +46,16 @@ public class PublicationLinkValidationTest extends BaseValidatorTest {
 	public static final String INVALID_DESCRIPTION_LENGTH = new ValidatorResult("description", LENGTH_0_TO_XXX_MSG + "4000", SeverityLevel.FATAL, null).toString();
 	public static final String INVALID_URL_FOMAT = new ValidatorResult("url", URL_FORMAT_MSG, SeverityLevel.FATAL, null).toString();
 
-	@Mock
+	@MockBean(name="mpPublicationLinkDao")
 	protected IMpDao<MpPublicationLink> pubLinkDao;
-	@Mock
+	@MockBean(name="mpPublicationDao")
 	protected IMpPublicationDao pubDao;
-	@Mock
+	@MockBean(name="linkTypeDao")
 	protected IDao<LinkType> linkTypeDao;
-	@Mock
+	@MockBean(name="linkFileTypeDao")
 	protected IDao<LinkFileType> linkFileTypeDao;
+	@MockBean(name="publicationDao")
+	protected IPublicationDao publicationDao;
 
 	private MpPublication pub;
 	private LinkType linkType;
@@ -60,19 +66,19 @@ public class PublicationLinkValidationTest extends BaseValidatorTest {
 
 	@Before
 	@Override
+	@SuppressWarnings("unchecked")
 	public void setUp() throws Exception {
 		super.setUp();
 		pubLink = new MpPublicationLink();
 		linkType = new LinkType();
-		linkType.setLinkTypeDao(linkTypeDao);
 		linkType.setId(1);
 		linkFileType = new LinkFileType();
-		linkFileType.setLinkFileTypeDao(linkFileTypeDao);
 		linkFileType.setId(1);
 		pub = new MpPublication();
-		pub.setMpPublicationDao(pubDao);
 		pub.setId(1);
 		pubLink.setUrl("http://noway.com");
+
+		reset(pubLinkDao, pubDao, linkTypeDao, linkFileTypeDao, publicationDao);
 	}
 
 	@Test

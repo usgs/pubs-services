@@ -1,122 +1,119 @@
 package gov.usgs.cida.pubs.busservice;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import static org.mockito.Mockito.*;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.dao.intfc.ICrossRefLogDao;
-import gov.usgs.cida.pubs.domain.Publication;
-import gov.usgs.cida.pubs.domain.mp.MpPublication;
-import gov.usgs.cida.pubs.transform.CrossrefTestPubBuilder;
-import gov.usgs.cida.pubs.transform.TransformerFactory;
-import gov.usgs.cida.pubs.utility.PubsEMailer;
-import gov.usgs.cida.pubs.validation.xml.XMLValidationException;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
-
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.util.EntityUtils;
-import org.junit.Assert;
-import static org.junit.Assert.assertNotNull;
-import org.springframework.http.HttpStatus;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.protocol.HttpContext;
-import static org.junit.Assert.assertEquals;
+import org.apache.http.util.EntityUtils;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import static org.mockito.Mockito.mock;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 
-public class CrossRefBusServiceTest extends BaseSpringTest {
-	
+import freemarker.template.Configuration;
+import gov.usgs.cida.pubs.BaseTest;
+import gov.usgs.cida.pubs.ConfigurationService;
+import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
+import gov.usgs.cida.pubs.dao.intfc.ICrossRefLogDao;
+import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.domain.ContributorType;
+import gov.usgs.cida.pubs.domain.CrossRefLog;
+import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.springinit.FreemarkerConfig;
+import gov.usgs.cida.pubs.springinit.TestSpringConfig;
+import gov.usgs.cida.pubs.transform.CrossrefTestPubBuilder;
+import gov.usgs.cida.pubs.utility.PubsEMailer;
+import gov.usgs.cida.pubs.validation.xml.XMLValidationException;
+
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={ConfigurationService.class, FreemarkerConfig.class,
+			PublicationBusService.class, TestSpringConfig.class,
+			ContributorType.class})
+public class CrossRefBusServiceTest extends BaseTest {
+
 	@Captor
 	protected ArgumentCaptor<String> captor;
-	
+
 	@Autowired
-	protected String warehouseEndpoint;
-	@Autowired
-	protected String crossRefProtocol;
-	@Autowired
-	protected String crossRefHost;
-	@Autowired
-	protected String crossRefUrl;
-	@Autowired
-	protected Integer crossRefPort;
-	@Autowired
-	protected String crossRefUser;
-	@Autowired
-	protected String crossRefPwd;
-	@Autowired
-	@Qualifier("crossRefDepositorEmail")
-	protected String depositorEmail;
-	@Autowired
-	protected String crossRefSchemaUrl;
-	@Autowired
-	protected String displayHost;
+	protected ConfigurationService configurationService;
 	@Mock
+	protected ConfigurationService mockConfigurationService;
+	@MockBean
 	protected PubsEMailer pubsEMailer;
-	@Autowired
-	protected TransformerFactory transformerFactory;
-	@Mock
+	@MockBean
 	protected ICrossRefLogDao crossRefLogDao;
-	
+	@MockBean(name="contributorTypeDao")
+	protected IDao<ContributorType> contributorTypeDao;
+	@Autowired
+	protected Configuration templateConfiguration;
+	@MockBean
+	protected IPublicationBusService publicationBusService;
+
 	protected CrossRefBusService busService;
-	
+	protected ContributorType contributorType;
+
 	@Before
 	public void initTest() throws Exception {
-		MockitoAnnotations.initMocks(this);
 		busService = new CrossRefBusService(
-			crossRefProtocol,
-			crossRefHost,
-			crossRefUrl,
-			crossRefPort,
-			crossRefUser,
-			crossRefPwd,
-			crossRefSchemaUrl,
-			displayHost,
+			configurationService,
 			pubsEMailer,
-			transformerFactory,
-			crossRefLogDao
+			crossRefLogDao,
+			templateConfiguration,
+			publicationBusService
 		);
+		contributorType = new ContributorType();
 	}
-	
+
 	@Test
 	public void getIndexIdMessageForNullPub() {
 		assertEquals("", busService.getIndexIdMessage(null));
 	}
-	
+
 	@Test
 	public void getIndexIdMessageForPubWithoutIndexId() {
 		Publication<?> pub = new Publication<>();
 		assertEquals("", busService.getIndexIdMessage(pub));
 	}
-	
+
 	@Test
 	public void getIndexIdMessageForPubWithEmptyIndexId() {
 		Publication<?> pub = new Publication<>();
 		pub.setIndexId("");
 		assertEquals("", busService.getIndexIdMessage(pub));
 	}
-	
+
 	@Test
 	public void getIndexIdForPubWithIndexId() {
 		String indexId = "greatPubIndexId07";
@@ -124,7 +121,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		pub.setIndexId(indexId);
 		assertTrue(busService.getIndexIdMessage(pub).contains(indexId));
 	}
-	
+
 	@Test
 	public void testBuildCrossrefUrl() throws UnsupportedEncodingException, URISyntaxException {
 		String protocol = "https";
@@ -134,25 +131,55 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		//place url-unsafe characters in these fields
 		String user = "demonstration_username&?%";
 		String password = "demonstration_password&?%";
-		
-		String actual = busService.buildCrossRefUrl(protocol, host, port, base, user, password);
-		
+
+		when(mockConfigurationService.getCrossrefProtocol()).thenReturn(protocol);
+		when(mockConfigurationService.getCrossrefHost()).thenReturn(host);
+		when(mockConfigurationService.getCrossrefPort()).thenReturn(port);
+		when(mockConfigurationService.getCrossrefUrl()).thenReturn(base);
+		when(mockConfigurationService.getCrossrefUser()).thenReturn(user);
+		when(mockConfigurationService.getCrossrefPwd()).thenReturn(password);
+
+		busService = new CrossRefBusService(
+				mockConfigurationService,
+				pubsEMailer,
+				crossRefLogDao,
+				templateConfiguration,
+				publicationBusService
+			);
+
+		String actual = busService.buildCrossRefUrl();
+
 		assertFalse("special user characters should be escaped from url", actual.contains(user));
 		assertFalse("special password characters should be escaped from url", actual.contains(password));
-		
+
 		String encodedUser = URLEncoder.encode(user, "UTF-8");
 		String encodedPassword = URLEncoder.encode(password, "UTF-8");
-		
+
 		assertTrue("special user characters should be escaped from url", actual.contains(encodedUser));
 		assertTrue("special password characters should be escaped from url", actual.contains(encodedPassword));
 	}
-	
+
 	@Test
 	public void verifyCrossrefUrlBuilderDoesNotSwallowURIProblems() throws UnsupportedEncodingException, URISyntaxException {
 		//do not specify characters that need %-encoding
 		String password = "MockPassword";
+		when(mockConfigurationService.getCrossrefProtocol()).thenReturn("");
+		when(mockConfigurationService.getCrossrefHost()).thenReturn("");
+		when(mockConfigurationService.getCrossrefPort()).thenReturn(-2);
+		when(mockConfigurationService.getCrossrefUrl()).thenReturn("");
+		when(mockConfigurationService.getCrossrefUser()).thenReturn("");
+		when(mockConfigurationService.getCrossrefPwd()).thenReturn(password);
+
+		busService = new CrossRefBusService(
+				mockConfigurationService,
+				pubsEMailer,
+				crossRefLogDao,
+				templateConfiguration,
+				publicationBusService
+			);
+
 		try{
-			busService.buildCrossRefUrl("", "", -2, "", "", password);
+			busService.buildCrossRefUrl();
 			Assert.fail("Should have raised Exception");
 		} catch (URISyntaxException ex) {
 			assertFalse(ex.getMessage().contains(password));
@@ -161,7 +188,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 			}
 		}
 	}
-	
+
 	@Test
 	public void performMockCrossRefPost() throws IOException{
 		//whitebox testing of posting to Crossref web services
@@ -177,7 +204,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		verify(httpClient).execute(any(), eq(httpPost), any(HttpContext.class));
 		assertEquals(expectedStatus, response.getStatusLine().getStatusCode());
 	}
-	
+
 	@Test(expected = IOException.class)
 	public void performFailingCrossRefPost() throws IOException{
 		//whitebox testing to ensure that implementation does not
@@ -187,7 +214,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		when(httpClient.execute(any(), eq(httpPost), any(HttpContext.class))).thenThrow(IOException.class);
 		busService.performCrossRefPost(httpPost, httpClient);
 	}
-	
+
 	@Test
 	public void tetBuildCrossRefPost() throws IOException {
 		String expectedBody = "expectedBody";
@@ -197,7 +224,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		HttpEntity entity = post.getEntity();
 		assertNotNull(entity);
 		EntityUtils.consume(entity);
-		
+
 		/**
 		 * Apache does not provide an easy way to extract a 
 		 * MultiPartEntity from an HttpPost's Entity, so instead we 
@@ -215,19 +242,21 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		assertTrue(requestBody.contains(expectedBody));
 		assertTrue(requestBody.contains(expectedIndexId));
 	}
-	
+
 	@Test
 	public void getGoodCrossrefXml() throws XMLValidationException, IOException {
+		when(contributorTypeDao.getById(ContributorType.AUTHORS)).thenReturn(buildContributorTypeAuthor());
+		when(contributorTypeDao.getById(ContributorType.EDITORS)).thenReturn(buildContributorTypeEditor());
 		Publication<?> pub = CrossrefTestPubBuilder.buildUnNumberedSeriesPub(new Publication<>());
 		String xml = busService.getCrossRefXml(pub);
-		
+
 		//verify that the attempt was logged
 		verify(crossRefLogDao).add(any());
-		
+
 		assertNotNull(xml);
 		assertTrue("should get some XML", 0 < xml.length());
 	}
-	
+
 	@Test
 	public void testHandleGoodResponse() throws HttpException {
 		StatusLine statusLine = mock(StatusLine.class);
@@ -236,19 +265,19 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		when(response.getStatusLine()).thenReturn(statusLine);
 		busService.handleResponse(response);
 	}
-	
+
 	@Test(expected = HttpException.class)
 	public void testHandleNullResponse() throws HttpException {
 		busService.handleResponse(null);
 	}
-	
+
 	@Test(expected = HttpException.class)
 	public void testEmptyStatusLineResponse() throws HttpException {
 		HttpResponse response = mock(HttpResponse.class);
 		when(response.getStatusLine()).thenReturn(null);
 		busService.handleResponse(response);
 	}
-	
+
 	@Test(expected = HttpException.class)
 	public void testHandleNotFoundResponse() throws HttpException {
 		StatusLine statusLine = mock(StatusLine.class);
@@ -257,7 +286,7 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		when(response.getStatusLine()).thenReturn(statusLine);
 		busService.handleResponse(response);
 	}
-	
+
 	@Test(expected = HttpException.class)
 	public void testHandleUnauthorizedResponse() throws HttpException {
 		StatusLine statusLine = mock(StatusLine.class);
@@ -266,36 +295,41 @@ public class CrossRefBusServiceTest extends BaseSpringTest {
 		when(response.getStatusLine()).thenReturn(statusLine);
 		busService.handleResponse(response);
 	}
-	
+
 	@Test
 	public void testThatSubmitCrossrefSwallowsAndEmailsExceptions () {
-		//construct a mock transformer factory that causes the 
-		//submission to fail early
-		
+		//cause the submission to fail
 		String causeMessage = "very good reason";
-		TransformerFactory mockTransformerFactory = mock(TransformerFactory.class);
-		when(mockTransformerFactory.getTransformer(any(), any(), any())).thenThrow(new RuntimeException(causeMessage));
-		
+		when(crossRefLogDao.add(any(CrossRefLog.class))).thenThrow(new RuntimeException(causeMessage));
+
 		busService = new CrossRefBusService(
-			crossRefProtocol,
-			crossRefHost,
-			crossRefUrl,
-			crossRefPort,
-			crossRefUser,
-			crossRefPwd,
-			crossRefSchemaUrl,
-			displayHost,
+			configurationService,
 			pubsEMailer,
-			mockTransformerFactory,
-			crossRefLogDao
+			crossRefLogDao,
+			templateConfiguration,
+			publicationBusService
 		);
 		MpPublication pub = (MpPublication) CrossrefTestPubBuilder.buildNumberedSeriesPub(new MpPublication());
-		
+
 		busService.submitCrossRef(pub);
 		verify(pubsEMailer).sendMail(anyString(), captor.capture());
 		String emailBody = captor.getValue();
 		assertTrue(emailBody.contains(causeMessage));
-		assertTrue(emailBody.contains(displayHost));
+		assertTrue(emailBody.contains(configurationService.getDisplayHost()));
 		assertTrue(emailBody.contains(pub.getIndexId()));
+	}
+
+	private ContributorType buildContributorTypeAuthor() {
+		ContributorType author = new ContributorType();
+		author.setId(ContributorType.AUTHORS);
+		author.setText("author");
+		return author;
+	}
+
+	private ContributorType buildContributorTypeEditor() {
+		ContributorType editor = new ContributorType();
+		editor.setId(ContributorType.EDITORS);
+		editor.setText("editor");
+		return editor;
 	}
 }

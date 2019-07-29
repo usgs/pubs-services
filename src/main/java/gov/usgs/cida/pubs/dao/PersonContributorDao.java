@@ -1,10 +1,5 @@
 package gov.usgs.cida.pubs.dao;
 
-import gov.usgs.cida.pubs.aop.ISetDbContext;
-import gov.usgs.cida.pubs.dao.intfc.IPersonContributorDao;
-import gov.usgs.cida.pubs.domain.Contributor;
-import gov.usgs.cida.pubs.domain.PersonContributor;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +8,11 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import gov.usgs.cida.pubs.dao.intfc.IPersonContributorDao;
+import gov.usgs.cida.pubs.domain.Contributor;
+import gov.usgs.cida.pubs.domain.PersonContributor;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 @Repository
 public class PersonContributorDao extends ContributorDao implements IPersonContributorDao {
@@ -37,61 +37,55 @@ public class PersonContributorDao extends ContributorDao implements IPersonContr
 	public static final String USGS = "usgs";
 
 	@Transactional
-	@ISetDbContext
 	@Override
 	public Integer add(Contributor<?> domainObject) {
-		getSqlSession().insert(NS + ADD + PERSON, domainObject);
-		return domainObject.getId();
+		return insert(NS + ADD + PERSON, domainObject);
 	}
 
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	@Override
 	public Contributor<?> getById(Integer domainID) {
 		return (Contributor<?>) getSqlSession().selectOne(NS + GET_BY_ID + PERSON, domainID);
 	}
 
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	@Override
 	public List<Contributor<?>> getByMap(Map<String, Object> filters) {
 		return getSqlSession().selectList(NS + GET_BY_MAP + PERSON, filters);
 	}
 
 	@Transactional
-	@ISetDbContext
 	@Override
 	public void update(Contributor<?> domainObject) {
-		getSqlSession().insert(NS + UPDATE + PERSON, domainObject);
+		update(NS + UPDATE + PERSON, domainObject);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	public Integer getObjectCount(Map<String, Object> filters) {
 		return getSqlSession().selectOne(NS + GET_COUNT, filters);
 	}
-	
+
 	@Override
 	@Transactional
-	@ISetDbContext
 	public void addAffiliation(Integer contributorId, Integer affiliationId) {
 		Map<String, Object> filters = new HashMap<String, Object>();
 		filters.put(CONTRIBUTOR_ID, contributorId);
 		filters.put(AFFILIATION_ID, affiliationId);
+		filters.put(INSERT_USERNAME, PubsUtilities.getUsername());
+		filters.put(UPDATE_USERNAME, PubsUtilities.getUsername());
+
 		getSqlSession().insert(NS + ADD + AFFILIATION, filters);
 	}
 
 	@Override
 	@Transactional
-	@ISetDbContext
 	public void removeAffiliations(Integer contributorId) {
-		getSqlSession().delete(NS + REMOVE + AFFILIATIONS, contributorId);
+		delete(NS + REMOVE + AFFILIATIONS, contributorId);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	public List<Contributor<?>> getByPreferred(PersonContributor<?> filter) {
 		return getSqlSession().selectList(NS + GET_BY_PREFERRED, filter);
 	}

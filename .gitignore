@@ -7,3 +7,8 @@ catalina.base_IS_UNDEFINED/
 nb-configuration.xml
 /bin/
 nbactions.xml
+/application-it.yml
+/application.yml
+/.idea/
+*.iml
+/.attach_*

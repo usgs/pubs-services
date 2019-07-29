@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 import javax.validation.Validator;
@@ -12,10 +13,11 @@ import javax.validation.Validator;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
@@ -23,13 +25,12 @@ import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
-import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
 import gov.usgs.cida.pubs.validation.unique.UniqueKeyValidatorForPublicationSeriesTest;
 
-//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={LocalValidatorFactoryBean.class, PublicationSubtype.class, PublicationSeries.class,
+			Publication.class})
 public class PublicationSeriesValidationTest extends BaseValidatorTest {
 	@Autowired
 	public Validator validator;
@@ -47,30 +48,28 @@ public class PublicationSeriesValidationTest extends BaseValidatorTest {
 	public static final String INVALID_ONLINE_ISSN_LENGTH = new ValidatorResult("onlineIssn", LENGTH_0_TO_XXX_MSG + "9", SeverityLevel.FATAL, null).toString();
 	public static final String INVALID_PRINT_ISSN_LENGTH = new ValidatorResult("printIssn", LENGTH_0_TO_XXX_MSG + "9", SeverityLevel.FATAL, null).toString();
 
-	@Mock
+	@MockBean(name="publicationSeriesDao")
 	protected IDao<PublicationSeries> pubSeriesDao;
-	@Mock
+	@MockBean(name="publicationSubtypeDao")
 	protected IDao<PublicationSubtype> publicationSubtypeDao;
-	@Mock
+	@MockBean(name="publicationDao")
 	protected IPublicationDao pubDao;
 
 	private PublicationSeries pubSeries;
 	private PublicationSubtype publicationSubtype;
-	private Publication<MpPublication> pub;
 
 	@Before
 	@Override
+	@SuppressWarnings("unchecked")
 	public void setUp() throws Exception {
 		super.setUp();
 		publicationSubtype = new PublicationSubtype();
-		publicationSubtype.setPublicationSubtypeDao(publicationSubtypeDao);
 		publicationSubtype.setId(1);
 		pubSeries = new PublicationSeries();
 		pubSeries.setPublicationSubtype(publicationSubtype);
 		pubSeries.setText("abc");
-		pubSeries.setPublicationSeriesDao(pubSeriesDao);
-		pub = new Publication<>();
-		pub.setPublicationDao(pubDao);
+
+		reset(publicationSubtypeDao, pubSeriesDao);
 	}
 
 	@Test

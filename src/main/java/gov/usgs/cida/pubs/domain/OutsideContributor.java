@@ -7,6 +7,7 @@ public class OutsideContributor extends PersonContributor<OutsideContributor> im
 	public OutsideContributor() {
 		corporation = false;
 		usgs = false;
+		preferred = false;
 	}
 
 }

@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.validation.mp.unique;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,9 +13,10 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import gov.usgs.cida.pubs.dao.mp.MpPublicationContributorDao;
 import gov.usgs.cida.pubs.domain.Contributor;
@@ -22,9 +24,8 @@ import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 
-//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={LocalValidatorFactoryBean.class, MpPublicationContributor.class})
 public class UniqueKeyValidatorForMpPublicationContributorTest extends BaseValidatorTest {
 
 	protected UniqueKeyValidatorForMpPublicationContributor validator;
@@ -32,7 +33,7 @@ public class UniqueKeyValidatorForMpPublicationContributorTest extends BaseValid
 	protected Contributor<?> contributor;
 	protected ContributorType type;
 
-	@Mock
+	@MockBean(name="mpPublicationContributorDao")
 	protected MpPublicationContributorDao mpPublicationContributorDao;
 
 	@Before
@@ -40,9 +41,10 @@ public class UniqueKeyValidatorForMpPublicationContributorTest extends BaseValid
 		super.setUp();
 		validator = new UniqueKeyValidatorForMpPublicationContributor();
 		mpPubContributor = new MpPublicationContributor();
-		mpPubContributor.setMpPublicationContributorDao(mpPublicationContributorDao);
 		contributor = new Contributor<>();
 		type = new ContributorType();
+
+		reset(mpPublicationContributorDao);
 	}
 
 	@Test

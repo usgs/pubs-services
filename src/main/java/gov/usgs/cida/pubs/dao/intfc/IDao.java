@@ -1,6 +1,5 @@
 package gov.usgs.cida.pubs.dao.intfc;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -69,12 +68,6 @@ public interface IDao<D> {
 	 * Get back all domainObjects that have duplicate values to this one.
 	 * @param domainObject domain object to check for duplicates. 
 	 */
-	Map<BigDecimal, Map<String, Object>> uniqueCheck(D domainObject);
-
-	/** 
-	 * Get client ID from the database.  For testing purposes only.
-	 * @return the database client ID.
-	 */
-	String getClientId();
+	Map<Integer, Map<String, Object>> uniqueCheck(D domainObject);
 
 }

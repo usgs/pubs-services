@@ -4,22 +4,38 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.domain.ProcessType;
-import gov.usgs.cida.pubs.domain.PublicationSubtype;
-import gov.usgs.cida.pubs.domain.PublicationType;
-import gov.usgs.cida.pubs.webservice.security.PubsRoles;
 
 import java.util.Arrays;
 
-import org.apache.commons.lang3.StringUtils;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.security.test.context.annotation.SecurityTestExecutionListeners;
+import org.springframework.security.test.context.support.WithMockUser;
+import static org.mockito.Mockito.when;
+import gov.usgs.cida.pubs.BaseTest;
+import gov.usgs.cida.pubs.ConfigurationService;
+import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.TestOAuth;
+import gov.usgs.cida.pubs.domain.ProcessType;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
+import gov.usgs.cida.pubs.domain.PublicationType;
 
-public class PubsUtilitiesTest extends BaseSpringTest {
+@SecurityTestExecutionListeners
+public class PubsUtilitiesTest extends BaseTest {
 
 	public static final String ID_NOT_MATCH_VALIDATION_JSON = "\"validationErrors\":[{\"field\":\"id\",\"level\":\"FATAL\",\"message\":\"The id in the URL does not match the id in the request.\",\"value\":\"30\"}]";
+
+	@Mock
+	ConfigurationService configurationService;
+
+	@Before
+	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		when(configurationService.getAuthorizedAuthorities()).thenReturn(new String[] {TestOAuth.AUTHORIZED_AUTHORITY, TestOAuth.SPN_AUTHORITY, "silly", "willy"});
+		when(configurationService.getSpnAuthorities()).thenReturn(new String[] {TestOAuth.SPN_AUTHORITY, "silly"});
+	}
 
 	@Test
 	public void isUsgsNumberedSeriesTest() {
@@ -99,14 +115,14 @@ public class PubsUtilitiesTest extends BaseSpringTest {
 	}
 
 	@Test
-	public void getUsernameTest() {
+	public void getUsernameTest_noAuthentication() {
 		assertEquals("Not Authenticated", PubsConstants.ANONYMOUS_USER, PubsUtilities.getUsername());
+	}
 
-		buildTestAuthentication("dummy");
-		assertEquals("Is Authenticated", "dummy", PubsUtilities.getUsername());
-
-		SecurityContextHolder.clearContext();
-		assertEquals("Not Authenticated", PubsConstants.ANONYMOUS_USER, PubsUtilities.getUsername());
+	@Test
+	@WithMockUser(username=TestOAuth.AUTHENTICATED_USER)
+	public void getUsernameTest_authenticated() {
+		assertEquals("Is Authenticated", TestOAuth.AUTHENTICATED_USER, PubsUtilities.getUsername());
 	}
 
 	@Test
@@ -119,94 +135,6 @@ public class PubsUtilitiesTest extends BaseSpringTest {
 		assertEquals("is {0} from {1}", PubsUtilities.buildErrorMsg("is {0} from {1}", null));
 		assertEquals("is abc from def", PubsUtilities.buildErrorMsg("is {0} from {1}", messageArguments));
 		assertEquals("abc from def not", PubsUtilities.buildErrorMsg("{0} from {1} not", messageArguments));
-	}
-
-	@Test
-	public void removeStopWordsTest() {
-		assertTrue(PubsUtilities.removeStopWords(null).isEmpty());
-		assertTrue(PubsUtilities.removeStopWords("").isEmpty());
-		assertTrue(PubsUtilities.removeStopWords("   ").isEmpty());
-		assertEquals("red and fox and jumped and over and fence",
-				StringUtils.join(PubsUtilities.removeStopWords("The red fox jumped over THE fence or not"), " and "));
-		assertEquals("turtles and loggerhead", StringUtils.join(PubsUtilities.removeStopWords("Turtles Loggerhead"), " and "));
-		assertTrue(PubsUtilities.removeStopWords("~`!@#$%^&*()_+{}|:\"<>?`-=[]\\;',./").isEmpty());
-		assertEquals("1234567890qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnm",
-				StringUtils.join(PubsUtilities.removeStopWords("1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"), " and "));
-		assertEquals("a1 and b and c and dd and e and f and g and h and ii and j and k and l and m and n and o and p and q and r and ss and tt and u and v and w and x and y and z"
-				+ " and 1 and 2 and 3 and 4 and 5 and 6 and 7 and 8",
-				StringUtils.join(PubsUtilities.removeStopWords("a1~b`c!dd@e#f$g%h^ii&j*k(l)m_n+o{p}q|r:ss\"tt<u>v?w`x-y=z[1]2\\3;4'5,6.7/8"), " and "));
-		assertEquals("new and analysis and mars and  and special and regions and  and  and findings and second and mepag and special and regions and science and analysis and group and  and sr and sag2", 
-				StringUtils.join(PubsUtilities.removeStopWords("A new analysis of Mars \"Special Regions\": findings of the Second MEPAG Special Regions Science Analysis Group (SR-SAG2)"), " and "));
-	}
-
-	@Test
-	public void escapeReservedWordTest() {
-		assertNull(PubsUtilities.escapeReservedWord(null));
-		assertEquals("", PubsUtilities.escapeReservedWord(""));
-		assertEquals("   ", PubsUtilities.escapeReservedWord("   "));
-		assertEquals("red", PubsUtilities.escapeReservedWord("red"));
-		assertEquals("{within}", PubsUtilities.escapeReservedWord("within"));
-		assertEquals("{\\}", PubsUtilities.escapeReservedWord("\\"));
-	}
-
-	@Test
-	public void isSpnUserTest() {
-		assertFalse(PubsUtilities.isSpnUser());
-
-		PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_SPN_USER.name()));
-		assertTrue(PubsUtilities.isSpnUser());
-
-		PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_SPN_USER.name(),
-				PubsRoles.PUBS_ADMIN.name()));
-		assertTrue(PubsUtilities.isSpnUser());
-
-		PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_SPN_USER.name(),
-				PubsRoles.PUBS_CATALOGER_USER.name()));
-		assertTrue(PubsUtilities.isSpnUser());
-
-		PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_SPN_USER.name(),
-				PubsRoles.PUBS_ADMIN.name(), PubsRoles.PUBS_CATALOGER_USER.name()));
-		assertTrue(PubsUtilities.isSpnUser());
-
-		PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_ADMIN.name(),
-				PubsRoles.PUBS_CATALOGER_USER.name()));
-		assertFalse(PubsUtilities.isSpnUser());
-
-		PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_ADMIN.name()));
-		assertFalse(PubsUtilities.isSpnUser());
-
-		PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_CATALOGER_USER.name()));
-		assertFalse(PubsUtilities.isSpnUser());
-	}
-
-	@Test
-	public void isSpnOnlyTest() {
-		assertFalse(PubsUtilities.isSpnOnly());
-
-		PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_SPN_USER.name()));
-		assertTrue(PubsUtilities.isSpnOnly());
-
-		PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_SPN_USER.name(),
-				PubsRoles.PUBS_ADMIN.name()));
-		assertFalse(PubsUtilities.isSpnOnly());
-
-		PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_SPN_USER.name(),
-				PubsRoles.PUBS_CATALOGER_USER.name()));
-		assertFalse(PubsUtilities.isSpnOnly());
-
-		PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_SPN_USER.name(),
-				PubsRoles.PUBS_ADMIN.name(), PubsRoles.PUBS_CATALOGER_USER.name()));
-		assertFalse(PubsUtilities.isSpnOnly());
-
-		PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_ADMIN.name(),
-				PubsRoles.PUBS_CATALOGER_USER.name()));
-		assertFalse(PubsUtilities.isSpnOnly());
-
-		PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_ADMIN.name()));
-		assertFalse(PubsUtilities.isSpnOnly());
-
-		PubsUtilitiesTest.buildTestAuthentication("dummy", Arrays.asList(PubsRoles.PUBS_CATALOGER_USER.name()));
-		assertFalse(PubsUtilities.isSpnOnly());
 	}
 
 	@Test
@@ -227,4 +155,61 @@ public class PubsUtilitiesTest extends BaseSpringTest {
 		assertEquals(123, PubsUtilities.parseInteger("123").intValue());
 	}
 
+	@Test
+	public void isSpnUserTest_noAuthentication() {
+		assertFalse(PubsUtilities.isSpnUser(configurationService));
+	}
+
+	@Test
+	@WithMockUser(username=TestOAuth.AUTHENTICATED_USER)
+	public void isSpnUserTest_noAuthorities() {
+		assertFalse(PubsUtilities.isSpnUser(configurationService));
+	}
+
+	@Test
+	@WithMockUser(username=TestOAuth.SPN_USER, authorities={TestOAuth.SPN_AUTHORITY})
+	public void isSpnUserTest() {
+		assertTrue(PubsUtilities.isSpnUser(configurationService));
+	}
+
+	@Test
+	@WithMockUser(username=TestOAuth.AUTHORIZED_USER,authorities={TestOAuth.SPN_AUTHORITY, TestOAuth.AUTHORIZED_AUTHORITY})
+	public void isSpnUserTest_plus() {
+		assertTrue(PubsUtilities.isSpnUser(configurationService));
+	}
+
+	@Test
+	@WithMockUser(username=TestOAuth.AUTHORIZED_USER, authorities={TestOAuth.AUTHORIZED_AUTHORITY})
+	public void isSpnUserTest_pubs() {
+		assertFalse(PubsUtilities.isSpnUser(configurationService));
+	}
+
+	@Test
+	public void isSpnOnlyTest_noAuthentication() {
+		assertFalse(PubsUtilities.isSpnOnly(configurationService));
+	}
+
+	@Test
+	@WithMockUser(username=TestOAuth.AUTHENTICATED_USER)
+	public void isSpnOnlyTest_noAuthorities() {
+		assertFalse(PubsUtilities.isSpnOnly(configurationService));
+	}
+
+	@Test
+	@WithMockUser(username=TestOAuth.SPN_USER, authorities={TestOAuth.SPN_AUTHORITY})
+	public void isSpnOnlyTest() {
+		assertTrue(PubsUtilities.isSpnOnly(configurationService));
+	}
+
+	@Test
+	@WithMockUser(username=TestOAuth.AUTHORIZED_USER,authorities={TestOAuth.SPN_AUTHORITY, TestOAuth.AUTHORIZED_AUTHORITY})
+	public void isSpnOnlyTest_plus() {
+		assertFalse(PubsUtilities.isSpnOnly(configurationService));
+	}
+
+	@Test
+	@WithMockUser(username=TestOAuth.AUTHORIZED_USER, authorities={TestOAuth.AUTHORIZED_AUTHORITY})
+	public void isSpnOnlyTest_pubs() {
+		assertFalse(PubsUtilities.isSpnOnly(configurationService));
+	}
 }

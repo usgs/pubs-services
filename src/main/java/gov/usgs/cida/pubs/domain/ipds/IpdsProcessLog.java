@@ -18,17 +18,17 @@ public class IpdsProcessLog extends BaseDomain<IpdsProcessLog> {
 
 	private static IDao<IpdsProcessLog> ipdsProcessLogDao;
 
-	private String ipdsNumber;
+	private Integer ipdsNumber;
 
 	private String uri;
 
 	private String message;
 
-	public String getIpdsNumber() {
+	public Integer getIpdsNumber() {
 		return ipdsNumber;
 	}
 
-	public void setIpdsNumber(String ipdsNumber) {
+	public void setIpdsNumber(Integer ipdsNumber) {
 		this.ipdsNumber = ipdsNumber;
 	}
 

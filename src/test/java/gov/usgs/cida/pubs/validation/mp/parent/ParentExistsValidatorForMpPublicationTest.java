@@ -3,21 +3,23 @@ package gov.usgs.cida.pubs.validation.mp.parent;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
 import gov.usgs.cida.pubs.dao.PublicationSubtypeDao;
 import gov.usgs.cida.pubs.dao.PublicationTypeDao;
 import gov.usgs.cida.pubs.dao.PublishingServiceCenterDao;
+import gov.usgs.cida.pubs.dao.intfc.IMpPublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
@@ -26,9 +28,9 @@ import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 
-//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={MpPublication.class, Publication.class, PublicationType.class, PublicationSubtype.class,
+			PublicationSeries.class, PublishingServiceCenter.class})
 public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest {
 
 	protected ParentExistsValidatorForMpPublication validator;
@@ -41,34 +43,36 @@ public class ParentExistsValidatorForMpPublicationTest extends BaseValidatorTest
 	protected Publication<?> sb;
 	protected PublishingServiceCenter psc;
 
-	@Mock
+	@MockBean(name="publicationTypeDao")
 	protected PublicationTypeDao publicationTypeDao;
-	@Mock
+	@MockBean(name="publicationSubtypeDao")
 	protected PublicationSubtypeDao publicationSubtypeDao;
-	@Mock
+	@MockBean(name="publicationSeriesDao")
 	protected PublicationSeriesDao publicationSeriesDao;
-	@Mock
+	@MockBean(name="publicationDao")
 	protected PublicationDao publicationDao;
-	@Mock
+	@MockBean(name="mpPublicationDao")
+	protected IMpPublicationDao mpPublicationDao;
+	@MockBean(name="publishingServiceCenterDao")
 	protected PublishingServiceCenterDao publishingServiceCenterDao;
 
 	@Before
+	@Override
+	@SuppressWarnings("unchecked")
 	public void setUp() throws Exception {
 		super.setUp();
 		validator = new ParentExistsValidatorForMpPublication();
 		mpPub = new MpPublication();
-		mpPub.setPublicationDao(publicationDao);
 		pubType = new PublicationType();
-		pubType.setPublicationTypeDao(publicationTypeDao);
 		pubSubtype = new PublicationSubtype();
-		pubSubtype.setPublicationSubtypeDao(publicationSubtypeDao);
 		pubSeries = new PublicationSeries();
-		pubSeries.setPublicationSeriesDao(publicationSeriesDao);
 		largerWorkType = new PublicationType();
 		po = new MpPublication();
 		sb = new MpPublication();
 		psc = new PublishingServiceCenter();
 		psc.setPublishingServiceCenterDao(publishingServiceCenterDao);
+
+		reset(publicationTypeDao, publicationSubtypeDao, publicationSeriesDao, publicationDao, publishingServiceCenterDao);
 	}
 
 	@Test

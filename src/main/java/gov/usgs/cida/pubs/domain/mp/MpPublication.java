@@ -34,6 +34,10 @@ public class MpPublication extends Publication<MpPublication> {
 
 	private static IMpPublicationDao mpPublicationDao;
 
+	public MpPublication() {
+		super(false, false);
+	}
+
 	@JsonIgnore
 	private String lockUsername;
 

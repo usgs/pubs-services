@@ -13,7 +13,7 @@
 
     <sql id="baseSelect">
         select ipds_message_log_id,
-               xmlserialize(content ipds_message as clob no indent) ipds_message,
+               xmlserialize(content ipds_message as text) ipds_message,
                processing_details,
                prod_id,
                process_type
@@ -22,10 +22,14 @@
 
     <insert id="add" parameterType="IpdsMessageLog">
         <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
-            select ipds_message_log_seq.nextval id from dual
+            select nextval('ipds_message_log_seq')
         </selectKey>
-        {call xml_crutch.insert_ipds_message_log (#{id,jdbcType=NUMERIC,mode=IN}, #{messageText,jdbcType=CLOB,mode=IN},
-                                                  #{processType,jdbcType=VARCHAR,mode=IN})}
+        insert into ipds_message_log (ipds_message_log_id, ipds_message, process_type, <include refid="base.auditCols"/>)
+            values (#{id,jdbcType=NUMERIC},
+                    xmlparse(content #{messageText,jdbcType=CLOB}),
+                    #{processType,jdbcType=VARCHAR},
+                    <include refid="base.auditHosts"/>
+                   )
     </insert>
 
     <select id="getById" parameterType="Integer" resultMap="result">
@@ -49,7 +53,7 @@
          where ipds_message_log_id = #{id,jdbcType=NUMERIC}
     </update>
 
-    <select id="getMpPublicationFromIpds" parameterType="Integer" resultType="PubMap">
+    <select id="getMpPublicationFromIpds" parameterType="Integer" resultType="java.util.HashMap">
         select Abstract,
                Citation,
                CostCenter,
@@ -74,38 +78,38 @@
                USGSSeriesTypeValue,
                Volume,
                WorkingTitle
-          from (select * from ipds_message_log iml,
-               xmltable(xmlnamespaces('http://schemas.microsoft.com/ado/2007/08/dataservices' as "d",
-                                      'http://schemas.microsoft.com/ado/2007/08/dataservices/metadata' as "m",
-                                      'http://www.w3.org/2005/Atom' as "q"),
-                        'for $i in /q:feed/q:entry return $i'
-                        passing iml.ipds_message
-                        columns Abstract clob path '/q:entry/m:properties/d:Abstract',
-                                Citation varchar2(4000 char) path '/q:entry/m:properties/d:Citation',
-                                CostCenter number path '/q:entry/m:properties/d:CostCenter',
-                                Cooperators varchar2(4000 char) path '/q:entry/m:properties/d:Cooperators',
-                                DigitalObjectIdentifier varchar2(2000 char) path '/q:entry/m:properties/d:DigitalObjectIdentifier',
-                                EditionNumber varchar2(255 char) path '/q:entry/m:properties/d:EditionNumber',
-                                FinalTitle varchar2(2000 char) path '/q:entry/m:properties/d:FinalTitle',
-                                ipds_internal_id number path '/q:entry/m:properties/d:Id',
-                                IPNumber varchar2(15 char) path '/q:entry/m:properties/d:IPNumber',
-                                Issue varchar2(20 char) path '/q:entry/m:properties/d:Issue',
-                                JournalTitle varchar2(2000 char) path '/q:entry/m:properties/d:JournalTitle',
-                                NonUSGSPublisher varchar2(255 char) path '/q:entry/m:properties/d:NonUSGSPublisher',
-                                PageRange varchar2(2000 char) path '/q:entry/m:properties/d:PageRange',
-                                PhysicalDescription varchar2(2000 char) path '/q:entry/m:properties/d:PhysicalDescription',
-                                ProductSummary clob path '/q:entry/m:properties/d:ProductSummary',
-                                ProductTypeValue varchar2(2000 char) path '/q:entry/m:properties/d:ProductTypeValue',
-                                PublishedURL varchar2(4000 char) path '/q:entry/m:properties/d:PublishedURL',
-                                PublishingServiceCenter number path '/q:entry/m:properties/d:PublishingServiceCenter',
-                                Task varchar2(4000 char) path '/q:entry/m:properties/d:Task',
-                                USGSSeriesLetter varchar2(20 char) path '/q:entry/m:properties/d:USGSSeriesLetter',
-                                USGSSeriesNumber varchar2(20 char) path '/q:entry/m:properties/d:USGSSeriesNumber',
-                                USGSSeriesTypeValue varchar2(2000 char) path '/q:entry/m:properties/d:USGSSeriesTypeValue',
-                                Volume varchar2(50 char) path '/q:entry/m:properties/d:Volume',
-                                WorkingTitle varchar2(2000 char) path '/q:entry/m:properties/d:WorkingTitle'
-                                )) x
-                        where ipds_message_log_id = #{value}
+          from (select xmltable.*
+                  from xmltable(xmlnamespaces('http://schemas.microsoft.com/ado/2007/08/dataservices' as "d",
+                                              'http://schemas.microsoft.com/ado/2007/08/dataservices/metadata' as "m",
+                                              'http://www.w3.org/2005/Atom' as "q"),
+                                '/q:feed/q:entry'
+                                passing (select ipds_message from ipds_message_log where ipds_message_log_id = #{value})
+                                columns Abstract text path './/m:properties/d:Abstract',
+                                        Citation text path './/m:properties/d:Citation',
+                                        CostCenter integer path './/m:properties/d:CostCenter',
+                                        Cooperators text path './/m:properties/d:Cooperators',
+                                        DigitalObjectIdentifier text path './/m:properties/d:DigitalObjectIdentifier',
+                                        EditionNumber text path './/m:properties/d:EditionNumber',
+                                        FinalTitle text path './/m:properties/d:FinalTitle',
+                                        ipds_internal_id integer path './/m:properties/d:Id',
+                                        IPNumber text path './/m:properties/d:IPNumber',
+                                        Issue text path './/m:properties/d:Issue',
+                                        JournalTitle text path './/m:properties/d:JournalTitle',
+                                        NonUSGSPublisher text path './/m:properties/d:NonUSGSPublisher',
+                                        PageRange text path './/m:properties/d:PageRange',
+                                        PhysicalDescription text path './/m:properties/d:PhysicalDescription',
+                                        ProductSummary text path './/m:properties/d:ProductSummary',
+                                        ProductTypeValue text path './/m:properties/d:ProductTypeValue',
+                                        PublishedURL text path './/m:properties/d:PublishedURL',
+                                        PublishingServiceCenter integer path './/m:properties/d:PublishingServiceCenter',
+                                        Task text path './/m:properties/d:Task',
+                                        USGSSeriesLetter text path './/m:properties/d:USGSSeriesLetter',
+                                        USGSSeriesNumber text path './/m:properties/d:USGSSeriesNumber',
+                                        USGSSeriesTypeValue text path './/m:properties/d:USGSSeriesTypeValue',
+                                        Volume text path './/m:properties/d:Volume',
+                                        WorkingTitle text path './/m:properties/d:WorkingTitle'
+                               )
+               ) x
     </select>
 
 </mapper>

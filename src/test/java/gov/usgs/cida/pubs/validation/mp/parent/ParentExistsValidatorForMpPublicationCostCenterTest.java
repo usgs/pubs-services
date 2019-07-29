@@ -3,26 +3,29 @@ package gov.usgs.cida.pubs.validation.mp.parent;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import gov.usgs.cida.pubs.dao.CostCenterDao;
+import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
+import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.CostCenter;
+import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 
-//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={MpPublication.class, Publication.class, CostCenter.class, Affiliation.class})
 public class ParentExistsValidatorForMpPublicationCostCenterTest extends BaseValidatorTest {
 
 	protected ParentExistsValidatorForMpPublicationCostCenter validator;
@@ -30,20 +33,25 @@ public class ParentExistsValidatorForMpPublicationCostCenterTest extends BaseVal
 	protected PublicationCostCenter<?> mpPubCostCenter;
 	protected CostCenter costCenter;
 
-	@Mock
+	@MockBean(name="mpPublicationDao")
 	protected MpPublicationDao mpPublicationDao;
-	@Mock
+	@MockBean(name="publicationDao")
+	protected IPublicationDao publicationDao;
+	@MockBean(name="costCenterDao")
 	protected CostCenterDao costCenterDao;
+	@MockBean(name="affiliationDao")
+	protected CostCenterDao affiliationDao;
 
 	@Before
+	@SuppressWarnings("unchecked")
 	public void setUp() throws Exception {
 		super.setUp();
 		validator = new ParentExistsValidatorForMpPublicationCostCenter();
 		mpPublication = new MpPublication();
-		mpPublication.setMpPublicationDao(mpPublicationDao);
 		mpPubCostCenter = new PublicationCostCenter<>();
 		costCenter = new CostCenter();
-		costCenter.setCostCenterDao(costCenterDao);
+
+		reset(mpPublicationDao, publicationDao, costCenterDao, affiliationDao);
 	}
 
 	@Test

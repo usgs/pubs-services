@@ -7,10 +7,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -21,15 +19,10 @@ import org.springframework.web.context.request.WebRequest;
 
 public class GlobalDefaultExceptionHandlerTest {
 
-	@Mock
+	@MockBean
 	WebRequest request;
 
 	private GlobalDefaultExceptionHandler controller = new GlobalDefaultExceptionHandler();
-
-	@Before
-	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
-	}
 
 	@Test
 	public void handleUncaughtExceptionTest() throws IOException {

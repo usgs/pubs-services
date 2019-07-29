@@ -9,15 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import gov.usgs.cida.pubs.aop.ISetDbContext;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.intfc.IPwPublicationDao;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 
 /**
  * @author drsteini
- * NOTE: getbyId hits the base table to avoid the VPD - this method should only be used for business logic related to MyPubs
- * NOTE: all of the other methods use the VIEW so that the VPD will not show publications before the displayToPublicDate - they should be 
+ * NOTE: getbyId shows ALL data - this method should only be used for business logic related to MyPubs
+ * NOTE: all of the other methods will not show publications before the displayToPublicDate - they should be 
  *	   used when dealing with the warehouse.
  */
 @Repository
@@ -44,12 +43,16 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	public static final String PUB_DATE_LOW = "pub_date_low";
 	public static final String PUB_X_DAYS = "pub_x_days";
 
+	@Transactional
+	public void refreshTextIndex() {
+		getSqlSession().update(NS + ".refreshTextIndex");
+	}
+
 	/** 
 	 * {@inheritDoc}
 	 * @see gov.usgs.cida.pubs.core.dao.BaseDao#getById(java.lang.Integer)
 	 */
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	@Override
 	public PwPublication getById(Integer domainID) {
 		return (PwPublication) getSqlSession().selectOne(NS + GET_BY_ID, domainID);
@@ -60,7 +63,6 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	 * @see gov.usgs.cida.pubs.dao.BaseDao#getByMap(java.util.Map)
 	 */
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	@Override
 	public PwPublication getByIpdsId(String ipdsId) {
 		return getSqlSession().selectOne(NS + GET_BY_IPDS_ID, ipdsId);
@@ -71,7 +73,6 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	 * @see gov.usgs.cida.pubs.dao.BaseDao#getByMap(java.util.Map)
 	 */
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	@Override
 	public List<PwPublication> getByMap(Map<String, Object> filters) {
 		return getSqlSession().selectList(NS + GET_BY_MAP, filters);
@@ -82,7 +83,6 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	 */
 	@Override
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	public Integer getObjectCount(Map<String, Object> filters) {
 		return getSqlSession().selectOne(NS + GET_COUNT, filters);
 	}
@@ -92,7 +92,6 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	 * @see gov.usgs.cida.pubs.core.dao.intfc.IPwPublicationDao#getByIndexId(java.lang.String)
 	 */
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	@Override
 	public PwPublication getByIndexId(String indexId) {
 		return (PwPublication) getSqlSession().selectOne(NS + GET_BY_INDEX_ID, indexId);

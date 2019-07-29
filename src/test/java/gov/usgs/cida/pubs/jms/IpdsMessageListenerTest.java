@@ -20,10 +20,10 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.busservice.intfc.IIpdsService;
 
-public class IpdsMessageListenerTest extends BaseSpringTest {
+public class IpdsMessageListenerTest extends BaseTest {
 
 	private class Isms implements IIpdsService {
 		public MessagePayload messagePayload;

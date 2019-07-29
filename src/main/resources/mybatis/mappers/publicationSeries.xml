@@ -3,148 +3,148 @@
 
 <mapper namespace="publicationSeries">
 
-	<resultMap id="result" type="PublicationSeries" extends="base.result">
-		<id property="id" column="publication_series_id"/>
-		<result property="publicationSubtype.id" column="publication_subtype_id"/>
-		<result property="text" column="name"/>
-		<result property="code" column="code"/>
-		<result property="seriesDoiName" column="doi_name"/>
-		<result property="printIssn" column="print_issn"/>
-		<result property="onlineIssn" column="online_issn"/>
-		<result property="active" column="is_active"/>
-	</resultMap>
+    <resultMap id="result" type="PublicationSeries" extends="base.result">
+        <id property="id" column="publication_series_id"/>
+        <result property="publicationSubtype.id" column="publication_subtype_id"/>
+        <result property="text" column="name"/>
+        <result property="code" column="code"/>
+        <result property="seriesDoiName" column="doi_name"/>
+        <result property="printIssn" column="print_issn"/>
+        <result property="onlineIssn" column="online_issn"/>
+        <result property="active" column="is_active"/>
+    </resultMap>
 
-	<sql id="cols">
-		publication_series_id, publication_subtype_id, name, code, doi_name, print_issn, online_issn, is_active,
-		<include refid="base.auditCols"/>
-	</sql>
+    <sql id="cols">
+        publication_series_id, publication_subtype_id, name, code, doi_name, print_issn, online_issn, is_active,
+        <include refid="base.auditCols"/>
+    </sql>
 
-	<sql id="hosts">
-		#{id,jdbcType=NUMERIC},
-		#{publicationSubtype.id,jdbcType=NUMERIC},
-		#{text,jdbcType=VARCHAR},
-		#{code,jdbcType=VARCHAR},
-		#{seriesDoiName,jdbcType=VARCHAR},
-		#{printIssn,jdbcType=VARCHAR},
-		#{onlineIssn,jdbcType=VARCHAR},
-		#{active,jdbcType=VARCHAR},
-		<include refid="base.auditHosts"/>
-	</sql>
+    <sql id="hosts">
+        #{id,jdbcType=NUMERIC},
+        #{publicationSubtype.id,jdbcType=NUMERIC},
+        #{text,jdbcType=VARCHAR},
+        #{code,jdbcType=VARCHAR},
+        #{seriesDoiName,jdbcType=VARCHAR},
+        #{printIssn,jdbcType=VARCHAR},
+        #{onlineIssn,jdbcType=VARCHAR},
+        #{active,jdbcType=VARCHAR},
+        <include refid="base.auditHosts"/>
+    </sql>
 
-	<sql id="sets">
-		publication_series_id = #{id,jdbcType=NUMERIC},
-		publication_subtype_id = #{publicationSubtype.id,jdbcType=NUMERIC},
-		name = #{text,jdbcType=VARCHAR},
-		code = #{code,jdbcType=VARCHAR},
-		doi_name = #{seriesDoiName,jdbcType=VARCHAR},
-		print_issn = #{printIssn,jdbcType=VARCHAR},
-		online_issn = #{onlineIssn,jdbcType=VARCHAR},
-		is_active = #{active,jdbcType=VARCHAR},
-		<include refid="base.auditSets"/>
-	</sql>
+    <sql id="sets">
+        publication_series_id = #{id,jdbcType=NUMERIC},
+        publication_subtype_id = #{publicationSubtype.id,jdbcType=NUMERIC},
+        name = #{text,jdbcType=VARCHAR},
+        code = #{code,jdbcType=VARCHAR},
+        doi_name = #{seriesDoiName,jdbcType=VARCHAR},
+        print_issn = #{printIssn,jdbcType=VARCHAR},
+        online_issn = #{onlineIssn,jdbcType=VARCHAR},
+        is_active = #{active,jdbcType=VARCHAR},
+        <include refid="base.auditSets"/>
+    </sql>
 
-	<sql id="filters">
-		<where>
-			<if test="id != null">
-				and publication_series_id = #{id}
-			</if>
-			<if test="publicationSubtypeId != null">
-				and publication_subtype_id = #{publicationSubtypeId}
-			</if>
-			<if test="code != null">
-				and code = #{code}
-			</if>
-			<if test="text != null">
-				and upper(name) like upper(#{text}) || '%'
-			</if>
-			<if test="active != null">
-				and is_active = #{active}
-			</if>
-		</where>
-	</sql>
+    <sql id="filters">
+        <where>
+            <if test="id != null">
+                and publication_series_id = #{id}
+            </if>
+            <if test="publicationSubtypeId != null">
+                and publication_subtype_id = #{publicationSubtypeId}
+            </if>
+            <if test="code != null">
+                and code = #{code}
+            </if>
+            <if test="text != null">
+                and upper(name) like upper(#{text}) || '%'
+            </if>
+            <if test="active != null">
+                and is_active = #{active}
+            </if>
+        </where>
+    </sql>
 
-	<sql id="baseSelect">
-		select <include refid="cols"/>
-		  from publication_series
-	</sql>
+    <sql id="baseSelect">
+        select <include refid="cols"/>
+          from publication_series
+    </sql>
 
-	<select id="getById" resultMap="result">
-		<include refid="baseSelect"/> 
-		where publication_series_id = #{value,jdbcType=NUMERIC}
-	</select>
+    <select id="getById" resultMap="result">
+        <include refid="baseSelect"/> 
+        where publication_series_id = #{value,jdbcType=NUMERIC}
+    </select>
 
-	<select id="getByMap" resultMap="result">
-		<include refid="baseSelect"/>
-		<include refid="filters"/>
-		order by name
-		<include refid="base.paging"/>
-	</select>
+    <select id="getByMap" resultMap="result">
+        <include refid="baseSelect"/>
+        <include refid="filters"/>
+        order by name
+        <include refid="base.pagingRowLimit"/>
+    </select>
 
-	<select id="getCount" resultType="Integer">
-		select count(*)
-		  from publication_series
-		<include refid="filters"/>
-	</select>
+    <select id="getCount" resultType="Integer">
+        select count(*)
+          from publication_series
+        <include refid="filters"/>
+    </select>
 
-	<insert id="add">
-		<selectKey keyProperty="id" resultType="Integer" order="BEFORE">
-			select publication_series_seq.nextval id from dual
-		</selectKey>
-		insert into publication_series (<include refid="cols"/>)
-			values (<include refid="hosts"/>)
-	</insert>
+    <insert id="add">
+        <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
+            select nextval('publication_series_seq')
+        </selectKey>
+        insert into publication_series (<include refid="cols"/>)
+            values (<include refid="hosts"/>)
+    </insert>
 
-	<update id="update">
-		update publication_series
-		   set <include refid="sets"/>
-		 where publication_series_id = #{id,jdbcType=NUMERIC}
-	</update>
-	
-	<delete id="delete">
-		delete from publication_series
-		 where publication_series_id = #{value,jdbcType=NUMERIC}
-	</delete>
+    <update id="update">
+        update publication_series
+           set <include refid="sets"/>
+         where publication_series_id = #{id,jdbcType=NUMERIC}
+    </update>
+    
+    <delete id="delete">
+        delete from publication_series <include refid="base.deleteAuditHack"/>
+         where publication_series_id = #{id,jdbcType=NUMERIC}
+    </delete>
 
-	<delete id="deleteByParent">
-		delete from publication_series
-		 where publication_subtype_id = #{value,jdbcType=NUMERIC}
-	</delete>
+    <delete id="deleteByParent">
+        delete from publication_series <include refid="base.deleteAuditHack"/>
+         where publication_subtype_id = #{id,jdbcType=NUMERIC}
+    </delete>
 
-	<select id="uniqueCheck" resultType="HashMap">
-		select publication_series_id id,
-		       case when upper(name) = upper(#{text,jdbcType=VARCHAR}) and
-		                 publication_subtype_id = #{publicationSubtype.id,jdbcType=NUMERIC} then 'Y' else 'N' end name_match,
-		       case when upper(code) = upper(#{code,jdbcType=VARCHAR}) then 'Y' else 'N' end code_match,
-		       case when upper(doi_name) = upper(#{seriesDoiName,jdbcType=VARCHAR}) then 'Y' else 'N' end doi_name_match,
-		       case when upper(print_issn) = upper(#{printIssn,jdbcType=VARCHAR}) then 'Y' else 'N' end print_issn_match,
-		       case when upper(online_issn) = upper(#{onlineIssn,jdbcType=VARCHAR}) then 'Y' else 'N' end online_issn_match
-		  from publication_series
-		<where>
-			<if test="id != null">
-				publication_series_id != #{id} and (
-			</if>
-			<trim prefix="" prefixOverrides="or">
-				<if test="text != null and publicationSubtype != null">
-					or (upper(name) = upper(#{text}) and
-					    publication_subtype_id = #{publicationSubtype.id,jdbcType=NUMERIC})
-				</if>
-				<if test="code != null">
-					or upper(code) = upper(#{code})
-				</if>
-				<if test="seriesDoiName != null">
-					or upper(doi_name) = upper(#{seriesDoiName})
-				</if>
-				<if test="printIssn != null">
-					or upper(print_issn) = upper(#{printIssn})
-				</if>
-				<if test="onlineIssn != null">
-					or upper(online_issn) = upper(#{onlineIssn})
-				</if>
-			</trim>
-			<if test="id != null">
-				)
-			</if>
-		</where>
-	</select>
+    <select id="uniqueCheck" resultType="HashMap">
+        select publication_series_id id,
+               case when upper(name) = upper(#{text,jdbcType=VARCHAR}) and
+                         publication_subtype_id = #{publicationSubtype.id,jdbcType=NUMERIC} then true else false end name_match,
+               case when upper(code) = upper(#{code,jdbcType=VARCHAR}) then true else false end code_match,
+               case when upper(doi_name) = upper(#{seriesDoiName,jdbcType=VARCHAR}) then true else false end doi_name_match,
+               case when upper(print_issn) = upper(#{printIssn,jdbcType=VARCHAR}) then true else false end print_issn_match,
+               case when upper(online_issn) = upper(#{onlineIssn,jdbcType=VARCHAR}) then true else false end online_issn_match
+          from publication_series
+        <where>
+            <if test="id != null">
+                publication_series_id != #{id} and (
+            </if>
+            <trim prefix="" prefixOverrides="or">
+                <if test="text != null and publicationSubtype != null">
+                    or (upper(name) = upper(#{text}) and
+                        publication_subtype_id = #{publicationSubtype.id,jdbcType=NUMERIC})
+                </if>
+                <if test="code != null">
+                    or upper(code) = upper(#{code})
+                </if>
+                <if test="seriesDoiName != null">
+                    or upper(doi_name) = upper(#{seriesDoiName})
+                </if>
+                <if test="printIssn != null">
+                    or upper(print_issn) = upper(#{printIssn})
+                </if>
+                <if test="onlineIssn != null">
+                    or upper(online_issn) = upper(#{onlineIssn})
+                </if>
+            </trim>
+            <if test="id != null">
+                )
+            </if>
+        </where>
+    </select>
 
 </mapper>

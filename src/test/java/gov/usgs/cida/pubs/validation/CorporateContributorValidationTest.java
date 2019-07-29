@@ -5,11 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
-import gov.usgs.cida.pubs.SeverityLevel;
-import gov.usgs.cida.pubs.dao.intfc.IDao;
-import gov.usgs.cida.pubs.domain.Contributor;
-import gov.usgs.cida.pubs.domain.CorporateContributor;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -19,14 +16,19 @@ import javax.validation.Validator;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
+import gov.usgs.cida.pubs.SeverityLevel;
+import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.domain.Contributor;
+import gov.usgs.cida.pubs.domain.CorporateContributor;
+
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={LocalValidatorFactoryBean.class, Contributor.class, CorporateContributor.class})
 public class CorporateContributorValidationTest extends BaseValidatorTest {
 
 	public static final String NOT_NULL_ORGANIZATION = new ValidatorResult("organization", NOT_NULL_MSG, SeverityLevel.FATAL, null).toString();
@@ -37,17 +39,21 @@ public class CorporateContributorValidationTest extends BaseValidatorTest {
 	@Autowired
 	public Validator validator;
 
-	@Mock
+	@MockBean(name="contributorDao")
 	protected IDao<Contributor<?>> contributorDao;
+	@MockBean(name="corporateContributorDao")
+	protected IDao<Contributor<?>> corporateContributorDao;
 
 	private CorporateContributor contributor;
 
 	@Before
 	@Override
+	@SuppressWarnings("unchecked")
 	public void setUp() throws Exception {
 		super.setUp();
 		contributor = new CorporateContributor();
-		contributor.setContributorDao(contributorDao);
+
+		reset(contributorDao, corporateContributorDao);
 	}
 
 	@Test

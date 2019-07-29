@@ -1,17 +1,18 @@
 package gov.usgs.cida.pubs.dao;
 
 
-import gov.usgs.cida.pubs.PubsConstants;
-import gov.usgs.cida.pubs.aop.ISetDbContext;
-import gov.usgs.cida.pubs.dao.intfc.IDao;
-
-import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
+
+import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.domain.BaseDomain;
+import gov.usgs.cida.pubs.utility.PubsUtilities;
 
 /**
  * @author drsteini
@@ -34,20 +35,12 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
 	public static final String PAGE_SIZE = "page_size";
 	public static final String PAGE_NUMBER = "page_number";
 
+	public static final String INSERT_USERNAME = "insertUsername";
+	public static final String UPDATE_USERNAME = "updateUsername";
+	public static final String DELETE_USERNAME = "deleteUsername";
+
 	public BaseDao(SqlSessionFactory sqlSessionFactory) {
 		setSqlSessionFactory(sqlSessionFactory);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#getClientId()
-	 */
-	@Override
-	@Transactional(readOnly = true)
-	@ISetDbContext
-	public String getClientId() {
-		return (String) getSqlSession().selectOne("getClientId");
 	}
 
 	/** {@inheritDoc}
@@ -140,8 +133,43 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
 	 */
 	@Transactional(readOnly = true)
 	@Override
-	public Map<BigDecimal, Map<String, Object>> uniqueCheck(D domainObject) {
+	public Map<Integer, Map<String, Object>> uniqueCheck(D domainObject) {
 		throw new RuntimeException(PubsConstants.NOT_IMPLEMENTED);
 	}
 
+	protected Integer insert(String statement, BaseDomain<D> domainObject) {
+		domainObject.setInsertUsername(PubsUtilities.getUsername());
+		domainObject.setUpdateUsername(PubsUtilities.getUsername());
+		getSqlSession().insert(statement, domainObject);
+		return domainObject.getId();
+	}
+
+	protected void insert(String statement, Integer id) {
+		Map<String, Object> parameters = buildMap(id, INSERT_USERNAME, UPDATE_USERNAME);
+		getSqlSession().insert(statement, parameters);
+	}
+
+	protected void update(String statement, BaseDomain<D> domainObject) {
+		domainObject.setUpdateUsername(PubsUtilities.getUsername());
+		getSqlSession().update(statement, domainObject);
+	}
+
+	protected void update(String statement, Integer id) {
+		Map<String, Object> parameters = buildMap(id, UPDATE_USERNAME);
+		getSqlSession().update(statement, parameters);
+	}
+
+	protected void delete(String statement, Integer id) {
+		Map<String, Object> parameters = buildMap(id, DELETE_USERNAME);
+		getSqlSession().delete(statement, parameters);
+	}
+
+	protected Map<String, Object> buildMap(Integer id, String... usernameType) {
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put(ID_SEARCH, id);
+		for (String type:usernameType) {
+			parameters.put(type, PubsUtilities.getUsername());
+		}
+		return parameters;
+	}
 }

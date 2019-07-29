@@ -2,9 +2,6 @@ package gov.usgs.cida.pubs;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import gov.usgs.cida.pubs.aop.ISetDbContext;
-import gov.usgs.cida.pubs.dao.BaseDao;
-import gov.usgs.cida.pubs.dao.mp.MpDao;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +15,8 @@ import org.junit.Test;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.dao.mp.MpDao;
 
 /**
  * @author jrschoen (back in biodata - copied here by drsteini)
@@ -30,8 +29,7 @@ public class DaoAnnotationsTest {
 	 */
 	@SuppressWarnings("rawtypes")
 	static final Class [] REQUIRED_ANNOTATIONS = {
-		org.springframework.transaction.annotation.Transactional.class,
-		 ISetDbContext.class
+		org.springframework.transaction.annotation.Transactional.class
 	};
 
 	/**
@@ -115,7 +113,7 @@ public class DaoAnnotationsTest {
 			}
 		}
 	}
-	
+
 	/**
 	 * Method gets all the classes for a specific package.
 	 * Note: The method changes the path to look at classes not test-classes 

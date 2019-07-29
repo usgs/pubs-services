@@ -5,10 +5,10 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,16 +18,15 @@ import javax.validation.Validator;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.dao.PublicationDao;
-import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
-import gov.usgs.cida.pubs.dao.PublicationSubtypeDao;
+import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSeriesTest;
@@ -35,10 +34,10 @@ import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.unique.UniqueKeyValidatorForPublicationSeriesTest;
 
-//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
-public class PublicationSeriesBusServiceTest extends BaseSpringTest {
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={LocalValidatorFactoryBean.class, PublicationSeries.class,
+			PublicationSubtype.class, Publication.class})
+public class PublicationSeriesBusServiceTest extends BaseTest {
 
 	@Autowired
 	public Validator validator;
@@ -49,27 +48,27 @@ public class PublicationSeriesBusServiceTest extends BaseSpringTest {
 	private PublicationSeries pubSeries;
 	protected Map<String, Object> filters = new HashMap<>();
 
-	@Mock
-	protected PublicationSubtypeDao publicationSubtypeDao;
-	@Mock
-	protected PublicationSeriesDao publicationSeriesDao;
-	@Mock
+	@MockBean(name="publicationSubtypeDao")
+	protected IDao<PublicationSubtype> publicationSubtypeDao;
+	@MockBean(name="publicationSeriesDao")
+	protected IDao<PublicationSeries> publicationSeriesDao;
+	@MockBean(name="publicationDao")
 	protected PublicationDao publicationDao;
 
 	@Before
+	@SuppressWarnings("unchecked")
 	public void initTest() throws Exception {
-		MockitoAnnotations.initMocks(this);
 		busService = new PublicationSeriesBusService(validator);
 
 		pubSeries = PublicationSeriesTest.buildAPubSeries(null);
-		pubSeries.setPublicationSeriesDao(publicationSeriesDao);
 
 		subtype = new PublicationSubtype();
 		subtype.setId(999);
-		subtype.setPublicationSubtypeDao(publicationSubtypeDao);
 
 		pub = new Publication<>();
 		pub.setPublicationDao(publicationDao);
+
+		reset(publicationSeriesDao, publicationSubtypeDao, publicationDao);
 	}
 
 	@Test
@@ -87,7 +86,7 @@ public class PublicationSeriesBusServiceTest extends BaseSpringTest {
 	@Test
 	public void createObjectTest() {
 		when(publicationSubtypeDao.getById(any(Integer.class))).thenReturn(new PublicationSubtype());
-		when(publicationSeriesDao.uniqueCheck(any(PublicationSeries.class))).thenReturn(new HashMap<BigDecimal, Map<String, Object>>());
+		when(publicationSeriesDao.uniqueCheck(any(PublicationSeries.class))).thenReturn(new HashMap<Integer, Map<String, Object>>());
 
 		when(publicationSeriesDao.add(any(PublicationSeries.class))).thenReturn(1);
 		when(publicationSeriesDao.getById(any(Integer.class))).thenReturn(pubSeries);
@@ -263,7 +262,7 @@ public class PublicationSeriesBusServiceTest extends BaseSpringTest {
 	@Test
 	public void updateObjectTest() {
 		when(publicationSubtypeDao.getById(any(Integer.class))).thenReturn(new PublicationSubtype());
-		when(publicationSeriesDao.uniqueCheck(any(PublicationSeries.class))).thenReturn(new HashMap<BigDecimal, Map<String, Object>>());
+		when(publicationSeriesDao.uniqueCheck(any(PublicationSeries.class))).thenReturn(new HashMap<Integer, Map<String, Object>>());
 
 		when(publicationSeriesDao.getById(any(Integer.class))).thenReturn(pubSeries);
 		pubSeries.setId(1);

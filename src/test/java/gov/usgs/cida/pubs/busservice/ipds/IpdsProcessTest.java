@@ -10,6 +10,7 @@ import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,25 +19,26 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionStatus;
 import org.xml.sax.SAXException;
 
-import gov.usgs.cida.pubs.BaseSpringTest;
-import gov.usgs.cida.pubs.PubMap;
+import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
 import gov.usgs.cida.pubs.dao.intfc.IPwPublicationDao;
 import gov.usgs.cida.pubs.dao.ipds.IpdsMessageLogDao;
 import gov.usgs.cida.pubs.domain.CostCenter;
@@ -53,24 +55,25 @@ import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 
-//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
-public class IpdsProcessTest extends BaseSpringTest {
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={PwPublication.class, IpdsMessageLog.class})
+public class IpdsProcessTest extends BaseTest {
 
-	@Mock
+	@MockBean
 	protected ICrossRefBusService crossRefBusService;
-	@Mock
+	@MockBean
 	protected IpdsBinding binder;
-	@Mock
+	@MockBean
 	protected IpdsWsRequester requester;
-	@Mock
+	@MockBean
 	protected IMpPublicationBusService pubBusService;
-	@Mock
-	protected IPwPublicationDao publicationDao;
-	@Mock
+	@MockBean(name="pwPublicationDao")
+	protected IPwPublicationDao pwPublicationDao;
+	@MockBean(name="publicationDao")
+	protected IPublicationDao publicationDao;
+	@MockBean
 	protected PlatformTransactionManager transactionManager;
-	@Mock
+	@MockBean
 	protected IpdsMessageLogDao ipdsMessageLogDao;
 
 	protected IpdsProcess ipdsProcess;
@@ -88,7 +91,6 @@ public class IpdsProcessTest extends BaseSpringTest {
 
 	@Before
 	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
 		ipdsProcess = new IpdsProcess(crossRefBusService, binder, requester, pubBusService, transactionManager);
 		resetThreadLocals();
 		pubType = buildPublicationType();
@@ -100,9 +102,7 @@ public class IpdsProcessTest extends BaseSpringTest {
 		existingPwPub9 = buildPwPub(9);
 		existingPwPub11 = buildPwPub(11);
 
-		existingPwPub9.setPwPublicationDao(publicationDao);
-		IpdsMessageLog ipdsMessageLog = new IpdsMessageLog();
-		ipdsMessageLog.setIpdsMessageLogDao(ipdsMessageLogDao);
+		reset(pwPublicationDao, publicationDao, ipdsMessageLogDao, requester, binder, pubBusService);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -140,8 +140,8 @@ public class IpdsProcessTest extends BaseSpringTest {
 
 	@Test
 	public void getFromPwTest() {
-		when(publicationDao.getByIpdsId(anyString())).thenReturn(null, null, existingPwPub9, null);
-		when(publicationDao.getByIndexId(anyString())).thenReturn(null, existingPwPub11);
+		when(pwPublicationDao.getByIpdsId(anyString())).thenReturn(null, null, existingPwPub9, null);
+		when(pwPublicationDao.getByIndexId(anyString())).thenReturn(null, existingPwPub11);
 		when(pubBusService.getUsgsNumberedSeriesIndexId(any(MpPublication.class))).thenReturn("sir1234a");
 		MpPublication newPub = new MpPublication();
 		newPub.setIpdsId("IPDS_123");
@@ -151,8 +151,8 @@ public class IpdsProcessTest extends BaseSpringTest {
 
 		//This time we don't find it by IPDS ID and we do not attempt by index ID
 		assertNull(ipdsProcess.getFromPw(newPub));
-		verify(publicationDao).getByIpdsId(anyString());
-		verify(publicationDao, never()).getByIndexId(anyString());
+		verify(pwPublicationDao).getByIpdsId(anyString());
+		verify(pwPublicationDao, never()).getByIndexId(anyString());
 
 		//This time we don't find it by either ID
 		PublicationSubtype psub = new PublicationSubtype();
@@ -161,25 +161,25 @@ public class IpdsProcessTest extends BaseSpringTest {
 		newPub.setSeriesTitle(pubSeries);
 		newPub.setSeriesNumber("456");
 		assertNull(ipdsProcess.getFromPw(newPub));
-		verify(publicationDao, times(2)).getByIpdsId(anyString());
-		verify(publicationDao).getByIndexId(anyString());
+		verify(pwPublicationDao, times(2)).getByIpdsId(anyString());
+		verify(pwPublicationDao).getByIndexId(anyString());
 
 		//This time is by IPDS ID
 		assertEquals(9, ipdsProcess.getFromPw(newPub).getId().intValue());
-		verify(publicationDao, times(3)).getByIpdsId(anyString());
-		verify(publicationDao).getByIndexId(anyString());
+		verify(pwPublicationDao, times(3)).getByIpdsId(anyString());
+		verify(pwPublicationDao).getByIndexId(anyString());
 
 		//This time is by Index ID
 		assertEquals(11, ipdsProcess.getFromPw(newPub).getId().intValue());
-		verify(publicationDao, times(4)).getByIpdsId(anyString());
-		verify(publicationDao, times(2)).getByIndexId(anyString());
+		verify(pwPublicationDao, times(4)).getByIpdsId(anyString());
+		verify(pwPublicationDao, times(2)).getByIndexId(anyString());
 	}
 
 	@Test
 	public void okToProcessTest() {
-		when(publicationDao.getByIpdsId(null)).thenReturn(null);
-		when(publicationDao.getByIndexId(null)).thenReturn(null);
-		when(publicationDao.getByIpdsId("IPDS-1")).thenReturn(new PwPublication());
+		when(pwPublicationDao.getByIpdsId(null)).thenReturn(null);
+		when(pwPublicationDao.getByIndexId(null)).thenReturn(null);
+		when(pwPublicationDao.getByIpdsId("IPDS-1")).thenReturn(new PwPublication());
 
 		//NPE tests
 		assertFalse(ipdsProcess.okToProcess(null, null, null));
@@ -214,9 +214,9 @@ public class IpdsProcessTest extends BaseSpringTest {
 
 	@Test
 	public void okToProcessDisseminationTest() {
-		when(publicationDao.getByIpdsId(null)).thenReturn(null);
-		when(publicationDao.getByIndexId(null)).thenReturn(null);
-		when(publicationDao.getByIpdsId("IPDS-1")).thenReturn(new PwPublication());
+		when(pwPublicationDao.getByIpdsId(null)).thenReturn(null);
+		when(pwPublicationDao.getByIndexId(null)).thenReturn(null);
+		when(pwPublicationDao.getByIpdsId("IPDS-1")).thenReturn(new PwPublication());
 
 		//Do not process if new data is null
 		assertFalse(ipdsProcess.okToProcessDissemination(null, null));
@@ -583,10 +583,11 @@ public class IpdsProcessTest extends BaseSpringTest {
 	}
 
 	@Test
+	@SuppressWarnings("unchecked")
 	public void processIpdsPublicationTest() throws SAXException, IOException {
-		PubMap pm = new PubMap();
+		Map<String, Object> pm = new HashMap<>();
 		pm.put(IpdsMessageLog.IPNUMBER, "IP-123");
-		when(binder.bindPublication(any(PubMap.class), anyString())).thenReturn(existingMpPub9);
+		when(binder.bindPublication(any(Map.class), anyString())).thenReturn(existingMpPub9);
 		when(pubBusService.getObjects(anyMap())).thenThrow(new RuntimeException("test")).thenReturn(null);
 		when(pubBusService.createObject(existingMpPub9)).thenReturn(existingMpPub9);
 		when(requester.getNotes(null, TEST_IPDS_CONTEXT)).thenReturn("<xml></xml>");
@@ -614,9 +615,10 @@ public class IpdsProcessTest extends BaseSpringTest {
 	}
 
 	@Test
+	@SuppressWarnings("unchecked")
 	public void processLogTest() {
-		String expectedMsg = "Summary:\n\tTotal Entries: 2\n\tPublications Added: 0\n\tErrors Encountered: 2\n\nnull:\n\tERROR: Trouble processing pub: null - test\n\nnull:\n\tERROR: Trouble processing pub: null - test\n\n";
-		when(binder.bindPublication(any(PubMap.class), anyString())).thenThrow(new RuntimeException("test"));
+		String expectedMsg = "Summary:\n\tTotal Entries: 2\n\tPublications Added: 0\n\tErrors Encountered: 2\n\nnull:\n\tERROR: Trouble processing pub: null - test\n\nnull:\n\tERROR: Trouble processing pub: null - test\n\nLog: 1\n";
+		when(binder.bindPublication(any(Map.class), anyString())).thenThrow(new RuntimeException("test"));
 		when(ipdsMessageLogDao.getFromIpds(1)).thenReturn(getPubMapList());
 		assertEquals(expectedMsg, ipdsProcess.processLog(ProcessType.DISSEMINATION, 1, TEST_IPDS_CONTEXT));
 
@@ -624,10 +626,10 @@ public class IpdsProcessTest extends BaseSpringTest {
 		assertEquals(expectedMsg, ipdsProcess.processLog(ProcessType.DISSEMINATION, 1, TEST_IPDS_CONTEXT));
 	}
 
-	protected List<PubMap> getPubMapList() {
-		List<PubMap> rtn = new ArrayList<>();
-		rtn.add(new PubMap());
-		rtn.add(new PubMap());
+	protected List<Map<String, Object>> getPubMapList() {
+		List<Map<String, Object>> rtn = new ArrayList<>();
+		rtn.add(new HashMap<>());
+		rtn.add(new HashMap<>());
 		return rtn;
 	}
 

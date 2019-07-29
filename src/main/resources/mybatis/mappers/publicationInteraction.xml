@@ -4,23 +4,23 @@
 <mapper namespace="publicationInteraction">
 
     <resultMap id="result" type="PublicationInteraction">
-		<id property="id" column="fake_id"/>
-		<result property="predicate" column="predicate_id"/>
+        <id property="id" column="fake_id"/>
+        <result property="predicate" column="predicate_id"/>
         <association property="subject" javaType="Publication">
-	        <id property="id" column="subject_publication_id"/>
-	        <result property="indexId" column="subject_index_id"/>
-    	    <result property="publicationYear" column="subject_publication_year"/>
-        	<result property="title" column="subject_title"/>
-        	<result property="chapter" column="subject_chapter"/>
-        	<result property="subchapterNumber" column="subject_subchapter"/>
+            <id property="id" column="subject_publication_id"/>
+            <result property="indexId" column="subject_index_id"/>
+            <result property="publicationYear" column="subject_publication_year"/>
+            <result property="title" column="subject_title"/>
+            <result property="chapter" column="subject_chapter"/>
+            <result property="subchapterNumber" column="subject_subchapter"/>
         </association>
         <association property="object" javaType="Publication">
-	        <id property="id" column="object_publication_id"/>
-	        <result property="indexId" column="object_index_id"/>
-    	    <result property="publicationYear" column="object_publication_year"/>
-        	<result property="title" column="object_title"/>
-        	<result property="chapter" column="object_chapter"/>
-        	<result property="subchapterNumber" column="object_subchapter"/>
+            <id property="id" column="object_publication_id"/>
+            <result property="indexId" column="object_index_id"/>
+            <result property="publicationYear" column="object_publication_year"/>
+            <result property="title" column="object_title"/>
+            <result property="chapter" column="object_chapter"/>
+            <result property="subchapterNumber" column="object_subchapter"/>
         </association>
     </resultMap>
 
@@ -30,15 +30,15 @@
                subj.index_id subject_index_id,
                subj.publication_year subject_publication_year,
                subj.title subject_title,
-        	   subj.chapter subject_chapter,
-        	   subj.subchapter subject_subchapter,
+               subj.chapter subject_chapter,
+               subj.subchapter subject_subchapter,
                predicate_id,
                obj.publication_id object_publication_id,
                obj.index_id object_index_id,
                obj.publication_year object_publication_year,
                obj.title object_title,
-        	   obj.chapter object_chapter,
-        	   obj.subchapter object_subchapter
+               obj.chapter object_chapter,
+               obj.subchapter object_subchapter
           from (select publication_id subject_publication_id, 1 predicate_id, is_part_of_id object_publication_id
                   from publication
                  where is_part_of_id = #{value,jdbcType=NUMERIC}
@@ -50,12 +50,12 @@
     </sql>
 
 	<sql id="joins">
-        	)
+            ) pub
                join all_publication_lookup subj 
-                 on subject_publication_id = subj.publication_id
+                 on pub.subject_publication_id = subj.publication_id
                join all_publication_lookup obj
-                 on object_publication_id = obj.publication_id
-             order by subject_publication_id, object_publication_id
+                 on pub.object_publication_id = obj.publication_id
+             order by pub.subject_publication_id, pub.object_publication_id
     </sql>
 
     <select id="getByPwPublication" parameterType="Integer" resultMap="result">
@@ -69,7 +69,7 @@
                  where publication_id = #{value,jdbcType=NUMERIC}
         <include refid="joins"/>
     </select>
-    
+
     <select id="getByMpPublication" parameterType="Integer" resultMap="result">
         <include refid="warehouseData"/>
                select publication_id subject_publication_id, 1 predicate_id, is_part_of_id object_publication_id

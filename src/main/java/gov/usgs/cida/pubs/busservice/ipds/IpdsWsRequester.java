@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.busservice.ipds;
 
 import java.io.IOException;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
+import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.ipds.IpdsProcessLog;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
@@ -41,20 +43,20 @@ public class IpdsWsRequester {
 	protected static final String NULL_DOI = " m:null=\"true\"/>";
 	protected static final String URL_PREFIX = "/_vti_bin/listdata.svc/";
 
-	private static final String IPDS_PROTOCOL = "https";
-	private static final int IPDS_PORT = 443;
+	protected static final String IPDS_PROTOCOL = "https";
+	protected static final int IPDS_PORT = 443;
 	private static final String ERROR = "ERROR: ";
 	private static final String ADMIN = "sites/Admin";
 
-	private final String ipdsEndpoint;
+	private final ConfigurationService configurationService;
 	private final NTCredentials credentials;
 	private final PubsEMailer pubsEMailer;
 
 	private BasicHttpContext httpContext;
 
 	@Autowired
-	public IpdsWsRequester(final String ipdsEndpoint, final NTCredentials credentials, final PubsEMailer pubsEMailer) {
-		this.ipdsEndpoint = ipdsEndpoint;
+	public IpdsWsRequester(final ConfigurationService configurationService, final NTCredentials credentials, final PubsEMailer pubsEMailer) {
+		this.configurationService = configurationService;
 		this.credentials = credentials;
 		this.pubsEMailer = pubsEMailer;
 	}
@@ -75,7 +77,7 @@ public class IpdsWsRequester {
 		.append("Authors()?$filter=startswith(IPNumber,'")
 		.append(ipds).append("')");
 
-		return getIpdsXml(url.toString(), ipds);
+		return getIpdsXml(url.toString(), NumberUtils.toInt(ipds));
 	}
 
 	protected String getContributor(final String ipds, String context) {
@@ -83,10 +85,10 @@ public class IpdsWsRequester {
 		.append("UserInformationList(")
 		.append(ipds).append(")");
 
-		return getIpdsXml(url.toString(), ipds);
+		return getIpdsXml(url.toString(), NumberUtils.toInt(ipds));
 	}
 
-	protected String getCostCenter(final String costCenterId, final String ipds) {
+	protected String getCostCenter(final int costCenterId, final int ipds) {
 		StringBuilder url = getAdminPrefix()
 		.append("CostCenters(").append(costCenterId).append(")");
 		return getIpdsXml(url.toString(), ipds);
@@ -103,7 +105,7 @@ public class IpdsWsRequester {
 		.append("Notes()?$filter=startswith(IPNumber,'")
 		.append(ipds).append("')");
 
-		return getIpdsXml(url.toString(), ipds);
+		return getIpdsXml(url.toString(), NumberUtils.toInt(ipds));
 	}
 
 	public String getSpnProduction(MessagePayload messagePayload) {
@@ -132,9 +134,9 @@ public class IpdsWsRequester {
 		return url;
 	}
 
-	protected String getIpdsXml(final String url, final String ipdsId)  {
+	protected String getIpdsXml(final String url, final Integer ipdsId)  {
 		String xml = null;
-		
+
 		LOG.debug("requesting url: " + url);
 
 		HttpResponse response = doGet(url);
@@ -185,7 +187,7 @@ public class IpdsWsRequester {
 	}
 
 	protected HttpHost getHttpHost() {
-		return new HttpHost(ipdsEndpoint, IPDS_PORT, IPDS_PROTOCOL);
+		return new HttpHost(configurationService.getIpdsEndpoint(), IPDS_PORT, IPDS_PROTOCOL);
 	}
 
 	protected String updateIpdsDoi(MpPublication inPub, String context) {

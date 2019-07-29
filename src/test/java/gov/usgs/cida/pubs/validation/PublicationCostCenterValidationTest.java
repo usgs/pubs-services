@@ -4,29 +4,33 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 import javax.validation.Validator;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.dao.intfc.IMpDao;
 import gov.usgs.cida.pubs.dao.intfc.IMpPublicationDao;
+import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
 import gov.usgs.cida.pubs.domain.CostCenter;
+import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
 import gov.usgs.cida.pubs.validation.mp.unique.UniqueKeyValidatorForMpPublicationCostCenterTest;
 
-//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={LocalValidatorFactoryBean.class, MpPublicationCostCenter.class, CostCenter.class,
+			MpPublication.class, Publication.class})
 public class PublicationCostCenterValidationTest extends BaseValidatorTest {
 	@Autowired
 	public Validator validator;
@@ -36,12 +40,16 @@ public class PublicationCostCenterValidationTest extends BaseValidatorTest {
 	public static final String INVALID_COST_CENTER = new ValidatorResult("costCenter", NO_PARENT_MSG, SeverityLevel.FATAL, null).toString();
 	public static final String NOT_NULL_COST_CENTER = new ValidatorResult("costCenter", NOT_NULL_MSG, SeverityLevel.FATAL, null).toString();
 
-	@Mock
+	@MockBean(name="mpPublicationCostCenterDao")
 	protected IMpDao<MpPublicationCostCenter> pubCostCenterDao;
-	@Mock
+	@MockBean(name="mpPublicationDao")
 	protected IMpPublicationDao pubDao;
-	@Mock
+	@MockBean(name="publicationDao")
+	protected IPublicationDao publicationDao;
+	@MockBean(name="costCenterDao")
 	protected IDao<CostCenter> costCenterDao;
+	@MockBean(name="affiliationDao")
+	protected IDao<CostCenter> affiliationDao;
 
 	private MpPublication pub;
 	private CostCenter costCenter;
@@ -51,16 +59,16 @@ public class PublicationCostCenterValidationTest extends BaseValidatorTest {
 
 	@Before
 	@Override
+	@SuppressWarnings("unchecked")
 	public void setUp() throws Exception {
 		super.setUp();
 		pubCostCenter = new MpPublicationCostCenter();
-		pubCostCenter.setMpPublicationCostCenterDao(pubCostCenterDao);
 		costCenter = new CostCenter();
-		costCenter.setCostCenterDao(costCenterDao);
 		costCenter.setId(1);
 		pub = new MpPublication();
-		pub.setMpPublicationDao(pubDao);
 		pub.setId(1);
+
+		reset(pubCostCenterDao, pubDao, publicationDao, costCenterDao, affiliationDao);
 	}
 
 	@Test

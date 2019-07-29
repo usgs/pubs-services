@@ -18,7 +18,6 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import gov.usgs.cida.pubs.PubMap;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IIpdsProcess;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
@@ -71,20 +70,22 @@ public class IpdsProcess implements IIpdsProcess {
 		setErrors(0);
 		setContext(context);
 
-		List<PubMap> ipdsPubs = IpdsMessageLog.getDao().getFromIpds(logId);
+		List<Map<String, Object>> ipdsPubs = IpdsMessageLog.getDao().getFromIpds(logId);
 
-		for (PubMap ipdsPub : ipdsPubs) {
+		for (Map<String, Object> ipdsPub : ipdsPubs) {
 			processIpdsPublication(inProcessType, ipdsPub);
 		}
 
 		String counts = "Summary:\n\tTotal Entries: " + ipdsPubs.size() + "\n\tPublications Added: " + getAdditions() + "\n\tErrors Encountered: " + getErrors() + "\n\n";
 
 		getStringBuilder().insert(0, counts);
+		
+		getStringBuilder().append("Log: " + logId + "\n");
 
 		return getStringBuilder().toString();
 	}
 
-	protected void processIpdsPublication(final ProcessType inProcessType, final PubMap ipdsPub) {
+	protected void processIpdsPublication(final ProcessType inProcessType, final Map<String, Object> ipdsPub) {
 		getStringBuilder().append(ipdsPub.get(IpdsMessageLog.IPNUMBER) + ":");
 		TransactionDefinition txDef = new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
 		TransactionStatus txStatus = txnMgr.getTransaction(txDef);
@@ -202,7 +203,7 @@ public class IpdsProcess implements IIpdsProcess {
 		}
 	}
 
-	protected void processPublication(final ProcessType processType, final PubMap ipdsPub, final MpPublication newMpPub, final MpPublication existingMpPub) {
+	protected void processPublication(final ProcessType processType, final Map<String, Object> ipdsPub, final MpPublication newMpPub, final MpPublication existingMpPub) {
 		newMpPub.setIpdsReviewProcessState(processType.getIpdsValue());
 		//We only keep the prodID from the original MP record. The delete is to make sure we kill all child objects.
 		if (null != existingMpPub) {
@@ -258,7 +259,7 @@ public class IpdsProcess implements IIpdsProcess {
 		return contributors;
 	}
 
-	protected Collection<PublicationCostCenter<?>> getCostCenters(PubMap ipdsPub) {
+	protected Collection<PublicationCostCenter<?>> getCostCenters(Map<String, Object> ipdsPub) {
 		//get contributingOffice from web service
 		Collection<PublicationCostCenter<?>> costCenters = null;
 		try {

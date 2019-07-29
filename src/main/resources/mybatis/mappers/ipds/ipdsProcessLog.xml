@@ -11,18 +11,21 @@
     </resultMap>
 
     <sql id="baseSelect">
-        select ipds_process_log_id, uri, message, ipds_number
+        select ipds_process_log_id, uri, xmlserialize(content message as text) message, ipds_number
           from ipds_process_log
     </sql>
 
     <insert id="add" parameterType="IpdsProcessLog">
         <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
-            select ipds_process_log_seq.nextval id from dual
+            select nextval('ipds_process_log_seq')
         </selectKey>
-        {call xml_crutch.insert_ipds_process_log (#{id,jdbcType=NUMERIC,mode=IN},
-                                                  #{ipdsNumber,jdbcType=VARCHAR,mode=IN},
-                                                  #{uri,jdbcType=VARCHAR,mode=IN},
-                                                  #{message,jdbcType=CLOB,mode=IN})}
+        insert into ipds_process_log (ipds_process_log_id, ipds_number, uri, message, <include refid="base.auditCols"/>)
+            values (#{id,jdbcType=NUMERIC},
+                    #{ipdsNumber,jdbcType=VARCHAR},
+                    #{uri,jdbcType=VARCHAR},
+                    xmlparse(content #{message,jdbcType=CLOB}),
+                    <include refid="base.auditHosts"/>
+                   )
     </insert>
 
     <select id="getById" parameterType="Integer" resultMap="result">

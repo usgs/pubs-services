@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-	<publication publication_id="100" index_id="100" display_to_public_date="2015-12-31 08:10:15" publication_year="2015"	no_year="N"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="a" />
-	<publication publication_id="120" index_id="120" display_to_public_date="2015-06-01 08:10:15" publication_year="2015"	no_year="N"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="z" />
-	<publication publication_id="140" index_id="140" display_to_public_date="2014-01-15 08:10:15" publication_year="2015"	no_year="N"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="b" />
-	<publication publication_id="160" index_id="160" display_to_public_date="2015-12-31 08:10:15" publication_year="2010"	no_year="N"	insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="y" />
+    <publication publication_id="100" index_id="100" display_to_public_date="2015-12-31 08:10:15" publication_year="2015"    no_year="false"    insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="a" />
+    <publication publication_id="120" index_id="120" display_to_public_date="2015-06-01 08:10:15" publication_year="2015"    no_year="false"    insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="z" />
+    <publication publication_id="140" index_id="140" display_to_public_date="2014-01-15 08:10:15" publication_year="2015"    no_year="false"    insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="b" />
+    <publication publication_id="160" index_id="160" display_to_public_date="2015-12-31 08:10:15" publication_year="2010"    no_year="false"    insert_date="2014-12-31 08:08:08" update_date="2015-01-31 08:10:10" title="y" />
 </dataset>

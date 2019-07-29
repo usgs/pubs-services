@@ -4,34 +4,39 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.when;
 
 import org.apache.http.HttpHost;
 import org.apache.http.auth.NTCredentials;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
-import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.BaseTest;
+import gov.usgs.cida.pubs.ConfigurationService;
+import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
 
-public class IpdsWsRequesterTest extends BaseSpringTest {
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={TestSpringConfig.class})
+public class IpdsWsRequesterTest extends BaseTest {
 
-	@Autowired
-	protected String ipdsEndpoint;
+	protected static final String IPDS_HOST = "bad.usgs.gov";
 	@Autowired
 	protected NTCredentials credentials;
-	@Mock
+	@MockBean
+	protected ConfigurationService configurationService;
+	@MockBean
 	protected PubsEMailer pubsEMailer;
-
 	public IpdsWsRequester requester;
 
 	@Before
 	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
-
-		requester = new IpdsWsRequester(ipdsEndpoint, credentials, pubsEMailer);
+		requester = new IpdsWsRequester(configurationService, credentials, pubsEMailer);
+		when(configurationService.getIpdsEndpoint()).thenReturn(IPDS_HOST);
 	}
 
 //	@Test
@@ -88,7 +93,7 @@ public class IpdsWsRequesterTest extends BaseSpringTest {
 
 	@Test
 	public void getHttpHostTest() {
-		IpdsWsRequester fRequester = new IpdsWsRequester(null, null, null);
+		IpdsWsRequester fRequester = new IpdsWsRequester(new ConfigurationService(), null, null);
 		try {
 			fRequester.getHttpHost();
 			fail("Didn't fail without a host name.");
@@ -99,9 +104,9 @@ public class IpdsWsRequesterTest extends BaseSpringTest {
 
 		HttpHost host = requester.getHttpHost();
 		assertNotNull(host);
-		assertEquals(ipdsEndpoint, host.getHostName());
-		assertEquals(443, host.getPort());
-		assertEquals("https", host.getSchemeName());
+		assertEquals(IPDS_HOST, host.getHostName());
+		assertEquals(IpdsWsRequester.IPDS_PORT, host.getPort());
+		assertEquals(IpdsWsRequester.IPDS_PROTOCOL, host.getSchemeName());
 	}
 
 	//TODO Activate this Test?

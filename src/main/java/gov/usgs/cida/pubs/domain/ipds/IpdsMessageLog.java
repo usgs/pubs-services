@@ -22,30 +22,30 @@ public class IpdsMessageLog extends BaseDomain <IpdsMessageLog> {
 
 	private static IIpdsMessageLogDao ipdsMessageLogDao;
 
-	public static final String ABSTRACT = "ABSTRACT";
-	public static final String CITATION = "CITATION";
-	public static final String COOPERATORS = "COOPERATORS";
-	public static final String COSTCENTER = "COSTCENTER";
-	public static final String DIGITALOBJECTIDENTIFIER = "DIGITALOBJECTIDENTIFIER";
-	public static final String EDITIONNUMBER = "EDITIONNUMBER";
-	public static final String FINALTITLE = "FINALTITLE";
-	public static final String IPDS_INTERNAL_ID = "IPDS_INTERNAL_ID";
-	public static final String IPNUMBER = "IPNUMBER";
-	public static final String ISSUE = "ISSUE";
-	public static final String JOURNALTITLE = "JOURNALTITLE";
-	public static final String NONUSGSPUBLISHER = "NONUSGSPUBLISHER";
-	public static final String PAGERANGE = "PAGERANGE";
-	public static final String PHYSICALDESCRIPTION = "PHYSICALDESCRIPTION";
-	public static final String PRODUCTSUMMARY = "PRODUCTSUMMARY";
-	public static final String PRODUCTTYPEVALUE = "PRODUCTTYPEVALUE";
-	public static final String PUBLISHEDURL = "PUBLISHEDURL";
-	public static final String PUBLISHINGSERVICECENTER = "PUBLISHINGSERVICECENTER";
-	public static final String TASK = "TASK";
-	public static final String USGSSERIESLETTER = "USGSSERIESLETTER";
-	public static final String USGSSERIESNUMBER = "USGSSERIESNUMBER";
-	public static final String USGSSERIESTYPEVALUE = "USGSSERIESTYPEVALUE";
-	public static final String VOLUME = "VOLUME";
-	public static final String WORKINGTITLE = "WORKINGTITLE";
+	public static final String ABSTRACT = "abstract";
+	public static final String CITATION = "citation";
+	public static final String COOPERATORS = "cooperators";
+	public static final String COSTCENTER = "costcenter";
+	public static final String DIGITALOBJECTIDENTIFIER = "digitalobjectidentifier";
+	public static final String EDITIONNUMBER = "editionnumber";
+	public static final String FINALTITLE = "finaltitle";
+	public static final String IPDS_INTERNAL_ID = "ipds_internal_id";
+	public static final String IPNUMBER = "ipnumber";
+	public static final String ISSUE = "issue";
+	public static final String JOURNALTITLE = "journaltitle";
+	public static final String NONUSGSPUBLISHER = "nonusgspublisher";
+	public static final String PAGERANGE = "pagerange";
+	public static final String PHYSICALDESCRIPTION = "physicaldescription";
+	public static final String PRODUCTSUMMARY = "productsummary";
+	public static final String PRODUCTTYPEVALUE = "producttypevalue";
+	public static final String PUBLISHEDURL = "publishedurl";
+	public static final String PUBLISHINGSERVICECENTER = "publishingservicecenter";
+	public static final String TASK = "task";
+	public static final String USGSSERIESLETTER = "usgsseriesletter";
+	public static final String USGSSERIESNUMBER = "usgsseriesnumber";
+	public static final String USGSSERIESTYPEVALUE = "usgsseriestypevalue";
+	public static final String VOLUME = "volume";
+	public static final String WORKINGTITLE = "workingtitle";
 
 	public static final Collection<String> IPDS_LOG_PROPERTIES = new ArrayList<>(
 			Arrays.asList(ABSTRACT,

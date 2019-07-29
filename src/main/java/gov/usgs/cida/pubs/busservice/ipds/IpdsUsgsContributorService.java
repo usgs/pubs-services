@@ -121,7 +121,7 @@ public class IpdsUsgsContributorService {
 
 	protected CostCenter getCostCenter(final Element authorsItem) throws SAXException, IOException {
 		CostCenter costCenter = null;
-		String costCenterId = parser.getFirstNodeText(authorsItem, Schema.COST_CENTER);
+		Integer costCenterId = parser.getFirstNodeInteger(authorsItem, Schema.COST_CENTER);
 		if (null != costCenterId) {
 			costCenter = ipdsCostCenterService.getCostCenter(costCenterId);
 			if (null == costCenter) {

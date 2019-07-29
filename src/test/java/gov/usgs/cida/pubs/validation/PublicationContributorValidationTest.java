@@ -10,25 +10,30 @@ import javax.validation.Validator;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.dao.intfc.IMpDao;
 import gov.usgs.cida.pubs.dao.intfc.IMpPublicationDao;
+import gov.usgs.cida.pubs.dao.intfc.IPersonContributorDao;
+import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
+import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.validation.mp.unique.UniqueKeyValidatorForMpPublicationContributorTest;
 
-//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={LocalValidatorFactoryBean.class, MpPublicationContributor.class,
+			OutsideContributor.class, MpPublication.class, ContributorType.class,
+			PersonContributor.class, Contributor.class})
 public class PublicationContributorValidationTest extends BaseValidatorTest {
 	@Autowired
 	public Validator validator;
@@ -39,14 +44,18 @@ public class PublicationContributorValidationTest extends BaseValidatorTest {
 	public static final String INVALID_CONTRIBUTOR_TYPE = new ValidatorResult("contributorType", NO_PARENT_MSG, SeverityLevel.FATAL, null).toString();
 	public static final String NOT_NULL_CONTRIBUTOR = new ValidatorResult("contributor", NOT_NULL_MSG, SeverityLevel.FATAL, null).toString();
 
-	@Mock
+	@MockBean(name="contributorDao")
 	protected IDao<Contributor<?>> contributorDao;
-	@Mock
+	@MockBean(name="contributorTypeDao")
 	protected IDao<ContributorType> contributorTypeDao;
-	@Mock
+	@MockBean(name="mpPublicationContributorDao")
 	protected IMpDao<MpPublicationContributor> pubContributorDao;
-	@Mock
+	@MockBean(name="mpPublicationDao")
 	protected IMpPublicationDao pubDao;
+	@MockBean(name="personContributorDao")
+	protected IPersonContributorDao personContributorDao;
+	@MockBean(name="publicationDao")
+	protected IPublicationDao inPublicationDao;
 
 	//Using OutsideContributor  because it works easier (all validations are the same via PersonContributor...)
 	private OutsideContributor contributor;
@@ -61,15 +70,11 @@ public class PublicationContributorValidationTest extends BaseValidatorTest {
 	public void setUp() throws Exception {
 		super.setUp();
 		pubContributor = new MpPublicationContributor();
-		pubContributor.setMpPublicationContributorDao(pubContributorDao);
 		contributor = new OutsideContributor();
-		contributor.setContributorDao(contributorDao);
 		contributor.setId(1);
 		contributorType = new ContributorType();
-		contributorType.setContributorTypeDao(contributorTypeDao);
 		contributorType.setId(1);
 		pub = new MpPublication();
-		pub.setMpPublicationDao(pubDao);
 		pub.setId(1);
 	}
 

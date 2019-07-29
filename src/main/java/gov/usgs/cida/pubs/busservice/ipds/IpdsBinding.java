@@ -14,13 +14,13 @@ import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import gov.usgs.cida.pubs.PubMap;
 import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CostCenter;
@@ -115,7 +115,7 @@ public class IpdsBinding {
 		return contributors;
 	}
 
-	public MpPublication bindPublication(PubMap inPub, String context) {
+	public MpPublication bindPublication(Map<String, Object> inPub, String context) {
 		if (null != inPub && !inPub.isEmpty()) {
 			MpPublication pub = new MpPublication();
 			//Not from IPDS - pub.setId()
@@ -226,7 +226,7 @@ public class IpdsBinding {
 		return null;
 	}
 
-	public Collection<PublicationLink<?>> bindPublishedURL(final PubMap inPub) {
+	public Collection<PublicationLink<?>> bindPublishedURL(final Map<String, Object> inPub) {
 		Collection<PublicationLink<?>> rtn = null;
 		//We pull the URL from the structure "URL, DisplayText"
 		if (null != inPub
@@ -244,8 +244,8 @@ public class IpdsBinding {
 		return rtn;
 	}
 	
-	public CostCenter getOrCreateCostCenter(final PubMap inPub) throws SAXException, IOException {
-		String ipdsId = getStringValue(inPub, IpdsMessageLog.COSTCENTER);
+	public CostCenter getOrCreateCostCenter(final Map<String, Object> inPub) throws SAXException, IOException {
+		Integer ipdsId = getIntegerValue(inPub, IpdsMessageLog.COSTCENTER);
 		CostCenter costCenter = null;
 		if (null != ipdsId) {
 			costCenter = ipdsCostCenterService.getCostCenter(ipdsId);
@@ -256,7 +256,7 @@ public class IpdsBinding {
 		return costCenter;
 	}
 
-	protected PublicationSeries getSeriesTitle(PublicationSubtype pubSubtype, PubMap inPub) {
+	protected PublicationSeries getSeriesTitle(PublicationSubtype pubSubtype, Map<String, Object> inPub) {
 		String usgsSeriesValue = getStringValue(inPub, IpdsMessageLog.USGSSERIESTYPEVALUE);
 		return getSeriesTitle(pubSubtype, usgsSeriesValue);
 	}
@@ -276,11 +276,19 @@ public class IpdsBinding {
 		return null;
 	}
 
-	protected String getStringValue(PubMap inPub, String key) {
+	protected String getStringValue(Map<String, Object> inPub, String key) {
 		if (null != inPub && null != inPub.get(key) && StringUtils.isNotBlank(inPub.get(key).toString())) {
 			return inPub.get(key).toString().trim();
 		} else {
 			return null;
 		}
+	}
+
+	protected Integer getIntegerValue(Map<String, Object> inPub, String key) {
+		Integer rtn = NumberUtils.toInt(getStringValue(inPub, key));
+		if (rtn < 1) {
+			rtn = null;
+		}
+		return rtn;
 	}
 }

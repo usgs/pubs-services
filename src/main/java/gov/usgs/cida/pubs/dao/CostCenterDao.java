@@ -1,8 +1,5 @@
 package gov.usgs.cida.pubs.dao;
 
-import gov.usgs.cida.pubs.aop.ISetDbContext;
-import gov.usgs.cida.pubs.domain.CostCenter;
-
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +7,8 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import gov.usgs.cida.pubs.domain.CostCenter;
 
 @Repository
 public class CostCenterDao extends AffiliationDao<CostCenter> {
@@ -26,11 +25,9 @@ public class CostCenterDao extends AffiliationDao<CostCenter> {
 	 * @see gov.usgs.cida.pubs.dao.BaseDao#add(java.lang.Object)
 	 */
 	@Transactional
-	@ISetDbContext
 	@Override
 	public Integer add(CostCenter domainObject) {
-		getSqlSession().insert(NS + ADD + COST_CENTER, domainObject);
-		return domainObject.getId();
+		return insert(NS + ADD + COST_CENTER, domainObject);
 	}
 
 	/** 
@@ -38,7 +35,6 @@ public class CostCenterDao extends AffiliationDao<CostCenter> {
 	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
 	 */
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	@Override
 	public CostCenter getById(Integer domainID) {
 		return getSqlSession().selectOne(NS + GET_BY_ID + COST_CENTER, domainID);
@@ -49,7 +45,6 @@ public class CostCenterDao extends AffiliationDao<CostCenter> {
 	 * @see gov.usgs.cida.pubs.dao.BaseDao#getByMap(Map)
 	 */
 	@Transactional(readOnly = true)
-	@ISetDbContext
 	@Override
 	public List<CostCenter> getByMap(Map<String, Object> filters) {
 		return getSqlSession().selectList(NS + GET_BY_MAP + COST_CENTER, filters);
@@ -59,9 +54,8 @@ public class CostCenterDao extends AffiliationDao<CostCenter> {
 	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#update(java.lang.Object)
 	 */
 	@Transactional
-	@ISetDbContext
 	@Override
 	public void update(CostCenter domainObject) {
-		getSqlSession().insert(NS + UPDATE + COST_CENTER, domainObject);
+		update(NS + UPDATE + COST_CENTER, domainObject);
 	}
 }

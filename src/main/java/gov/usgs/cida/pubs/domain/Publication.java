@@ -5,8 +5,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -30,8 +32,6 @@ import gov.usgs.cida.pubs.validation.constraint.CrossProperty;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 import gov.usgs.cida.pubs.validation.constraint.PublishChecks;
 import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
-import java.util.Comparator;
-import java.util.List;
 
 @Component
 @UniqueKey(message = "{publication.indexid.duplicate}")
@@ -42,6 +42,13 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	private static final long serialVersionUID = -9013357854464855631L;
 
 	private static IPublicationDao publicationDao;
+
+	public Publication() {}
+
+	public Publication(Boolean published, Boolean noUsgsAuthors) {
+		this.published = published;
+		this.noUsgsAuthors = noUsgsAuthors;
+	}
 
 	@JsonProperty("indexId")
 	@JsonView(View.PW.class)
@@ -98,7 +105,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	@JsonView(View.PW.class)
 	@Length(min=1, max=2000)
 	private String displayTitle;
-        
+
 	@JsonProperty("title")
 	@JsonView(View.PW.class)
 	@NotNull
@@ -432,14 +439,14 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	public void setSubchapterNumber(final String inSubchapterNumber) {
 		subchapterNumber = inSubchapterNumber;
 	}
-        
-        public String getDisplayTitle() {
-                return displayTitle;
-        }
-        
-        public void setDisplayTitle(final String inDisplayTitle) {
-                displayTitle = inDisplayTitle;
-        }
+
+	public String getDisplayTitle() {
+		return displayTitle;
+	}
+
+	public void setDisplayTitle(final String inDisplayTitle) {
+		displayTitle = inDisplayTitle;
+	}
 
 	public String getTitle() {
 		return title;

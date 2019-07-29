@@ -20,7 +20,7 @@
     </sql>
 
     <select id="getNewProdId" resultType="Integer">
-        select publication_seq.nextval id from dual
+        select nextval('publication_seq')
     </select>
 
     <sql id="singleSearchTermFilter">
@@ -74,7 +74,7 @@
                                    join contributor
                                      on mp_pub_contributor.contributor_id = contributor.contributor_id
                              where pub.publication_id = mp_pub_contributor.publication_id and
-                                   contains(text, #{contributor}) > 0
+                                   to_tsvector(text) @@ to_tsquery(#{contributor})
                    )
             </if>
 
@@ -97,11 +97,11 @@
              values (<include refid="hosts"/>)
     </insert>
 
-    <insert id="copyMpFromPw" parameterType="Integer">
+    <insert id="copyMpFromPw">
         insert into mp_publication (<include refid="publication.cols"/>, published)
-            (select <include refid="publication.cols"/>, 'Y'
-               from publication
-              where publication_id = #{value,jdbcType=NUMERIC})
+            select <include refid="publication.cols"/>, 'Y'
+              from publication
+             where publication_id = #{id,jdbcType=INTEGER}::int
     </insert>
 
     <sql id="baseSelect">
@@ -114,7 +114,7 @@
 
     <select id="getById" parameterType="Integer" resultMap="result">
         <include refid="baseSelect"/>
-           where publication_id = #{value,jdbcType=VARCHAR}
+           where publication_id = #{value,jdbcType=INTEGER}::int
     </select>
 
     <select id="getByIndexId" parameterType="String" resultMap="result">
@@ -141,11 +141,11 @@
            where publication_id = #{id,jdbcType=NUMERIC}
     </update>
 
-    <update id="lockPub" parameterType="Integer">
-    	update mp_publication
-           set lock_username = <include refid="base.clientId"/>,
+    <update id="lockPub">
+        update mp_publication
+           set lock_username = #{lockUsername,jdbcType=VARCHAR},
                <include refid="base.auditSets"/>
-         where publication_id = #{value,jdbcType=NUMERIC}
+         where publication_id = #{publicationId,jdbcType=NUMERIC}
     </update>
 
     <sql id="releaseLocks">
@@ -154,114 +154,95 @@
                <include refid="base.auditSets"/>
     </sql>
 
-    <update id="releaseLocksUser" parameterType="String">
+    <update id="releaseLocksUser">
         <include refid="releaseLocks"/>
-           where lock_username = #{value,jdbcType=VARCHAR}
+           where lock_username = #{lockUsername,jdbcType=VARCHAR}
     </update>
 
-    <update id="releaseLocksPub" parameterType="Integer">
+    <update id="releaseLocksPub">
         <include refid="releaseLocks"/>
-           where publication_id = #{value,jdbcType=NUMERIC}
+           where publication_id = #{id,jdbcType=INTEGER}::int
     </update>
 
-    <update id="publish" parameterType="Integer">
-        merge into publication pw
-            using (select <include refid="publication.cols"/>
-                     from mp_publication
-                    where publication_id = #{value,jdbcType=NUMERIC}) mp
-               on (mp.publication_id = pw.publication_id)
-             when matched then update
-                  set pw.index_id                     = mp.index_id,
-                      pw.display_to_public_date       = mp.display_to_public_date,
-                      pw.publication_year             = mp.publication_year,
-                      pw.no_year                      = mp.no_year,
-                      pw.publication_type_id          = mp.publication_type_id,
-                      pw.publication_subtype_id       = mp.publication_subtype_id,
-                      pw.publication_series_id        = mp.publication_series_id,
-                      pw.series_number                = mp.series_number,
-                      pw.subseries_title              = mp.subseries_title,
-                      pw.chapter                      = mp.chapter,
-                      pw.subchapter                   = mp.subchapter,
-                      pw.display_title                = mp.display_title,
-                      pw.title                        = mp.title,
-                      pw.larger_work_type_id          = mp.larger_work_type_id,
-                      pw.larger_work_title            = mp.larger_work_title,
-                      pw.larger_work_subtype_id       = mp.larger_work_subtype_id,
-                      pw.conference_title             = mp.conference_title,
-                      pw.conference_date              = mp.conference_date,
-                      pw.conference_location          = mp.conference_location,
-                      pw.language                     = mp.language,
-                      pw.publisher                    = mp.publisher,
-                      pw.publisher_location           = mp.publisher_location,
-                      pw.doi_name                     = mp.doi_name,
-                      pw.issn                         = mp.issn,
-                      pw.isbn                         = mp.isbn,
-                      pw.collaboration                = mp.collaboration,
-                      pw.usgs_citation                = mp.usgs_citation,
-                      pw.product_description          = mp.product_description,
-                      pw.start_page                   = mp.start_page,
-                      pw.end_page                     = mp.end_page,
-                      pw.number_of_pages              = mp.number_of_pages,
-                      pw.online_only                  = mp.online_only,
-                      pw.additional_online_files      = mp.additional_online_files,
-                      pw.temporal_start               = mp.temporal_start,
-                      pw.temporal_end                 = mp.temporal_end,
-                      pw.ipds_id                      = mp.ipds_id,
-                      pw.ipds_review_process_state    = mp.ipds_review_process_state,
-                      pw.ipds_internal_id             = mp.ipds_internal_id,
-                      pw.scale                        = mp.scale,
-                      pw.projection                   = mp.projection,
-                      pw.datum                        = mp.datum,
-                      pw.country                      = mp.country,
-                      pw.state                        = mp.state,
-                      pw.county                       = mp.county,
-                      pw.city                         = mp.city,
-                      pw.other_geospatial             = mp.other_geospatial,
-                      pw.volume                       = mp.volume,
-                      pw.issue                        = mp.issue,
-                      pw.edition                      = mp.edition,
-                      pw.public_comments              = mp.public_comments,
-                      pw.contact_info                 = mp.contact_info,
-                      pw.table_of_contents            = mp.table_of_contents,
-                      pw.publishing_service_center_id = mp.publishing_service_center_id,
-                      pw.published_date               = mp.published_date,
-                      pw.is_part_of_id                = mp.is_part_of_id,
-                      pw.superseded_by_id             = mp.superseded_by_id,
-                      pw.revised_date                 = mp.revised_date,
-                      pw.insert_date                  = mp.insert_date,
-                      pw.insert_username              = mp.insert_username,
-                      pw.update_date                  = sysdate,
-                      pw.update_username              = audit_trail_util.get_username,
-                      pw.abstract                     = mp.abstract,
-                      pw.notes                        = mp.notes,
-                      pw.geographic_extents           = mp.geographic_extents,
-                      pw.no_usgs_authors              = mp.no_usgs_authors,
-                      pw.ipds_context                 = mp.ipds_context
-             when not matched then insert (<include refid="publication.cols"/>)
-                  values (mp.publication_id,            mp.index_id,                    mp.display_to_public_date,          mp.publication_year,
-                          mp.no_year,                   mp.publication_type_id,         mp.publication_subtype_id,          mp.publication_series_id,
-                          mp.series_number,             mp.subseries_title,             mp.chapter,                         mp.subchapter,
-                          mp.display_title,
-                          mp.title,                     mp.larger_work_type_id,         mp.larger_work_title,               mp.larger_work_subtype_id,
-                          mp.conference_title,          mp.conference_date,             mp.conference_location,             mp.language,
-                          mp.publisher,                 mp.publisher_location,          mp.doi_name,                        mp.issn,
-                          mp.isbn,                      mp.collaboration,               mp.usgs_citation,                   mp.product_description,
-                          mp.start_page,                mp.end_page,                    mp.number_of_pages,                 mp.online_only,
-                          mp.additional_online_files,   mp.temporal_start,              mp.temporal_end,
-                          mp.ipds_id,                   mp.ipds_review_process_state,   mp.ipds_internal_id,                mp.scale,
-                          mp.projection,                mp.datum,                       mp.country,                         mp.state,
-                          mp.county,                    mp.city,                        mp.other_geospatial,
-                          mp.volume,                    mp.issue,                       mp.edition,                         mp.public_comments,
-                          mp.contact_info,              mp.table_of_contents,           mp.publishing_service_center_id,    mp.published_date,
-                          mp.is_part_of_id,             mp.superseded_by_id,            mp.revised_date,
-                          mp.insert_date,               mp.insert_username,             sysdate,                            audit_trail_util.get_username,
-                          mp.abstract,                  mp.notes,                       mp.geographic_extents,              mp.no_usgs_authors,
-                          mp.ipds_context)
+    <update id="publish">
+        insert into publication (<include refid="publication.cols"/>)
+            select <include refid="publication.cols"/>
+                      from mp_publication
+                     where publication_id = #{id,jdbcType=NUMERIC}
+            on conflict (publication_id)
+               do update
+                  set index_id                     = excluded.index_id,
+                      display_to_public_date       = excluded.display_to_public_date,
+                      publication_year             = excluded.publication_year,
+                      no_year                      = excluded.no_year,
+                      publication_type_id          = excluded.publication_type_id,
+                      publication_subtype_id       = excluded.publication_subtype_id,
+                      publication_series_id        = excluded.publication_series_id,
+                      series_number                = excluded.series_number,
+                      subseries_title              = excluded.subseries_title,
+                      chapter                      = excluded.chapter,
+                      subchapter                   = excluded.subchapter,
+                      display_title                = excluded.display_title,
+                      title                        = excluded.title,
+                      larger_work_type_id          = excluded.larger_work_type_id,
+                      larger_work_title            = excluded.larger_work_title,
+                      larger_work_subtype_id       = excluded.larger_work_subtype_id,
+                      conference_title             = excluded.conference_title,
+                      conference_date              = excluded.conference_date,
+                      conference_location          = excluded.conference_location,
+                      language                     = excluded.language,
+                      publisher                    = excluded.publisher,
+                      publisher_location           = excluded.publisher_location,
+                      doi_name                     = excluded.doi_name,
+                      issn                         = excluded.issn,
+                      isbn                         = excluded.isbn,
+                      collaboration                = excluded.collaboration,
+                      usgs_citation                = excluded.usgs_citation,
+                      product_description          = excluded.product_description,
+                      start_page                   = excluded.start_page,
+                      end_page                     = excluded.end_page,
+                      number_of_pages              = excluded.number_of_pages,
+                      online_only                  = excluded.online_only,
+                      additional_online_files      = excluded.additional_online_files,
+                      temporal_start               = excluded.temporal_start,
+                      temporal_end                 = excluded.temporal_end,
+                      ipds_id                      = excluded.ipds_id,
+                      ipds_review_process_state    = excluded.ipds_review_process_state,
+                      ipds_internal_id             = excluded.ipds_internal_id,
+                      scale                        = excluded.scale,
+                      projection                   = excluded.projection,
+                      datum                        = excluded.datum,
+                      country                      = excluded.country,
+                      state                        = excluded.state,
+                      county                       = excluded.county,
+                      city                         = excluded.city,
+                      other_geospatial             = excluded.other_geospatial,
+                      volume                       = excluded.volume,
+                      issue                        = excluded.issue,
+                      edition                      = excluded.edition,
+                      public_comments              = excluded.public_comments,
+                      contact_info                 = excluded.contact_info,
+                      table_of_contents            = excluded.table_of_contents,
+                      publishing_service_center_id = excluded.publishing_service_center_id,
+                      published_date               = excluded.published_date,
+                      is_part_of_id                = excluded.is_part_of_id,
+                      superseded_by_id             = excluded.superseded_by_id,
+                      revised_date                 = excluded.revised_date,
+                      insert_date                  = excluded.insert_date,
+                      insert_username              = excluded.insert_username,
+                      update_date                  = now() at time zone 'UTC',
+                      update_username              = #{updateUsername,jdbcType=VARCHAR},
+                      abstract                     = excluded.abstract,
+                      notes                        = excluded.notes,
+                      geographic_extents           = excluded.geographic_extents,
+                      no_usgs_authors              = excluded.no_usgs_authors,
+                      ipds_context                 = excluded.ipds_context,
+                      geom                         = excluded.geom
     </update>
 
-    <delete id="delete" parameterType="Integer">
-        delete from mp_publication
-         where publication_id = #{value,jdbcType=NUMERIC}
+    <delete id="delete">
+        delete from mp_publication <include refid="base.deleteAuditHack"/>
+         where publication_id = #{id,jdbcType=INTEGER}::int
     </delete>
 
 </mapper>

@@ -8,17 +8,16 @@ import java.util.List;
 
 import javax.validation.metadata.ConstraintDescriptor;
 
+import org.hibernate.validator.internal.engine.DefaultClockProvider;
 import org.hibernate.validator.internal.engine.constraintvalidation.ConstraintValidatorContextImpl;
 import org.hibernate.validator.internal.engine.path.PathImpl;
-import org.hibernate.validator.internal.engine.DefaultClockProvider;
 import org.junit.Before;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
-import gov.usgs.cida.pubs.BaseSpringTest;
+import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.SeverityLevel;
 
-public abstract class BaseValidatorTest extends BaseSpringTest {
+public abstract class BaseValidatorTest extends BaseTest {
 
 	public static final String NOT_NULL_MSG = "must not be null";
 	public static final String BAD_URL_MSG = "must be a valid URL";
@@ -37,13 +36,12 @@ public abstract class BaseValidatorTest extends BaseSpringTest {
 	protected List<String> methodParameterNames = new ArrayList<>();
 	protected PathImpl propertyPath = PathImpl.createPathFromString("abc");
 
-	@Mock
+	@MockBean
 	protected ConstraintDescriptor<?> constraintDescriptor;
 
 	@Before
 	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
-		context = new ConstraintValidatorContextImpl(methodParameterNames, DefaultClockProvider.INSTANCE, propertyPath, constraintDescriptor);
+		context = new ConstraintValidatorContextImpl(methodParameterNames, DefaultClockProvider.INSTANCE, propertyPath, constraintDescriptor, null);
 	}
 
 	public void assertValidationResults(List<ValidatorResult> actual, String... expected) {

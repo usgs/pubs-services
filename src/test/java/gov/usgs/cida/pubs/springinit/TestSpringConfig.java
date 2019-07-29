@@ -1,155 +1,22 @@
 package gov.usgs.cida.pubs.springinit;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
-import org.dbunit.ext.oracle.OracleDataTypeFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.http.auth.NTCredentials;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.env.Environment;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.util.FileCopyUtils;
 
-import com.github.springtestdbunit.bean.DatabaseConfigBean;
-import com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean;
+import gov.usgs.cida.pubs.dao.ContributorTypeDaoIT;
 
-import oracle.jdbc.pool.OracleDataSource;
-
-@PropertySource(value = "classpath:test.properties")
+@Configuration
 public class TestSpringConfig {
 
-	@Autowired
-	private Environment env;
-
 	@Bean
-	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-		return new PropertySourcesPlaceholderConfigurer();
-	}
-
-	@Bean
-	public OracleDataSource dataSource() throws SQLException {
-		OracleDataSource ds = new OracleDataSource();
-		ds.setURL(env.getProperty("jdbc.mypubs.url"));
-		ds.setUser(env.getProperty("jdbc.mypubs.username"));
-		ds.setPassword(env.getProperty("jdbc.mypubs.password"));
-		return ds;
-	}
-
-	//Beans to support DBunit for unit testing with Oracle.
-	@Bean
-	public DatabaseConfigBean dbUnitDatabaseConfig() {
-		DatabaseConfigBean dbUnitDbConfig = new DatabaseConfigBean();
-		dbUnitDbConfig.setDatatypeFactory(new OracleDataTypeFactory());
-		dbUnitDbConfig.setSkipOracleRecyclebinTables(true);
-		dbUnitDbConfig.setQualifiedTableNames(false);
-		return dbUnitDbConfig;
-	}
-
-	@Bean
-	public DatabaseDataSourceConnectionFactoryBean dbUnitDatabaseConnection() throws SQLException {
-		DatabaseDataSourceConnectionFactoryBean dbUnitDatabaseConnection = new DatabaseDataSourceConnectionFactoryBean();
-		dbUnitDatabaseConnection.setDatabaseConfig(dbUnitDatabaseConfig());
-		dbUnitDatabaseConnection.setDataSource(dataSource());
-		dbUnitDatabaseConnection.setSchema("PUBS");
-		return dbUnitDatabaseConnection;
-	}
-
-	@Bean
-	public String ipdsPubsWsPwd() {
-		return env.getProperty("pubs.ipdsPubsWsPwd");
-	}
-
-	@Bean
-	public String ipdsPubsWsUser() {
-		return env.getProperty("pubs.ipdsPubsWsUser");
-	}
-
-	@Bean
-	public String brokerURL() {
-		return "vm://localhost?broker.persistent=false";
-	}
-
-	@Bean
-	public String queueName() {
-		return "dummy";
-	}
-
-	@Bean
-	public String costCenterQueueName() {
-		return "dummy";
-	}
-
-	@Bean
-	public String ipdsEndpoint() {
-		return "bad.usgs.gov";//"ipdsv2test.usgs.gov";
-	}
-
-	@Bean
-	public String crossRefProtocol() {
-		return "https";
-	}
-
-	@Bean
-	public String crossRefHost() {
-		return "test.crossref.org";
-	}
-
-	@Bean
-	public String crossRefUrl() {
-		return "/servlet/deposit";
-	}
-
-	@Bean
-	public Integer crossRefPort() {
-		return 443;
-	}
-
-	@Bean
-	public String crossRefUser() {
-		return env.getProperty("crossref.username");
-	}
-
-	@Bean
-	public String crossRefPwd() {
-		return env.getProperty("crossref.password");
-	}
-
-	@Bean
-	public String crossRefSchemaUrl() {
-		return "http://www.crossref.org/schema/deposit/crossref4.4.0.xsd";
-	}
-	
-	@Bean
-	public String displayHost() {
-		return "localhost";
-	}
-	
-	@Bean
-	public String pubsEmailList() {
-		return env.getProperty("pubs.emailList");
-	}
-
-	@Bean
-	public String mailHost() {
-		return "gsvaresh01.er.usgs.gov";
-	}
-
-	@Bean
-	public Integer lockTimeoutHours() {
-		return 3;
-	}
-
-	@Bean
-	public String crossRefDepositorEmail() {
-		return "drsteini@usgs.gov";
-	}
-
-	@Bean
-	public String warehouseEndpoint() {
-		return "http://pubs.er.usgs.gov";
+	public NTCredentials nTCredentials() {
+		return new NTCredentials("test", "test", "", "GS");
 	}
 
 	@Value("classpath:testResult/getMpPub1.json")
@@ -256,20 +123,28 @@ public class TestSpringConfig {
 	public String testUnNumberedSeriesXml() throws IOException {
 		return new String(FileCopyUtils.copyToByteArray(testUnNumberedSeries.getInputStream()));
 	}
-	
+
 	@Value("classpath:testResult/testOneUnNumberedSeriesPub.xml")
 	private Resource testOneUnNumberedSeries;
 	@Bean
 	public String testOneUnNumberedSeriesPubXml() throws IOException{
 		return new String(FileCopyUtils.copyToByteArray(testOneUnNumberedSeries.getInputStream()));
 	}
-	
+
 	@Value("classpath:testResult/testOneNumberedSeriesPub.xml")
 	private Resource testOneNumberedSeries;
 	@Bean
 	public String testOneNumberedSeriesPubXml() throws IOException{
 		return new String(FileCopyUtils.copyToByteArray(testOneNumberedSeries.getInputStream()));
 	}
-	
 
+	@Bean
+	public String authorKey() {
+		return ContributorTypeDaoIT.AUTHOR_KEY;
+	}
+
+	@Bean
+	public String editorKey() {
+		return ContributorTypeDaoIT.EDITOR_KEY;
+	}
 }

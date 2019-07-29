@@ -3,10 +3,14 @@
 
 <mapper namespace="crossRefLog">
 
-	<insert id="add" parameterType="CrossRefLog">
-		{call xml_crutch.insert_cross_ref_log (#{batchId,jdbcType=VARCHAR,mode=IN},
-	                                           #{prodId,jdbcType=VARCHAR,mode=IN},
-		                                       #{crossrefXml,jdbcType=CLOB,mode=IN})}
-	</insert>
-	
+    <insert id="add" parameterType="CrossRefLog">
+        insert into cross_ref_log (sent_timestamp, batch_id, prod_id, cross_ref_xml, <include refid="base.auditCols"/>)
+            values (timezone('UTC', now()),
+                    #{batchId,jdbcType=VARCHAR},
+                    #{prodId,jdbcType=VARCHAR},
+                    xmlparse(content #{crossrefXml,jdbcType=CLOB}),
+                    <include refid="base.auditHosts"/>
+                   )
+    </insert>
+
 </mapper>

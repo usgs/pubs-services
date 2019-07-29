@@ -1,59 +1,33 @@
 package gov.usgs.cida.pubs.springinit;
 
-import java.io.IOException;
 import java.util.List;
 
-import org.apache.http.auth.NTCredentials;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.Import;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import freemarker.cache.ClassTemplateLoader;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateExceptionHandler;
 import gov.usgs.cida.pubs.PubsConstants;
 import gov.usgs.cida.pubs.utility.CustomStringToArrayConverter;
 import gov.usgs.cida.pubs.utility.CustomStringToStringConverter;
 import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
 
 @Configuration
-@ComponentScan(basePackages={
-	"gov.usgs.cida.pubs.webservice",
-	"gov.usgs.cida.pubs.utility",
-	"gov.usgs.cida.pubs.dao",
-	"gov.usgs.cida.pubs.jms",
-	"gov.usgs.cida.pubs.domain",
-	"gov.usgs.cida.pubs.aop",
-	"gov.usgs.cida.pubs.busservice",
-	"gov.usgs.cida.pubs.transform",
-	"gov.usgs.cida.pubs.validation"
-})
-@EnableWebMvc
-@EnableTransactionManagement
-@EnableAspectJAutoProxy
-@Import({BusServiceConfig.class, MybatisConfig.class})
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SpringConfig implements WebMvcConfigurer {
 
 	@Autowired
@@ -64,14 +38,6 @@ public class SpringConfig implements WebMvcConfigurer {
 
 	@Autowired
 	CustomStringToStringConverter customStringToStringConverter;
-
-	@Autowired
-	@Qualifier("ipdsPubsWsUser")
-	String ipdsPubsWsUser;
-
-	@Autowired
-	@Qualifier("ipdsPubsWsPwd")
-	String ipdsPubsWsPwd;
 
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
@@ -120,11 +86,6 @@ public class SpringConfig implements WebMvcConfigurer {
 	}
 
 	@Bean
-	public NTCredentials nTCredentials() {
-		return new NTCredentials(ipdsPubsWsUser, ipdsPubsWsPwd, "", "GS");
-	}
-
-	@Bean
 	public ResourceBundleMessageInterpolator messageInterpolator() {
 		return new ResourceBundleMessageInterpolator();
 	}
@@ -136,42 +97,4 @@ public class SpringConfig implements WebMvcConfigurer {
 		return validator;
 	}
 
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("swagger-ui.html")
-			.addResourceLocations("classpath:/META-INF/resources/");
-
-		registry.addResourceHandler("webjars/**")
-			.addResourceLocations("classpath:/META-INF/resources/webjars/");
-	}
-
-	
-	@Bean
-	public FreeMarkerConfigurationFactory freeMarkerConfigurationFactory() {
-		FreeMarkerConfigurationFactory factory = new FreeMarkerConfigurationFactory();
-		factory.setPreferFileSystemAccess(false);
-		return factory;
-	}
-	
-	@Bean
-	public freemarker.template.Configuration freeMarkerConfiguration() {
-		freemarker.template.Configuration templateConfig;
-		try {
-			templateConfig = freeMarkerConfigurationFactory().createConfiguration();
-			templateConfig.setTemplateLoader(
-				new ClassTemplateLoader(this.getClass().getClassLoader(), "templates")
-			);
-			//we will choose whether TemplateExceptions should halt the program
-			templateConfig.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-			
-			//Associate ".ftlx" file extensions with XML auto-escaping,
-			//and ".ftlh" extensions with HTML auto-escaping
-			templateConfig.setRecognizeStandardFileExtensions(true);
-			//we will choose whether TemplateExceptions should be logged
-			templateConfig.setLogTemplateExceptions(false);
-		} catch (IOException | TemplateException ex) {
-			throw new RuntimeException("could not create freemarker template configuration", ex);
-		}
-		return templateConfig;
-	}
 }

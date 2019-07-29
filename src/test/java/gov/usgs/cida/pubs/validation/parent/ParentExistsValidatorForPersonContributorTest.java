@@ -3,8 +3,19 @@ package gov.usgs.cida.pubs.validation.parent;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
+
 import gov.usgs.cida.pubs.dao.CostCenterDao;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.CostCenter;
@@ -12,18 +23,8 @@ import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
-
-//The Dao mocking works because the getDao() methods are all static and JAVA/Spring don't redo them 
-//for each reference. This does mean that we need to let Spring know that the context is now dirty...
-@DirtiesContext(classMode=ClassMode.AFTER_CLASS)
+@SpringBootTest(webEnvironment=WebEnvironment.NONE,
+	classes={Affiliation.class, CostCenter.class})
 public class ParentExistsValidatorForPersonContributorTest extends BaseValidatorTest {
 
 	protected ParentExistsValidatorForPersonContributor validator;
@@ -31,8 +32,10 @@ public class ParentExistsValidatorForPersonContributorTest extends BaseValidator
 	protected CostCenter affiliation;
 	protected Set<Affiliation<? extends Affiliation<?>>> affiliations;
 
-	@Mock
+	@MockBean(name="affiliationDao")
 	protected CostCenterDao affiliationDao;
+	@MockBean(name="costCenterDao")
+	protected CostCenterDao costCenterDao;
 
 	@Before
 	public void setUp() throws Exception {
@@ -40,9 +43,10 @@ public class ParentExistsValidatorForPersonContributorTest extends BaseValidator
 		validator = new ParentExistsValidatorForPersonContributor();
 		personContributor = new UsgsContributor();
 		affiliation = new CostCenter();
-		affiliation.setAffiliationDao(affiliationDao);
 		affiliations = new HashSet<Affiliation<? extends Affiliation<?>>>();
 		affiliations.add(affiliation);
+
+		reset(affiliationDao, costCenterDao);
 	}
 
 	@Test

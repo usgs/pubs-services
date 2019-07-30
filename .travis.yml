@@ -9,6 +9,8 @@ services:
 jdk:
   - openjdk11
 
+install: true
+
 script:
   - docker network create pubsServices
   - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$TRAVIS_BUILD_DIR":/usr/src/mymaven -w /usr/src/mymaven --network=pubsServices -e TESTING_DATABASE_PORT=5432 -e TESTING_DATABASE_ADDRESS=pubsDatabase -e TESTING_DATABASE_NETWORK=pubsServices -e TESTING_CROSSREF_USERNAME=$TESTING_CROSSREF_USERNAME -e TESTING_CROSSREF_PASSWORD=$TESTING_CROSSREF_PASSWORD maven:3.6.0-jdk-11 mvn clean verify

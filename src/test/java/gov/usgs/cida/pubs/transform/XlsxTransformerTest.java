@@ -10,7 +10,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -84,7 +85,7 @@ public class XlsxTransformerTest {
 			assertEquals("data2", row1.getCell(1).getStringCellValue());
 			assertEquals("1", row1.getCell(2).getStringCellValue());
 			//We don't do dates - this is the ugly default JAVA .toString() format
-			assertEquals("Wed Dec 31 18:00:10 CST 1969", row1.getCell(3).getStringCellValue());
+			assertEquals("1970-01-01T00:00:10", row1.getCell(3).getStringCellValue());
 			assertNull(row1.getCell(4));
 			assertEquals(29382.2398, row1.getCell(5).getNumericCellValue(), 0);
 
@@ -136,7 +137,7 @@ public class XlsxTransformerTest {
 		record.put("A", "data1");
 		record.put("B", "data2");
 		record.put("C", rowCount++);
-		record.put("D", new Date(10000));
+		record.put("D", LocalDateTime.ofEpochSecond(10, 0, ZoneOffset.UTC));
 		record.put("E", null);
 		record.put("F", new BigDecimal(29382.2398));
 		record.put("G", "nocando");

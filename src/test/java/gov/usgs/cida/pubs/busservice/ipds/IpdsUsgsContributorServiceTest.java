@@ -64,7 +64,7 @@ public class IpdsUsgsContributorServiceTest extends BaseTest {
 		when(ipdsWsRequester.getContributor("4", IpdsProcessTest.TEST_IPDS_CONTEXT)).thenReturn(contributor4Xml);
 		when(ipdsWsRequester.getContributor("5", IpdsProcessTest.TEST_IPDS_CONTEXT)).thenReturn(contributor5Xml);
 		when(ipdsWsRequester.getContributor("6", IpdsProcessTest.TEST_IPDS_CONTEXT)).thenReturn(contributor6Xml);
-		when(ipdsWsRequester.getContributor("101", IpdsProcessTest.TEST_IPDS_CONTEXT)).thenReturn(contributor101Xml);
+		when(ipdsWsRequester.getContributor("51", IpdsProcessTest.TEST_IPDS_CONTEXT)).thenReturn(contributor101Xml);
 		when(ipdsWsRequester.getContributor("123", IpdsProcessTest.TEST_IPDS_CONTEXT)).thenReturn(usgsContributorXml);
 		ipdsUsgsContributorService = new IpdsUsgsContributorService(ipdsParser, ipdsWsRequester, mockCostCenterService, mockPersonContributorService);
 

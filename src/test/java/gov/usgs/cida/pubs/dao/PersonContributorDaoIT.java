@@ -187,8 +187,8 @@ public class PersonContributorDaoIT extends BaseIT {
 	public void getByPreferredAll() {
 		List<Contributor<?>> contributors = personContributorDao.getByPreferred(null);
 		assertEquals(12, contributors.size());
-		assertEquals(101, contributors.get(0).getId().intValue());
-		assertEquals(104, contributors.get(1).getId().intValue());
+		assertEquals(51, contributors.get(0).getId().intValue());
+		assertEquals(54, contributors.get(1).getId().intValue());
 		assertEquals(4, contributors.get(2).getId().intValue());
 		assertEquals(1, contributors.get(3).getId().intValue());
 		assertEquals(44, contributors.get(4).getId().intValue());

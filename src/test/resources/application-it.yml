@@ -1,30 +1,19 @@
 spring:
-#  activemq:
-#    broker-url: changeMe
+  activemq:
+    broker-url: vm://localhost?broker.persistent=false
   datasource:
     url: jdbc:postgresql://${PUBS_DB_HOST}:${PUBS_DB_PORT}/${PUBS_DB_NAME}
     username: ${PUBS_DB_READ_ONLY_USERNAME}
     password: ${PUBS_DB_READ_ONLY_PASSWORD}
-    hikari:
-      auto-commit: false
 
-  profiles:
-    active: default,swagger
-
-server:
-  port: ${SERVER_PORT}
-  servlet:
-    context-path: ${SERVER_CONTEXT_PATH}
-
-#
 #ipds:
 #  pubsWsPwd: changeMe
 #  pubsWsUser: changeMe
-#  endpoint: changeMe
+#  endpoint: bad.usgs.gov
 #  port: 80
 #  protocol: https
-#  queueName: changeMe
-
+#  queueName: dummy
+#
 crossref:
   protocol: ${CROSSREF_PROTOCOL}
   host: ${CROSSREF_HOST}
@@ -35,15 +24,14 @@ crossref:
   schema:
     url: ${CROSSREF_SCHEMA_URL}
   depositorEmail: ${CROSSREF_DEPOSITOR_EMAIL}
-
-swagger:
-  display:
-    host: ${SWAGGER_DISPLAY_HOST}
-    path: ${SWAGGER_DISPLAY_PATH}
-    protocol: ${SWAGGER_DISPLAY_PROTOCOL}
+#
+#swagger:
+#  displayProtocol: https
+#  displayHost: localhost:8443
+#  displayPath: /pubs-services
 
 pubs:
-#  emailList: changeMe@usgs.gov
+#  emailList: changeMe
 #  mailHost: changeMe
   lockTimeoutHours: ${PUBS_LOCK_TIMEOUT_HOURS}
   warehouseEndpoint: ${PUBS_WAREHOUSE_ENPOINT}
@@ -51,32 +39,9 @@ pubs:
     authorized: ${PUBS_AUTHORIZED_GROUPS}
     spn: ${PUBS_SPN_GROUPS}
 
-logging:
-  level:
-    root: ${ROOT_LOG_LEVEL}
-#
 #security:
 #  oauth2:
 #    resource:
 #      id: changeMe
 #      jwk:
 #        keySetUri: changeMe
-
-management:
-  endpoints:
-    enabled-by-default: false
-    jmx:
-      exposure:
-        exclude: "*"
-    web:
-      base-path: /about
-      exposure:
-        include:
-        - info
-        - health
-  endpoint:
-    info:
-      enabled: true
-    health:
-      enabled: true
-      show-details: never

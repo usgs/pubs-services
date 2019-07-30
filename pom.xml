@@ -215,37 +215,40 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
                     <environmentVariables>
-                        <spring.profiles.active>IT</spring.profiles.active>
-                        <spring.activemq.broker-url>tcp://cidasddvasactmq.cr.usgs.gov:61616</spring.activemq.broker-url>
+                        <PUBS_DB_HOST>${TESTING_DATABASE_ADDRESS}</PUBS_DB_HOST>
+                        <PUBS_DB_PORT>${TESTING_DATABASE_PORT}</PUBS_DB_PORT>
+                        <PUBS_DB_NAME>pubs_db_name</PUBS_DB_NAME>
+                        <PUBS_SCHEMA_NAME>pubs_schema</PUBS_SCHEMA_NAME>
+                        <PUBS_DB_READ_ONLY_USERNAME>user_name</PUBS_DB_READ_ONLY_USERNAME>
+                        <PUBS_DB_READ_ONLY_PASSWORD>changeMe</PUBS_DB_READ_ONLY_PASSWORD>
 
-                        <spring.datasource.url>jdbc:postgresql://${TESTING_DATABASE_ADDRESS}:${TESTING_DATABASE_PORT}/pubs_db_name</spring.datasource.url>
-                        <pring.datasource.username>user_name</pring.datasource.username>
-                        <spring.datasource.password>changeMe</spring.datasource.password>
+                        <PUBS_OWNER_USERNAME>owner_name</PUBS_OWNER_USERNAME>
+                        <PUBS_OWNER_PASSWORD>changeMe</PUBS_OWNER_PASSWORD>
 
-                        <crossref.protocol>changeMe</crossref.protocol>
-                        <crossref.host>changeMe</crossref.host>
-                        <crossref.url>changeMe</crossref.url>
-                        <crossref.port>changeMe</crossref.port>
-                        <crossref.username>changeMe</crossref.username>
-                        <crossref.password>changeMe</crossref.password>
-                        <crossref.depositorEmail>changeMe</crossref.depositorEmail>
-                        <crossref.schema.url>http://www.crossref.org/schema/deposit/crossref4.4.0.xsd</crossref.schema.url>
+                        <CROSSREF_PROTOCOL>https</CROSSREF_PROTOCOL>
+                        <CROSSREF_HOST>test.crossref.org</CROSSREF_HOST>
+                        <CROSSREF_URL>/servlet/deposit</CROSSREF_URL>
+                        <CROSSREF_PORT>-1</CROSSREF_PORT>
+                        <CROSSREF_USERNAME>${TESTING_CROSSREF_USERNAME}</CROSSREF_USERNAME>
+                        <CROSSREF_PASSWORD>${TESTING_CROSSREF_PASSWORD}</CROSSREF_PASSWORD>
+                        <CROSSREF_DEPOSITOR_EMAIL>nobody@usgs.gov</CROSSREF_DEPOSITOR_EMAIL>
+                        <CROSSREF_SCHEMA_URL>http://www.crossref.org/schema/deposit/crossref4.4.0.xsd</CROSSREF_SCHEMA_URL>
 
                         <pubs.emailList>changeMe</pubs.emailList>
                         <pubs.mailHost>changeMe</pubs.mailHost>
-                        <pubs.lockTimeoutHours>1</pubs.lockTimeoutHours>
-                        <pubs.warehouseEndpoint>http://pubs.er.usgs.gov</pubs.warehouseEndpoint>
-                        <pubs.authorities.spn>changeMe</pubs.authorities.spn>
-                        <pubs.authorities.authorized>changeMe</pubs.authorities.authorized>
+                        <PUBS_LOCK_TIMEOUT_HOURS>1</PUBS_LOCK_TIMEOUT_HOURS>
+                        <PUBS_WAREHOUSE_ENPOINT>http://pubs.er.usgs.gov</PUBS_WAREHOUSE_ENPOINT>
+                        <PUBS_AUTHORIZED_GROUPS>SPN_AUTHORITY, PUBS_AUTHORITY</PUBS_AUTHORIZED_GROUPS>
+                        <PUBS_SPN_GROUPS>SPN_AUTHORITY</PUBS_SPN_GROUPS>
 
                         <ipds.endpoint>changeMe</ipds.endpoint>
                         <ipds.pubsWsPwd>changeMe</ipds.pubsWsPwd>
                         <ipds.pubsWsUser>changeMe</ipds.pubsWsUser>
                         <ipds.queueName>changeMe</ipds.queueName>
 
-                        <swagger.displayHost>localhost:8444</swagger.displayHost>
-                        <swagger.displayPath>/pubs-services</swagger.displayPath>
-                        <swagger.displayProtocol>https</swagger.displayProtocol>
+                        <SWAGGER_DISPLAY_HOST>localhost:8444</SWAGGER_DISPLAY_HOST>
+                        <SWAGGER_DISPLAY_PATH>/pubs-services</SWAGGER_DISPLAY_PATH>
+                        <SWAGGER_DISPLAY_PROTOCOL>https</SWAGGER_DISPLAY_PROTOCOL>
 
                         <security.oauth2.resource.id>changeMe</security.oauth2.resource.id>
                         <security.oauth2.resource.jwk.keySetUri>changeMe</security.oauth2.resource.jwk.keySetUri>
@@ -309,7 +312,7 @@
                                     <LOCAL_NETWORK_NAME>pubs</LOCAL_NETWORK_NAME>
                                 </env>
                                 <wait>
-                                    <time>100000</time>
+                                    <time>80000</time>
                                 </wait>
                             </run>
                         </image>
@@ -319,13 +322,4 @@
         </plugins>
     </build>
 
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>2.7</version>
-            </plugin>
-        </plugins>
-    </reporting>
 </project>

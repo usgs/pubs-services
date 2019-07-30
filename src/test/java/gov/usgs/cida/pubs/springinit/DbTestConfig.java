@@ -18,26 +18,14 @@ public class DbTestConfig {
 	@Value("${spring.datasource.url}")
 	private String datasourceUrl;
 
-	@Value("${spring.datasource.username}")
-	private String datasourceUsername;
-
-	@Value("${spring.datasource.password}")
-	private String datasourcePassword;
-
-	@Value("${pubsOwner.username}")
+	@Value("${PUBS_OWNER_USERNAME}")
 	private String datasourceOwnerUsername;
 
-	@Value("${pubsOwner.password}")
+	@Value("${PUBS_OWNER_PASSWORD}")
 	private String datasourceOwnerPassword;
 
-	@Bean
-	public DataSource dataSource() throws Exception {
-		PGSimpleDataSource ds = new PGSimpleDataSource();
-		ds.setUrl(datasourceUrl);
-		ds.setUser(datasourceUsername);
-		ds.setPassword(datasourcePassword);
-		return ds;
-	}
+	@Value("${PUBS_SCHEMA_NAME}")
+	private String schemaName;
 
 	@Bean
 	public DataSource dbUnitDataSource() throws Exception {
@@ -63,7 +51,7 @@ public class DbTestConfig {
 		DatabaseDataSourceConnectionFactoryBean dbUnitDatabaseConnection = new DatabaseDataSourceConnectionFactoryBean();
 		dbUnitDatabaseConnection.setDatabaseConfig(dbUnitDatabaseConfig());
 		dbUnitDatabaseConnection.setDataSource(dbUnitDataSource());
-		dbUnitDatabaseConnection.setSchema("pubs");
+		dbUnitDatabaseConnection.setSchema(schemaName);
 		return dbUnitDatabaseConnection;
 	}
 

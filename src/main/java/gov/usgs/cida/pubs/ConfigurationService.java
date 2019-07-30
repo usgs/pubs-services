@@ -21,7 +21,7 @@ public class ConfigurationService {
 	private String crossrefHost;
 	@Value("${crossref.url}")
 	private String crossrefUrl;
-	@Value("${crossref.port}")
+	@Value("${crossref.port:-1}")
 	private Integer crossrefPort;
 	@Value("${crossref.username}")
 	private String crossRefUser;
@@ -40,7 +40,7 @@ public class ConfigurationService {
 	private String pubsEmailList;
 	@Value("${pubs.mailHost}")
 	private String mailHost;
-	@Value("${pubs.lockTimeoutHours:PubsConstants.DEFAULT_LOCK_TIMEOUT_HOURS}")
+	@Value("${pubs.lockTimeoutHours:3}")
 	private Integer lockTimeoutHours;
 	@Value("${pubs.warehouseEndpoint}")
 	private String warehouseEndpoint;

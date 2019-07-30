@@ -128,7 +128,7 @@
     </sql>
 
     <sql id="defaultOrderBy">
-        order by text
+        order by upper(text)
     </sql>
 
     <select id="getCount" resultType="Integer">
@@ -195,7 +195,7 @@
             </if>
         </where>
         order by is_preferred desc,
-                 text
+                 upper(text)
     </select>
 
     <insert id="addPersonContributor" parameterType="PersonContributor">

@@ -179,6 +179,7 @@ public class PwPublicationDaoIT extends BaseIT {
 		@DatabaseSetup("classpath:/testData/dataset.xml")
 	})
 	public void getObjectCountTest() {
+		pwPublicationDao.refreshTextIndex();
 		Map<String, Object> filters = new HashMap<>();
 		filters.put(PublicationDao.Q, "title");
 		Integer cnt = pwPublicationDao.getObjectCount(filters);

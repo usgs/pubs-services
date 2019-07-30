@@ -187,7 +187,7 @@ public class IpdsUsgsContributorServiceIT extends BaseIpdsTest {
 	}
 
 	public static void assertContributor101(Contributor<?> contributor) {
-		assertEquals(101, contributor.getId().intValue());
+		assertEquals(51, contributor.getId().intValue());
 		assertTrue(contributor instanceof UsgsContributor);
 		UsgsContributor usgsContributor = (UsgsContributor) contributor;
 		assertEquals("101Family", usgsContributor.getFamily());
@@ -201,7 +201,7 @@ public class IpdsUsgsContributorServiceIT extends BaseIpdsTest {
 	}
 
 	public static void assertContributor104(Contributor<?> contributor) {
-		assertEquals(104, contributor.getId().intValue());
+		assertEquals(54, contributor.getId().intValue());
 		assertTrue(contributor instanceof UsgsContributor);
 		UsgsContributor usgsContributor = (UsgsContributor) contributor;
 		assertEquals("104Family", usgsContributor.getFamily());

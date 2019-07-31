@@ -312,7 +312,7 @@
                                     <LOCAL_NETWORK_NAME>pubs</LOCAL_NETWORK_NAME>
                                 </env>
                                 <wait>
-                                    <time>80000</time>
+                                    <time>100000</time>
                                 </wait>
                             </run>
                         </image>

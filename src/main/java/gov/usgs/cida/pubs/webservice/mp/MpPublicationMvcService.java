@@ -35,7 +35,7 @@ import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.json.View;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 import gov.usgs.cida.pubs.webservice.MvcService;
@@ -110,7 +110,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 				@PathVariable("publicationId") String publicationId) {
 		LOG.debug("getMpPublication");
 		setHeaders(response);
-		Integer id = PubsUtilities.parseInteger(publicationId);
+		Integer id = PubsUtils.parseInteger(publicationId);
 		MpPublication rtn = new MpPublication();
 		ValidatorResult locked = busService.checkAvailability(id);
 		if (null == locked) {
@@ -162,10 +162,10 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		setHeaders(response);
 	
 		MpPublication rtn = pub;
-		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(publicationId, pub);
+		ValidatorResult idNotMatched = PubsUtils.validateIdsMatch(publicationId, pub);
 
 		if (null == idNotMatched) {
-			Integer id = PubsUtilities.parseInteger(publicationId);
+			Integer id = PubsUtils.parseInteger(publicationId);
 			ValidatorResult locked = busService.checkAvailability(id);
 			if (null == locked) {
 				rtn = busService.updateObject(pub);
@@ -191,7 +191,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 	@Transactional
 	public @ResponseBody ValidationResults deletePub(@PathVariable String publicationId, HttpServletResponse response) {
 		setHeaders(response);
-		Integer id = PubsUtilities.parseInteger(publicationId);
+		Integer id = PubsUtils.parseInteger(publicationId);
 		ValidationResults rtn = new ValidationResults();
 		ValidatorResult locked = busService.checkAvailability(id);
 		if (null == locked) {

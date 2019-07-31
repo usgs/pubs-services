@@ -35,7 +35,7 @@ import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
@@ -163,11 +163,11 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 				//Only auto update index ID if publication in not in the warehouse.
 				String indexId = outPublication.getId().toString();
 				String doi = outPublication.getDoi();
-				if (PubsUtilities.isUsgsNumberedSeries(outPublication.getPublicationSubtype())) {
+				if (PubsUtils.isUsgsNumberedSeries(outPublication.getPublicationSubtype())) {
 					//Only USGS Numbered Series get a "special" index ID
 					indexId = getUsgsNumberedSeriesIndexId(outPublication);
 					doi = getDoiName(indexId);
-				} else if (PubsUtilities.isUsgsUnnumberedSeries(outPublication.getPublicationSubtype())) {
+				} else if (PubsUtils.isUsgsUnnumberedSeries(outPublication.getPublicationSubtype())) {
 					doi = getDoiName(indexId);
 				}
 
@@ -176,8 +176,8 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 			} else {
 				//Otherwise overlay with the values from the published pub.
 				outPublication.setIndexId(published.getIndexId());
-				if ((PubsUtilities.isUsgsNumberedSeries(outPublication.getPublicationSubtype())
-						|| PubsUtilities.isUsgsUnnumberedSeries(outPublication.getPublicationSubtype()))
+				if ((PubsUtils.isUsgsNumberedSeries(outPublication.getPublicationSubtype())
+						|| PubsUtils.isUsgsUnnumberedSeries(outPublication.getPublicationSubtype()))
 						&& (null != published.getDoi() && 0 < published.getDoi().length())) {
 					//USGS Numbered and Unnumbered Series with a published DOI keep it, everyone else can update from the UI input.
 					outPublication.setDoi(published.getDoi());
@@ -256,13 +256,13 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 					MpPublicationCostCenter.getDao().publishToPw(publicationId);
 					MpPublicationLink.getDao().publishToPw(publicationId);
 					MpPublicationContributor.getDao().publishToPw(publicationId);
-					if ((PubsUtilities.isUsgsNumberedSeries(mpPub.getPublicationSubtype())
-							|| PubsUtilities.isUsgsUnnumberedSeries(mpPub.getPublicationSubtype()))
+					if ((PubsUtils.isUsgsNumberedSeries(mpPub.getPublicationSubtype())
+							|| PubsUtils.isUsgsUnnumberedSeries(mpPub.getPublicationSubtype()))
 							&& StringUtils.isNotBlank(mpPub.getDoi())) {
 						crossRefBusService.submitCrossRef(mpPub);
 					}
 					deleteObject(publicationId);
-					if (PubsUtilities.isSpnUser(configurationService)) {
+					if (PubsUtils.isSpnUser(configurationService)) {
 						//Pubs published by this role should be put back in MyPubs and in the USGS Series list
 						beginPublicationEdit(publicationId);
 						setList(MpPublication.getDao().getById(publicationId), MpList.IPDS_USGS_NUMBERED_SERIES);
@@ -291,8 +291,8 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 				MpPublicationLink thumbnail = new MpPublicationLink();
 				thumbnail.setPublicationId(mpPub.getId());
 				thumbnail.setLinkType(LinkType.getDao().getById(LinkType.THUMBNAIL.toString()));
-				if (PubsUtilities.isUsgsNumberedSeries(mpPub.getPublicationSubtype())
-						|| PubsUtilities.isUsgsUnnumberedSeries(mpPub.getPublicationSubtype())) {
+				if (PubsUtils.isUsgsNumberedSeries(mpPub.getPublicationSubtype())
+						|| PubsUtils.isUsgsUnnumberedSeries(mpPub.getPublicationSubtype())) {
 					thumbnail.setUrl(configurationService.getWarehouseEndpoint() + MpPublicationLink.USGS_THUMBNAIL);
 				} else {
 					thumbnail.setUrl(configurationService.getWarehouseEndpoint() + MpPublicationLink.EXTERNAL_THUMBNAIL);
@@ -305,16 +305,16 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 	protected void setList(MpPublication inPublication) {
 		if (null != inPublication && null == PwPublication.getDao().getById(inPublication.getId()) ) {
 			int listId = MpList.IPDS_OTHER_PUBS;
-			if (PubsUtilities.isPublicationTypeArticle(inPublication.getPublicationType())) {
+			if (PubsUtils.isPublicationTypeArticle(inPublication.getPublicationType())) {
 				listId = MpList.IPDS_JOURNAL_ARTICLES;
-			} else if (PubsUtilities.isSpnProduction(inPublication.getIpdsReviewProcessState())) {
+			} else if (PubsUtils.isSpnProduction(inPublication.getIpdsReviewProcessState())) {
 				//Default to the old list if we don't have a PSC.
 				listId = MpList.PENDING_USGS_SERIES;
-			} else if (PubsUtilities.isUsgsNumberedSeries(inPublication.getPublicationSubtype())) {
+			} else if (PubsUtils.isUsgsNumberedSeries(inPublication.getPublicationSubtype())) {
 				listId = MpList.IPDS_USGS_NUMBERED_SERIES;
-			} else if (PubsUtilities.isPublicationTypeUSGSDataRelease(inPublication.getPublicationSubtype())) {
+			} else if (PubsUtils.isPublicationTypeUSGSDataRelease(inPublication.getPublicationSubtype())) {
 				listId = MpList.USGS_DATA_RELEASES;
-			} else if (PubsUtilities.isPublicationTypeUSGSWebsite(inPublication.getPublicationSubtype())) {
+			} else if (PubsUtils.isPublicationTypeUSGSWebsite(inPublication.getPublicationSubtype())) {
 				listId = MpList.USGS_WEBSITE;
 			}
 			setList(inPublication, listId);
@@ -353,7 +353,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 			if (StringUtils.isNotBlank(mpPub.getLockUsername()) 
 					&& !PubsConstantsHelper.ANONYMOUS_USER.contentEquals(mpPub.getLockUsername())) {
 				//Now, was it locked by the current user.
-				if (PubsUtilities.getUsername().equalsIgnoreCase(mpPub.getLockUsername())) {
+				if (PubsUtils.getUsername().equalsIgnoreCase(mpPub.getLockUsername())) {
 					//Yes, this user locked it so we are ok to edit.
 					available = true;
 				} else if (null == mpPub.getUpdateDate() || 0 < now.compareTo(mpPub.getUpdateDate().plusHours(configurationService.getLockTimeoutHours()))) {

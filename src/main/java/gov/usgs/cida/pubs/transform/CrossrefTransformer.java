@@ -31,7 +31,7 @@ import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 
 /**
  * Transforms Publications into Crossref XML. One Transformer should be 
@@ -146,7 +146,7 @@ public class CrossrefTransformer extends Transformer {
 			} else {
 				Map<String, Object> model = new HashMap<>();
 				model.put("pub", pub);
-				boolean isNumberedSeries = PubsUtilities.isUsgsNumberedSeries(pub.getPublicationSubtype());
+				boolean isNumberedSeries = PubsUtils.isUsgsNumberedSeries(pub.getPublicationSubtype());
 				model.put("isNumberedSeries", isNumberedSeries);
 
 				String indexPage = pubBusService.getIndexPage(pub);

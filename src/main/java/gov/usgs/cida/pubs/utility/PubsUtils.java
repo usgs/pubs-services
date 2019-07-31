@@ -21,9 +21,9 @@ import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 
-public final class PubsUtilities {
+public final class PubsUtils {
 
-	private PubsUtilities() {
+	private PubsUtils() {
 	}
 
 	/** Utility method for determining if a string represents an integer.  
@@ -116,7 +116,7 @@ public final class PubsUtilities {
 			if (messageName.startsWith("{") && messageName.endsWith("}")) {
 				Properties props = new Properties();
 				try {
-					props.load(PubsUtilities.class.getClassLoader().getResourceAsStream("ValidationMessages.properties"));
+					props.load(PubsUtils.class.getClassLoader().getResourceAsStream("ValidationMessages.properties"));
 				} catch (Exception e) {
 					throw new RuntimeException("Unable to load ValidationMessages.properties", e);
 				}

@@ -16,42 +16,42 @@ import gov.usgs.cida.pubs.ConfigurationService;
 public class BusServiceConfig {
 
 	@Autowired
-	ConfigurationService configurationService;
+	private ConfigurationService configurationService;
 
 	@Value("classpath:templates/crossref.4.3.3/numberedSeries.xml")
 	private Resource numberedSeriesResource;
+
+	@Value("classpath:templates/crossref.4.3.3/unNumberedSeries.xml")
+	private Resource unNumberedSeriesResource;
+
+	@Value("classpath:templates/crossref.4.3.3/organizationName.xml")
+	private Resource organizationNameResource;
+
+	@Value("classpath:templates/crossref.4.3.3/personName.xml")
+	private Resource personNameResource;
+
+	@Value("classpath:templates/crossref.4.3.3/pages.xml")
+	private Resource pagesResource;
 
 	@Bean
 	public String numberedSeriesXml() throws IOException {
 		return new String(FileCopyUtils.copyToByteArray(numberedSeriesResource.getInputStream()));
 	}
 
-	@Value("classpath:templates/crossref.4.3.3/unNumberedSeries.xml")
-	private Resource unNumberedSeriesResource;
-
 	@Bean
 	public String unNumberedSeriesXml() throws IOException {
 		return new String(FileCopyUtils.copyToByteArray(unNumberedSeriesResource.getInputStream()));
 	}
-
-	@Value("classpath:templates/crossref.4.3.3/organizationName.xml")
-	private Resource organizationNameResource;
 
 	@Bean
 	public String organizationNameXml() throws IOException {
 		return new String(FileCopyUtils.copyToByteArray(organizationNameResource.getInputStream()));
 	}
 
-	@Value("classpath:templates/crossref.4.3.3/personName.xml")
-	private Resource personNameResource;
-
 	@Bean
 	public String personNameXml() throws IOException {
 		return new String(FileCopyUtils.copyToByteArray(personNameResource.getInputStream()));
 	}
-
-	@Value("classpath:templates/crossref.4.3.3/pages.xml")
-	private Resource pagesResource;
 
 	@Bean
 	public String pagesXml() throws IOException {

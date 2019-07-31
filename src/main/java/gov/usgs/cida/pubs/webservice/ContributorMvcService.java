@@ -29,7 +29,7 @@ import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.json.View;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
@@ -56,7 +56,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	public @ResponseBody Contributor<?> getContributor(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") String id) {
 		LOG.debug("getContributor");
 		setHeaders(response);
-		Contributor<?> rtn = Contributor.getDao().getById(PubsUtilities.parseInteger(id));
+		Contributor<?> rtn = Contributor.getDao().getById(PubsUtils.parseInteger(id));
 		if (null == rtn) {
 			response.setStatus(HttpStatus.NOT_FOUND.value());
 		}
@@ -69,7 +69,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	public @ResponseBody Contributor<?> getPerson(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") String id) {
 		LOG.debug("getPerson");
 		setHeaders(response);
-		Contributor<?> rtn = (Contributor<?>) personContributorBusService.getObject(PubsUtilities.parseInteger(id));
+		Contributor<?> rtn = (Contributor<?>) personContributorBusService.getObject(PubsUtils.parseInteger(id));
 		if (null == rtn) {
 			response.setStatus(HttpStatus.NOT_FOUND.value());
 		}
@@ -101,7 +101,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		setHeaders(response);
 
 		UsgsContributor result = person;
-		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(id, person);
+		ValidatorResult idNotMatched = PubsUtils.validateIdsMatch(id, person);
 
 		if (null == idNotMatched) {
 			result = (UsgsContributor) personContributorBusService.updateObject(person);
@@ -143,7 +143,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		setHeaders(response);
 
 		OutsideContributor result = person;
-		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(id, person);
+		ValidatorResult idNotMatched = PubsUtils.validateIdsMatch(id, person);
 
 		if (null == idNotMatched) {
 			result = (OutsideContributor) personContributorBusService.updateObject(person);
@@ -166,7 +166,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 			@PathVariable("id") String id) {
 		LOG.debug("getCorporation");
 		setHeaders(response);
-		CorporateContributor rtn = corporateContributorBusService.getObject(PubsUtilities.parseInteger(id));
+		CorporateContributor rtn = corporateContributorBusService.getObject(PubsUtils.parseInteger(id));
 		if (null == rtn) {
 			response.setStatus(HttpStatus.NOT_FOUND.value());
 		}
@@ -198,7 +198,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		setHeaders(response);
 
 		CorporateContributor result = corporation;
-		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(id, corporation);
+		ValidatorResult idNotMatched = PubsUtils.validateIdsMatch(id, corporation);
 
 		if (null == idNotMatched) {
 			result = (CorporateContributor) corporateContributorBusService.updateObject(corporation);

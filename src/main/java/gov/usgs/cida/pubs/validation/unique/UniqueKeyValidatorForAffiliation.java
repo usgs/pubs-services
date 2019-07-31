@@ -2,7 +2,7 @@ package gov.usgs.cida.pubs.validation.unique;
 
 import gov.usgs.cida.pubs.dao.AffiliationDao;
 import gov.usgs.cida.pubs.domain.Affiliation;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
 
 import java.util.Arrays;
@@ -38,7 +38,7 @@ public class UniqueKeyValidatorForAffiliation implements ConstraintValidator<Uni
 				if (null == value.getId() || 0 != affiliation.getId().compareTo(value.getId())) {
 					valid = false;
 					Object[] messageArguments = Arrays.asList(new String[]{value.getText(), affiliation.getId().toString()}).toArray();
-					String errorMsg = PubsUtilities.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
+					String errorMsg = PubsUtils.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
 					context.disableDefaultConstraintViolation();
 					context.buildConstraintViolationWithTemplate(errorMsg).addPropertyNode(AffiliationDao.TEXT_SEARCH).addConstraintViolation();
 				}

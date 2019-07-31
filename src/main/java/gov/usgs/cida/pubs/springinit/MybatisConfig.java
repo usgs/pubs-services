@@ -56,7 +56,7 @@ import gov.usgs.cida.pubs.domain.pw.PwStore;
 public class MybatisConfig {
 
 	@Autowired
-	DataSource dataSource;
+	private DataSource dataSource;
 
 	@Bean
 	public PlatformTransactionManager transactionManager() throws Exception {

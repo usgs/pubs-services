@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import gov.usgs.cida.pubs.domain.Affiliation;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 
 @Repository
 public class AffiliationDao<D extends Affiliation<D>> extends BaseDao<D> {
@@ -33,7 +33,7 @@ public class AffiliationDao<D extends Affiliation<D>> extends BaseDao<D> {
 	@Transactional(readOnly = true)
 	@Override
 	public D getById(String domainID) {
-		return getById(PubsUtilities.parseInteger(domainID));
+		return getById(PubsUtils.parseInteger(domainID));
 	}
 
 	@Transactional(readOnly = true)

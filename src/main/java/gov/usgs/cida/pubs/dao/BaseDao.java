@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.BaseDomain;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 
 /**
  * @author drsteini
@@ -138,8 +138,8 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
 	}
 
 	protected Integer insert(String statement, BaseDomain<D> domainObject) {
-		domainObject.setInsertUsername(PubsUtilities.getUsername());
-		domainObject.setUpdateUsername(PubsUtilities.getUsername());
+		domainObject.setInsertUsername(PubsUtils.getUsername());
+		domainObject.setUpdateUsername(PubsUtils.getUsername());
 		getSqlSession().insert(statement, domainObject);
 		return domainObject.getId();
 	}
@@ -150,7 +150,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
 	}
 
 	protected void update(String statement, BaseDomain<D> domainObject) {
-		domainObject.setUpdateUsername(PubsUtilities.getUsername());
+		domainObject.setUpdateUsername(PubsUtils.getUsername());
 		getSqlSession().update(statement, domainObject);
 	}
 
@@ -168,7 +168,7 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put(ID_SEARCH, id);
 		for (String type:usernameType) {
-			parameters.put(type, PubsUtilities.getUsername());
+			parameters.put(type, PubsUtils.getUsername());
 		}
 		return parameters;
 	}

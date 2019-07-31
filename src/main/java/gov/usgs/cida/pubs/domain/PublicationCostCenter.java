@@ -1,7 +1,7 @@
 package gov.usgs.cida.pubs.domain;
 
 import gov.usgs.cida.pubs.json.View;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
 
@@ -34,7 +34,7 @@ public class PublicationCostCenter<D> extends BaseDomain<D> implements Serializa
 	}
 
 	public void setPublicationId(final String inPublicationId) {
-		publicationId = PubsUtilities.parseInteger(inPublicationId);
+		publicationId = PubsUtils.parseInteger(inPublicationId);
 	}
 
 	@NotNull
@@ -57,6 +57,6 @@ public class PublicationCostCenter<D> extends BaseDomain<D> implements Serializa
 	@JsonIgnore
 	@Override
 	public void setId(final String inId) {
-		id = PubsUtilities.parseInteger(inId);
+		id = PubsUtils.parseInteger(inId);
 	}
 }

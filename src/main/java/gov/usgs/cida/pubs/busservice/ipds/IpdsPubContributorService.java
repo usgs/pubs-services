@@ -13,7 +13,7 @@ import org.xml.sax.SAXException;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 
 @Service
 public class IpdsPubContributorService {
@@ -71,7 +71,7 @@ public class IpdsPubContributorService {
 	}
 
 	protected Integer bindRank(Element authorsItem) {
-		Integer rank = PubsUtilities.parseInteger(authorsItem.getElementsByTagName(Schema.RANK).item(0).getTextContent());
+		Integer rank = PubsUtils.parseInteger(authorsItem.getElementsByTagName(Schema.RANK).item(0).getTextContent());
 		if (null == rank) {
 			return 1;
 		} else {

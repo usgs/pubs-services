@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import gov.usgs.cida.pubs.domain.Contributor;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 
 @Repository
 public class ContributorDao extends BaseDao<Contributor<?>> {
@@ -30,7 +30,7 @@ public class ContributorDao extends BaseDao<Contributor<?>> {
 	@Transactional(readOnly = true)
 	@Override
 	public Contributor<?> getById(String domainID) {
-		return getById(PubsUtilities.parseInteger(domainID));
+		return getById(PubsUtils.parseInteger(domainID));
 	}
 
 	@Transactional(readOnly = true)
@@ -52,15 +52,15 @@ public class ContributorDao extends BaseDao<Contributor<?>> {
 	}
 
 	protected Integer insert(String statement, Contributor<?> domainObject) {
-		domainObject.setInsertUsername(PubsUtilities.getUsername());
-		domainObject.setUpdateUsername(PubsUtilities.getUsername());
+		domainObject.setInsertUsername(PubsUtils.getUsername());
+		domainObject.setUpdateUsername(PubsUtils.getUsername());
 		getSqlSession().insert(statement, domainObject);
 		return domainObject.getId();
 	}
 
 	protected void update(String statement, Contributor<?> domainObject) {
-		domainObject.setInsertUsername(PubsUtilities.getUsername());
-		domainObject.setUpdateUsername(PubsUtilities.getUsername());
+		domainObject.setInsertUsername(PubsUtils.getUsername());
+		domainObject.setUpdateUsername(PubsUtils.getUsername());
 		getSqlSession().update(statement, domainObject);
 	}
 }

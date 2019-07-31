@@ -13,7 +13,7 @@ import gov.usgs.cida.pubs.busservice.BusService;
 import gov.usgs.cida.pubs.dao.mp.MpListDao;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 import gov.usgs.cida.pubs.domain.mp.MpList.MpListType;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 
 @Service
 public class MpListBusService extends BusService<MpList> {
@@ -29,7 +29,7 @@ public class MpListBusService extends BusService<MpList> {
 
 	@Override
 	public List<MpList> getObjects(final Map<String, Object> filters) {
-		if (PubsUtilities.isSpnOnly(configurationService)) {
+		if (PubsUtils.isSpnOnly(configurationService)) {
 			filters.put(MpListDao.LIST_TYPE_SEARCH, MpListType.SPN);
 		}
 		return MpList.getDao().getByMap(filters);

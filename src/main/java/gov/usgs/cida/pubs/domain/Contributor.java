@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.json.View;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 
 @Component
 public class Contributor<D> extends BaseDomain<Contributor<D>> {
@@ -49,7 +49,7 @@ public class Contributor<D> extends BaseDomain<Contributor<D>> {
 	@JsonProperty("contributorId")
 	@JsonView(View.PW.class)
 	public void setId(final String inId) {
-		id = PubsUtilities.parseInteger(inId);
+		id = PubsUtils.parseInteger(inId);
 	}
 
 	@JsonProperty("id")

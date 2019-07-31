@@ -43,13 +43,6 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 
 	private static IPublicationDao publicationDao;
 
-	public Publication() {}
-
-	public Publication(Boolean published, Boolean noUsgsAuthors) {
-		this.published = published;
-		this.noUsgsAuthors = noUsgsAuthors;
-	}
-
 	@JsonProperty("indexId")
 	@JsonView(View.PW.class)
 	@Length(min=1, max=100)
@@ -365,6 +358,13 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	@JsonProperty("noUsgsAuthors")
 	@JsonView(View.MP.class)
 	private Boolean noUsgsAuthors;
+
+	public Publication() {}
+
+	public Publication(Boolean published, Boolean noUsgsAuthors) {
+		this.published = published;
+		this.noUsgsAuthors = noUsgsAuthors;
+	}
 
 	public String getIndexId() {
 		return indexId;

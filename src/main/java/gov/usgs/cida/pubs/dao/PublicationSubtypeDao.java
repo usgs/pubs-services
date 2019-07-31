@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 
 @Repository
 public class PublicationSubtypeDao extends BaseDao<PublicationSubtype> {
@@ -30,7 +30,7 @@ public class PublicationSubtypeDao extends BaseDao<PublicationSubtype> {
 	@Transactional(readOnly = true)
 	@Override
 	public PublicationSubtype getById(String domainID) {
-		return getById(PubsUtilities.parseInteger(domainID));
+		return getById(PubsUtils.parseInteger(domainID));
 	}
 
 	@Transactional(readOnly = true)

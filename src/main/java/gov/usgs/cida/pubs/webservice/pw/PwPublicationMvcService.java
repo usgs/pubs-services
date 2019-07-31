@@ -43,10 +43,10 @@ import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.transform.CrossrefTransformer;
 import gov.usgs.cida.pubs.transform.DelimitedTransformer;
 import gov.usgs.cida.pubs.transform.JsonTransformer;
-import gov.usgs.cida.pubs.transform.PublicationColumns;
+import gov.usgs.cida.pubs.transform.PublicationColumnsHelper;
 import gov.usgs.cida.pubs.transform.XlsxTransformer;
 import gov.usgs.cida.pubs.transform.intfc.ITransformer;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.webservice.MvcService;
 import io.swagger.annotations.ApiParam;
 
@@ -144,19 +144,19 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 				statement = statement + PwPublicationDao.GET_STREAM_BY_MAP;
 				response.setContentType(PubsConstantsHelper.MEDIA_TYPE_TSV_VALUE);
 				response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + mimeType);
-				transformer = new DelimitedTransformer(response.getOutputStream(), PublicationColumns.getMappings(), "\t");
+				transformer = new DelimitedTransformer(response.getOutputStream(), PublicationColumnsHelper.getMappings(), "\t");
 				break;
 			case PubsConstantsHelper.MEDIA_TYPE_XLSX_EXTENSION:
 				statement = statement + PwPublicationDao.GET_STREAM_BY_MAP;
 				response.setContentType(PubsConstantsHelper.MEDIA_TYPE_XLSX_VALUE);
 				response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + mimeType);
-				transformer = new XlsxTransformer(response.getOutputStream(), PublicationColumns.getMappings());
+				transformer = new XlsxTransformer(response.getOutputStream(), PublicationColumnsHelper.getMappings());
 				break;
 			case PubsConstantsHelper.MEDIA_TYPE_CSV_EXTENSION:
 				statement = statement + PwPublicationDao.GET_STREAM_BY_MAP;
 				response.setContentType(PubsConstantsHelper.MEDIA_TYPE_CSV_VALUE);
 				response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + mimeType);
-				transformer = new DelimitedTransformer(response.getOutputStream(), PublicationColumns.getMappings(), ",");
+				transformer = new DelimitedTransformer(response.getOutputStream(), PublicationColumnsHelper.getMappings(), ",");
 				break;
 			default:
 				//Let json be the default
@@ -318,6 +318,6 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 
 	protected boolean isUsgsSeries(PwPublication pub){
 		PublicationSubtype subtype = pub.getPublicationSubtype();
-		return PubsUtilities.isUsgsNumberedSeries(subtype) || PubsUtilities.isUsgsUnnumberedSeries(subtype);
+		return PubsUtils.isUsgsNumberedSeries(subtype) || PubsUtils.isUsgsUnnumberedSeries(subtype);
 	}
 }

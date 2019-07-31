@@ -39,177 +39,177 @@ public class PubsUtilitiesTest extends BaseTest {
 
 	@Test
 	public void isUsgsNumberedSeriesTest() {
-		assertFalse(PubsUtilities.isUsgsNumberedSeries(null));
+		assertFalse(PubsUtils.isUsgsNumberedSeries(null));
 		PublicationSubtype pubSubtype = new PublicationSubtype();
-		assertFalse(PubsUtilities.isUsgsNumberedSeries(pubSubtype));
+		assertFalse(PubsUtils.isUsgsNumberedSeries(pubSubtype));
 		pubSubtype.setId(1);
-		assertFalse(PubsUtilities.isUsgsNumberedSeries(pubSubtype));
+		assertFalse(PubsUtils.isUsgsNumberedSeries(pubSubtype));
 		pubSubtype.setId(PublicationSubtype.USGS_UNNUMBERED_SERIES);
-		assertFalse(PubsUtilities.isUsgsNumberedSeries(pubSubtype));
+		assertFalse(PubsUtils.isUsgsNumberedSeries(pubSubtype));
 		pubSubtype.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
-		assertTrue(PubsUtilities.isUsgsNumberedSeries(pubSubtype));
+		assertTrue(PubsUtils.isUsgsNumberedSeries(pubSubtype));
 	}
 
 	@Test
 	public void isUsgsUnnumberedSeriesTest() {
-		assertFalse(PubsUtilities.isUsgsUnnumberedSeries(null));
+		assertFalse(PubsUtils.isUsgsUnnumberedSeries(null));
 		PublicationSubtype pubSubtype = new PublicationSubtype();
-		assertFalse(PubsUtilities.isUsgsUnnumberedSeries(pubSubtype));
+		assertFalse(PubsUtils.isUsgsUnnumberedSeries(pubSubtype));
 		pubSubtype.setId(1);
-		assertFalse(PubsUtilities.isUsgsUnnumberedSeries(pubSubtype));
+		assertFalse(PubsUtils.isUsgsUnnumberedSeries(pubSubtype));
 		pubSubtype.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
-		assertFalse(PubsUtilities.isUsgsUnnumberedSeries(pubSubtype));
+		assertFalse(PubsUtils.isUsgsUnnumberedSeries(pubSubtype));
 		pubSubtype.setId(PublicationSubtype.USGS_UNNUMBERED_SERIES);
-		assertTrue(PubsUtilities.isUsgsUnnumberedSeries(pubSubtype));
+		assertTrue(PubsUtils.isUsgsUnnumberedSeries(pubSubtype));
 	}
 
 	@Test
 	public void isPublicationTypeArticleTest() {
-		assertFalse(PubsUtilities.isPublicationTypeArticle(null));
+		assertFalse(PubsUtils.isPublicationTypeArticle(null));
 		PublicationType pubType = new PublicationType();
-		assertFalse(PubsUtilities.isPublicationTypeArticle(pubType));
+		assertFalse(PubsUtils.isPublicationTypeArticle(pubType));
 		pubType.setId(1);
-		assertFalse(PubsUtilities.isPublicationTypeArticle(pubType));
+		assertFalse(PubsUtils.isPublicationTypeArticle(pubType));
 		pubType.setId(PublicationType.REPORT);
-		assertFalse(PubsUtilities.isPublicationTypeArticle(pubType));
+		assertFalse(PubsUtils.isPublicationTypeArticle(pubType));
 		pubType.setId(PublicationType.ARTICLE);
-		assertTrue(PubsUtilities.isPublicationTypeArticle(pubType));
+		assertTrue(PubsUtils.isPublicationTypeArticle(pubType));
 	}
 
 	@Test
 	public void isSpnProductionTest() {
-		assertFalse(PubsUtilities.isSpnProduction(null));
-		assertFalse(PubsUtilities.isSpnProduction(""));
-		assertFalse(PubsUtilities.isSpnProduction(" "));
-		assertFalse(PubsUtilities.isSpnProduction("xyz"));
-		assertTrue(PubsUtilities.isSpnProduction(ProcessType.SPN_PRODUCTION.getIpdsValue()));
-		assertFalse(PubsUtilities.isSpnProduction(ProcessType.SPN_PRODUCTION.getIpdsValueEncoded()));
+		assertFalse(PubsUtils.isSpnProduction(null));
+		assertFalse(PubsUtils.isSpnProduction(""));
+		assertFalse(PubsUtils.isSpnProduction(" "));
+		assertFalse(PubsUtils.isSpnProduction("xyz"));
+		assertTrue(PubsUtils.isSpnProduction(ProcessType.SPN_PRODUCTION.getIpdsValue()));
+		assertFalse(PubsUtils.isSpnProduction(ProcessType.SPN_PRODUCTION.getIpdsValueEncoded()));
 	}
 
 	@Test
 	public void isPublicationTypeUSGSDataReleaseTest() {
-		assertFalse(PubsUtilities.isPublicationTypeUSGSDataRelease(null));
+		assertFalse(PubsUtils.isPublicationTypeUSGSDataRelease(null));
 		PublicationSubtype pubSubtype = new PublicationSubtype();
-		assertFalse(PubsUtilities.isPublicationTypeUSGSDataRelease(pubSubtype));
+		assertFalse(PubsUtils.isPublicationTypeUSGSDataRelease(pubSubtype));
 		pubSubtype.setId(1);
-		assertFalse(PubsUtilities.isPublicationTypeUSGSDataRelease(pubSubtype));
+		assertFalse(PubsUtils.isPublicationTypeUSGSDataRelease(pubSubtype));
 		pubSubtype.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
-		assertFalse(PubsUtilities.isPublicationTypeUSGSDataRelease(pubSubtype));
+		assertFalse(PubsUtils.isPublicationTypeUSGSDataRelease(pubSubtype));
 		pubSubtype.setId(PublicationSubtype.USGS_DATA_RELEASE);
-		assertTrue(PubsUtilities.isPublicationTypeUSGSDataRelease(pubSubtype));
+		assertTrue(PubsUtils.isPublicationTypeUSGSDataRelease(pubSubtype));
 	}
 
 	@Test
 	public void isPublicationTypeUSGSWebsiteTest() {
-		assertFalse(PubsUtilities.isPublicationTypeUSGSWebsite(null));
+		assertFalse(PubsUtils.isPublicationTypeUSGSWebsite(null));
 		PublicationSubtype pubSubtype = new PublicationSubtype();
-		assertFalse(PubsUtilities.isPublicationTypeUSGSWebsite(pubSubtype));
+		assertFalse(PubsUtils.isPublicationTypeUSGSWebsite(pubSubtype));
 		pubSubtype.setId(1);
-		assertFalse(PubsUtilities.isPublicationTypeUSGSWebsite(pubSubtype));
+		assertFalse(PubsUtils.isPublicationTypeUSGSWebsite(pubSubtype));
 		pubSubtype.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
-		assertFalse(PubsUtilities.isPublicationTypeUSGSWebsite(pubSubtype));
+		assertFalse(PubsUtils.isPublicationTypeUSGSWebsite(pubSubtype));
 		pubSubtype.setId(PublicationSubtype.USGS_DATA_RELEASE);
-		assertFalse(PubsUtilities.isPublicationTypeUSGSWebsite(pubSubtype));
+		assertFalse(PubsUtils.isPublicationTypeUSGSWebsite(pubSubtype));
 		pubSubtype.setId(PublicationSubtype.USGS_WEBSITE);
-		assertTrue(PubsUtilities.isPublicationTypeUSGSWebsite(pubSubtype));
+		assertTrue(PubsUtils.isPublicationTypeUSGSWebsite(pubSubtype));
 	}
 
 	@Test
 	public void getUsernameTest_noAuthentication() {
-		assertEquals("Not Authenticated", PubsConstantsHelper.ANONYMOUS_USER, PubsUtilities.getUsername());
+		assertEquals("Not Authenticated", PubsConstantsHelper.ANONYMOUS_USER, PubsUtils.getUsername());
 	}
 
 	@Test
 	@WithMockUser(username=TestOAuth.AUTHENTICATED_USER)
 	public void getUsernameTest_authenticated() {
-		assertEquals("Is Authenticated", TestOAuth.AUTHENTICATED_USER, PubsUtilities.getUsername());
+		assertEquals("Is Authenticated", TestOAuth.AUTHENTICATED_USER, PubsUtils.getUsername());
 	}
 
 	@Test
 	public void buildErrorMsgTest() {
 		Object[] messageArguments = Arrays.asList(new String[]{"abc", "def"}).toArray();
-		assertNull(PubsUtilities.buildErrorMsg(null, null));
-		assertEquals("", PubsUtilities.buildErrorMsg("", null));
-		assertEquals("{0} is already in use on Prod Id {1}.", PubsUtilities.buildErrorMsg("{publication.indexid.duplicate}", null));
-		assertEquals("abc is already in use on Prod Id def.", PubsUtilities.buildErrorMsg("{publication.indexid.duplicate}", messageArguments));
-		assertEquals("is {0} from {1}", PubsUtilities.buildErrorMsg("is {0} from {1}", null));
-		assertEquals("is abc from def", PubsUtilities.buildErrorMsg("is {0} from {1}", messageArguments));
-		assertEquals("abc from def not", PubsUtilities.buildErrorMsg("{0} from {1} not", messageArguments));
+		assertNull(PubsUtils.buildErrorMsg(null, null));
+		assertEquals("", PubsUtils.buildErrorMsg("", null));
+		assertEquals("{0} is already in use on Prod Id {1}.", PubsUtils.buildErrorMsg("{publication.indexid.duplicate}", null));
+		assertEquals("abc is already in use on Prod Id def.", PubsUtils.buildErrorMsg("{publication.indexid.duplicate}", messageArguments));
+		assertEquals("is {0} from {1}", PubsUtils.buildErrorMsg("is {0} from {1}", null));
+		assertEquals("is abc from def", PubsUtils.buildErrorMsg("is {0} from {1}", messageArguments));
+		assertEquals("abc from def not", PubsUtils.buildErrorMsg("{0} from {1} not", messageArguments));
 	}
 
 	@Test
 	public void isIntegerTest() {
-		assertFalse(PubsUtilities.isInteger(null));
-		assertFalse(PubsUtilities.isInteger(""));
-		assertFalse(PubsUtilities.isInteger("  "));
-		assertFalse(PubsUtilities.isInteger("abc123"));
-		assertTrue(PubsUtilities.isInteger("123"));
+		assertFalse(PubsUtils.isInteger(null));
+		assertFalse(PubsUtils.isInteger(""));
+		assertFalse(PubsUtils.isInteger("  "));
+		assertFalse(PubsUtils.isInteger("abc123"));
+		assertTrue(PubsUtils.isInteger("123"));
 	}
 
 	@Test
 	public void parseIntegerTest() {
-		assertNull(PubsUtilities.parseInteger(null));
-		assertNull(PubsUtilities.parseInteger(""));
-		assertNull(PubsUtilities.parseInteger("  "));
-		assertNull(PubsUtilities.parseInteger("abc123"));
-		assertEquals(123, PubsUtilities.parseInteger("123").intValue());
+		assertNull(PubsUtils.parseInteger(null));
+		assertNull(PubsUtils.parseInteger(""));
+		assertNull(PubsUtils.parseInteger("  "));
+		assertNull(PubsUtils.parseInteger("abc123"));
+		assertEquals(123, PubsUtils.parseInteger("123").intValue());
 	}
 
 	@Test
 	public void isSpnUserTest_noAuthentication() {
-		assertFalse(PubsUtilities.isSpnUser(configurationService));
+		assertFalse(PubsUtils.isSpnUser(configurationService));
 	}
 
 	@Test
 	@WithMockUser(username=TestOAuth.AUTHENTICATED_USER)
 	public void isSpnUserTest_noAuthorities() {
-		assertFalse(PubsUtilities.isSpnUser(configurationService));
+		assertFalse(PubsUtils.isSpnUser(configurationService));
 	}
 
 	@Test
 	@WithMockUser(username=TestOAuth.SPN_USER, authorities={TestOAuth.SPN_AUTHORITY})
 	public void isSpnUserTest() {
-		assertTrue(PubsUtilities.isSpnUser(configurationService));
+		assertTrue(PubsUtils.isSpnUser(configurationService));
 	}
 
 	@Test
 	@WithMockUser(username=TestOAuth.AUTHORIZED_USER,authorities={TestOAuth.SPN_AUTHORITY, TestOAuth.AUTHORIZED_AUTHORITY})
 	public void isSpnUserTest_plus() {
-		assertTrue(PubsUtilities.isSpnUser(configurationService));
+		assertTrue(PubsUtils.isSpnUser(configurationService));
 	}
 
 	@Test
 	@WithMockUser(username=TestOAuth.AUTHORIZED_USER, authorities={TestOAuth.AUTHORIZED_AUTHORITY})
 	public void isSpnUserTest_pubs() {
-		assertFalse(PubsUtilities.isSpnUser(configurationService));
+		assertFalse(PubsUtils.isSpnUser(configurationService));
 	}
 
 	@Test
 	public void isSpnOnlyTest_noAuthentication() {
-		assertFalse(PubsUtilities.isSpnOnly(configurationService));
+		assertFalse(PubsUtils.isSpnOnly(configurationService));
 	}
 
 	@Test
 	@WithMockUser(username=TestOAuth.AUTHENTICATED_USER)
 	public void isSpnOnlyTest_noAuthorities() {
-		assertFalse(PubsUtilities.isSpnOnly(configurationService));
+		assertFalse(PubsUtils.isSpnOnly(configurationService));
 	}
 
 	@Test
 	@WithMockUser(username=TestOAuth.SPN_USER, authorities={TestOAuth.SPN_AUTHORITY})
 	public void isSpnOnlyTest() {
-		assertTrue(PubsUtilities.isSpnOnly(configurationService));
+		assertTrue(PubsUtils.isSpnOnly(configurationService));
 	}
 
 	@Test
 	@WithMockUser(username=TestOAuth.AUTHORIZED_USER,authorities={TestOAuth.SPN_AUTHORITY, TestOAuth.AUTHORIZED_AUTHORITY})
 	public void isSpnOnlyTest_plus() {
-		assertFalse(PubsUtilities.isSpnOnly(configurationService));
+		assertFalse(PubsUtils.isSpnOnly(configurationService));
 	}
 
 	@Test
 	@WithMockUser(username=TestOAuth.AUTHORIZED_USER, authorities={TestOAuth.AUTHORIZED_AUTHORITY})
 	public void isSpnOnlyTest_pubs() {
-		assertFalse(PubsUtilities.isSpnOnly(configurationService));
+		assertFalse(PubsUtils.isSpnOnly(configurationService));
 	}
 }

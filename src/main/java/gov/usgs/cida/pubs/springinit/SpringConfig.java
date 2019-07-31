@@ -31,13 +31,13 @@ import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
 public class SpringConfig implements WebMvcConfigurer {
 
 	@Autowired
-	CustomStringToArrayConverter customStringToArrayConverter;
+	private CustomStringToArrayConverter customStringToArrayConverter;
 
 	@Autowired
-	StringArrayCleansingConverter customStringListToArrayConverter;
+	private StringArrayCleansingConverter customStringListToArrayConverter;
 
 	@Autowired
-	CustomStringToStringConverter customStringToStringConverter;
+	private CustomStringToStringConverter customStringToStringConverter;
 
 	@Override
 	public void addFormatters(FormatterRegistry registry) {

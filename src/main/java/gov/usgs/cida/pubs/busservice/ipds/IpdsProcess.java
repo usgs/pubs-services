@@ -32,7 +32,7 @@ import gov.usgs.cida.pubs.domain.ipds.PublicationMap;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 
 @Service
 public class IpdsProcess implements IIpdsProcess {
@@ -132,7 +132,7 @@ public class IpdsProcess implements IIpdsProcess {
 		filters.put(PublicationDao.IPDS_ID, new String[]{pub.getIpdsId()});
 		List<MpPublication> existingMpPubs = pubBusService.getObjects(filters);
 		MpPublication existingMpPub = null == existingMpPubs ? null : existingMpPubs.isEmpty() ? null : existingMpPubs.get(0);
-		if (null == existingMpPub && PubsUtilities.isUsgsNumberedSeries(pub.getPublicationSubtype())) {
+		if (null == existingMpPub && PubsUtils.isUsgsNumberedSeries(pub.getPublicationSubtype())) {
 			//It's a USGS Numbered Series, to try again by index ID if not found by IPDS ID
 			filters.clear();
 			filters.put(PublicationDao.INDEX_ID, new String[]{pubBusService.getUsgsNumberedSeriesIndexId(pub)});
@@ -162,7 +162,7 @@ public class IpdsProcess implements IIpdsProcess {
 			//Do not proceed if the new data is null
 		} else if (null != getFromPw(newMpPub)) {
 			//Do not proceed if the pub has been published
-		} else if (PubsUtilities.isUsgsNumberedSeries(newMpPub.getPublicationSubtype())
+		} else if (PubsUtils.isUsgsNumberedSeries(newMpPub.getPublicationSubtype())
 				&& null == newMpPub.getSeriesTitle()) {
 			//Do not process USGS numbered series without an actual series.
 		} else if (null == existingMpPub) {
@@ -183,7 +183,7 @@ public class IpdsProcess implements IIpdsProcess {
 				//Skip if we have already assigned a DOI (shouldn't happen as we are querying for null DOI publications)
 			} else if (null == newMpPub.getIpdsReviewProcessState() || !ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(newMpPub.getIpdsReviewProcessState())) {
 				//Skip if not in SPN Production (shouldn't happen as we are querying SPN Production only)
-			} else if (PubsUtilities.isUsgsNumberedSeries(newMpPub.getPublicationSubtype())) {
+			} else if (PubsUtils.isUsgsNumberedSeries(newMpPub.getPublicationSubtype())) {
 				rtn = true;
 			}
 		}
@@ -193,7 +193,7 @@ public class IpdsProcess implements IIpdsProcess {
 	protected PwPublication getFromPw(MpPublication newMpPub) {
 		if (null != newMpPub) {
 			PwPublication existingPwPub = PwPublication.getDao().getByIpdsId(newMpPub.getIpdsId());
-			if (null == existingPwPub && PubsUtilities.isUsgsNumberedSeries(newMpPub.getPublicationSubtype())) {
+			if (null == existingPwPub && PubsUtils.isUsgsNumberedSeries(newMpPub.getPublicationSubtype())) {
 				//It's a USGS Numbered Series, to try again by index ID if not found by IPDS ID
 				existingPwPub = PwPublication.getDao().getByIndexId(pubBusService.getUsgsNumberedSeriesIndexId(newMpPub));
 			}
@@ -229,8 +229,8 @@ public class IpdsProcess implements IIpdsProcess {
 				updateIpdsWithDoi(rtnPub);
 				break;
 			case DISSEMINATION:
-				if ((PubsUtilities.isUsgsNumberedSeries(rtnPub.getPublicationSubtype())
-						|| PubsUtilities.isUsgsUnnumberedSeries(rtnPub.getPublicationSubtype()))
+				if ((PubsUtils.isUsgsNumberedSeries(rtnPub.getPublicationSubtype())
+						|| PubsUtils.isUsgsUnnumberedSeries(rtnPub.getPublicationSubtype()))
 						&& (null != rtnPub.getDoi() && 0 < rtnPub.getDoi().length())) {
 					crossRefBusService.submitCrossRef(rtnPub);
 				}

@@ -10,18 +10,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.domain.mp.MpList;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 
 @Repository
 public class MpListDao extends BaseDao<MpList> {
+
+	private static final String NS = "mpList";
+	public static final String LIST_TYPE_SEARCH = "listType";
 
 	@Autowired
 	public MpListDao(SqlSessionFactory sqlSessionFactory) {
 		super(sqlSessionFactory);
 	}
-
-	private static final String NS = "mpList";
-	public static final String LIST_TYPE_SEARCH = "listType";
 
 	@Transactional(readOnly = true)
 	@Override
@@ -29,14 +29,10 @@ public class MpListDao extends BaseDao<MpList> {
 		return getSqlSession().selectOne(NS + GET_BY_ID, domainID);
 	}
 
-	/** 
-	 * {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.String)
-	 */
 	@Transactional(readOnly = true)
 	@Override
 	public MpList getById(String domainID) {
-		return getById(PubsUtilities.parseInteger(domainID));
+		return getById(PubsUtils.parseInteger(domainID));
 	}
 
 	@Transactional(readOnly = true)

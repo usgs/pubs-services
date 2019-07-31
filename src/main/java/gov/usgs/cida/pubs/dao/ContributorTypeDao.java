@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import gov.usgs.cida.pubs.domain.ContributorType;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 
 @Repository
 public class ContributorTypeDao extends BaseDao<ContributorType> {
@@ -30,7 +30,7 @@ public class ContributorTypeDao extends BaseDao<ContributorType> {
 	@Transactional(readOnly = true)
 	@Override
 	public ContributorType getById(String domainID) {
-		return getById(PubsUtilities.parseInteger(domainID));
+		return getById(PubsUtils.parseInteger(domainID));
 	}
 
 	@Transactional(readOnly = true)

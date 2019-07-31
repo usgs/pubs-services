@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import gov.usgs.cida.pubs.domain.LinkType;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 
 @Repository
 public class LinkTypeDao extends BaseDao<LinkType> {
@@ -30,7 +30,7 @@ public class LinkTypeDao extends BaseDao<LinkType> {
 	@Transactional(readOnly = true)
 	@Override
 	public LinkType getById(String domainID) {
-		return getById(PubsUtilities.parseInteger(domainID));
+		return getById(PubsUtils.parseInteger(domainID));
 	}
 
 	@Transactional(readOnly = true)

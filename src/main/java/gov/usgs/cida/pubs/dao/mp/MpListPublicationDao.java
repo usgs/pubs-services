@@ -10,21 +10,17 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import gov.usgs.cida.pubs.domain.mp.MpListPublication;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 
-/**
- * @author drsteini
- *
- */
 @Repository
 public class MpListPublicationDao extends MpDao<MpListPublication> {
+
+	private static final String NS = "mpListPublication";
 
 	@Autowired
 	public MpListPublicationDao(SqlSessionFactory sqlSessionFactory) {
 		super(sqlSessionFactory);
 	}
-
-	private static final String NS = "mpListPublication";
 
 	@Transactional
 	@Override
@@ -42,7 +38,7 @@ public class MpListPublicationDao extends MpDao<MpListPublication> {
 	@Transactional(readOnly = true)
 	@Override
 	public MpListPublication getById(String domainID) {
-		return getById(PubsUtilities.parseInteger(domainID));
+		return getById(PubsUtils.parseInteger(domainID));
 	}
 
 	@Transactional(readOnly = true)

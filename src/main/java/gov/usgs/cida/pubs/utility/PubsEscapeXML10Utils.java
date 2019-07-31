@@ -20,22 +20,23 @@ import gov.usgs.cida.pubs.busservice.ipds.IpdsCostCenterService;
  * @author drsteini
  *
  */
-public class PubsEscapeXML10 {
+public class PubsEscapeXML10Utils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(IpdsCostCenterService.class);
 
 	public static final String ERROR_CLEANSING = "<error>Service returned unreadable message.</error>";
-	private PubsEscapeXML10() {}
 
 	public static final CharSequenceTranslator ESCAPE_XML10 =
 		new AggregateTranslator(new NumericEntityRemover());
+
+	private PubsEscapeXML10Utils() {}
 
 	public static  String cleanseXml(String xml) {
 		if (!StringUtils.startsWith(xml, "<") || StringUtils.containsIgnoreCase(xml, "<!DOCTYPE html")) {
 			LOG.info("ERROR RESPONSE FROM IPDS!!!", xml);
 			return ERROR_CLEANSING;
 		} else {
-			return PubsEscapeXML10.ESCAPE_XML10.translate(xml);
+			return PubsEscapeXML10Utils.ESCAPE_XML10.translate(xml);
 		}
 	}
 

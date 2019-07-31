@@ -10,7 +10,7 @@ import javax.validation.ConstraintValidatorContext;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.constraint.NoChildren;
 
 public class NoChildrenValidatorForPublicationSeries implements ConstraintValidator<NoChildren, PublicationSeries> {
@@ -32,7 +32,7 @@ public class NoChildrenValidatorForPublicationSeries implements ConstraintValida
 				rtn = false;
 				context.disableDefaultConstraintViolation();
 				Object[] messageArguments = Arrays.asList(new String[]{"Name " + value.getText(), cnt.toString()}).toArray();
-				String errorMsg = PubsUtilities.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
+				String errorMsg = PubsUtils.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
 				context.buildConstraintViolationWithTemplate(errorMsg).addPropertyNode("id").addConstraintViolation();
 			}
 		}

@@ -66,14 +66,15 @@ public class PublicationSeriesBusService extends BusService<PublicationSeries> {
 	@Override
 	@Transactional
 	public PublicationSeries createObject(PublicationSeries object) {
+		PublicationSeries result = object;
 		if (null != object) {
 			object.setValidationErrors(validator.validate(object));
 			if (object.isValid()) {
 				Integer id = PublicationSeries.getDao().add(object);
-				object = PublicationSeries.getDao().getById(id);
+				result = PublicationSeries.getDao().getById(id);
 			}
 		}
-		return object;
+		return result;
 	}
 
 	/** {@inheritDoc}

@@ -7,7 +7,7 @@ import javax.validation.ConstraintValidatorContext;
 
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 
 public class ParentExistsValidatorForPublicationSeries implements ConstraintValidator<ParentExists, PublicationSeries> {
@@ -27,7 +27,7 @@ public class ParentExistsValidatorForPublicationSeries implements ConstraintVali
 				rtn = false;
 				context.disableDefaultConstraintViolation();
 				Object[] messageArguments = Arrays.asList(new String[]{"Name " + value.getText()}).toArray();
-				String errorMsg = PubsUtilities.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
+				String errorMsg = PubsUtils.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
 				context.buildConstraintViolationWithTemplate(errorMsg).addPropertyNode("id").addConstraintViolation();
 			}
 		}

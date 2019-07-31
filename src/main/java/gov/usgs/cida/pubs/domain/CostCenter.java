@@ -1,7 +1,7 @@
 package gov.usgs.cida.pubs.domain;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 
 import java.io.Serializable;
 
@@ -35,7 +35,7 @@ public class CostCenter extends Affiliation<CostCenter> implements Serializable 
 	}
 
 	public void setIpdsId(final String inIpdsId) {
-		ipdsId = PubsUtilities.parseInteger(inIpdsId);
+		ipdsId = PubsUtils.parseInteger(inIpdsId);
 	}
 
 	/**

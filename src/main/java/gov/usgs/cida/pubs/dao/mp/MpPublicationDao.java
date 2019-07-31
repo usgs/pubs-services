@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import gov.usgs.cida.pubs.dao.intfc.IMpPublicationDao;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 
 /**
  * @author drsteini
@@ -19,11 +19,6 @@ import gov.usgs.cida.pubs.utility.PubsUtilities;
  */
 @Repository
 public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublicationDao {
-
-	@Autowired
-	public MpPublicationDao(SqlSessionFactory sqlSessionFactory) {
-		super(sqlSessionFactory);
-	}
 
 	private static final String NS = "mpPublication";
 	public static final String GET_NEW_ID = ".getNewProdId";
@@ -37,94 +32,65 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
 	public static final String LIST_ID = "listId";
 	public static final String SEARCH_TERMS = "searchTerms";
 
-	/**
-	 * {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.BaseDao#add(java.lang.Object)
-	 */
+	@Autowired
+	public MpPublicationDao(SqlSessionFactory sqlSessionFactory) {
+		super(sqlSessionFactory);
+	}
+
 	@Transactional
 	@Override
 	public Integer add(MpPublication domainObject) {
 		return insert(NS + ADD, domainObject);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.BaseDao#getById(java.lang.Integer)
-	 */
 	@Transactional(readOnly = true)
 	@Override
 	public MpPublication getById(Integer domainID) {
 		return (MpPublication) getSqlSession().selectOne(NS + GET_BY_ID, domainID);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.BaseDao#getByMap(java.util.Map)
-	 */
 	@Transactional(readOnly = true)
 	@Override
 	public List<MpPublication> getByMap(Map<String, Object> filters) {
 		return getSqlSession().selectList(NS + GET_BY_MAP, filters);
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.core.dao.intfc.IDao#getObjectCount(java.util.Map)
-	 */
 	@Override
 	@Transactional(readOnly = true)
 	public Integer getObjectCount(Map<String, Object> filters) {
 		return getSqlSession().selectOne(NS + GET_COUNT, filters);
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#update(java.lang.Object)
-	 */
 	@Transactional
 	@Override
 	public void update(MpPublication domainObject) {
 		update(NS + UPDATE, domainObject);
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#delete(java.lang.Object)
-	 */
 	@Transactional
 	@Override
 	public void delete(MpPublication domainObject) {
 		deleteById(domainObject.getId());
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#deleteById(java.lang.Integer)
-	 */
 	@Transactional
 	@Override
 	public void deleteById(Integer domainID) {
 		delete(NS + DELETE, domainID);
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.intfc.IMpDao#copyFromPw(java.lang.Integer)
-	 */
 	@Transactional
 	@Override
 	public void copyFromPw(Integer domainID) {
 		insert(NS + COPY_FROM_PW, domainID);
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.intfc.IMpDao#publishToPw(java.lang.Integer)
-	 */
 	@Transactional
 	@Override
 	public void publishToPw(Integer domainID) {
 		update(NS + PUBLISH, domainID);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.intfc.IMpPublicationDao#getNewProdId()
-	 */
 	@Transactional
 	@Override
 	public Integer getNewProdId() {
@@ -135,8 +101,8 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
 	@Override
 	public void lockPub(Integer domainId) {
 		Map<String, Object> params = new HashMap<>();
-		params.put("lockUsername", PubsUtilities.getUsername());
-		params.put("updateUsername", PubsUtilities.getUsername());
+		params.put("lockUsername", PubsUtils.getUsername());
+		params.put("updateUsername", PubsUtils.getUsername());
 		params.put("publicationId", domainId);
 		getSqlSession().update(NS + LOCK_PUB, params);
 	}
@@ -146,7 +112,7 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
 	public void releaseLocksUser(String lockUsername) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("lockUsername", lockUsername);
-		params.put("updateUsername", PubsUtilities.getUsername());
+		params.put("updateUsername", PubsUtils.getUsername());
 		getSqlSession().update(NS + RELEASE_LOCKS_USER, params);
 	}
 

@@ -23,4 +23,4 @@ USER $USER
 CMD ["java", "-jar", "app.jar"]
 
 HEALTHCHECK --interval=30s --timeout=3s \
-  CMD curl -H "Accept: application/json" -v -k "http://127.0.0.1:${SERVER_PORT}${SERVER_CONTEXT_PATH}/actuator/health" | grep -q "{\"status\":\"UP\"}" || exit 1
+  CMD curl -H "Accept: application/json" -v -k "http://127.0.0.1:${SERVER_PORT}${SERVER_CONTEXT_PATH}/about/health" | grep -q "{\"status\":\"UP\"}" || exit 1

@@ -1,6 +1,6 @@
 spring:
-#  activemq:
-#    broker-url: changeMe
+  activemq:
+    broker-url: ${QUEUE_URL}
   datasource:
     url: jdbc:postgresql://${PUBS_DB_HOST}:${PUBS_DB_PORT}/${PUBS_DB_NAME}
     username: ${PUBS_DB_READ_ONLY_USERNAME}
@@ -13,6 +13,12 @@ spring:
 
 server:
   port: ${SERVER_PORT}
+#  ssl:
+#    key-store: ${KEY_STORE}
+#    key-store-password: ${KEY_STORE_PASSWORD}
+#    key-store-type: ${KEY_STORE_TYPE}
+#    key-alias: ${KEY_ALIAS}
+#    key-password: ${KEY_STORE_PASSWORD}
   servlet:
     context-path: ${SERVER_CONTEXT_PATH}
 
@@ -54,13 +60,13 @@ pubs:
 logging:
   level:
     root: ${ROOT_LOG_LEVEL}
-#
-#security:
-#  oauth2:
-#    resource:
-#      id: changeMe
-#      jwk:
-#        keySetUri: changeMe
+
+security:
+  oauth2:
+    resource:
+      id: ${SECURITY_RESOURCE_ID}
+      jwk:
+        keySetUri: ${SECURITY_KEYSET_URI}
 
 management:
   endpoints:

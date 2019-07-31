@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
 import gov.usgs.cida.pubs.json.View;
@@ -201,7 +201,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 
 	@JsonProperty("numberOfPages")
 	@JsonView(View.PW.class)
-	@Pattern(regexp=PubsConstants.SPACES_OR_NUMBER_REGEX)
+	@Pattern(regexp=PubsConstantsHelper.SPACES_OR_NUMBER_REGEX)
 	private String numberOfPages;
 
 	@JsonProperty("onlineOnly")
@@ -238,7 +238,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 
 	@JsonProperty("ipdsInternalId")
 	@JsonView(View.MP.class)
-	@Pattern(regexp=PubsConstants.SPACES_OR_NUMBER_REGEX)
+	@Pattern(regexp=PubsConstantsHelper.SPACES_OR_NUMBER_REGEX)
 	protected String ipdsInternalId;
 
 	@JsonProperty("ipdsContext")
@@ -262,7 +262,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 
 	@JsonProperty("scale")
 	@JsonView(View.PW.class)
-	@Pattern(regexp=PubsConstants.SPACES_OR_NUMBER_REGEX)
+	@Pattern(regexp=PubsConstantsHelper.SPACES_OR_NUMBER_REGEX)
 	private String scale;
 
 	@JsonProperty("projection")

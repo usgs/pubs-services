@@ -27,7 +27,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.PublicationBusService;
 import gov.usgs.cida.pubs.busservice.pw.PwPublicationBusService;
 import gov.usgs.cida.pubs.dao.ContributorTypeDao;
@@ -73,7 +73,7 @@ public class PwPublicationMvcServiceSinglePubIT extends BaseIT {
 		MvcResult result = mockMvc.perform(get("/publication/" + CROSSREF_PUB_ID))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-			.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 			.andReturn();
 		JSONObject content = getRtnAsJSONObject(result);
 		assertTrue("expects non-empty response",  0 < content.length());
@@ -96,7 +96,7 @@ public class PwPublicationMvcServiceSinglePubIT extends BaseIT {
 			))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-			.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 			.andReturn();
 		JSONObject content = getRtnAsJSONObject(result);
 		assertTrue("expects non-empty response",  0 < content.length());
@@ -115,7 +115,7 @@ public class PwPublicationMvcServiceSinglePubIT extends BaseIT {
 			))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-			.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 			.andReturn();
 		JSONObject content = getRtnAsJSONObject(result);
 		assertTrue("expects non-empty response",  0 < content.length());
@@ -128,10 +128,10 @@ public class PwPublicationMvcServiceSinglePubIT extends BaseIT {
 	
 	@Test
 	public void getJSONWhenQueryStringAsksForJSON () throws Exception {
-		MvcResult result = mockMvc.perform(get("/publication/" + CROSSREF_PUB_ID + "?" + PubsConstants.CONTENT_PARAMETER_NAME +"=" + PubsConstants.MEDIA_TYPE_JSON_EXTENSION))
+		MvcResult result = mockMvc.perform(get("/publication/" + CROSSREF_PUB_ID + "?" + PubsConstantsHelper.CONTENT_PARAMETER_NAME +"=" + PubsConstantsHelper.MEDIA_TYPE_JSON_EXTENSION))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-			.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 			.andReturn();
 		JSONObject content = getRtnAsJSONObject(result);
 		assertTrue("expects non-empty response",  0 < content.length());
@@ -146,7 +146,7 @@ public class PwPublicationMvcServiceSinglePubIT extends BaseIT {
 	public void notFoundTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/publication/nonExistentPubId?mimetype=json").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())
-				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 		assertEquals(0, rtn.getResponse().getContentAsString().length());
 	}
@@ -154,11 +154,11 @@ public class PwPublicationMvcServiceSinglePubIT extends BaseIT {
 	@Test
 	public void getCrossrefXMLWhenAcceptHeaderAsksForCrossref () throws Exception {
 		MvcResult result = mockMvc.perform(get("/publication/" + CROSSREF_PUB_ID)
-			.accept(PubsConstants.MEDIA_TYPE_CROSSREF)
+			.accept(PubsConstantsHelper.MEDIA_TYPE_CROSSREF)
 			)
 			.andExpect(status().isOk())
-			.andExpect(content().contentType(PubsConstants.MEDIA_TYPE_CROSSREF))
-			.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+			.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_CROSSREF))
+			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 			.andExpect(header().string(MIME.CONTENT_DISPOSITION, "inline"))
 			.andReturn();
 		String resultText = result.getResponse().getContentAsString();
@@ -168,10 +168,10 @@ public class PwPublicationMvcServiceSinglePubIT extends BaseIT {
 	
 	@Test
 	public void getCrossrefXMLWhenQueryStringAsksForCrossref () throws Exception {
-		MvcResult result = mockMvc.perform(get("/publication/" + CROSSREF_PUB_ID + "?" + PubsConstants.CONTENT_PARAMETER_NAME +"=" + PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION))
+		MvcResult result = mockMvc.perform(get("/publication/" + CROSSREF_PUB_ID + "?" + PubsConstantsHelper.CONTENT_PARAMETER_NAME +"=" + PubsConstantsHelper.MEDIA_TYPE_CROSSREF_EXTENSION))
 			.andExpect(status().isOk())
-			.andExpect(content().contentType(PubsConstants.MEDIA_TYPE_CROSSREF))
-			.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+			.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_CROSSREF))
+			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 			.andExpect(header().string(MIME.CONTENT_DISPOSITION, "inline"))
 			.andReturn();
 		String resultText = result.getResponse().getContentAsString();

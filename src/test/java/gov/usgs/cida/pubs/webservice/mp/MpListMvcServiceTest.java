@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import gov.usgs.cida.pubs.BaseTest;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.dao.mp.MpListDaoIT;
 import gov.usgs.cida.pubs.domain.mp.MpList;
@@ -33,11 +33,9 @@ public class MpListMvcServiceTest extends BaseTest {
 
 	private MockMvc mockMvc;
 
-	private MpListMvcService mvcService;
-	
 	@Before
 	public void setup() {
-		mvcService = new MpListMvcService(busService);
+		MpListMvcService mvcService = new MpListMvcService(busService);
 		mockMvc = MockMvcBuilders.standaloneSetup(mvcService).build();
 	}
 
@@ -47,7 +45,7 @@ public class MpListMvcServiceTest extends BaseTest {
 		MvcResult rtn = mockMvc.perform(get("/lists?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
 		assertThat(getRtnAsJSONArray(rtn),

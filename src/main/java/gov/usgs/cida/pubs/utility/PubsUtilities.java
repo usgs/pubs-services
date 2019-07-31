@@ -13,7 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.domain.ProcessType;
@@ -45,7 +45,7 @@ public final class PubsUtilities {
 	}
 
 	public static String getUsername() {
-		String username = PubsConstants.ANONYMOUS_USER;
+		String username = PubsConstantsHelper.ANONYMOUS_USER;
 		Authentication auth = getAuthentication();
 
 		if (null != auth && auth.getPrincipal() instanceof User) {

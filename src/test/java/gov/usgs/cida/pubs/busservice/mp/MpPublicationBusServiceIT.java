@@ -33,7 +33,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.TestOAuth;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
@@ -144,7 +144,7 @@ public class MpPublicationBusServiceIT extends BaseIT {
 		assertNull(busService.getObject(-1));
 		assertNotNull(busService.getObject(1));
 		MpPublication mpPub = busService.getObject(1);
-		MpPublicationDaoIT.assertMpPub1(mpPub, PubsConstants.ANONYMOUS_USER);
+		MpPublicationDaoIT.assertMpPub1(mpPub, PubsConstantsHelper.ANONYMOUS_USER);
 		MpPublicationDaoIT.assertMpPub1Children(mpPub);
 	}
 
@@ -306,7 +306,7 @@ public class MpPublicationBusServiceIT extends BaseIT {
 		assertNotNull(outPublication);
 		assertNotNull(outPublication.getId());
 		assertEquals("sirnumber", outPublication.getIndexId());
-		assertEquals(PubsConstants.DOI_PREFIX + "/" + outPublication.getIndexId(), outPublication.getDoi());
+		assertEquals(PubsConstantsHelper.DOI_PREFIX + "/" + outPublication.getIndexId(), outPublication.getDoi());
 		assertEquals("testnewlinecarriagereturn", outPublication.getTitle());
 
 		inPublication = new MpPublication();
@@ -336,7 +336,7 @@ public class MpPublicationBusServiceIT extends BaseIT {
 		assertNotNull(outPublication);
 		assertNotNull(outPublication.getId());
 		assertEquals(outPublication.getId().toString(), outPublication.getIndexId());
-		assertEquals(PubsConstants.DOI_PREFIX + "/" + outPublication.getIndexId(), outPublication.getDoi());
+		assertEquals(PubsConstantsHelper.DOI_PREFIX + "/" + outPublication.getIndexId(), outPublication.getDoi());
 
 		//Test that we cannot update indexId or doi on a USGS series
 		inPublication = new MpPublication();
@@ -428,7 +428,7 @@ public class MpPublicationBusServiceIT extends BaseIT {
 	public void doiNameTest() {
 		assertNull(MpPublicationBusService.getDoiName(null));
 		assertNull(MpPublicationBusService.getDoiName(""));
-		assertEquals(PubsConstants.DOI_PREFIX + "/abc", MpPublicationBusService.getDoiName("abc"));
+		assertEquals(PubsConstantsHelper.DOI_PREFIX + "/abc", MpPublicationBusService.getDoiName("abc"));
 	}
 
 	@Test
@@ -563,7 +563,7 @@ public class MpPublicationBusServiceIT extends BaseIT {
 		//This one should change nothing
 		busService.beginPublicationEdit(2);
 		Publication<?> mpPub2after = MpPublication.getDao().getById(2);
-		MpPublicationDaoIT.assertMpPub2(mpPub2after, PubsConstants.ANONYMOUS_USER);
+		MpPublicationDaoIT.assertMpPub2(mpPub2after, PubsConstantsHelper.ANONYMOUS_USER);
 		MpPublicationDaoIT.assertMpPub2Children(mpPub2after);
 
 		//This one is in PW, not MP and should be moved
@@ -573,7 +573,7 @@ public class MpPublicationBusServiceIT extends BaseIT {
 		MpPublication mpPub4after = MpPublication.getDao().getById(4);
 		PwPublicationTest.assertPwPub4(mpPub4after);
 		PwPublicationTest.assertPwPub4Children(mpPub4after);
-		assertEquals(PubsConstants.ANONYMOUS_USER, mpPub4after.getLockUsername());
+		assertEquals(PubsConstantsHelper.ANONYMOUS_USER, mpPub4after.getLockUsername());
 	}
 
 	@Test
@@ -606,7 +606,7 @@ public class MpPublicationBusServiceIT extends BaseIT {
 	@Test
 	public void releaseLocksUserTest() {
 		MpPublication mpPub = MpPublicationDaoIT.addAPub(MpPublication.getDao().getNewProdId());
-		busService.releaseLocksUser(PubsConstants.ANONYMOUS_USER);
+		busService.releaseLocksUser(PubsConstantsHelper.ANONYMOUS_USER);
 		mpPub = MpPublication.getDao().getById(mpPub.getId());
 		assertNull(mpPub.getLockUsername());
 
@@ -631,7 +631,7 @@ public class MpPublicationBusServiceIT extends BaseIT {
 		assertNull(mpPub.getLockUsername());
 
 		mpPub = MpPublication.getDao().getById(2);
-		assertEquals(PubsConstants.ANONYMOUS_USER,mpPub.getLockUsername());
+		assertEquals(PubsConstantsHelper.ANONYMOUS_USER,mpPub.getLockUsername());
 
 		mpPub = MpPublication.getDao().getById(1);
 		assertEquals("drsteini", mpPub.getLockUsername());

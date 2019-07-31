@@ -16,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 import gov.usgs.cida.pubs.BaseIT;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 import gov.usgs.cida.pubs.domain.mp.MpList.MpListType;
@@ -71,7 +71,7 @@ public class MpListDaoIT extends BaseIT {
 			mpListDao.add(new MpList());
 			fail("Was able to add.");
 		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+			assertEquals(PubsConstantsHelper.NOT_IMPLEMENTED, e.getMessage());
 		}
 
 		try {
@@ -80,28 +80,28 @@ public class MpListDaoIT extends BaseIT {
 			mpListDao.getObjectCount(params);
 			fail("Was able to get count.");
 		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+			assertEquals(PubsConstantsHelper.NOT_IMPLEMENTED, e.getMessage());
 		}
 
 		try {
 			mpListDao.update(new MpList());
 			fail("Was able to update.");
 		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+			assertEquals(PubsConstantsHelper.NOT_IMPLEMENTED, e.getMessage());
 		}
 
 		try {
 			mpListDao.delete(new MpList());
 			fail("Was able to delete.");
 		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+			assertEquals(PubsConstantsHelper.NOT_IMPLEMENTED, e.getMessage());
 		}
 
 		try {
 			mpListDao.deleteById(1);
 			fail("Was able to delete by it.");
 		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+			assertEquals(PubsConstantsHelper.NOT_IMPLEMENTED, e.getMessage());
 		}
 	}
 
@@ -131,9 +131,9 @@ public class MpListDaoIT extends BaseIT {
 		mpList.setType(MpListType.SPN);
 		mpList.setIpdsInternalId(1);
 		mpList.setInsertDate(LocalDateTime.now());
-		mpList.setInsertUsername(PubsConstants.ANONYMOUS_USER);
+		mpList.setInsertUsername(PubsConstantsHelper.ANONYMOUS_USER);
 		mpList.setUpdateDate(LocalDateTime.now());
-		mpList.setUpdateUsername(PubsConstants.ANONYMOUS_USER);
+		mpList.setUpdateUsername(PubsConstantsHelper.ANONYMOUS_USER);
 		return mpList;
 	}
 }

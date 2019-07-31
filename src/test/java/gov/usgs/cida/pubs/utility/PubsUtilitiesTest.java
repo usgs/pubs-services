@@ -16,7 +16,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import static org.mockito.Mockito.when;
 import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.TestOAuth;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
@@ -116,7 +116,7 @@ public class PubsUtilitiesTest extends BaseTest {
 
 	@Test
 	public void getUsernameTest_noAuthentication() {
-		assertEquals("Not Authenticated", PubsConstants.ANONYMOUS_USER, PubsUtilities.getUsername());
+		assertEquals("Not Authenticated", PubsConstantsHelper.ANONYMOUS_USER, PubsUtilities.getUsername());
 	}
 
 	@Test

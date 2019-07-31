@@ -26,7 +26,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.Publication;
@@ -70,7 +70,7 @@ public class CrossrefTransformer extends Transformer {
 		this.templateConfiguration = templateConfiguration;
 		this.configurationService = configurationService;
 		try {
-			this.streamWriter = new OutputStreamWriter(target, PubsConstants.DEFAULT_ENCODING);
+			this.streamWriter = new OutputStreamWriter(target, PubsConstantsHelper.DEFAULT_ENCODING);
 		} catch (UnsupportedEncodingException ex) {
 			//we can't do anything about this
 			throw new RuntimeException(ex);
@@ -249,7 +249,7 @@ public class CrossrefTransformer extends Transformer {
 		) {
 			t.process(model, reportWriter);
 			bais = new ByteArrayInputStream(baos.toByteArray());
-			IOUtils.copy(bais, bufferedWriter, PubsConstants.DEFAULT_ENCODING);
+			IOUtils.copy(bais, bufferedWriter, PubsConstantsHelper.DEFAULT_ENCODING);
 		} finally {
 			closeQuietly(bais);
 		}

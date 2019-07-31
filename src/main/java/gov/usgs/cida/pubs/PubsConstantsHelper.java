@@ -2,7 +2,7 @@ package gov.usgs.cida.pubs;
 
 import org.springframework.http.MediaType;
 
-public final class PubsConstants {
+public final class PubsConstantsHelper {
 
 	public static final String DEFAULT_ENCODING = "UTF-8";
 
@@ -61,7 +61,7 @@ public final class PubsConstants {
 
 	public static final String API_KEY_NAME = "pubsApiKey";
 
-	private PubsConstants() {
+	private PubsConstantsHelper() {
 	}
 
 }

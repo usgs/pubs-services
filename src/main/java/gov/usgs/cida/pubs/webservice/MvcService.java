@@ -17,7 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.ObjectUtils;
 
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
@@ -101,7 +101,7 @@ public abstract class MvcService<D> {
 		//On the MP side, We split the input on spaces and commas to ultimately create an "and" query on each word
 		//On the warehouse side, we are doing Text queries
 		if (StringUtils.isNotBlank(searchTerms)) {
-			List<String> splitTerms = Arrays.stream(searchTerms.trim().toLowerCase().split(PubsConstants.SEARCH_TERMS_SPLIT_REGEX))
+			List<String> splitTerms = Arrays.stream(searchTerms.trim().toLowerCase().split(PubsConstantsHelper.SEARCH_TERMS_SPLIT_REGEX))
 					.filter(x -> StringUtils.isNotEmpty(x))
 					.collect(Collectors.toList());
 			if (!splitTerms.isEmpty()) {
@@ -209,7 +209,7 @@ public abstract class MvcService<D> {
 		boolean rtn = true;
 		setHeaders(response);
 		if (request.getParameterMap().isEmpty()
-				&& ObjectUtils.isEmpty(request.getHeader(PubsConstants.ACCEPT_HEADER))) {
+				&& ObjectUtils.isEmpty(request.getHeader(PubsConstantsHelper.ACCEPT_HEADER))) {
 			rtn = false;
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 		}
@@ -217,7 +217,7 @@ public abstract class MvcService<D> {
 	}
 
 	protected void setHeaders(HttpServletResponse response) {
-		response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
+		response.setCharacterEncoding(PubsConstantsHelper.DEFAULT_ENCODING);
 	}
 
 }

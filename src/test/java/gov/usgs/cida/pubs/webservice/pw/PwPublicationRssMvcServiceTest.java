@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 import gov.usgs.cida.pubs.springinit.TestSpringConfig;
@@ -46,11 +46,9 @@ public class PwPublicationRssMvcServiceTest extends BaseTest {
 
 	private MockMvc mockMvc;
 
-	private PwPublicationRssMvcService mvcRssService;
-
 	@Before
-	public void setup() {
-		mvcRssService = new PwPublicationRssMvcService(busService, configurationService);
+	public void setUp() {
+		PwPublicationRssMvcService mvcRssService = new PwPublicationRssMvcService(busService, configurationService);
 		mockMvc = MockMvcBuilders.standaloneSetup(mvcRssService).build();
 
 		int titleStart = expectedGetRssPub.indexOf("<title>") + "<title>".length();
@@ -71,10 +69,10 @@ public class PwPublicationRssMvcServiceTest extends BaseTest {
 		//Happy Path
 		when(busService.getObjects(anyMap())).thenReturn(Arrays.asList(PwPublicationTest.buildAPub(1)));
 		
-		MvcResult rtn = mockMvc.perform(get("/publication/rss?orderby=dispPubDate").accept(PubsConstants.MEDIA_TYPE_RSS))
+		MvcResult rtn = mockMvc.perform(get("/publication/rss?orderby=dispPubDate").accept(PubsConstantsHelper.MEDIA_TYPE_RSS))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(PubsConstants.MEDIA_TYPE_RSS_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_RSS_VALUE))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
 		String response = rtn.getResponse().getContentAsString();

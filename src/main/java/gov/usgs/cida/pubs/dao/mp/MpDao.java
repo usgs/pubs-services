@@ -1,6 +1,6 @@
 package gov.usgs.cida.pubs.dao.mp;
 
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.intfc.IMpDao;
 
@@ -25,7 +25,7 @@ public abstract class MpDao<D> extends BaseDao<D> implements IMpDao<D> {
 	@Transactional(readOnly = true)
 	@Override
 	public void copyFromPw(Integer prodID) {
-		throw new RuntimeException(PubsConstants.NOT_IMPLEMENTED);
+		throw new RuntimeException(PubsConstantsHelper.NOT_IMPLEMENTED);
 	}
 
 	/** {@inheritDoc}
@@ -34,7 +34,7 @@ public abstract class MpDao<D> extends BaseDao<D> implements IMpDao<D> {
 	@Transactional(readOnly = true)
 	@Override
 	public void publishToPw(Integer prodID) {
-		throw new RuntimeException(PubsConstants.NOT_IMPLEMENTED);
+		throw new RuntimeException(PubsConstantsHelper.NOT_IMPLEMENTED);
 	}
 
 }

@@ -35,7 +35,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.PublicationBusService;
 import gov.usgs.cida.pubs.busservice.pw.PwPublicationBusService;
 import gov.usgs.cida.pubs.dao.ContributorTypeDao;
@@ -114,12 +114,12 @@ public class PwPublicationMvcServiceBulkCrossrefIT extends BaseIT {
 	public void getBulkCrossRefWithAcceptHeaderSpecified() throws Exception {
 		MvcResult result = mockMvc.perform(
 				get(URL)
-				.accept(PubsConstants.MEDIA_TYPE_CROSSREF)
+				.accept(PubsConstantsHelper.MEDIA_TYPE_CROSSREF)
 			)
 			.andExpect(status().isOk())
-			.andExpect(content().contentType(PubsConstants.MEDIA_TYPE_CROSSREF))
-			.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-			.andExpect(header().string(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION))
+			.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_CROSSREF))
+			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
+			.andExpect(header().string(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + PubsConstantsHelper.MEDIA_TYPE_CROSSREF_EXTENSION))
 			.andReturn();
 		String resultText = result.getResponse().getContentAsString();
 		assertNotNull(resultText);
@@ -131,12 +131,12 @@ public class PwPublicationMvcServiceBulkCrossrefIT extends BaseIT {
 	public void getBulkCrossrefXMLWhenQueryStringAsksForCrossref() throws Exception {
 		MvcResult result = mockMvc.perform(
 				get(URL + "?mimeType=crossref.xml")
-				.accept(PubsConstants.MEDIA_TYPE_CROSSREF)
+				.accept(PubsConstantsHelper.MEDIA_TYPE_CROSSREF)
 			)
 			.andExpect(status().isOk())
-			.andExpect(content().contentType(PubsConstants.MEDIA_TYPE_CROSSREF))
-			.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
-			.andExpect(header().string(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION))
+			.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_CROSSREF))
+			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
+			.andExpect(header().string(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + PubsConstantsHelper.MEDIA_TYPE_CROSSREF_EXTENSION))
 			.andReturn();
 		String resultText = result.getResponse().getContentAsString();
 		assertNotNull(resultText);

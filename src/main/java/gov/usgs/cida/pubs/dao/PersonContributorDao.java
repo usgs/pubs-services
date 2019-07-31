@@ -17,11 +17,6 @@ import gov.usgs.cida.pubs.utility.PubsUtilities;
 @Repository
 public class PersonContributorDao extends ContributorDao implements IPersonContributorDao {
 
-	@Autowired
-	public PersonContributorDao(SqlSessionFactory sqlSessionFactory) {
-		super(sqlSessionFactory);
-	}
-
 	private static final String PERSON = "PersonContributor";
 	private static final String GET_BY_PREFERRED = ".getByPreferred";
 
@@ -35,6 +30,11 @@ public class PersonContributorDao extends ContributorDao implements IPersonContr
 	public static final String GIVEN = "given";
 	public static final String FAMILY = "family";
 	public static final String USGS = "usgs";
+
+	@Autowired
+	public PersonContributorDao(SqlSessionFactory sqlSessionFactory) {
+		super(sqlSessionFactory);
+	}
 
 	@Transactional
 	@Override

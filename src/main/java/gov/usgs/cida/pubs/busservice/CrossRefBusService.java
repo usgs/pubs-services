@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service;
 
 import freemarker.template.Configuration;
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.dao.intfc.ICrossRefLogDao;
@@ -90,7 +90,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 			transformer.write(pub);
 			transformer.end();
 
-			xml = new String(baos.toByteArray(), PubsConstants.DEFAULT_ENCODING);
+			xml = new String(baos.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
 
 			//it is important to log the XML, even if it is invalid
 			CrossRefLog logEntry = new CrossRefLog(transformer.getBatchId(), pub.getId(), xml);
@@ -133,9 +133,9 @@ public class CrossRefBusService implements ICrossRefBusService {
 		String url = null;
 		try {
 			String query = "?operation=doMDUpload&login_id=" +
-			URLEncoder.encode(configurationService.getCrossrefUser(), PubsConstants.URL_ENCODING) +
+			URLEncoder.encode(configurationService.getCrossrefUser(), PubsConstantsHelper.URL_ENCODING) +
 			"&login_passwd=" +
-			URLEncoder.encode(configurationService.getCrossrefPwd(), PubsConstants.URL_ENCODING) +
+			URLEncoder.encode(configurationService.getCrossrefPwd(), PubsConstantsHelper.URL_ENCODING) +
 			"&area=live";
 			URI uri = new URI(configurationService.getCrossrefProtocol(), null, configurationService.getCrossrefHost(),
 					configurationService.getCrossrefPort(), configurationService.getCrossrefUrl(), null, null);
@@ -231,11 +231,11 @@ public class CrossRefBusService implements ICrossRefBusService {
 		HttpPost httpPost = new HttpPost(url);
 
 		File crossRefTempFile = writeCrossRefToTempFile(crossRefXml);
-		ContentType contentType = ContentType.create(PubsConstants.MEDIA_TYPE_CROSSREF_VALUE, PubsConstants.DEFAULT_ENCODING);
+		ContentType contentType = ContentType.create(PubsConstantsHelper.MEDIA_TYPE_CROSSREF_VALUE, PubsConstantsHelper.DEFAULT_ENCODING);
 
 		//The filename is displayed in Crossref's dashboard, so put some
 		//useful info in it
-		String filename = indexId + "." + PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION;
+		String filename = indexId + "." + PubsConstantsHelper.MEDIA_TYPE_CROSSREF_EXTENSION;
 
 		FileBody fileBody = new FileBody(crossRefTempFile, contentType, filename);
 		HttpEntity httpEntity = MultipartEntityBuilder.create()
@@ -254,7 +254,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 	protected File writeCrossRefToTempFile(String crossRefXML) throws IOException {
 		try {
 			File crossRefTempFile = File.createTempFile("crossref", "xml");
-			FileUtils.writeStringToFile(crossRefTempFile, crossRefXML, PubsConstants.DEFAULT_ENCODING);
+			FileUtils.writeStringToFile(crossRefTempFile, crossRefXML, PubsConstantsHelper.DEFAULT_ENCODING);
 			return crossRefTempFile;
 		} catch (IOException ex) {
 			throw new IOException("Error writing crossref XML to temp file", ex);

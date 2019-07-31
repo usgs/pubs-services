@@ -9,6 +9,6 @@ public class VersionController {
 
 	@RequestMapping(value="version", method=RequestMethod.GET)
 	public String getVersion() {
-		return "redirect:/actuator/info";
+		return "redirect:/about/info";
 	}
 }

@@ -99,7 +99,7 @@ public class PublicationSeriesValidationTest extends BaseValidatorTest {
 
 	@Test
 	public void notNullTest() {
-		pubSeries.setPublicationSubtype(null);;
+		pubSeries.setPublicationSubtype(null);
 		pubSeries.setText(null);
 		pubSeries.setValidationErrors(validator.validate(pubSeries));
 		assertFalse(pubSeries.isValid());

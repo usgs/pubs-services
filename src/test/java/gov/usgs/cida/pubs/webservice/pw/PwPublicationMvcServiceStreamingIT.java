@@ -26,7 +26,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.PublicationBusService;
 import gov.usgs.cida.pubs.busservice.pw.PwPublicationBusService;
 import gov.usgs.cida.pubs.dao.PublicationDao;
@@ -64,8 +64,8 @@ public class PwPublicationMvcServiceStreamingIT extends BaseIT {
 	public void getAsCsvTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/publication?mimeType=csv"))
 			.andExpect(status().isOk())
-			.andExpect(content().contentType(PubsConstants.MEDIA_TYPE_CSV_VALUE))
-			.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+			.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_CSV_VALUE))
+			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 			.andExpect(header().string(MIME.CONTENT_DISPOSITION, "attachment; filename=publications.csv"))
 			.andReturn();
 	
@@ -76,8 +76,8 @@ public class PwPublicationMvcServiceStreamingIT extends BaseIT {
 	public void getAsTsvTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/publication?mimeType=tsv"))
 			.andExpect(status().isOk())
-			.andExpect(content().contentType(PubsConstants.MEDIA_TYPE_TSV_VALUE))
-			.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+			.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_TSV_VALUE))
+			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 			.andExpect(header().string(MIME.CONTENT_DISPOSITION, "attachment; filename=publications.tsv"))
 			.andReturn();
 		
@@ -91,8 +91,8 @@ public class PwPublicationMvcServiceStreamingIT extends BaseIT {
 	public void getAsXlsxTest() throws Exception {
 		mockMvc.perform(get("/publication?mimeType=xlsx"))
 			.andExpect(status().isOk())
-			.andExpect(content().contentType(PubsConstants.MEDIA_TYPE_XLSX_VALUE))
-			.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+			.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_XLSX_VALUE))
+			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 			.andExpect(header().string(MIME.CONTENT_DISPOSITION, "attachment; filename=publications.xlsx"));
 		//TODO verify xlsx
 		//	.andReturn();
@@ -105,7 +105,7 @@ public class PwPublicationMvcServiceStreamingIT extends BaseIT {
 		MvcResult rtn = mockMvc.perform(get("/publication?mimeType=json"))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-			.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 			.andReturn();
 	
 		assertThat(new JSONObject(rtn.getResponse().getContentAsString()), sameJSONObjectAs(new JSONObject(getCompareFile("stream.json"))).allowingAnyArrayOrdering());
@@ -117,7 +117,7 @@ public class PwPublicationMvcServiceStreamingIT extends BaseIT {
 		MvcResult rtn = mockMvc.perform(get("/publication/6.1?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
 		assertThat(getRtnAsJSONObject(rtn),

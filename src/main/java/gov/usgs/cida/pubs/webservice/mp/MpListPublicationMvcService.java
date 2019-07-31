@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IMpListPublicationBusService;
 import gov.usgs.cida.pubs.domain.mp.MpListPublication;
 import gov.usgs.cida.pubs.utility.PubsUtilities;
@@ -36,7 +36,7 @@ public class MpListPublicationMvcService extends MvcService<MpListPublication> {
 		this.busService = busService;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PostMapping
 	@Transactional
 	public @ResponseBody Collection<MpListPublication> addPubToList(@PathVariable String listId,
@@ -46,7 +46,7 @@ public class MpListPublicationMvcService extends MvcService<MpListPublication> {
 		return busService.addPubToList(PubsUtilities.parseInteger(listId), publicationIds);
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@DeleteMapping(value = "{publicationId}")
 	@Transactional
 	public @ResponseBody ValidationResults removePubFromList(@PathVariable String listId,

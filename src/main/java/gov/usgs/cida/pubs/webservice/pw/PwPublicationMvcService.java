@@ -28,7 +28,7 @@ import com.google.common.collect.ImmutableMap;
 
 import freemarker.template.Configuration;
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.dao.BaseDao;
@@ -78,7 +78,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	}
 
 	@GetMapping(produces={MediaType.APPLICATION_JSON_VALUE,
-			PubsConstants.MEDIA_TYPE_XLSX_VALUE, PubsConstants.MEDIA_TYPE_CSV_VALUE, PubsConstants.MEDIA_TYPE_TSV_VALUE})
+			PubsConstantsHelper.MEDIA_TYPE_XLSX_VALUE, PubsConstantsHelper.MEDIA_TYPE_CSV_VALUE, PubsConstantsHelper.MEDIA_TYPE_TSV_VALUE})
 	@JsonView(View.PW.class)
 	public void getPubs(
 			@RequestParam(value=PublicationDao.Q, required=false) String q,
@@ -112,8 +112,8 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 			@RequestParam(value=PwPublicationDao.MOD_DATE_HIGH, required=false) String modDateHigh,
 			@RequestParam(value=PublicationDao.ORDER_BY, required=false) String orderBy,
 			@RequestParam(value=PwPublicationDao.CHORUS, required=false) Boolean chorus,
-			@ApiParam(allowableValues=PubsConstants.MEDIA_TYPE_JSON_EXTENSION + "," + PubsConstants.MEDIA_TYPE_CSV_EXTENSION + "," + PubsConstants.MEDIA_TYPE_TSV_EXTENSION + "," + PubsConstants.MEDIA_TYPE_XLSX_EXTENSION)
-			@RequestParam(value=PubsConstants.CONTENT_PARAMETER_NAME, required=false, defaultValue="json") String mimeType,
+			@ApiParam(allowableValues=PubsConstantsHelper.MEDIA_TYPE_JSON_EXTENSION + "," + PubsConstantsHelper.MEDIA_TYPE_CSV_EXTENSION + "," + PubsConstantsHelper.MEDIA_TYPE_TSV_EXTENSION + "," + PubsConstantsHelper.MEDIA_TYPE_XLSX_EXTENSION)
+			@RequestParam(value=PubsConstantsHelper.CONTENT_PARAMETER_NAME, required=false, defaultValue="json") String mimeType,
 			HttpServletResponse response, HttpServletRequest request) {
 
 		setHeaders(response);
@@ -126,35 +126,35 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 
 		filters.put("url", configurationService.getWarehouseEndpoint() + "/publication/");
 
-		if (PubsConstants.MEDIA_TYPE_JSON_EXTENSION.equalsIgnoreCase(mimeType)) {
+		if (PubsConstantsHelper.MEDIA_TYPE_JSON_EXTENSION.equalsIgnoreCase(mimeType)) {
 			filters.putAll(buildPaging(pageRowStart, pageSize, pageNumber));
 		}
 		streamResults(filters, mimeType, response);
 	}
 
 	protected void streamResults(Map<String, Object> filters, String mimeType, HttpServletResponse response) {
-		response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
+		response.setCharacterEncoding(PubsConstantsHelper.DEFAULT_ENCODING);
 		String statement = PwPublicationDao.NS;
 
 		try {
 			ITransformer transformer;
 			SearchResults searchResults = null;
 			switch (mimeType) {
-			case PubsConstants.MEDIA_TYPE_TSV_EXTENSION:
+			case PubsConstantsHelper.MEDIA_TYPE_TSV_EXTENSION:
 				statement = statement + PwPublicationDao.GET_STREAM_BY_MAP;
-				response.setContentType(PubsConstants.MEDIA_TYPE_TSV_VALUE);
+				response.setContentType(PubsConstantsHelper.MEDIA_TYPE_TSV_VALUE);
 				response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + mimeType);
 				transformer = new DelimitedTransformer(response.getOutputStream(), PublicationColumns.getMappings(), "\t");
 				break;
-			case PubsConstants.MEDIA_TYPE_XLSX_EXTENSION:
+			case PubsConstantsHelper.MEDIA_TYPE_XLSX_EXTENSION:
 				statement = statement + PwPublicationDao.GET_STREAM_BY_MAP;
-				response.setContentType(PubsConstants.MEDIA_TYPE_XLSX_VALUE);
+				response.setContentType(PubsConstantsHelper.MEDIA_TYPE_XLSX_VALUE);
 				response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + mimeType);
 				transformer = new XlsxTransformer(response.getOutputStream(), PublicationColumns.getMappings());
 				break;
-			case PubsConstants.MEDIA_TYPE_CSV_EXTENSION:
+			case PubsConstantsHelper.MEDIA_TYPE_CSV_EXTENSION:
 				statement = statement + PwPublicationDao.GET_STREAM_BY_MAP;
-				response.setContentType(PubsConstants.MEDIA_TYPE_CSV_VALUE);
+				response.setContentType(PubsConstantsHelper.MEDIA_TYPE_CSV_VALUE);
 				response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + mimeType);
 				transformer = new DelimitedTransformer(response.getOutputStream(), PublicationColumns.getMappings(), ",");
 				break;
@@ -191,7 +191,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		value="{indexId}",
 		produces={
 			MediaType.APPLICATION_JSON_VALUE, 
-			PubsConstants.MEDIA_TYPE_CROSSREF_VALUE
+			PubsConstantsHelper.MEDIA_TYPE_CROSSREF_VALUE
 		}
 	)
 	@JsonView(View.PW.class)
@@ -219,7 +219,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	 */
 	@GetMapping(
 		value = "/crossref",
-		produces = { PubsConstants.MEDIA_TYPE_CROSSREF_VALUE }
+		produces = { PubsConstantsHelper.MEDIA_TYPE_CROSSREF_VALUE }
 	)
 	public void getBulkCrossref(HttpServletRequest request,
 		HttpServletResponse response) throws IOException{
@@ -242,10 +242,10 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 						ContributorType.EDITOR_KEY
 					);
 			) {
-			response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
+			response.setCharacterEncoding(PubsConstantsHelper.DEFAULT_ENCODING);
 
-			response.setContentType(PubsConstants.MEDIA_TYPE_CROSSREF_VALUE);
-			response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION);
+			response.setContentType(PubsConstantsHelper.MEDIA_TYPE_CROSSREF_VALUE);
+			response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + PubsConstantsHelper.MEDIA_TYPE_CROSSREF_EXTENSION);
 			busService.stream(statement, filters, new StreamingResultHandler<>(transformer));
 			transformer.end();
 		}
@@ -258,7 +258,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	 */
 	protected boolean isCrossRefRequest(List<MediaType> mediaTypes){
 		boolean isCrossRefRequest = false;
-		if (null != mediaTypes && mediaTypes.contains(PubsConstants.MEDIA_TYPE_CROSSREF)) {
+		if (null != mediaTypes && mediaTypes.contains(PubsConstantsHelper.MEDIA_TYPE_CROSSREF)) {
 			isCrossRefRequest = true;
 		}
 		return isCrossRefRequest;
@@ -308,8 +308,8 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 						ContributorType.EDITOR_KEY
 					);
 			) {
-			response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
-			response.setContentType(PubsConstants.MEDIA_TYPE_CROSSREF_VALUE);
+			response.setCharacterEncoding(PubsConstantsHelper.DEFAULT_ENCODING);
+			response.setContentType(PubsConstantsHelper.MEDIA_TYPE_CROSSREF_VALUE);
 			response.setHeader(MIME.CONTENT_DISPOSITION, "inline");
 			transformer.write(pub);
 			transformer.end();

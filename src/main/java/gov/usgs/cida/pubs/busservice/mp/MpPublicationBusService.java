@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
@@ -219,7 +219,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 	public static String getDoiName(final String inIndexId) {
 		String rtn = null;
 		if (null != inIndexId && 0 < inIndexId.length()) {
-			rtn = PubsConstants.DOI_PREFIX + "/" + inIndexId;
+			rtn = PubsConstantsHelper.DOI_PREFIX + "/" + inIndexId;
 		}
 		return rtn;
 	}
@@ -351,7 +351,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 		} else {
 			//We found it, so check if it is already locked.
 			if (StringUtils.isNotBlank(mpPub.getLockUsername()) 
-					&& !PubsConstants.ANONYMOUS_USER.contentEquals(mpPub.getLockUsername())) {
+					&& !PubsConstantsHelper.ANONYMOUS_USER.contentEquals(mpPub.getLockUsername())) {
 				//Now, was it locked by the current user.
 				if (PubsUtilities.getUsername().equalsIgnoreCase(mpPub.getLockUsername())) {
 					//Yes, this user locked it so we are ok to edit.

@@ -22,7 +22,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseIT;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
 import gov.usgs.cida.pubs.domain.ProcessType;
@@ -181,7 +181,7 @@ public class MpPublicationDaoIT extends BaseIT {
 	public void lockPubTest() {
 		mpPublicationDao.lockPub(3);
 		MpPublication mpPub = mpPublicationDao.getById(3);
-		assertEquals(PubsConstants.ANONYMOUS_USER, mpPub.getLockUsername());
+		assertEquals(PubsConstantsHelper.ANONYMOUS_USER, mpPub.getLockUsername());
 	}
 
 	@Test
@@ -194,7 +194,7 @@ public class MpPublicationDaoIT extends BaseIT {
 	})
 	public void releaseLocksUserTest() {
 		MpPublication mpPub = addAPub(mpPublicationDao.getNewProdId());
-		mpPublicationDao.releaseLocksUser(PubsConstants.ANONYMOUS_USER);
+		mpPublicationDao.releaseLocksUser(PubsConstantsHelper.ANONYMOUS_USER);
 		mpPub = mpPublicationDao.getById(mpPub.getId());
 		assertNull(mpPub.getLockUsername());
 
@@ -226,7 +226,7 @@ public class MpPublicationDaoIT extends BaseIT {
 		assertNull(mpPub.getLockUsername());
 
 		mpPub = mpPublicationDao.getById(2);
-		assertEquals(PubsConstants.ANONYMOUS_USER,mpPub.getLockUsername());
+		assertEquals(PubsConstantsHelper.ANONYMOUS_USER,mpPub.getLockUsername());
 
 		mpPub = mpPublicationDao.getById(1);
 		assertEquals("drsteini", mpPub.getLockUsername());
@@ -435,7 +435,7 @@ public class MpPublicationDaoIT extends BaseIT {
 
 	public static MpPublication buildAPub(final Integer pubId) {
 		MpPublication newPub = (MpPublication) PublicationIT.buildAPub(new MpPublication(), pubId);
-		newPub.setLockUsername(PubsConstants.ANONYMOUS_USER);
+		newPub.setLockUsername(PubsConstantsHelper.ANONYMOUS_USER);
 		return newPub;
 	}
 

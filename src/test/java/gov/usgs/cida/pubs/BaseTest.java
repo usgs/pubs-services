@@ -76,33 +76,33 @@ public abstract class BaseTest {
 
 	public void assertDaoTestResults(final Class<?> inClass, final Object inObject, final Object resultObject, final List<String> ignoreProperties, final boolean ignoreInsertAudit, final boolean ignoreUpdateAudit,
 			final boolean allowNull) {
-				for (PropertyDescriptor prop : getPropertyMap(inClass).values()) {
-					if ((null != ignoreProperties && ignoreProperties.contains(prop.getName())) 
-							|| (ignoreInsertAudit && (prop.getName().contentEquals("insertDate") || prop.getName().contentEquals("insertUsername")))
-							|| (ignoreUpdateAudit && (prop.getName().contentEquals("updateDate") || prop.getName().contentEquals("updateUsername")))) {
-						assertTrue(true);
-					} else {
-						try {
-							if (null != prop.getReadMethod() && !"getClass".contentEquals(prop.getReadMethod().getName())) {
-								Object inProp = prop.getReadMethod().invoke(inObject);
-								Object resultProp = prop.getReadMethod().invoke(resultObject);
-								if (!allowNull) {
-									assertNotNull(prop.getName() + " original is null.", inProp);
-									assertNotNull(prop.getName() + " result is null.", resultProp);
-								};
-								if (resultProp instanceof Collection) {
-									//TODO - could try to match the lists...
-									assertEquals(prop.getName(), ((Collection<?>) inProp).size(), ((Collection<?>) resultProp).size());
-								} else {
-									assertProperty(inProp, resultProp, prop);
-								}
-							}
-						} catch (Exception e) {
-							throw new RuntimeException("Error getting property: " + prop.getName(), e);
+		for (PropertyDescriptor prop : getPropertyMap(inClass).values()) {
+			if ((null != ignoreProperties && ignoreProperties.contains(prop.getName())) 
+					|| (ignoreInsertAudit && (prop.getName().contentEquals("insertDate") || prop.getName().contentEquals("insertUsername")))
+					|| (ignoreUpdateAudit && (prop.getName().contentEquals("updateDate") || prop.getName().contentEquals("updateUsername")))) {
+				assertTrue(true);
+			} else {
+				try {
+					if (null != prop.getReadMethod() && !"getClass".contentEquals(prop.getReadMethod().getName())) {
+						Object inProp = prop.getReadMethod().invoke(inObject);
+						Object resultProp = prop.getReadMethod().invoke(resultObject);
+						if (!allowNull) {
+							assertNotNull(prop.getName() + " original is null.", inProp);
+							assertNotNull(prop.getName() + " result is null.", resultProp);
+						}
+						if (resultProp instanceof Collection) {
+							//TODO - could try to match the lists...
+							assertEquals(prop.getName(), ((Collection<?>) inProp).size(), ((Collection<?>) resultProp).size());
+						} else {
+							assertProperty(inProp, resultProp, prop);
 						}
 					}
+				} catch (Exception e) {
+					throw new RuntimeException("Error getting property: " + prop.getName(), e);
 				}
 			}
+		}
+	}
 
 	private void assertProperty(final Object inProp, final Object resultProp, final PropertyDescriptor prop) throws Exception {
 		if (resultProp instanceof BaseDomain) {

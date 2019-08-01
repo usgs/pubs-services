@@ -11,7 +11,7 @@ jdk:
 
 before_install:
   - sudo apt-get install jq
-  - curl $(curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r '.assets | map({content_type, browser_download_url} | select(.content_type | contains("application/java-archive"))) | .[0].browser_download_url') -o codacy-coverage-reporter-assembly.jar
+  - curl $(curl -Ls https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r '.assets | map({content_type, browser_download_url} | select(.content_type | contains("java-archive"))) | .[0].browser_download_url') -o codacy-coverage-reporter-assembly.jar
 
 install: true
 
@@ -21,4 +21,4 @@ script:
   - docker network rm pubsServices
 
 after_success:
-  - java -jar codacy-coverage-reporter-assembly.jar report -l Java -r build/reports/jacoco/test/jacocoTestReport.xml
+  - java -jar codacy-coverage-reporter-assembly.jar report -l Java -r "$TRAVIS_BUILD_DIR"/target/site/jacoco-aggregate/jacoco.xml

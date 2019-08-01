@@ -71,7 +71,7 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 			if (result.isValid()) {
 				Integer id = PersonContributor.getDao().add(result);
 				updateAffiliations(id, object);
-				object = (PersonContributor<?>) PersonContributor.getDao().getById(id);
+				result = (PersonContributor<?>) PersonContributor.getDao().getById(id);
 			}
 		}
 		return result;

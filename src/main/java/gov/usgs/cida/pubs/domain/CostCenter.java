@@ -18,13 +18,13 @@ public class CostCenter extends Affiliation<CostCenter> implements Serializable 
 
 	private static IDao<CostCenter> costCenterDao;
 
+	@JsonIgnore
+	private Integer ipdsId;
+
 	public CostCenter() {
 		usgs = true;
 		active = true;
 	}
-
-	@JsonIgnore
-	private Integer ipdsId;
 
 	public Integer getIpdsId() {
 		return ipdsId;
@@ -38,17 +38,10 @@ public class CostCenter extends Affiliation<CostCenter> implements Serializable 
 		ipdsId = PubsUtils.parseInteger(inIpdsId);
 	}
 
-	/**
-	 * @return the costCenterDao
-	 */
 	public static IDao<CostCenter> getDao() {
 		return costCenterDao;
 	}
 
-	/**
-	 * The setter for costCenterDao.
-	 * @param inCostCenterDao the costCenterDao to set
-	 */
 	@Autowired
 	@Qualifier("costCenterDao")
 	public void setCostCenterDao(final IDao<CostCenter> inCostCenterDao) {

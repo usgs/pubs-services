@@ -14,10 +14,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.annotation.JsonView;
 
-/**
- * @author drsteini
- *
- */
 @Component
 @JsonPropertyOrder({"id", "indexId", "displayToPublicDate", "lastModifiedDate", "publicationType", "publicationSubtype",
 	"largerWorkType", "largerWorkTitle", "largerWorkSubtype", "seriesTitle", "costCenters", "subseriesTitle", "seriesNumber", "chapter",
@@ -34,12 +30,12 @@ public class MpPublication extends Publication<MpPublication> {
 
 	private static IMpPublicationDao mpPublicationDao;
 
+	@JsonIgnore
+	private String lockUsername;
+
 	public MpPublication() {
 		super(false, false);
 	}
-
-	@JsonIgnore
-	private String lockUsername;
 
 	public String getLockUsername() {
 		return lockUsername;
@@ -57,17 +53,10 @@ public class MpPublication extends Publication<MpPublication> {
 		return super.getValidationErrors();
 	}
 
-	/**
-	 * @return the mpPublicationDao
-	 */
 	public static IMpPublicationDao getDao() {
 		return mpPublicationDao;
 	}
 
-	/**
-	 * The setter for mpPublicationDao.
-	 * @param inMpPublicationDao the MpPublicationDao to set
-	 */
 	@Autowired
 	public void setMpPublicationDao(final IMpPublicationDao inMpPublicationDao) {
 		mpPublicationDao = inMpPublicationDao;

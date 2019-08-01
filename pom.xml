@@ -297,7 +297,7 @@
                                     <name>${TESTING_DATABASE_NETWORK}</name>
                                 </network>
                                 <ports>
-                                    <port>${TESTING_DATABASE_PORT}:5432</port>
+                                    <port>5445:5432</port>
                                 </ports>
                                 <env>
                                     <POSTGRES_PASSWORD>changeMe</POSTGRES_PASSWORD>

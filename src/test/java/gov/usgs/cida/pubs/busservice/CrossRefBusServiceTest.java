@@ -43,7 +43,7 @@ import org.springframework.http.HttpStatus;
 import freemarker.template.Configuration;
 import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.dao.intfc.ICrossRefLogDao;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
@@ -234,11 +234,11 @@ public class CrossRefBusServiceTest extends BaseTest {
 		InputStream content = entity.getContent();
 		assertNotNull(content);
 		IOUtils.copy(content, baos);
-		String requestBody = baos.toString(PubsConstants.DEFAULT_ENCODING);
+		String requestBody = baos.toString(PubsConstantsHelper.DEFAULT_ENCODING);
 		assertNotNull(requestBody);
 		assertTrue(0 < requestBody.length());
-		assertTrue(requestBody.contains(PubsConstants.DEFAULT_ENCODING));
-		assertTrue(requestBody.contains(PubsConstants.MEDIA_TYPE_CROSSREF_VALUE));
+		assertTrue(requestBody.contains(PubsConstantsHelper.DEFAULT_ENCODING));
+		assertTrue(requestBody.contains(PubsConstantsHelper.MEDIA_TYPE_CROSSREF_VALUE));
 		assertTrue(requestBody.contains(expectedBody));
 		assertTrue(requestBody.contains(expectedIndexId));
 	}

@@ -17,12 +17,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.ObjectUtils;
 
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 
 public abstract class MvcService<D> {
 
@@ -59,9 +59,9 @@ public abstract class MvcService<D> {
 		filters.put(PwPublicationDao.MOD_DATE_LOW, modDateLow);
 		filters.put(PwPublicationDao.MOD_X_DAYS, modXDays);
 		filters.put(PublicationDao.ORDER_BY, orderBy);
-		filters.put(BaseDao.PAGE_NUMBER, PubsUtilities.parseInteger(page_number));
-		filters.put(PublicationDao.PAGE_ROW_START, PubsUtilities.parseInteger(page_row_start));
-		filters.put(PublicationDao.PAGE_SIZE, PubsUtilities.parseInteger(page_size));
+		filters.put(BaseDao.PAGE_NUMBER, PubsUtils.parseInteger(page_number));
+		filters.put(PublicationDao.PAGE_ROW_START, PubsUtils.parseInteger(page_row_start));
+		filters.put(PublicationDao.PAGE_SIZE, PubsUtils.parseInteger(page_size));
 		filters.put(PublicationDao.PROD_ID, prodId);
 		filters.put(PwPublicationDao.PUB_DATE_HIGH, pubDateHigh);
 		filters.put(PwPublicationDao.PUB_DATE_LOW, pubDateLow);
@@ -87,7 +87,7 @@ public abstract class MvcService<D> {
 		Integer[] listIdInt = new Integer[listId.length];
 		int index = 0;
 		for (int i=0; i < listId.length; i++) {
-			Integer x = PubsUtilities.parseInteger(listId[i]);
+			Integer x = PubsUtils.parseInteger(listId[i]);
 			if (null != x) {
 				listIdInt[index] = x;
 				index++;
@@ -101,7 +101,7 @@ public abstract class MvcService<D> {
 		//On the MP side, We split the input on spaces and commas to ultimately create an "and" query on each word
 		//On the warehouse side, we are doing Text queries
 		if (StringUtils.isNotBlank(searchTerms)) {
-			List<String> splitTerms = Arrays.stream(searchTerms.trim().toLowerCase().split(PubsConstants.SEARCH_TERMS_SPLIT_REGEX))
+			List<String> splitTerms = Arrays.stream(searchTerms.trim().toLowerCase().split(PubsConstantsHelper.SEARCH_TERMS_SPLIT_REGEX))
 					.filter(x -> StringUtils.isNotEmpty(x))
 					.collect(Collectors.toList());
 			if (!splitTerms.isEmpty()) {
@@ -177,9 +177,9 @@ public abstract class MvcService<D> {
 	}
 
 	protected Map<String, Object> buildPaging (String inPageRowStart, String inPageSize, String inPageNumber) {
-		Integer pageRowStart = PubsUtilities.parseInteger(inPageRowStart);
-		Integer pageSize = PubsUtilities.parseInteger(inPageSize);
-		Integer pageNumber = PubsUtilities.parseInteger(inPageNumber);
+		Integer pageRowStart = PubsUtils.parseInteger(inPageRowStart);
+		Integer pageSize = PubsUtils.parseInteger(inPageSize);
+		Integer pageNumber = PubsUtils.parseInteger(inPageNumber);
 		Map<String, Object> paging = new HashMap<>();
 		if (null != pageNumber) {
 			//pageNumber overrides the pageRowStart
@@ -209,7 +209,7 @@ public abstract class MvcService<D> {
 		boolean rtn = true;
 		setHeaders(response);
 		if (request.getParameterMap().isEmpty()
-				&& ObjectUtils.isEmpty(request.getHeader(PubsConstants.ACCEPT_HEADER))) {
+				&& ObjectUtils.isEmpty(request.getHeader(PubsConstantsHelper.ACCEPT_HEADER))) {
 			rtn = false;
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 		}
@@ -217,7 +217,7 @@ public abstract class MvcService<D> {
 	}
 
 	protected void setHeaders(HttpServletResponse response) {
-		response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
+		response.setCharacterEncoding(PubsConstantsHelper.DEFAULT_ENCODING);
 	}
 
 }

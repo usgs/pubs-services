@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 import gov.usgs.cida.pubs.BaseIT;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
 
@@ -81,7 +81,7 @@ public class PublishingServiceCenterDaoIT extends BaseIT {
 			publishingServiceCenterDao.add(new PublishingServiceCenter());
 			fail("Was able to add.");
 		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+			assertEquals(PubsConstantsHelper.NOT_IMPLEMENTED, e.getMessage());
 		}
 
 		try {
@@ -90,28 +90,28 @@ public class PublishingServiceCenterDaoIT extends BaseIT {
 			publishingServiceCenterDao.getObjectCount(params);
 			fail("Was able to get count.");
 		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+			assertEquals(PubsConstantsHelper.NOT_IMPLEMENTED, e.getMessage());
 		}
 
 		try {
 			publishingServiceCenterDao.update(new PublishingServiceCenter());
 			fail("Was able to update.");
 		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+			assertEquals(PubsConstantsHelper.NOT_IMPLEMENTED, e.getMessage());
 		}
 
 		try {
 			publishingServiceCenterDao.delete(new PublishingServiceCenter());
 			fail("Was able to delete.");
 		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+			assertEquals(PubsConstantsHelper.NOT_IMPLEMENTED, e.getMessage());
 		}
 
 		try {
 			publishingServiceCenterDao.deleteById(1);
 			fail("Was able to delete by it.");
 		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+			assertEquals(PubsConstantsHelper.NOT_IMPLEMENTED, e.getMessage());
 		}
 	}
 

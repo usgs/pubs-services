@@ -16,13 +16,13 @@ import gov.usgs.cida.pubs.ConfigurationService;
 public class JmsConfig {
 
 	@Autowired
-	ConfigurationService configurationService;
+	private ConfigurationService configurationService;
 	@Autowired
 	@Qualifier("ipdsMessageListener")
-	MessageListener ipdsMessageListener;
+	private MessageListener ipdsMessageListener;
 
 	@Autowired
-	ConnectionFactory connectionFactory;
+	private ConnectionFactory connectionFactory;
 
 	@Bean
 	public DefaultMessageListenerContainer mlc() throws NamingException {

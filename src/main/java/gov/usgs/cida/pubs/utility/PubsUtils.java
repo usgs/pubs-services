@@ -13,7 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.domain.ProcessType;
@@ -21,9 +21,9 @@ import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 
-public final class PubsUtilities {
+public final class PubsUtils {
 
-	private PubsUtilities() {
+	private PubsUtils() {
 	}
 
 	/** Utility method for determining if a string represents an integer.  
@@ -45,7 +45,7 @@ public final class PubsUtilities {
 	}
 
 	public static String getUsername() {
-		String username = PubsConstants.ANONYMOUS_USER;
+		String username = PubsConstantsHelper.ANONYMOUS_USER;
 		Authentication auth = getAuthentication();
 
 		if (null != auth && auth.getPrincipal() instanceof User) {
@@ -116,7 +116,7 @@ public final class PubsUtilities {
 			if (messageName.startsWith("{") && messageName.endsWith("}")) {
 				Properties props = new Properties();
 				try {
-					props.load(PubsUtilities.class.getClassLoader().getResourceAsStream("ValidationMessages.properties"));
+					props.load(PubsUtils.class.getClassLoader().getResourceAsStream("ValidationMessages.properties"));
 				} catch (Exception e) {
 					throw new RuntimeException("Unable to load ValidationMessages.properties", e);
 				}

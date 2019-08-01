@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.json.View;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 
@@ -59,7 +59,7 @@ public abstract class BaseDomain<D> {
 	@JsonProperty("id")
 	@JsonView(View.Base.class)
 	public void setId(final String inId) {
-		id = PubsUtilities.parseInteger(inId);
+		id = PubsUtils.parseInteger(inId);
 	}
 
 	public LocalDateTime getInsertDate() {

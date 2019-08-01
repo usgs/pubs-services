@@ -21,7 +21,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.utility.CustomStringToArrayConverter;
 import gov.usgs.cida.pubs.utility.CustomStringToStringConverter;
 import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
@@ -31,13 +31,13 @@ import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
 public class SpringConfig implements WebMvcConfigurer {
 
 	@Autowired
-	CustomStringToArrayConverter customStringToArrayConverter;
+	private CustomStringToArrayConverter customStringToArrayConverter;
 
 	@Autowired
-	StringArrayCleansingConverter customStringListToArrayConverter;
+	private StringArrayCleansingConverter customStringListToArrayConverter;
 
 	@Autowired
-	CustomStringToStringConverter customStringToStringConverter;
+	private CustomStringToStringConverter customStringToStringConverter;
 
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
@@ -50,14 +50,14 @@ public class SpringConfig implements WebMvcConfigurer {
 	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
 		configurer
 			.favorParameter(true)
-			.parameterName(PubsConstants.CONTENT_PARAMETER_NAME)
+			.parameterName(PubsConstantsHelper.CONTENT_PARAMETER_NAME)
 			.defaultContentType(MediaType.APPLICATION_JSON)
-			.mediaType(PubsConstants.MEDIA_TYPE_CSV_EXTENSION, PubsConstants.MEDIA_TYPE_CSV)
-			.mediaType(PubsConstants.MEDIA_TYPE_TSV_EXTENSION, PubsConstants.MEDIA_TYPE_TSV)
-			.mediaType(PubsConstants.MEDIA_TYPE_XML_EXTENSION, MediaType.APPLICATION_XML)
-			.mediaType(PubsConstants.MEDIA_TYPE_JSON_EXTENSION, MediaType.APPLICATION_JSON)
-			.mediaType(PubsConstants.MEDIA_TYPE_XLSX_EXTENSION, PubsConstants.MEDIA_TYPE_XLSX)
-			.mediaType(PubsConstants.MEDIA_TYPE_CROSSREF_EXTENSION, PubsConstants.MEDIA_TYPE_CROSSREF)
+			.mediaType(PubsConstantsHelper.MEDIA_TYPE_CSV_EXTENSION, PubsConstantsHelper.MEDIA_TYPE_CSV)
+			.mediaType(PubsConstantsHelper.MEDIA_TYPE_TSV_EXTENSION, PubsConstantsHelper.MEDIA_TYPE_TSV)
+			.mediaType(PubsConstantsHelper.MEDIA_TYPE_XML_EXTENSION, MediaType.APPLICATION_XML)
+			.mediaType(PubsConstantsHelper.MEDIA_TYPE_JSON_EXTENSION, MediaType.APPLICATION_JSON)
+			.mediaType(PubsConstantsHelper.MEDIA_TYPE_XLSX_EXTENSION, PubsConstantsHelper.MEDIA_TYPE_XLSX)
+			.mediaType(PubsConstantsHelper.MEDIA_TYPE_CROSSREF_EXTENSION, PubsConstantsHelper.MEDIA_TYPE_CROSSREF)
 			;
 	}
 

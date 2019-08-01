@@ -1,12 +1,12 @@
 package gov.usgs.cida.pubs.webservice;
 
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
 import gov.usgs.cida.pubs.json.View;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 import io.swagger.annotations.ApiOperation;
@@ -53,7 +53,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		this.outsideAffiliationBusService = outsideAffiliationBusService;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@GetMapping(value={"/costcenter"})
 	@JsonView(View.MP.class)
 	public List<CostCenter> getCostCenters(HttpServletRequest request, HttpServletResponse response) {
@@ -67,20 +67,20 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		return rtn;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@GetMapping(value={"/costcenter/{id}"})
 	@JsonView(View.MP.class)
 	public CostCenter getCostCenter(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") String id) {
 		LOG.debug("getCostCenter");
 		setHeaders(response);
-		CostCenter rtn = costCenterBusService.getObject(PubsUtilities.parseInteger(id));
+		CostCenter rtn = costCenterBusService.getObject(PubsUtils.parseInteger(id));
 		if (null == rtn) {
 			response.setStatus(HttpStatus.NOT_FOUND.value());
 		}
 		return rtn;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PostMapping(value={"/costcenter"})
 	@JsonView(View.MP.class)
 	@Transactional
@@ -96,14 +96,14 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		return result;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@DeleteMapping(value="/costcenter/{id}")
 	@Transactional
 	@JsonView(View.MP.class)
 	public @ResponseBody ValidationResults deleteCostCenter(@PathVariable String id, HttpServletResponse response) {
 		LOG.debug("deleteCostCenter");
 		setHeaders(response);
-		ValidationResults result = costCenterBusService.deleteObject(PubsUtilities.parseInteger(id));
+		ValidationResults result = costCenterBusService.deleteObject(PubsUtils.parseInteger(id));
 		if (null != result && result.isEmpty()) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
@@ -112,7 +112,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		return result;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PutMapping(value="/costcenter/{id}")
 	@JsonView(View.MP.class)
 	@Transactional
@@ -121,7 +121,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		setHeaders(response);
 
 		CostCenter result = costCenter;
-		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(id, costCenter);
+		ValidatorResult idNotMatched = PubsUtils.validateIdsMatch(id, costCenter);
 
 		if (null == idNotMatched) {
 			result = costCenterBusService.updateObject(costCenter);
@@ -137,7 +137,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		return result;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@GetMapping(value={"/outsideaffiliation"})
 	@JsonView(View.MP.class)
 	public List<OutsideAffiliation> getOutsideAffiliations(HttpServletRequest request, HttpServletResponse response) {
@@ -151,20 +151,20 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		return rtn;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@GetMapping(value={"/outsideaffiliation/{id}"})
 	@JsonView(View.MP.class)
 	public OutsideAffiliation getOutsideAffiliation(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") String id) {
 		LOG.debug("getOutsideAffiliation");
 		setHeaders(response);
-		OutsideAffiliation rtn = outsideAffiliationBusService.getObject(PubsUtilities.parseInteger(id));
+		OutsideAffiliation rtn = outsideAffiliationBusService.getObject(PubsUtils.parseInteger(id));
 		if (null == rtn) {
 			response.setStatus(HttpStatus.NOT_FOUND.value());
 		}
 		return rtn;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PostMapping(value={"/outsideaffiliation"})
 	@JsonView(View.MP.class)
 	@Transactional
@@ -180,14 +180,14 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		return result;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@DeleteMapping(value="/outsideaffiliation/{id}")
 	@Transactional
 	@JsonView(View.MP.class)
 	public @ResponseBody ValidationResults deleteOutsideAffiliation(@PathVariable String id, HttpServletResponse response) {
 		LOG.debug("deleteOutsideAffiliation");
 		setHeaders(response);
-		ValidationResults result = outsideAffiliationBusService.deleteObject(PubsUtilities.parseInteger(id));
+		ValidationResults result = outsideAffiliationBusService.deleteObject(PubsUtils.parseInteger(id));
 		if (null != result && result.isEmpty()) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
@@ -196,7 +196,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		return result;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PutMapping(value="/outsideaffiliation/{id}")
 	@JsonView(View.MP.class)
 	@Transactional
@@ -205,7 +205,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		setHeaders(response);
 		
 		OutsideAffiliation result = outsideAffiliation;
-		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(id, outsideAffiliation);
+		ValidatorResult idNotMatched = PubsUtils.validateIdsMatch(id, outsideAffiliation);
 		
 		if (null == idNotMatched) {
 			result = outsideAffiliationBusService.updateObject(outsideAffiliation);

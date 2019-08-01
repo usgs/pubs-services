@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
 import gov.usgs.cida.pubs.json.View;
@@ -42,13 +42,6 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	private static final long serialVersionUID = -9013357854464855631L;
 
 	private static IPublicationDao publicationDao;
-
-	public Publication() {}
-
-	public Publication(Boolean published, Boolean noUsgsAuthors) {
-		this.published = published;
-		this.noUsgsAuthors = noUsgsAuthors;
-	}
 
 	@JsonProperty("indexId")
 	@JsonView(View.PW.class)
@@ -201,7 +194,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 
 	@JsonProperty("numberOfPages")
 	@JsonView(View.PW.class)
-	@Pattern(regexp=PubsConstants.SPACES_OR_NUMBER_REGEX)
+	@Pattern(regexp=PubsConstantsHelper.SPACES_OR_NUMBER_REGEX)
 	private String numberOfPages;
 
 	@JsonProperty("onlineOnly")
@@ -238,7 +231,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 
 	@JsonProperty("ipdsInternalId")
 	@JsonView(View.MP.class)
-	@Pattern(regexp=PubsConstants.SPACES_OR_NUMBER_REGEX)
+	@Pattern(regexp=PubsConstantsHelper.SPACES_OR_NUMBER_REGEX)
 	protected String ipdsInternalId;
 
 	@JsonProperty("ipdsContext")
@@ -262,7 +255,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 
 	@JsonProperty("scale")
 	@JsonView(View.PW.class)
-	@Pattern(regexp=PubsConstants.SPACES_OR_NUMBER_REGEX)
+	@Pattern(regexp=PubsConstantsHelper.SPACES_OR_NUMBER_REGEX)
 	private String scale;
 
 	@JsonProperty("projection")
@@ -365,6 +358,13 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	@JsonProperty("noUsgsAuthors")
 	@JsonView(View.MP.class)
 	private Boolean noUsgsAuthors;
+
+	public Publication() {}
+
+	public Publication(Boolean published, Boolean noUsgsAuthors) {
+		this.published = published;
+		this.noUsgsAuthors = noUsgsAuthors;
+	}
 
 	public String getIndexId() {
 		return indexId;

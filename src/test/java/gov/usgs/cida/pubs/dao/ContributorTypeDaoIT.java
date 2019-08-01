@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 import gov.usgs.cida.pubs.BaseIT;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
 
@@ -67,7 +67,7 @@ public class ContributorTypeDaoIT extends BaseIT {
 			contributorTypeDao.add(new ContributorType());
 			fail("Was able to add.");
 		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+			assertEquals(PubsConstantsHelper.NOT_IMPLEMENTED, e.getMessage());
 		}
 
 		try {
@@ -76,28 +76,28 @@ public class ContributorTypeDaoIT extends BaseIT {
 			contributorTypeDao.getObjectCount(params);
 			fail("Was able to get count.");
 		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+			assertEquals(PubsConstantsHelper.NOT_IMPLEMENTED, e.getMessage());
 		}
 
 		try {
 			contributorTypeDao.update(new ContributorType());
 			fail("Was able to update.");
 		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+			assertEquals(PubsConstantsHelper.NOT_IMPLEMENTED, e.getMessage());
 		}
 
 		try {
 			contributorTypeDao.delete(new ContributorType());
 			fail("Was able to delete.");
 		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+			assertEquals(PubsConstantsHelper.NOT_IMPLEMENTED, e.getMessage());
 		}
 
 		try {
 			contributorTypeDao.deleteById(1);
 			fail("Was able to delete by it.");
 		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+			assertEquals(PubsConstantsHelper.NOT_IMPLEMENTED, e.getMessage());
 		}
 	}
 

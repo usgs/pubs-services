@@ -45,11 +45,11 @@ public class ConfigurationService {
 	@Value("${pubs.warehouseEndpoint}")
 	private String warehouseEndpoint;
 
-	@Value("${swagger.displayProtocol:https}")
+	@Value("${swagger.display.protocol:https}")
 	private String displayProtocol;
-	@Value("${swagger.displayHost}")
+	@Value("${swagger.display.host}")
 	private String displayHost;
-	@Value("${swagger.displayPath}")
+	@Value("${swagger.display.path}")
 	private String displayPath;
 
 	@Value("${security.oauth2.resource.id}")

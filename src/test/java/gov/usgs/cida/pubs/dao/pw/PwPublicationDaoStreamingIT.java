@@ -24,7 +24,7 @@ import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
-import gov.usgs.cida.pubs.transform.PublicationColumns;
+import gov.usgs.cida.pubs.transform.PublicationColumnsHelper;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={DbTestConfig.class, PwPublicationDao.class})
@@ -59,10 +59,10 @@ public class PwPublicationDaoStreamingIT extends BaseIT {
 		assertNotNull(pubs);
 		assertEquals(2, pubs.size());
 
-		assertEquals(PublicationColumns.getMappings().keySet().size(), pubs.get(0).keySet().size());
-		assertTrue(pubs.get(0).keySet().containsAll(PublicationColumns.getMappings().keySet()));
-		assertEquals(PublicationColumns.getMappings().keySet().size(), pubs.get(1).keySet().size());
-		assertTrue(pubs.get(1).keySet().containsAll(PublicationColumns.getMappings().keySet()));
+		assertEquals(PublicationColumnsHelper.getMappings().keySet().size(), pubs.get(0).keySet().size());
+		assertTrue(pubs.get(0).keySet().containsAll(PublicationColumnsHelper.getMappings().keySet()));
+		assertEquals(PublicationColumnsHelper.getMappings().keySet().size(), pubs.get(1).keySet().size());
+		assertTrue(pubs.get(1).keySet().containsAll(PublicationColumnsHelper.getMappings().keySet()));
 
 		Map<String, Object> pub = pubs.get(0);
 		assertEquals("https://test.gov/4", pub.get("warehouse_url"));

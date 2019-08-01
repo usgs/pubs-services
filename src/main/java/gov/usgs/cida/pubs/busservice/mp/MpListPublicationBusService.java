@@ -5,7 +5,7 @@ import gov.usgs.cida.pubs.busservice.intfc.IMpListPublicationBusService;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 import gov.usgs.cida.pubs.domain.mp.MpListPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 
@@ -39,7 +39,7 @@ public class MpListPublicationBusService extends MpBusService<MpListPublication>
 			MpList mpList = new MpList();
 			mpList.setId(listId);
 			for (String publicationId : publicationIds) {
-				beginPublicationEdit(PubsUtilities.parseInteger(publicationId));
+				beginPublicationEdit(PubsUtils.parseInteger(publicationId));
 				MpListPublication listPub = new MpListPublication();
 				MpPublication mpPub = new MpPublication();
 				mpPub.setId(publicationId);

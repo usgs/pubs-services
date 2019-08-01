@@ -18,7 +18,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseIT;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
@@ -137,7 +137,7 @@ public class AffiliationDaoIT extends BaseIT {
 			affiliationDao.add(null);
 			fail("Was able to add.");
 		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+			assertEquals(PubsConstantsHelper.NOT_IMPLEMENTED, e.getMessage());
 		}
 
 		try {
@@ -146,14 +146,14 @@ public class AffiliationDaoIT extends BaseIT {
 			affiliationDao.getObjectCount(params);
 			fail("Was able to get count.");
 		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+			assertEquals(PubsConstantsHelper.NOT_IMPLEMENTED, e.getMessage());
 		}
 
 		try {
 			affiliationDao.update(null);
 			fail("Was able to update.");
 		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+			assertEquals(PubsConstantsHelper.NOT_IMPLEMENTED, e.getMessage());
 		}
 	}
 

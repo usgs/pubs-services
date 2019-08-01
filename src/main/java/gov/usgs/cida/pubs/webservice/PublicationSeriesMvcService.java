@@ -1,13 +1,13 @@
 package gov.usgs.cida.pubs.webservice;
 
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.json.View;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 import io.swagger.annotations.ApiOperation;
@@ -53,7 +53,7 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 		this.busService = busService;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@GetMapping
 	@JsonView(View.PW.class)
 	public @ResponseBody SearchResults getPublicationSeries(HttpServletRequest request, HttpServletResponse response,
@@ -68,7 +68,7 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 		setHeaders(response);
 		Map<String, Object> filters = new HashMap<>();
 		if (null != publicationSubtypeId && 0 < publicationSubtypeId.length) {
-			filters.put(PublicationSeriesDao.SUBTYPE_SEARCH, PubsUtilities.parseInteger(publicationSubtypeId[0]));
+			filters.put(PublicationSeriesDao.SUBTYPE_SEARCH, PubsUtils.parseInteger(publicationSubtypeId[0]));
 		}
 		if (null != text && 0 < text.length) {
 			filters.put(PublicationSeriesDao.TEXT_SEARCH, text[0]);
@@ -86,21 +86,21 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 		return results;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@GetMapping(value={"/{id}"})
 	@JsonView(View.PW.class)
 	public @ResponseBody PublicationSeries getPublicationSeries(HttpServletRequest request, HttpServletResponse response,
 				@PathVariable("id") String id) {
 		LOG.debug("getPublicationSeries");
 		setHeaders(response);
-		PublicationSeries rtn = busService.getObject(PubsUtilities.parseInteger(id));
+		PublicationSeries rtn = busService.getObject(PubsUtils.parseInteger(id));
 		if (null == rtn) {
 			response.setStatus(HttpStatus.NOT_FOUND.value());
 		}
 		return rtn;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PostMapping
 	@Transactional
 	@JsonView(View.LookupMaint.class)
@@ -116,7 +116,7 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 		return result;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PutMapping(value="/{id}")
 	@Transactional
 	@JsonView(View.LookupMaint.class)
@@ -125,7 +125,7 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 		setHeaders(response);
 
 		PublicationSeries result = pubSeries;
-		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(id, pubSeries);
+		ValidatorResult idNotMatched = PubsUtils.validateIdsMatch(id, pubSeries);
 
 		if (null == idNotMatched) {
 			result = busService.updateObject(pubSeries);
@@ -142,13 +142,13 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 		return result;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@DeleteMapping(value="/{id}")
 	@Transactional
 	@JsonView(View.LookupMaint.class)
 	public @ResponseBody ValidationResults deletePublicationSeries(@PathVariable String id, HttpServletResponse response) {
 		setHeaders(response);
-		ValidationResults result = busService.deleteObject(PubsUtilities.parseInteger(id));
+		ValidationResults result = busService.deleteObject(PubsUtils.parseInteger(id));
 		if (null != result && result.isEmpty()) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {

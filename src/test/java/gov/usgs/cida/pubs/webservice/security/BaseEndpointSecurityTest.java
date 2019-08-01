@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.TestOAuth;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpListPublicationBusService;
@@ -284,12 +284,12 @@ public abstract class BaseEndpointSecurityTest extends BaseTest {
 				.secure(true).with(csrf()).with(requestPostProcessor))
 			.andExpect(expectedStatus);
 
-		mockMvc.perform(get("/publication/crossref").accept(PubsConstants.MEDIA_TYPE_CROSSREF_VALUE)
+		mockMvc.perform(get("/publication/crossref").accept(PubsConstantsHelper.MEDIA_TYPE_CROSSREF_VALUE)
 				.secure(true).with(csrf()).with(requestPostProcessor))
 			.andExpect(expectedStatus);
 
 		//PW Publication RSS
-		mockMvc.perform(get("/publication/rss").accept(PubsConstants.MEDIA_TYPE_RSS)
+		mockMvc.perform(get("/publication/rss").accept(PubsConstantsHelper.MEDIA_TYPE_RSS)
 				.secure(true).with(csrf()).with(requestPostProcessor))
 			.andExpect(expectedStatus);
 	}

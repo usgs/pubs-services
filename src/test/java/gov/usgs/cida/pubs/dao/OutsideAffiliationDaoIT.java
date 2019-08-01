@@ -18,7 +18,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseIT;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
 
@@ -141,7 +141,7 @@ public class OutsideAffiliationDaoIT extends BaseIT {
 			outsideAffiliationDao.getObjectCount(params);
 			fail("Was able to get count.");
 		} catch (Exception e) {
-			assertEquals(PubsConstants.NOT_IMPLEMENTED, e.getMessage());
+			assertEquals(PubsConstantsHelper.NOT_IMPLEMENTED, e.getMessage());
 		}
 	}
 }

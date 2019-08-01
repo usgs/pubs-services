@@ -36,7 +36,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import gov.usgs.cida.pubs.BaseTest;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
@@ -120,7 +120,7 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 		MvcResult rtn = mockMvc.perform(get("/mppublications?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(expectedGetPubsDefault)));
@@ -135,7 +135,7 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 				+ "/preview").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
@@ -148,7 +148,7 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 		MvcResult rtn = mockMvc.perform(get("/mppublications/1?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
@@ -157,14 +157,14 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 		rtn = mockMvc.perform(get("/mppublications/2?mimetype=json").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isConflict())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(LOCK_MSG2)));
 
 		//Pub not found
 		rtn = mockMvc.perform(get("/mppublications/3?mimetype=json").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())
-				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 		assertEquals(0, rtn.getResponse().getContentAsString().length());
 	}
@@ -177,7 +177,7 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 		MvcResult rtn = mockMvc.perform(get("/mppublications?q=1").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(expectedGetPubsDefault)));
@@ -185,7 +185,7 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 		MvcResult rtn2 = mockMvc.perform(get("/mppublications?q=NoPublicationIsGoingToHaveThisSearchTermZZzzzzZZZZZwhatNO").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 
 		assertThat(getRtnAsJSONObject(rtn2), sameJSONObjectAs(new JSONObject(NO_RECORDS)));
@@ -198,7 +198,7 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 		MvcResult rtn = mockMvc.perform(post("/mppublications").content(MP_PUB_1_JSON).contentType(MediaType.APPLICATION_JSON)
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isBadRequest())
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
 		assertEquals("", rtn.getResponse().getContentAsString());
@@ -207,7 +207,7 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isCreated())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
@@ -223,7 +223,7 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isConflict())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(LOCK_MSG3)));
 
@@ -231,7 +231,7 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 				+ PublicationType.REPORT + ",\"text\":\"abc\"},\"indexId\":\"abc\"}").contentType(MediaType.APPLICATION_JSON)
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isBadRequest())
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 		assertEquals("", rtn.getResponse().getContentAsString());
 
@@ -240,7 +240,7 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
 	}
@@ -254,7 +254,7 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isBadRequest())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(pubJsonWithError)));
 	}
@@ -266,7 +266,7 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 		MvcResult rtn = mockMvc.perform(delete("/mppublications/1").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
 
@@ -274,7 +274,7 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 		rtn = mockMvc.perform(delete("/mppublications/2").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isConflict())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(LOCK_MSG)));
 	}
@@ -287,7 +287,7 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
 
@@ -296,7 +296,7 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isConflict())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(LOCK_MSG)));
 
@@ -307,7 +307,7 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 		rtn = mockMvc.perform(post("/mppublications/publish").content("{\"id\":3}}").contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())
-				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject("{\"validationErrors\":[{\"field\":\"Publication\",\"message\":\"Publication does not exist.\",\"level\":\"FATAL\",\"value\":\"3\"}]}")));
 
@@ -320,7 +320,7 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 				.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
 		verify(busService, times(1)).releaseLocksPub(anyInt());
@@ -330,7 +330,7 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isConflict())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(LOCK_MSG)));
 		//We executed the releaseLocksPub above - this would be 2 if we also hit it in the locked test.

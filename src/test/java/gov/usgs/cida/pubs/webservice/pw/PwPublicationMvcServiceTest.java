@@ -33,7 +33,7 @@ import org.springframework.web.accept.ContentNegotiationStrategy;
 import freemarker.template.Configuration;
 import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.dao.BaseDao;
@@ -113,10 +113,10 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 	@SuppressWarnings("unchecked")
 	public void streamResultsTsvTest() {
 		HttpServletResponse response = new MockHttpServletResponse();
-		mvcService.streamResults(filters, PubsConstants.MEDIA_TYPE_TSV_EXTENSION, response);
-		assertEquals(PubsConstants.DEFAULT_ENCODING, response.getCharacterEncoding());
+		mvcService.streamResults(filters, PubsConstantsHelper.MEDIA_TYPE_TSV_EXTENSION, response);
+		assertEquals(PubsConstantsHelper.DEFAULT_ENCODING, response.getCharacterEncoding());
 		assertEquals("attachment; filename=publications.tsv", response.getHeader(MIME.CONTENT_DISPOSITION));
-		assertEquals(PubsConstants.MEDIA_TYPE_TSV_VALUE, response.getContentType());
+		assertEquals(PubsConstantsHelper.MEDIA_TYPE_TSV_VALUE, response.getContentType());
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		verify(busService).stream(eq("pwPublication.getStreamByMap"), anyMap(), any(ResultHandler.class));
 		verify(busService, never()).getObjectCount(anyMap());
@@ -126,10 +126,10 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 	@SuppressWarnings("unchecked")
 	public void streamResultsCsvTest() {
 		HttpServletResponse response = new MockHttpServletResponse();
-		mvcService.streamResults(filters, PubsConstants.MEDIA_TYPE_CSV_EXTENSION, response);
-		assertEquals(PubsConstants.DEFAULT_ENCODING, response.getCharacterEncoding());
+		mvcService.streamResults(filters, PubsConstantsHelper.MEDIA_TYPE_CSV_EXTENSION, response);
+		assertEquals(PubsConstantsHelper.DEFAULT_ENCODING, response.getCharacterEncoding());
 		assertEquals("attachment; filename=publications.csv", response.getHeader(MIME.CONTENT_DISPOSITION));
-		assertEquals(PubsConstants.MEDIA_TYPE_CSV_VALUE, response.getContentType());
+		assertEquals(PubsConstantsHelper.MEDIA_TYPE_CSV_VALUE, response.getContentType());
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		verify(busService).stream(eq("pwPublication.getStreamByMap"), anyMap(), any(ResultHandler.class));
 		verify(busService, never()).getObjectCount(anyMap());
@@ -139,10 +139,10 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 	@SuppressWarnings("unchecked")
 	public void streamResultsXlsxTest() {
 		HttpServletResponse response = new MockHttpServletResponse();
-		mvcService.streamResults(filters, PubsConstants.MEDIA_TYPE_XLSX_EXTENSION, response);
-		assertEquals(PubsConstants.DEFAULT_ENCODING, response.getCharacterEncoding());
+		mvcService.streamResults(filters, PubsConstantsHelper.MEDIA_TYPE_XLSX_EXTENSION, response);
+		assertEquals(PubsConstantsHelper.DEFAULT_ENCODING, response.getCharacterEncoding());
 		assertEquals("attachment; filename=publications.xlsx", response.getHeader(MIME.CONTENT_DISPOSITION));
-		assertEquals(PubsConstants.MEDIA_TYPE_XLSX_VALUE, response.getContentType());
+		assertEquals(PubsConstantsHelper.MEDIA_TYPE_XLSX_VALUE, response.getContentType());
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		verify(busService).stream(eq("pwPublication.getStreamByMap"), anyMap(), any(ResultHandler.class));
 		verify(busService, never()).getObjectCount(anyMap());
@@ -152,8 +152,8 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 	@SuppressWarnings("unchecked")
 	public void streamResultsJsonTest() {
 		HttpServletResponse response = new MockHttpServletResponse();
-		mvcService.streamResults(filters, PubsConstants.MEDIA_TYPE_JSON_EXTENSION, response);
-		assertEquals(PubsConstants.DEFAULT_ENCODING, response.getCharacterEncoding());
+		mvcService.streamResults(filters, PubsConstantsHelper.MEDIA_TYPE_JSON_EXTENSION, response);
+		assertEquals(PubsConstantsHelper.DEFAULT_ENCODING, response.getCharacterEncoding());
 		assertEquals(MediaType.APPLICATION_JSON_UTF8_VALUE, response.getContentType());
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		verify(busService).stream(eq("pwPublication.getByMap"), anyMap(), any(ResultHandler.class));

@@ -20,7 +20,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.dao.ContributorTypeDao;
 import gov.usgs.cida.pubs.dao.ContributorTypeDaoIT;
 import gov.usgs.cida.pubs.dao.LinkFileTypeDao;
@@ -48,7 +48,7 @@ public class LookupMvcServiceIT extends BaseIT {
 		MvcResult rtn = mockMvc.perform(get("/lookup/contributortypes?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
 		assertEquals(ContributorTypeDaoIT.CONTRIBUTOR_TYPE_CNT, getRtnAsJSONArray(rtn).length());
@@ -56,7 +56,7 @@ public class LookupMvcServiceIT extends BaseIT {
 		rtn = mockMvc.perform(get("/lookup/contributortypes?text=au").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
 		assertThat(getRtnAsJSONArray(rtn),
@@ -68,7 +68,7 @@ public class LookupMvcServiceIT extends BaseIT {
 		MvcResult rtn = mockMvc.perform(get("/lookup/linkfiletypes?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
 		JSONArray rtnAsJSONArray = getRtnAsJSONArray(rtn);
@@ -83,7 +83,7 @@ public class LookupMvcServiceIT extends BaseIT {
 		rtn = mockMvc.perform(get("/lookup/linkfiletypes?text=s").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
 		rtnAsJSONArray = getRtnAsJSONArray(rtn);
@@ -99,7 +99,7 @@ public class LookupMvcServiceIT extends BaseIT {
 		MvcResult rtn = mockMvc.perform(get("/lookup/linktypes?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
 		assertEquals(LinkTypeDaoIT.LINK_TYPES_CNT, getRtnAsJSONArray(rtn).length());
@@ -107,7 +107,7 @@ public class LookupMvcServiceIT extends BaseIT {
 		rtn = mockMvc.perform(get("/lookup/linktypes?text=r").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
 		JSONArray rtnAsJSONArray = getRtnAsJSONArray(rtn);

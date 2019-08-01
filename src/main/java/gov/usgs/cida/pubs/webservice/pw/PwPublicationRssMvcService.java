@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
@@ -46,7 +46,7 @@ import gov.usgs.cida.pubs.webservice.MvcService;
  * Spring throws a 404 if this endpoint gets hit with no headers because it doesn't find a method to render the response.
  */
 @RestController
-@RequestMapping(value = "publication/rss", produces={PubsConstants.MEDIA_TYPE_RSS_VALUE, MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(value = "publication/rss", produces={PubsConstantsHelper.MEDIA_TYPE_RSS_VALUE, MediaType.APPLICATION_JSON_VALUE})
 public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 	private static final String DEFAULT_RECORDS = "30";
 
@@ -99,10 +99,9 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 		 * 
 		 * 	"if mod_x_days is there, and pub_x_days is not, mod_x_days should override the default pub_x_days = 30"
 		 */
-		if((pubXDays == null) || (pubXDays.isEmpty())) {
-			if((modXDays == null) || (modXDays.isEmpty())) {
-				pubXDays = DEFAULT_RECORDS;
-			}
+		if (((pubXDays == null) || (pubXDays.isEmpty()))
+				&& ((modXDays == null) || (modXDays.isEmpty()))) {
+			pubXDays = DEFAULT_RECORDS;
 		}
 
 		Map<String, Object> filters = buildFilters(chorus, contributingOffice, contributor, orcid, null, endYear, g, null,
@@ -114,10 +113,10 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 
 		String rssResults = getSearchResultsAsRSS(pubs);
 
-		response.setCharacterEncoding(PubsConstants.DEFAULT_ENCODING);
-		response.setContentType(PubsConstants.MEDIA_TYPE_RSS_VALUE);
+		response.setCharacterEncoding(PubsConstantsHelper.DEFAULT_ENCODING);
+		response.setContentType(PubsConstantsHelper.MEDIA_TYPE_RSS_VALUE);
 		try {
-			response.setContentLength(rssResults.getBytes(PubsConstants.DEFAULT_ENCODING).length);
+			response.setContentLength(rssResults.getBytes(PubsConstantsHelper.DEFAULT_ENCODING).length);
 		} catch (UnsupportedEncodingException e) {
 			LOG.error("Unable to set content length of resulting RSS content: " + e);
 		}
@@ -175,130 +174,9 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 		/**
 		 * Now per item
 		 */
-		if(records != null) {
+		if (records != null) {
 			for(BaseDomain<?> record : records) {
-				Publication<?> publication = (Publication<?>)record;
-
-				rssResults.append("\t\t<item>\n");
-
-				// ==== TITLE
-				rssResults.append("\t\t\t<title>");
-
-				String itemTitle = publication.getTitle();
-				if(itemTitle != null) {
-					rssResults.append(StringEscapeUtils.escapeXml10(itemTitle.trim()));
-				}
-				rssResults.append("</title>\n");
-
-				// ==== AUTHORS
-				/**
-				 * Authors is a list
-				 */
-				rssResults.append("\t\t\t<author>");
-				StringBuffer authorship = new StringBuffer();
-				if (null != publication && null != publication.getContributors() && !publication.getContributors().isEmpty()) {
-					List<PublicationContributor<?>> contributors = (List<PublicationContributor<?>>) publication.getContributorsToMap().get(ContributorType.AUTHOR_KEY);
-					try {
-						if(contributors != null) {
-							for(int i = 0; i < contributors.size(); i++) {
-								PublicationContributor<?> author = contributors.get(i);
-
-								Contributor<?> contributor = author.getContributor();
-
-								if(contributor != null) {
-									if(contributor.isCorporation()) {
-										CorporateContributor corpContributor = (CorporateContributor) contributor;
-
-										String organization = corpContributor.getOrganization();
-										if(organization != null) {
-											authorship.append(organization.trim());
-										}
-									} else if(contributor.isUsgs()) {
-										UsgsContributor usgsContributor = (UsgsContributor) contributor;
-
-										String family = usgsContributor.getFamily();
-										if(family != null) {
-											authorship.append(family.trim());
-											authorship.append(", ");
-										}
-
-										String given = usgsContributor.getGiven();
-										if(given != null) {
-											authorship.append(given.trim());
-										}
-									} else {
-										if(contributor instanceof PersonContributor) {
-											PersonContributor<?> person = (PersonContributor<?>) contributor;
-
-											String family = person.getFamily();
-											if(family != null) {
-												authorship.append(family.trim());
-												authorship.append(", ");
-											}
-											
-											String given = person.getGiven();
-											if(given != null) {
-												authorship.append(given.trim());
-											}
-										} else {
-											authorship.append(contributor.getId());
-										}
-									}
-								}
-
-								if((i + 1) < contributors.size()) {
-									authorship.append("; ");
-								}
-							}
-						}
-					} catch (ClassCastException e) {
-						LOG.error("Error extracting contributor information: " + e);
-					}
-				}
-				rssResults.append(StringEscapeUtils.escapeXml10(authorship.toString()));
-				rssResults.append("</author>\n");
-
-				// ==== LINKS
-				/**
-				 * Links is a list
-				 */
-				rssResults.append("\t\t\t<link>");
-				String pubId = publication.getIndexId();
-				if(pubId != null) {
-					rssResults.append(configurationService.getWarehouseEndpoint() + "/publication/" + pubId.trim());
-				}
-				rssResults.append("</link>\n");
-
-				// ==== DESCRIPTION
-				rssResults.append("\t\t\t<description>");
-
-				String itemDesc = publication.getDocAbstract();
-				if(itemDesc != null) {
-					rssResults.append(StringEscapeUtils.escapeXml10(itemDesc.trim()));
-				}
-				rssResults.append("</description>\n");
-
-				// ==== PUBLICATION DATE
-				rssResults.append("\t\t\t<pubDate>");
-				LocalDateTime pubLocalDateTime = publication.getUpdateDate();
-				if (pubLocalDateTime != null) {
-					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("EEE, d MMM yyyy HH:mm:ss");
-					String pubDate = pubLocalDateTime.format(dtf);
-					rssResults.append(pubDate);
-				}
-				rssResults.append("</pubDate>\n");
-
-				// ==== CATEGORY
-				rssResults.append("\t\t\t<category>");
-				PublicationSeries pubSeries = publication.getSeriesTitle();
-				if(pubSeries != null) {
-					String pubSeriesTitle = pubSeries.getText();
-					if(pubSeriesTitle != null) {
-						rssResults.append(StringEscapeUtils.escapeXml10(pubSeriesTitle.trim()));
-					}
-				}
-				rssResults.append("</category>\n");
-				rssResults.append("\t\t</item>\n");
+				rssResults.append(processRecord(record));
 			}
 		}
 
@@ -306,5 +184,168 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 		rssResults.append("</rss>\n");
 
 		return rssResults.toString();
+	}
+
+	private StringBuffer processRecord(BaseDomain<?> record) {
+
+		Publication<?> publication = (Publication<?>)record;
+
+		StringBuffer rssRecord = new StringBuffer("\t\t<item>\n");
+
+		// ==== TITLE
+		rssRecord.append(addTitle(publication));
+
+		// ==== AUTHORS
+		rssRecord.append(addAuthors(publication));
+
+		// ==== LINKS
+		rssRecord.append(addLinks(publication.getIndexId()));
+
+		// ==== DESCRIPTION
+		rssRecord.append(addDescription(publication.getDocAbstract()));
+
+		// ==== PUBLICATION DATE
+		rssRecord.append(addPublicationDate(publication.getUpdateDate()));
+
+		// ==== CATEGORY
+		rssRecord.append(addCategory(publication.getSeriesTitle()));
+
+		rssRecord.append("\t\t</item>\n");
+		return rssRecord;
+	}
+
+	private StringBuffer addTitle(Publication<?> publication) {
+		StringBuffer title = new StringBuffer("\t\t\t<title>");
+		String itemTitle = publication.getTitle();
+		if (itemTitle != null) {
+			title.append(StringEscapeUtils.escapeXml10(itemTitle.trim()));
+		}
+		title.append("</title>\n");
+		return title;
+	}
+
+	private StringBuffer addAuthors(Publication<?> publication) {
+		StringBuffer authors = new StringBuffer("\t\t\t<author>");
+		/**
+		 * Authors is a list
+		 */
+		if (null != publication && null != publication.getContributors() && !publication.getContributors().isEmpty()) {
+			authors.append(processAuthors(publication.getContributorsToMap().get(ContributorType.AUTHOR_KEY)));
+		}
+		authors.append("</author>\n");
+		return authors;
+	}
+
+	private StringBuffer addLinks(String pubId) {
+		StringBuffer links = new StringBuffer("\t\t\t<link>");
+		if (pubId != null) {
+			links.append(configurationService.getWarehouseEndpoint() + "/publication/" + pubId.trim());
+		}
+		links.append("</link>\n");
+		return links;
+	}
+
+	private StringBuffer addDescription(String itemDesc) {
+		StringBuffer description = new StringBuffer("\t\t\t<description>");
+		if (itemDesc != null) {
+			description.append(StringEscapeUtils.escapeXml10(itemDesc.trim()));
+		}
+		description.append("</description>\n");
+		return description;
+	}
+
+	private StringBuffer addPublicationDate(LocalDateTime pubLocalDateTime) {
+		StringBuffer publicationDate = new StringBuffer("\t\t\t<pubDate>");
+		if (pubLocalDateTime != null) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("EEE, d MMM yyyy HH:mm:ss");
+			String pubDate = pubLocalDateTime.format(dtf);
+			publicationDate.append(pubDate);
+		}
+		publicationDate.append("</pubDate>\n");
+		return publicationDate;
+	}
+
+	private StringBuffer addCategory(PublicationSeries pubSeries) {
+		StringBuffer category = new StringBuffer("\t\t\t<category>");
+		if (pubSeries != null) {
+			String pubSeriesTitle = pubSeries.getText();
+			if(pubSeriesTitle != null) {
+				category.append(StringEscapeUtils.escapeXml10(pubSeriesTitle.trim()));
+			}
+		}
+		category.append("</category>\n");
+		return category;
+	}
+
+	private StringBuffer processAuthors(List<PublicationContributor<?>> contributors) {
+		StringBuffer authorship = new StringBuffer();
+		if (contributors != null) {
+			try {
+				for(int i = 0; i < contributors.size(); i++) {
+					PublicationContributor<?> author = contributors.get(i);
+
+					Contributor<?> contributor = author.getContributor();
+
+					if (contributor != null) {
+						if (contributor.isCorporation()) {
+							authorship.append(addCorporation((CorporateContributor) contributor));
+						} else if (contributor.isUsgs()) {
+							authorship.append(addUsgsContributor((UsgsContributor) contributor));
+						} else {
+							if(contributor instanceof PersonContributor) {
+								authorship.append(addPersonContributor((PersonContributor<?>) contributor));
+							} else {
+								authorship.append(contributor.getId());
+							}
+						}
+					}
+
+					if ((i + 1) < contributors.size()) {
+						authorship.append("; ");
+					}
+				}
+			} catch (ClassCastException e) {
+				LOG.error("Error extracting contributor information: " + e);
+			}
+		}
+		return authorship;
+	}
+
+	private String addCorporation(CorporateContributor corpContributor) {
+		String organization = corpContributor.getOrganization();
+		if (organization != null) {
+			return organization.trim();
+		}
+		return null;
+	}
+
+	private StringBuffer addUsgsContributor(UsgsContributor usgsContributor) {
+		StringBuffer contributor = new StringBuffer();
+		String family = usgsContributor.getFamily();
+		if (family != null) {
+			contributor.append(family.trim());
+			contributor.append(", ");
+		}
+
+		String given = usgsContributor.getGiven();
+		if(given != null) {
+			contributor.append(given.trim());
+		}
+		return contributor;
+	}
+
+	private StringBuffer addPersonContributor(PersonContributor<?> person) {
+		StringBuffer contributor = new StringBuffer();
+		String family = person.getFamily();
+		if (family != null) {
+			contributor.append(family.trim());
+			contributor.append(", ");
+		}
+
+		String given = person.getGiven();
+		if (given != null) {
+			contributor.append(given.trim());
+		}
+		return contributor;
 	}
 }

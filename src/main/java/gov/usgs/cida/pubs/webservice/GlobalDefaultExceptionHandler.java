@@ -22,8 +22,8 @@ import org.springframework.web.context.request.WebRequest;
 @ControllerAdvice
 public class GlobalDefaultExceptionHandler {
 	private static final Logger LOG = LoggerFactory.getLogger(GlobalDefaultExceptionHandler.class);
-	
-	static final String ERROR_MESSAGE_KEY = "Error Message";
+
+	public static final String ERROR_MESSAGE_KEY = "Error Message";
 
 	@ExceptionHandler(Exception.class)
 	public @ResponseBody Map<String, String> handleUncaughtException(Exception ex, WebRequest request, HttpServletResponse response) throws IOException {

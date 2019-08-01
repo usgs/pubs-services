@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IMpListPublicationBusService;
 import gov.usgs.cida.pubs.domain.mp.MpListPublication;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.webservice.MvcService;
 import io.swagger.annotations.ApiOperation;
@@ -36,23 +36,23 @@ public class MpListPublicationMvcService extends MvcService<MpListPublication> {
 		this.busService = busService;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PostMapping
 	@Transactional
 	public @ResponseBody Collection<MpListPublication> addPubToList(@PathVariable String listId,
 			@RequestParam("publicationId") String[] publicationIds, HttpServletResponse response) {
 		setHeaders(response);
 		response.setStatus(HttpServletResponse.SC_CREATED);
-		return busService.addPubToList(PubsUtilities.parseInteger(listId), publicationIds);
+		return busService.addPubToList(PubsUtils.parseInteger(listId), publicationIds);
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@DeleteMapping(value = "{publicationId}")
 	@Transactional
 	public @ResponseBody ValidationResults removePubFromList(@PathVariable String listId,
 			@PathVariable("publicationId") String publicationId, HttpServletResponse response) {
 		setHeaders(response);
-		return busService.removePubFromList(PubsUtilities.parseInteger(listId), PubsUtilities.parseInteger(publicationId));
+		return busService.removePubFromList(PubsUtils.parseInteger(listId), PubsUtils.parseInteger(publicationId));
 	}
 
 }

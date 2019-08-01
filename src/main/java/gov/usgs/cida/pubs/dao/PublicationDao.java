@@ -14,11 +14,6 @@ import gov.usgs.cida.pubs.domain.Publication;
 @Repository
 public class PublicationDao extends BaseDao<Publication<?>> implements IPublicationDao {
 
-	@Autowired
-	public PublicationDao(SqlSessionFactory sqlSessionFactory) {
-		super(sqlSessionFactory);
-	}
-
 	private static final String NS = "publication";
 	private static final String FILTER_BY_INDEX_ID = ".filterLookupByIndexId";
 	private static final String VALIDATE_BY_MAP = ".validateByMap";
@@ -45,6 +40,11 @@ public class PublicationDao extends BaseDao<Publication<?>> implements IPublicat
 	public static final String TITLE = "title";
 	public static final String TYPE_NAME = "typeName";
 	public static final String YEAR = "year";
+
+	@Autowired
+	public PublicationDao(SqlSessionFactory sqlSessionFactory) {
+		super(sqlSessionFactory);
+	}
 
 	@Transactional(readOnly = true)
 	@Override

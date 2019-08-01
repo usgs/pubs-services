@@ -22,7 +22,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.context.request.WebRequest;
 
 import gov.usgs.cida.pubs.BaseTest;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
@@ -223,8 +223,8 @@ public class MvcServiceTest {
 
 		String[] searchTerms = testMvcService.buildSearchTerms(Arrays.asList(new String[]{"turtles","loggerhead",""," "}));
 		assertEquals(2, searchTerms.length);
-		assertEquals("turtles", searchTerms[0].toString());
-		assertEquals("loggerhead", searchTerms[1].toString());
+		assertEquals("turtles", searchTerms[0]);
+		assertEquals("loggerhead", searchTerms[1]);
 	}
 
 	@Test
@@ -283,7 +283,7 @@ public class MvcServiceTest {
 	public void setHeadersTest() {
 		HttpServletResponse response = new MockHttpServletResponse();
 		testMvcService.setHeaders(response);
-		assertEquals(PubsConstants.DEFAULT_ENCODING, response.getCharacterEncoding());
+		assertEquals(PubsConstantsHelper.DEFAULT_ENCODING, response.getCharacterEncoding());
 	}
 
 	@Test
@@ -302,7 +302,7 @@ public class MvcServiceTest {
 		assertFalse(HttpStatus.BAD_REQUEST.value() == response.getStatus());
 
 		request = new MockHttpServletRequest();
-		request.addHeader(PubsConstants.ACCEPT_HEADER, PubsConstants.MEDIA_TYPE_CSV_VALUE);
+		request.addHeader(PubsConstantsHelper.ACCEPT_HEADER, PubsConstantsHelper.MEDIA_TYPE_CSV_VALUE);
 		response = new MockHttpServletResponse();
 		assertTrue(testMvcService.validateParametersSetHeaders(request, response));
 		assertFalse(HttpStatus.BAD_REQUEST.value() == response.getStatus());

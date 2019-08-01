@@ -3,11 +3,11 @@ package gov.usgs.cida.pubs.transform;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class PublicationColumns {
+public class PublicationColumnsHelper {
 
 	private static Map<String, String> mappings;
 
-	private PublicationColumns() {}
+	private PublicationColumnsHelper() {}
 
 	//TODO - possible dynamic contributors
 	static {

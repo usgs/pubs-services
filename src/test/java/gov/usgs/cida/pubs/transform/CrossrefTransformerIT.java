@@ -30,7 +30,7 @@ import org.xml.sax.SAXParseException;
 import freemarker.template.Configuration;
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.PublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.dao.ContributorTypeDao;
@@ -162,7 +162,7 @@ public class CrossrefTransformerIT extends BaseIT {
 	@Test
 	public void testNoPubs() throws UnsupportedEncodingException, ParserConfigurationException, SAXException, IOException {
 		instance.end();
-		String output = new String(target.toByteArray(), PubsConstants.DEFAULT_ENCODING);
+		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
 		assertNotNull(output);
 		assertTrue(0 < output.length());
 		assertWellFormed(output);
@@ -179,7 +179,7 @@ public class CrossrefTransformerIT extends BaseIT {
 		//one publication can't be successfully written
 
 		instance.end();
-		String output = new String(target.toByteArray(), PubsConstants.DEFAULT_ENCODING);
+		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
 	
 		assertNotNull(output);
 		assertTrue(0 < output.length());
@@ -201,7 +201,7 @@ public class CrossrefTransformerIT extends BaseIT {
 		//one publication can't be successfully written
 
 		instance.end();
-		String output = new String(target.toByteArray(), PubsConstants.DEFAULT_ENCODING);
+		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
 
 		assertNotNull(output);
 		assertTrue(0 < output.length());
@@ -221,7 +221,7 @@ public class CrossrefTransformerIT extends BaseIT {
 		boolean success = instance.writeResult(pub);
 		assertTrue("should be able to write a valid publication", success);
 		instance.end();
-		String output = new String(target.toByteArray(), PubsConstants.DEFAULT_ENCODING);
+		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
 		assertNotNull(output);
 		assertTrue(0 < output.length());
 		assertWellFormed(output);
@@ -239,7 +239,7 @@ public class CrossrefTransformerIT extends BaseIT {
 		boolean success = instance.writeResult(pub);
 		assertTrue("should be able to write a valid publication", success);
 		instance.end();
-		String output = new String(target.toByteArray(), PubsConstants.DEFAULT_ENCODING);
+		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
 		assertNotNull(output);
 		assertTrue(0 < output.length());
 		assertWellFormed(output);
@@ -272,7 +272,7 @@ public class CrossrefTransformerIT extends BaseIT {
 		assertTrue("should be able to write a valid publication, even if one of its contributors is of an unknown type", success);
 
 		instance.end();
-		String output = new String(target.toByteArray(), PubsConstants.DEFAULT_ENCODING);
+		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
 		assertNotNull(output);
 		assertTrue(0 < output.length());
 		assertWellFormed(output);

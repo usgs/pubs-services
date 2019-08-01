@@ -2,7 +2,7 @@ package gov.usgs.cida.pubs.validation.mp.unique;
 
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
 
 import java.util.Arrays;
@@ -47,7 +47,7 @@ public class UniqueKeyValidatorForMpPublicationContributor implements Constraint
 				if (null == value.getId() || 0 != pubContrib.getId().compareTo(value.getId())) {
 					rtn = false;
 					Object[] messageArguments = Arrays.asList(new String[]{value.getPublicationId().toString(), value.getContributorType().getId().toString(), pubContrib.getContributor().getId().toString()}).toArray();
-					String errorMsg = PubsUtilities.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
+					String errorMsg = PubsUtils.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
 					context.disableDefaultConstraintViolation();
 					context.buildConstraintViolationWithTemplate(errorMsg).addConstraintViolation();
 				}

@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import gov.usgs.cida.pubs.BaseTest;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.PublicationSeriesBusService;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSeriesTest;
@@ -57,7 +57,7 @@ public class PublicationSeriesMvcServiceTest extends BaseTest {
 		MvcResult rtn = mockMvc.perform(get("/publicationSeries?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
 		assertThat(getRtnAsJSONObject(rtn),
@@ -72,7 +72,7 @@ public class PublicationSeriesMvcServiceTest extends BaseTest {
 		MvcResult rtn = mockMvc.perform(get("/publicationSeries/1?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
 		assertThat(getRtnAsJSONObject(rtn),
@@ -81,7 +81,7 @@ public class PublicationSeriesMvcServiceTest extends BaseTest {
 		//PublicationSeries not found
 		rtn = mockMvc.perform(get("/publicationSeries/3?mimetype=json").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())
-				.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 		assertEquals(0, rtn.getResponse().getContentAsString().length());
 	}
@@ -93,7 +93,7 @@ public class PublicationSeriesMvcServiceTest extends BaseTest {
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isCreated())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
 		assertThat(getRtnAsJSONObject(rtn),
@@ -107,7 +107,7 @@ public class PublicationSeriesMvcServiceTest extends BaseTest {
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isBadRequest())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
 		assertThat(getRtnAsJSONObject(rtn),
@@ -121,7 +121,7 @@ public class PublicationSeriesMvcServiceTest extends BaseTest {
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
 		assertThat(getRtnAsJSONObject(rtn),
@@ -134,7 +134,7 @@ public class PublicationSeriesMvcServiceTest extends BaseTest {
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isBadRequest())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 		
 		String expectedJSON = PublicationSeriesTest.DEFAULT_AS_JSON.replaceFirst("}$", "," + PubsUtilitiesTest.ID_NOT_MATCH_VALIDATION_JSON + "}");
@@ -149,7 +149,7 @@ public class PublicationSeriesMvcServiceTest extends BaseTest {
 		MvcResult rtn = mockMvc.perform(delete("/publicationSeries/1").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-		.andExpect(content().encoding(PubsConstants.DEFAULT_ENCODING))
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 		assertThat(getRtnAsJSONObject(rtn),
 				sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));

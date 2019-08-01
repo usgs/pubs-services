@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.dao.BaseDao;
@@ -35,7 +35,7 @@ import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.json.View;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 import gov.usgs.cida.pubs.webservice.MvcService;
@@ -59,7 +59,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		this.busService = busService;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@GetMapping
 	@JsonView(View.MP.class)
 	public @ResponseBody SearchResults getPubs(
@@ -102,7 +102,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		return results;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@GetMapping(value="{publicationId}")
 	@JsonView(View.MP.class)
 	@Transactional
@@ -110,7 +110,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 				@PathVariable("publicationId") String publicationId) {
 		LOG.debug("getMpPublication");
 		setHeaders(response);
-		Integer id = PubsUtilities.parseInteger(publicationId);
+		Integer id = PubsUtils.parseInteger(publicationId);
 		MpPublication rtn = new MpPublication();
 		ValidatorResult locked = busService.checkAvailability(id);
 		if (null == locked) {
@@ -139,7 +139,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		return rtn;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PostMapping
 	@JsonView(View.MP.class)
 	@Transactional
@@ -154,7 +154,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		return newPub;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PutMapping(value = "{publicationId}")
 	@JsonView(View.MP.class)
 	@Transactional
@@ -162,10 +162,10 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		setHeaders(response);
 	
 		MpPublication rtn = pub;
-		ValidatorResult idNotMatched = PubsUtilities.validateIdsMatch(publicationId, pub);
+		ValidatorResult idNotMatched = PubsUtils.validateIdsMatch(publicationId, pub);
 
 		if (null == idNotMatched) {
-			Integer id = PubsUtilities.parseInteger(publicationId);
+			Integer id = PubsUtils.parseInteger(publicationId);
 			ValidatorResult locked = busService.checkAvailability(id);
 			if (null == locked) {
 				rtn = busService.updateObject(pub);
@@ -185,13 +185,13 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		return rtn;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@DeleteMapping(value = "{publicationId}")
 	@JsonView(View.MP.class)
 	@Transactional
 	public @ResponseBody ValidationResults deletePub(@PathVariable String publicationId, HttpServletResponse response) {
 		setHeaders(response);
-		Integer id = PubsUtilities.parseInteger(publicationId);
+		Integer id = PubsUtils.parseInteger(publicationId);
 		ValidationResults rtn = new ValidationResults();
 		ValidatorResult locked = busService.checkAvailability(id);
 		if (null == locked) {
@@ -208,7 +208,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		return rtn;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PostMapping(value = "publish")
 	@JsonView(View.MP.class)
 	@Transactional
@@ -232,7 +232,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		return rtn;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstants.API_KEY_NAME) })
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PostMapping(value="release")
 	@JsonView(View.MP.class)
 	@Transactional

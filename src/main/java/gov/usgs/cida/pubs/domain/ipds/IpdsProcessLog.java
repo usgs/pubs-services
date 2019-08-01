@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.BaseDomain;
-import gov.usgs.cida.pubs.utility.PubsEscapeXML10;
+import gov.usgs.cida.pubs.utility.PubsEscapeXML10Utils;
 
 /**
  * An object for logging the issues mapping IPDS mqueues.
@@ -45,7 +45,7 @@ public class IpdsProcessLog extends BaseDomain<IpdsProcessLog> {
 	}
 
 	public void setMessage(String message) {
-		this.message = PubsEscapeXML10.cleanseXml(message);
+		this.message = PubsEscapeXML10Utils.cleanseXml(message);
 	}
 
 	public static IDao<IpdsProcessLog> getDao() {

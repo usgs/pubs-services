@@ -11,17 +11,13 @@ import gov.usgs.cida.pubs.domain.CrossRefLog;
 @Repository
 public class CrossRefLogDao extends BaseDao<CrossRefLog> implements ICrossRefLogDao {
 
+	private static final String NS = "crossRefLog" ;
+
 	@Autowired
 	public CrossRefLogDao(SqlSessionFactory sqlSessionFactory) {
 		super(sqlSessionFactory);
 	}
 
-	private static final String NS = "crossRefLog" ;
-	
-	/** 
-	 * {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.core.dao.BaseDao#add(java.lang.Object)
-	 */
 	@Transactional
 	@Override
 	public Integer add(final CrossRefLog domainObject) {

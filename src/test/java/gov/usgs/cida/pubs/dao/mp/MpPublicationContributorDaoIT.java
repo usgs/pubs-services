@@ -30,11 +30,11 @@ import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationContributor;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={DbTestConfig.class, MpPublicationContributorDao.class, MpPublicationDao.class, PwPublicationDao.class,
-			PubsUtilities.class, ContributorType.class, ContributorTypeDao.class})
+			PubsUtils.class, ContributorType.class, ContributorTypeDao.class})
 @DatabaseSetups({
 	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 	@DatabaseSetup("classpath:/testData/publicationType.xml"),

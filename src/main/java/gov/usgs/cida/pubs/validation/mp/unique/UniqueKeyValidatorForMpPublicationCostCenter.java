@@ -2,7 +2,7 @@ package gov.usgs.cida.pubs.validation.mp.unique;
 
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
 
 import java.util.Arrays;
@@ -45,7 +45,7 @@ public class UniqueKeyValidatorForMpPublicationCostCenter implements ConstraintV
 				if (null == value.getId() || 0 != pubCostCenter.getId().compareTo(value.getId())) {
 					rtn = false;
 					Object[] messageArguments = Arrays.asList(new String[]{value.getPublicationId().toString(), value.getCostCenter().getId().toString()}).toArray();
-					String errorMsg = PubsUtilities.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
+					String errorMsg = PubsUtils.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
 					context.disableDefaultConstraintViolation();
 					context.buildConstraintViolationWithTemplate(errorMsg).addConstraintViolation();
 				}

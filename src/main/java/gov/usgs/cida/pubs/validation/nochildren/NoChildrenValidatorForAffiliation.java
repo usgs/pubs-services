@@ -3,7 +3,7 @@ package gov.usgs.cida.pubs.validation.nochildren;
 import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.domain.Affiliation;
 import gov.usgs.cida.pubs.domain.PersonContributor;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.constraint.NoChildren;
 
 import java.util.Arrays;
@@ -32,7 +32,7 @@ public class NoChildrenValidatorForAffiliation implements ConstraintValidator<No
 				valid = false;
 				context.disableDefaultConstraintViolation();
 				Object[] messageArguments = Arrays.asList(new String[]{"Name " + value.getText(), cnt.toString()}).toArray();
-				String errorMsg = PubsUtilities.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
+				String errorMsg = PubsUtils.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
 				context.buildConstraintViolationWithTemplate(errorMsg).addPropertyNode("id").addConstraintViolation();
 			}
 		}

@@ -13,3 +13,4 @@ nbactions.xml
 *.iml
 /.attach_*
 /application-it.yml.old
+/.env

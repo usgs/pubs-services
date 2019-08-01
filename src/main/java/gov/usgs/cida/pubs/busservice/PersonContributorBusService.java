@@ -35,7 +35,7 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 	@Override
 	@Transactional
 	public PersonContributor<?> updateObject(PersonContributor<?> object) {
-		PersonContributor<?> result = null;
+		PersonContributor<?> result = object;
 		if (null != object && null != object.getId()) {
 			Integer id = object.getId();
 			if (object instanceof OutsideContributor) {
@@ -57,23 +57,24 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 	@Override
 	@Transactional
 	public PersonContributor<?> createObject(PersonContributor<?> object) {
+		PersonContributor<?> result = object;
 		if (null != object) {
-			if (object instanceof OutsideContributor) {
-				Contributor<PersonContributor<OutsideContributor>> oc = (OutsideContributor) object;
+			if (result instanceof OutsideContributor) {
+				Contributor<PersonContributor<OutsideContributor>> oc = (OutsideContributor) result;
 				Set<ConstraintViolation<Contributor<PersonContributor<OutsideContributor>>>> results = validator.validate(oc);
 				oc.setValidationErrors(results);
 			} else {
-				Contributor<PersonContributor<UsgsContributor>> uc = (UsgsContributor) object;
+				Contributor<PersonContributor<UsgsContributor>> uc = (UsgsContributor) result;
 				Set<ConstraintViolation<Contributor<PersonContributor<UsgsContributor>>>> results = validator.validate(uc);
 				uc.setValidationErrors(results);
 			}
-			if (object.isValid()) {
-				Integer id = PersonContributor.getDao().add(object);
+			if (result.isValid()) {
+				Integer id = PersonContributor.getDao().add(result);
 				updateAffiliations(id, object);
 				object = (PersonContributor<?>) PersonContributor.getDao().getById(id);
 			}
 		}
-		return object;
+		return result;
 	}
 
 	private void updateAffiliations(Integer contributorId, PersonContributor<?> object) {

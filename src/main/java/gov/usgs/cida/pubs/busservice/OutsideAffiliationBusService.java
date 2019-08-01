@@ -60,14 +60,15 @@ public class OutsideAffiliationBusService extends BusService<OutsideAffiliation>
 	@Override
 	@Transactional
 	public OutsideAffiliation createObject(OutsideAffiliation object) {
+		OutsideAffiliation result = object;
 		if (null != object) {
 			object.setValidationErrors(validator.validate(object));
 			if (object.isValid()) {
 				Integer id = OutsideAffiliation.getDao().add(object);
-				object = OutsideAffiliation.getDao().getById(id);
+				result = OutsideAffiliation.getDao().getById(id);
 			}
 		}
-		return object;
+		return result;
 	}
 
 	@Override

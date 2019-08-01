@@ -10,7 +10,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
+import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.dao.intfc.IMpPublicationDao;
+import gov.usgs.cida.pubs.dao.intfc.IPersonContributorDao;
+import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
+import gov.usgs.cida.pubs.dao.intfc.IPublishingServiceCenterDao;
 import springfox.documentation.PathProvider;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -28,21 +33,26 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfig {
 
 	@Autowired
-	ConfigurationService configurationService;
+	private ConfigurationService configurationService;
 
 	@Bean
-	public Docket nldiServicesApi() {
+	public Docket pubsServicesApi() {
 		Set<String> protocols = new HashSet<>();
 		protocols.add(configurationService.getDisplayProtocol());
+
+		Class<?>[] clazz = {IDao.class, IMpPublicationDao.class, IPersonContributorDao.class, IPublicationDao.class,
+				IPublishingServiceCenterDao.class};
+
 		Docket docket = new Docket(DocumentationType.SWAGGER_2)
 				.select()
-				.apis(RequestHandlerSelectors.any())
-				.paths(PathSelectors.any())
+					.apis(RequestHandlerSelectors.basePackage("gov.usgs.cida.pubs.webservice"))
+					.paths(PathSelectors.any())
 				.build()
 				.protocols(protocols)
 				.host(configurationService.getDisplayHost())
 				.pathProvider(pathProvider())
-				.useDefaultResponseMessages(false);
+				.useDefaultResponseMessages(false)
+				.ignoredParameterTypes(clazz);
 
 		docket.apiInfo(apiInfo());
 		docket.securitySchemes(Collections.singletonList(apiKey()));
@@ -77,7 +87,7 @@ public class SwaggerConfig {
 	}
 
 	private ApiKey apiKey() {
-		return new ApiKey(PubsConstants.API_KEY_NAME, "Authorization", "header");
+		return new ApiKey(PubsConstantsHelper.API_KEY_NAME, "Authorization", "header");
 	}
 
 }

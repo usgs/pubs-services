@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import gov.usgs.cida.pubs.PubsConstants;
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 
 public class DelimitedTransformer extends Transformer {
 
@@ -85,7 +85,7 @@ public class DelimitedTransformer extends Transformer {
 	 */
 	protected void copyString(final String in) throws IOException {
 		if (null != in) {
-			target.write(in.getBytes(PubsConstants.DEFAULT_ENCODING));
+			target.write(in.getBytes(PubsConstantsHelper.DEFAULT_ENCODING));
 		}
 	}
 

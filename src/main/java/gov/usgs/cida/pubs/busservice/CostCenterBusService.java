@@ -60,14 +60,15 @@ public class CostCenterBusService extends BusService<CostCenter> {
 	@Override
 	@Transactional
 	public CostCenter createObject(CostCenter object) {
+		CostCenter result = object;
 		if (null != object) {
 			object.setValidationErrors(validator.validate(object));
 			if (object.isValid()) {
 				Integer id = CostCenter.getDao().add(object);
-				object = CostCenter.getDao().getById(id);
+				result = CostCenter.getDao().getById(id);
 			}
 		}
-		return object;
+		return result;
 	}
 
 	@Override

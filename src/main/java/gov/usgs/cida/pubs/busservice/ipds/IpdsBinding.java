@@ -36,7 +36,7 @@ import gov.usgs.cida.pubs.domain.ipds.PublicationMap;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
-import gov.usgs.cida.pubs.utility.PubsUtilities;
+import gov.usgs.cida.pubs.utility.PubsUtils;
 
 @Service
 public class IpdsBinding {
@@ -154,7 +154,7 @@ public class IpdsBinding {
 			pub.setLanguage("English");
 
 			if ((null != conv && IpdsPubTypeConv.USGS_PERIODICAL == conv.getId())
-					|| (PubsUtilities.isUsgsNumberedSeries(pub.getPublicationSubtype()))) {
+					|| (PubsUtils.isUsgsNumberedSeries(pub.getPublicationSubtype()))) {
 				pub.setPublisher("U.S. Geological Survey");
 				pub.setPublisherLocation("Reston VA");
 			} else {
@@ -186,7 +186,7 @@ public class IpdsBinding {
 			//Not from IPDS - pub.setLargerWorkType()
 			String largerWorkTitle = getStringValue(inPub, IpdsMessageLog.JOURNALTITLE);
 			if (StringUtils.isNotBlank(largerWorkTitle)) {
-				if (PubsUtilities.isPublicationTypeArticle(pub.getPublicationType())
+				if (PubsUtils.isPublicationTypeArticle(pub.getPublicationType())
 						&& null != pub.getPublicationSubtype()) {
 					pub.setSeriesTitle(getSeriesTitle(pub.getPublicationSubtype(), largerWorkTitle));
 				} else {
@@ -217,7 +217,7 @@ public class IpdsBinding {
 			//Not from IPDS - pub.setContact();
 			//Not from IPDS - pub.setTableOfContents();
 			PublishingServiceCenter psc = PublishingServiceCenter.getDao().getByIpdsId(
-					PubsUtilities.parseInteger(getStringValue(inPub, IpdsMessageLog.PUBLISHINGSERVICECENTER)));
+					PubsUtils.parseInteger(getStringValue(inPub, IpdsMessageLog.PUBLISHINGSERVICECENTER)));
 			pub.setPublishingServiceCenter(psc);
 			//Not from IPDS - pub.setPublishedDateStatement();
 			pub.setIpdsContext(context);

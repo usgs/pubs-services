@@ -401,7 +401,7 @@
 <!--                             <apiToken>${env.CODACY_API_TOKEN}</apiToken> -->
 <!--                             <projectToken>${env.CODACY_PROJECT_TOKEN}</projectToken> -->
                             <coverageReportFile>${project.reporting.outputDirectory}/jacoco-it/jacoco.xml</coverageReportFile>
-                            <commit>${env.TRAVIS_COMMIT}</commit>
+<!--                             <commit>${env.TRAVIS_COMMIT}</commit> -->
 <!--                             <codacyApiBaseUrl>https://api.codacy.com</codacyApiBaseUrl> -->
                             <failOnMissingReportFile>false</failOnMissingReportFile>
                          </configuration>

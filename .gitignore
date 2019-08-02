@@ -14,3 +14,4 @@ nbactions.xml
 /.attach_*
 /application-it.yml.old
 /.env
+/maven/

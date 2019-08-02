@@ -19,16 +19,16 @@ public class CorporateContributor extends Contributor<CorporateContributor> impl
 
 	private static IDao<Contributor<?>> corporateContributorDao;
 
-	public CorporateContributor() {
-		corporation = true;
-		usgs = false;
-	}
-
 	@JsonProperty("organization")
 	@JsonView(View.PW.class)
 	@Length(min=1, max=400)
 	@NotNull
 	private String organization;
+
+	public CorporateContributor() {
+		corporation = true;
+		usgs = false;
+	}
 
 	public String getOrganization() {
 		return organization;

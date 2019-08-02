@@ -18,19 +18,18 @@ public class ParentExistsValidatorForPersonContributor implements ConstraintVali
 	public boolean isValid(PersonContributor<?> value, ConstraintValidatorContext context) {
 		boolean rtn = true;
 		
-		if (null != value && null != context) {
-			if (!value.getAffiliations().isEmpty()) {
-				for (Affiliation<?> affiliation : value.getAffiliations()) {
-					if (rtn && null != affiliation && null != affiliation.getId() && null == Affiliation.getDao().getById(affiliation.getId())) {
-						rtn = false;
-						context.disableDefaultConstraintViolation();
-						context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
-						.addPropertyNode("affiliations").addConstraintViolation();
-					}
+		if (null != value && null != context
+				&& !value.getAffiliations().isEmpty()) {
+			for (Affiliation<?> affiliation : value.getAffiliations()) {
+				if (rtn && null != affiliation && null != affiliation.getId() && null == Affiliation.getDao().getById(affiliation.getId())) {
+					rtn = false;
+					context.disableDefaultConstraintViolation();
+					context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
+					.addPropertyNode("affiliations").addConstraintViolation();
 				}
 			}
 		}
-		
+
 		return rtn;
 	}
 }

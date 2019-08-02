@@ -9,16 +9,9 @@ services:
 jdk:
   - openjdk11
 
-before_install:
-  - sudo apt-get install jq
-  - curl $(curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r '.assets | map({content_type, browser_download_url} | select(.content_type | contains("application/java-archive"))) | .[0].browser_download_url') -o codacy-coverage-reporter-assembly.jar
-
 install: true
 
 script:
   - docker network create pubsServices
-  - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$TRAVIS_BUILD_DIR":/usr/src/mymaven -w /usr/src/mymaven --network=pubsServices -e TESTING_DATABASE_PORT=5432 -e TESTING_DATABASE_ADDRESS=pubsDatabase -e TESTING_DATABASE_NETWORK=pubsServices -e TESTING_CROSSREF_USERNAME=$TESTING_CROSSREF_USERNAME -e TESTING_CROSSREF_PASSWORD=$TESTING_CROSSREF_PASSWORD maven:3.6.0-jdk-11 mvn clean verify
+  - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$TRAVIS_BUILD_DIR":/usr/src/mymaven -w /usr/src/mymaven --network=pubsServices -e TESTING_DATABASE_PORT=5432 -e TESTING_DATABASE_ADDRESS=pubsDatabase -e TESTING_DATABASE_NETWORK=pubsServices -e TESTING_CROSSREF_USERNAME=$TESTING_CROSSREF_USERNAME -e TESTING_CROSSREF_PASSWORD=$TESTING_CROSSREF_PASSWORD -e TRAVIS=true -e CODACY_API_TOKEN=$CODACY_API_TOKEN -e CODACY_PROJECT_TOKEN=$CODACY_PROJECT_TOKEN maven:3.6.0-jdk-11 mvn clean verify
   - docker network rm pubsServices
-
-after_success:
-  - java -jar codacy-coverage-reporter-assembly.jar report -l Java -r build/reports/jacoco/test/jacocoTestReport.xml

@@ -3,7 +3,7 @@
     "name": "pubs-services",
     "organization": "U.S. Geological Survey",
     "description": "USGS Publications Warehouse Web Services",
-    "version": "1.0.0",
+    "version": "1.1.0-SNAPSHOT",
     "status": "development",
 
     "permissions": {

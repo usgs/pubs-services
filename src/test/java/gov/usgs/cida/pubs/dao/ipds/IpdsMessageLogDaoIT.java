@@ -1,5 +1,7 @@
 package gov.usgs.cida.pubs.dao.ipds;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -9,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -18,7 +21,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.domain.ProcessType;
@@ -28,13 +30,7 @@ import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={DbTestConfig.class, IpdsMessageLogDao.class, TestSpringConfig.class})
-@DatabaseSetups({
-	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-	@DatabaseSetup("classpath:/testData/publicationType.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-	@DatabaseSetup("classpath:/testData/dataset.xml")
-})
+@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
 public class IpdsMessageLogDaoIT extends BaseIT {
 
 	@Resource(name="feedXml")
@@ -111,6 +107,18 @@ public class IpdsMessageLogDaoIT extends BaseIT {
 				assertEquals("Pesticides in groundwater of Wyoming, 2008-2010", pub.get(IpdsMessageLog.WORKINGTITLE));
 			}
 		}
+	}
+
+	@Test
+	@DatabaseSetup("classpath:/testData/sipp/csv/")
+	public void getFromSipp() {
+		List<Map<String, Object>> pubMaps = ipdsMessageLogDao.getFromSipp(1);
+		assertNotNull(pubMaps);
+		assertEquals(2, pubMaps.size());
+		assertEquals(1, pubMaps.get(0).keySet().size());
+		assertTrue(pubMaps.get(0).containsKey(IpdsMessageLog.IPNUMBER));
+		assertThat(pubMaps.stream().map(x -> x.get(IpdsMessageLog.IPNUMBER)).collect(Collectors.toList()).toArray(),
+				arrayContainingInAnyOrder("IP-100081", "IP-110902"));
 	}
 
 	public static Map<String, Object> createPubMap1() {

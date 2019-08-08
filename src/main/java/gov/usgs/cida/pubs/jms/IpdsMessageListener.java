@@ -22,14 +22,10 @@ public class IpdsMessageListener implements MessageListener {
 
 	private static final Log LOG = LogFactory.getLog(IpdsMessageListener.class);
 
-	protected final IIpdsService ipdsStringMessageService;
-
 	protected final IIpdsService spnProductionMessageService;
 
 	@Autowired
-	public IpdsMessageListener(@Qualifier("ipdsStringMessageService") final IIpdsService ipdsStringMessageService,
-			@Qualifier("spnProductionMessageService") final IIpdsService spnProductionMessageService) {
-		this.ipdsStringMessageService = ipdsStringMessageService;
+	public IpdsMessageListener(@Qualifier("spnProductionMessageService") final IIpdsService spnProductionMessageService) {
 		this.spnProductionMessageService = spnProductionMessageService;
 	}
 
@@ -58,7 +54,7 @@ public class IpdsMessageListener implements MessageListener {
 			if (null != messagePayload.getType() && messagePayload.getType().equalsIgnoreCase(ProcessType.SPN_PRODUCTION.toString())) {
 				spnProductionMessageService.processIpdsMessage(messagePayload);
 			} else {
-				ipdsStringMessageService.processIpdsMessage(messagePayload);
+				throw new IllegalArgumentException("Invalid Message - Not SPN Production");
 			}
 		} else {
 			throw new IllegalArgumentException("Invalid Message - No Content");

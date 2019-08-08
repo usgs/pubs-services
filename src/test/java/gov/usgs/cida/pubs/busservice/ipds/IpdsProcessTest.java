@@ -36,7 +36,6 @@ import org.xml.sax.SAXException;
 
 import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.SeverityLevel;
-import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
 import gov.usgs.cida.pubs.dao.intfc.IPwPublicationDao;
@@ -59,8 +58,6 @@ import gov.usgs.cida.pubs.validation.ValidatorResult;
 	classes={PwPublication.class, IpdsMessageLog.class})
 public class IpdsProcessTest extends BaseTest {
 
-	@MockBean
-	protected ICrossRefBusService crossRefBusService;
 	@MockBean
 	protected IpdsBinding binder;
 	@MockBean
@@ -91,7 +88,7 @@ public class IpdsProcessTest extends BaseTest {
 
 	@Before
 	public void setUp() throws Exception {
-		ipdsProcess = new IpdsProcess(crossRefBusService, binder, requester, pubBusService, transactionManager);
+		ipdsProcess = new IpdsProcess(binder, requester, pubBusService, transactionManager);
 		resetThreadLocals();
 		pubType = buildPublicationType();
 		pubSubtype = buildPublicationSubtype();
@@ -194,7 +191,7 @@ public class IpdsProcessTest extends BaseTest {
 		newMpPub.setPublicationType(pubType);
 
 		//Good Dissemination (brand new)
-		assertTrue(ipdsProcess.okToProcess(ProcessType.DISSEMINATION, newMpPub, new MpPublication()));
+		assertFalse(ipdsProcess.okToProcess(ProcessType.DISSEMINATION, newMpPub, new MpPublication()));
 		//Bad Dissemination (in warehouse)
 		newMpPub.setIpdsId("IPDS-1");
 		assertFalse(ipdsProcess.okToProcess(ProcessType.DISSEMINATION, newMpPub, new MpPublication()));
@@ -210,63 +207,6 @@ public class IpdsProcessTest extends BaseTest {
 		//Bad SPN Production
 		newMpPub.setIpdsReviewProcessState("garbage");
 		assertFalse(ipdsProcess.okToProcess(ProcessType.SPN_PRODUCTION, newMpPub, new MpPublication()));
-	}
-
-	@Test
-	public void okToProcessDisseminationTest() {
-		when(pwPublicationDao.getByIpdsId(null)).thenReturn(null);
-		when(pwPublicationDao.getByIndexId(null)).thenReturn(null);
-		when(pwPublicationDao.getByIpdsId("IPDS-1")).thenReturn(new PwPublication());
-
-		//Do not process if new data is null
-		assertFalse(ipdsProcess.okToProcessDissemination(null, null));
-		assertFalse(ipdsProcess.okToProcessDissemination(null, new MpPublication()));
-
-		//Do not process if already in Pubs Warehouse.
-		MpPublication newMpPub = new MpPublication();
-		newMpPub.setIpdsId("IPDS-1");
-		assertFalse(ipdsProcess.okToProcessDissemination(newMpPub, new MpPublication()));
-
-		//Do not process USGS numbered series without an actual series.
-		newMpPub = new MpPublication();
-		PublicationType pubType = new PublicationType();
-		newMpPub.setPublicationType(pubType);
-		PublicationSubtype pubSubtype = new PublicationSubtype();
-		pubSubtype.setId(PublicationSubtype.USGS_NUMBERED_SERIES);
-		newMpPub.setPublicationSubtype(pubSubtype);
-		assertFalse(ipdsProcess.okToProcessDissemination(newMpPub, null));
-
-		//OK to process USGS Numbered Series when new
-		newMpPub.setSeriesTitle(new PublicationSeries());
-		assertTrue(ipdsProcess.okToProcessDissemination(newMpPub, null));
-
-		//OK to process USGS Numbered Series in MyPubs if has no review state
-		MpPublication existingPub = new MpPublication();
-		assertTrue(ipdsProcess.okToProcessDissemination(newMpPub, existingPub));
-
-		//OK to process USGS Numbered Series in MyPubs if in the SPN Production state
-		existingPub.setIpdsReviewProcessState(ProcessType.SPN_PRODUCTION.getIpdsValue());
-		assertTrue(ipdsProcess.okToProcessDissemination(newMpPub, existingPub));
-
-		//Do not process USGS Numbered Series if already in MyPubs (with a Dissemination state).
-		existingPub.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
-		assertFalse(ipdsProcess.okToProcessDissemination(newMpPub, existingPub));
-
-		//OK to process other than USGS Numbered Series when new
-		newMpPub = new MpPublication();
-		assertTrue(ipdsProcess.okToProcessDissemination(newMpPub, null));
-
-		//OK to process other than USGS Numbered Series in MyPubs if has no review state
-		existingPub = new MpPublication();
-		assertTrue(ipdsProcess.okToProcessDissemination(newMpPub, existingPub));
-
-		//OK to process other than USGS Numbered Series in MyPubs if in the SPN Production state
-		existingPub.setIpdsReviewProcessState(ProcessType.SPN_PRODUCTION.getIpdsValue());
-		assertTrue(ipdsProcess.okToProcessDissemination(newMpPub, existingPub));
-
-		//Do not process other than USGS Numbered Series if already in MyPubs (with a Dissemination state).
-		existingPub.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
-		assertFalse(ipdsProcess.okToProcessDissemination(newMpPub, existingPub));
 	}
 
 	@Test
@@ -461,7 +401,6 @@ public class IpdsProcessTest extends BaseTest {
 		verify(pubBusService, never()).deleteObject(null);
 		verify(pubBusService).createObject(newMpPub);
 		verify(requester, never()).updateIpdsDoi(any(MpPublication.class), anyString());
-		verify(crossRefBusService, never()).submitCrossRef(any(MpPublication.class));
 	}
 
 	@Test
@@ -478,102 +417,7 @@ public class IpdsProcessTest extends BaseTest {
 		verify(pubBusService, never()).deleteObject(null);
 		verify(pubBusService).createObject(newMpPub);
 		verify(requester).updateIpdsDoi(any(MpPublication.class), anyString());
-		verify(crossRefBusService, never()).submitCrossRef(any(MpPublication.class));
 	}
-
-	@Test
-	public void processPublicationDisseminationTest() {
-		MpPublication newMpPub = new MpPublication();
-		when(pubBusService.deleteObject(null)).thenReturn(null);
-		when(pubBusService.createObject(newMpPub)).thenReturn(newMpPub);
-		when(requester.updateIpdsDoi(any(MpPublication.class), anyString())).thenReturn("");
-
-		//Not USGS Numbered or UnNumbered Series
-		ipdsProcess.processPublication(ProcessType.DISSEMINATION, null, newMpPub, null);
-		assertEquals("\n\tTrouble getting comment: null\n\tAdded to MyPubs as ProdId: null", IpdsProcess.getStringBuilder().toString());
-		assertEquals(1, IpdsProcess.getErrors().intValue());
-		assertEquals(1, IpdsProcess.getAdditions().intValue());
-		verify(pubBusService, never()).deleteObject(null);
-		verify(pubBusService).createObject(newMpPub);
-		verify(requester, never()).updateIpdsDoi(any(MpPublication.class), anyString());
-		verify(crossRefBusService, never()).submitCrossRef(any(MpPublication.class));
-
-		//Is USGS Numbered, null doi
-		resetThreadLocals();
-		PublicationSubtype numbered = new PublicationSubtype();
-		numbered.setId(5);
-		newMpPub.setPublicationSubtype(numbered);
-		ipdsProcess.processPublication(ProcessType.DISSEMINATION, null, newMpPub, null);
-		assertEquals("\n\tTrouble getting comment: null\n\tAdded to MyPubs as ProdId: null", IpdsProcess.getStringBuilder().toString());
-		assertEquals(1, IpdsProcess.getErrors().intValue());
-		assertEquals(1, IpdsProcess.getAdditions().intValue());
-		verify(pubBusService, never()).deleteObject(null);
-		verify(pubBusService, times(2)).createObject(newMpPub);
-		verify(requester, never()).updateIpdsDoi(any(MpPublication.class), anyString());
-		verify(crossRefBusService, never()).submitCrossRef(any(MpPublication.class));
-
-		//Is USGS Numbered, emptyString doi
-		resetThreadLocals();
-		newMpPub.setDoi("");
-		ipdsProcess.processPublication(ProcessType.DISSEMINATION, null, newMpPub, null);
-		assertEquals("\n\tTrouble getting comment: null\n\tAdded to MyPubs as ProdId: null", IpdsProcess.getStringBuilder().toString());
-		assertEquals(1, IpdsProcess.getErrors().intValue());
-		assertEquals(1, IpdsProcess.getAdditions().intValue());
-		verify(pubBusService, never()).deleteObject(null);
-		verify(pubBusService, times(3)).createObject(newMpPub);
-		verify(requester, never()).updateIpdsDoi(any(MpPublication.class), anyString());
-		verify(crossRefBusService, never()).submitCrossRef(any(MpPublication.class));
-
-		//Is USGS Numbered, "real" doi
-		resetThreadLocals();
-		newMpPub.setDoi("http:\\doi.gov");
-		ipdsProcess.processPublication(ProcessType.DISSEMINATION, null, newMpPub, null);
-		assertEquals("\n\tTrouble getting comment: null\n\tAdded to MyPubs as ProdId: null", IpdsProcess.getStringBuilder().toString());
-		assertEquals(1, IpdsProcess.getErrors().intValue());
-		assertEquals(1, IpdsProcess.getAdditions().intValue());
-		verify(pubBusService, never()).deleteObject(null);
-		verify(pubBusService, times(4)).createObject(newMpPub);
-		verify(requester, never()).updateIpdsDoi(any(MpPublication.class), anyString());
-		verify(crossRefBusService).submitCrossRef(any(MpPublication.class));
-
-		//Is USGS UnNumbered, null doi
-		resetThreadLocals();
-		newMpPub.setDoi(null);
-		PublicationSubtype unnumbered = new PublicationSubtype();
-		unnumbered.setId(6);
-		newMpPub.setPublicationSubtype(unnumbered);
-		ipdsProcess.processPublication(ProcessType.DISSEMINATION, null, newMpPub, null);
-		assertEquals("\n\tTrouble getting comment: null\n\tAdded to MyPubs as ProdId: null", IpdsProcess.getStringBuilder().toString());
-		assertEquals(1, IpdsProcess.getErrors().intValue());
-		assertEquals(1, IpdsProcess.getAdditions().intValue());
-		verify(pubBusService, never()).deleteObject(null);
-		verify(pubBusService, times(5)).createObject(newMpPub);
-		verify(requester, never()).updateIpdsDoi(any(MpPublication.class), anyString());
-		verify(crossRefBusService).submitCrossRef(any(MpPublication.class));
-
-		//Is USGS UnNumbered, emptyString doi
-		resetThreadLocals();
-		newMpPub.setDoi("");
-		ipdsProcess.processPublication(ProcessType.DISSEMINATION, null, newMpPub, null);
-		assertEquals("\n\tTrouble getting comment: null\n\tAdded to MyPubs as ProdId: null", IpdsProcess.getStringBuilder().toString());
-		assertEquals(1, IpdsProcess.getErrors().intValue());
-		assertEquals(1, IpdsProcess.getAdditions().intValue());
-		verify(pubBusService, never()).deleteObject(null);
-		verify(pubBusService, times(6)).createObject(newMpPub);
-		verify(requester, never()).updateIpdsDoi(any(MpPublication.class), anyString());
-		verify(crossRefBusService).submitCrossRef(any(MpPublication.class));
-
-		//Is USGS UnNumbered, "real" doi
-		resetThreadLocals();
-		newMpPub.setDoi("http:\\doi.gov");
-		ipdsProcess.processPublication(ProcessType.DISSEMINATION, null, newMpPub, null);
-		assertEquals("\n\tTrouble getting comment: null\n\tAdded to MyPubs as ProdId: null", IpdsProcess.getStringBuilder().toString());
-		assertEquals(1, IpdsProcess.getErrors().intValue());
-		assertEquals(1, IpdsProcess.getAdditions().intValue());
-		verify(pubBusService, never()).deleteObject(null);
-		verify(pubBusService, times(7)).createObject(newMpPub);
-		verify(requester, never()).updateIpdsDoi(any(MpPublication.class), anyString());
-		verify(crossRefBusService, times(2)).submitCrossRef(any(MpPublication.class));	}
 
 	protected MpPublication getInvalidPub() {
 		MpPublication rtn = new MpPublication();
@@ -602,16 +446,6 @@ public class IpdsProcessTest extends BaseTest {
 		verify(transactionManager).getTransaction(any(TransactionDefinition.class));
 		verify(transactionManager).rollback(any(TransactionStatus.class));
 		verify(transactionManager, never()).commit(any(TransactionStatus.class));
-
-		//Good, processed, and should commit
-		resetThreadLocals();
-		ipdsProcess.processIpdsPublication(ProcessType.DISSEMINATION, pm);
-		assertEquals("IP-123:\n\tAdded to MyPubs as ProdId: 9\n\n", IpdsProcess.getStringBuilder().toString());
-		assertEquals(0, IpdsProcess.getErrors().intValue());
-		assertEquals(1, IpdsProcess.getAdditions().intValue());
-		verify(transactionManager, times(2)).getTransaction(any(TransactionDefinition.class));
-		verify(transactionManager).rollback(any(TransactionStatus.class));
-		verify(transactionManager, times(1)).commit(any(TransactionStatus.class));
 	}
 
 	@Test
@@ -620,10 +454,10 @@ public class IpdsProcessTest extends BaseTest {
 		String expectedMsg = "Summary:\n\tTotal Entries: 2\n\tPublications Added: 0\n\tErrors Encountered: 2\n\nnull:\n\tERROR: Trouble processing pub: null - test\n\nnull:\n\tERROR: Trouble processing pub: null - test\n\nLog: 1\n";
 		when(binder.bindPublication(any(Map.class), anyString())).thenThrow(new RuntimeException("test"));
 		when(ipdsMessageLogDao.getFromIpds(1)).thenReturn(getPubMapList());
-		assertEquals(expectedMsg, ipdsProcess.processLog(ProcessType.DISSEMINATION, 1, TEST_IPDS_CONTEXT));
+		assertEquals(expectedMsg, ipdsProcess.processLog(ProcessType.SPN_PRODUCTION, 1, TEST_IPDS_CONTEXT));
 
 		//Should be the same message as the ThreadLocals are reset at start of method
-		assertEquals(expectedMsg, ipdsProcess.processLog(ProcessType.DISSEMINATION, 1, TEST_IPDS_CONTEXT));
+		assertEquals(expectedMsg, ipdsProcess.processLog(ProcessType.SPN_PRODUCTION, 1, TEST_IPDS_CONTEXT));
 	}
 
 	protected List<Map<String, Object>> getPubMapList() {

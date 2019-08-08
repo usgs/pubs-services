@@ -112,4 +112,13 @@
                ) x
     </select>
 
+    <select id="getMpPublicationFromSipp" parameterType="Integer" resultType="java.util.HashMap">
+        select xmltable.*
+          from ipds_message_log,
+               xmltable ('/IPDSBureauApprovals/IPDSBureauApproval' passing ipds_message
+                         columns
+                             ipnumber text path 'IPNumber'
+                        )
+    </select>
+
 </mapper>

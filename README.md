@@ -40,6 +40,9 @@ PUBS_WAREHOUSE_ENPOINT: http://pubs.er.usgs.gov
 PUBS_AUTHORIZED_GROUPS: group1, group2, spnGroup
 PUBS_SPN_GROUPS: spnGroup
 
+DISSEMINATION_SCHEDULE: <cron type syntac a hyphen for not scheduled>
+DISSEMINATION_LIST_URL: https://something.gov
+DAYS_LAST_DISSEMINATED: 1
 ipds.endpoint: changeMe
 ipds.pubsWsPwd: changeMe
 ipds.pubsWsUser: changeMe

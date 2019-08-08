@@ -61,17 +61,6 @@ public class IpdsWsRequester {
 		this.pubsEMailer = pubsEMailer;
 	}
 
-	public String getIpdsProductXml(MessagePayload messagePayload) {
-		StringBuilder url = getContextPrefix(messagePayload.getContext())
-		.append("InformationProducts()?$filter=((Modified+ge+datetime'")
-		.append(messagePayload.getAsOfString())
-		.append("')%20and%20(Modified+lt+datetime'")
-		.append(messagePayload.getPriorToString())
-		.append("'))");
-
-		return getIpdsXml(url.toString(), null);
-	}
-
 	protected String getContributors(final String ipds, String context) {
 		StringBuilder url = getContextPrefix(context)
 		.append("Authors()?$filter=startswith(IPNumber,'")

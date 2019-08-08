@@ -17,7 +17,7 @@ import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 @TestExecutionListeners({DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
 	TransactionDbUnitTestExecutionListener.class
 	})
-@DbUnitConfiguration(dataSetLoader=ColumnSensingFlatXMLDataSetLoader.class)
+@DbUnitConfiguration(dataSetLoader=FileSensingDataSetLoader.class)
 @AutoConfigureTestDatabase(replace=Replace.NONE)
 @Transactional(propagation=Propagation.NOT_SUPPORTED)
 public abstract class BaseIT extends BaseTest {

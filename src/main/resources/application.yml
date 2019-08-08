@@ -22,7 +22,11 @@ server:
   servlet:
     context-path: ${SERVER_CONTEXT_PATH}
 
-#
+sipp:
+  dissemination:
+    schedule: ${DISSEMINATION_SCHEDULE}
+    list-url: ${DISSEMINATION_LIST_URL}
+    daysLastDisseminated: ${DAYS_LAST_DISSEMINATED}
 #ipds:
 #  pubsWsPwd: changeMe
 #  pubsWsUser: changeMe

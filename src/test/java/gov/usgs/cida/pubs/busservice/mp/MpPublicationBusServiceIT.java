@@ -406,7 +406,7 @@ public class MpPublicationBusServiceIT extends BaseIT {
 	}
 
 	@Test
-	public void getUsgsNumberedSeriesIndexId() {
+	public void getUsgsNumberedSeriesIndexIdFromPub() {
 		assertNull(busService.getUsgsNumberedSeriesIndexId(null));
 		assertNull(busService.getUsgsNumberedSeriesIndexId(new MpPublication()));
 		MpPublication pub = new MpPublication();
@@ -422,6 +422,19 @@ public class MpPublicationBusServiceIT extends BaseIT {
 		pub.setChapter("abc");
 		pub.setSubchapterNumber("123");
 		assertEquals("ofr123456ABC123", busService.getUsgsNumberedSeriesIndexId(pub));
+	}
+
+	@Test
+	public void getUsgsNumberedSeriesIndexId() {
+		assertNull(busService.getUsgsNumberedSeriesIndexId(null, null, null, null));
+		assertNull(busService.getUsgsNumberedSeriesIndexId(new PublicationSeries(), null, null, null));
+		PublicationSeries pubSeries = new PublicationSeries();
+		pubSeries.setCode("ofr");;
+		assertNull(busService.getUsgsNumberedSeriesIndexId(pubSeries, null, null, null));
+		assertEquals("ofr123456", busService.getUsgsNumberedSeriesIndexId(pubSeries,"1- 2-3,4,5 6", null, null));
+		assertEquals("ofr123456ABC", busService.getUsgsNumberedSeriesIndexId(pubSeries,"1- 2-3,4,5 6", "abc", null));
+		assertEquals("ofr123456ABC123", busService.getUsgsNumberedSeriesIndexId(pubSeries,"1- 2-3,4,5 6", "abc", "123"));
+		assertEquals("ofr123456123", busService.getUsgsNumberedSeriesIndexId(pubSeries,"1- 2-3,4,5 6", null, "123"));
 	}
 
 	@Test

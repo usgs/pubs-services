@@ -191,19 +191,26 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 	}
 
 	public String getUsgsNumberedSeriesIndexId(final MpPublication pub) {
+		String rtn = null;
+		if (null != pub && null != pub.getSeriesTitle()) {
+			rtn = getUsgsNumberedSeriesIndexId(PublicationSeries.getDao().getById(pub.getSeriesTitle().getId()),
+					pub.getSeriesNumber(), pub.getChapter(), pub.getSubchapterNumber());
+		}
+		return rtn;
+	}
+
+	public String getUsgsNumberedSeriesIndexId(PublicationSeries series, String seriesNumber,
+			String chapter, String subchapterNumber) {
 		StringBuilder indexId = new StringBuilder();
-		if (null != pub && null != pub.getSeriesTitle()
-				&& null != pub.getSeriesNumber()) {
-			PublicationSeries series = PublicationSeries.getDao().getById(pub.getSeriesTitle().getId());
-			if (null != series && null != series.getCode()) {
-				indexId.append(cleanseIndexField(series.getCode().toLowerCase()));
-				indexId.append(cleanseIndexField(pub.getSeriesNumber()));
-				if (null != pub.getChapter()) {
-					indexId.append(cleanseIndexField(pub.getChapter().toUpperCase()));
-				}
-				if (null != pub.getSubchapterNumber()) {
-					indexId.append(cleanseIndexField(pub.getSubchapterNumber()));
-				}
+		if (null != series && null != series.getCode()
+				&& null != seriesNumber) {
+			indexId.append(cleanseIndexField(series.getCode().toLowerCase()));
+			indexId.append(cleanseIndexField(seriesNumber));
+			if (null != chapter) {
+				indexId.append(cleanseIndexField(chapter.toUpperCase()));
+			}
+			if (null != subchapterNumber) {
+				indexId.append(cleanseIndexField(subchapterNumber));
 			}
 		}
 		return 0 == indexId.length() ? null : indexId.toString();

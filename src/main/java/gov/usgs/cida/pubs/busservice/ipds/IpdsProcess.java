@@ -18,7 +18,6 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IIpdsProcess;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.dao.PublicationDao;
@@ -43,7 +42,6 @@ public class IpdsProcess implements IIpdsProcess {
 	private static ThreadLocal<Integer> errors = new ThreadLocal<>();
 	private static ThreadLocal<String> context = new ThreadLocal<>();
 
-	private final ICrossRefBusService crossRefBusService;
 	private final IpdsBinding binder;
 	private final IpdsWsRequester requester;
 	private final IMpPublicationBusService pubBusService;
@@ -52,12 +50,10 @@ public class IpdsProcess implements IIpdsProcess {
 
 
 	@Autowired
-	public IpdsProcess(final ICrossRefBusService crossRefBusService,
-			final IpdsBinding binder,
+	public IpdsProcess(final IpdsBinding binder,
 			final IpdsWsRequester requester,
 			final IMpPublicationBusService pubBusService,
 			final PlatformTransactionManager transactionManager) {
-		this.crossRefBusService = crossRefBusService;
 		this.binder = binder;
 		this.requester = requester;
 		this.pubBusService = pubBusService;
@@ -145,8 +141,6 @@ public class IpdsProcess implements IIpdsProcess {
 	protected boolean okToProcess(final ProcessType inProcessType, final MpPublication newMpPub, final MpPublication existingMpPub) {
 		if (null != inProcessType && null != newMpPub && null != newMpPub.getPublicationType()) {
 			switch (inProcessType) {
-			case DISSEMINATION:
-				return okToProcessDissemination(newMpPub, existingMpPub);
 			case SPN_PRODUCTION:
 				return okToProcessSpnProduction(newMpPub);
 			default:
@@ -154,26 +148,6 @@ public class IpdsProcess implements IIpdsProcess {
 			}
 		}
 		return false;
-	}
-
-	protected boolean okToProcessDissemination(final MpPublication newMpPub, final MpPublication existingMpPub) {
-		boolean rtn = false;
-		if (null == newMpPub) {
-			//Do not proceed if the new data is null
-		} else if (null != getFromPw(newMpPub)) {
-			//Do not proceed if the pub has been published
-		} else if (PubsUtils.isUsgsNumberedSeries(newMpPub.getPublicationSubtype())
-				&& null == newMpPub.getSeriesTitle()) {
-			//Do not process USGS numbered series without an actual series.
-		} else if (null == existingMpPub) {
-			//OK to process at this point if we have no record of the pub
-			rtn = true;
-		} else if (null == existingMpPub.getIpdsReviewProcessState()
-				|| ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(existingMpPub.getIpdsReviewProcessState())) {
-			//It is ok to process a publication already in MyPubs if has no review state or is in the SPN Production state.
-			rtn = true;
-		}
-		return rtn;
 	}
 
 	protected boolean okToProcessSpnProduction(final MpPublication newMpPub) {
@@ -227,13 +201,6 @@ public class IpdsProcess implements IIpdsProcess {
 			switch (processType) {
 			case SPN_PRODUCTION:
 				updateIpdsWithDoi(rtnPub);
-				break;
-			case DISSEMINATION:
-				if ((PubsUtils.isUsgsNumberedSeries(rtnPub.getPublicationSubtype())
-						|| PubsUtils.isUsgsUnnumberedSeries(rtnPub.getPublicationSubtype()))
-						&& (null != rtnPub.getDoi() && 0 < rtnPub.getDoi().length())) {
-					crossRefBusService.submitCrossRef(rtnPub);
-				}
 				break;
 			default:
 				break;

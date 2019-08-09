@@ -3,7 +3,6 @@ package gov.usgs.cida.pubs.jms;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -25,16 +24,6 @@ import gov.usgs.cida.pubs.busservice.intfc.IIpdsService;
 
 public class IpdsMessageListenerTest extends BaseTest {
 
-	private class Isms implements IIpdsService {
-		public MessagePayload messagePayload;
-		@Override
-		public void processIpdsMessage(MessagePayload messagePayload) {
-			this.messagePayload = messagePayload;
-		}
-	}
-
-	private Isms isms;
-
 	private class Spms implements IIpdsService {
 		public MessagePayload messagePayload;
 		@Override
@@ -51,10 +40,9 @@ public class IpdsMessageListenerTest extends BaseTest {
 
 	@Before
 	public void setUp() throws Exception {
-		isms = new Isms();
 		spms = new Spms();
 		connectionFactory = new ActiveMQConnectionFactory("vm://localhost?broker.persistent=false");
-		mc = new IpdsMessageListener(isms, spms);
+		mc = new IpdsMessageListener(spms);
 		conn = connectionFactory.createConnection();
 		sess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
 	}
@@ -123,7 +111,6 @@ public class IpdsMessageListenerTest extends BaseTest {
 			try {
 				TextMessage message = sess.createTextMessage("{\"type\":\"SPN_PRODUCTION\"}");
 				mc.onMessage(message);
-				assertNull(isms.messagePayload);
 				assertNotNull(spms.messagePayload);
 				assertEquals("SPN_PRODUCTION", spms.messagePayload.getType());
 				assertEquals(LocalDate.now().toString(), spms.messagePayload.getAsOfString());
@@ -138,7 +125,6 @@ public class IpdsMessageListenerTest extends BaseTest {
 			try {
 				TextMessage message = sess.createTextMessage("{\"type\":\"SPN_PRODUCTION\",\"asOfDate\":\"2012-01-01\",\"context\":\"one\"}");
 				mc.onMessage(message);
-				assertNull(isms.messagePayload);
 				assertNotNull(spms.messagePayload);
 				assertEquals("SPN_PRODUCTION", spms.messagePayload.getType());
 				assertEquals("2012-01-01", spms.messagePayload.getAsOfString());
@@ -154,43 +140,10 @@ public class IpdsMessageListenerTest extends BaseTest {
 			try {
 				TextMessage message = sess.createTextMessage("{}");
 				mc.onMessage(message);
-				assertNotNull(isms.messagePayload);
-				assertEquals(LocalDate.now().toString(), isms.messagePayload.getAsOfString());
-				assertNull(spms.messagePayload);
-			} catch (JMSException e) {
-				e.printStackTrace();
-				fail();
-			}
-		}
-
-		@Test
-		public void testSparseDisseminationMessage() {
-			try {
-				TextMessage message = sess.createTextMessage("{\"type\":\"DISSEMINATIO\"}");
-				mc.onMessage(message);
-				assertNotNull(isms.messagePayload);
-				assertEquals("DISSEMINATIO", isms.messagePayload.getType());
-				assertEquals(LocalDate.now().toString(), isms.messagePayload.getAsOfString());
-				assertNull(spms.messagePayload);
-			} catch (JMSException e) {
-				e.printStackTrace();
-				fail();
-			}
-		}
-
-		@Test
-		public void testFullDisseminationMessage() {
-			try {
-				TextMessage message = sess.createTextMessage("{\"type\":\"DISSEMINATION\",\"asOfDate\":\"2012-01-01\",\"context\":\"one\"}");
-				mc.onMessage(message);
-				assertNotNull(isms.messagePayload);
-				assertEquals("DISSEMINATION", isms.messagePayload.getType());
-				assertEquals("2012-01-01", isms.messagePayload.getAsOfString());
-				assertEquals("one", isms.messagePayload.getContext());
-				assertNull(spms.messagePayload);
-			} catch (JMSException e) {
-				e.printStackTrace();
-				fail();
+				fail("should have gotten \"Invalid Message\"");
+			} catch (Exception e) {
+				assertEquals("Bad JMS Karma", e.getMessage());
+				assertEquals("Invalid Message - Not SPN Production", e.getCause().getMessage());
 			}
 		}
 

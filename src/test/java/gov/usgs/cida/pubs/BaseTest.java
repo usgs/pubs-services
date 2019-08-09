@@ -140,7 +140,11 @@ public abstract class BaseTest {
 	}
 
 	public String getCompareFile(String file) throws IOException {
-		return new String(FileCopyUtils.copyToByteArray(new ClassPathResource("testResult/" + file).getInputStream()));
+		return getFile("testResult/" + file);
+	}
+
+	public String getFile(String file) throws IOException {
+		return new String(FileCopyUtils.copyToByteArray(new ClassPathResource(file).getInputStream()));
 	}
 
 	public JSONObject getRtnAsJSONObject(MvcResult rtn) throws Exception {

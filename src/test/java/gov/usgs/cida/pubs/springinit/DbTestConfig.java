@@ -41,7 +41,6 @@ public class DbTestConfig {
 	public DatabaseConfigBean dbUnitDatabaseConfig() {
 		DatabaseConfigBean dbUnitDbConfig = new DatabaseConfigBean();
 		dbUnitDbConfig.setDatatypeFactory(new PubsDataTypeFactory());
-		dbUnitDbConfig.setSkipOracleRecyclebinTables(true);
 		dbUnitDbConfig.setQualifiedTableNames(false);
 		return dbUnitDbConfig;
 	}

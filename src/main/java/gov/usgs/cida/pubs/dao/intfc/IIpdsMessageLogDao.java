@@ -14,4 +14,10 @@ public interface IIpdsMessageLogDao extends IDao<IpdsMessageLog> {
 	 */
 	List<Map<String, Object>> getFromIpds(Integer ipdsMessageLogId);
 
+	/**
+	 * Get the a list of IPDSBureauApprovals from the ipds message.
+	 * @param ipdsMessageLogId ID of the log to read.
+	 * @return the list of IPDSBureauApprovals from the log
+	 */
+	List<Map<String, Object>> getFromSipp(Integer ipdsMessageLogId);
 }

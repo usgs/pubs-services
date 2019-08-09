@@ -57,96 +57,82 @@ public class ConfigurationService {
 	@Value("${security.oauth2.resource.jwk.keySetUri}")
 	private String keySetUri;
 
+	@Value("${sipp.dissemination.list-url}")
+	private String disseminationListUrl;
+
 	public String getIpdsPubsWsPwd() {
 		return ipdsPubsWsPwd;
 	}
-
 	public String getIpdsPubsWsUser() {
 		return ipdsPubsWsUser;
 	}
-
 	public String getIpdsQueueName() {
 		return ipdsQueueName;
 	}
-
 	public String getIpdsEndpoint() {
 		return ipdsEndpoint;
 	}
-
 	public String getCrossrefProtocol() {
 		return crossrefProtocol;
 	}
-
 	public String getCrossrefHost() {
 		return crossrefHost;
 	}
-
 	public String getCrossrefUrl() {
 		return crossrefUrl;
 	}
-
 	public Integer getCrossrefPort() {
 		return crossrefPort;
 	}
-
 	public String getCrossrefUser() {
 		return crossRefUser;
 	}
-
 	public String getCrossrefPwd() {
 		return crossrefPwd;
 	}
-
 	public String getCrossrefSchemaUrl() {
 		return crossrefSchemaUrl;
 	}
-
 	public String getCrossrefDepositorEmail() {
 		return crossrefDepositorEmail;
 	}
-
 	public String getPubsEmailList() {
 		return pubsEmailList;
 	}
-
 	public String getMailHost() {
 		return mailHost;
 	}
-
 	public Integer getLockTimeoutHours() {
 		return lockTimeoutHours;
 	}
-
 	public String getWarehouseEndpoint() {
 		return warehouseEndpoint;
 	}
-
 	public String getDisplayProtocol() {
 		return displayProtocol;
 	}
-
 	public String getDisplayHost() {
 		return displayHost;
 	}
-
 	public String getDisplayPath() {
 		return displayPath;
 	}
-
 	public String getResourceId() {
 		return resourceId;
 	}
-
 	public String getKeySetUri() {
 		return keySetUri;
 	}
-
 	public String[] getSpnAuthorities() {
 		return spnAuthorities;
 	}
-
 	public String[] getAuthorizedAuthorities() {
 		return authorizedAuthorities;
 	}
-
+	public String getDisseminationListUrl() {
+		return disseminationListUrl;
+	}
+	public void setDisseminationListUrl(String disseminationListUrl) {
+		this.disseminationListUrl = disseminationListUrl;
+	}
 }

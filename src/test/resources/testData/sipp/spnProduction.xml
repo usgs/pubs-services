@@ -1,0 +1,391 @@
+<InformationProduct xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IPNumber>IP-090167</IPNumber>
+  <Abstract>Pesticide results from the U.S. Geological Survey (USGS) National Water Quality Laboratory (NWQL) are used for water-quality assessments by many agencies and organizations. The USGS is committed to providing data of the highest possible quality to the consumers of its data. A cooperatorΓÇÖs inquiries about specific pesticide detections in water revealed potential laboratory contamination issues for some results. Consequently, the USGS conducted an extensive evaluation of potential low-level contamination related to processing or analysis of water-quality samples at NWQL for 21 pesticide compounds of interest to the cooperator. This is the most comprehensive study of NWQL pesticide quality-control (QC) results to date.</Abstract>
+  <BasisNumber xsi:nil="true" />
+  <CostCenter>New England Water Science Center</CostCenter>
+  <IPPANumber xsi:nil="true" />
+  <Cooperators>None</Cooperators>
+  <EditionNumber xsi:nil="true" />
+  <FinalTitle>Use of Set Blanks in Reporting Pesticide Results at the U.S. Geological Survey National Water Quality Laboratory, 2001ΓÇô15</FinalTitle>
+  <JournalTitle xsi:nil="true" />
+  <NumberOfMapsOrPlates xsi:nil="true" />
+  <PageRange xsi:nil="true" />
+  <PhysicalDescription xsi:nil="true" />
+  <PlannedDisseminationDate>2018-12-31T06:00:00</PlannedDisseminationDate>
+  <SupersedesIPNumber xsi:nil="true" />
+  <TeamProjectName xsi:nil="true" />
+  <VISpecialist>Squillacci, Ann Marie</VISpecialist>
+  <Volume xsi:nil="true" />
+  <WorkingTitle>Use of Set Blanks in Reporting Pesticide Results at the U.S. Geological Survey National Water Quality Laboratory, 2001-15</WorkingTitle>
+  <USGSSeriesNumber>2019-5055</USGSSeriesNumber>
+  <USGSRegion>Northeast Region</USGSRegion>
+  <USGSProgram>National Water Quality Assessment Program</USGSProgram>
+  <USGSSeriesType>Scientific Investigations Report</USGSSeriesType>
+  <SeniorUSGSAuthor>Medalie, Laura</SeniorUSGSAuthor>
+  <LocationOfSupportingData>https://doi.org/10.5066/F70G3HN9</LocationOfSupportingData>
+  <PSCChief>Foster, Debra H.</PSCChief>
+  <PublishedURL xsi:nil="true" />
+  <CostCenterChief>Ely, Matt</CostCenterChief>
+  <AuthorsSupervisor>Ayotte, Joseph D.</AuthorsSupervisor>
+  <BureauApprovingOfficial>Cooper, Sandra C.</BureauApprovingOfficial>
+  <Citation xsi:nil="true" />
+  <DigitalObjectIdentifier>10.3133/sir20195055</DigitalObjectIdentifier>
+  <InterpretivePublication xsi:nil="true" />
+  <Issue xsi:nil="true" />
+  <ProductType>USGS series</ProductType>
+  <DataManagementPlan xsi:nil="true" />
+  <USGSFunded>Yes</USGSFunded>
+  <USGSMissionArea>Water Resources</USGSMissionArea>
+  <ProductSummary>This report and associated data release provides an analysis of censoring practices at the NWQL for 21 pesticide compounds in response to a request from the California Department of Pesticide Regulation.</ProductSummary>
+  <TaskAssignedTo>Foster, Debra H.</TaskAssignedTo>
+  <NonUSGSPublisher xsi:nil="true" />
+  <RelatedIPNumber>IP-085828</RelatedIPNumber>
+  <USGSSeriesLetter xsi:nil="true" />
+  <Task>SPN Production</Task>
+  <TaskStartDate>2019-06-13T17:44:34</TaskStartDate>
+  <GeologicalNames>No</GeologicalNames>
+  <Editor>Glover, Anna N.</Editor>
+  <PublishingServiceCenter>Pembroke PSC</PublishingServiceCenter>
+  <Created>2017-08-18T13:52:40</Created>
+  <CreatedBy>Medalie, Laura</CreatedBy>
+  <Modified>2019-06-13T17:58:11</Modified>
+  <ModifiedBy>igscci-IPDSPubsWS</ModifiedBy>
+  <Authors xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Author>
+      <IPNumber>IP-090167</IPNumber>
+      <AuthorName>Medalie, Laura</AuthorName>
+      <AuthorNameText>Medalie, Laura</AuthorNameText>
+      <ORCID>0000-0002-2440-2149</ORCID>
+      <CostCenter>New England Water Science Center</CostCenter>
+      <ContributorRole>1</ContributorRole>
+      <NonUSGSAffiliation xsi:nil="true" />
+      <NonUSGSContributor xsi:nil="true" />
+      <Rank>1</Rank>
+      <Created>2017-08-18T13:52:40</Created>
+      <CreatedBy>Medalie, Laura</CreatedBy>
+      <Modified>2017-08-21T12:39:25</Modified>
+      <ModifiedBy>Medalie, Laura</ModifiedBy>
+    </Author>
+    <Author>
+      <IPNumber>IP-090167</IPNumber>
+      <AuthorName>Sandstrom, Mark W.</AuthorName>
+      <AuthorNameText>Sandstrom, Mark W.</AuthorNameText>
+      <ORCID>0000-0003-0006-5675</ORCID>
+      <CostCenter>WMA - Laboratory &amp; Analytical Services Division</CostCenter>
+      <ContributorRole>1</ContributorRole>
+      <NonUSGSAffiliation xsi:nil="true" />
+      <NonUSGSContributor xsi:nil="true" />
+      <Rank>2</Rank>
+      <Created>2017-08-21T12:29:51</Created>
+      <CreatedBy>Medalie, Laura</CreatedBy>
+      <Modified>2019-02-20T14:07:06</Modified>
+      <ModifiedBy>Glover, Anna N.</ModifiedBy>
+    </Author>
+    <Author>
+      <IPNumber>IP-090167</IPNumber>
+      <AuthorName>Toccalino, Patricia</AuthorName>
+      <AuthorNameText>Toccalino, Patricia</AuthorNameText>
+      <ORCID>0000-0003-1066-1702</ORCID>
+      <CostCenter>California Water Science Center</CostCenter>
+      <ContributorRole>1</ContributorRole>
+      <NonUSGSAffiliation xsi:nil="true" />
+      <NonUSGSContributor xsi:nil="true" />
+      <Rank>3</Rank>
+      <Created>2018-10-02T12:14:51</Created>
+      <CreatedBy>Medalie, Laura</CreatedBy>
+      <Modified>2019-02-20T14:03:12</Modified>
+      <ModifiedBy>Glover, Anna N.</ModifiedBy>
+    </Author>
+    <Author>
+      <IPNumber>IP-090167</IPNumber>
+      <AuthorName>Foreman, William T.</AuthorName>
+      <AuthorNameText>Foreman, William T.</AuthorNameText>
+      <ORCID>0000-0002-2530-3310</ORCID>
+      <CostCenter>WMA - Laboratory &amp; Analytical Services Division</CostCenter>
+      <ContributorRole>1</ContributorRole>
+      <NonUSGSAffiliation xsi:nil="true" />
+      <NonUSGSContributor xsi:nil="true" />
+      <Rank>4</Rank>
+      <Created>2017-08-21T13:36:36</Created>
+      <CreatedBy>Medalie, Laura</CreatedBy>
+      <Modified>2019-02-20T14:07:36</Modified>
+      <ModifiedBy>Glover, Anna N.</ModifiedBy>
+    </Author>
+    <Author>
+      <IPNumber>IP-090167</IPNumber>
+      <AuthorName>ReVello, Rhiannon C.</AuthorName>
+      <AuthorNameText>ReVello, Rhiannon C.</AuthorNameText>
+      <ORCID>0000-0003-0375-8805</ORCID>
+      <CostCenter>WMA - Laboratory &amp; Analytical Services Division</CostCenter>
+      <ContributorRole>1</ContributorRole>
+      <NonUSGSAffiliation xsi:nil="true" />
+      <NonUSGSContributor xsi:nil="true" />
+      <Rank>5</Rank>
+      <Created>2017-08-21T12:30:37</Created>
+      <CreatedBy>Medalie, Laura</CreatedBy>
+      <Modified>2019-02-20T14:05:53</Modified>
+      <ModifiedBy>Glover, Anna N.</ModifiedBy>
+    </Author>
+    <Author>
+      <IPNumber>IP-090167</IPNumber>
+      <AuthorName>Bexfield, Laura M.</AuthorName>
+      <AuthorNameText>Bexfield, Laura M.</AuthorNameText>
+      <ORCID>0000-0002-1789-654X</ORCID>
+      <CostCenter>New Mexico Water Science Center</CostCenter>
+      <ContributorRole>1</ContributorRole>
+      <NonUSGSAffiliation xsi:nil="true" />
+      <NonUSGSContributor xsi:nil="true" />
+      <Rank>6</Rank>
+      <Created>2017-08-21T12:46:25</Created>
+      <CreatedBy>Medalie, Laura</CreatedBy>
+      <Modified>2018-10-02T12:16:05</Modified>
+      <ModifiedBy>Medalie, Laura</ModifiedBy>
+    </Author>
+    <Author>
+      <IPNumber>IP-090167</IPNumber>
+      <AuthorName>Riskin, Melissa L.</AuthorName>
+      <AuthorNameText>Riskin, Melissa L.</AuthorNameText>
+      <ORCID>0000-0001-6499-3775</ORCID>
+      <CostCenter>New Jersey Water Science Center</CostCenter>
+      <ContributorRole>1</ContributorRole>
+      <NonUSGSAffiliation xsi:nil="true" />
+      <NonUSGSContributor xsi:nil="true" />
+      <Rank>7</Rank>
+      <Created>2017-08-21T12:32:23</Created>
+      <CreatedBy>Medalie, Laura</CreatedBy>
+      <Modified>2019-02-20T14:06:44</Modified>
+      <ModifiedBy>Glover, Anna N.</ModifiedBy>
+    </Author>
+  </Authors>
+  <USGSPrograms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <USGSProgram>
+      <IPNumber>IP-090167</IPNumber>
+      <USGSProgram>National Water Quality Assessment Program</USGSProgram>
+    </USGSProgram>
+  </USGSPrograms>
+  <SpecialProductAlerts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <SpecialProductAlert>
+      <IPNumber>IP-090167</IPNumber>
+      <SpecialProductAlert>Policy Sensitive</SpecialProductAlert>
+    </SpecialProductAlert>
+  </SpecialProductAlerts>
+  <Reviewers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Reviewer>
+      <IPNumber>IP-090167</IPNumber>
+      <ReviewerType>USGS-Selected Peer</ReviewerType>
+      <ReviewerName>mrosen@usgs.gov</ReviewerName>
+      <ReviewerAffiliation>usgs</ReviewerAffiliation>
+      <Created>2017-10-02T12:52:52</Created>
+      <CreatedBy>Medalie, Laura</CreatedBy>
+      <Modified>2017-10-02T12:52:52</Modified>
+      <ModifiedBy>Medalie, Laura</ModifiedBy>
+    </Reviewer>
+    <Reviewer>
+      <IPNumber>IP-090167</IPNumber>
+      <ReviewerType>USGS-Selected Peer</ReviewerType>
+      <ReviewerName>jdmartin@usgs.gov</ReviewerName>
+      <ReviewerAffiliation>USGS</ReviewerAffiliation>
+      <Created>2017-10-02T12:52:34</Created>
+      <CreatedBy>Medalie, Laura</CreatedBy>
+      <Modified>2017-10-02T12:52:34</Modified>
+      <ModifiedBy>Medalie, Laura</ModifiedBy>
+    </Reviewer>
+    <Reviewer>
+      <IPNumber>IP-090167</IPNumber>
+      <ReviewerType>USGS-Selected Peer</ReviewerType>
+      <ReviewerName>mfram@usgs.gov</ReviewerName>
+      <ReviewerAffiliation>USGS</ReviewerAffiliation>
+      <Created>2017-10-02T12:52:11</Created>
+      <CreatedBy>Medalie, Laura</CreatedBy>
+      <Modified>2017-10-02T12:52:11</Modified>
+      <ModifiedBy>Medalie, Laura</ModifiedBy>
+    </Reviewer>
+    <Reviewer>
+      <IPNumber>IP-090167</IPNumber>
+      <ReviewerType>Other</ReviewerType>
+      <ReviewerName>glrowe@usgs.gov</ReviewerName>
+      <ReviewerAffiliation>USGS</ReviewerAffiliation>
+      <Created>2017-09-07T11:44:14</Created>
+      <CreatedBy>Medalie, Laura</CreatedBy>
+      <Modified>2017-09-07T11:44:14</Modified>
+      <ModifiedBy>Medalie, Laura</ModifiedBy>
+    </Reviewer>
+    <Reviewer>
+      <IPNumber>IP-090167</IPNumber>
+      <ReviewerType>Other</ReviewerType>
+      <ReviewerName>dnmyers@usgs.gov</ReviewerName>
+      <ReviewerAffiliation>USGS</ReviewerAffiliation>
+      <Created>2017-09-07T11:43:28</Created>
+      <CreatedBy>Medalie, Laura</CreatedBy>
+      <Modified>2017-09-07T11:43:57</Modified>
+      <ModifiedBy>Medalie, Laura</ModifiedBy>
+    </Reviewer>
+  </Reviewers>
+  <TaskHistory xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Task>
+      <IPNumber>IP-090167</IPNumber>
+      <Comments xsi:nil="true" />
+      <TaskStartDate>2019-06-07T17:15:25</TaskStartDate>
+      <TaskCompletionDate>2019-06-13T17:44:34</TaskCompletionDate>
+      <Status>Approve</Status>
+      <task>Prepare for SPN Production</task>
+      <TaskAssignedTo>Foster, Debra H.</TaskAssignedTo>
+      <NextTask>SPN Production</NextTask>
+      <TaskApprover>Medalie, Laura</TaskApprover>
+      <Created>2019-06-13T17:44:36</Created>
+      <CreatedBy>Medalie, Laura</CreatedBy>
+      <Modified>2019-06-13T17:44:36</Modified>
+      <ModifiedBy>Medalie, Laura</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-090167</IPNumber>
+      <Comments>The subject report is approved for release in the SIR series. No policy issues were identified. The report is in great shape; I noted a few comments for consideration - most pertain to minor details that should be easy to fix. I did disagree w/authorship of Technical Office Memos; specific comments are noted in the marginal comments of the main text. See the BAO review copy for details. Nice job.</Comments>
+      <TaskStartDate>2019-05-31T13:25:56</TaskStartDate>
+      <TaskCompletionDate>2019-06-07T17:15:25</TaskCompletionDate>
+      <Status>Approve</Status>
+      <task>Bureau Approval</task>
+      <TaskAssignedTo>Medalie, Laura</TaskAssignedTo>
+      <NextTask>Prepare for SPN Production</NextTask>
+      <TaskApprover>Cooper, Sandra C.</TaskApprover>
+      <Created>2019-06-07T17:15:26</Created>
+      <CreatedBy>Cooper, Sandra C.</CreatedBy>
+      <Modified>2019-06-07T17:15:26</Modified>
+      <ModifiedBy>Cooper, Sandra C.</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-090167</IPNumber>
+      <Comments xsi:nil="true" />
+      <TaskStartDate>2019-05-10T18:43:41</TaskStartDate>
+      <TaskCompletionDate>2019-05-31T13:25:56</TaskCompletionDate>
+      <Status>Approve</Status>
+      <task>Center Approval</task>
+      <TaskAssignedTo>Cooper, Sandra C.</TaskAssignedTo>
+      <NextTask>Bureau Approval</NextTask>
+      <TaskApprover>Ely, Matt</TaskApprover>
+      <Created>2019-05-31T13:25:59</Created>
+      <CreatedBy>Ely, Matt</CreatedBy>
+      <Modified>2019-05-31T13:25:59</Modified>
+      <ModifiedBy>Ely, Matt</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-090167</IPNumber>
+      <Comments>Medalie addressing minor comments. Will upload new version week of May 13th. Let me know if you have questions.</Comments>
+      <TaskStartDate>2019-05-10T18:42:58</TaskStartDate>
+      <TaskCompletionDate>2019-05-10T18:43:41</TaskCompletionDate>
+      <Status>Approve</Status>
+      <task>Supervisory Approval</task>
+      <TaskAssignedTo>Ely, Matt</TaskAssignedTo>
+      <NextTask>Center Approval</NextTask>
+      <TaskApprover>Ayotte, Joseph D.</TaskApprover>
+      <Created>2019-05-10T18:43:41</Created>
+      <CreatedBy>Ayotte, Joseph D.</CreatedBy>
+      <Modified>2019-05-10T18:43:41</Modified>
+      <ModifiedBy>Ayotte, Joseph D.</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-090167</IPNumber>
+      <Comments xsi:nil="true" />
+      <TaskStartDate>2019-05-10T18:40:36</TaskStartDate>
+      <TaskCompletionDate>2019-05-10T18:42:58</TaskCompletionDate>
+      <Status>Approve</Status>
+      <task>Prepare for Approvals</task>
+      <TaskAssignedTo>Ayotte, Joseph D.</TaskAssignedTo>
+      <NextTask>Supervisory Approval</NextTask>
+      <TaskApprover>Medalie, Laura</TaskApprover>
+      <Created>2019-05-10T18:43:08</Created>
+      <CreatedBy>Medalie, Laura</CreatedBy>
+      <Modified>2019-05-10T18:43:08</Modified>
+      <ModifiedBy>Medalie, Laura</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-090167</IPNumber>
+      <Comments xsi:nil="true" />
+      <TaskStartDate>2019-05-10T18:35:43</TaskStartDate>
+      <TaskCompletionDate>2019-05-10T18:40:36</TaskCompletionDate>
+      <Status>Approve</Status>
+      <task>SPN Edit</task>
+      <TaskAssignedTo>Medalie, Laura</TaskAssignedTo>
+      <NextTask>Prepare for Approvals</NextTask>
+      <TaskApprover>Foster, Debra H.</TaskApprover>
+      <Created>2019-05-10T18:40:36</Created>
+      <CreatedBy>Foster, Debra H.</CreatedBy>
+      <Modified>2019-05-10T18:40:36</Modified>
+      <ModifiedBy>Foster, Debra H.</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-090167</IPNumber>
+      <Comments>Medalie addressing minor comments. Will upload new version week of May 13th. Let me know if you have questions. </Comments>
+      <TaskStartDate>2019-04-24T21:22:02</TaskStartDate>
+      <TaskCompletionDate>2019-05-10T18:35:43</TaskCompletionDate>
+      <Status>Approve</Status>
+      <task>Pre-edit Approval</task>
+      <TaskAssignedTo>Foster, Debra H.</TaskAssignedTo>
+      <NextTask>SPN Edit</NextTask>
+      <TaskApprover>Ayotte, Joseph D.</TaskApprover>
+      <Created>2019-05-10T18:35:43</Created>
+      <CreatedBy>Ayotte, Joseph D.</CreatedBy>
+      <Modified>2019-05-10T18:35:43</Modified>
+      <ModifiedBy>Ayotte, Joseph D.</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-090167</IPNumber>
+      <Comments xsi:nil="true" />
+      <TaskStartDate>2019-02-04T21:13:00</TaskStartDate>
+      <TaskCompletionDate>2019-04-24T21:22:02</TaskCompletionDate>
+      <Status>Approve</Status>
+      <task>Reconcile Peer Review</task>
+      <TaskAssignedTo>Ayotte, Joseph D.</TaskAssignedTo>
+      <NextTask>Pre-edit Approval</NextTask>
+      <TaskApprover>Medalie, Laura</TaskApprover>
+      <Created>2019-04-24T21:22:02</Created>
+      <CreatedBy>Medalie, Laura</CreatedBy>
+      <Modified>2019-04-24T21:22:02</Modified>
+      <ModifiedBy>Medalie, Laura</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-090167</IPNumber>
+      <Comments xsi:nil="true" />
+      <TaskStartDate>2019-02-04T20:45:59</TaskStartDate>
+      <TaskCompletionDate>2019-02-04T21:13:00</TaskCompletionDate>
+      <Status>Approve</Status>
+      <task>Accept for Peer Review</task>
+      <TaskAssignedTo>Medalie, Laura</TaskAssignedTo>
+      <NextTask>Reconcile Peer Review</NextTask>
+      <TaskApprover>Ayotte, Joseph D.</TaskApprover>
+      <Created>2019-02-04T21:13:00</Created>
+      <CreatedBy>Ayotte, Joseph D.</CreatedBy>
+      <Modified>2019-02-04T21:13:00</Modified>
+      <ModifiedBy>Ayotte, Joseph D.</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-090167</IPNumber>
+      <Comments>Approver changed</Comments>
+      <TaskStartDate>2017-08-21T12:38:29</TaskStartDate>
+      <TaskCompletionDate>2019-02-04T20:45:59</TaskCompletionDate>
+      <Status>Reassign</Status>
+      <task>Accept for Peer Review</task>
+      <TaskAssignedTo>Ayotte, Joseph D.</TaskAssignedTo>
+      <NextTask>Accept for Peer Review</NextTask>
+      <TaskApprover>Medalie, Laura</TaskApprover>
+      <Created>2019-02-04T20:45:59</Created>
+      <CreatedBy>Medalie, Laura</CreatedBy>
+      <Modified>2019-02-04T20:45:59</Modified>
+      <ModifiedBy>Medalie, Laura</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-090167</IPNumber>
+      <Comments>Supervisory review</Comments>
+      <TaskStartDate>2017-08-18T13:52:33</TaskStartDate>
+      <TaskCompletionDate>2017-08-21T12:38:29</TaskCompletionDate>
+      <Status>Approve</Status>
+      <task>Request Peer Review</task>
+      <TaskAssignedTo>Morrison, Jonathan</TaskAssignedTo>
+      <NextTask>Accept for Peer Review</NextTask>
+      <TaskApprover>Morrison, Jonathan</TaskApprover>
+      <Created>2017-08-21T12:38:31</Created>
+      <CreatedBy>Medalie, Laura</CreatedBy>
+      <Modified>2017-08-21T12:38:31</Modified>
+      <ModifiedBy>Medalie, Laura</ModifiedBy>
+    </Task>
+  </TaskHistory>
+</InformationProduct>

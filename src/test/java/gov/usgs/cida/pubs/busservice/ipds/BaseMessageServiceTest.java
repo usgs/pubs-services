@@ -25,7 +25,6 @@ public abstract class BaseMessageServiceTest extends BaseIT {
 
 	public void setUp() throws Exception {
 		when(requester.getSpnProduction(any())).thenAnswer(getAnswer());
-		when(requester.getIpdsProductXml(any())).thenAnswer(getAnswer());
 		when(ipdsProcess.processLog(any(ProcessType.class), anyInt(), anyString())).thenReturn("Did Processing");
 	}
 

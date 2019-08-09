@@ -16,7 +16,7 @@
         <poi-ooxml-version>4.1.0</poi-ooxml-version>
         <mybatis-spring-boot-starter-version>2.1.0</mybatis-spring-boot-starter-version>
         <mybatis-typehandlers-jsr310-version>1.0.2</mybatis-typehandlers-jsr310-version>
-        <oauth2-autoconfigure-version>2.1.6.RELEASE</oauth2-autoconfigure-version>
+        <oauth2-autoconfigure-version>2.1.7.RELEASE</oauth2-autoconfigure-version>
         <spring-security-oauth2-version>2.3.6.RELEASE</spring-security-oauth2-version>
         <spring-security-jwt-version>1.0.10.RELEASE</spring-security-jwt-version>
 

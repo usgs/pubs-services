@@ -1,5 +1,6 @@
 package gov.usgs.cida.pubs.busservice.intfc;
 
+import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
@@ -45,4 +46,10 @@ public interface IMpPublicationBusService extends IBusService<MpPublication> {
 
 	String getUsgsNumberedSeriesIndexId(final MpPublication pub);
 
+	String getUsgsNumberedSeriesIndexId(
+			PublicationSeries series,
+			String seriesNumber,
+			String chapter,
+			String subchapterNumber
+			);
 }

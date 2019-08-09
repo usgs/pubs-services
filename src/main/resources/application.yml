@@ -27,6 +27,8 @@ sipp:
     schedule: ${DISSEMINATION_SCHEDULE}
     list-url: ${DISSEMINATION_LIST_URL}
     daysLastDisseminated: ${DAYS_LAST_DISSEMINATED}
+  infoProduct:
+    url: ${INFOPRODUCT_URL}
 #ipds:
 #  pubsWsPwd: changeMe
 #  pubsWsUser: changeMe

@@ -68,6 +68,11 @@ public class IpdsParserServiceTest extends BaseTest {
 		assertNull(ipdsParser.formatOrcid(orcidBadPrefixNoNumber));
 		assertNull(ipdsParser.formatOrcid(orcidBadPrefixBadNumber));
 		assertEquals("http://orcid.org/0000-0000-0000-0000", ipdsParser.formatOrcid("0000-0000-0000-0000"));
+		assertEquals("http://orcid.org/0000-0000-0000-000X", ipdsParser.formatOrcid("0000-0000-0000-000X"));
 		assertEquals("http://orcid.org/0000-0000-0000-000X", ipdsParser.formatOrcid("http://orcid.org/0000-0000-0000-000X"));
+		assertEquals("http://orcid.org/0000-0000-0000-0009", ipdsParser.formatOrcid("http://orcid.org/0000-0000-0000-0009"));
+
+		assertEquals("http://orcid.org/0000-0000-0000-000X", ipdsParser.formatOrcid("https://orcid.org/0000-0000-0000-000X"));
+		assertEquals("http://orcid.org/0000-0000-0000-0009", ipdsParser.formatOrcid("https://orcid.org/0000-0000-0000-0009"));
 	}
 }

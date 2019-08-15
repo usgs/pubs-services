@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.util.ObjectUtils;
 
 import gov.usgs.cida.pubs.PubsConstantsHelper;
+import gov.usgs.cida.pubs.busservice.ipds.IpdsParserService;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
@@ -78,6 +79,23 @@ public abstract class MvcService<D> {
 		filters.put(PublicationDao.YEAR, year);
 
 		return filters;
+	}
+
+    /** Translate filter values to format expected when querying against the database.
+	 *  Only normalizing orcid to support client querying by ORCID string or https URL.
+	 **/
+	protected void normalizeFilters(Map<String, Object> filters) {
+		if(filters != null) {
+			String[] orcids = (String[]) filters.get(PublicationDao.ORCID);
+			if(orcids != null && orcids.length > 0) {
+				for(int i=0; i < orcids.length; i++) {
+					String orcid = IpdsParserService.formatOrcid(orcids[i]);
+					if(orcid != null) {
+						orcids[i] = orcid;
+					}
+				}
+			}
+		}
 	}
 
 	protected Integer[] mapListId(String[] listId) {

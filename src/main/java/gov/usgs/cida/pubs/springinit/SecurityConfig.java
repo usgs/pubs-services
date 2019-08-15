@@ -51,7 +51,7 @@ public class SecurityConfig extends ResourceServerConfigurerAdapter {
 				.authorizeRequests()
 					//anonymous (public)
 					.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-					.antMatchers("/lists/**","/mppublications/**", "/lookup/**", "/publication/**", "/version", "/about/**").permitAll()
+					.antMatchers("/lookup/**", "/publication/**", "/version", "/about/**").permitAll()
 					.antMatchers("/swagger-ui.html", "/webjars/**", "/swagger-resources/**", "/v2/api-docs", "/v3/api-docs").permitAll()
 					//authenticated
 					.antMatchers("/mppublications/*/preview*", "/auth/logout").fullyAuthenticated()

@@ -56,6 +56,7 @@ public class SecurityConfig extends ResourceServerConfigurerAdapter {
 //				.requiresChannel().anyRequest().requiresSecure()
 			.and()
 				.anonymous()
+				.and().cors()
 			.and()
 				.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 		;

@@ -27,13 +27,13 @@ sipp:
     schedule: ${DISSEMINATION_SCHEDULE}
     list-url: ${DISSEMINATION_LIST_URL}
     daysLastDisseminated: ${DAYS_LAST_DISSEMINATED}
-ipds:
-  pubsWsPwd: changeMe
-  pubsWsUser: changeMe
-  endpoint: changeMe
-  port: 80
-  protocol: https
-  queueName: changeMe
+#ipds:
+#  pubsWsPwd: changeMe
+#  pubsWsUser: changeMe
+#  endpoint: changeMe
+#  port: 80
+#  protocol: https
+#  queueName: changeMe
 
 crossref:
   protocol: ${CROSSREF_PROTOCOL}

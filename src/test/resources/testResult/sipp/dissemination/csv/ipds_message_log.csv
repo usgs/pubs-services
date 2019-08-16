@@ -655,69 +655,100 @@ ipds_message,processing_details,process_type
 ","Summary:
 	Total Entries: 31
 	Publications Added: 0
-	Errors Encountered: 0
+	Errors Encountered: 31
 
 IP-100081:
+	ERROR: Trouble processing pub: IP-100081 - null
 
 IP-110902:
+	ERROR: Trouble processing pub: IP-110902 - null
 
 IP-110906:
+	ERROR: Trouble processing pub: IP-110906 - null
 
 IP-110921:
+	ERROR: Trouble processing pub: IP-110921 - null
 
 IP-110602:
+	ERROR: Trouble processing pub: IP-110602 - null
 
 IP-108574:
+	ERROR: Trouble processing pub: IP-108574 - null
 
 IP-109236:
+	ERROR: Trouble processing pub: IP-109236 - null
 
 IP-096062:
+	ERROR: Trouble processing pub: IP-096062 - null
 
 IP-105974:
+	ERROR: Trouble processing pub: IP-105974 - null
 
 IP-108542:
+	ERROR: Trouble processing pub: IP-108542 - null
 
 IP-098022:
+	ERROR: Trouble processing pub: IP-098022 - null
 
 IP-110567:
+	ERROR: Trouble processing pub: IP-110567 - null
 
 IP-105249:
+	ERROR: Trouble processing pub: IP-105249 - null
 
 IP-110551:
+	ERROR: Trouble processing pub: IP-110551 - null
 
 IP-110333:
+	ERROR: Trouble processing pub: IP-110333 - null
 
 IP-110494:
+	ERROR: Trouble processing pub: IP-110494 - null
 
 IP-109682:
+	ERROR: Trouble processing pub: IP-109682 - null
 
 IP-088577:
+	ERROR: Trouble processing pub: IP-088577 - null
 
 IP-101184:
+	ERROR: Trouble processing pub: IP-101184 - null
 
 IP-102377:
+	ERROR: Trouble processing pub: IP-102377 - null
 
 IP-108963:
+	ERROR: Trouble processing pub: IP-108963 - null
 
 IP-093511:
+	ERROR: Trouble processing pub: IP-093511 - null
 
 IP-096404:
+	ERROR: Trouble processing pub: IP-096404 - null
 
 IP-110128:
+	ERROR: Trouble processing pub: IP-110128 - null
 
 IP-109001:
+	ERROR: Trouble processing pub: IP-109001 - null
 
 IP-104113:
+	ERROR: Trouble processing pub: IP-104113 - null
 
 IP-104456:
+	ERROR: Trouble processing pub: IP-104456 - null
 
 IP-098864:
+	ERROR: Trouble processing pub: IP-098864 - null
 
 IP-110827:
+	ERROR: Trouble processing pub: IP-110827 - null
 
 IP-110273:
+	ERROR: Trouble processing pub: IP-110273 - null
 
 IP-110289:
+	ERROR: Trouble processing pub: IP-110289 - null
 
 Log: 123
 ",DISSEMINATION

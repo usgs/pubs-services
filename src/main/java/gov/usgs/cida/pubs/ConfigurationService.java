@@ -59,6 +59,8 @@ public class ConfigurationService {
 
 	@Value("${sipp.dissemination.list-url}")
 	private String disseminationListUrl;
+	@Value("${sipp.infoProduct.url}")
+	private String infoProductUrl;
 
 	public String getIpdsPubsWsPwd() {
 		return ipdsPubsWsPwd;
@@ -134,5 +136,11 @@ public class ConfigurationService {
 	}
 	public void setDisseminationListUrl(String disseminationListUrl) {
 		this.disseminationListUrl = disseminationListUrl;
+	}
+	public String getInfoProductUrl() {
+		return infoProductUrl;
+	}
+	public void setInfoProductUrl(String infoProductUrl) {
+		this.infoProductUrl = infoProductUrl;
 	}
 }

@@ -43,6 +43,7 @@ PUBS_SPN_GROUPS: spnGroup
 DISSEMINATION_SCHEDULE: <cron type syntax use just a single hyphen for not scheduled>
 DISSEMINATION_LIST_URL: https://something.gov
 DAYS_LAST_DISSEMINATED: 1
+INFOPRODUCT_URL: https://something.gov
 
 SWAGGER_DISPLAY_HOST: localhost:8080
 SWAGGER_DISPLAY_PATH: /pubs-services

@@ -58,7 +58,7 @@ public class DisseminationListServiceIT extends BaseIT {
 		when(configurationService.getDisseminationListUrl()).thenReturn(MOCK_SIPP_URL);
 	}
 
-	@Test
+//	@Test
 	@ExpectedDatabase(
 			value="classpath:/testResult/sipp/dissemination/csv/",
 			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,

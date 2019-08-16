@@ -20,8 +20,6 @@ import org.xml.sax.SAXException;
 public class IpdsParserService {
 
 	public static final String ORCID_PREFIX = "http://orcid.org/";
-	public static final String ORCID_PREFIX_HTTPS = "https://orcid.org/";
-	public static final int ORCID_SHORT_FORM_LEN = 19; // base identifier length:  000-0002-1825-0097
 	private DocumentBuilder builder;
 
 	public IpdsParserService() throws ParserConfigurationException {
@@ -59,17 +57,15 @@ public class IpdsParserService {
 		return rtn;
 	}
 
-	public static String formatOrcid(String orcid) {
+	protected String formatOrcid(String orcid) {
 		String formattedOrcid = null;
 		if (null != orcid) {
-			if (orcid.length() > ORCID_PREFIX.length() && orcid.startsWith(ORCID_PREFIX)) {
+			if (orcid.length() == 36 && orcid.startsWith(ORCID_PREFIX)) {
 				formattedOrcid = orcid.substring(ORCID_PREFIX.length());
-			} else if (orcid.length() > ORCID_PREFIX_HTTPS.length() && orcid.startsWith(ORCID_PREFIX_HTTPS)) {
-				formattedOrcid = orcid.substring(ORCID_PREFIX_HTTPS.length());
 			} else {
 				formattedOrcid = orcid;
 			}
-			if (formattedOrcid.length() == ORCID_SHORT_FORM_LEN && formattedOrcid.matches("^\\d{4}-\\d{4}-\\d{4}-(\\d{3}X|\\d{4})$")) {
+			if (formattedOrcid.length() == 19 && formattedOrcid.matches("^\\d{4}-\\d{4}-\\d{4}-(\\d{3}X|\\d{4})$")) {
 				formattedOrcid = ORCID_PREFIX + formattedOrcid;
 			} else {
 				formattedOrcid = null;

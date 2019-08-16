@@ -25,10 +25,10 @@ import gov.usgs.cida.pubs.validation.ValidatorResult;
 
 public final class PubsUtils {
 
+	public static final Pattern ORCID_PATTERN = Pattern.compile("\\d{4}-\\d{4}-\\d{4}-(\\d{3}X|\\d{4})"); //  format of the canonical short form of an orcid
+
 	private PubsUtils() {
 	}
-
-	public static final Pattern ORCID_PATTERN = Pattern.compile("\\d{4}-\\d{4}-\\d{4}-(\\d{3}X|\\d{4})"); //  format of the canonical short form of an orcid
 
 	/** Utility method for determining if a string represents an integer.  
 	 * @param number .

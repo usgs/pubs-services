@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +27,8 @@ public final class PubsUtils {
 
 	private PubsUtils() {
 	}
+
+	public static final Pattern ORCID_PATTERN = Pattern.compile("\\d{4}-\\d{4}-\\d{4}-(\\d{3}X|\\d{4})"); //  format of the canonical short form of an orcid
 
 	/** Utility method for determining if a string represents an integer.  
 	 * @param number .
@@ -186,6 +190,24 @@ public final class PubsUtils {
 			rtn = true;
 		}
 		return rtn;
+	}
+
+	/**
+	 *   returns the canonical short form (19 digits: 0000-0002-1825-0097) for the specified ORCID or null if short form not found
+	 * @param orcid The ORCDID to normalize
+	 * @return short form ORCID or null if orcid does not have a short ORCID component
+	 */
+	public static String normalizeOrcid(String orcid) {
+		String formattedOrcid = null;
+		if (null != orcid) {
+			Matcher matcher = ORCID_PATTERN.matcher(orcid);
+			if (matcher.find()) {
+				formattedOrcid = matcher.group();
+			} else {
+				formattedOrcid = null;
+			}
+		}
+		return formattedOrcid;
 	}
 
 }

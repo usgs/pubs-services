@@ -18,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.util.ObjectUtils;
 
 import gov.usgs.cida.pubs.PubsConstantsHelper;
-import gov.usgs.cida.pubs.busservice.ipds.IpdsParserService;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
@@ -89,7 +88,7 @@ public abstract class MvcService<D> {
 			String[] orcids = (String[]) filters.get(PublicationDao.ORCID);
 			if(orcids != null && orcids.length > 0) {
 				for(int i=0; i < orcids.length; i++) {
-					String orcid = IpdsParserService.formatOrcid(orcids[i]);
+					String orcid = PubsUtils.normalizeOrcid(orcids[i]);
 					if(orcid != null) {
 						orcids[i] = orcid;
 					}

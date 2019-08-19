@@ -8,8 +8,6 @@ public class SpecialProductAlert {
 	private String ipNumber;
 	@JsonProperty("SpecialProductAlert")
 	private String specialProductAlert;
-//  </SpecialProductAlert>
-//</SpecialProductAlerts>
 	public String getIpNumber() {
 		return ipNumber;
 	}

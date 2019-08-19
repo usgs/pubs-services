@@ -8,12 +8,6 @@ public class USGSProgram {
 	private String ipNumber;
 	@JsonProperty("USGSProgram")
 	private String usgsProgram;
-//  </USGSProgram>
-//  <USGSProgram>
-//    <IPNumber>IP-108541</IPNumber>
-//    <USGSProgram>Status and Trends</USGSProgram>
-//  </USGSProgram>
-//</USGSPrograms>
 	public String getIpNumber() {
 		return ipNumber;
 	}

@@ -20,18 +20,6 @@ public class Reviewer {
 	private String modified;
 	@JsonProperty("ModifiedBy")
 	private String modifiedBy;
-//  </Reviewer>
-//  <Reviewer>
-//    <IPNumber>IP-108541</IPNumber>
-//    <ReviewerType>USGS-Selected Peer</ReviewerType>
-//    <ReviewerName>Jamie McEvoy</ReviewerName>
-//    <ReviewerAffiliation>Montana State University</ReviewerAffiliation>
-//    <Created>2019-05-22T22:57:22</Created>
-//    <CreatedBy>Cravens, Amanda Emily</CreatedBy>
-//    <Modified>2019-05-22T22:57:22</Modified>
-//    <ModifiedBy>Cravens, Amanda Emily</ModifiedBy>
-//  </Reviewer>
-//</Reviewers>
 	public String getIpNumber() {
 		return ipNumber;
 	}

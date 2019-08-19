@@ -51,6 +51,8 @@ import gov.usgs.cida.pubs.domain.pw.PwPublicationContributor;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationCostCenter;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationLink;
 import gov.usgs.cida.pubs.domain.pw.PwStore;
+import gov.usgs.cida.pubs.domain.sipp.SippProcessLog;
+import gov.usgs.cida.pubs.domain.sipp.SippRequestLog;
 
 @Configuration
 public class MybatisConfig {
@@ -127,6 +129,9 @@ public class MybatisConfig {
 		registry.registerAlias("publicationType", PublicationType.class);
 		registry.registerAlias("publishingServiceCenter", PublishingServiceCenter.class);
 		registry.registerAlias("usgsContributor", UsgsContributor.class);
+
+		registry.registerAlias("sippProcessLog", SippProcessLog.class);
+		registry.registerAlias("sippRequestLog", SippRequestLog.class);
 
 		registry.registerAlias("ipdsMessageLog", IpdsMessageLog.class);
 		registry.registerAlias("ipdsProcessLog", IpdsProcessLog.class);

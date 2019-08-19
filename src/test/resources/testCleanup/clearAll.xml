@@ -21,4 +21,6 @@
 	<PUBLICATION_CONTRIBUTOR/>
 	<PUBLICATION_COST_CENTER/>
 	<PUBLICATION_LINK/>
+    <sipp_process_log/>
+    <sipp_request_log/>
 </dataset>

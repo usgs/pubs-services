@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/usgs/pubs-services.svg?branch=master)](https://travis-ci.org/usgs/pubs-services)
 
 ## Development
-This is a Spring Batch/Boot project. All of the normal caveats relating to a Spring Batch/Boot application apply.
+This is a Spring Boot project. All of the normal caveats relating to a Spring Boot application apply.
 
 ### Dependencies
 This application utilizes a PostgreSQL database.

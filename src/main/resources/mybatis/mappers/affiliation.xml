@@ -39,7 +39,7 @@
 
      <sql id="costCenterHosts">
         <include refid="baseHosts"/>,
-        #{ipdsId,jdbcType=VARCHAR}
+        #{ipdsId,jdbcType=NUMERIC}
     </sql>
 
     <sql id="baseSets">

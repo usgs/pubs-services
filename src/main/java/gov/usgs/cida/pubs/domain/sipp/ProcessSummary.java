@@ -1,4 +1,4 @@
-package gov.usgs.cida.pubs.busservice.sipp;
+package gov.usgs.cida.pubs.domain.sipp;
 
 public class ProcessSummary {
 
@@ -17,11 +17,16 @@ public class ProcessSummary {
 	public void setAdditions(int additions) {
 		this.additions = additions;
 	}
+	public void incrementAdditions(int additions) {
+		this.additions = this.additions + additions;
+	}
 	public int getErrors() {
 		return errors;
 	}
 	public void setErrors(int errors) {
 		this.errors = errors;
 	}
-
+	public void incrementErrors(int errors) {
+		this.errors = this.errors + errors;
+	}
 }

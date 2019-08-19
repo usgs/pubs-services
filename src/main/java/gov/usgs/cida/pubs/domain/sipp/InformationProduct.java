@@ -2,9 +2,20 @@ package gov.usgs.cida.pubs.domain.sipp;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import gov.usgs.cida.pubs.dao.sipp.InformationProductDao;
+import gov.usgs.cida.pubs.domain.PublicationSeries;
+import gov.usgs.cida.pubs.domain.PublicationSubtype;
+import gov.usgs.cida.pubs.domain.PublicationType;
+
+@Component
 public class InformationProduct {
+	private static InformationProductDao informationProductDao;
 
 	@JsonProperty("IPNumber")
 	private String ipNumber;
@@ -114,10 +125,18 @@ public class InformationProduct {
 	private List<USGSProgram> usgsPrograms;
 	@JsonProperty("SpecialProductAlerts")
 	private List<SpecialProductAlert> specialProductAlerts;
+	@JsonProperty("Notes")
+	private List<Note> notes;
 	@JsonProperty("Reviewers")
 	private List<Reviewer> reviewers;
 	@JsonProperty("TaskHistory")
 	private List<Task> taskHistory;
+	private PublicationType publicationType;
+	private PublicationSubtype publicationSubtype;
+	private PublicationSeries usgsSeriesTitle;
+	private boolean usgsNumberedSeries;
+	private String indexId;
+	private boolean usgsPeriodical;
 	public String getIpNumber() {
 		return ipNumber;
 	}
@@ -442,6 +461,12 @@ public class InformationProduct {
 	public void setSpecialProductAlerts(List<SpecialProductAlert> specialProductAlerts) {
 		this.specialProductAlerts = specialProductAlerts;
 	}
+	public List<Note> getNotes() {
+		return notes;
+	}
+	public void setNotes(List<Note> notes) {
+		this.notes = notes;
+	}
 	public List<Reviewer> getReviewers() {
 		return reviewers;
 	}
@@ -453,5 +478,49 @@ public class InformationProduct {
 	}
 	public void setTaskHistory(List<Task> taskHistory) {
 		this.taskHistory = taskHistory;
+	}
+	public PublicationType getPublicationType() {
+		return publicationType;
+	}
+	public void setPublicationType(PublicationType publicationType) {
+		this.publicationType = publicationType;
+	}
+	public PublicationSubtype getPublicationSubtype() {
+		return publicationSubtype;
+	}
+	public void setPublicationSubtype(PublicationSubtype publicationSubtype) {
+		this.publicationSubtype = publicationSubtype;
+	}
+	public PublicationSeries getUsgsSeriesTitle() {
+		return usgsSeriesTitle;
+	}
+	public void setUsgsSeriesTitle(PublicationSeries usgsSeriesTitle) {
+		this.usgsSeriesTitle = usgsSeriesTitle;
+	}
+	public boolean isUsgsNumberedSeries() {
+		return usgsNumberedSeries;
+	}
+	public void setUsgsNumberedSeries(boolean usgsNumberedSeries) {
+		this.usgsNumberedSeries = usgsNumberedSeries;
+	}
+	public String getIndexId() {
+		return indexId;
+	}
+	public void setIndexId(String indexId) {
+		this.indexId = indexId;
+	}
+	public boolean isUsgsPeriodical() {
+		return usgsPeriodical;
+	}
+	public void setUsgsPeriodical(boolean usgsPeriodical) {
+		this.usgsPeriodical = usgsPeriodical;
+	}
+	public static InformationProductDao getDao() {
+		return informationProductDao;
+	}
+	@Autowired
+	@Qualifier("informationProductDao")
+	public void setInformationProductDao(InformationProductDao inInformationProductDao) {
+		informationProductDao = inInformationProductDao;
 	}
 }

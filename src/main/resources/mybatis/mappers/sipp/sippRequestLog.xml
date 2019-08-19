@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="sippRequestLog">
+
+    <insert id="add" parameterType="SippRequestLog" useGeneratedKeys="true" keyProperty="id" keyColumn="sipp_request_log_id">
+        insert into sipp_request_log (request_uri,
+                                      request_method,
+                                      request_headers,
+                                      request_body,
+                                      <include refid="base.auditCols"/>
+                                     )
+            values (#{uri,jdbcType=VARCHAR},
+                    #{method,jdbcType=VARCHAR},
+                    #{requestHeaders,jdbcType=VARCHAR},
+                    #{requestBody,jdbcType=VARCHAR},
+                    <include refid="base.auditHosts"/>
+                   )
+    </insert>
+
+    <update id="update" parameterType="SippRequestLog">
+        update sipp_request_log
+           set status_code = #{statusCode,jdbcType=VARCHAR},
+               status_text = #{statusText,jdbcType=VARCHAR},
+               response_headers = #{responseHeaders,jdbcType=VARCHAR},
+               response_body = #{responseBody,jdbcType=VARCHAR},
+               <include refid="base.auditSets"/>
+         where sipp_request_log_id = #{id,jdbcType=NUMERIC}
+    </update>
+
+</mapper>

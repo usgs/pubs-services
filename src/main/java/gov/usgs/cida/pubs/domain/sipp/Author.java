@@ -30,23 +30,6 @@ public class Author {
 	private String modified;
 	@JsonProperty("ModifiedBy")
 	private String modifiedBy;
-//  </Author>
-//  <Author>
-//    <IPNumber>IP-108541</IPNumber>
-//    <AuthorName>Cravens, Amanda Emily</AuthorName>
-//    <AuthorNameText>Cravens, Amanda Emily</AuthorNameText>
-//    <ORCID>0000-0002-0271-7967</ORCID>
-//    <CostCenter>Fort Collins Science Center</CostCenter>
-//    <ContributorRole>1</ContributorRole>
-//    <NonUSGSAffiliation xsi:nil="true" />
-//    <NonUSGSContributor xsi:nil="true" />
-//    <Rank>2</Rank>
-//    <Created>2019-05-22T17:04:05</Created>
-//    <CreatedBy>Cravens, Amanda Emily</CreatedBy>
-//    <Modified>2019-05-22T17:56:01</Modified>
-//    <ModifiedBy>Cravens, Amanda Emily</ModifiedBy>
-//  </Author>
-//</Authors>
 	public String getIpNumber() {
 		return ipNumber;
 	}
@@ -125,5 +108,18 @@ public class Author {
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
-
+	public String[] splitFullName() {
+		String[] familyGiven = new String[] {null, null};
+		if (null != authorNameText) {
+			String[] nameParts = authorNameText.split(",");
+	
+			if (0 < nameParts.length) {
+				familyGiven[0] = nameParts[0].trim();
+			}
+			if (1 < nameParts.length) {
+				familyGiven[1] = nameParts[1].trim();
+			}
+		}
+		return familyGiven;
+	}
 }

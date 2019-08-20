@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
 
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.ContributorType;
@@ -33,6 +34,7 @@ import gov.usgs.cida.pubs.domain.sipp.InformationProduct;
 import gov.usgs.cida.pubs.domain.sipp.Note;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 
+@Service
 public class SippConversionService {
 
 	public MpPublication buildMpPublication(InformationProduct informationProduct, Integer prodId) {

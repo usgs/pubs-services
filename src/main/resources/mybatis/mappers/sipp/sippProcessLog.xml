@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="sippProcessLog">
+
+    <insert id="add" parameterType="SippProcessLog" useGeneratedKeys="true" keyProperty="id" keyColumn="sipp_process_log_id">
+        insert into sipp_process_log (process_type,
+                                      <include refid="base.auditCols"/>
+                                     )
+            values (#{processType,jdbcType=VARCHAR},
+                    <include refid="base.auditHosts"/>
+                   )
+    </insert>
+
+    <update id="update" parameterType="SippProcessLog">
+        update sipp_process_log
+           set total_entries = #{totalEntries,jdbcType=NUMERIC},
+               publications_added = #{publicationsAdded,jdbcType=NUMERIC},
+               errors_encountered = #{errorsEncountered,jdbcType=NUMERIC},
+               processing_details = #{processingDetails,jdbcType=VARCHAR},
+               <include refid="base.auditSets"/>
+         where sipp_process_log_id = #{id,jdbcType=NUMERIC}
+    </update>
+
+</mapper>

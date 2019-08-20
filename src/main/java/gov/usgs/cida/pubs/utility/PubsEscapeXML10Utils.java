@@ -6,8 +6,6 @@ import org.apache.commons.text.translate.CharSequenceTranslator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gov.usgs.cida.pubs.busservice.ipds.IpdsCostCenterService;
-
 /** 
  * This is a modified version of org.apache.commons.text.StringEscapeUtils.ESCAPE_XML10
  * We occasionally get characters from IPDS that cause LPX-00217 Oracle errors in an UTF8 database.
@@ -22,7 +20,7 @@ import gov.usgs.cida.pubs.busservice.ipds.IpdsCostCenterService;
  */
 public class PubsEscapeXML10Utils {
 
-	private static final Logger LOG = LoggerFactory.getLogger(IpdsCostCenterService.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PubsEscapeXML10Utils.class);
 
 	public static final String ERROR_CLEANSING = "<error>Service returned unreadable message.</error>";
 

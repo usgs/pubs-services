@@ -3,7 +3,7 @@ package gov.usgs.cida.pubs.domain;
 
 import gov.usgs.cida.pubs.dao.ContributorTypeDaoIT;
 
-public class PublicationContributorTest {
+public class PublicationContributorHelper {
 
 	public static PublicationContributor<?> buildCorporatePublicationContributor(String typeText, int typeId) {
 		CorporateContributor contributor = new CorporateContributor();

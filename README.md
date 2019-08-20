@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/usgs/pubs-services.svg?branch=master)](https://travis-ci.org/usgs/pubs-services)
 
 ## Development
-This is a Spring Batch/Boot project. All of the normal caveats relating to a Spring Batch/Boot application apply.
+This is a Spring Boot project. All of the normal caveats relating to a Spring Boot application apply.
 
 ### Dependencies
 This application utilizes a PostgreSQL database.
@@ -43,6 +43,7 @@ PUBS_SPN_GROUPS: spnGroup
 DISSEMINATION_SCHEDULE: <cron type syntax use just a single hyphen for not scheduled>
 DISSEMINATION_LIST_URL: https://something.gov
 DAYS_LAST_DISSEMINATED: 1
+INFOPRODUCT_URL: https://something.gov
 
 SWAGGER_DISPLAY_HOST: localhost:8080
 SWAGGER_DISPLAY_PATH: /pubs-services

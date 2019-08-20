@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.dao;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.util.HashMap;
@@ -31,7 +32,7 @@ public class PublishingServiceCenterDaoIT extends BaseIT {
 	@Test
 	public void getByIdInteger() {
 		Integer nil = null;
-		publishingServiceCenterDao.getById(nil);
+		assertNull(publishingServiceCenterDao.getById(nil));
 		PublishingServiceCenter psc = publishingServiceCenterDao.getById(1);
 		assertNotNull(psc);
 		assertPsc1(psc);
@@ -40,7 +41,7 @@ public class PublishingServiceCenterDaoIT extends BaseIT {
 	@Test
 	public void getByIdString() {
 		String nil = null;
-		publishingServiceCenterDao.getById(nil);
+		assertNull(publishingServiceCenterDao.getById(nil));
 		PublishingServiceCenter psc = publishingServiceCenterDao.getById("2");
 		assertNotNull(psc);
 		assertPsc2(psc);
@@ -48,7 +49,7 @@ public class PublishingServiceCenterDaoIT extends BaseIT {
 
 	@Test
 	public void getByIpdsValue() {
-		publishingServiceCenterDao.getByIpdsId(null);
+		assertNull(publishingServiceCenterDao.getByIpdsId(null));
 		PublishingServiceCenter psc = publishingServiceCenterDao.getByIpdsId(2);
 		assertNotNull(psc);
 		assertPsc2(psc);

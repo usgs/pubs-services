@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
-import gov.usgs.cida.pubs.domain.PublicationContributorTest;
+import gov.usgs.cida.pubs.domain.PublicationContributorHelper;
 import gov.usgs.cida.pubs.domain.PublicationIT;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationLinkTest;
@@ -37,10 +37,10 @@ public class CrossrefTestPubBuilder {
 
 		Collection<PublicationContributor<?>> contributors = new ArrayList<>();
 
-		contributors.add(PublicationContributorTest.buildPersonPublicationAuthor());
-		contributors.add(PublicationContributorTest.buildPersonPublicationEditor());
-		contributors.add(PublicationContributorTest.buildCorporatePublicationAuthor());
-		contributors.add(PublicationContributorTest.buildCorporatePublicationEditor());
+		contributors.add(PublicationContributorHelper.buildPersonPublicationAuthor());
+		contributors.add(PublicationContributorHelper.buildPersonPublicationEditor());
+		contributors.add(PublicationContributorHelper.buildCorporatePublicationAuthor());
+		contributors.add(PublicationContributorHelper.buildCorporatePublicationEditor());
 
 		pub.setContributors(contributors);
 
@@ -68,10 +68,10 @@ public class CrossrefTestPubBuilder {
 		pub.setDoi("10.3133/ofr20131259");
 
 		Collection<PublicationContributor<?>> contributors = new ArrayList<>();
-		contributors.add(PublicationContributorTest.buildPersonPublicationAuthor());
-		contributors.add(PublicationContributorTest.buildPersonPublicationEditor());
-		contributors.add(PublicationContributorTest.buildCorporatePublicationAuthor());
-		contributors.add(PublicationContributorTest.buildCorporatePublicationEditor());
+		contributors.add(PublicationContributorHelper.buildPersonPublicationAuthor());
+		contributors.add(PublicationContributorHelper.buildPersonPublicationEditor());
+		contributors.add(PublicationContributorHelper.buildCorporatePublicationAuthor());
+		contributors.add(PublicationContributorHelper.buildCorporatePublicationEditor());
 		pub.setContributors(contributors);
 
 		pub.setStartPage("52");

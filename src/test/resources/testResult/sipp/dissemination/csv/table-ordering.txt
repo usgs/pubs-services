@@ -1,1 +1,1 @@
-ipds_message_log
+sipp_process_log

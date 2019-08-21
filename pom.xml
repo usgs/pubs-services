@@ -24,6 +24,7 @@
         <spring-test-dbunit-version>1.3.0</spring-test-dbunit-version>
         <dbunit-version>2.6.0</dbunit-version>
         <hamcrest-json-version>0.2</hamcrest-json-version>
+        <log.db.ready>database system is ready to accept connections</log.db.ready>
     </properties>
 
     <scm>
@@ -312,7 +313,8 @@
                                     <LOCAL_NETWORK_NAME>pubs</LOCAL_NETWORK_NAME>
                                 </env>
                                 <wait>
-                                    <time>100000</time>
+                                    <log>(?s)${log.db.ready}.*${log.db.ready}.*${log.db.ready}</log>
+                                    <time>300000</time>
                                 </wait>
                             </run>
                         </image>

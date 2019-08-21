@@ -37,8 +37,8 @@ import gov.usgs.cida.pubs.webservice.MvcService;
 })
 public class ContributorDaoIT extends BaseIT {
 
-	public static final int CONTRIBUTOR_CNT = 5;
-	public static final int PERSON_CONTRIBUTOR_CNT = 4;
+	public static final int CONTRIBUTOR_CNT = 13;
+	public static final int PERSON_CONTRIBUTOR_CNT = 12;
 	public static final int CORPORATE_CONTRIBUTOR_CNT = 1;
 
 	public static final List<String> IGNORE_PROPERTIES_PERSON = Arrays.asList("validationErrors", "valErrors", "organization", "affiliations");
@@ -98,20 +98,24 @@ public class ContributorDaoIT extends BaseIT {
 		filters.clear();
 		filters.put(ContributorDao.TEXT_SEARCH, "con" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX);
 		contributors = contributorDao.getByMap(filters);
-		assertEquals(2, contributors.size());
+		assertEquals(3, contributors.size());
 		boolean got1 = false;
-		boolean got4 = false;
+		boolean got11 = false;
+		boolean got21 = false;
 		for (Contributor<?> contributor : contributors) {
 			if (1 == contributor.getId()) {
 				got1 = true;
-			} else if (4 == contributor.getId()) {
-				got4 = true;
+			} else if (11 == contributor.getId()) {
+				got11 = true;
+			} else if (21 == contributor.getId()) {
+				got21 = true;
 			} else {
 				fail("Got wrong contributor" + contributor.getId());
 			}
 		}
 		assertTrue("Got 1", got1);
-		assertTrue("Got 4", got4);
+		assertTrue("Got 11", got11);
+		assertTrue("Got 21", got21);
 
 		filters.clear();
 		filters.put(ContributorDao.TEXT_SEARCH, "us" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX + MvcService.TEXT_SEARCH_AND + "ge" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX);
@@ -137,10 +141,19 @@ public class ContributorDaoIT extends BaseIT {
 		filters.put("corporation", false);
 		contributors = contributorDao.getByMap(filters);
 		assertEquals(PERSON_CONTRIBUTOR_CNT, contributors.size());
-		assertEquals(4, contributors.get(0).getId().intValue());
-		assertEquals(1, contributors.get(1).getId().intValue());
-		assertEquals(5, contributors.get(2).getId().intValue());
-		assertEquals(3, contributors.get(3).getId().intValue());
+		assertEquals(51, contributors.get(0).getId().intValue());
+		assertEquals(54, contributors.get(1).getId().intValue());
+		assertEquals(11, contributors.get(2).getId().intValue());
+		assertEquals(21, contributors.get(3).getId().intValue());
+		assertEquals(14, contributors.get(4).getId().intValue());
+		assertEquals(24, contributors.get(5).getId().intValue());
+		assertEquals(34, contributors.get(6).getId().intValue());
+		assertEquals(44, contributors.get(7).getId().intValue());
+		assertEquals(4, contributors.get(8).getId().intValue());
+		assertEquals(1, contributors.get(9).getId().intValue());
+		assertEquals(5, contributors.get(10).getId().intValue());
+		assertEquals(3, contributors.get(11).getId().intValue());
+
 		filters.put(ContributorDao.TEXT_SEARCH, "oute" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX);
 		contributors = contributorDao.getByMap(filters);
 		assertEquals(1, contributors.size());
@@ -160,8 +173,12 @@ public class ContributorDaoIT extends BaseIT {
 		filters.clear();
 		filters.put(PersonContributorDao.ORCID, new String[]{"http://orcid.org/0000-0000-0000-0004"});
 		contributors = contributorDao.getByMap(filters);
-		assertEquals(1, contributors.size());
-		assertEquals(4, contributors.get(0).getId().intValue());
+		assertEquals(5, contributors.size());
+		assertEquals(14, contributors.get(0).getId().intValue());
+		assertEquals(24, contributors.get(1).getId().intValue());
+		assertEquals(34, contributors.get(2).getId().intValue());
+		assertEquals(44, contributors.get(3).getId().intValue());
+		assertEquals(4, contributors.get(4).getId().intValue());
 
 		filters.clear();
 		filters.put("corporation", true);
@@ -179,7 +196,7 @@ public class ContributorDaoIT extends BaseIT {
 		Map<String, Object> filters = new HashMap<>();
 		filters.put("preferred", true);
 		List<Contributor<?>> contributors = contributorDao.getByMap(filters);
-		assertEquals(3, contributors.size());
+		assertEquals(5, contributors.size());
 	}
 
 	@Test

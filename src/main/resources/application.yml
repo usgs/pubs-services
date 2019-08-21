@@ -24,9 +24,9 @@ server:
 
 sipp:
   dissemination:
-    schedule: ${DISSEMINATION_SCHEDULE}
+    schedule: ${DISSEMINATION_SCHEDULE:-}
     list-url: ${DISSEMINATION_LIST_URL}
-    daysLastDisseminated: ${DAYS_LAST_DISSEMINATED}
+    daysLastDisseminated: ${DAYS_LAST_DISSEMINATED:1}
   infoProduct:
     url: ${INFOPRODUCT_URL}
 #ipds:

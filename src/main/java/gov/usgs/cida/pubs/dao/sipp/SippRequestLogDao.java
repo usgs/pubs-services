@@ -12,12 +12,12 @@ import gov.usgs.cida.pubs.domain.sipp.SippRequestLog;
 @Repository
 public class SippRequestLogDao extends BaseDao<SippRequestLog> {
 
+	private static final String NS = "sippRequestLog";
+
 	@Autowired
 	public SippRequestLogDao(SqlSessionFactory sqlSessionFactory) {
 		super(sqlSessionFactory);
 	}
-
-	private static final String NS = "sippRequestLog";
 
 	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	@Override

@@ -19,7 +19,7 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.busservice.ext.ExtPublicationBusService;
+import gov.usgs.cida.pubs.busservice.ext.ExtPublicationService;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
 import gov.usgs.cida.pubs.busservice.mp.MpPublicationBusService;
@@ -48,7 +48,7 @@ public class DisseminationListServiceIT extends BaseIT {
 	@MockBean(name="configurationService")
 	protected ConfigurationService configurationService;
 	@MockBean(name="extPublicationBusService")
-	protected ExtPublicationBusService extPublicationBusService;
+	protected ExtPublicationService extPublicationBusService;
 	@MockBean(name="validator")
 	protected Validator validator;
 	@MockBean(name="crossRefBusService")

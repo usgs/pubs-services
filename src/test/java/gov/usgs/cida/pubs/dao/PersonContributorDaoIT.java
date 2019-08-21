@@ -28,7 +28,7 @@ import gov.usgs.cida.pubs.springinit.DbTestConfig;
 @DatabaseSetups({
 	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 	@DatabaseSetup("classpath:/testData/affiliation.xml"),
-	@DatabaseSetup("classpath:/testData/ipdsUsgsContributorService.xml")
+	@DatabaseSetup("classpath:/testData/contributor.xml")
 })
 public class PersonContributorDaoIT extends BaseIT {
 
@@ -60,7 +60,7 @@ public class PersonContributorDaoIT extends BaseIT {
 	@Test
 	public void getByMap() {
 		List<Contributor<?>> contributors = personContributorDao.getByMap(null);
-		assertEquals(11, contributors.size());
+		assertEquals(ContributorDaoIT.PERSON_CONTRIBUTOR_CNT, contributors.size());
 
 		Map<String, Object> filters = new HashMap<>();
 		filters.put(PersonContributorDao.ID_SEARCH, 1);
@@ -71,7 +71,7 @@ public class PersonContributorDaoIT extends BaseIT {
 		filters.clear();
 		filters.put(PersonContributorDao.TEXT_SEARCH, "con:*");
 		contributors = personContributorDao.getByMap(filters);
-		assertEquals(10, contributors.size());
+		assertEquals(3, contributors.size());
 		for (Contributor<?> contributor : contributors) {
 			if (!((PersonContributor<?>)contributor).getEmail().substring(0, 3).equalsIgnoreCase("con")) {
 				fail("Got wrong contributor(Text) ID: " + contributor.getId());
@@ -81,7 +81,7 @@ public class PersonContributorDaoIT extends BaseIT {
 		filters.clear();
 		filters.put(PersonContributorDao.GIVEN, "con");
 		contributors = personContributorDao.getByMap(filters);
-		assertEquals(3, contributors.size());
+		assertEquals(1, contributors.size());
 		for (Contributor<?> contributor : contributors) {
 			if (!((PersonContributor<?>)contributor).getGiven().substring(0, 3).equalsIgnoreCase("con")) {
 				fail("Got wrong contributor Given: " + ((PersonContributor<?>)contributor).getGiven());
@@ -91,7 +91,7 @@ public class PersonContributorDaoIT extends BaseIT {
 		filters.clear();
 		filters.put(PersonContributorDao.FAMILY, "con");
 		contributors = personContributorDao.getByMap(filters);
-		assertEquals(3, contributors.size());
+		assertEquals(1, contributors.size());
 		for (Contributor<?> contributor : contributors) {
 			if (!((PersonContributor<?>)contributor).getFamily().substring(0, 3).equalsIgnoreCase("con")) {
 				fail("Got wrong contributor Family: " + ((PersonContributor<?>)contributor).getFamily());
@@ -186,19 +186,20 @@ public class PersonContributorDaoIT extends BaseIT {
 	@Test
 	public void getByPreferredAll() {
 		List<Contributor<?>> contributors = personContributorDao.getByPreferred(null);
-		assertEquals(12, contributors.size());
+		assertEquals(ContributorDaoIT.CONTRIBUTOR_CNT, contributors.size());
 		assertEquals(51, contributors.get(0).getId().intValue());
 		assertEquals(54, contributors.get(1).getId().intValue());
 		assertEquals(4, contributors.get(2).getId().intValue());
 		assertEquals(1, contributors.get(3).getId().intValue());
-		assertEquals(44, contributors.get(4).getId().intValue());
-		assertEquals(34, contributors.get(5).getId().intValue());
-		assertEquals(24, contributors.get(6).getId().intValue());
+		assertEquals(5, contributors.get(4).getId().intValue());
+		assertEquals(11, contributors.get(5).getId().intValue());
+		assertEquals(21, contributors.get(6).getId().intValue());
 		assertEquals(14, contributors.get(7).getId().intValue());
-		assertEquals(11, contributors.get(8).getId().intValue());
-		assertEquals(21, contributors.get(9).getId().intValue());
-		assertEquals(3, contributors.get(10).getId().intValue());
-		assertEquals(2, contributors.get(11).getId().intValue());
+		assertEquals(24, contributors.get(8).getId().intValue());
+		assertEquals(34, contributors.get(9).getId().intValue());
+		assertEquals(44, contributors.get(10).getId().intValue());
+		assertEquals(3, contributors.get(11).getId().intValue());
+		assertEquals(2, contributors.get(12).getId().intValue());
 	}
 
 	@Test
@@ -208,10 +209,10 @@ public class PersonContributorDaoIT extends BaseIT {
 		List<Contributor<?>> contributors = personContributorDao.getByPreferred(filter);
 		assertEquals(5, contributors.size());
 		assertEquals(4, contributors.get(0).getId().intValue());
-		assertEquals(44, contributors.get(1).getId().intValue());
-		assertEquals(34, contributors.get(2).getId().intValue());
-		assertEquals(24, contributors.get(3).getId().intValue());
-		assertEquals(14, contributors.get(4).getId().intValue());
+		assertEquals(14, contributors.get(1).getId().intValue());
+		assertEquals(24, contributors.get(2).getId().intValue());
+		assertEquals(34, contributors.get(3).getId().intValue());
+		assertEquals(44, contributors.get(4).getId().intValue());
 	}
 
 	@Test
@@ -219,10 +220,9 @@ public class PersonContributorDaoIT extends BaseIT {
 		UsgsContributor filter = new UsgsContributor();
 		filter.setEmail("con@usgs.gov");;
 		List<Contributor<?>> contributors = personContributorDao.getByPreferred(filter);
-		assertEquals(3, contributors.size());
+		assertEquals(2, contributors.size());
 		assertEquals(1, contributors.get(0).getId().intValue());
 		assertEquals(11, contributors.get(1).getId().intValue());
-		assertEquals(21, contributors.get(2).getId().intValue());
 	}
 
 	public static PersonContributor<?> buildAPerson(final Integer personId, final String type) {

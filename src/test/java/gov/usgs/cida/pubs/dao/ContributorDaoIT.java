@@ -245,7 +245,7 @@ public class ContributorDaoIT extends BaseIT {
 		assertEquals("outerGiven", outsideContributor.getGiven());
 		assertEquals("outerSuffix", outsideContributor.getSuffix());
 		assertEquals("outer@gmail.com", outsideContributor.getEmail());
-		assertEquals("http://orcid.org/0000-0000-0000-0001", outsideContributor.getOrcid());
+		assertEquals("0000-0000-0000-0001", outsideContributor.getOrcid());
 		assertFalse(outsideContributor.isUsgs());
 		assertFalse(outsideContributor.isCorporation());
 		assertFalse(outsideContributor.isPreferred());
@@ -259,7 +259,7 @@ public class ContributorDaoIT extends BaseIT {
 		assertEquals("4Given", usgsContributor.getGiven());
 		assertEquals("4Suffix", usgsContributor.getSuffix());
 		assertEquals("con4@usgs.gov", usgsContributor.getEmail());
-		assertEquals("http://orcid.org/0000-0000-0000-0004", usgsContributor.getOrcid());
+		assertEquals("0000-0000-0000-0004", usgsContributor.getOrcid());
 		assertTrue(usgsContributor.isUsgs());
 		assertFalse(usgsContributor.isCorporation());
 		assertTrue(usgsContributor.isPreferred());

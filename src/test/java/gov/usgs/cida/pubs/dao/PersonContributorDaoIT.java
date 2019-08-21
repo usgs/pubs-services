@@ -99,11 +99,11 @@ public class PersonContributorDaoIT extends BaseIT {
 		}
 
 		filters.clear();
-		filters.put(PersonContributorDao.ORCID, new String[]{"http://orcid.org/0000-0000-0000-0004"});
+		filters.put(PersonContributorDao.ORCID, new String[]{"0000-0000-0000-0004"});
 		contributors = personContributorDao.getByMap(filters);
 		assertEquals(5, contributors.size());
 		for (Contributor<?> contributor : contributors) {
-			if (!((PersonContributor<?>)contributor).getOrcid().equalsIgnoreCase("http://orcid.org/0000-0000-0000-0004")) {
+			if (!((PersonContributor<?>)contributor).getOrcid().equalsIgnoreCase("0000-0000-0000-0004")) {
 				fail("Got wrong contributor ORCID: " + ((PersonContributor<?>)contributor).getOrcid());
 			}
 		}
@@ -121,7 +121,7 @@ public class PersonContributorDaoIT extends BaseIT {
 		filters.put(PersonContributorDao.ID_SEARCH, 3);
 		contributors = personContributorDao.getByMap(filters);
 		assertEquals(1, contributors.size());
-		filters.put(PersonContributorDao.ORCID, new String[]{"http://orcid.org/0000-0000-0000-0001"});
+		filters.put(PersonContributorDao.ORCID, new String[]{"0000-0000-0000-0001"});
 		contributors = personContributorDao.getByMap(filters);
 		assertEquals(1, contributors.size());
 	}
@@ -205,7 +205,7 @@ public class PersonContributorDaoIT extends BaseIT {
 	@Test
 	public void getByPreferredByOrcid() {
 		UsgsContributor filter = new UsgsContributor();
-		filter.setOrcid("http://orcid.org/0000-0000-0000-0004");
+		filter.setOrcid("0000-0000-0000-0004");
 		List<Contributor<?>> contributors = personContributorDao.getByPreferred(filter);
 		assertEquals(5, contributors.size());
 		assertEquals(4, contributors.get(0).getId().intValue());

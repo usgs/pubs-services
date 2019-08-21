@@ -171,7 +171,7 @@ public class ContributorDaoIT extends BaseIT {
 		assertTrue(contributorDao.getByMap(filters).isEmpty());
 
 		filters.clear();
-		filters.put(PersonContributorDao.ORCID, new String[]{"http://orcid.org/0000-0000-0000-0004"});
+		filters.put(PersonContributorDao.ORCID, new String[]{"0000-0000-0000-0004"});
 		contributors = contributorDao.getByMap(filters);
 		assertEquals(5, contributors.size());
 		assertEquals(14, contributors.get(0).getId().intValue());

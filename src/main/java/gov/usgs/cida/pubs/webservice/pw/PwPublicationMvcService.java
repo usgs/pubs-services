@@ -46,6 +46,7 @@ import gov.usgs.cida.pubs.transform.JsonTransformer;
 import gov.usgs.cida.pubs.transform.PublicationColumnsHelper;
 import gov.usgs.cida.pubs.transform.XlsxTransformer;
 import gov.usgs.cida.pubs.transform.intfc.ITransformer;
+import gov.usgs.cida.pubs.utility.DataNormalization;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.webservice.MvcService;
 import io.swagger.annotations.ApiParam;
@@ -136,7 +137,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		response.setCharacterEncoding(PubsConstantsHelper.DEFAULT_ENCODING);
 		String statement = PwPublicationDao.NS;
 
-        normalizeFilters(filters);
+        DataNormalization.normalizeFilters(filters);
 
 		try {
 			ITransformer transformer;

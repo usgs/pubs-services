@@ -80,23 +80,6 @@ public abstract class MvcService<D> {
 		return filters;
 	}
 
-    /** Translate filter values to format expected when querying against the database.
-	 *  Only normalizing orcid to support client querying by ORCID string or https URL.
-	 **/
-	protected void normalizeFilters(Map<String, Object> filters) {
-		if(filters != null) {
-			String[] orcids = (String[]) filters.get(PublicationDao.ORCID);
-			if(orcids != null && orcids.length > 0) {
-				for(int i=0; i < orcids.length; i++) {
-					String orcid = PubsUtils.normalizeOrcid(orcids[i]);
-					if(orcid != null) {
-						orcids[i] = orcid;
-					}
-				}
-			}
-		}
-	}
-
 	protected Integer[] mapListId(String[] listId) {
 		if (null == listId) {
 			return null;

@@ -5,6 +5,7 @@ import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
+import gov.usgs.cida.pubs.utility.DataNormalization;
 
 import java.util.Set;
 
@@ -45,6 +46,7 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 				Contributor<PersonContributor<UsgsContributor>> uc = (UsgsContributor) object;
 				uc.setValidationErrors(validator.validate(uc));
 			}
+			DataNormalization.normalize(object);
 			if (object.isValid()) {
 				updateAffiliations(id, object);
 				PersonContributor.getDao().update(object);
@@ -58,7 +60,7 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 	@Transactional
 	public PersonContributor<?> createObject(PersonContributor<?> object) {
 		PersonContributor<?> result = object;
-		if (null != object) {
+		if (null != result) {
 			if (result instanceof OutsideContributor) {
 				Contributor<PersonContributor<OutsideContributor>> oc = (OutsideContributor) result;
 				Set<ConstraintViolation<Contributor<PersonContributor<OutsideContributor>>>> results = validator.validate(oc);
@@ -68,9 +70,10 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 				Set<ConstraintViolation<Contributor<PersonContributor<UsgsContributor>>>> results = validator.validate(uc);
 				uc.setValidationErrors(results);
 			}
+			DataNormalization.normalize(result);
 			if (result.isValid()) {
 				Integer id = PersonContributor.getDao().add(result);
-				updateAffiliations(id, object);
+				updateAffiliations(id, result);
 				result = (PersonContributor<?>) PersonContributor.getDao().getById(id);
 			}
 		}
@@ -89,4 +92,5 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 			}
 		}
 	}
+
 }

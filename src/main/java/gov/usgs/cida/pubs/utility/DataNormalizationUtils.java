@@ -10,7 +10,7 @@ import gov.usgs.cida.pubs.domain.PersonContributor;
 /**
  * Methods to transform values to and from the canonical form stored in the database
  */
-public final class DataNormalization {
+public final class DataNormalizationUtils {
 
 	public static final String ORCID_REGEX = "\\d{4}-\\d{4}-\\d{4}-\\d{3}[0-9X]"; // format of the canonical short form of an orcid
 	public static final Pattern ORCID_PATTERN = Pattern.compile(ORCID_REGEX);
@@ -42,21 +42,20 @@ public final class DataNormalization {
 	 */
 	public static String denormalizeOrcid(String orcid) {
 		String formattedOrcid = null;
-		orcid = DataNormalization.normalizeOrcid(orcid);
-		if (orcid != null) {
-			formattedOrcid = ORCID_PREFIX + orcid;
+		String normalizedOrcid = DataNormalizationUtils.normalizeOrcid(orcid);
+		if (normalizedOrcid != null) {
+			formattedOrcid = ORCID_PREFIX + normalizedOrcid;
 		}
 		return formattedOrcid;
 	}
 	
 	// update fields to form stored in the database
 	public static void normalize(PersonContributor<?> object) {
-		if(object != null) {
-			if(object.getOrcid() != null) {
-				String orcid = normalizeOrcid(object.getOrcid());
-				if(orcid != null) {
-					object.setOrcid(orcid);
-				}
+		boolean orcidIsSet = object != null && object.getOrcid() != null;
+		if(orcidIsSet) {
+			String orcid = normalizeOrcid(object.getOrcid());
+			if(orcid != null) {
+				object.setOrcid(orcid);
 			}
 		}
 	}

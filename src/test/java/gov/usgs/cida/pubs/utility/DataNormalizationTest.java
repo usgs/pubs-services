@@ -35,44 +35,44 @@ public class DataNormalizationTest extends BaseTest {
 	@Test
     public void testNormalizeOrcid() {
 
-            assertNull(DataNormalization.normalizeOrcid(orcidNull));
-            assertNull(DataNormalization.normalizeOrcid(orcidPrefixNoNumber));
-            assertNull(DataNormalization.normalizeOrcid(orcidBadNumber));
-            assertNull(DataNormalization.normalizeOrcid(orcidPrefixBadNumber));
-            assertNull(DataNormalization.normalizeOrcid(orcidBadPrefixNoNumber));
-            assertNull(DataNormalization.normalizeOrcid(orcidBadPrefixBadNumber));
+            assertNull(DataNormalizationUtils.normalizeOrcid(orcidNull));
+            assertNull(DataNormalizationUtils.normalizeOrcid(orcidPrefixNoNumber));
+            assertNull(DataNormalizationUtils.normalizeOrcid(orcidBadNumber));
+            assertNull(DataNormalizationUtils.normalizeOrcid(orcidPrefixBadNumber));
+            assertNull(DataNormalizationUtils.normalizeOrcid(orcidBadPrefixNoNumber));
+            assertNull(DataNormalizationUtils.normalizeOrcid(orcidBadPrefixBadNumber));
 
-            assertEquals(orcidGoodNumber, DataNormalization.normalizeOrcid(orcidGoodNumber));
-            assertEquals(orcidGoodNumber, DataNormalization.normalizeOrcid(orcidPrefixNoNumber + orcidGoodNumber));
-            assertEquals("0000-0000-0000-0000", DataNormalization.normalizeOrcid("http://orcid.org/0000-0000-0000-0000"));
-            assertEquals("0000-0000-0000-000X", DataNormalization.normalizeOrcid("http://orcid.org/0000-0000-0000-000X"));
+            assertEquals(orcidGoodNumber, DataNormalizationUtils.normalizeOrcid(orcidGoodNumber));
+            assertEquals(orcidGoodNumber, DataNormalizationUtils.normalizeOrcid(orcidPrefixNoNumber + orcidGoodNumber));
+            assertEquals("0000-0000-0000-0000", DataNormalizationUtils.normalizeOrcid("http://orcid.org/0000-0000-0000-0000"));
+            assertEquals("0000-0000-0000-000X", DataNormalizationUtils.normalizeOrcid("http://orcid.org/0000-0000-0000-000X"));
 
-            assertEquals("0000-0000-0000-0000", DataNormalization.normalizeOrcid("https://orcid.org/0000-0000-0000-0000"));
-            assertEquals("0000-0000-0000-000X", DataNormalization.normalizeOrcid("https://orcid.org/0000-0000-0000-000X"));
+            assertEquals("0000-0000-0000-0000", DataNormalizationUtils.normalizeOrcid("https://orcid.org/0000-0000-0000-0000"));
+            assertEquals("0000-0000-0000-000X", DataNormalizationUtils.normalizeOrcid("https://orcid.org/0000-0000-0000-000X"));
     }
 
 	@Test
     public void testDeormalizeOrcid() {
-            assertNull(DataNormalization.denormalizeOrcid(orcidNull));
-            assertNull(DataNormalization.denormalizeOrcid(orcidPrefixNoNumber));
-            assertNull(DataNormalization.denormalizeOrcid(orcidBadNumber));
-            assertNull(DataNormalization.denormalizeOrcid(orcidPrefixBadNumber));
-            assertNull(DataNormalization.denormalizeOrcid(orcidBadPrefixNoNumber));
-            assertNull(DataNormalization.denormalizeOrcid(orcidBadPrefixBadNumber));
+            assertNull(DataNormalizationUtils.denormalizeOrcid(orcidNull));
+            assertNull(DataNormalizationUtils.denormalizeOrcid(orcidPrefixNoNumber));
+            assertNull(DataNormalizationUtils.denormalizeOrcid(orcidBadNumber));
+            assertNull(DataNormalizationUtils.denormalizeOrcid(orcidPrefixBadNumber));
+            assertNull(DataNormalizationUtils.denormalizeOrcid(orcidBadPrefixNoNumber));
+            assertNull(DataNormalizationUtils.denormalizeOrcid(orcidBadPrefixBadNumber));
 
-            String orcidPrefix = DataNormalization.ORCID_PREFIX;
+            String orcidPrefix = DataNormalizationUtils.ORCID_PREFIX;
 
-            assertEquals(orcidPrefix + orcidGoodNumber, DataNormalization.denormalizeOrcid(orcidGoodNumber));
-            assertEquals(orcidPrefix + orcidGoodNumber, DataNormalization.denormalizeOrcid(orcidPrefixNoNumber + orcidGoodNumber));
+            assertEquals(orcidPrefix + orcidGoodNumber, DataNormalizationUtils.denormalizeOrcid(orcidGoodNumber));
+            assertEquals(orcidPrefix + orcidGoodNumber, DataNormalizationUtils.denormalizeOrcid(orcidPrefixNoNumber + orcidGoodNumber));
 
-            assertEquals(orcidPrefix + "0000-0000-0000-0000", DataNormalization.denormalizeOrcid("0000-0000-0000-0000"));
-            assertEquals(orcidPrefix + "0000-0000-0000-000X", DataNormalization.denormalizeOrcid("0000-0000-0000-000X"));
+            assertEquals(orcidPrefix + "0000-0000-0000-0000", DataNormalizationUtils.denormalizeOrcid("0000-0000-0000-0000"));
+            assertEquals(orcidPrefix + "0000-0000-0000-000X", DataNormalizationUtils.denormalizeOrcid("0000-0000-0000-000X"));
 
-            assertEquals(orcidPrefix + "0000-0000-0000-0000", DataNormalization.denormalizeOrcid("http://orcid.org/0000-0000-0000-0000"));
-            assertEquals(orcidPrefix + "0000-0000-0000-000X", DataNormalization.denormalizeOrcid("http://orcid.org/0000-0000-0000-000X"));
+            assertEquals(orcidPrefix + "0000-0000-0000-0000", DataNormalizationUtils.denormalizeOrcid("http://orcid.org/0000-0000-0000-0000"));
+            assertEquals(orcidPrefix + "0000-0000-0000-000X", DataNormalizationUtils.denormalizeOrcid("http://orcid.org/0000-0000-0000-000X"));
 
-            assertEquals(orcidPrefix + "0000-0000-0000-0000", DataNormalization.denormalizeOrcid("https://orcid.org/0000-0000-0000-0000"));
-            assertEquals(orcidPrefix + "0000-0000-0000-000X", DataNormalization.denormalizeOrcid("https://orcid.org/0000-0000-0000-000X"));
+            assertEquals(orcidPrefix + "0000-0000-0000-0000", DataNormalizationUtils.denormalizeOrcid("https://orcid.org/0000-0000-0000-0000"));
+            assertEquals(orcidPrefix + "0000-0000-0000-000X", DataNormalizationUtils.denormalizeOrcid("https://orcid.org/0000-0000-0000-000X"));
 	}
 
 }

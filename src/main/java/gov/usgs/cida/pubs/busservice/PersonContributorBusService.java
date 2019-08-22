@@ -5,7 +5,7 @@ import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
-import gov.usgs.cida.pubs.utility.DataNormalization;
+import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
 
 import java.util.Set;
 
@@ -46,7 +46,7 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 				Contributor<PersonContributor<UsgsContributor>> uc = (UsgsContributor) object;
 				uc.setValidationErrors(validator.validate(uc));
 			}
-			DataNormalization.normalize(object);
+			DataNormalizationUtils.normalize(object);
 			if (object.isValid()) {
 				updateAffiliations(id, object);
 				PersonContributor.getDao().update(object);
@@ -70,7 +70,7 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 				Set<ConstraintViolation<Contributor<PersonContributor<UsgsContributor>>>> results = validator.validate(uc);
 				uc.setValidationErrors(results);
 			}
-			DataNormalization.normalize(result);
+			DataNormalizationUtils.normalize(result);
 			if (result.isValid()) {
 				Integer id = PersonContributor.getDao().add(result);
 				updateAffiliations(id, result);

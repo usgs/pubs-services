@@ -15,7 +15,7 @@ import gov.usgs.cida.pubs.dao.sipp.RequestResponseLoggingInterceptor;
 public class RestTemplateConfig {
 
 	@Bean
-	ClientHttpRequestFactory clientHttpRequestFactory() {
+	public ClientHttpRequestFactory clientHttpRequestFactory() {
 		return new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory());
 	}
 

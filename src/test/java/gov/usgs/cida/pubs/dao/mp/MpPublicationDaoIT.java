@@ -27,9 +27,9 @@ import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.PublicationIT;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
-import gov.usgs.cida.pubs.domain.PublicationIT;
 import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
@@ -43,7 +43,8 @@ import gov.usgs.cida.pubs.springinit.DbTestConfig;
 public class MpPublicationDaoIT extends BaseIT {
 
 	//TODO contributors, links, & CostCenters in test.
-	public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "contributors", "contributorsToMap", "links", "interactions", "sourceDatabase", "published");
+	public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters",
+			"contributors", "contributorsToMap", "links", "interactions", "sourceDatabase", "published", "ipdsContext");
 
 	public static final String MPPUB1_INDEXID = "sir20145083";
 	public static final String MPPUB1_LOCKEDBY = "drsteini";

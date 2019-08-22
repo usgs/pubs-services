@@ -7,9 +7,10 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import gov.usgs.cida.pubs.busservice.ext.ExtPublicationBusService;
+import gov.usgs.cida.pubs.busservice.ext.ExtPublicationService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.ISippProcess;
 import gov.usgs.cida.pubs.dao.PublicationDao;
@@ -17,23 +18,23 @@ import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
-import gov.usgs.cida.pubs.domain.ipds.IpdsPubTypeConv;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.sipp.InformationProduct;
+import gov.usgs.cida.pubs.domain.sipp.IpdsPubTypeConv;
 import gov.usgs.cida.pubs.domain.sipp.ProcessSummary;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 
 @Service
 public class SippProcess implements ISippProcess {
 
-	private final ExtPublicationBusService extPublicationBusService;
+	private final ExtPublicationService extPublicationBusService;
 	private final IMpPublicationBusService pubBusService;
 	private final SippConversionService sippConversionService;
 
 	@Autowired
 	public SippProcess(
-			final ExtPublicationBusService extPublicationBusService,
+			final ExtPublicationService extPublicationBusService,
 			final IMpPublicationBusService pubBusService,
 			final SippConversionService sippConversionService
 			) {
@@ -42,7 +43,7 @@ public class SippProcess implements ISippProcess {
 		this.sippConversionService = sippConversionService;
 	}
 
-	@Transactional
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public ProcessSummary processInformationProduct(ProcessType processType, String ipNumber) {
 		ProcessSummary rtn = new ProcessSummary();
 		StringBuilder processingDetails = new StringBuilder(ipNumber + ":");
@@ -149,15 +150,18 @@ public class SippProcess implements ISippProcess {
 		boolean rtn = false;
 		if (null == informationProduct) {
 			//Do not proceed if the new data is null
+			rtn = false;
 		} else if (null != getPwPublication(informationProduct)) {
 			//Do not proceed if the pub has been published
+			rtn = false;
 		} else if (informationProduct.isUsgsNumberedSeries()
-				&& null == informationProduct.getUsgsSeriesLetter()) {
+				&& StringUtils.isEmpty(informationProduct.getUsgsSeriesLetter())) {
 			//Do not process USGS numbered series without an actual series.
+			rtn = false;
 		} else if (null == mpPublication) {
 			//OK to process at this point if we have no record of the pub
 			rtn = true;
-		} else if (null == mpPublication.getIpdsReviewProcessState()
+		} else if (StringUtils.isEmpty(mpPublication.getIpdsReviewProcessState())
 				|| ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(mpPublication.getIpdsReviewProcessState())) {
 			//It is ok to process a publication already in MyPubs if has no review state or is in the SPN Production state.
 			rtn = true;
@@ -170,8 +174,10 @@ public class SippProcess implements ISippProcess {
 		if (null != informationProduct) {
 			if (StringUtils.isNotBlank(informationProduct.getDigitalObjectIdentifier())) {
 				//Skip if we have already assigned a DOI (shouldn't happen as we are querying for null DOI publications)
+				rtn = false;
 			} else if (null == informationProduct.getTask() || !ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(informationProduct.getTask())) {
 				//Skip if not in SPN Production (shouldn't happen as we are querying SPN Production only)
+				rtn = false;
 			} else if (informationProduct.isUsgsNumberedSeries()) {
 				rtn = true;
 			}

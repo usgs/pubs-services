@@ -53,7 +53,7 @@ public class SippConversionService {
 
 	protected Contributor<?> buildContributor(Author author) {
 		Contributor<?> contributor;
-		if (null == author.getNonUSGSContributor()) {
+		if (StringUtils.isEmpty(author.getNonUSGSContributor())) {
 			contributor = buildUsgsContributor(author);
 		} else {
 			contributor = buildOutsideContributor(author);
@@ -72,7 +72,7 @@ public class SippConversionService {
 	}
 
 	protected String buildNotes(InformationProduct informationProduct) {
-		StringBuilder notes = new StringBuilder(null == informationProduct.getProductSummary() ? "" : informationProduct.getProductSummary());
+		StringBuilder notes = new StringBuilder(StringUtils.isEmpty(informationProduct.getProductSummary()) ? "" : informationProduct.getProductSummary());
 		if (0 < notes.length()) {
 			notes.append("\n\t");
 		}
@@ -234,7 +234,7 @@ public class SippConversionService {
 	}
 
 	protected PublicationSeries buildSeriesTitle(PublicationSubtype pubSubtype, String text) {
-		if (null == pubSubtype || null == text) {
+		if (null == pubSubtype || StringUtils.isEmpty(text)) {
 			return null;
 		} else {
 			PublicationSeries publicationSeries = new PublicationSeries();
@@ -245,7 +245,7 @@ public class SippConversionService {
 	}
 
 	protected String buildTitle(String finalTitle, String workingTitle) {
-		if (null == finalTitle) {
+		if (StringUtils.isEmpty(finalTitle)) {
 			return workingTitle;
 		} else {
 			return finalTitle;
@@ -275,7 +275,7 @@ public class SippConversionService {
 	}
 
 	protected String cleanseUsgsSeriesNumber(String usgsSeriesNumber) {
-		if (null == usgsSeriesNumber
+		if (StringUtils.isEmpty(usgsSeriesNumber)
 				|| ".".contentEquals(usgsSeriesNumber)) {
 			return null;
 		} else {

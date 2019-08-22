@@ -54,7 +54,6 @@
 	"notes": "notes",
 	"ipdsReviewProcessState": "Dissemination",
 	"ipdsInternalId": "12",
-	"ipdsContext": "content9",
 	"costCenters": [{"id": 2, "text": "Affiliation Cost Center 2", "active": true , "usgs": true}],
 	"scale": "100",
 	"projection": "EPSG:3857",

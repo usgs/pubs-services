@@ -1,4 +1,4 @@
-package gov.usgs.cida.pubs.dao.ipds;
+package gov.usgs.cida.pubs.dao.sipp;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -12,7 +12,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseIT;
-import gov.usgs.cida.pubs.domain.ipds.IpdsPubTypeConv;
+import gov.usgs.cida.pubs.domain.sipp.IpdsPubTypeConv;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,

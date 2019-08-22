@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import gov.usgs.cida.pubs.busservice.intfc.ISippProcess;
@@ -25,7 +26,7 @@ public class DisseminationListService {
 		this.sippProcess = sippProcess;
 	}
 
-	@Transactional
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public void processDisseminationList(final int daysLastDisseminated) {
 		SippProcessLog sippProcessLog = logProcessStart();
 

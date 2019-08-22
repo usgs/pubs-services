@@ -37,9 +37,6 @@ import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
-import gov.usgs.cida.pubs.domain.ipds.IpdsMessageLog;
-import gov.usgs.cida.pubs.domain.ipds.IpdsProcessLog;
-import gov.usgs.cida.pubs.domain.ipds.IpdsPubTypeConv;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 import gov.usgs.cida.pubs.domain.mp.MpListPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
@@ -51,6 +48,7 @@ import gov.usgs.cida.pubs.domain.pw.PwPublicationContributor;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationCostCenter;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationLink;
 import gov.usgs.cida.pubs.domain.pw.PwStore;
+import gov.usgs.cida.pubs.domain.sipp.IpdsPubTypeConv;
 import gov.usgs.cida.pubs.domain.sipp.SippProcessLog;
 import gov.usgs.cida.pubs.domain.sipp.SippRequestLog;
 
@@ -132,9 +130,6 @@ public class MybatisConfig {
 
 		registry.registerAlias("sippProcessLog", SippProcessLog.class);
 		registry.registerAlias("sippRequestLog", SippRequestLog.class);
-
-		registry.registerAlias("ipdsMessageLog", IpdsMessageLog.class);
-		registry.registerAlias("ipdsProcessLog", IpdsProcessLog.class);
 		registry.registerAlias("ipdsPubTypeConv", IpdsPubTypeConv.class);
 	}
 

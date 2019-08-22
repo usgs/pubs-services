@@ -4,11 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
@@ -30,7 +30,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import gov.usgs.cida.pubs.BaseTest;
-import gov.usgs.cida.pubs.busservice.ext.ExtPublicationBusService;
+import gov.usgs.cida.pubs.busservice.ext.ExtPublicationService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.dao.intfc.IIpdsPubTypeConvDao;
@@ -46,10 +46,10 @@ import gov.usgs.cida.pubs.domain.PublicationSeriesHelper;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
-import gov.usgs.cida.pubs.domain.ipds.IpdsPubTypeConv;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.sipp.InformationProduct;
+import gov.usgs.cida.pubs.domain.sipp.IpdsPubTypeConv;
 import gov.usgs.cida.pubs.domain.sipp.ProcessSummary;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
@@ -62,7 +62,7 @@ public class SippProcessTest extends BaseTest {
 	protected Validator validator;
 
 	@MockBean
-	protected ExtPublicationBusService extPublicationBusService;
+	protected ExtPublicationService extPublicationBusService;
 	@MockBean
 	protected IMpPublicationBusService pubBusService;
 	@MockBean(name="pwPublicationDao")

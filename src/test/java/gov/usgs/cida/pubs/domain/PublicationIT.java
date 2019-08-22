@@ -23,7 +23,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import com.google.common.collect.ImmutableMap;
 
 import gov.usgs.cida.pubs.BaseIT;
-import gov.usgs.cida.pubs.busservice.ipds.IpdsProcessTest;
 import gov.usgs.cida.pubs.dao.ContributorTypeDao;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
@@ -210,7 +209,6 @@ public class PublicationIT extends BaseIT {
 		newPub.setIpdsId("ipds_id" + pubId);
 		newPub.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
 		newPub.setIpdsInternalId("12");
-		newPub.setIpdsContext(IpdsProcessTest.TEST_IPDS_CONTEXT); 
 		newPub.setId(pubId);
 		newPub.setPublicationYear("2001");
 		newPub.setNoYear(false);

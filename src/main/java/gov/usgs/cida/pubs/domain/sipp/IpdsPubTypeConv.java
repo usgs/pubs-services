@@ -1,4 +1,4 @@
-package gov.usgs.cida.pubs.domain.ipds;
+package gov.usgs.cida.pubs.domain.sipp;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

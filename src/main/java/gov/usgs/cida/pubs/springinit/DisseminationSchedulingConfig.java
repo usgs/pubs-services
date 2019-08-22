@@ -22,7 +22,7 @@ public class DisseminationSchedulingConfig {
 
 	@Autowired
 	private DisseminationListService disseminationListService;
-	@Value("${sipp.dissemination.daysLastDisseminated}")
+	@Value("${sipp.dissemination.daysLastDisseminated:1}")
 	private int daysLastDisseminated;
 
 	@Bean
@@ -30,7 +30,7 @@ public class DisseminationSchedulingConfig {
 		return Executors.newScheduledThreadPool(10);
 	}
 
-	@Scheduled(cron = "${sipp.dissemination.schedule}")
+	@Scheduled(cron = "${sipp.dissemination.schedule:-}")
 	public void scheduleTaskWithCronExpression() {
 		LOG.info("DisseminationListService.processDisseminationList :: Execution Start Time - {}", LocalDateTime.now());
 		disseminationListService.processDisseminationList(daysLastDisseminated);

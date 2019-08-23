@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.busservice;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import javax.validation.Validator;
 
@@ -91,11 +92,20 @@ public class PersonContributorBusServiceIT extends BaseIT {
 
 		assertTrue("Expected id not to be set: " + person.getId(), person.getId() == null || person.getId() == 0);
 
-		boolean hasValidationMess = person.getValidationErrors() != null && !person.getValidationErrors().isEmpty();
-		assertTrue("Expected a validation error message", hasValidationMess);
+		boolean hasValidationMess = false;
+		String expectedMess = PersonContributor.ORCID_VALIDATION_MESS.replace("${validatedValue}", person.getOrcid());
+		String validationMessage = "[no validation message found]";
 
-		boolean isValidIsFalse = !person.isValid();
-		assertTrue("Expected isValid() to be false", isValidIsFalse);
+		if(person.getValidationErrors() != null && !person.getValidationErrors().isEmpty()) {
+			validationMessage = person.getValidationErrors().toString();
+			if(validationMessage.contains(expectedMess)) {
+				hasValidationMess = true;
+			}
+		}
+		String testMess = "Expected validation error message: " + expectedMess + " got: " + validationMessage;
+		assertTrue(testMess, hasValidationMess);
+
+		assertFalse("Expected isValid() to be false", person.isValid());
 	}
 
 }

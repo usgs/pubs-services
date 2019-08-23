@@ -137,8 +137,6 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		response.setCharacterEncoding(PubsConstantsHelper.DEFAULT_ENCODING);
 		String statement = PwPublicationDao.NS;
 
-        DataNormalizationUtils.normalizeFilters(filters);
-
 		try {
 			ITransformer transformer;
 			SearchResults searchResults = null;

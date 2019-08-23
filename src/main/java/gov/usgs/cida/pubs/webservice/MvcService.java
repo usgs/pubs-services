@@ -22,6 +22,7 @@ import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
+import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 
 public abstract class MvcService<D> {
@@ -45,7 +46,7 @@ public abstract class MvcService<D> {
 		filters.put(PwPublicationDao.CHORUS, chorus);
 		filters.put(PublicationDao.CONTRIBUTING_OFFICE, contributingOffice);
 		filters.put(PublicationDao.CONTRIBUTOR, configureContributorFilter(contributor));
-		filters.put(PublicationDao.ORCID, orcid);
+		filters.put(PublicationDao.ORCID, DataNormalizationUtils.normalizeOrcid(orcid));
 		filters.put(PublicationDao.DOI, doi);
 		filters.put(PublicationDao.END_YEAR, endYear);
 		if (null != g && G_PATTERN.matcher(g.toLowerCase()).matches()) {

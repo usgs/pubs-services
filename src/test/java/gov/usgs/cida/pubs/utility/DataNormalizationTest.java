@@ -36,11 +36,11 @@ public class DataNormalizationTest extends BaseTest {
     public void testNormalizeOrcid() {
 
             assertNull(DataNormalizationUtils.normalizeOrcid(orcidNull));
-            assertNull(DataNormalizationUtils.normalizeOrcid(orcidPrefixNoNumber));
-            assertNull(DataNormalizationUtils.normalizeOrcid(orcidBadNumber));
-            assertNull(DataNormalizationUtils.normalizeOrcid(orcidPrefixBadNumber));
-            assertNull(DataNormalizationUtils.normalizeOrcid(orcidBadPrefixNoNumber));
-            assertNull(DataNormalizationUtils.normalizeOrcid(orcidBadPrefixBadNumber));
+            assertEquals(orcidPrefixNoNumber,DataNormalizationUtils.normalizeOrcid(orcidPrefixNoNumber));
+            assertEquals(orcidBadNumber, DataNormalizationUtils.normalizeOrcid(orcidBadNumber));
+            assertEquals(orcidPrefixBadNumber, DataNormalizationUtils.normalizeOrcid(orcidPrefixBadNumber));
+            assertEquals(orcidBadPrefixNoNumber, DataNormalizationUtils.normalizeOrcid(orcidBadPrefixNoNumber));
+            assertEquals(orcidBadPrefixBadNumber, DataNormalizationUtils.normalizeOrcid(orcidBadPrefixBadNumber));
 
             assertEquals(orcidGoodNumber, DataNormalizationUtils.normalizeOrcid(orcidGoodNumber));
             assertEquals(orcidGoodNumber, DataNormalizationUtils.normalizeOrcid(orcidPrefixNoNumber + orcidGoodNumber));
@@ -54,11 +54,11 @@ public class DataNormalizationTest extends BaseTest {
 	@Test
     public void testDeormalizeOrcid() {
             assertNull(DataNormalizationUtils.denormalizeOrcid(orcidNull));
-            assertNull(DataNormalizationUtils.denormalizeOrcid(orcidPrefixNoNumber));
-            assertNull(DataNormalizationUtils.denormalizeOrcid(orcidBadNumber));
-            assertNull(DataNormalizationUtils.denormalizeOrcid(orcidPrefixBadNumber));
-            assertNull(DataNormalizationUtils.denormalizeOrcid(orcidBadPrefixNoNumber));
-            assertNull(DataNormalizationUtils.denormalizeOrcid(orcidBadPrefixBadNumber));
+            assertEquals(orcidPrefixNoNumber,DataNormalizationUtils.denormalizeOrcid(orcidPrefixNoNumber));
+            assertEquals(orcidBadNumber, DataNormalizationUtils.denormalizeOrcid(orcidBadNumber));
+            assertEquals(orcidPrefixBadNumber, DataNormalizationUtils.denormalizeOrcid(orcidPrefixBadNumber));
+            assertEquals(orcidBadPrefixNoNumber, DataNormalizationUtils.denormalizeOrcid(orcidBadPrefixNoNumber));
+            assertEquals(orcidBadPrefixBadNumber, DataNormalizationUtils.denormalizeOrcid(orcidBadPrefixBadNumber));
 
             String orcidPrefix = DataNormalizationUtils.ORCID_PREFIX;
 

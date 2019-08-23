@@ -6,9 +6,25 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
+import java.util.Set;
 
 public final class UsgsContributorHelper {
 	private UsgsContributorHelper() {
+	}
+
+	public static UsgsContributor JANE_DOE = new  UsgsContributor();
+	static {
+		JANE_DOE.setFamily("Doe");
+		JANE_DOE.setGiven("Jane");
+		JANE_DOE.setAffiliations(Set.of(CostCenterHelper.AFFILIATION_COST_CENTER_1));
+		JANE_DOE.setOrcid("0000-0000-0000-0000");
+	}
+
+	public static UsgsContributor JANE_N_DOE = new  UsgsContributor();
+	static {
+		JANE_N_DOE.setFamily("ODoul");
+		JANE_N_DOE.setGiven("Jane q");
+		JANE_N_DOE.setOrcid("0000-0000-0080-0000");
 	}
 
 	public static void assertJaneDoe(UsgsContributor contributor) {

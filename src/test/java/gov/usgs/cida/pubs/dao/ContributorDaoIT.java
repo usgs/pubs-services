@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,8 +40,8 @@ public class ContributorDaoIT extends BaseIT {
 	public static final int PERSON_CONTRIBUTOR_CNT = 12;
 	public static final int CORPORATE_CONTRIBUTOR_CNT = 1;
 
-	public static final List<String> IGNORE_PROPERTIES_PERSON = Arrays.asList("validationErrors", "valErrors", "organization", "affiliations");
-	public static final List<String> IGNORE_PROPERTIES_CORPORATION = Arrays.asList("validationErrors", "valErrors", "family", 
+	public static final List<String> IGNORE_PROPERTIES_PERSON = List.of("validationErrors", "valErrors", "organization", "affiliations");
+	public static final List<String> IGNORE_PROPERTIES_CORPORATION = List.of("validationErrors", "valErrors", "family", 
 			"given", "suffix", "email", "affiliation");
 
 	@Autowired

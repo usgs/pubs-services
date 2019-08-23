@@ -159,7 +159,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
 
 	@GetMapping("costcenters")
 	@JsonView(View.Lookup.class)
-	public @ResponseBody Collection<CostCenter> getCostCenters(HttpServletRequest request, HttpServletResponse response,
+	public @ResponseBody Collection<CostCenter> getCostCentersLookup(HttpServletRequest request, HttpServletResponse response,
 				@RequestParam(value=TEXT_SEARCH, required=false) String[] text,
 				@RequestParam(value=ACTIVE_SEARCH, required=false) String[] active) {
 		LOG.debug("CostCenter");

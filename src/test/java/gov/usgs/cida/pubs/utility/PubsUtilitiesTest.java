@@ -4,8 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +12,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.test.context.annotation.SecurityTestExecutionListeners;
 import org.springframework.security.test.context.support.WithMockUser;
-import static org.mockito.Mockito.when;
+
 import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
@@ -127,7 +126,7 @@ public class PubsUtilitiesTest extends BaseTest {
 
 	@Test
 	public void buildErrorMsgTest() {
-		Object[] messageArguments = Arrays.asList(new String[]{"abc", "def"}).toArray();
+		Object[] messageArguments = new String[]{"abc", "def"};
 		assertNull(PubsUtils.buildErrorMsg(null, null));
 		assertEquals("", PubsUtils.buildErrorMsg("", null));
 		assertEquals("{0} is already in use on Prod Id {1}.", PubsUtils.buildErrorMsg("{publication.indexid.duplicate}", null));

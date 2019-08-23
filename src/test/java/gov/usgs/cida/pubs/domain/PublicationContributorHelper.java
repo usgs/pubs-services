@@ -3,7 +3,23 @@ package gov.usgs.cida.pubs.domain;
 
 import gov.usgs.cida.pubs.dao.ContributorTypeDaoIT;
 
-public class PublicationContributorHelper {
+public final class PublicationContributorHelper {
+	private PublicationContributorHelper() {
+	}
+
+	public static final PublicationContributor<?> USGS_AUTHOR = new PublicationContributor<>();
+	static {
+		USGS_AUTHOR.setContributorType(ContributorTypeHelper.AUTHORS);
+		USGS_AUTHOR.setRank(12);
+		USGS_AUTHOR.setContributor(UsgsContributorHelper.JANE_N_DOE);
+	}
+
+	public static final PublicationContributor<?> OUTSIDE_AUTHOR = new PublicationContributor<>();
+	static {
+		OUTSIDE_AUTHOR.setContributorType(ContributorTypeHelper.AUTHORS);
+		OUTSIDE_AUTHOR.setRank(86);
+		OUTSIDE_AUTHOR.setContributor(OutsideContributorHelper.JANE_M_DOE);
+	}
 
 	public static PublicationContributor<?> buildCorporatePublicationContributor(String typeText, int typeId) {
 		CorporateContributor contributor = new CorporateContributor();

@@ -7,7 +7,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -108,7 +107,7 @@ import gov.usgs.cida.pubs.validation.ValidatorResult;
 @TestExecutionListeners({WithSecurityContextTestExecutionListener.class, ReactorContextTestExecutionListener.class})
 public class MpPublicationBusServiceIT extends BaseIT {
 
-	public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters", "contributors", "contributorsToMap", "links",
+	public static final List<String> IGNORE_PROPERTIES = List.of("validationErrors", "valErrors", "costCenters", "contributors", "contributorsToMap", "links",
 			"doi", "indexId", "interactions", "sourceDatabase", "published", "ipdsContext");
 
 	public Integer lockTimeoutHours = 1;

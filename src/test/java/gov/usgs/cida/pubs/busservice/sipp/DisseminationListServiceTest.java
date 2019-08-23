@@ -8,7 +8,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public class DisseminationListServiceTest extends BaseTest {
 	@Test
 	public void processDisseminationListTest() {
 		when(ipdsBureauApprovalDao.getIpdsBureauApprovals(1))
-			.thenReturn(Arrays.asList(IpdsBureauApprovalHelper.getIpdsBureauApproval("IP-1234"), IpdsBureauApprovalHelper.getIpdsBureauApproval("IP-5678")));
+			.thenReturn(List.of(IpdsBureauApprovalHelper.getIpdsBureauApproval("IP-1234"), IpdsBureauApprovalHelper.getIpdsBureauApproval("IP-5678")));
 		when(sippProcess.processInformationProduct(ProcessType.DISSEMINATION, "IP-1234"))
 			.thenReturn(getProcessSummary1234());
 		when(sippProcess.processInformationProduct(ProcessType.DISSEMINATION, "IP-5678"))

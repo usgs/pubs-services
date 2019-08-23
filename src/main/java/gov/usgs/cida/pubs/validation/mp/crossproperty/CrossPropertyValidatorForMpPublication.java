@@ -1,13 +1,11 @@
 package gov.usgs.cida.pubs.validation.mp.crossproperty;
 
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.constraint.CrossProperty;
-
-import java.util.Arrays;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 
 public class CrossPropertyValidatorForMpPublication implements ConstraintValidator<CrossProperty, Publication<?>> {
 
@@ -31,7 +29,7 @@ public class CrossPropertyValidatorForMpPublication implements ConstraintValidat
 				&& (null == value.getSeriesTitle() || null == value.getSeriesTitle().getId())) {
 			// USGS Numbered Series must have a Series Title - validity of the title is verified in ParentExistsValidatorForMpPublication
 			rtn = false;
-			Object[] messageArguments = Arrays.asList(new String[]{"USGS Numbered Series", "a Series Title"}).toArray();
+			Object[] messageArguments = new String[] {"USGS Numbered Series", "a Series Title"};
 			String errorMsg = PubsUtils.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
 			context.disableDefaultConstraintViolation();
 			context.buildConstraintViolationWithTemplate(errorMsg).addConstraintViolation();

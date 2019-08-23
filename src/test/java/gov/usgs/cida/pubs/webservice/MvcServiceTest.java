@@ -6,7 +6,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -219,9 +218,9 @@ public class MvcServiceTest {
 
 		//An empty value should return a null
 		assertNull(testMvcService.buildSearchTerms(new LinkedList<String>()));
-		assertNull(testMvcService.buildSearchTerms(Arrays.asList(new String[]{"   ","  "})));
+		assertNull(testMvcService.buildSearchTerms(List.of("   ","  ")));
 
-		String[] searchTerms = testMvcService.buildSearchTerms(Arrays.asList(new String[]{"turtles","loggerhead",""," "}));
+		String[] searchTerms = testMvcService.buildSearchTerms(List.of("turtles","loggerhead",""," "));
 		assertEquals(2, searchTerms.length);
 		assertEquals("turtles", searchTerms[0]);
 		assertEquals("loggerhead", searchTerms[1]);

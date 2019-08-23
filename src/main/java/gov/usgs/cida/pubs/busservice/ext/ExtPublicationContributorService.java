@@ -39,13 +39,13 @@ public class ExtPublicationContributorService {
 
 	public void processPublicationContributors(Collection<PublicationContributor<?>> publicationContributors) {
 		if (!publicationContributors.isEmpty()) {
-			for (PublicationContributor<?> contributor : publicationContributors) {
-				processPublicationContributor(contributor);
+			for (PublicationContributor<?> publicationContributor : publicationContributors) {
+				publicationContributor = processPublicationContributor(publicationContributor);
 			}
 		}
 	}
 
-	protected void processPublicationContributor(PublicationContributor<?> publicationContributor) {
+	protected PublicationContributor<?> processPublicationContributor(PublicationContributor<?> publicationContributor) {
 		if (null != publicationContributor.getContributor()) {
 			if (publicationContributor.getContributor() instanceof UsgsContributor) {
 				publicationContributor.setContributor(processUsgsContributor((UsgsContributor) publicationContributor.getContributor()));
@@ -53,12 +53,13 @@ public class ExtPublicationContributorService {
 				publicationContributor.setContributor(processOutsideContributor((OutsideContributor) publicationContributor.getContributor()));
 			}
 		}
+		return publicationContributor;
 	}
 
 	protected UsgsContributor processUsgsContributor(UsgsContributor contributor) {
 		UsgsContributor temp = null;
 		if (null != contributor.getOrcid()) {
-			temp = getUsgsContributorByORCID(contributor.getOrcid());
+			temp = getUsgsContributorByOrcid(contributor.getOrcid());
 		}
 		if (null == temp) {
 			temp = createUsgsContributor(contributor);
@@ -66,7 +67,7 @@ public class ExtPublicationContributorService {
 		return temp;
 	}
 
-	protected UsgsContributor getUsgsContributorByORCID(String orcid) {
+	protected UsgsContributor getUsgsContributorByOrcid(String orcid) {
 		UsgsContributor filter = new UsgsContributor();
 		filter.setOrcid(orcid);
 		List<Contributor<?>> contributors = UsgsContributor.getDao().getByPreferred(filter);
@@ -94,7 +95,7 @@ public class ExtPublicationContributorService {
 		if (null != contributor.getOrcid()) {
 			temp = getOutsideContributorByOrcid(contributor.getOrcid());
 		}
-		if (null == temp) {
+		if (null == temp && null != contributor.getFamily() && null != contributor.getGiven()) {
 			temp = getByName(contributor.getFamily(), contributor.getGiven());
 		}
 		if (null == temp) {

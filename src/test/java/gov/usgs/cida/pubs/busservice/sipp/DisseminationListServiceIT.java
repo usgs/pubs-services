@@ -2,7 +2,7 @@ package gov.usgs.cida.pubs.busservice.sipp;
 
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
+import java.util.List;
 
 import javax.validation.Validator;
 
@@ -79,7 +79,7 @@ public class DisseminationListServiceIT extends BaseIT {
 			query="select process_type, total_entries,publications_added,errors_encountered,processing_details from sipp_process_log")
 	public void processDisseminationListTest() {
 		when(ipdsBureauApprovalDao.getIpdsBureauApprovals(1))
-			.thenReturn(Arrays.asList(IpdsBureauApprovalHelper.getIpdsBureauApproval("IP-1234"), IpdsBureauApprovalHelper.getIpdsBureauApproval("IP-5678")));
+			.thenReturn(List.of(IpdsBureauApprovalHelper.getIpdsBureauApproval("IP-1234"), IpdsBureauApprovalHelper.getIpdsBureauApproval("IP-5678")));
 		service.processDisseminationList(1);
 	}
 

@@ -1,8 +1,8 @@
 package gov.usgs.cida.pubs.utility;
 
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -66,7 +66,7 @@ public final class PubsUtils {
 		boolean rtn = false;
 		Authentication auth =  getAuthentication();
 		if (null != auth && null != auth.getAuthorities()) {
-			Set<String> spnAuthorities = new HashSet<String>(Arrays.asList(configurationService.getSpnAuthorities()));
+			Set<String> spnAuthorities = new HashSet<String>(List.of(configurationService.getSpnAuthorities()));
 			if (0 < auth.getAuthorities().stream().filter(z -> spnAuthorities.contains(z.getAuthority())).collect(Collectors.toList()).size()) {
 				rtn = true;
 			}
@@ -78,8 +78,8 @@ public final class PubsUtils {
 		boolean rtn = false;
 		Authentication auth =  getAuthentication();
 		if (null != auth && null != auth.getAuthorities()) {
-			Set<String> pubsAuthorities = new HashSet<String>(Arrays.asList(configurationService.getAuthorizedAuthorities()));
-			pubsAuthorities.removeAll(Arrays.asList(configurationService.getSpnAuthorities()));
+			Set<String> pubsAuthorities = new HashSet<String>(List.of(configurationService.getAuthorizedAuthorities()));
+			pubsAuthorities.removeAll(List.of(configurationService.getSpnAuthorities()));
 			if (0 < auth.getAuthorities().stream().filter(z -> pubsAuthorities.contains(z.getAuthority())).collect(Collectors.toList()).size()) {
 				rtn = true;
 			}

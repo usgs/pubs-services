@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +34,7 @@ public class OutsideAffiliationDaoIT extends BaseIT {
 
 	public static final int OUTSIDE_AFFILIATES_CNT = 3;
 
-	public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "ipdsId");
+	public static final List<String> IGNORE_PROPERTIES = List.of("validationErrors", "valErrors", "ipdsId");
 
 	@Autowired
 	OutsideAffiliationDao outsideAffiliationDao;

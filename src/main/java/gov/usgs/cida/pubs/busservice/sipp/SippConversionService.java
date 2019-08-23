@@ -2,7 +2,6 @@ package gov.usgs.cida.pubs.busservice.sipp;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -193,7 +192,7 @@ public class SippConversionService {
 			costCenter.setText(name);
 			PublicationCostCenter<?> publicationCostCenter = new MpPublicationCostCenter();
 			publicationCostCenter.setCostCenter((CostCenter) costCenter);
-			Collection<PublicationCostCenter<?>> costCenters = Arrays.asList(publicationCostCenter);
+			Collection<PublicationCostCenter<?>> costCenters = List.of(publicationCostCenter);
 			return costCenters;
 		} else {
 			return null;
@@ -207,7 +206,7 @@ public class SippConversionService {
 			LinkType linkType = new LinkType();
 			linkType.setId(LinkType.INDEX_PAGE);
 			publicationLink.setLinkType(linkType);
-			Collection<PublicationLink<?>> publicationLinks = Arrays.asList(publicationLink);
+			Collection<PublicationLink<?>> publicationLinks = List.of(publicationLink);
 			return publicationLinks;
 		} else {
 			return null;

@@ -1,17 +1,16 @@
 package gov.usgs.cida.pubs.validation.nochildren;
 
-import gov.usgs.cida.pubs.dao.PersonContributorDao;
-import gov.usgs.cida.pubs.domain.Affiliation;
-import gov.usgs.cida.pubs.domain.PersonContributor;
-import gov.usgs.cida.pubs.utility.PubsUtils;
-import gov.usgs.cida.pubs.validation.constraint.NoChildren;
-
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+
+import gov.usgs.cida.pubs.dao.PersonContributorDao;
+import gov.usgs.cida.pubs.domain.Affiliation;
+import gov.usgs.cida.pubs.domain.PersonContributor;
+import gov.usgs.cida.pubs.utility.PubsUtils;
+import gov.usgs.cida.pubs.validation.constraint.NoChildren;
 
 public class NoChildrenValidatorForAffiliation implements ConstraintValidator<NoChildren, Affiliation<?>> {
 
@@ -31,7 +30,7 @@ public class NoChildrenValidatorForAffiliation implements ConstraintValidator<No
 			if (0 != cnt) {
 				valid = false;
 				context.disableDefaultConstraintViolation();
-				Object[] messageArguments = Arrays.asList(new String[]{"Name " + value.getText(), cnt.toString()}).toArray();
+				Object[] messageArguments = new String[]{"Name " + value.getText(), cnt.toString()};
 				String errorMsg = PubsUtils.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
 				context.buildConstraintViolationWithTemplate(errorMsg).addPropertyNode("id").addConstraintViolation();
 			}

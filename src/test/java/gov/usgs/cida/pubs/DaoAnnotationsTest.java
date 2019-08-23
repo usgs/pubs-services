@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.Test;
 import org.springframework.transaction.annotation.Propagation;
@@ -56,8 +56,8 @@ public class DaoAnnotationsTest {
 	public void testRequiredAnnotations()  
 	throws IOException, NoSuchMethodException, ClassNotFoundException {
 		Class[] classes = getClasses("gov.usgs.cida.pubs.dao");
-		Collection<Class<?>> exc = Arrays.asList(EXCLUDE_CLASSES);
-		Collection<String> excMethod = Arrays.asList(EXCLUDE_METHODS);
+		Collection<Class<?>> exc = List.of(EXCLUDE_CLASSES);
+		Collection<String> excMethod = List.of(EXCLUDE_METHODS);
 		for (Class classe : classes) {
 			Class c = classe;
 			if (!exc.contains(c)) {

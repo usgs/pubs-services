@@ -1,16 +1,15 @@
 package gov.usgs.cida.pubs.validation.mp.unique;
 
-import gov.usgs.cida.pubs.domain.mp.MpListPublication;
-import gov.usgs.cida.pubs.utility.PubsUtils;
-import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
-
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+
+import gov.usgs.cida.pubs.domain.mp.MpListPublication;
+import gov.usgs.cida.pubs.utility.PubsUtils;
+import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
 
 /**
  * @author drsteini
@@ -43,7 +42,7 @@ public class UniqueKeyValidatorForMpListPublication implements ConstraintValidat
 			for (MpListPublication listPub : listPubs) {
 				if (null == value.getId() || 0 != listPub.getId().compareTo(value.getId())) {
 					rtn = false;
-					Object[] messageArguments = Arrays.asList(new String[]{value.getMpList().getId().toString(), listPub.getMpPublication().getId().toString()}).toArray();
+					Object[] messageArguments = new String[] {value.getMpList().getId().toString(), listPub.getMpPublication().getId().toString()};
 					String errorMsg = PubsUtils.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
 					context.disableDefaultConstraintViolation();
 					context.buildConstraintViolationWithTemplate(errorMsg).addConstraintViolation();

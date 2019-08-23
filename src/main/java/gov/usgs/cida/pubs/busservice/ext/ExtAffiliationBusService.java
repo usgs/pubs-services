@@ -61,7 +61,7 @@ public class ExtAffiliationBusService {
 			String name = costCenter.getText();
 			Map<String, Object> filters = new HashMap<>();
 			filters.put(AffiliationDao.EXACT_SEARCH, name);
-			List<CostCenter> costCenters = CostCenter.getDao().getByMap(filters);
+			List<CostCenter> costCenters = costCenterBusService.getObjects(filters);
 			if (costCenters.size() > 1) {
 				LOG.warn("Multiple costCenters found for name: {}", name);
 			}
@@ -86,6 +86,7 @@ public class ExtAffiliationBusService {
 					temp.add(processed);
 				}
 			}
+			return temp;
 		}
 		return null;
 	}
@@ -116,7 +117,7 @@ public class ExtAffiliationBusService {
 			Map<String, Object> filters = new HashMap<>();
 			filters.put(AffiliationDao.EXACT_SEARCH, name);
 			filters.put(AffiliationDao.USGS_SEARCH, false);
-			List<? extends Affiliation<?>> affiliations = Affiliation.getDao().getByMap(filters);
+			List<? extends Affiliation<?>> affiliations = outsideAffiliationBusService.getObjects(filters);
 			if (!affiliations.isEmpty()) {
 				if (affiliations.size() > 1) {
 					LOG.warn("Multiple OutsideAffiliation found for: {}", name);

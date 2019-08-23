@@ -46,7 +46,6 @@ import gov.usgs.cida.pubs.transform.JsonTransformer;
 import gov.usgs.cida.pubs.transform.PublicationColumnsHelper;
 import gov.usgs.cida.pubs.transform.XlsxTransformer;
 import gov.usgs.cida.pubs.transform.intfc.ITransformer;
-import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.webservice.MvcService;
 import io.swagger.annotations.ApiParam;

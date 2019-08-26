@@ -27,7 +27,7 @@ import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 @Component
 @ParentExists
 public class PersonContributor<D> extends Contributor<PersonContributor<D>> implements ILookup {
-	public static final String ORCID_VALIDATION_REGEX = ".*" + DataNormalizationUtils.ORCID_REGEX;
+	public static final String ORCID_VALIDATION_REGEX = "^" + DataNormalizationUtils.ORCID_REGEX + "$"; // only storing short form in db
 	public static final String ORCID_VALIDATION_MESS = "The value of orcid=${validatedValue} must include " +
 	                             "16 digits [0-9] separated into groups of 4 by hyphens, final character optionally the letter X";
 

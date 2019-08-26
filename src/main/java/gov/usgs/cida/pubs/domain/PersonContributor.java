@@ -1,11 +1,14 @@
 package gov.usgs.cida.pubs.domain;
 
+import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Length;
@@ -24,6 +27,9 @@ import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 @Component
 @ParentExists
 public class PersonContributor<D> extends Contributor<PersonContributor<D>> implements ILookup {
+	public static final String ORCID_VALIDATION_REGEX = "^" + DataNormalizationUtils.ORCID_REGEX + "$"; // only storing short form in db
+	public static final String ORCID_VALIDATION_MESS = "The value of orcid=${validatedValue} must include " +
+	                             "16 digits [0-9] separated into groups of 4 by hyphens, final character optionally the letter X";
 
 	private static IPersonContributorDao personContributorDao;
 
@@ -49,9 +55,7 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 	@Email
 	private String email;
 
-	@JsonProperty("orcid")
-	@JsonView(View.PW.class)
-	@Length(min=36, max=36)
+	@Pattern(regexp=ORCID_VALIDATION_REGEX, message=ORCID_VALIDATION_MESS)
 	private String orcid;
 
 	@JsonProperty("affiliations")
@@ -98,8 +102,14 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 		return orcid;
 	}
 
+	@JsonProperty("orcid")
+	@JsonView(View.PW.class)
+	public String getDenormalizeOrcid() {
+		return DataNormalizationUtils.denormalizeOrcid(orcid);
+	}
+
 	public void setOrcid(String orcid) {
-		this.orcid = orcid;
+		this.orcid = DataNormalizationUtils.normalizeOrcid(orcid);
 	}
 
 	public Collection<Affiliation<? extends Affiliation<?>>> getAffiliations() {

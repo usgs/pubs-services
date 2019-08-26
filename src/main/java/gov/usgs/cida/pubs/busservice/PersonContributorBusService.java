@@ -58,7 +58,7 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 	@Transactional
 	public PersonContributor<?> createObject(PersonContributor<?> object) {
 		PersonContributor<?> result = object;
-		if (null != object) {
+		if (null != result) {
 			if (result instanceof OutsideContributor) {
 				Contributor<PersonContributor<OutsideContributor>> oc = (OutsideContributor) result;
 				Set<ConstraintViolation<Contributor<PersonContributor<OutsideContributor>>>> results = validator.validate(oc);
@@ -70,7 +70,7 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 			}
 			if (result.isValid()) {
 				Integer id = PersonContributor.getDao().add(result);
-				updateAffiliations(id, object);
+				updateAffiliations(id, result);
 				result = (PersonContributor<?>) PersonContributor.getDao().getById(id);
 			}
 		}
@@ -89,4 +89,5 @@ public class PersonContributorBusService extends BusService<PersonContributor<?>
 			}
 		}
 	}
+
 }

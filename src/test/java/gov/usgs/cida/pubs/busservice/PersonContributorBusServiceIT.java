@@ -1,6 +1,8 @@
 package gov.usgs.cida.pubs.busservice;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import javax.validation.Validator;
 
@@ -58,6 +60,7 @@ public class PersonContributorBusServiceIT extends BaseIT {
 		person.setOrcid("http://orcid.org/0000-0002-1825-0097");
 		person.setPreferred(true);
 		busService.createObject(person);
+		assertTrue("Expected isValid() true, got validation errors: " + person.getValidationErrors(), person.isValid());
 		assertNotNull(person.getId());
 		UsgsContributor persisted = (UsgsContributor) Contributor.getDao().getById(person.getId());
 		assertDaoTestResults(UsgsContributor.class, person, persisted, ContributorDaoIT.IGNORE_PROPERTIES_PERSON, true, true);
@@ -68,11 +71,41 @@ public class PersonContributorBusServiceIT extends BaseIT {
 		outperson.setGiven("outgiven");
 		outperson.setSuffix("outsuffix");
 		outperson.setEmail("outemail@usgs.gov");
-		outperson.setOrcid("http://orcid.org/0000-0002-1825-0097");
+		outperson.setOrcid("0000-0002-1825-0097"); // service stores normalized orcid
 		outperson.setPreferred(true);
 		busService.createObject(outperson);
 		assertNotNull(outperson.getId());
 		OutsideContributor outpersisted = (OutsideContributor) Contributor.getDao().getById(outperson.getId());
 		assertDaoTestResults(OutsideContributor.class, outperson, outpersisted, ContributorDaoIT.IGNORE_PROPERTIES_PERSON, true, true);
 	}
+
+	@Test
+	public void orcidValidationTest() {
+		UsgsContributor person = new UsgsContributor();
+		person.setFamily("family");
+		person.setGiven("given");
+		person.setSuffix("suffix");
+		person.setEmail("email@usgs.gov");
+		person.setOrcid("http://orcid.org/0000-0002-1825-009R");
+		person.setPreferred(true);
+		busService.createObject(person);
+
+		assertTrue("Expected id not to be set: " + person.getId(), person.getId() == null || person.getId() == 0);
+
+		boolean hasValidationMess = false;
+		String expectedMess = PersonContributor.ORCID_VALIDATION_MESS.replace("${validatedValue}", person.getOrcid());
+		String validationMessage = "[no validation message found]";
+
+		if(person.getValidationErrors() != null && !person.getValidationErrors().isEmpty()) {
+			validationMessage = person.getValidationErrors().toString();
+			if(validationMessage.contains(expectedMess)) {
+				hasValidationMess = true;
+			}
+		}
+		String testMess = "Expected validation error message: " + expectedMess + " got: " + validationMessage;
+		assertTrue(testMess, hasValidationMess);
+
+		assertFalse("Expected isValid() to be false", person.isValid());
+	}
+
 }

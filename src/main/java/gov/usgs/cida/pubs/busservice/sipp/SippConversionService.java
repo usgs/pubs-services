@@ -32,6 +32,7 @@ import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.domain.sipp.Author;
 import gov.usgs.cida.pubs.domain.sipp.InformationProduct;
 import gov.usgs.cida.pubs.domain.sipp.Note;
+import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 
 @Service
@@ -149,7 +150,7 @@ public class SippConversionService {
 		contributor.setFamily(familyGiven[0]);
 		contributor.setGiven(familyGiven[1]);
 
-		contributor.setOrcid(PubsUtils.normalizeOrcid(author.getOrcid()));
+		contributor.setOrcid(DataNormalizationUtils.normalizeOrcid(author.getOrcid()));
 
 		if (null != author.getNonUSGSAffiliation()) {
 			OutsideAffiliation affiliation = new OutsideAffiliation();
@@ -262,7 +263,7 @@ public class SippConversionService {
 		contributor.setFamily(familyGiven[0]);
 		contributor.setGiven(familyGiven[1]);
 
-		contributor.setOrcid(PubsUtils.normalizeOrcid(author.getOrcid()));
+		contributor.setOrcid(DataNormalizationUtils.normalizeOrcid(author.getOrcid()));
 		contributor.setPreferred(true);
 
 		if (null != author.getCostCenter()) {

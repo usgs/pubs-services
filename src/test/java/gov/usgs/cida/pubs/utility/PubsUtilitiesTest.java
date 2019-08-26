@@ -155,32 +155,6 @@ public class PubsUtilitiesTest extends BaseTest {
 	}
 
 	@Test
-    public void testNormalizeOrcid() {
-            String orcidNull = null;
-            String orcidPrefixNoNumber = "http://orcid/";
-            String orcidGoodNumber = "0000-0002-1824-0097";
-            String orcidBadNumber = "ojae-hjrg-aag2-0020";
-            String orcidPrefixBadNumber = orcidPrefixNoNumber + orcidBadNumber;
-            String orcidBadPrefixNoNumber = "http://notorcid.org";
-            String orcidBadPrefixBadNumber = "http://gro.dicro" + "1234-5678-9101-112K";
-
-            assertNull(PubsUtils.normalizeOrcid(orcidNull));
-            assertNull(PubsUtils.normalizeOrcid(orcidPrefixNoNumber));
-            assertNull(PubsUtils.normalizeOrcid(orcidBadNumber));
-            assertNull(PubsUtils.normalizeOrcid(orcidPrefixBadNumber));
-            assertNull(PubsUtils.normalizeOrcid(orcidBadPrefixNoNumber));
-            assertNull(PubsUtils.normalizeOrcid(orcidBadPrefixBadNumber));
-
-            assertEquals(orcidGoodNumber, PubsUtils.normalizeOrcid(orcidGoodNumber));
-            assertEquals(orcidGoodNumber, PubsUtils.normalizeOrcid(orcidPrefixNoNumber + orcidGoodNumber));
-            assertEquals("0000-0000-0000-0000", PubsUtils.normalizeOrcid("http://orcid.org/0000-0000-0000-0000"));
-            assertEquals("0000-0000-0000-000X", PubsUtils.normalizeOrcid("http://orcid.org/0000-0000-0000-000X"));
-
-            assertEquals("0000-0000-0000-0000", PubsUtils.normalizeOrcid("https://orcid.org/0000-0000-0000-0000"));
-            assertEquals("0000-0000-0000-000X", PubsUtils.normalizeOrcid("https://orcid.org/0000-0000-0000-000X"));
-    }
-
-	@Test
 	public void isSpnUserTest_noAuthentication() {
 		assertFalse(PubsUtils.isSpnUser(configurationService));
 	}

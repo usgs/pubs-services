@@ -27,6 +27,7 @@ import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
+import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
 
 public class MvcServiceTest {
 
@@ -90,7 +91,7 @@ public class MvcServiceTest {
 		assertTrue(filters.containsKey(PublicationDao.CONTRIBUTOR));
 		assertEquals("rebecca:* & b.:* & carvin:* & c2:*", filters.get(PublicationDao.CONTRIBUTOR));
 		assertTrue(filters.containsKey(PersonContributorDao.ORCID));
-		assertEquals(orcid, filters.get(PersonContributorDao.ORCID));
+		assertTrue(Arrays.equals(DataNormalizationUtils.normalizeOrcid(orcid), (String[]) filters.get(PersonContributorDao.ORCID)));
 		assertEquals(doi, filters.get(PublicationDao.DOI));
 		assertTrue(filters.containsKey(PublicationDao.END_YEAR));
 		assertEquals(endYear, filters.get(PublicationDao.END_YEAR));

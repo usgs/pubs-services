@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -90,7 +89,7 @@ public class SippConversionServiceTest extends BaseTest {
 
 		assertEquals("productSummary\n\t", sippConversionService.buildNotes(informationProduct));
 
-		informationProduct.setNotes(Arrays.asList(NoteHelper.ONE, NoteHelper.TWO, NoteHelper.THREE));
+		informationProduct.setNotes(List.of(NoteHelper.ONE, NoteHelper.TWO, NoteHelper.THREE));
 
 		assertEquals("productSummary\n\tnote1|note2|" , sippConversionService.buildNotes(informationProduct));
 
@@ -212,7 +211,7 @@ public class SippConversionServiceTest extends BaseTest {
 		editor2.setRank("6");
 
 		InformationProduct informationProduct = new InformationProduct();
-		informationProduct.setAuthors(Arrays.asList(editor1, author2, author1, editor2));
+		informationProduct.setAuthors(List.of(editor1, author2, author1, editor2));
 
 		Collection<PublicationContributor<?>> contributors = sippConversionService.buildPublicationContributors(informationProduct);
 

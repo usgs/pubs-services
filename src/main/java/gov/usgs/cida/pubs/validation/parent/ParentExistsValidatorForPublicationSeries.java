@@ -1,7 +1,5 @@
 package gov.usgs.cida.pubs.validation.parent;
 
-import java.util.Arrays;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -26,7 +24,7 @@ public class ParentExistsValidatorForPublicationSeries implements ConstraintVali
 			if (null == subtype) {
 				rtn = false;
 				context.disableDefaultConstraintViolation();
-				Object[] messageArguments = Arrays.asList(new String[]{"Name " + value.getText()}).toArray();
+				Object[] messageArguments = new String[]{"Name " + value.getText()};
 				String errorMsg = PubsUtils.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
 				context.buildConstraintViolationWithTemplate(errorMsg).addPropertyNode("id").addConstraintViolation();
 			}

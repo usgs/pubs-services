@@ -5,11 +5,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.busservice.ext.ExtPublicationService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.ISippProcess;
@@ -24,9 +27,11 @@ import gov.usgs.cida.pubs.domain.sipp.InformationProduct;
 import gov.usgs.cida.pubs.domain.sipp.IpdsPubTypeConv;
 import gov.usgs.cida.pubs.domain.sipp.ProcessSummary;
 import gov.usgs.cida.pubs.utility.PubsUtils;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
 
 @Service
 public class SippProcess implements ISippProcess {
+	private static final Logger LOG = LoggerFactory.getLogger(SippProcess.class);
 
 	private final ExtPublicationService extPublicationBusService;
 	private final IMpPublicationBusService pubBusService;
@@ -80,6 +85,8 @@ public class SippProcess implements ISippProcess {
 
 				informationProduct.setUsgsNumberedSeries(
 					PubsUtils.isUsgsNumberedSeries(idsPubTypeConv.getPublicationSubtype()));
+			} else {
+				LOG.info("IpdsPubTypeConv not found for: {} {}", informationProduct.getIpNumber(), informationProduct.getProductType());
 			}
 
 			if (informationProduct.isUsgsNumberedSeries()) {
@@ -150,21 +157,25 @@ public class SippProcess implements ISippProcess {
 		boolean rtn = false;
 		if (null == informationProduct) {
 			//Do not proceed if the new data is null
-			rtn = false;
+			LOG.info("Not okToProcessDissemination - new data is null");
 		} else if (null != getPwPublication(informationProduct)) {
 			//Do not proceed if the pub has been published
-			rtn = false;
+			LOG.info("Not okToProcessDissemination - Pub {} already published", informationProduct.getIpNumber());
 		} else if (informationProduct.isUsgsNumberedSeries()
-				&& StringUtils.isEmpty(informationProduct.getUsgsSeriesLetter())) {
+				&& null == informationProduct.getUsgsSeriesTitle()) {
 			//Do not process USGS numbered series without an actual series.
-			rtn = false;
+			LOG.info("Not okToProcessDissemination - Pub {} is a USGS Nmber Series, but Series Title is empty", informationProduct.getIpNumber());
 		} else if (null == mpPublication) {
 			//OK to process at this point if we have no record of the pub
+			LOG.info("okToProcessDissemination - Pub {} not in MP", informationProduct.getIpNumber());
 			rtn = true;
 		} else if (StringUtils.isEmpty(mpPublication.getIpdsReviewProcessState())
 				|| ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(mpPublication.getIpdsReviewProcessState())) {
 			//It is ok to process a publication already in MyPubs if has no review state or is in the SPN Production state.
+			LOG.info("okToProcessDissemination - Pub {} in SPN_PRODUCTION", informationProduct.getIpNumber());
 			rtn = true;
+		} else {
+			LOG.info("Not okToProcessDissemination - did not hit either OK options {}", informationProduct.getIpNumber());
 		}
 		return rtn;
 	}
@@ -174,10 +185,10 @@ public class SippProcess implements ISippProcess {
 		if (null != informationProduct) {
 			if (StringUtils.isNotBlank(informationProduct.getDigitalObjectIdentifier())) {
 				//Skip if we have already assigned a DOI (shouldn't happen as we are querying for null DOI publications)
-				rtn = false;
+				LOG.info("Not okToProcessSpnProduction - Pub {} already has a DOI assigned", informationProduct.getIpNumber());
 			} else if (null == informationProduct.getTask() || !ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(informationProduct.getTask())) {
 				//Skip if not in SPN Production (shouldn't happen as we are querying SPN Production only)
-				rtn = false;
+				LOG.info("Not okToProcessSpnProduction - Pub {} is in {} status, rather than SPN_PRODUCTION", informationProduct.getIpNumber(), informationProduct.getTask());
 			} else if (informationProduct.isUsgsNumberedSeries()) {
 				rtn = true;
 			}
@@ -194,7 +205,14 @@ public class SippProcess implements ISippProcess {
 
 		MpPublication mpPublication = sippConversionService.buildMpPublication(informationProduct, prodId);
 
-		MpPublication rtnPub = extPublicationBusService.create(mpPublication);
+		MpPublication rtnPub = null;
+		try {
+			rtnPub = extPublicationBusService.create(mpPublication);
+		} catch (Exception e) {
+			rtnPub = mpPublication;
+			ValidatorResult validatorResult = new ValidatorResult("MpPublication", e.getLocalizedMessage(), SeverityLevel.FATAL, mpPublication.getIpdsId());
+			rtnPub.addValidatorResult(validatorResult);
+		}
 
 		//TODO		if (rtnPub.isValid() && ProcessType.SPN_PRODUCTION.equals(processType)) {
 		//TODO				updateIpdsWithDoi(rtnPub);
@@ -216,7 +234,8 @@ public class SippProcess implements ISippProcess {
 	}
 
 	protected String buildNotOkDetails(ProcessType processType, InformationProduct informationProduct) {
-		StringBuilder notOkDetails = new StringBuilder("\n\t").append("IPDS record not processed (\"").append(processType).append("\") -");
+		StringBuilder notOkDetails = new StringBuilder("\n\t").append("IPDS record not processed (\"").append(processType).append("\") -")
+				.append(" ProductType: ").append(informationProduct.getProductType());
 		if (null != informationProduct.getPublicationType()) {
 			notOkDetails.append(" Publication Type: ").append(informationProduct.getPublicationType().getText());
 		}

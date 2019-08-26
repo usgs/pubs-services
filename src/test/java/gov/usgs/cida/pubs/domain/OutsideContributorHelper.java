@@ -6,9 +6,24 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
+import java.util.Set;
 
 public final class OutsideContributorHelper {
 	private OutsideContributorHelper() {
+	}
+
+	public static OutsideContributor JANE_M_DOE = new OutsideContributor();
+	static {
+		JANE_M_DOE.setFamily("Doe");
+		JANE_M_DOE.setGiven("Jane M.");
+		JANE_M_DOE.setAffiliations(Set.of(OutsideAffiliationHelper.OUTER_AFFILIATION_1));
+	}
+
+	public static OutsideContributor JANE_Q_ODOUL = new OutsideContributor();
+	static {
+		JANE_Q_ODOUL.setFamily("ODoul");
+		JANE_Q_ODOUL.setGiven("Jane q");
+		JANE_Q_ODOUL.setAffiliations(Set.of(OutsideAffiliationHelper.OUTER_AFFILIATION_1));
 	}
 
 	public static void assertJaneMDoe(OutsideContributor contributor) {

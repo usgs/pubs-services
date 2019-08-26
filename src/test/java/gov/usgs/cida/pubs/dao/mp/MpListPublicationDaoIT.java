@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,7 @@ import gov.usgs.cida.pubs.springinit.DbTestConfig;
 })
 public class MpListPublicationDaoIT extends BaseIT {
 
-	public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors");
+	public static final List<String> IGNORE_PROPERTIES = List.of("validationErrors", "valErrors");
 
 	@Autowired
 	MpListPublicationDao mpListPublicationDao;

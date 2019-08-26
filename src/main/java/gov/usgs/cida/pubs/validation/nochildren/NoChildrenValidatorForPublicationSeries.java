@@ -1,6 +1,5 @@
 package gov.usgs.cida.pubs.validation.nochildren;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +30,7 @@ public class NoChildrenValidatorForPublicationSeries implements ConstraintValida
 			if (0 != cnt) {
 				rtn = false;
 				context.disableDefaultConstraintViolation();
-				Object[] messageArguments = Arrays.asList(new String[]{"Name " + value.getText(), cnt.toString()}).toArray();
+				Object[] messageArguments = new String[]{"Name " + value.getText(), cnt.toString()};
 				String errorMsg = PubsUtils.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
 				context.buildConstraintViolationWithTemplate(errorMsg).addPropertyNode("id").addConstraintViolation();
 			}

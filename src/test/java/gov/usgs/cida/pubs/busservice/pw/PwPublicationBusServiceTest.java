@@ -7,7 +7,6 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +58,7 @@ public class PwPublicationBusServiceTest extends BaseTest {
 
 	@Test
 	public void getObjectsTest() {
-		when(pwPublicationDao.getByMap(anyMap())).thenReturn(Arrays.asList(pub));
+		when(pwPublicationDao.getByMap(anyMap())).thenReturn(List.of(pub));
 		List<PwPublication> pubs = service.getObjects(filters);
 		assertEquals(1, pubs.size());
 		assertEquals(pub, pubs.get(0));

@@ -1,6 +1,6 @@
 package gov.usgs.cida.pubs.domain.sipp;
 
-import java.util.Arrays;
+import java.util.List;
 
 import gov.usgs.cida.pubs.domain.PublicationSeriesHelper;
 import gov.usgs.cida.pubs.domain.PublicationSubtypeHelper;
@@ -40,7 +40,7 @@ public final class InformationProductHelper {
 		TEST_ONE.setCostCenter("PSC");
 		TEST_ONE.setPublishedURL("https://water.usgs.gov");
 
-		TEST_ONE.setAuthors(Arrays.asList(
+		TEST_ONE.setAuthors(List.of(
 				SippContributorHelper.FOUR,
 				SippContributorHelper.FIVE,
 				SippContributorHelper.ONE,
@@ -49,7 +49,7 @@ public final class InformationProductHelper {
 				SippContributorHelper.ONE_ZERO_ONE
 				));
 
-		TEST_ONE.setNotes(Arrays.asList(NoteHelper.ONE, NoteHelper.TWO, NoteHelper.THREE));
+		TEST_ONE.setNotes(List.of(NoteHelper.ONE, NoteHelper.TWO, NoteHelper.THREE));
 	}
 
 	public static InformationProduct TEST_TWO = new InformationProduct();

@@ -56,7 +56,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	public @ResponseBody Contributor<?> getContributor(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") String id) {
 		LOG.debug("getContributor");
 		setHeaders(response);
-		Contributor<?> rtn = Contributor.getDao().getById(PubsUtils.parseInteger(id));
+		Contributor<?> rtn = personContributorBusService.getObject(PubsUtils.parseInteger(id));
 		if (null == rtn) {
 			response.setStatus(HttpStatus.NOT_FOUND.value());
 		}

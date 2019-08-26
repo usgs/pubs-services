@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -86,7 +85,7 @@ public class PublicationDaoIT extends BaseIT {
 		assertEquals(0, pubs.size());
 		
 		filters.clear();
-		filters.put(MpPublicationDao.SEARCH_TERMS, Arrays.asList("a").toArray());
+		filters.put(MpPublicationDao.SEARCH_TERMS, List.of("a").toArray());
 		pubs = publicationDao.getByMap(filters);
 
 		filters.put(MpPublicationDao.GLOBAL, "true");
@@ -120,7 +119,7 @@ public class PublicationDaoIT extends BaseIT {
 
 		filters.clear();
 		filters.put(MpPublicationDao.GLOBAL, "true");
-		filters.put(MpPublicationDao.SEARCH_TERMS, Arrays.asList("a").toArray());
+		filters.put(MpPublicationDao.SEARCH_TERMS, List.of("a").toArray());
 		pubs = publicationDao.getByMap(filters);
 
 		filters.clear();

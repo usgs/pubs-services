@@ -37,43 +37,43 @@ public class ExtAffiliationBusService {
 	}
 
 	public CostCenter processCostCenter(CostCenter costCenter) {
-		CostCenter temp = null;
+		CostCenter persistedCostCenter = null;
 		if (null != costCenter) {
-			temp = getCostCenter(costCenter);
-			if (null == temp) {
-				temp = createCostCenter(costCenter);
+			persistedCostCenter = getCostCenter(costCenter);
+			if (null == persistedCostCenter) {
+				persistedCostCenter = createCostCenter(costCenter);
 			}
 		}
-		return temp;
+		return persistedCostCenter;
 	}
 
 	protected CostCenter createCostCenter(CostCenter costCenter) {
-		CostCenter temp = null;
+		CostCenter persistedCostCenter = null;
 		if (StringUtils.isNotBlank(costCenter.getText())) {
-			temp = costCenterBusService.createObject(costCenter);
+			persistedCostCenter = costCenterBusService.createObject(costCenter);
 		}
-		return temp;
+		return persistedCostCenter;
 	}
 
 	protected CostCenter getCostCenter(CostCenter costCenter) {
-		CostCenter temp = null;
+		CostCenter persistedCostCenter = null;
 		if (StringUtils.isNotBlank(costCenter.getText())) {
 			String name = costCenter.getText();
 			Map<String, Object> filters = new HashMap<>();
 			filters.put(AffiliationDao.EXACT_SEARCH, name);
-			List<CostCenter> costCenters = CostCenter.getDao().getByMap(filters);
+			List<CostCenter> costCenters = costCenterBusService.getObjects(filters);
 			if (costCenters.size() > 1) {
 				LOG.warn("Multiple costCenters found for name: {}", name);
 			}
 			if (!costCenters.isEmpty()) {
-				temp = costCenters.get(0);
+				persistedCostCenter = costCenters.get(0);
 			}
 		}
-		return temp;
+		return persistedCostCenter;
 	}
 
 	public Set<Affiliation<? extends Affiliation<?>>> processAffiliations(Collection<Affiliation<? extends Affiliation<?>>> affiliations) {
-		Set<Affiliation<? extends Affiliation<?>>> temp = new HashSet<>();
+		Set<Affiliation<? extends Affiliation<?>>> persistedAffiliations = new HashSet<>();
 		if (!affiliations.isEmpty()) {
 			for (Affiliation<?> affiliation : affiliations) {
 				Affiliation<?> processed = null;
@@ -83,47 +83,48 @@ public class ExtAffiliationBusService {
 					processed = processOutsideAffiliation((OutsideAffiliation) affiliation);
 				}
 				if (null != processed) {
-					temp.add(processed);
+					persistedAffiliations.add(processed);
 				}
 			}
+			return persistedAffiliations;
 		}
 		return null;
 	}
 
 	protected OutsideAffiliation processOutsideAffiliation(OutsideAffiliation outsideAffiliation) {
-		OutsideAffiliation temp = null;
+		OutsideAffiliation persistedOutsideAffiliation = null;
 		if (null != outsideAffiliation) {
-			temp = getOutsideAffiliation(outsideAffiliation);
-			if (null == temp) {
-				temp = createOutsideAffiliation(outsideAffiliation);
+			persistedOutsideAffiliation = getOutsideAffiliation(outsideAffiliation);
+			if (null == persistedOutsideAffiliation) {
+				persistedOutsideAffiliation = createOutsideAffiliation(outsideAffiliation);
 			}
 		}
-		return temp;
+		return persistedOutsideAffiliation;
 	}
 
 	protected OutsideAffiliation createOutsideAffiliation(OutsideAffiliation outsideAffiliation) {
-		OutsideAffiliation temp = null;
+		OutsideAffiliation persistedOutsideAffiliation = null;
 		if (StringUtils.isNotBlank(outsideAffiliation.getText())) {
-			temp = outsideAffiliationBusService.createObject(outsideAffiliation);
+			persistedOutsideAffiliation = outsideAffiliationBusService.createObject(outsideAffiliation);
 		}
-		return temp;
+		return persistedOutsideAffiliation;
 	}
 
 	protected OutsideAffiliation getOutsideAffiliation(OutsideAffiliation outsideAffiliation) {
-		OutsideAffiliation temp = null;
+		OutsideAffiliation persistedOutsideAffiliation = null;
 		if (StringUtils.isNotBlank(outsideAffiliation.getText())) {
 			String name = outsideAffiliation.getText();
 			Map<String, Object> filters = new HashMap<>();
 			filters.put(AffiliationDao.EXACT_SEARCH, name);
 			filters.put(AffiliationDao.USGS_SEARCH, false);
-			List<? extends Affiliation<?>> affiliations = Affiliation.getDao().getByMap(filters);
+			List<? extends Affiliation<?>> affiliations = outsideAffiliationBusService.getObjects(filters);
 			if (!affiliations.isEmpty()) {
 				if (affiliations.size() > 1) {
 					LOG.warn("Multiple OutsideAffiliation found for: {}", name);
 				}
-				temp = (OutsideAffiliation) affiliations.get(0);
+				persistedOutsideAffiliation = (OutsideAffiliation) affiliations.get(0);
 			}
 		}
-		return temp;
+		return persistedOutsideAffiliation;
 	}
 }

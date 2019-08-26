@@ -1,6 +1,5 @@
 package gov.usgs.cida.pubs.validation.mp.unique;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +42,7 @@ public class UniqueKeyValidatorForMpPublication implements ConstraintValidator<U
 				for (Publication<?> pub : pubs) {
 					if (null == value.getId() || 0 != pub.getId().compareTo(value.getId())) {
 						rtn = false;
-						Object[] messageArguments = Arrays.asList(new String[]{"indexId " + value.getIndexId(), pub.getId().toString()}).toArray();
+						Object[] messageArguments = new String[] {"indexId " + value.getIndexId(), pub.getId().toString()};
 						String errorMsg = PubsUtils.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
 						context.disableDefaultConstraintViolation();
 						context.buildConstraintViolationWithTemplate(errorMsg).addPropertyNode(PublicationDao.INDEX_ID).addConstraintViolation();
@@ -58,7 +57,7 @@ public class UniqueKeyValidatorForMpPublication implements ConstraintValidator<U
 				for (Publication<?> pub : pubs) {
 					if (null == value.getId() || 0 != pub.getId().compareTo(value.getId())) {
 						rtn = false;
-						Object[] messageArguments = Arrays.asList(new String[]{"ipdsId " + value.getIpdsId(), pub.getId().toString()}).toArray();
+						Object[] messageArguments = new String[] {"ipdsId " + value.getIpdsId(), pub.getId().toString()};
 						String errorMsg = PubsUtils.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
 						context.disableDefaultConstraintViolation();
 						context.buildConstraintViolationWithTemplate(errorMsg).addPropertyNode(PublicationDao.IPDS_ID).addConstraintViolation();

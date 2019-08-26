@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -67,7 +67,7 @@ public class PwPublicationRssMvcServiceTest extends BaseTest {
 	@Test
 	public void getRssPubsTest() throws Exception {
 		//Happy Path
-		when(busService.getObjects(anyMap())).thenReturn(Arrays.asList(PwPublicationTest.buildAPub(1)));
+		when(busService.getObjects(anyMap())).thenReturn(List.of(PwPublicationTest.buildAPub(1)));
 		
 		MvcResult rtn = mockMvc.perform(get("/publication/rss?orderby=dispPubDate").accept(PubsConstantsHelper.MEDIA_TYPE_RSS))
 		.andExpect(status().isOk())

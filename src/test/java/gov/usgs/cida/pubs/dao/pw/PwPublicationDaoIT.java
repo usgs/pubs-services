@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -291,7 +290,7 @@ public class PwPublicationDaoIT extends BaseIT {
 		pubs = pwPublicationDao.getCrossrefPublications(filters);
 		assertEquals(2, pubs.size());
 		List<String> actualIndexIds = pubs.stream().map((pub) -> pub.getIndexId()).sorted().collect(Collectors.toList());
-		List<String> expectedIndexIds = Arrays.asList("sir2", "sir3").stream().sorted().collect(Collectors.toList());
+		List<String> expectedIndexIds = List.of("sir2", "sir3").stream().sorted().collect(Collectors.toList());
 		assertEquals(expectedIndexIds, actualIndexIds);
 		
 		//verify that none of an unknown subtype ID are returned

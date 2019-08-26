@@ -56,7 +56,7 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@GetMapping
 	@JsonView(View.PW.class)
-	public @ResponseBody SearchResults getPublicationSeries(HttpServletRequest request, HttpServletResponse response,
+	public @ResponseBody SearchResults getPublicationSeriesList(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam(value=TEXT_SEARCH, required=false) String[] text,
 			@RequestParam(value="publicationsubtypeid", required=false) String[] publicationSubtypeId,
 			@RequestParam(value=ACTIVE_SEARCH, required=false) String[] active,

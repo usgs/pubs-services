@@ -13,12 +13,6 @@ spring:
 
 server:
   port: ${SERVER_PORT}
-#  ssl:
-#    key-store: ${KEY_STORE}
-#    key-store-password: ${KEY_STORE_PASSWORD}
-#    key-store-type: ${KEY_STORE_TYPE}
-#    key-alias: ${KEY_ALIAS}
-#    key-password: ${KEY_STORE_PASSWORD}
   servlet:
     context-path: ${SERVER_CONTEXT_PATH}
 
@@ -29,13 +23,6 @@ sipp:
     daysLastDisseminated: ${DAYS_LAST_DISSEMINATED:1}
   infoProduct:
     url: ${INFOPRODUCT_URL}
-#ipds:
-#  pubsWsPwd: changeMe
-#  pubsWsUser: changeMe
-#  endpoint: changeMe
-#  port: 80
-#  protocol: https
-#  queueName: changeMe
 
 crossref:
   protocol: ${CROSSREF_PROTOCOL}
@@ -55,8 +42,6 @@ swagger:
     protocol: ${SWAGGER_DISPLAY_PROTOCOL}
 
 pubs:
-#  emailList: changeMe@usgs.gov
-#  mailHost: changeMe
   lockTimeoutHours: ${PUBS_LOCK_TIMEOUT_HOURS}
   warehouseEndpoint: ${PUBS_WAREHOUSE_ENPOINT}
   authorities:

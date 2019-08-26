@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +42,7 @@ import gov.usgs.cida.pubs.springinit.DbTestConfig;
 public class MpPublicationDaoIT extends BaseIT {
 
 	//TODO contributors, links, & CostCenters in test.
-	public static final List<String> IGNORE_PROPERTIES = Arrays.asList("validationErrors", "valErrors", "costCenters",
+	public static final List<String> IGNORE_PROPERTIES = List.of("validationErrors", "valErrors", "costCenters",
 			"contributors", "contributorsToMap", "links", "interactions", "sourceDatabase", "published", "ipdsContext");
 
 	public static final String MPPUB1_INDEXID = "sir20145083";

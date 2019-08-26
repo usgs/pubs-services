@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -168,7 +168,7 @@ public abstract class BaseEndpointSecurityTest extends BaseTest {
 		when(publicationSeriesBusService.deleteObject(anyInt())).thenReturn(new ValidationResults());
 		when(publicationSeriesBusService.updateObject(any(PublicationSeries.class))).thenReturn(new PublicationSeries());
 
-		when(pwPublicationBusService.getObjects(anyMap())).thenReturn(Arrays.asList(PwPublicationTest.buildAPub(1)));
+		when(pwPublicationBusService.getObjects(anyMap())).thenReturn(List.of(PwPublicationTest.buildAPub(1)));
 		when(pwPublicationBusService.getByIndexId(anyString())).thenReturn(PwPublicationTest.buildAPub(1));
 
 		when(mpPublicationBusService.getObject(anyInt())).thenReturn(MpPublicationDaoIT.buildAPub(1));

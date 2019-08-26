@@ -80,7 +80,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	@GetMapping(produces={MediaType.APPLICATION_JSON_VALUE,
 			PubsConstantsHelper.MEDIA_TYPE_XLSX_VALUE, PubsConstantsHelper.MEDIA_TYPE_CSV_VALUE, PubsConstantsHelper.MEDIA_TYPE_TSV_VALUE})
 	@JsonView(View.PW.class)
-	public void getPubs(
+	public void getStreamPubs(
 			@RequestParam(value=PublicationDao.Q, required=false) String q,
 			@RequestParam(value=PwPublicationDao.G, required=false) String g,
 			@RequestParam(value=PublicationDao.TITLE, required=false) String[] title,

@@ -1,17 +1,16 @@
 package gov.usgs.cida.pubs.validation.unique;
 
-import gov.usgs.cida.pubs.dao.AffiliationDao;
-import gov.usgs.cida.pubs.domain.Affiliation;
-import gov.usgs.cida.pubs.utility.PubsUtils;
-import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
-
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+
+import gov.usgs.cida.pubs.dao.AffiliationDao;
+import gov.usgs.cida.pubs.domain.Affiliation;
+import gov.usgs.cida.pubs.utility.PubsUtils;
+import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
 
 public class UniqueKeyValidatorForAffiliation implements ConstraintValidator<UniqueKey, Affiliation<?>> {
 
@@ -37,7 +36,7 @@ public class UniqueKeyValidatorForAffiliation implements ConstraintValidator<Uni
 			for (Affiliation<?> affiliation : affiliations) {
 				if (null == value.getId() || 0 != affiliation.getId().compareTo(value.getId())) {
 					valid = false;
-					Object[] messageArguments = Arrays.asList(new String[]{value.getText(), affiliation.getId().toString()}).toArray();
+					Object[] messageArguments = new String[]{value.getText(), affiliation.getId().toString()};
 					String errorMsg = PubsUtils.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
 					context.disableDefaultConstraintViolation();
 					context.buildConstraintViolationWithTemplate(errorMsg).addPropertyNode(AffiliationDao.TEXT_SEARCH).addConstraintViolation();

@@ -6,14 +6,6 @@ spring:
     username: ${PUBS_DB_READ_ONLY_USERNAME}
     password: ${PUBS_DB_READ_ONLY_PASSWORD}
 
-#ipds:
-#  pubsWsPwd: changeMe
-#  pubsWsUser: changeMe
-#  endpoint: bad.usgs.gov
-#  port: 80
-#  protocol: https
-#  queueName: dummy
-#
 crossref:
   protocol: ${CROSSREF_PROTOCOL}
   host: ${CROSSREF_HOST}
@@ -24,24 +16,10 @@ crossref:
   schema:
     url: ${CROSSREF_SCHEMA_URL}
   depositorEmail: ${CROSSREF_DEPOSITOR_EMAIL}
-#
-#swagger:
-#  displayProtocol: https
-#  displayHost: localhost:8443
-#  displayPath: /pubs-services
 
 pubs:
-#  emailList: changeMe
-#  mailHost: changeMe
   lockTimeoutHours: ${PUBS_LOCK_TIMEOUT_HOURS}
   warehouseEndpoint: ${PUBS_WAREHOUSE_ENPOINT}
   authorities:
     authorized: ${PUBS_AUTHORIZED_GROUPS}
     spn: ${PUBS_SPN_GROUPS}
-
-#security:
-#  oauth2:
-#    resource:
-#      id: changeMe
-#      jwk:
-#        keySetUri: changeMe

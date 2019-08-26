@@ -57,14 +57,14 @@ public class ExtPublicationContributorService {
 	}
 
 	protected UsgsContributor processUsgsContributor(UsgsContributor contributor) {
-		UsgsContributor temp = null;
+		UsgsContributor persistedContributor = null;
 		if (null != contributor.getOrcid()) {
-			temp = getUsgsContributorByOrcid(contributor.getOrcid());
+			persistedContributor = getUsgsContributorByOrcid(contributor.getOrcid());
 		}
-		if (null == temp) {
-			temp = createUsgsContributor(contributor);
+		if (null == persistedContributor) {
+			persistedContributor = createUsgsContributor(contributor);
 		}
-		return temp;
+		return persistedContributor;
 	}
 
 	protected UsgsContributor getUsgsContributorByOrcid(String orcid) {
@@ -91,17 +91,17 @@ public class ExtPublicationContributorService {
 	}
 
 	protected OutsideContributor processOutsideContributor(OutsideContributor contributor) {
-		OutsideContributor temp = null;
+		OutsideContributor persistedContributor = null;
 		if (null != contributor.getOrcid()) {
-			temp = getOutsideContributorByOrcid(contributor.getOrcid());
+			persistedContributor = getOutsideContributorByOrcid(contributor.getOrcid());
 		}
-		if (null == temp && null != contributor.getFamily() && null != contributor.getGiven()) {
-			temp = getByName(contributor.getFamily(), contributor.getGiven());
+		if (null == persistedContributor && null != contributor.getFamily() && null != contributor.getGiven()) {
+			persistedContributor = getByName(contributor.getFamily(), contributor.getGiven());
 		}
-		if (null == temp) {
-			temp = createOutsideContributor(contributor);
+		if (null == persistedContributor) {
+			persistedContributor = createOutsideContributor(contributor);
 		}
-		return temp;
+		return persistedContributor;
 	}
 
 	protected OutsideContributor getOutsideContributorByOrcid(String orcid) {

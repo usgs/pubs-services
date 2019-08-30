@@ -40,6 +40,7 @@ import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.busservice.intfc.ISippProcess;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoIT;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
@@ -85,6 +86,8 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 	private IBusService<Publication<?>> pubBusService;
 	@MockBean
 	private IMpPublicationBusService busService;
+	@MockBean
+	private ISippProcess sippService;
 
 	@Resource(name="expectedGetMpPub1")
 	public String expectedGetMpPub1;
@@ -97,7 +100,7 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 
 	@Before
 	public void setup() {
-		mvcService = new MpPublicationMvcService(pubBusService, busService);
+		mvcService = new MpPublicationMvcService(pubBusService, busService, sippService);
 		mockMvc = MockMvcBuilders.standaloneSetup(mvcService).setMessageConverters(jackson2HttpMessageConverter).build();
 
 		when(busService.checkAvailability(1)).thenReturn(VR_NOT_LOCKED);

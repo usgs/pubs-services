@@ -18,14 +18,16 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import gov.usgs.cida.pubs.BaseTest;
+import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.busservice.intfc.ISippProcess;
 import gov.usgs.cida.pubs.dao.sipp.IpdsBureauApprovalDao;
 import gov.usgs.cida.pubs.dao.sipp.SippProcessLogDao;
 import gov.usgs.cida.pubs.domain.IpdsBureauApprovalHelper;
 import gov.usgs.cida.pubs.domain.ProcessType;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.sipp.IpdsBureauApproval;
-import gov.usgs.cida.pubs.domain.sipp.ProcessSummary;
 import gov.usgs.cida.pubs.domain.sipp.SippProcessLog;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={IpdsBureauApproval.class, SippProcessLog.class})
@@ -51,7 +53,7 @@ public class DisseminationListServiceTest extends BaseTest {
 		when(ipdsBureauApprovalDao.getIpdsBureauApprovals(1))
 			.thenReturn(List.of(IpdsBureauApprovalHelper.getIpdsBureauApproval("IP-1234"), IpdsBureauApprovalHelper.getIpdsBureauApproval("IP-5678")));
 		when(sippProcess.processInformationProduct(ProcessType.DISSEMINATION, "IP-1234"))
-			.thenReturn(getProcessSummary1234());
+			.thenReturn(getPub1234());
 		when(sippProcess.processInformationProduct(ProcessType.DISSEMINATION, "IP-5678"))
 			.thenThrow(new RuntimeException("oops"));
 		when(sippProcessLogDao.add(any(SippProcessLog.class)))
@@ -71,8 +73,8 @@ public class DisseminationListServiceTest extends BaseTest {
 		assertEquals(ProcessType.DISSEMINATION, valueCapture.getValue().getProcessType());
 		assertEquals(2, valueCapture.getValue().getTotalEntries().intValue());
 		assertEquals(1, valueCapture.getValue().getPublicationsAdded().intValue());
-		assertEquals(3, valueCapture.getValue().getErrorsEncountered().intValue());
-		assertEquals("IP-1234 added\n\toops", valueCapture.getValue().getProcessingDetails());
+		assertEquals(1, valueCapture.getValue().getErrorsEncountered().intValue());
+		assertEquals("\n\tAdded to MyPubs as ProdId: 1234\n\t" + "Error processing IPNumber 'IP-5678': oops", valueCapture.getValue().getProcessingDetails());
 	}
 
 	@Test
@@ -111,11 +113,34 @@ public class DisseminationListServiceTest extends BaseTest {
 		assertEquals("bl;ah", valueCapture.getValue().getProcessingDetails());
 	}
 
-	private ProcessSummary getProcessSummary1234() {
-		ProcessSummary processSummary = new ProcessSummary();
-		processSummary.setAdditions(1);
-		processSummary.setErrors(2);
-		processSummary.setProcessingDetails("IP-1234 added");
-		return processSummary;
+	@Test
+	public void buildPublicationProcessSummaryTest() {
+		MpPublication mpPublication = new MpPublication();
+		mpPublication.setId(1234);
+		mpPublication.setTitle("test");
+		mpPublication.setIndexId("ds1");
+
+		ProcessSummary processSummary = service.buildPublicationProcessSummary(mpPublication);
+
+		assertEquals(0, processSummary.getErrors());
+		assertEquals(1, processSummary.getAdditions());
+		assertEquals("\n\tAdded to MyPubs as ProdId: 1234", processSummary.getProcessingDetails());
+
+		mpPublication.addValidatorResult(new ValidatorResult("publicationType", "must not be null", SeverityLevel.FATAL, null));
+		processSummary = service.buildPublicationProcessSummary(mpPublication);
+
+		assertEquals(1, processSummary.getErrors());
+		assertEquals(0, processSummary.getAdditions());
+		assertEquals("\nERROR: Failed validation.\n" +
+				"\tField:publicationType - Message:must not be null - Level:FATAL - Value:null\n" +
+				"\tValidator Results: 1 result(s)\n\t", processSummary.getProcessingDetails());
+	}
+
+
+	private MpPublication getPub1234() {
+		MpPublication pub = new MpPublication();
+		pub.setId(1234);
+
+		return pub;
 	}
 }

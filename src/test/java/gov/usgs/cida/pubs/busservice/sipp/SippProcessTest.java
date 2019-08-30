@@ -49,7 +49,6 @@ import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.sipp.InformationProduct;
 import gov.usgs.cida.pubs.domain.sipp.IpdsPubTypeConv;
-import gov.usgs.cida.pubs.domain.sipp.ProcessSummary;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes= {PwPublication.class, SippProcess.class, PublicationSeries.class,
@@ -114,20 +113,18 @@ public class SippProcessTest extends BaseTest {
 		when(sippConversionService.buildMpPublication(any(InformationProduct.class), anyInt())).thenReturn(new MpPublication());
 		when(extPublicationBusService.create(any(MpPublication.class))).thenReturn(mpPublicationx);
 
-		ProcessSummary processSummary = sippProcess.processInformationProduct(ProcessType.DISSEMINATION, "IP-12344354");
-		assertEquals(1, processSummary.getAdditions());
-		assertEquals(0, processSummary.getErrors());
-		assertEquals("IP-12344354:\n\tAdded to MyPubs as ProdId: 123\n\n", processSummary.getProcessingDetails());
+		MpPublication pub = sippProcess.processInformationProduct(ProcessType.DISSEMINATION, "IP-12344354");
+		assertTrue(pub.isValid());
+		assertEquals(pub.getId() + "", "123");
 
-		processSummary = sippProcess.processInformationProduct(ProcessType.DISSEMINATION, "IP-12344354");
-		assertEquals(1, processSummary.getAdditions());
-		assertEquals(0, processSummary.getErrors());
-		assertEquals("IP-12344354:\n\tAdded to MyPubs as ProdId: 123\n\n", processSummary.getProcessingDetails());
+		pub = sippProcess.processInformationProduct(ProcessType.DISSEMINATION, "IP-12344354");
+		assertTrue(pub.isValid());
+		assertEquals(pub.getId() + "", "123");
 
-		processSummary = sippProcess.processInformationProduct(ProcessType.DISSEMINATION, "IP-12344354");
-		assertEquals(0, processSummary.getAdditions());
-		assertEquals(0, processSummary.getErrors());
-		assertEquals("IP-12344354:\n\tIPDS record not processed (\"DISSEMINATION\") - ProductType: Cooperator publication Publication Type: Report PublicationSubtype: USGS Numbered Series Series: Scientific Investigations Report Process State: Dissemination DOI: \n\n", processSummary.getProcessingDetails());
+		pub = sippProcess.processInformationProduct(ProcessType.DISSEMINATION, "IP-12344354");
+		assertEquals("Field:MpPublication - Message:\n\tIPDS record for IPNumber 'IP-12344354' not processed (\"DISSEMINATION\") - ProductType: Cooperator publication Publication Type: Report"
+				+ " PublicationSubtype: USGS Numbered Series Series: Scientific Investigations Report Process State: Dissemination DOI:"
+				+ "  - Level:FATAL - Value:IP-12344354\nValidator Results: 1 result(s)\n", pub.getValidationErrors().toString());
 	}
 
 	@Test
@@ -393,69 +390,41 @@ public class SippProcessTest extends BaseTest {
 		when(sippConversionService.buildMpPublication(any(InformationProduct.class), anyInt())).thenReturn(new MpPublication());
 		when(extPublicationBusService.create(any(MpPublication.class))).thenThrow(new RuntimeException("testing error")).thenReturn(new MpPublication());
 
-		ProcessSummary processSummary = sippProcess.processPublication(null, new InformationProduct(), null);
+		MpPublication pub = sippProcess.processPublication(null, new InformationProduct(), null);
 
-		assertEquals(1, processSummary.getErrors());
-		assertEquals(0, processSummary.getAdditions());
-		assertEquals("\n" + 
-				"ERROR: Failed validation.\n" + 
-				"\tField:MpPublication - Message:testing error - Level:FATAL - Value:null\n" + 
-				"\tValidator Results: 1 result(s)\n" + 
-				"\t", processSummary.getProcessingDetails());
+		assertFalse(pub.isValid());
+		assertEquals("Field:MpPublication - Message:testing error - Level:FATAL - Value:null\n" + 
+				"Validator Results: 1 result(s)\n", pub.getValidationErrors().toString());
 		verify(pubBusService, never()).deleteObject(anyInt());
 		verify(sippConversionService).buildMpPublication(any(InformationProduct.class), isNull());
 		verify(extPublicationBusService).create(any(MpPublication.class));
 
-		processSummary = sippProcess.processPublication(null, new InformationProduct(), null);
+		pub = sippProcess.processPublication(null, new InformationProduct(), null);
 
-		assertEquals(0, processSummary.getErrors());
-		assertEquals(1, processSummary.getAdditions());
-		assertEquals("\n\tAdded to MyPubs as ProdId: null", processSummary.getProcessingDetails());
+		assertTrue(pub.isValid());
+		assertNull(pub.getId());
 		verify(pubBusService, never()).deleteObject(anyInt());
 		verify(sippConversionService, times(2)).buildMpPublication(any(InformationProduct.class), isNull());
 		verify(extPublicationBusService, times(2)).create(any(MpPublication.class));
 
-		processSummary = sippProcess.processPublication(null, new InformationProduct(), 1234);
+		pub = sippProcess.processPublication(null, new InformationProduct(), 1234);
 
-		assertEquals(0, processSummary.getErrors());
-		assertEquals(1, processSummary.getAdditions());
-		assertEquals("\n\tAdded to MyPubs as ProdId: null", processSummary.getProcessingDetails());
+		assertTrue(pub.isValid());
+		assertNull(pub.getId());
 		verify(pubBusService).deleteObject(anyInt());
 		verify(sippConversionService).buildMpPublication(any(InformationProduct.class), anyInt());
 		verify(extPublicationBusService, times(3)).create(any(MpPublication.class));
 	}
 
 	@Test
-	public void buildPublicationProcessSummaryTest() {
-		MpPublication mpPublication = new MpPublication();
-		mpPublication.setId(1234);
-		mpPublication.setTitle("test");
-		mpPublication.setIndexId("ds1");
-
-		ProcessSummary processSummary = sippProcess.buildPublicationProcessSummary(mpPublication);
-
-		assertEquals(0, processSummary.getErrors());
-		assertEquals(1, processSummary.getAdditions());
-		assertEquals("\n\tAdded to MyPubs as ProdId: 1234", processSummary.getProcessingDetails());
-
-		mpPublication.setValidationErrors(validator.validate(mpPublication));
-		processSummary = sippProcess.buildPublicationProcessSummary(mpPublication);
-
-		assertEquals(1, processSummary.getErrors());
-		assertEquals(0, processSummary.getAdditions());
-		assertEquals("\nERROR: Failed validation.\n" +
-				"\tField:publicationType - Message:must not be null - Level:FATAL - Value:null\n" + 
-				"\tValidator Results: 1 result(s)\n" + 
-				"\t", processSummary.getProcessingDetails());
-	}
-
-	@Test
 	public void buildNotOkDetailsTest() {
-		assertEquals("\n\tIPDS record not processed (\"DISSEMINATION\") - ProductType: null Process State: null DOI: null", sippProcess.buildNotOkDetails(ProcessType.DISSEMINATION, new InformationProduct()));
+		assertEquals("\n\tIPDS record for IPNumber 'IP-1234' not processed (\"DISSEMINATION\") - ProductType: [Not Found] Process State: null DOI: null",
+				sippProcess.buildNotOkDetails(ProcessType.DISSEMINATION, new InformationProduct(), "IP-1234"));
 
 		InformationProduct informationProduct = InformationProductHelper.getExtendedInformationProduct108541(PublicationSeriesHelper.THREE_ZERO_NINE);
 		informationProduct.setDigitalObjectIdentifier("http://dx.doi.org/10.1016/j.gca.2003.11.028");
-		assertEquals("\n\tIPDS record not processed (\"DISSEMINATION\") - ProductType: Cooperator publication Publication Type: Report PublicationSubtype: USGS Numbered Series Series: Coal Map Process State: Dissemination DOI: http://dx.doi.org/10.1016/j.gca.2003.11.028", sippProcess.buildNotOkDetails(ProcessType.DISSEMINATION, informationProduct));
+		assertEquals("\n\tIPDS record for IPNumber 'IP-108541' not processed (\"DISSEMINATION\") - ProductType: Cooperator publication Publication Type: Report PublicationSubtype: USGS Numbered Series Series: Coal Map Process State: Dissemination DOI: http://dx.doi.org/10.1016/j.gca.2003.11.028",
+				sippProcess.buildNotOkDetails(ProcessType.DISSEMINATION, informationProduct, "IP-108541"));
 	}
 
 	private IpdsPubTypeConv getIpdsPubTypeConv6() {

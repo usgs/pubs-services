@@ -5,12 +5,14 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,12 +30,14 @@ import com.fasterxml.jackson.annotation.JsonView;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.busservice.intfc.ISippProcess;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.domain.sipp.SippMpPubRequest;
 import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.ValidationResults;
@@ -49,14 +53,18 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 
 	private final IBusService<Publication<?>> pubBusService;
 	private final IMpPublicationBusService busService;
+	private final ISippProcess sippService;
 
 	@Autowired
 	public MpPublicationMvcService(@Qualifier("publicationBusService")
 			final IBusService<Publication<?>> pubBusService,
 			@Qualifier("mpPublicationBusService")
-			final IMpPublicationBusService busService) {
+			final IMpPublicationBusService busService,
+			@Qualifier("sippProcess")
+			final ISippProcess sippService) {
 		this.pubBusService = pubBusService;
 		this.busService = busService;
+		this.sippService = sippService;
 	}
 
 	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
@@ -146,6 +154,21 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 	public @ResponseBody MpPublication createPub(@RequestBody MpPublication pub, HttpServletResponse response) {
 		setHeaders(response);
 		MpPublication newPub = busService.createObject(pub);
+		if (null != newPub && newPub.isValid()) {
+			response.setStatus(HttpServletResponse.SC_CREATED);
+		} else {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		}
+		return newPub;
+	}
+
+	//TESTING: @ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+	@PostMapping(value="/sipp")
+	@JsonView(View.MP.class)
+	@Transactional
+	public @ResponseBody MpPublication createPubViaSipp(@Valid @RequestBody SippMpPubRequest req, HttpServletResponse response) {
+		setHeaders(response);
+		MpPublication newPub = sippService.processInformationProduct(req.getProcessTypeEnum(), req.getIpNumber());
 		if (null != newPub && newPub.isValid()) {
 			response.setStatus(HttpServletResponse.SC_CREATED);
 		} else {

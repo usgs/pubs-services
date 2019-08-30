@@ -13,6 +13,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,6 +32,9 @@ public class GlobalDefaultExceptionHandler {
 		if (ex instanceof AccessDeniedException) {
 			response.setStatus(HttpStatus.FORBIDDEN.value());
 			responseMap.put(ERROR_MESSAGE_KEY, "You are not authorized to perform this action.");
+		} else if (ex instanceof MethodArgumentNotValidException) {
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			responseMap.put(ERROR_MESSAGE_KEY, ((MethodArgumentNotValidException) ex).getBindingResult().getFieldError().getDefaultMessage());
 		} else if (ex instanceof MissingServletRequestParameterException
 				|| ex instanceof HttpMediaTypeNotSupportedException
 				|| ex instanceof HttpMediaTypeNotAcceptableException) {

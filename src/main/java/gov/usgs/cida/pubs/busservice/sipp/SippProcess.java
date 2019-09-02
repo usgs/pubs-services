@@ -58,17 +58,18 @@ public class SippProcess implements ISippProcess {
 			mpPublication = getMpPublication(informationProduct);
 		}
 
-		if(mpPublication == null) {
-			mpPublication = new MpPublication();
-		}
-
 		if (okToProcess(processType, informationProduct, mpPublication)) {
 			Integer prodId = null == mpPublication ? null : mpPublication.getId();
 			rtn = processPublication(processType, informationProduct, prodId);
 		} else {
 			String errMess = buildNotOkDetails(processType, informationProduct, ipNumber);
 			ValidatorResult validatorResult = new ValidatorResult("MpPublication", errMess, SeverityLevel.FATAL, ipNumber);
-			rtn = mpPublication;
+			if(mpPublication == null) {
+				rtn = new MpPublication();
+			} else {
+				rtn = mpPublication;
+			}
+
 			rtn.addValidatorResult(validatorResult);
 		}
 

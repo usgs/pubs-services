@@ -47,23 +47,23 @@ public class SecurityConfig extends ResourceServerConfigurerAdapter {
 	public void configure(HttpSecurity http) throws Exception {
 		http
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-			.and().authorizeRequests().antMatchers("/**").permitAll();
-//				.authorizeRequests()
-//					//anonymous (public)
-//					.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-//					.antMatchers("/lookup/**", "/publication/**", "/version", "/about/**").permitAll()
-//					.antMatchers("/swagger-ui.html", "/webjars/**", "/swagger-resources/**", "/v2/api-docs", "/v3/api-docs").permitAll()
-//					//authenticated
-//					.antMatchers("/mppublications/*/preview*", "/auth/logout").fullyAuthenticated()
-//					//authorized
-//					.antMatchers("/**").hasAnyAuthority(configurationService.getAuthorizedAuthorities())
-////			.and()
-////				.requiresChannel().anyRequest().requiresSecure()
+			.and()
+				.authorizeRequests()
+					//anonymous (public)
+					.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+					.antMatchers("/lookup/**", "/publication/**", "/version", "/about/**").permitAll()
+					.antMatchers("/swagger-ui.html", "/webjars/**", "/swagger-resources/**", "/v2/api-docs", "/v3/api-docs").permitAll()
+					//authenticated
+					.antMatchers("/mppublications/*/preview*", "/auth/logout").fullyAuthenticated()
+					//authorized
+					.antMatchers("/**").hasAnyAuthority(configurationService.getAuthorizedAuthorities())
 //			.and()
-//				.anonymous()
-//				.and().cors()
-//			.and()
-//				.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+//				.requiresChannel().anyRequest().requiresSecure()
+			.and()
+				.anonymous()
+				.and().cors()
+			.and()
+				.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 		;
 	}
 

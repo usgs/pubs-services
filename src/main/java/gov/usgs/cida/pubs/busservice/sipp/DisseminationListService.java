@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.busservice.sipp;
 
 import java.util.List;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import gov.usgs.cida.pubs.busservice.intfc.ISippProcess;
 import gov.usgs.cida.pubs.domain.ProcessType;
+import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.sipp.IpdsBureauApproval;
-import gov.usgs.cida.pubs.domain.sipp.ProcessSummary;
 import gov.usgs.cida.pubs.domain.sipp.SippProcessLog;
 
 @Service
@@ -36,20 +37,38 @@ public class DisseminationListService {
 
 		List<IpdsBureauApproval> ipdsBureauApprovals = IpdsBureauApproval.getDao().getIpdsBureauApprovals(daysLastDisseminated);
 
-		try {
-			for (IpdsBureauApproval ipdsBureauApproval : ipdsBureauApprovals) {
-				ProcessSummary processSummary = sippProcess.processInformationProduct(ProcessType.DISSEMINATION, ipdsBureauApproval.getIpNumber());
+		for (IpdsBureauApproval ipdsBureauApproval : ipdsBureauApprovals) {
+			try {
+				MpPublication pub = sippProcess.processInformationProduct(ProcessType.DISSEMINATION, ipdsBureauApproval.getIpNumber());
+
+				ProcessSummary processSummary = buildPublicationProcessSummary(pub);
 				processingDetails.append(processSummary.getProcessingDetails());
 				additions = additions + processSummary.getAdditions();
 				errors = errors + processSummary.getErrors();
+			} catch (Exception e) {
+				String errMess = String.format("Error processing IPNumber '%s': %s",
+					ipdsBureauApproval.getIpNumber(), e.getMessage());
+				LOG.error(errMess + String.format(" [Exception: %s]", e.getClass().getName()));
+				LOG.error(ExceptionUtils.getStackTrace(e));
+				processingDetails.append("\n\t").append(errMess);
+				errors = errors + 1;
 			}
-		} catch (Exception e) {
-			LOG.info(e.getMessage());
-			processingDetails.append("\n\t").append(e.getMessage());
-			errors = errors + 1;
-		} finally {
-			logProcessEnd(sippProcessLog, ipdsBureauApprovals.size(), additions, errors, processingDetails);
 		}
+		logProcessEnd(sippProcessLog, ipdsBureauApprovals.size(), additions, errors, processingDetails);
+
+	}
+
+	protected ProcessSummary buildPublicationProcessSummary(MpPublication mpPublication) {
+		ProcessSummary processSummary = new ProcessSummary();
+		if (mpPublication.isValid()) {
+			processSummary.setAdditions(1);
+			processSummary.setProcessingDetails("\n\tAdded to MyPubs as ProdId: " + mpPublication.getId());
+		} else {
+			processSummary.setErrors(1);
+			processSummary.setProcessingDetails("\nERROR: Failed validation.\n\t"
+					+ mpPublication.getValidationErrors().toString().replaceAll("\n", "\n\t"));
+		}
+		return processSummary;
 	}
 
 	protected SippProcessLog logProcessStart() {

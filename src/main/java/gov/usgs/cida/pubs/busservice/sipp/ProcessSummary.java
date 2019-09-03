@@ -1,4 +1,4 @@
-package gov.usgs.cida.pubs.domain.sipp;
+package gov.usgs.cida.pubs.busservice.sipp;
 
 public class ProcessSummary {
 

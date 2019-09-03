@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +41,9 @@ import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.busservice.intfc.ISippProcess;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoIT;
+import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
@@ -53,10 +56,11 @@ import gov.usgs.cida.pubs.utility.PubsUtilitiesTest;
 import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
+import gov.usgs.cida.pubs.webservice.GlobalDefaultExceptionHandler;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={TestSpringConfig.class, SpringConfig.class, CustomStringToArrayConverter.class,
-			StringArrayCleansingConverter.class, CustomStringToStringConverter.class})
+			StringArrayCleansingConverter.class, CustomStringToStringConverter.class, GlobalDefaultExceptionHandler.class})
 public class MpPublicationMvcServiceTest extends BaseTest {
 
 	private static final String MP_PUB_1_JSON = "{"
@@ -68,10 +72,14 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 			+ "\"given\": \"Molina\",\"email\": \"wlmolina@usgs.gov\",\"affiliation\": {\"id\": 84,\"text\": \"Caribbean Water Science Center\""
 			+ "},\"id\": 110,\"rank\": 1}]"
 			+ "}";
+
 	public static final String LOCK_MSG = "{\"validationErrors\":[{\"field\":\"Publication\",\"message\":\"This Publication is being edited by somebody\",\"level\":\"FATAL\",\"value\":\"somebody\"}]}\"";
 	public static final String LOCK_MSG2 = LOCK_MSG.replace("}]}", "}],\"text\":\"null - null - null\",\"noYear\":false,\"published\":false,\"noUsgsAuthors\":false}");
 	public static final String LOCK_MSG3 = LOCK_MSG.replace("}]}", "}],\"id\":2,\"indexId\":\"abc\",\"publicationType\":{\"id\":18,\"text\":\"abc\"},"
 			+"\"text\":\"abc - null - null\",\"noYear\":false,\"published\":false,\"noUsgsAuthors\":false}");
+
+	public static final String SIPP_PROCTYPE_ERRR_TEMPLATE = "Unknown ProcessType specified ('XXX') must be one of: 'DISSEMINATION', 'SPN_PRODUCTION'";
+	public static final String SIPP_IPNUMBER_ERRR_TEMPLATE = "Invalid IPNumber specified ('XXX') must be 'IP-' followed by 6 digits [0-9].";
 
 	public static final ValidatorResult VR_LOCKED = new ValidatorResult("Publication", "This Publication is being edited by somebody", SeverityLevel.FATAL, "somebody");
 	public static final ValidatorResult VR_NOT_LOCKED = null;
@@ -85,6 +93,8 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 	private IBusService<Publication<?>> pubBusService;
 	@MockBean
 	private IMpPublicationBusService busService;
+	@MockBean
+	private ISippProcess sippService;
 
 	@Resource(name="expectedGetMpPub1")
 	public String expectedGetMpPub1;
@@ -97,8 +107,9 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 
 	@Before
 	public void setup() {
-		mvcService = new MpPublicationMvcService(pubBusService, busService);
-		mockMvc = MockMvcBuilders.standaloneSetup(mvcService).setMessageConverters(jackson2HttpMessageConverter).build();
+		mvcService = new MpPublicationMvcService(pubBusService, busService, sippService);
+		mockMvc = MockMvcBuilders.standaloneSetup(mvcService).setMessageConverters(jackson2HttpMessageConverter)
+				.setControllerAdvice(GlobalDefaultExceptionHandler.class).build();
 
 		when(busService.checkAvailability(1)).thenReturn(VR_NOT_LOCKED);
 		when(busService.checkAvailability(2)).thenReturn(VR_LOCKED);
@@ -211,6 +222,17 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 		.andReturn();
 
 		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(expectedGetMpPub1)));
+	}
+
+	@Test
+	public void createPubViaSippTest() throws Exception {
+		String path = "/mppublications/sipp";
+
+		String errMess = SIPP_PROCTYPE_ERRR_TEMPLATE.replace("XXX", "DIS");
+		runTestCasePostErr(path, buildCreateFromSippJson("DIS", "IP-123456"), buildSippErrorJson(errMess), "Case with unknown ProcessType");
+
+		errMess = SIPP_IPNUMBER_ERRR_TEMPLATE.replace("XXX", "IP-1234");
+		runTestCasePostErr(path, buildCreateFromSippJson(ProcessType.DISSEMINATION.name(), "IP-1234"), buildSippErrorJson(errMess), "Case with illegal IPNumber");
 	}
 
 	@Test
@@ -347,4 +369,29 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 		rtn.add(MpPublicationDaoIT.buildAPub(1));
 		return rtn;
 	}
+
+	private String buildCreateFromSippJson(String processType, String ipNumber) throws JSONException {
+		JSONObject json = new JSONObject();
+		json.put("ProcessType", processType);
+		json.put("IPNumber", ipNumber);
+		return json.toString();
+	}
+
+	private JSONObject buildSippErrorJson(String errMess) throws JSONException {
+		JSONObject json = new JSONObject();
+
+		json.put("Error Message", errMess);
+		return json;
+	}
+
+	private void runTestCasePostErr(String path, String jsonToPost, JSONObject expectedReturn, String desc) throws Exception, JSONException {
+		MvcResult rtn = mockMvc.perform(post(path).content(jsonToPost).contentType(MediaType.APPLICATION_JSON)
+		.accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isBadRequest())
+		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
+		.andReturn();
+
+		assertThat(desc, getRtnAsJSONObject(rtn), sameJSONObjectAs(expectedReturn));
+	}
+
 }

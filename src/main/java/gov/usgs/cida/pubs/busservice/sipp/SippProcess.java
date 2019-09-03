@@ -25,7 +25,6 @@ import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.sipp.InformationProduct;
 import gov.usgs.cida.pubs.domain.sipp.IpdsPubTypeConv;
-import gov.usgs.cida.pubs.domain.sipp.ProcessSummary;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 
@@ -49,24 +48,31 @@ public class SippProcess implements ISippProcess {
 	}
 
 	@Transactional(propagation=Propagation.REQUIRES_NEW)
-	public ProcessSummary processInformationProduct(ProcessType processType, String ipNumber) {
-		ProcessSummary rtn = new ProcessSummary();
-		StringBuilder processingDetails = new StringBuilder(ipNumber + ":");
+	public MpPublication processInformationProduct(ProcessType processType, String ipNumber) {
+		MpPublication rtn = null;
 
+		MpPublication mpPublication = null;
 		InformationProduct informationProduct = getInformationProduct(ipNumber);
-		MpPublication mpPublication = getMpPublication(informationProduct);
+
+		if(informationProduct != null) {
+			mpPublication = getMpPublication(informationProduct);
+		}
 
 		if (okToProcess(processType, informationProduct, mpPublication)) {
 			Integer prodId = null == mpPublication ? null : mpPublication.getId();
-			ProcessSummary publicationSummary = processPublication(processType, informationProduct, prodId);
-			processingDetails.append(publicationSummary.getProcessingDetails());
-			rtn.incrementAdditions(publicationSummary.getAdditions());
-			rtn.incrementErrors(publicationSummary.getErrors());
+			rtn = processPublication(processType, informationProduct, prodId);
 		} else {
-			processingDetails.append(buildNotOkDetails(processType, informationProduct));
+			String errMess = buildNotOkDetails(processType, informationProduct, ipNumber);
+			ValidatorResult validatorResult = new ValidatorResult("MpPublication", errMess, SeverityLevel.FATAL, ipNumber);
+			if(mpPublication == null) {
+				rtn = new MpPublication();
+			} else {
+				rtn = mpPublication;
+			}
+
+			rtn.addValidatorResult(validatorResult);
 		}
 
-		rtn.setProcessingDetails(processingDetails.append("\n\n").toString());
 		return rtn;
 	}
 
@@ -196,7 +202,7 @@ public class SippProcess implements ISippProcess {
 		return rtn;
 	}
 
-	protected ProcessSummary processPublication(ProcessType processType, InformationProduct informationProduct, Integer prodId) {
+	protected MpPublication processPublication(ProcessType processType, InformationProduct informationProduct, Integer prodId) {
 		//TODO??		newMpPub.setIpdsReviewProcessState(processType.getIpdsValue());
 		//We only keep the prodID from the original MP record. The delete is to make sure we kill all child objects.
 		if (null != prodId) {
@@ -217,35 +223,30 @@ public class SippProcess implements ISippProcess {
 		//TODO		if (rtnPub.isValid() && ProcessType.SPN_PRODUCTION.equals(processType)) {
 		//TODO				updateIpdsWithDoi(rtnPub);
 		//TODO		}
-		return buildPublicationProcessSummary(rtnPub);
+		return rtnPub;
 	}
 
-	protected ProcessSummary buildPublicationProcessSummary(MpPublication mpPublication) {
-		ProcessSummary processSummary = new ProcessSummary();
-		if (mpPublication.isValid()) {
-			processSummary.setAdditions(1);
-			processSummary.setProcessingDetails("\n\tAdded to MyPubs as ProdId: " + mpPublication.getId());
-		} else {
-			processSummary.setErrors(1);
-			processSummary.setProcessingDetails("\nERROR: Failed validation.\n\t"
-					+ mpPublication.getValidationErrors().toString().replaceAll("\n", "\n\t"));
-		}
-		return processSummary;
-	}
+	protected String buildNotOkDetails(ProcessType processType, InformationProduct informationProduct, String ipNumber) {
+		String productType = informationProduct == null || informationProduct.getProductType() == null
+				? "[Not Found]" : informationProduct.getProductType();
 
-	protected String buildNotOkDetails(ProcessType processType, InformationProduct informationProduct) {
-		StringBuilder notOkDetails = new StringBuilder("\n\t").append("IPDS record not processed (\"").append(processType).append("\") -")
-				.append(" ProductType: ").append(informationProduct.getProductType());
-		if (null != informationProduct.getPublicationType()) {
-			notOkDetails.append(" Publication Type: ").append(informationProduct.getPublicationType().getText());
+		String notProcessedMess = String.format("IPDS record for IPNumber '%s' not processed", ipNumber);
+
+		StringBuilder notOkDetails = new StringBuilder("\n\t").append(notProcessedMess).append(" (\"").append(processType).append("\") -")
+				.append(" ProductType: ").append(productType);
+
+		if (informationProduct != null) {
+			if (null != informationProduct.getPublicationType()) {
+				notOkDetails.append(" Publication Type: ").append(informationProduct.getPublicationType().getText());
+			}
+			if (null != informationProduct.getPublicationSubtype()) {
+				notOkDetails.append(" PublicationSubtype: ").append(informationProduct.getPublicationSubtype().getText());
+			}
+			if (null != informationProduct.getUsgsSeriesTitle()) {
+				notOkDetails.append(" Series: ").append(informationProduct.getUsgsSeriesTitle().getText());
+			}
+			notOkDetails.append(" Process State: ").append(informationProduct.getTask()).append(" DOI: ").append(informationProduct.getDigitalObjectIdentifier());
 		}
-		if (null != informationProduct.getPublicationSubtype()) {
-			notOkDetails.append(" PublicationSubtype: ").append(informationProduct.getPublicationSubtype().getText());
-		}
-		if (null != informationProduct.getUsgsSeriesTitle()) {
-			notOkDetails.append(" Series: ").append(informationProduct.getUsgsSeriesTitle().getText());
-		}
-		notOkDetails.append(" Process State: ").append(informationProduct.getTask()).append(" DOI: ").append(informationProduct.getDigitalObjectIdentifier());
 		return notOkDetails.toString();
 	}
 }

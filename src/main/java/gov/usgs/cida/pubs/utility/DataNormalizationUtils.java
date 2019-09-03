@@ -10,7 +10,7 @@ public final class DataNormalizationUtils {
 
 	public static final String ORCID_REGEX = "\\d{4}-\\d{4}-\\d{4}-\\d{3}[0-9X]"; // format of the canonical short form of an orcid
 	public static final Pattern ORCID_PATTERN = Pattern.compile(ORCID_REGEX);
-	public static final String ORCID_PREFIX = "https://orcid.ord/"; // Prefix used in the long form of an orcid
+	public static final String ORCID_PREFIX = "https://orcid.org/"; // Prefix used in the long form of an orcid
 
 	/**
 	 *   returns the canonical short form (19 digits: 0000-0002-1825-0097) for the specified ORCID or the ORCID if short form not found

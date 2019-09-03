@@ -235,7 +235,7 @@ public class SippProcess implements ISippProcess {
 		StringBuilder notOkDetails = new StringBuilder("\n\t").append(notProcessedMess).append(" (\"").append(processType).append("\") -")
 				.append(" ProductType: ").append(productType);
 
-		if(informationProduct != null) {
+		if (informationProduct != null) {
 			if (null != informationProduct.getPublicationType()) {
 				notOkDetails.append(" Publication Type: ").append(informationProduct.getPublicationType().getText());
 			}

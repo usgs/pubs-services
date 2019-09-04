@@ -18,6 +18,7 @@ import org.springframework.web.accept.ContentNegotiationStrategy;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,11 +33,11 @@ import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.dao.BaseDao;
-import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
 import gov.usgs.cida.pubs.dao.resulthandler.StreamingResultHandler;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
+import gov.usgs.cida.pubs.domain.PublicationFilterParams;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.json.View;
@@ -48,11 +49,10 @@ import gov.usgs.cida.pubs.transform.XlsxTransformer;
 import gov.usgs.cida.pubs.transform.intfc.ITransformer;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.webservice.MvcService;
-import io.swagger.annotations.ApiParam;
 
 @RestController
 @RequestMapping(value="publication")
-@ResponseBody 
+@ResponseBody
 public class PwPublicationMvcService extends MvcService<PwPublication> {
 
 	private final IPwPublicationBusService busService;
@@ -79,55 +79,21 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 
 	@GetMapping(produces={MediaType.APPLICATION_JSON_VALUE,
 			PubsConstantsHelper.MEDIA_TYPE_XLSX_VALUE, PubsConstantsHelper.MEDIA_TYPE_CSV_VALUE, PubsConstantsHelper.MEDIA_TYPE_TSV_VALUE})
+	@RequestMapping(method=RequestMethod.GET)
 	@JsonView(View.PW.class)
 	public void getStreamPubs(
-			@RequestParam(value=PublicationDao.Q, required=false) String q,
-			@RequestParam(value=PwPublicationDao.G, required=false) String g,
-			@RequestParam(value=PublicationDao.TITLE, required=false) String[] title,
-			@RequestParam(value=PublicationDao.PUB_ABSTRACT, required=false) String[] pubAbstract,
-			@RequestParam(value=PublicationDao.CONTRIBUTOR, required=false) String[] contributor,
-			@RequestParam(value=PublicationDao.ORCID, required=false) String[] orcid,
-			@RequestParam(value=PublicationDao.DOI, required=false) Boolean doi,
-			@RequestParam(value=PublicationDao.PROD_ID, required=false) String[] prodId,
-			@RequestParam(value=PublicationDao.INDEX_ID, required=false) String[] indexId,
-			@RequestParam(value=PublicationDao.IPDS_ID, required=false) String[] ipdsId,
-			@RequestParam(value=PublicationDao.YEAR, required=false) String[] year,
-			@RequestParam(value=PublicationDao.START_YEAR, required=false) String startYear,
-			@RequestParam(value=PublicationDao.END_YEAR, required=false) String endYear,
-			@RequestParam(value=PublicationDao.CONTRIBUTING_OFFICE, required=false) String[] contributingOffice,
-			@RequestParam(value=PublicationDao.TYPE_NAME, required=false) String[] typeName,
-			@RequestParam(value=PublicationDao.SUBTYPE_NAME, required=false) String[] subtypeName,
-			@RequestParam(value=PublicationDao.SERIES_NAME, required=false) String[] seriesName,
-			@RequestParam(value=PublicationDao.REPORT_NUMBER, required=false) String[] reportNumber,
-			@RequestParam(value=PublicationDao.LINK_TYPE, required=false) String[] linkType,
-			@RequestParam(value=PublicationDao.NO_LINK_TYPE, required=false) String[] noLinkType,
-			@RequestParam(value=BaseDao.PAGE_ROW_START, required=false) String pageRowStart,
-			@RequestParam(value=BaseDao.PAGE_NUMBER, required=false) String pageNumber,
-			@RequestParam(value=BaseDao.PAGE_SIZE, required=false) String pageSize,
-			@RequestParam(value=PwPublicationDao.PUB_X_DAYS, required=false) String pubXDays,
-			@RequestParam(value=PwPublicationDao.PUB_DATE_LOW, required=false) String pubDateLow,
-			@RequestParam(value=PwPublicationDao.PUB_DATE_HIGH, required=false) String pubDateHigh,
-			@RequestParam(value=PwPublicationDao.MOD_X_DAYS, required=false) String modXDays,
-			@RequestParam(value=PwPublicationDao.MOD_DATE_LOW, required=false) String modDateLow,
-			@RequestParam(value=PwPublicationDao.MOD_DATE_HIGH, required=false) String modDateHigh,
-			@RequestParam(value=PublicationDao.ORDER_BY, required=false) String orderBy,
-			@RequestParam(value=PwPublicationDao.CHORUS, required=false) Boolean chorus,
-			@ApiParam(allowableValues=PubsConstantsHelper.MEDIA_TYPE_JSON_EXTENSION + "," + PubsConstantsHelper.MEDIA_TYPE_CSV_EXTENSION + "," + PubsConstantsHelper.MEDIA_TYPE_TSV_EXTENSION + "," + PubsConstantsHelper.MEDIA_TYPE_XLSX_EXTENSION)
-			@RequestParam(value=PubsConstantsHelper.CONTENT_PARAMETER_NAME, required=false, defaultValue="json") String mimeType,
-			HttpServletResponse response, HttpServletRequest request) {
+			HttpServletResponse response, HttpServletRequest request, PublicationFilterParams filterParams,
+			@RequestParam(value=PubsConstantsHelper.CONTENT_PARAMETER_NAME, required=false, defaultValue="json") String mimeType) {
 
 		setHeaders(response);
 
 		//Note that paging is only applied to the json format
-		Map<String, Object> filters = buildFilters(chorus, contributingOffice, contributor, orcid, doi, endYear, g, null,
-				indexId, ipdsId, null, modDateHigh, modDateLow, modXDays, orderBy, null, null,
-				null, prodId, pubAbstract, pubDateHigh, pubDateLow, pubXDays, q, linkType, noLinkType, reportNumber,
-				seriesName, startYear, subtypeName, title, typeName, year);
+		Map<String, Object> filters = buildFilters(filterParams);
 
 		filters.put("url", configurationService.getWarehouseEndpoint() + "/publication/");
 
 		if (PubsConstantsHelper.MEDIA_TYPE_JSON_EXTENSION.equalsIgnoreCase(mimeType)) {
-			filters.putAll(buildPaging(pageRowStart, pageSize, pageNumber));
+			filters.putAll(buildPaging(filterParams.getPageRowStart(), filterParams.getPageSize(), filterParams.getPageNumber()));
 		}
 		streamResults(filters, mimeType, response);
 	}
@@ -225,8 +191,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		HttpServletResponse response) throws IOException{
 		String statement = PwPublicationDao.NS + PwPublicationDao.GET_CROSSREF_PUBLICATIONS;
 
-		Map<String, Object> filters = ImmutableMap.of(
-			PwPublicationDao.SUBTYPE_ID, new int[]{
+		Map<String, Object> filters = ImmutableMap.of(PwPublicationDao.SUBTYPE_ID, new int[]{
 				PublicationSubtype.USGS_NUMBERED_SERIES,
 				PublicationSubtype.USGS_UNNUMBERED_SERIES
 			}

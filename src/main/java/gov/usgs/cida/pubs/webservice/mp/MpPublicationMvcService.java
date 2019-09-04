@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,10 +30,8 @@ import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.ISippProcess;
-import gov.usgs.cida.pubs.dao.BaseDao;
-import gov.usgs.cida.pubs.dao.PublicationDao;
-import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.PublicationFilterParams;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.sipp.SippMpPubRequest;
@@ -68,41 +66,25 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 
 	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@GetMapping
+	@RequestMapping(method=RequestMethod.GET)
 	@JsonView(View.MP.class)
-	public @ResponseBody SearchResults getPubs(
-			@RequestParam(value=PublicationDao.Q, required=false) String q,
-			@RequestParam(value=PublicationDao.TITLE, required=false) String[] title,
-			@RequestParam(value=PublicationDao.PUB_ABSTRACT, required=false) String[] pubAbstract,
-			@RequestParam(value=PublicationDao.CONTRIBUTOR, required=false) String[] contributor,
-			@RequestParam(value=PublicationDao.PROD_ID, required=false) String[] prodId,
-			@RequestParam(value=PublicationDao.INDEX_ID, required=false) String[] indexId,
-			@RequestParam(value=PublicationDao.IPDS_ID, required=false) String[] ipdsId,
-			@RequestParam(value=PublicationDao.YEAR, required=false) String[] year,
-			@RequestParam(value=PublicationDao.START_YEAR, required=false) String startYear,
-			@RequestParam(value=PublicationDao.END_YEAR, required=false) String endYear,
-			@RequestParam(value=PublicationDao.CONTRIBUTING_OFFICE, required=false) String[] contributingOffice,
-			@RequestParam(value=PublicationDao.TYPE_NAME, required=false) String[] typeName,
-			@RequestParam(value=PublicationDao.SUBTYPE_NAME, required=false) String[] subtypeName,
-			@RequestParam(value=PublicationDao.SERIES_NAME, required=false) String[] seriesName,
-			@RequestParam(value=PublicationDao.REPORT_NUMBER, required=false) String[] reportNumber,
-			@RequestParam(value=BaseDao.PAGE_ROW_START, required=false, defaultValue = "0") String pageRowStart,
-			@RequestParam(value=BaseDao.PAGE_SIZE, required=false, defaultValue = "25") String pageSize,
-			@RequestParam(value=MpPublicationDao.LIST_ID, required=false) String[] listId,
-			@RequestParam(value=MpPublicationDao.GLOBAL, required=false, defaultValue="true") String global,
-			HttpServletResponse response) {
+	public @ResponseBody SearchResults getPubs(HttpServletResponse response, PublicationFilterParams filterParams) {
 
 		setHeaders(response);
 
-		Map<String, Object> filters = buildFilters(null, contributingOffice, contributor, null, null, endYear, null, global,
-				indexId, ipdsId, listId, null, null, null, null, null, pageRowStart,
-				pageSize, prodId, pubAbstract, null, null, null, q, null, null, reportNumber,
-				seriesName, startYear, subtypeName, title, typeName, year);
+		System.out.println("DEBUG: filetr-= " + filterParams);
+		// set Query parameter defaults
+		filterParams.setPageSize(filterParams.getPageSize() == null ? "25" : filterParams.getPageSize());
+		filterParams.setPageRowStart(filterParams.getPageRowStart() == null ? "0" : filterParams.getPageRowStart());
+		filterParams.setGlobal(filterParams.getGlobal() == null ? "true" : filterParams.getGlobal());
+
+		Map<String, Object> filters = buildFilters(filterParams);
 
 		List<Publication<?>> pubs = pubBusService.getObjects(filters);
 		Integer totalPubsCount = pubBusService.getObjectCount(filters);
 		SearchResults results = new SearchResults();
-		results.setPageSize(pageSize);
-		results.setPageRowStart(pageRowStart);
+		results.setPageSize(filterParams.getPageSize());
+		results.setPageRowStart(filterParams.getPageRowStart());
 		results.setRecords(pubs);
 		results.setRecordCount(totalPubsCount);
 

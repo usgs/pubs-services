@@ -427,9 +427,17 @@
                     )
             </if>
 
-            <if test="null != doi">
+            <if test="doi != null and doi.length > 0">
+                and (
+                <foreach item="d" collection="doi" open="" separator="or" close="">
+                    upper(pub.doi_name) like '%' || upper(#{d}) || '%'
+                </foreach>
+                )
+            </if>
+
+            <if test="null != hasDoi">
             <choose>
-                <when test="doi">
+                <when test="hasDoi">
                     and pub.doi_name is not null
                 </when>
                 <otherwise>

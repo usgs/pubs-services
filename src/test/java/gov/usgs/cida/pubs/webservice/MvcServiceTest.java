@@ -28,6 +28,7 @@ import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
+import gov.usgs.cida.pubs.domain.PublicationFilterParams;
 import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
 
 public class MvcServiceTest {
@@ -47,7 +48,8 @@ public class MvcServiceTest {
 		String[] contributingOffice = new String[]{"co1","co2"};
 		String[] contributor = new String[]{"Rebecca B. Carvin", "c2"};
 		String[] orcid = new String[]{"http://orcid.org/0000-0000-0000-0000", "http://orcid.org/1111-1111-1111-1111"};
-		Boolean doi = true;
+		String[] doi = new String[]{"DOI-123"};
+		Boolean hasDoi = true;
 		String endYear = "2020";
 		String g = "polygon((-122.3876953125 37.80869897600677,-122.3876953125 36.75979104322286,-123.55224609375 36.75979104322286," +
 				"-123.55224609375 37.80869897600677,-122.3876953125 37.80869897600677))";
@@ -78,10 +80,12 @@ public class MvcServiceTest {
 		String[] typeName = new String[]{"type1", "type2"};
 		String[] year = new String[]{"year1","year2"};
 
-		Map<String, Object> filters = testMvcService.buildFilters(chorus, contributingOffice, contributor, orcid, doi, endYear, g, global, indexId,
-				ipdsId, listId, modDateHigh, modDateLow, modXDays, orderBy,
-				String.valueOf(page_number), String.valueOf(page_row_start), String.valueOf(page_size), prodId, pubAbstract,
+		PublicationFilterParams filterParams = buildPwPubFilterParams(chorus, contributingOffice, contributor, orcid, doi, hasDoi, endYear, g,
+				global, indexId, ipdsId, listId, modDateHigh, modDateLow, modXDays, orderBy, String.valueOf(page_number), String.valueOf(page_row_start),
+				String.valueOf(page_size), prodId, pubAbstract,
 				pubDateHigh, pubDateLow, pubXDays, q, linkType, noLinkType, reportNumber, seriesName, startYear, subtypeName, title, typeName, year);
+
+		Map<String, Object> filters = testMvcService.buildFilters(filterParams);
 
 		assertTrue(filters.containsKey(PublicationDao.PUB_ABSTRACT ));
 		assertEquals(pubAbstract, filters.get(PublicationDao.PUB_ABSTRACT));
@@ -93,7 +97,8 @@ public class MvcServiceTest {
 		assertEquals("rebecca:* & b.:* & carvin:* & c2:*", filters.get(PublicationDao.CONTRIBUTOR));
 		assertTrue(filters.containsKey(PersonContributorDao.ORCID));
 		assertTrue(Arrays.equals(DataNormalizationUtils.normalizeOrcid(orcid), (String[]) filters.get(PersonContributorDao.ORCID)));
-		assertEquals(doi, filters.get(PublicationDao.DOI));
+		assertTrue(Arrays.equals(doi, (String[]) filters.get(PublicationDao.DOI)));
+		assertTrue((Boolean)filters.get(PublicationDao.HAS_DOI));
 		assertTrue(filters.containsKey(PublicationDao.END_YEAR));
 		assertEquals(endYear, filters.get(PublicationDao.END_YEAR));
 		assertTrue(filters.containsKey(PwPublicationDao.G));
@@ -154,9 +159,10 @@ public class MvcServiceTest {
 
 	@Test
 	public void buildFiltersBadGTest() {
-		Map<String, Object> filters = testMvcService.buildFilters(null, null, null, null, null, null, "abc", null, null,
-				null, null, null, null, null, null, null, null, null, null, null,
-				null, null, null, null, null, null, null, null, null, null, null, null, null);
+		PublicationFilterParams filterParams = buildPwPubFilterParams(null, null, null, null, null, null, "abc", null, null,
+				null, null, null, null, null, null, null, null, null, null, null, null, null,
+				null, null, null, null, null, null, null, null, null, null, null, null);
+		Map<String, Object> filters = testMvcService.buildFilters(filterParams);
 		assertFalse(filters.containsKey(PwPublicationDao.G));
 	}
 
@@ -327,5 +333,51 @@ public class MvcServiceTest {
 
 		ids = testMvcService.mapListId(null);
 		assertNull(ids);
+	}
+
+	protected PublicationFilterParams buildPwPubFilterParams(Boolean chorus, String[] contributingOffice, String[] contributor,
+			String[] orcid, String[] doi, Boolean hasDoi, String endYear, String g, String global, String[] indexId, String[] ipdsId, String[] listId,
+			String modDateHigh, String modDateLow, String modXDays, String orderBy, String pageNumber,
+			String pageRowStart, String pageSize, String[] prodId, String[] pubAbstract, String pubDateHigh,
+			String pubDateLow, String pubXDays, String q, String[] linkType, String[] noLinkType, String[] reportNumber, String[] seriesName,
+			String startYear, String[] subtypeName, String[] title, String[] typeName, String[] year) {
+
+			PublicationFilterParams filterParams = new PublicationFilterParams();
+			filterParams.setChorus(chorus);
+			filterParams.setContributingOffice(contributingOffice);
+			filterParams.setContributor(contributor);
+			filterParams.setOrcid(orcid);
+			filterParams.setDoi(doi);
+			filterParams.setHasDoi(hasDoi);
+			filterParams.setEndYear(endYear);
+			filterParams.setG(g);
+			filterParams.setGlobal(global);
+			filterParams.setIndexId(indexId);
+			filterParams.setIpdsId(ipdsId);
+			filterParams.setListId(listId);
+			filterParams.setModDateHigh(modDateHigh);
+			filterParams.setModDateLow(modDateLow);
+			filterParams.setModXDays(modXDays);
+			filterParams.setOrderBy(orderBy);
+			filterParams.setPageNumber(pageNumber);
+			filterParams.setPageRowStart(pageRowStart);
+			filterParams.setPageSize(pageSize);
+			filterParams.setProdId(prodId);
+			filterParams.setPubAbstract(pubAbstract);
+			filterParams.setPubDateHigh(pubDateHigh);
+			filterParams.setPubDateLow(pubDateLow);
+			filterParams.setPubXDays(pubXDays);
+			filterParams.setQ(q);
+			filterParams.setLinkType(linkType);
+			filterParams.setNoLinkType(noLinkType);
+			filterParams.setReportNumber(reportNumber);
+			filterParams.setSeriesName(seriesName);
+			filterParams.setStartYear(startYear);
+			filterParams.setSubtypeName(subtypeName);
+			filterParams.setTitle(title);
+			filterParams.setTypeName(typeName);
+			filterParams.setYear(year);
+
+			return filterParams;
 	}
 }

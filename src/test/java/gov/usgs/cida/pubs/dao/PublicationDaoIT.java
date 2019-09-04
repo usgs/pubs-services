@@ -355,7 +355,8 @@ public class PublicationDaoIT extends BaseIT {
 		filters.put(PublicationDao.CONTRIBUTING_OFFICE, new String[]{"contributingOffice1", "contributingOffice2"});
 		filters.put(PublicationDao.CONTRIBUTOR, "contributor1" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX + MvcService.TEXT_SEARCH_AND + "contributor2" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX);
 		
-		filters.put(PublicationDao.DOI, true);
+		filters.put(PublicationDao.DOI, new String[]{"DOI-123"});
+		filters.put(PublicationDao.HAS_DOI, true);
 
 		filters.put(PublicationDao.END_YEAR, "yearEnd");
 		filters.put(PwPublicationDao.G, SEARCH_POLYGON);

@@ -73,18 +73,18 @@ public class GlobalDefaultExceptionHandler {
 
 	// parse out a user friendly field message from the field error in the binding exception
 	private String formatErrorMessage(BindException ex) {
-		String errorMess = "";
+		StringBuilder errorMess =  new StringBuilder(100);
 		String sep = "";
 
 		for(FieldError err: ex.getFieldErrors()) {
 			String mess = err.getDefaultMessage() == null ? " Error processing field" : err.getDefaultMessage();
 			mess = mess.replaceAll(NESTED_EXCEPTION_REGEX, "");
 			String prefix = "Error in parameter " + err.getField() + ":";
-			errorMess = errorMess + sep + prefix + mess;
+			errorMess.append(sep).append(prefix).append(mess);
 			sep = " -- ";
 		}
 
-		return errorMess;
+		return errorMess.toString();
 	}
 
 }

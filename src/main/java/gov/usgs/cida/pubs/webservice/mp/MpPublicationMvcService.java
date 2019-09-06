@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -66,13 +65,11 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 
 	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@GetMapping
-	@RequestMapping(method=RequestMethod.GET)
 	@JsonView(View.MP.class)
 	public @ResponseBody SearchResults getPubs(HttpServletResponse response, PublicationFilterParams filterParams) {
 
 		setHeaders(response);
 
-		System.out.println("DEBUG: filetr-= " + filterParams);
 		// set Query parameter defaults
 		filterParams.setPageSize(filterParams.getPageSize() == null ? "25" : filterParams.getPageSize());
 		filterParams.setPageRowStart(filterParams.getPageRowStart() == null ? "0" : filterParams.getPageRowStart());

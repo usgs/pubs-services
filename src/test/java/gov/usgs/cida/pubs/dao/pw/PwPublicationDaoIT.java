@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,9 @@ import com.google.common.collect.ImmutableMap;
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.PublicationDaoIT;
+import gov.usgs.cida.pubs.domain.PersonContributor;
+import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
@@ -90,6 +95,75 @@ public class PwPublicationDaoIT extends BaseIT {
 		//This only checks that the final query is syntactically correct, not that it is logically correct!
 		pwPublicationDao.getByMap(PublicationDaoIT.buildAllParms());
 		//TODO add in real filter tests
+	}
+
+	@Test
+	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
+		@DatabaseSetup("classpath:/testData/publicationType.xml"),
+		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+		@DatabaseSetup("classpath:/testData/dataset.xml")
+	})
+	public void getByMapTestOrcid() {
+		Map<String, Object> filters = new HashMap<>();
+		String[] orcids = new String[] { "0000-0000-0000-0001", "0000-0000-0000-0004" };
+		for(String orcid : orcids) {
+			filters.clear();
+			filters.put(PublicationDao.ORCID, new String[] {orcid});
+
+			List<PwPublication> pubs = pwPublicationDao.getByMap(filters);
+			assertNotNull(pubs);
+			assertTrue(String.format("Expected filter match on orcid '%s', got none", orcid), pubs.size() > 0);
+
+			for(Publication<?> pub : pubs) {
+				assertNotNull("Null publication returned from db query", pub);
+				assertNotNull("Pubication returned from db query has null id", pub.getId());
+				assertTrue("Publication returned from query has invalid id: " + pub.getId(), pub.getId() > 0);
+				assertTrue(String.format("Publication (id=%d) has validation errors:",pub.getId(), pub.getValidationErrors().toString()), pub.isValid());
+				List<String> orcidList = getOrcids(pub);
+				assertTrue(String.format("Expected orcid '%s' in publication (id=%d) returned from query, got orcids: %s" , 
+							orcid, pub.getId(), Arrays.toString(orcidList.toArray())),
+							orcidList.contains(orcid));
+			}
+		}
+
+		// try both orcids in a single query
+		filters.clear();
+		filters.put(PublicationDao.ORCID, orcids);
+		List<PwPublication> pubs = pwPublicationDao.getByMap(filters);
+		assertNotNull(pubs);
+		assertTrue(String.format("Expected two matches on orcids '%s', got none", Arrays.toString(orcids)), pubs.size() == 2);
+		List<String> foundOrcidList = new ArrayList<>();
+
+		for(Publication<?> pub : pubs) {
+			foundOrcidList.addAll(getOrcids(pub));
+		}
+		String[] foundOrcids = foundOrcidList.toArray(new String[foundOrcidList.size()]);
+		Arrays.sort(foundOrcids);
+		assertTrue(String.format("Expected orcids %s from query specifying multiple oids, got: %s", Arrays.toString(orcids), Arrays.toString(foundOrcids)),
+					Arrays.equals(orcids, foundOrcids));
+
+		// test for orcid being undefined in the filter, these queries should match on all publications
+		String[] emptyOrcids = new String[]{ null, ""};
+		for(String orcid : emptyOrcids) {
+			filters.clear();
+			filters.put(PublicationDao.ORCID, new String[]{orcid});
+			pubs = pwPublicationDao.getByMap(filters);
+			assertNotNull(pubs);
+			String orcidDesc = orcid == null ? "null" : orcid.isEmpty() ? "empty string" : orcid;
+			assertTrue(String.format("Expected %d matches on filter with orcid %s, got %d", 4, orcidDesc, pubs.size()), pubs.size() == 0);
+		}
+
+		// try a few illegal orcids that might fool query into a match
+		String[] badOrcids = new String[]{"0000", "0000-0000-0000-00001", "0000-0000-0000-000A", "any"};
+		for(String orcid : badOrcids) {
+			filters.clear();
+			filters.put(PublicationDao.ORCID, new String[]{orcid});
+			pubs = pwPublicationDao.getByMap(filters);
+			assertNotNull(pubs);
+			assertTrue(String.format("Expected no matches on filter with orcid '%s', got %d", orcid, pubs.size()), pubs.size() == 0);
+		}
 	}
 
 	@Test
@@ -250,7 +324,7 @@ public class PwPublicationDaoIT extends BaseIT {
 		pubs = pwPublicationDao.getByMap(filters);
 		assertNotNull(pubs);
 		assertFalse(pubs.isEmpty());
-		assertEquals(2, pubs.size());
+		assertEquals(4, pubs.size());
 	}
 	
 	@Test
@@ -304,6 +378,21 @@ public class PwPublicationDaoIT extends BaseIT {
 	@Test
 	public void refreshIndexTest() {
 		pwPublicationDao.refreshTextIndex();
+	}
+
+	private List<String> getOrcids(Publication<?> pub) {
+		ArrayList<String> orcidList = new ArrayList<>();
+
+		for(PublicationContributor<?> contributor : pub.getContributors()) {
+			if(contributor.getContributor() instanceof PersonContributor) {
+				String orcid = ((PersonContributor<?>)contributor.getContributor()).getOrcid();
+				if(!orcidList.contains(orcid)) {
+					orcidList.add(orcid);
+				}
+			}
+		}
+
+		return orcidList;
 	}
 
 }

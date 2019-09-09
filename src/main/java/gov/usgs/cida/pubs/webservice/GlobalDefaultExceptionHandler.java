@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -23,6 +25,7 @@ import org.springframework.web.context.request.WebRequest;
 @ControllerAdvice
 public class GlobalDefaultExceptionHandler {
 	private static final Logger LOG = LoggerFactory.getLogger(GlobalDefaultExceptionHandler.class);
+	private static final String NESTED_EXCEPTION_REGEX = ".*nested exception is.*:";
 
 	public static final String ERROR_MESSAGE_KEY = "Error Message";
 
@@ -32,6 +35,9 @@ public class GlobalDefaultExceptionHandler {
 		if (ex instanceof AccessDeniedException) {
 			response.setStatus(HttpStatus.FORBIDDEN.value());
 			responseMap.put(ERROR_MESSAGE_KEY, "You are not authorized to perform this action.");
+		} else if (ex instanceof BindException && hasOnlyFieldErrors((BindException) ex)) {
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			responseMap.put(ERROR_MESSAGE_KEY, formatErrorMessage((BindException) ex));
 		} else if (ex instanceof MethodArgumentNotValidException) {
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 			responseMap.put(ERROR_MESSAGE_KEY, ((MethodArgumentNotValidException) ex).getBindingResult().getFieldError().getDefaultMessage());
@@ -59,4 +65,26 @@ public class GlobalDefaultExceptionHandler {
 		}
 		return responseMap;
 	}
+
+	// return true if the bind exception only has field (data) errors, typically caused by bad input
+	private boolean hasOnlyFieldErrors(BindException ex) {
+		return ex.hasFieldErrors() && !ex.hasGlobalErrors();
+	}
+
+	// parse out a user friendly field message from the field error in the binding exception
+	private String formatErrorMessage(BindException ex) {
+		StringBuilder errorMess =  new StringBuilder(100);
+		String sep = "";
+
+		for(FieldError err: ex.getFieldErrors()) {
+			String mess = err.getDefaultMessage() == null ? " Error processing field" : err.getDefaultMessage();
+			mess = mess.replaceAll(NESTED_EXCEPTION_REGEX, "");
+			String prefix = "Error in parameter " + err.getField() + ":";
+			errorMess.append(sep).append(prefix).append(mess);
+			sep = " -- ";
+		}
+
+		return errorMess.toString();
+	}
+
 }

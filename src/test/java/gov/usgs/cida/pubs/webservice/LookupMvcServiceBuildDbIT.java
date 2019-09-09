@@ -117,7 +117,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 						new JSONArray("[{\"id\":3,\"text\":\"outerfamily, outerGiven outerSuffix outer@gmail.com\",\"preferred\":false}]"))
 								.allowingAnyArrayOrdering());
 
-		rtn = mockMvc.perform(get("/lookup/people?orcid=http://orcid.org/0000-0000-0000-0004").accept(MediaType.APPLICATION_JSON))
+		rtn = mockMvc.perform(get("/lookup/people?orcid=0000-0000-0000-0004").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
@@ -191,7 +191,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
-		assertEquals(6, getRtnAsJSONArray(rtn).length());
+		assertEquals(8, getRtnAsJSONArray(rtn).length());
 
 		rtn = mockMvc.perform(get("/lookup/publications?text=9").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())

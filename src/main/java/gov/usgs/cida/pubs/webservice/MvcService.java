@@ -22,6 +22,7 @@ import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
+import gov.usgs.cida.pubs.domain.PublicationFilterParams;
 import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 
@@ -34,49 +35,45 @@ public abstract class MvcService<D> {
 
 	private static final Pattern G_PATTERN = Pattern.compile("^polygon\\(\\((-?\\d+\\.?\\d* -?\\d+\\.?\\d*,){3,}-?\\d+\\.?\\d* -?\\d+\\.?\\d*\\)\\)$");
 
-	protected Map<String, Object> buildFilters(Boolean chorus, String[] contributingOffice, String[] contributor,
-			String[] orcid, Boolean doi, String endYear, String g, String global, String[] indexId, String[] ipdsId, String[] listId,
-			String modDateHigh, String modDateLow, String modXDays, String orderBy, String page_number,
-			String page_row_start, String page_size, String[] prodId, String[] pubAbstract, String pubDateHigh,
-			String pubDateLow, String pubXDays, String q, String[] linkType, String[] noLinkType, String[] reportNumber, String[] seriesName,
-			String startYear, String[] subtypeName, String[] title, String[] typeName, String[] year) {
+	protected Map<String, Object> buildFilters(PublicationFilterParams filterParams) {
 		Map<String, Object> filters = new HashMap<>();
 
-		filters.put(PublicationDao.PUB_ABSTRACT, pubAbstract);
-		filters.put(PwPublicationDao.CHORUS, chorus);
-		filters.put(PublicationDao.CONTRIBUTING_OFFICE, contributingOffice);
-		filters.put(PublicationDao.CONTRIBUTOR, configureContributorFilter(contributor));
-		filters.put(PublicationDao.ORCID, DataNormalizationUtils.normalizeOrcid(orcid));
-		filters.put(PublicationDao.DOI, doi);
-		filters.put(PublicationDao.END_YEAR, endYear);
-		if (null != g && G_PATTERN.matcher(g.toLowerCase()).matches()) {
-			filters.put(PwPublicationDao.G, g.toLowerCase());
+		filters.put(PublicationDao.PUB_ABSTRACT, filterParams.getPubAbstract());
+		filters.put(PwPublicationDao.CHORUS, filterParams.getChorus());
+		filters.put(PublicationDao.CONTRIBUTING_OFFICE, filterParams.getContributingOffice());
+		filters.put(PublicationDao.CONTRIBUTOR, configureContributorFilter(filterParams.getContributor()));
+		filters.put(PublicationDao.ORCID, DataNormalizationUtils.normalizeOrcid(filterParams.getOrcid()));
+		filters.put(PublicationDao.DOI, filterParams.getDoi());
+		filters.put(PublicationDao.HAS_DOI, filterParams.getHasDoi());
+		filters.put(PublicationDao.END_YEAR, filterParams.getEndYear());
+		if (null != filterParams.getG() && G_PATTERN.matcher(filterParams.getG().toLowerCase()).matches()) {
+			filters.put(PwPublicationDao.G, filterParams.getG().toLowerCase());
 		}
-		filters.put(MpPublicationDao.GLOBAL, global);
-		filters.put(PublicationDao.INDEX_ID, indexId);
-		filters.put(PublicationDao.IPDS_ID, ipdsId);
-		filters.put(MpPublicationDao.LIST_ID, null == listId ? null : mapListId(listId));
-		filters.put(PwPublicationDao.MOD_DATE_HIGH, modDateHigh);
-		filters.put(PwPublicationDao.MOD_DATE_LOW, modDateLow);
-		filters.put(PwPublicationDao.MOD_X_DAYS, modXDays);
-		filters.put(PublicationDao.ORDER_BY, orderBy);
-		filters.put(BaseDao.PAGE_NUMBER, PubsUtils.parseInteger(page_number));
-		filters.put(PublicationDao.PAGE_ROW_START, PubsUtils.parseInteger(page_row_start));
-		filters.put(PublicationDao.PAGE_SIZE, PubsUtils.parseInteger(page_size));
-		filters.put(PublicationDao.PROD_ID, prodId);
-		filters.put(PwPublicationDao.PUB_DATE_HIGH, pubDateHigh);
-		filters.put(PwPublicationDao.PUB_DATE_LOW, pubDateLow);
-		filters.put(PwPublicationDao.PUB_X_DAYS, pubXDays);
-		filters.putAll(configureSingleSearchFilters(q));
-		filters.put(PublicationDao.LINK_TYPE, linkType);
-		filters.put(PublicationDao.NO_LINK_TYPE, noLinkType);
-		filters.put(PublicationDao.REPORT_NUMBER, reportNumber);
-		filters.put(PublicationDao.SERIES_NAME, seriesName);
-		filters.put(PublicationDao.START_YEAR, startYear);
-		filters.put(PublicationDao.SUBTYPE_NAME, subtypeName);
-		filters.put(PublicationDao.TITLE, title);
-		filters.put(PublicationDao.TYPE_NAME, typeName);
-		filters.put(PublicationDao.YEAR, year);
+		filters.put(MpPublicationDao.GLOBAL, filterParams.getGlobal());
+		filters.put(PublicationDao.INDEX_ID, filterParams.getIndexId());
+		filters.put(PublicationDao.IPDS_ID, filterParams.getIpdsId());
+		filters.put(MpPublicationDao.LIST_ID, null == filterParams.getListId() ? null : mapListId(filterParams.getListId()));
+		filters.put(PwPublicationDao.MOD_DATE_HIGH, filterParams.getModDateHigh());
+		filters.put(PwPublicationDao.MOD_DATE_LOW, filterParams.getModDateLow());
+		filters.put(PwPublicationDao.MOD_X_DAYS, filterParams.getModXDays());
+		filters.put(PublicationDao.ORDER_BY, filterParams.getOrderBy());
+		filters.put(BaseDao.PAGE_NUMBER, PubsUtils.parseInteger(filterParams.getPageNumber()));
+		filters.put(PublicationDao.PAGE_ROW_START, PubsUtils.parseInteger(filterParams.getPageRowStart()));
+		filters.put(PublicationDao.PAGE_SIZE, PubsUtils.parseInteger(filterParams.getPageSize()));
+		filters.put(PublicationDao.PROD_ID, filterParams.getProdId());
+		filters.put(PwPublicationDao.PUB_DATE_HIGH, filterParams.getPubDateHigh());
+		filters.put(PwPublicationDao.PUB_DATE_LOW, filterParams.getPubDateLow());
+		filters.put(PwPublicationDao.PUB_X_DAYS, filterParams.getPubXDays());
+		filters.putAll(configureSingleSearchFilters(filterParams.getQ()));
+		filters.put(PublicationDao.LINK_TYPE, filterParams.getLinkType());
+		filters.put(PublicationDao.NO_LINK_TYPE, filterParams.getNoLinkType());
+		filters.put(PublicationDao.REPORT_NUMBER, filterParams.getReportNumber());
+		filters.put(PublicationDao.SERIES_NAME, filterParams.getSeriesName());
+		filters.put(PublicationDao.START_YEAR, filterParams.getStartYear());
+		filters.put(PublicationDao.SUBTYPE_NAME, filterParams.getSubtypeName());
+		filters.put(PublicationDao.TITLE, filterParams.getTitle());
+		filters.put(PublicationDao.TYPE_NAME, filterParams.getTypeName());
+		filters.put(PublicationDao.YEAR, filterParams.getYear());
 
 		return filters;
 	}

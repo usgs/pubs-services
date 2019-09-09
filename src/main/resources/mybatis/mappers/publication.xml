@@ -334,51 +334,39 @@
 
     <sql id="filters">
             <if test="title != null and title.length > 0">
-                and (
-                <foreach item="t" collection="title" open="" separator="or" close="">
+                and <foreach item="t" collection="title" open="(" separator="or" close=")">
                     upper(pub.title) like '%' || upper(#{t}) || '%'
                 </foreach>
-                )
             </if>
 
             <if test="abstract != null and abstract.length > 0">
-                and (
-                <foreach item="a" collection="abstract" open="" separator="or" close="">
+                and <foreach item="a" collection="abstract" open="(" separator="or" close=")">
                     upper(pub.abstract) like '%' || upper(#{a}) || '%'
                 </foreach>
-                )
             </if>
 
             <if test="prodId != null and prodId.length > 0">
-                and (
-                <foreach item="i" collection="prodId" open="" separator="or" close="">
+                and <foreach item="i" collection="prodId" open="(" separator="or" close=")">
                     pub.publication_id = #{i}
                 </foreach>
-                )
             </if>
 
             <if test="indexId != null and indexId.length > 0">
-                and (
-                <foreach item="i" collection="indexId" open="" separator="or" close="">
+                and <foreach item="i" collection="indexId" open="(" separator="or" close=")">
                     upper(pub.index_id) = upper(#{i,jdbcType=VARCHAR})
                 </foreach>
-                )
             </if>
 
             <if test="ipdsId != null and ipdsId.length > 0">
-                and (
-                <foreach item="i" collection="ipdsId" open="" separator="or" close="">
+                and <foreach item="i" collection="ipdsId" open="(" separator="or" close=")">
                     pub.ipds_id = #{i,jdbcType=VARCHAR}
                 </foreach>
-                )
             </if>
 
             <if test="year != null and year.length > 0">
-                and (
-                <foreach item="y" collection="year" open="" separator="or" close="">
+                and <foreach item="y" collection="year" open="(" separator="or" close=")">
                     pub.publication_year = #{y}
                 </foreach>
-                )
             </if>
 
             <if test="startYear != null">
@@ -393,7 +381,7 @@
                 and pub.publication_type_id in (select publication_type_id
                                                   from publication_type
                                                  where
-                    <foreach item="r" collection="typeName" open="" separator="or" close="">
+                    <foreach item="r" collection="typeName" open="(" separator="or" close=")">
                         upper(name) like '%' || upper(#{r}) || '%'
                     </foreach>
                     )
@@ -403,7 +391,7 @@
                 and pub.publication_subtype_id in (select publication_subtype_id
                                                      from publication_subtype
                                                     where
-                    <foreach item="r" collection="subtypeName" open="" separator="or" close="">
+                    <foreach item="r" collection="subtypeName" open="(" separator="or" close=")">
                         upper(name) like '%' || upper(#{r}) || '%'
                     </foreach>
                     )
@@ -413,23 +401,27 @@
                 and pub.publication_series_id in (select publication_series_id
                                                     from publication_series
                                                    where
-                    <foreach item="r" collection="seriesName" open="" separator="or" close="">
+                    <foreach item="r" collection="seriesName" open="(" separator="or" close=")">
                         upper(name) like '%' || upper(#{r}) || '%'
                     </foreach>
                     )
             </if>
 
             <if test="reportNumber != null and reportNumber.length > 0">
-                and (
-                    <foreach item="r" collection="reportNumber" open="" separator="or" close="">
+                and <foreach item="r" collection="reportNumber" open="(" separator="or" close=")">
                         upper(pub.series_number) like '%' || upper(#{r}) || '%'
                     </foreach>
-                    )
             </if>
 
-            <if test="null != doi">
+            <if test="doi != null and doi.length > 0">
+                and <foreach item="d" collection="doi" open="(" separator="or" close=")">
+                    upper(pub.doi_name) like '%' || upper(#{d}) || '%'
+                </foreach>
+            </if>
+
+            <if test="null != hasDoi">
             <choose>
-                <when test="doi">
+                <when test="hasDoi">
                     and pub.doi_name is not null
                 </when>
                 <otherwise>

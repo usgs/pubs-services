@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,6 +37,7 @@ import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
+import gov.usgs.cida.pubs.domain.PublicationFilterParams;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.webservice.MvcService;
@@ -64,50 +66,19 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 	}
 
 	@GetMapping
-	public void getRSS(
-			@RequestParam(value=PublicationDao.Q, required=false) String q,
-			@RequestParam(value=PwPublicationDao.G, required=false) String g,
-			@RequestParam(value=PublicationDao.TITLE, required=false) String[] title,
-			@RequestParam(value=PublicationDao.PUB_ABSTRACT, required=false) String[] pubAbstract,
-			@RequestParam(value=PublicationDao.CONTRIBUTOR, required=false) String[] contributor,
-			@RequestParam(value=PublicationDao.ORCID, required=false) String[] orcid,
-			@RequestParam(value=PublicationDao.PROD_ID, required=false) String[] prodId,
-			@RequestParam(value=PublicationDao.INDEX_ID, required=false) String[] indexId,
-			@RequestParam(value=PublicationDao.IPDS_ID, required=false) String[] ipdsId,
-			@RequestParam(value=PublicationDao.YEAR, required=false) String[] year,
-			@RequestParam(value=PublicationDao.START_YEAR, required=false) String startYear,
-			@RequestParam(value=PublicationDao.END_YEAR, required=false) String endYear,
-			@RequestParam(value=PublicationDao.CONTRIBUTING_OFFICE, required=false) String[] contributingOffice,
-			@RequestParam(value=PublicationDao.TYPE_NAME, required=false) String[] typeName,
-			@RequestParam(value=PublicationDao.SUBTYPE_NAME, required=false) String[] subtypeName,
-			@RequestParam(value=PublicationDao.SERIES_NAME, required=false) String[] seriesName,
-			@RequestParam(value=PublicationDao.REPORT_NUMBER, required=false) String[] reportNumber,
-			@RequestParam(value=PublicationDao.LINK_TYPE, required=false) String[] linkType,
-			@RequestParam(value=PublicationDao.NO_LINK_TYPE, required=false) String[] noLinkType,
-			@RequestParam(value=PwPublicationDao.PUB_X_DAYS, required=false) String pubXDays,
-			@RequestParam(value=PwPublicationDao.PUB_DATE_LOW, required=false) String pubDateLow,
-			@RequestParam(value=PwPublicationDao.PUB_DATE_HIGH, required=false) String pubDateHigh,
-			@RequestParam(value=PwPublicationDao.MOD_X_DAYS, required=false) String modXDays,
-			@RequestParam(value=PwPublicationDao.MOD_DATE_LOW, required=false) String modDateLow,
-			@RequestParam(value=PwPublicationDao.MOD_DATE_HIGH, required=false) String modDateHigh,
-			@RequestParam(value=PublicationDao.ORDER_BY, required=false) String orderBy,
-			@RequestParam(value=PwPublicationDao.CHORUS, required=false) Boolean chorus,
-			HttpServletResponse response) {
-
+	@RequestMapping(method=RequestMethod.GET)
+	public void getRSS(HttpServletResponse response, PublicationFilterParams filterParams) {
 		/**
 		 * Per JIMK on JIRA PUBSTWO-971:
 		 * 
 		 * 	"if mod_x_days is there, and pub_x_days is not, mod_x_days should override the default pub_x_days = 30"
 		 */
-		if (((pubXDays == null) || (pubXDays.isEmpty()))
-				&& ((modXDays == null) || (modXDays.isEmpty()))) {
-			pubXDays = DEFAULT_RECORDS;
+		if (((filterParams.getPubXDays() == null) || (filterParams.getPubXDays().isEmpty()))
+				&& ((filterParams.getModXDays() == null) || (filterParams.getModXDays().isEmpty()))) {
+			filterParams.setPubXDays(DEFAULT_RECORDS);
 		}
 
-		Map<String, Object> filters = buildFilters(chorus, contributingOffice, contributor, orcid, null, endYear, g, null,
-				indexId, ipdsId, null, modDateHigh, modDateLow, modXDays, orderBy, null, null,
-				null, prodId, pubAbstract, pubDateHigh, pubDateLow, pubXDays, q, linkType, noLinkType, reportNumber,
-				seriesName, startYear, subtypeName, title, typeName, year);
+		Map<String, Object> filters = buildFilters(filterParams);
 
 		List<PwPublication> pubs = busService.getObjects(filters);
 

@@ -5,6 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +24,9 @@ import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoIT;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
+import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
 import gov.usgs.cida.pubs.webservice.MvcService;
@@ -130,6 +134,43 @@ public class PublicationDaoIT extends BaseIT {
 
 		//This only checks that the final query is syntactically correct, not that it is logically correct!
 		pubs = publicationDao.getByMap(buildAllParms());
+	}
+
+	@Test
+	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testData/publicationType.xml"),
+		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+		@DatabaseSetup("classpath:/testData/dataset.xml")
+	})
+	public void getByMapTestDoi() {
+		Map<String, Object> filters = new HashMap<>();
+		filters.put(PublicationDao.DOI, new String[] { "10.3133/sir20145083" });
+		List<Publication<?>> pubs = publicationDao.getByMap(filters);
+		assertEquals(1, pubs.size());
+		assertEquals("10.3133/sir20145083", pubs.get(0).getDoi());
+		assertEquals("sir20145083", pubs.get(0).getIndexId());
+		assertEquals("2014-5083", pubs.get(0).getSeriesNumber());
+		assertEquals(23, pubs.get(0).getLargerWorkType().getId().intValue());
+		assertEquals(23, pubs.get(0).getLargerWorkSubtype().getId().intValue());
+		assertEquals("EPSG:3857", pubs.get(0).getProjection());
+
+		filters.clear();
+		String[] doiIds = new String[] { "10.3133/ofr20141147", "10.3133/sir20145083", };
+		filters.put(PublicationDao.DOI, doiIds);
+		pubs = publicationDao.getByMap(filters);
+		assertEquals(2, pubs.size());
+		String[] foundDois = getDoiIds(pubs);
+		assertTrue(Arrays.equals(doiIds, foundDois));
+
+		filters.clear();
+		filters.put(PublicationDao.HAS_DOI, Boolean.TRUE);
+		doiIds = new String[] {"10.3133/ofr20141147", "10.3133/sir20145083", "doi"};
+		pubs = publicationDao.getByMap(filters);
+		assertEquals(3, pubs.size());
+		foundDois = getDoiIds(pubs);
+		assertTrue(String.format("Expected doi values '%s', got '%s'", Arrays.toString(doiIds), Arrays.toString(foundDois)),
+					Arrays.equals(doiIds, foundDois));
 	}
 
 	@Test
@@ -334,7 +375,7 @@ public class PublicationDaoIT extends BaseIT {
 
 		filters.put(MpPublicationDao.GLOBAL, "true");
 		cnt = publicationDao.getObjectCount(filters);
-		assertEquals(6, cnt.intValue());
+		assertEquals(8, cnt.intValue());
 
 		filters.put(PublicationDao.IPDS_ID, new String[] { "ipds_id" });
 		cnt = publicationDao.getObjectCount(filters);
@@ -355,7 +396,8 @@ public class PublicationDaoIT extends BaseIT {
 		filters.put(PublicationDao.CONTRIBUTING_OFFICE, new String[]{"contributingOffice1", "contributingOffice2"});
 		filters.put(PublicationDao.CONTRIBUTOR, "contributor1" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX + MvcService.TEXT_SEARCH_AND + "contributor2" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX);
 		
-		filters.put(PublicationDao.DOI, true);
+		filters.put(PublicationDao.DOI, new String[]{"DOI-123", "DOI-456"});
+		filters.put(PublicationDao.HAS_DOI, true);
 
 		filters.put(PublicationDao.END_YEAR, "yearEnd");
 		filters.put(PwPublicationDao.G, SEARCH_POLYGON);
@@ -467,4 +509,18 @@ public class PublicationDaoIT extends BaseIT {
 		//This only checks that the final query is syntactically correct, not that it is logically correct!
 		pubs = publicationDao.getByMap(buildAllParms());
 	}
+
+	private String[] getDoiIds(List<Publication<?>> pubs) {
+		ArrayList<String> doiList = new ArrayList<>();
+
+		for(Publication<?> pub : pubs) {
+			doiList.add(pub.getDoi());
+		}
+
+		String[] doiIds = doiList.toArray(new String[0]);
+		Arrays.sort(doiIds);
+
+		return doiIds;
+	}
+
 }

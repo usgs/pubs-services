@@ -48,10 +48,6 @@ pubs:
     authorized: ${PUBS_AUTHORIZED_GROUPS}
     spn: ${PUBS_SPN_GROUPS}
 
-logging:
-  level:
-    root: ${ROOT_LOG_LEVEL}
-
 security:
   oauth2:
     resource:

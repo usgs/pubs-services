@@ -24,7 +24,6 @@
         <spring-test-dbunit-version>1.3.0</spring-test-dbunit-version>
         <dbunit-version>2.6.0</dbunit-version>
         <hamcrest-json-version>0.2</hamcrest-json-version>
-        <log.db.ready>database system is ready to accept connections</log.db.ready>
     </properties>
 
     <scm>
@@ -163,6 +162,12 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>biz.paluch.logging</groupId>
+            <artifactId>logstash-gelf</artifactId>
+            <version>1.13.0</version>
+        </dependency>
+
         <!-- Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -294,7 +299,7 @@
                                     <name>${TESTING_DATABASE_NETWORK}</name>
                                 </network>
                                 <ports>
-                                    <port>5445:5432</port>
+                                    <port>${TESTING_DATABASE_PORT}:5432</port>
                                 </ports>
                                 <env>
                                     <POSTGRES_PASSWORD>changeMe</POSTGRES_PASSWORD>
@@ -309,7 +314,7 @@
                                     <LOCAL_NETWORK_NAME>pubs</LOCAL_NETWORK_NAME>
                                 </env>
                                 <wait>
-                                    <log>(?s)${log.db.ready}.*${log.db.ready}.*${log.db.ready}</log>
+                                    <log>(?s)PostgreSQL init process complete; ready for start up.*database system is ready to accept connections</log>
                                     <time>300000</time>
                                 </wait>
                             </run>
@@ -323,98 +328,19 @@
                 <version>0.8.4</version>
                 <executions>
                     <execution>
-                        <id>default-prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
                     <execution>
-                        <id>default-prepare-agent-integration</id>
-                        <goals>
-                            <goal>prepare-agent-integration</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>default-report</id>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>default-report-integration</id>
-                        <goals>
-                            <goal>report-integration</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>merge-results</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>merge</goal>
-                        </goals>
-                        <configuration>
-                            <fileSets>
-                                <fileSet>
-                                    <directory>${project.build.directory}</directory>
-                                    <includes>
-                                        <include>*.exec</include>
-                                    </includes>
-                                    <excludes>
-                                        <exclude>aggregate.exec</exclude>
-                                    </excludes>
-                                </fileSet>
-                            </fileSets>
-                            <destFile>${project.build.directory}/aggregate.exec</destFile>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>post-merge-report</id>
+                        <id>report</id>
                         <phase>post-integration-test</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
-                        <configuration>
-                            <dataFile>${project.build.directory}/aggregate.exec</dataFile>
-                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate</outputDirectory>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>codecoverage</id>
-            <activation>
-                <property>
-                    <name>env.TRAVIS_PULL_REQUEST</name>
-                    <value>false</value>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.gavinmogan</groupId>
-                        <artifactId>codacy-maven-plugin</artifactId>
-                        <version>1.2.0</version>
-                        <configuration>
-                            <coverageReportFile>${project.reporting.outputDirectory}/jacoco-it/jacoco.xml</coverageReportFile>
-                            <commit>${env.TRAVIS_COMMIT}</commit>
-                            <failOnMissingReportFile>false</failOnMissingReportFile>
-                         </configuration>
-                        <executions>
-                            <execution>
-                                <id>post-test</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>coverage</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

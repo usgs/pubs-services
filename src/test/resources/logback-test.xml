@@ -4,8 +4,6 @@
     <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
     <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
     <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
-    <springProperty name="gelfHost" source="logging.gelf.host" defaultValue="tcp:localhost"/>
-    <springProperty name="gelfPort" source="logging.gelf.port" defaultValue="12201"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -14,16 +12,7 @@
         </encoder>
     </appender>
 
-    <appender name="gelf" class="biz.paluch.logging.gelf.logback.GelfLogbackAppender">
-        <host>${gelfHost}</host>
-        <port>${gelfPort}</port>
-        <version>1.1</version>
-        <extractStackTrace>true</extractStackTrace>
-        <filterStackTrace>true</filterStackTrace>
-    </appender>
-
     <root level="INFO">
-        <appender-ref ref="gelf" />
         <appender-ref ref="STDOUT" />
     </root>
 

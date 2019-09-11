@@ -27,7 +27,6 @@ import gov.usgs.cida.pubs.dao.CostCenterDao;
 import gov.usgs.cida.pubs.dao.LinkFileTypeDao;
 import gov.usgs.cida.pubs.dao.LinkTypeDao;
 import gov.usgs.cida.pubs.dao.OutsideAffiliationDao;
-import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
 import gov.usgs.cida.pubs.dao.PublicationSubtypeDao;
 import gov.usgs.cida.pubs.dao.PublicationTypeDao;
@@ -40,6 +39,7 @@ import gov.usgs.cida.pubs.domain.LinkFileType;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
 import gov.usgs.cida.pubs.domain.PersonContributor;
+import gov.usgs.cida.pubs.domain.PersonContributorFilterParams;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
@@ -47,7 +47,6 @@ import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
 import gov.usgs.cida.pubs.json.View;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -247,29 +246,19 @@ public class LookupMvcService extends MvcService<PublicationType> {
 
 	@GetMapping("people")
 	@ApiOperation(value="Search for Contributors",
-		notes="This search expects either an ORCID or a text search of at least two characters.")
+		notes="At least one search value must be provided.")
 	@ApiResponses(value={
 			@ApiResponse(code=HttpStatus.SC_BAD_REQUEST, message="Invalid query parameters provided.") }
 	)
-	@JsonView(View.Lookup.class)
+	@JsonView(View.PW.class)
 	public @ResponseBody Collection<Contributor<?>> getContributorsPeople(HttpServletRequest request, HttpServletResponse response,
-			@ApiParam("The ORCID to search for. Include the entire URI - for example: http://orcid.org/0000-0000-0000-0000") @RequestParam(value=PersonContributorDao.ORCID, required=false) String[] orcid,
-			@ApiParam("A 'contains' search value which if provided, must be at least 2 characters long.") @RequestParam(value=TEXT_SEARCH, required=false) String[] text,
-			@ApiParam("If provided, will limit to either preferred or not preferred contributor information.") @RequestParam(value="preferred", required=false) Boolean preferred) {
-		LOG.debug("Contributor - People");
-			Collection<Contributor<?>> rtn = new ArrayList<>();
-		if ((null != text && text.length > 0 && text[0].length() > 1)
-				|| (null != orcid && orcid.length > 0)
-				|| (null != preferred)) {
-			if (validateParametersSetHeaders(request, response)) {
-				Map<String, Object> filters = new HashMap<>();
-				filters.put(BaseDao.TEXT_SEARCH, configureContributorFilter(text));
-				filters.put(PersonContributorDao.ORCID, orcid);
-				filters.put("preferred", preferred);
-				rtn = PersonContributor.getDao().getByMap(filters);
-			}
-		} else {
-			response.setStatus(HttpStatus.SC_BAD_REQUEST);
+			PersonContributorFilterParams filterParams) {
+		Collection<Contributor<?>> rtn = new ArrayList<>();
+		if (validateParametersSetHeaders(request, response)) {
+			validateParamProvided(filterParams);
+			validateParams(filterParams);
+			Map<String, Object> filters = buildFilters(filterParams);
+			rtn = PersonContributor.getDao().getByMap(filters);
 		}
 		return rtn;
 	}
@@ -319,5 +308,20 @@ public class LookupMvcService extends MvcService<PublicationType> {
 			rtn = Publication.getPublicationDao().filterByIndexId(filter);
 		}
 		return rtn;
+	}
+
+	private void validateParamProvided(PersonContributorFilterParams params) {
+		if(params == null || !params.hasParamSet()) {
+			throw new PubsInvalidParameterException("At least one search value must be provided.");
+		}
+	}
+
+	private void validateParams(PersonContributorFilterParams params) {
+		if(params != null) {
+			if (params.getText() != null && params.getText().length > 0
+				&& params.getText()[0].length() < 2) {
+				throw new PubsInvalidParameterException("parameter 'text' must be two or more characters.");
+			}
+		}
 	}
 }

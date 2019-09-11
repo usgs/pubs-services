@@ -79,7 +79,7 @@ public class PersonContributorDaoIT extends BaseIT {
 		}
 
 		filters.clear();
-		filters.put(PersonContributorDao.GIVEN, "con");
+		filters.put(PersonContributorDao.GIVEN, new String[]{"con"});
 		contributors = personContributorDao.getByMap(filters);
 		assertEquals(1, contributors.size());
 		for (Contributor<?> contributor : contributors) {
@@ -89,7 +89,7 @@ public class PersonContributorDaoIT extends BaseIT {
 		}
 
 		filters.clear();
-		filters.put(PersonContributorDao.FAMILY, "con");
+		filters.put(PersonContributorDao.FAMILY, new String[]{"con"});
 		contributors = personContributorDao.getByMap(filters);
 		assertEquals(1, contributors.size());
 		for (Contributor<?> contributor : contributors) {
@@ -109,10 +109,10 @@ public class PersonContributorDaoIT extends BaseIT {
 		}
 
 		filters.clear();
-		filters.put(PersonContributorDao.FAMILY, "out");
+		filters.put(PersonContributorDao.FAMILY, new String[]{"out"});
 		contributors = personContributorDao.getByMap(filters);
 		assertEquals(1, contributors.size());
-		filters.put(PersonContributorDao.GIVEN, "out");
+		filters.put(PersonContributorDao.GIVEN, new String[]{"out"});
 		contributors = personContributorDao.getByMap(filters);
 		assertEquals(1, contributors.size());
 		filters.put(PersonContributorDao.TEXT_SEARCH, "oute:*");

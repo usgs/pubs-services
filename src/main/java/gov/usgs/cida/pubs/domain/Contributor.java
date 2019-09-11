@@ -34,8 +34,16 @@ public class Contributor<D> extends BaseDomain<Contributor<D>> {
 		return corporation;
 	}
 
+	public void setCorporation(Boolean corporation) {
+		this.corporation = corporation;
+	}
+
 	public Boolean isUsgs() {
 		return usgs;
+	}
+
+	public void setUsgs(Boolean usgs) {
+		this.usgs = usgs;
 	}
 
 	@Override

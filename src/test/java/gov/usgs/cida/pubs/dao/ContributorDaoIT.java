@@ -6,6 +6,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -123,16 +126,38 @@ public class ContributorDaoIT extends BaseIT {
 		assertEquals(2, contributors.get(0).getId().intValue());
 
 		filters.clear();
-		filters.put(PersonContributorDao.GIVEN, "con");
+		filters.put(PersonContributorDao.GIVEN, new String[] {"con"});
 		contributors = contributorDao.getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(1, contributors.get(0).getId().intValue());
+		assertTrue(contributors.get(0) instanceof UsgsContributor);
+		assertEquals("ConGiven", ((UsgsContributor) contributors.get(0)).getGiven());
+		assertEquals("ConFamily", ((UsgsContributor) contributors.get(0)).getFamily());
+		assertEquals("ConSuffix", ((UsgsContributor) contributors.get(0)).getSuffix());
+		assertEquals("con@usgs.gov", ((UsgsContributor) contributors.get(0)).getEmail());
 
 		filters.clear();
-		filters.put(PersonContributorDao.FAMILY, "con");
+		filters.put(PersonContributorDao.FAMILY, new String[]{"con"});
 		contributors = contributorDao.getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(1, contributors.get(0).getId().intValue());
+		assertTrue(contributors.get(0) instanceof UsgsContributor);
+		assertEquals("ConGiven", ((UsgsContributor) contributors.get(0)).getGiven());
+		assertEquals("ConFamily", ((UsgsContributor) contributors.get(0)).getFamily());
+		assertEquals("ConSuffix", ((UsgsContributor) contributors.get(0)).getSuffix());
+		assertEquals("con@usgs.gov", ((UsgsContributor) contributors.get(0)).getEmail());
+
+		filters.clear();
+		filters.put(PersonContributorDao.EMAIL, new String[]{"family4@usgs.gov"});
+		contributors = contributorDao.getByMap(filters);
+		assertEquals(1, contributors.size());
+		assertEquals(4, contributors.get(0).getId().intValue());
+		assertTrue(contributors.get(0) instanceof UsgsContributor);
+		assertEquals("4Given", ((UsgsContributor) contributors.get(0)).getGiven());
+		assertEquals("4Family", ((UsgsContributor) contributors.get(0)).getFamily());
+		assertEquals("4Suffix", ((UsgsContributor) contributors.get(0)).getSuffix());
+		assertEquals("family4@usgs.gov", ((UsgsContributor) contributors.get(0)).getEmail());
+
 		filters.put("preferred", false);
 		assertTrue(contributorDao.getByMap(filters).isEmpty());
 
@@ -157,10 +182,10 @@ public class ContributorDaoIT extends BaseIT {
 		contributors = contributorDao.getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(3, contributors.get(0).getId().intValue());
-		filters.put(PersonContributorDao.FAMILY, "out");
+		filters.put(PersonContributorDao.FAMILY, new String[]{"out"});
 		contributors = contributorDao.getByMap(filters);
 		assertEquals(1, contributors.size());
-		filters.put(PersonContributorDao.GIVEN, "out");
+		filters.put(PersonContributorDao.GIVEN, new String[]{"out"});
 		contributors = contributorDao.getByMap(filters);
 		assertEquals(1, contributors.size());
 		filters.put(ContributorDao.ID_SEARCH, 3);
@@ -188,6 +213,47 @@ public class ContributorDaoIT extends BaseIT {
 		contributors = contributorDao.getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(2, contributors.get(0).getId().intValue());
+	}
+
+	@Test
+	public void getByMapMultiParams() {
+		Map<String, Object> filters = new HashMap<>();
+		List<Contributor<?>> contributors;
+
+		filters.put(PersonContributorDao.FAMILY, new String[]{"con", "4"});
+		contributors = contributorDao.getByMap(filters);
+		assertEquals(3, contributors.size());
+		List<Integer> ids = getIds(contributors);
+		List<Integer> expectedIds = List.of(1, 4, 44);
+		assertTrue(String.format("family query expected ids %s, got %s", toString(expectedIds), toString(ids)),
+				ids.equals(expectedIds));
+
+		filters.clear();
+		filters.put(PersonContributorDao.GIVEN, new String[]{"con", "1"});
+		contributors = contributorDao.getByMap(filters);
+		assertEquals(4, contributors.size());
+		ids = getIds(contributors);
+		expectedIds = List.of(1, 14, 51, 54);
+		assertTrue(String.format("given query expected ids %s, got %s", toString(expectedIds), toString(ids)),
+				ids.equals(expectedIds));
+
+		filters.clear();
+		filters.put(PersonContributorDao.EMAIL, new String[]{"family14@usgs.goy", "con"});
+		contributors = contributorDao.getByMap(filters);
+		assertEquals(4, contributors.size());
+		ids = getIds(contributors);
+		expectedIds = List.of(1, 11, 14, 21);
+		assertTrue(String.format("email query expected ids %s, got %s", toString(expectedIds), toString(ids)),
+				ids.equals(expectedIds));
+
+		filters.clear();
+		filters.put(PersonContributorDao.ORCID, new String[]{"0000-0000-0000-0004", "0000-0000-0000-0104"});
+		contributors = contributorDao.getByMap(filters);
+		ids = getIds(contributors);
+		assertEquals(6, contributors.size());
+		expectedIds = List.of(4, 14, 24, 34, 44, 54);
+		assertTrue(String.format("orcid query expected ids %s, got %s", toString(expectedIds), toString(ids)),
+				ids.equals(expectedIds));
 	}
 
 	@Test
@@ -262,5 +328,24 @@ public class ContributorDaoIT extends BaseIT {
 		assertTrue(usgsContributor.isUsgs());
 		assertFalse(usgsContributor.isCorporation());
 		assertTrue(usgsContributor.isPreferred());
+	}
+
+	private List<Integer> getIds(List<Contributor<?>> contributors) {
+		ArrayList<Integer> idList = new ArrayList<>();
+
+		for(Contributor<?> contributor : contributors) {
+			Integer id = contributor.getId();
+			if(id != null && !idList.contains(id)) {
+				idList.add(id);
+			}
+		}
+
+		Collections.sort(idList);
+
+		return idList;
+	}
+
+	private String toString(List<Integer> intList) {
+		return Arrays.toString(intList.toArray());
 	}
 }

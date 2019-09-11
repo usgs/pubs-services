@@ -27,6 +27,13 @@ import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 @Component
 @ParentExists
 public class PersonContributor<D> extends Contributor<PersonContributor<D>> implements ILookup {
+	@Override
+	public String toString() {
+		return "PersonContributor [family=" + family + ", given=" + given + ", suffix=" + suffix + ", email=" + email
+				+ ", orcid=" + orcid + ", affiliations=" + affiliations + ", preferred=" + preferred + ", corporation="
+				+ corporation + ", usgs=" + usgs + ", id=" + id + ", validationErrors=" + validationErrors + "]";
+	}
+
 	public static final String ORCID_VALIDATION_REGEX = "^" + DataNormalizationUtils.ORCID_REGEX + "$"; // only storing short form in db
 	public static final String ORCID_VALIDATION_MESS = "The value of orcid=${validatedValue} must include " +
 	                             "16 digits [0-9] separated into groups of 4 by hyphens, final character optionally the letter X";

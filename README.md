@@ -12,7 +12,8 @@ This application utilizes a PostgreSQL database.
 
 ### Environment variables
 To run the project you will need to create the file application.yml in the project's root directory and add the following:
-```
+
+``` yaml
 QUEUE_URL: vm://localhost?broker.persistent=false
 PUBS_DB_HOST: hostNameOfDatabase
 PUBS_DB_PORT: portNumberForDatabase
@@ -55,6 +56,9 @@ SECURITY_KEYSET_URI: keysetURI
 ROOT_LOG_LEVEL: INFO
 
 spring.security.user.password: changeMe
+
+logging.gelf.host: "tcp:localhost"
+logging.gelf.port: 12201
 ```
 
 ### Testing

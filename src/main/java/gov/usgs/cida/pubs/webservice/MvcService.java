@@ -19,6 +19,7 @@ import org.springframework.util.ObjectUtils;
 
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.dao.CorporateContributorDao;
 import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
@@ -85,7 +86,7 @@ public abstract class MvcService<D> {
 
 		filters.put(BaseDao.ID_SEARCH,filterParams.getId());
 		filters.put(BaseDao.TEXT_SEARCH, configureContributorFilter(filterParams.getText()));
-		filters.put(PersonContributorDao.CORPORATION,filterParams.getCorporation());
+		filters.put(CorporateContributorDao.CORPORATION,filterParams.getCorporation());
 		filters.put(PersonContributorDao.USGS,filterParams.getUsgs());
 		filters.put(PersonContributorDao.FAMILY,filterParams.getFamilyName());
 		filters.put(PersonContributorDao.GIVEN,filterParams.getGivenName());

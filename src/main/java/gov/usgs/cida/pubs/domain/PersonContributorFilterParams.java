@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiParam;
 @Api
 public class PersonContributorFilterParams {
 	private Integer[] id;
-	
+
 	private Boolean corporation;
 
 	private Boolean usgs;
@@ -19,7 +19,7 @@ public class PersonContributorFilterParams {
 
 	private String[] email;
 
-	@ApiParam("The ORCID to search for. The http prefix is optional. Example: 0000-0002-1825-0097")
+	@ApiParam("The ORCID(s) to search for. The http/https prefix is optional. Example: 0000-0002-1825-0097")
 	private String[] orcid;
 
 	@ApiParam("If provided, will limit to either preferred or not preferred contributor information.")

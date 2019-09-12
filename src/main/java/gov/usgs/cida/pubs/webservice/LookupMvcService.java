@@ -255,8 +255,6 @@ public class LookupMvcService extends MvcService<PublicationType> {
 			PersonContributorFilterParams filterParams) {
 		Collection<Contributor<?>> rtn = new ArrayList<>();
 		if (validateParametersSetHeaders(request, response)) {
-			validateParamProvided(filterParams);
-			validateParams(filterParams);
 			Map<String, Object> filters = buildFilters(filterParams);
 			rtn = PersonContributor.getDao().getByMap(filters);
 		}
@@ -310,18 +308,4 @@ public class LookupMvcService extends MvcService<PublicationType> {
 		return rtn;
 	}
 
-	private void validateParamProvided(PersonContributorFilterParams params) {
-		if(params == null || !params.hasParamSet()) {
-			throw new PubsInvalidParameterException("At least one search value must be provided.");
-		}
-	}
-
-	private void validateParams(PersonContributorFilterParams params) {
-		if(params != null) {
-			if (params.getText() != null && params.getText().length > 0
-				&& params.getText()[0].length() < 2) {
-				throw new PubsInvalidParameterException("parameter 'text' must be two or more characters.");
-			}
-		}
-	}
 }

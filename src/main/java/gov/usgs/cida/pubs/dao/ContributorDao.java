@@ -16,8 +16,6 @@ public class ContributorDao extends BaseDao<Contributor<?>> {
 
 	protected static final String NS = "contributor";
 
-	public static final String CORPORATION = "corporation";
-
 	@Autowired
 	public ContributorDao(SqlSessionFactory sqlSessionFactory) {
 		super(sqlSessionFactory);

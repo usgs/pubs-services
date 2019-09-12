@@ -25,6 +25,7 @@ import org.springframework.web.context.request.WebRequest;
 import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.dao.CorporateContributorDao;
 import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
@@ -190,7 +191,7 @@ public class MvcServiceTest {
 
 		assertTrue(filters.containsKey(BaseDao.ID_SEARCH));
 		assertTrue(filters.containsKey(BaseDao.TEXT_SEARCH));
-		assertTrue(filters.containsKey(PersonContributorDao.CORPORATION));
+		assertTrue(filters.containsKey(CorporateContributorDao.CORPORATION));
 		assertTrue(filters.containsKey(PersonContributorDao.USGS));
 		assertTrue(filters.containsKey(PersonContributorDao.FAMILY));
 		assertTrue(filters.containsKey(PersonContributorDao.GIVEN));
@@ -200,7 +201,7 @@ public class MvcServiceTest {
 
 		assertTrue(Arrays.equals(id, (Integer[]) filters.get(BaseDao.ID_SEARCH)));
 		assertEquals("text:* & to:* & search:*", (String) filters.get(BaseDao.TEXT_SEARCH));
-		assertTrue("Expected corporation to be true", (Boolean) filters.get(PersonContributorDao.CORPORATION));
+		assertTrue("Expected corporation to be true", (Boolean) filters.get(CorporateContributorDao.CORPORATION));
 		assertFalse("Expected usgs to be false", (Boolean) filters.get(PersonContributorDao.USGS));
 		assertTrue(Arrays.equals(family, (Object[]) filters.get(PersonContributorDao.FAMILY)));
 		assertTrue(Arrays.equals(given, (Object[]) filters.get(PersonContributorDao.GIVEN)));

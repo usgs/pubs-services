@@ -43,8 +43,7 @@ public class GlobalDefaultExceptionHandler {
 			responseMap.put(ERROR_MESSAGE_KEY, ((MethodArgumentNotValidException) ex).getBindingResult().getFieldError().getDefaultMessage());
 		} else if (ex instanceof MissingServletRequestParameterException
 				|| ex instanceof HttpMediaTypeNotSupportedException
-				|| ex instanceof HttpMediaTypeNotAcceptableException
-				|| ex instanceof PubsInvalidParameterException) {
+				|| ex instanceof HttpMediaTypeNotAcceptableException) {
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 			responseMap.put(ERROR_MESSAGE_KEY, ex.getLocalizedMessage());
 		} else if (ex instanceof HttpMessageNotReadableException) {

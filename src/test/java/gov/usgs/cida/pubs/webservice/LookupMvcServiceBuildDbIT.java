@@ -2,8 +2,6 @@ package gov.usgs.cida.pubs.webservice;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -47,12 +45,14 @@ import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
+import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
+import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
 import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
 
@@ -113,6 +113,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
+		System.out.println("returned josn = " + rtn.getResponse().getContentAsString());
 		JSONArray rtnAsJSONArray = getRtnAsJSONArray(rtn);
 
 		assertEquals(1, rtnAsJSONArray.length());
@@ -130,34 +131,6 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 		assertEquals(1, rtnAsJSONArray.length());
 
 		assertThat(rtnAsJSONArray, sameJSONArrayAs(contributor4JsonArray()).allowingAnyArrayOrdering());
-	}
-
-	@Test
-	public void getPeopleNoParams() throws Exception{
-			Exception caughtException = null;
-			try {
-				mockMvc.perform(get("/lookup/people").accept(MediaType.APPLICATION_JSON));
-			} catch (Exception ex) {
-				caughtException = ex;
-			}
-			assertNotNull("Expected an exception (http get /lookup/people)", caughtException);
-			assertNotNull("Expected exception's cause to not be null", caughtException.getCause());
-			assertTrue("Expected the exception's cause to be PubsInvalidParameterException, got: " + caughtException.getCause().getClass(),
-					caughtException.getCause() instanceof PubsInvalidParameterException);
-	}
-
-	@Test
-	public void getPeopleBadTextParam() throws Exception{
-		Exception caughtException = null;
-		try {
-			mockMvc.perform(get("/lookup/people?text=a").accept(MediaType.APPLICATION_JSON));
-		} catch (Exception ex) {
-			caughtException = ex;
-		}
-		assertNotNull("Expected an exception (http get /lookup/people?text=a)", caughtException);
-		assertNotNull("Expected exception's cause to not be null", caughtException.getCause());
-		assertTrue("Expected exception's cause to be PubsInvalidParameterException, got: " + caughtException.getCause().getClass(),
-				caughtException.getCause() instanceof PubsInvalidParameterException);
 	}
 
 	@Test
@@ -315,33 +288,28 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 	}
 
 	private JSONArray contributor3JsonArray() throws JSONException {
-		PersonContributor<?> contributor = new PersonContributor<>();
+		PersonContributor<?> contributor = new OutsideContributor();
 
 		contributor.setId(3);
 		contributor.setEmail("outer@gmail.com");
 		contributor.setGiven("outerGiven");
-		contributor.setPreferred(false);
-		contributor.setCorporation(false);
 		contributor.setFamily("outerfamily");
 		contributor.setSuffix("outerSuffix");
 		contributor.setOrcid("https://orcid.org/0000-0000-0000-0001");
-		contributor.setUsgs(false);
 
 		return contributorJsonArray(contributor);
 	}
 
 	private JSONArray contributor4JsonArray() throws JSONException {
-		PersonContributor<?> contributor = new PersonContributor<>();
+		PersonContributor<?> contributor = new UsgsContributor();
 
 		contributor.setId(4);
 		contributor.setEmail("con4@usgs.gov");
 		contributor.setGiven("4Given");
 		contributor.setPreferred(true);
-		contributor.setCorporation(false);
 		contributor.setFamily("4Family");
 		contributor.setSuffix("4Suffix");
 		contributor.setOrcid("https://orcid.org/0000-0000-0000-0004");
-		contributor.setUsgs(true);
 
 		return contributorJsonArray(contributor);
 	}

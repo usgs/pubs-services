@@ -39,9 +39,9 @@ import gov.usgs.cida.pubs.webservice.MvcService;
 })
 public class ContributorDaoIT extends BaseIT {
 
-	public static final int CONTRIBUTOR_CNT = 13;
+	public static final int CONTRIBUTOR_CNT = 14;
 	public static final int PERSON_CONTRIBUTOR_CNT = 12;
-	public static final int CORPORATE_CONTRIBUTOR_CNT = 1;
+	public static final int CORPORATE_CONTRIBUTOR_CNT = 2;
 
 	public static final List<String> IGNORE_PROPERTIES_PERSON = List.of("validationErrors", "valErrors", "organization", "affiliations");
 	public static final List<String> IGNORE_PROPERTIES_CORPORATION = List.of("validationErrors", "valErrors", "family", 
@@ -208,7 +208,11 @@ public class ContributorDaoIT extends BaseIT {
 		filters.put("corporation", true);
 		contributors = contributorDao.getByMap(filters);
 		assertEquals(CORPORATE_CONTRIBUTOR_CNT, contributors.size());
-		assertEquals(2, contributors.get(0).getId().intValue());
+		List<Integer> ids = getIds(contributors);
+		List<Integer> expectedIds = List.of(2, 60);
+		assertTrue(String.format("corporation true query expected ids %s, got %s", toString(expectedIds), toString(ids)),
+				ids.equals(expectedIds));
+
 		filters.put(ContributorDao.TEXT_SEARCH, "us:*");
 		contributors = contributorDao.getByMap(filters);
 		assertEquals(1, contributors.size());
@@ -261,7 +265,7 @@ public class ContributorDaoIT extends BaseIT {
 		Map<String, Object> filters = new HashMap<>();
 		filters.put("preferred", true);
 		List<Contributor<?>> contributors = contributorDao.getByMap(filters);
-		assertEquals(5, contributors.size());
+		assertEquals(6, contributors.size());
 	}
 
 	@Test
@@ -330,7 +334,7 @@ public class ContributorDaoIT extends BaseIT {
 		assertTrue(usgsContributor.isPreferred());
 	}
 
-	private List<Integer> getIds(List<Contributor<?>> contributors) {
+	public static List<Integer> getIds(List<Contributor<?>> contributors) {
 		ArrayList<Integer> idList = new ArrayList<>();
 
 		for(Contributor<?> contributor : contributors) {
@@ -345,7 +349,7 @@ public class ContributorDaoIT extends BaseIT {
 		return idList;
 	}
 
-	private String toString(List<Integer> intList) {
+	public static String toString(List<Integer> intList) {
 		return Arrays.toString(intList.toArray());
 	}
 }

@@ -12,8 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -33,6 +34,7 @@ import gov.usgs.cida.pubs.dao.intfc.IPersonContributorDao;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
+import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
 
 @EnableWebMvc
 @AutoConfigureMockMvc(secure=false)
@@ -53,11 +55,10 @@ public class LkupMvcServiceTest extends BaseTest {
 		personContributor = new UsgsContributor();
 	}
 
-	@Ignore // TODO: refactor test for pojo query parameters
 	@Test
 	public void getPeopleTest() throws Exception {
-		mockMvc.perform(get("/lookup/people").accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
-		mockMvc.perform(get("/lookup/people?text=a").accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
+		mockMvc.perform(get("/lookup/people").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+		mockMvc.perform(get("/lookup/people?text=a").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 		when(personContributorDao.getByMap(anyMap())).thenReturn(getPeople());
 
 		MvcResult rtn = mockMvc.perform(get("/lookup/people?text=kr").accept(MediaType.APPLICATION_JSON))
@@ -66,17 +67,48 @@ public class LkupMvcServiceTest extends BaseTest {
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 		assertThat(getRtnAsJSONArray(rtn),
-				sameJSONArrayAs(new JSONArray("[{\"id\":1,\"text\":\"Kreft, James M. jkreft@usgs.gov\"}]")).allowingAnyArrayOrdering());
+				sameJSONArrayAs(contributorJsonArray(contributor1())).allowingAnyArrayOrdering());
 	}
 
-	List<Contributor<?>> getPeople() {
+	List<Contributor<?>> getPeople() throws JSONException {
 		List<Contributor<?>> rtn = new ArrayList<>();
-		UsgsContributor contributor = new UsgsContributor();
+		rtn.add(contributor1());
+		return rtn;
+	}
+
+	private PersonContributor<?> contributor1() throws JSONException {
+		PersonContributor<?> contributor = new UsgsContributor();
+
 		contributor.setId(1);
 		contributor.setFamily("Kreft");
 		contributor.setGiven("James M.");
+		contributor.setEmail("outer@gmail.com");
 		contributor.setEmail("jkreft@usgs.gov");
-		rtn.add(contributor);
-		return rtn;
+		contributor.setSuffix("Mr.");
+		contributor.setOrcid("https://orcid.org/0000-0000-0000-0001");
+
+		return contributor;
+	}
+
+	private JSONArray contributorJsonArray(PersonContributor<?> contributor) throws JSONException {
+		JSONObject json = new JSONObject();
+
+		json.put("contributorId", contributor.getId());
+		json.put("email", contributor.getEmail());
+		json.put("given", contributor.getGiven());
+		json.put("preferred", contributor.isPreferred());
+		json.put("corporation", contributor.isCorporation());
+		json.put("family", contributor.getFamily());
+		json.put("suffix", contributor.getSuffix());
+		json.put("orcid", contributor.getOrcid());
+		json.put("usgs", contributor.isUsgs());
+		json.put("text", contributor.getText());
+		json.put("affiliations", new JSONArray());
+
+		String jsonStr = json.toString();
+		jsonStr =  jsonStr.replace(DataNormalizationUtils.normalizeOrcid(contributor.getOrcid()), DataNormalizationUtils.denormalizeOrcid(contributor.getOrcid()));
+		JSONArray jsonArray = new JSONArray("[" + jsonStr + "]");
+
+		return jsonArray;
 	}
 }

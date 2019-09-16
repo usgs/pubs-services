@@ -113,7 +113,6 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
-		System.out.println("returned josn = " + rtn.getResponse().getContentAsString());
 		JSONArray rtnAsJSONArray = getRtnAsJSONArray(rtn);
 
 		assertEquals(1, rtnAsJSONArray.length());

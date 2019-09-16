@@ -15,4 +15,6 @@
     <CONTRIBUTOR CONTRIBUTOR_ID="44" FAMILY="44Family" GIVEN="44Given" SUFFIX="4Suffix" EMAIL="family44@usgs.gou" IS_CORPORATION="false" IS_USGS="true" text="4Family 4Given 4Suffix family44@usgs.gou" orcid="0000-0000-0000-0004" IS_PREFERRED="false" />
     <CONTRIBUTOR CONTRIBUTOR_ID="51" FAMILY="101Family" GIVEN="101Given" SUFFIX="101Suffix" EMAIL="family101@usgs.gov" IS_CORPORATION="false" IS_USGS="true" text="101Family, 101Given 101Suffix family101@usgs.gov" IS_PREFERRED="true" />
     <CONTRIBUTOR CONTRIBUTOR_ID="54" FAMILY="104Family" GIVEN="104Given" SUFFIX="104Suffix" EMAIL="family104@usgs.gov" IS_CORPORATION="false" IS_USGS="true" text="104Family 104Given 104Suffix family104@usgs.gov" orcid="0000-0000-0000-0104" IS_PREFERRED="true" />
+
+    <CONTRIBUTOR CONTRIBUTOR_ID="60" LITERAL="Preferred US Geological Survey Ice Survey Team" IS_CORPORATION="true" IS_USGS="false" text="Preferred Geological Survey Ice Survey Team" IS_PREFERRED="true"/>
 </dataset>

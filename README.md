@@ -60,7 +60,11 @@ spring.security.user.password: changeMe
 logging.gelf.host: "tcp:localhost"
 logging.gelf.port: 12201
 ```
+Optionally adding the following will disable security for local development. 
 
+```yml
+spring.profiles.active: default,swagger,insecure
+```
 ### Testing
 This project contains JUnit tests. Maven can be used to run them (in addition to the capabilities of your IDE).
 

@@ -12,10 +12,10 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -27,7 +27,6 @@ import gov.usgs.cida.pubs.utility.CustomStringToStringConverter;
 import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
 
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SpringConfig implements WebMvcConfigurer {
 
 	@Autowired
@@ -95,5 +94,14 @@ public class SpringConfig implements WebMvcConfigurer {
 		LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
 		validator.setMessageInterpolator(messageInterpolator());
 		return validator;
+	}
+
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry
+			.addMapping("/**")
+			.allowedOrigins("*")
+			.allowedMethods("GET","POST", "OPTIONS", "DELETE", "PUT")
+			.allowedHeaders("Origin", "Accept", "X-Requested-With", "Content-Type", "Authorization");
 	}
 }

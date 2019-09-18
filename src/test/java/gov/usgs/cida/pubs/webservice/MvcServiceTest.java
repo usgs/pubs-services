@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.webservice;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -24,10 +25,12 @@ import org.springframework.web.context.request.WebRequest;
 import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.dao.CorporateContributorDao;
 import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
+import gov.usgs.cida.pubs.domain.PersonContributorFilterParams;
 import gov.usgs.cida.pubs.domain.PublicationFilterParams;
 import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
 
@@ -43,7 +46,7 @@ public class MvcServiceTest {
 	private TestMvcService testMvcService = new TestMvcService();
 
 	@Test
-	public void buildFiltersTest() {
+	public void buildPublicationFiltersTest() {
 		Boolean chorus = true;
 		String[] contributingOffice = new String[]{"co1","co2"};
 		String[] contributor = new String[]{"Rebecca B. Carvin", "c2"};
@@ -110,7 +113,7 @@ public class MvcServiceTest {
 		assertTrue(filters.containsKey(PublicationDao.IPDS_ID));
 		assertEquals(ipdsId, filters.get(PublicationDao.IPDS_ID));
 		assertTrue(filters.containsKey(MpPublicationDao.LIST_ID));
-//TODO		assertEquals(3, filters.get(MpPublicationDao.LIST_ID));
+		assertTrue(Arrays.equals(new Integer[] {3}, (Integer[]) filters.get(MpPublicationDao.LIST_ID)));
 		assertTrue(filters.containsKey(PwPublicationDao.MOD_DATE_HIGH));
 		assertEquals(modDateHigh, filters.get(PwPublicationDao.MOD_DATE_HIGH));
 		assertTrue(filters.containsKey(PwPublicationDao.MOD_DATE_LOW));
@@ -155,6 +158,56 @@ public class MvcServiceTest {
 		assertEquals(typeName, filters.get(PublicationDao.TYPE_NAME));
 		assertTrue(filters.containsKey(PublicationDao.YEAR));
 		assertEquals(year, filters.get(PublicationDao.YEAR));
+	}
+
+	@Test
+	public void buildPersonContriborFiltersTest() {
+		PersonContributorFilterParams filterParams = new PersonContributorFilterParams();
+
+		Integer[] id = new Integer[]{10, 20};
+		String[] text = new String[]{"text to search"};
+		Boolean corporation = true;
+		Boolean usgs = false;
+		String[] family = new String[]{"TestFamily"};
+		String[] given = new String[]{"testGiven"};
+		String[] email = new String[]{"nobody@usgs.gov"};
+		String[] orcid = new String[]{"0000-0001-0002-0003"};
+		Boolean preferred = true;
+
+		filterParams.setId(id);
+		filterParams.setText(text);
+		filterParams.setCorporation(corporation);
+		filterParams.setUsgs(usgs);
+		filterParams.setFamilyName(family);
+		filterParams.setGivenName(given);
+		filterParams.setEmail(email);
+		filterParams.setOrcid(orcid);
+		filterParams.setPreferred(preferred);
+
+		Map<String, Object> filters = testMvcService.buildFilters(filterParams);
+
+		assertNotNull(filters);
+		assertEquals(9, filters.keySet().size());
+
+		assertTrue(filters.containsKey(BaseDao.ID_SEARCH));
+		assertTrue(filters.containsKey(BaseDao.TEXT_SEARCH));
+		assertTrue(filters.containsKey(CorporateContributorDao.CORPORATION));
+		assertTrue(filters.containsKey(PersonContributorDao.USGS));
+		assertTrue(filters.containsKey(PersonContributorDao.FAMILY));
+		assertTrue(filters.containsKey(PersonContributorDao.GIVEN));
+		assertTrue(filters.containsKey(PersonContributorDao.EMAIL));
+		assertTrue(filters.containsKey(PersonContributorDao.ORCID));
+		assertTrue(filters.containsKey(PersonContributorDao.PREFERRED));
+
+		assertTrue(Arrays.equals(id, (Integer[]) filters.get(BaseDao.ID_SEARCH)));
+		assertEquals("text:* & to:* & search:*", (String) filters.get(BaseDao.TEXT_SEARCH));
+		assertTrue("Expected corporation to be true", (Boolean) filters.get(CorporateContributorDao.CORPORATION));
+		assertFalse("Expected usgs to be false", (Boolean) filters.get(PersonContributorDao.USGS));
+		assertTrue(Arrays.equals(family, (Object[]) filters.get(PersonContributorDao.FAMILY)));
+		assertTrue(Arrays.equals(given, (Object[]) filters.get(PersonContributorDao.GIVEN)));
+		assertTrue(Arrays.equals(email, (Object[]) filters.get(PersonContributorDao.EMAIL)));
+		assertTrue(Arrays.equals(orcid, (Object[]) filters.get(PersonContributorDao.ORCID)));
+		assertTrue("Expected perferred to be true", (Boolean) filters.get(PersonContributorDao.PREFERRED));
 	}
 
 	@Test

@@ -79,7 +79,7 @@ public class PersonContributorDaoIT extends BaseIT {
 		}
 
 		filters.clear();
-		filters.put(PersonContributorDao.GIVEN, "con");
+		filters.put(PersonContributorDao.GIVEN, new String[]{"con"});
 		contributors = personContributorDao.getByMap(filters);
 		assertEquals(1, contributors.size());
 		for (Contributor<?> contributor : contributors) {
@@ -89,7 +89,7 @@ public class PersonContributorDaoIT extends BaseIT {
 		}
 
 		filters.clear();
-		filters.put(PersonContributorDao.FAMILY, "con");
+		filters.put(PersonContributorDao.FAMILY, new String[]{"con"});
 		contributors = personContributorDao.getByMap(filters);
 		assertEquals(1, contributors.size());
 		for (Contributor<?> contributor : contributors) {
@@ -109,10 +109,10 @@ public class PersonContributorDaoIT extends BaseIT {
 		}
 
 		filters.clear();
-		filters.put(PersonContributorDao.FAMILY, "out");
+		filters.put(PersonContributorDao.FAMILY, new String[]{"out"});
 		contributors = personContributorDao.getByMap(filters);
 		assertEquals(1, contributors.size());
-		filters.put(PersonContributorDao.GIVEN, "out");
+		filters.put(PersonContributorDao.GIVEN, new String[]{"out"});
 		contributors = personContributorDao.getByMap(filters);
 		assertEquals(1, contributors.size());
 		filters.put(PersonContributorDao.TEXT_SEARCH, "oute:*");
@@ -187,19 +187,21 @@ public class PersonContributorDaoIT extends BaseIT {
 	public void getByPreferredAll() {
 		List<Contributor<?>> contributors = personContributorDao.getByPreferred(null);
 		assertEquals(ContributorDaoIT.CONTRIBUTOR_CNT, contributors.size());
+		// verify that 'order by' in the query returned results in the expected order
 		assertEquals(51, contributors.get(0).getId().intValue());
 		assertEquals(54, contributors.get(1).getId().intValue());
 		assertEquals(4, contributors.get(2).getId().intValue());
 		assertEquals(1, contributors.get(3).getId().intValue());
 		assertEquals(5, contributors.get(4).getId().intValue());
-		assertEquals(11, contributors.get(5).getId().intValue());
-		assertEquals(21, contributors.get(6).getId().intValue());
-		assertEquals(14, contributors.get(7).getId().intValue());
-		assertEquals(24, contributors.get(8).getId().intValue());
-		assertEquals(34, contributors.get(9).getId().intValue());
-		assertEquals(44, contributors.get(10).getId().intValue());
-		assertEquals(3, contributors.get(11).getId().intValue());
-		assertEquals(2, contributors.get(12).getId().intValue());
+		assertEquals(60, contributors.get(5).getId().intValue());
+		assertEquals(11, contributors.get(6).getId().intValue());
+		assertEquals(21, contributors.get(7).getId().intValue());
+		assertEquals(14, contributors.get(8).getId().intValue());
+		assertEquals(24, contributors.get(9).getId().intValue());
+		assertEquals(34, contributors.get(10).getId().intValue());
+		assertEquals(44, contributors.get(11).getId().intValue());
+		assertEquals(3, contributors.get(12).getId().intValue());
+		assertEquals(2, contributors.get(13).getId().intValue());
 	}
 
 	@Test
@@ -208,6 +210,7 @@ public class PersonContributorDaoIT extends BaseIT {
 		filter.setOrcid("0000-0000-0000-0004");
 		List<Contributor<?>> contributors = personContributorDao.getByPreferred(filter);
 		assertEquals(5, contributors.size());
+		// verify that 'order by' in the query returned results in the expected order
 		assertEquals(4, contributors.get(0).getId().intValue());
 		assertEquals(14, contributors.get(1).getId().intValue());
 		assertEquals(24, contributors.get(2).getId().intValue());
@@ -220,6 +223,7 @@ public class PersonContributorDaoIT extends BaseIT {
 		UsgsContributor filter = new UsgsContributor();
 		filter.setEmail("con@usgs.gov");;
 		List<Contributor<?>> contributors = personContributorDao.getByPreferred(filter);
+		// verify that 'order by' in the query returned results in the expected order
 		assertEquals(2, contributors.size());
 		assertEquals(1, contributors.get(0).getId().intValue());
 		assertEquals(11, contributors.get(1).getId().intValue());

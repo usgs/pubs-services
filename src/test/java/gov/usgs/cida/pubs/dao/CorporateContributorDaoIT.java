@@ -1,6 +1,7 @@
 package gov.usgs.cida.pubs.dao;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -58,18 +59,28 @@ public class CorporateContributorDaoIT extends BaseIT {
 	public void getByMap() {
 		List<Contributor<?>> contributors = corporateContributorDao.getByMap(null);
 		assertEquals(ContributorDaoIT.CORPORATE_CONTRIBUTOR_CNT, contributors.size());
+		assertAllAreCorporateContributors(contributors);
 
 		Map<String, Object> filters = new HashMap<>();
 		filters.put(CorporateContributorDao.ID_SEARCH, 2);
 		contributors = corporateContributorDao.getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(2, contributors.get(0).getId().intValue());
+		assertCorporateContributor(contributors.get(0));
+
+		filters.clear();
+		filters.put(CorporateContributorDao.ID_SEARCH, 60);
+		contributors = corporateContributorDao.getByMap(filters);
+		assertEquals(1, contributors.size());
+		assertEquals(60, contributors.get(0).getId().intValue());
+		assertCorporateContributor(contributors.get(0));
 
 		filters.clear();
 		filters.put(CorporateContributorDao.TEXT_SEARCH, "us" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX);
 		contributors = corporateContributorDao.getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(2, contributors.get(0).getId().intValue());
+		assertCorporateContributor(contributors.get(0));
 
 		filters.clear();
 		filters.put("id", 2);
@@ -77,6 +88,53 @@ public class CorporateContributorDaoIT extends BaseIT {
 		contributors = corporateContributorDao.getByMap(filters);
 		assertEquals(1, contributors.size());
 		assertEquals(2, contributors.get(0).getId().intValue());
+		assertCorporateContributor(contributors.get(0));
+	}
+
+	@Test
+	public void getByMapContributorFilterTest() {
+		Map<String, Object> filters = new HashMap<>();
+		filters.put(PersonContributorDao.PREFERRED, Boolean.TRUE);
+		List<Contributor<?>> contributors = corporateContributorDao.getByMap(null);
+		assertEquals(2, contributors.size());
+		assertAllAreCorporateContributors(contributors);
+
+		filters.clear();
+		filters.put(PersonContributorDao.FAMILY, new String[]{"con"});
+		contributors = corporateContributorDao.getByMap(filters);
+		assertEquals(0, contributors.size());
+
+		filters.clear();
+		filters.put(PersonContributorDao.GIVEN, new String[]{"Given"});
+		contributors = corporateContributorDao.getByMap(filters);
+		assertEquals(0, contributors.size());
+
+		filters.clear();
+		filters.put(CorporateContributorDao.CORPORATION, Boolean.TRUE);
+		contributors = corporateContributorDao.getByMap(filters);
+		assertEquals(ContributorDaoIT.CORPORATE_CONTRIBUTOR_CNT, contributors.size());
+		assertAllAreCorporateContributors(contributors);
+
+		filters.clear();
+		filters.put(CorporateContributorDao.CORPORATION, Boolean.FALSE);
+		contributors = corporateContributorDao.getByMap(filters);
+		assertEquals(0, contributors.size());
+
+		filters.clear();
+		filters.put(PersonContributorDao.USGS, Boolean.TRUE);
+		contributors = corporateContributorDao.getByMap(filters);
+		assertEquals(0, contributors.size());
+
+		filters.clear();
+		filters.put(PersonContributorDao.USGS, Boolean.FALSE);
+		contributors = corporateContributorDao.getByMap(filters);
+		assertEquals(ContributorDaoIT.CORPORATE_CONTRIBUTOR_CNT, contributors.size());
+		assertAllAreCorporateContributors(contributors);
+
+		filters.clear();
+		filters.put(PersonContributorDao.EMAIL, new String[]{"test@corp.none.com"});
+		contributors = corporateContributorDao.getByMap(filters);
+		assertEquals(0, contributors.size());
 	}
 
 	@Test
@@ -112,5 +170,17 @@ public class CorporateContributorDaoIT extends BaseIT {
 		CorporateContributor newCorp = new CorporateContributor();
 		newCorp.setId(corpId);
 		return newCorp;
+	}
+
+	private void assertAllAreCorporateContributors(List<Contributor<?>> contributors) {
+		for(Contributor<?> contributor : contributors) {
+			assertCorporateContributor(contributor);
+		}
+	}
+
+	private void assertCorporateContributor(Contributor<?> contributor) {
+		assertTrue(contributor instanceof CorporateContributor);
+		assertTrue(contributor.isCorporation());
+		assertFalse(contributor.isUsgs());
 	}
 }

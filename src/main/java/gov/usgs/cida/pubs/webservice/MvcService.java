@@ -19,9 +19,12 @@ import org.springframework.util.ObjectUtils;
 
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.dao.CorporateContributorDao;
+import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
+import gov.usgs.cida.pubs.domain.PersonContributorFilterParams;
 import gov.usgs.cida.pubs.domain.PublicationFilterParams;
 import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
 import gov.usgs.cida.pubs.utility.PubsUtils;
@@ -74,6 +77,22 @@ public abstract class MvcService<D> {
 		filters.put(PublicationDao.TITLE, filterParams.getTitle());
 		filters.put(PublicationDao.TYPE_NAME, filterParams.getTypeName());
 		filters.put(PublicationDao.YEAR, filterParams.getYear());
+
+		return filters;
+	}
+
+	protected Map<String, Object> buildFilters(PersonContributorFilterParams filterParams) {
+		Map<String, Object> filters = new HashMap<>();
+
+		filters.put(BaseDao.ID_SEARCH,filterParams.getId());
+		filters.put(BaseDao.TEXT_SEARCH, configureContributorFilter(filterParams.getText()));
+		filters.put(CorporateContributorDao.CORPORATION,filterParams.getCorporation());
+		filters.put(PersonContributorDao.USGS,filterParams.getUsgs());
+		filters.put(PersonContributorDao.FAMILY,filterParams.getFamilyName());
+		filters.put(PersonContributorDao.GIVEN,filterParams.getGivenName());
+		filters.put(PersonContributorDao.EMAIL,filterParams.getEmail());
+		filters.put(PersonContributorDao.ORCID,DataNormalizationUtils.normalizeOrcid(filterParams.getOrcid()));
+		filters.put(PersonContributorDao.PREFERRED,filterParams.getPreferred());
 
 		return filters;
 	}

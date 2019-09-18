@@ -101,17 +101,26 @@
         <if test="text != null">
             and to_tsvector(text) @@ to_tsquery(#{text})
         </if>
-        <if test="given != null">
-            and upper(given) like upper(#{given}) || '%'
+        <if test="given != null and given.length > 0">
+            <foreach item="given" collection="given" open="and (" separator="or" close=")">
+               upper(given) like upper(#{given}) || '%'
+            </foreach>
         </if>
-        <if test="family != null">
-            and upper(family) like upper(#{family}) || '%'
+        <if test="family != null and family.length > 0">
+            <foreach item="family" collection="family" open="and (" separator="or" close=")">
+               upper(family) like upper(#{family}) || '%'
+            </foreach>
         </if>
         <if test="corporation != null">
             and is_corporation = #{corporation}
         </if>
         <if test="usgs != null">
             and is_usgs = #{usgs}
+        </if>
+        <if test="email != null and email.length > 0">
+            <foreach item="email" collection="email" open="and (" separator="or" close=")">
+               upper(email) like upper(#{email}) || '%'
+            </foreach>
         </if>
         <if test="orcid != null and orcid.length > 0">
             <foreach item="oid" collection="orcid" open="and (" separator="or" close=")">

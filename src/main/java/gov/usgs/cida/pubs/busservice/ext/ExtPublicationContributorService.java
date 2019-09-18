@@ -123,8 +123,8 @@ public class ExtPublicationContributorService {
 
 	protected OutsideContributor getByName(String family, String given) {
 		Map<String, Object> filters = new HashMap<>();
-		filters.put(PersonContributorDao.FAMILY, family);
-		filters.put(PersonContributorDao.GIVEN, given);
+		filters.put(PersonContributorDao.FAMILY, new String[]{family});
+		filters.put(PersonContributorDao.GIVEN, new String[]{given});
 		filters.put(PersonContributorDao.USGS, false);
 		List<Contributor<?>> contributors = OutsideContributor.getDao().getByMap(filters);
 		OutsideContributor contributor = null;

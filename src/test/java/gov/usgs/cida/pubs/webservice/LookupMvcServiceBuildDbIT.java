@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONArrayAs;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -43,13 +45,16 @@ import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
+import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
+import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
+import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
 
 @EnableWebMvc
 @AutoConfigureMockMvc(secure=false)
@@ -112,10 +117,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 
 		assertEquals(1, rtnAsJSONArray.length());
 
-		assertThat(rtnAsJSONArray,
-				sameJSONArrayAs(
-						new JSONArray("[{\"id\":3,\"text\":\"outerfamily, outerGiven outerSuffix outer@gmail.com\",\"preferred\":false}]"))
-								.allowingAnyArrayOrdering());
+		assertThat(rtnAsJSONArray, sameJSONArrayAs(contributor3JsonArray()).allowingAnyArrayOrdering());
 
 		rtn = mockMvc.perform(get("/lookup/people?orcid=0000-0000-0000-0004").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -127,20 +129,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 
 		assertEquals(1, rtnAsJSONArray.length());
 
-		assertThat(rtnAsJSONArray,
-				sameJSONArrayAs(
-						new JSONArray("[{\"id\":4,\"text\":\"4Family, 4Given 4Suffix con4@usgs.gov\",\"preferred\":true}]"))
-				.allowingAnyArrayOrdering());
-
-		mockMvc.perform(get("/lookup/people").accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isBadRequest())
-			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING));
-
-		mockMvc.perform(get("/lookup/people?text=a").accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isBadRequest())
-			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING));
+		assertThat(rtnAsJSONArray, sameJSONArrayAs(contributor4JsonArray()).allowingAnyArrayOrdering());
 	}
 
 	@Test
@@ -295,6 +284,55 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 				sameJSONArrayAs(new JSONArray(
 						"[{\"id\":4,\"text\":\"Rolla PSC\"},{\"id\":8,\"text\":\"Raleigh PSC\"},{\"id\":9,\"text\":\"Reston PSC\"}]"))
 								.allowingAnyArrayOrdering());
+	}
+
+	private JSONArray contributor3JsonArray() throws JSONException {
+		PersonContributor<?> contributor = new OutsideContributor();
+
+		contributor.setId(3);
+		contributor.setEmail("outer@gmail.com");
+		contributor.setGiven("outerGiven");
+		contributor.setFamily("outerfamily");
+		contributor.setSuffix("outerSuffix");
+		contributor.setOrcid("https://orcid.org/0000-0000-0000-0001");
+
+		return contributorJsonArray(contributor);
+	}
+
+	private JSONArray contributor4JsonArray() throws JSONException {
+		PersonContributor<?> contributor = new UsgsContributor();
+
+		contributor.setId(4);
+		contributor.setEmail("con4@usgs.gov");
+		contributor.setGiven("4Given");
+		contributor.setPreferred(true);
+		contributor.setFamily("4Family");
+		contributor.setSuffix("4Suffix");
+		contributor.setOrcid("https://orcid.org/0000-0000-0000-0004");
+
+		return contributorJsonArray(contributor);
+	}
+
+	private JSONArray contributorJsonArray(PersonContributor<?> contributor) throws JSONException {
+		JSONObject json = new JSONObject();
+
+		json.put("contributorId", contributor.getId());
+		json.put("email", contributor.getEmail());
+		json.put("given", contributor.getGiven());
+		json.put("preferred", contributor.isPreferred());
+		json.put("corporation", contributor.isCorporation());
+		json.put("family", contributor.getFamily());
+		json.put("suffix", contributor.getSuffix());
+		json.put("orcid", contributor.getOrcid());
+		json.put("usgs", contributor.isUsgs());
+		json.put("text", contributor.getText());
+		json.put("affiliations", new JSONArray());
+
+		String jsonStr = json.toString();
+		jsonStr =  jsonStr.replace(DataNormalizationUtils.normalizeOrcid(contributor.getOrcid()), DataNormalizationUtils.denormalizeOrcid(contributor.getOrcid()));
+		JSONArray jsonArray = new JSONArray("[" + jsonStr + "]");
+
+		return jsonArray;
 	}
 
 }

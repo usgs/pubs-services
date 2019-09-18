@@ -15,6 +15,8 @@ public class CorporateContributorDao extends ContributorDao {
 
 	private static final String CORPORATE = "CorporateContributor";
 
+	public static final String CORPORATION = "corporation";
+
 	@Autowired
 	public CorporateContributorDao(SqlSessionFactory sqlSessionFactory) {
 		super(sqlSessionFactory);

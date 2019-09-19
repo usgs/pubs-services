@@ -103,10 +103,6 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpmime</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.hibernate.validator</groupId>
@@ -242,11 +238,6 @@
                         <PUBS_WAREHOUSE_ENPOINT>http://pubs.er.usgs.gov</PUBS_WAREHOUSE_ENPOINT>
                         <PUBS_AUTHORIZED_GROUPS>SPN_AUTHORITY, PUBS_AUTHORITY</PUBS_AUTHORIZED_GROUPS>
                         <PUBS_SPN_GROUPS>SPN_AUTHORITY</PUBS_SPN_GROUPS>
-
-                        <ipds.endpoint>changeMe</ipds.endpoint>
-                        <ipds.pubsWsPwd>changeMe</ipds.pubsWsPwd>
-                        <ipds.pubsWsUser>changeMe</ipds.pubsWsUser>
-                        <ipds.queueName>changeMe</ipds.queueName>
 
                         <SWAGGER_DISPLAY_HOST>localhost:8444</SWAGGER_DISPLAY_HOST>
                         <SWAGGER_DISPLAY_PATH>/pubs-services</SWAGGER_DISPLAY_PATH>

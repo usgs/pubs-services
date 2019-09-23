@@ -2,21 +2,14 @@ package gov.usgs.cida.pubs.springinit;
 
 import java.io.IOException;
 
-import org.apache.http.auth.NTCredentials;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.util.FileCopyUtils;
 
-import gov.usgs.cida.pubs.ConfigurationService;
-
 @Configuration
 public class BusServiceConfig {
-
-	@Autowired
-	private ConfigurationService configurationService;
 
 	@Value("classpath:templates/crossref.4.3.3/numberedSeries.xml")
 	private Resource numberedSeriesResource;
@@ -57,10 +50,4 @@ public class BusServiceConfig {
 	public String pagesXml() throws IOException {
 		return new String(FileCopyUtils.copyToByteArray(pagesResource.getInputStream()));
 	}
-
-	@Bean
-	public NTCredentials nTCredentials() {
-		return new NTCredentials(configurationService.getIpdsPubsWsUser(), configurationService.getIpdsPubsWsPwd(), "", "GS");
-	}
-
 }

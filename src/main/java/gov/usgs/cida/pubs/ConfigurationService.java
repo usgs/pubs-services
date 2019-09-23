@@ -6,15 +6,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class ConfigurationService {
 
-	@Value("${ipds.pubsWsPwd}")
-	private String ipdsPubsWsPwd;
-	@Value("${ipds.pubsWsUser}")
-	private String ipdsPubsWsUser;
-	@Value("${ipds.queueName}")
-	private String ipdsQueueName;
-	@Value("${ipds.endpoint}")
-	private String ipdsEndpoint;
-
 	@Value("${crossref.protocol}")
 	private String crossrefProtocol;
 	@Value("${crossref.host}")
@@ -62,18 +53,6 @@ public class ConfigurationService {
 	@Value("${sipp.infoProduct.url}")
 	private String infoProductUrl;
 
-	public String getIpdsPubsWsPwd() {
-		return ipdsPubsWsPwd;
-	}
-	public String getIpdsPubsWsUser() {
-		return ipdsPubsWsUser;
-	}
-	public String getIpdsQueueName() {
-		return ipdsQueueName;
-	}
-	public String getIpdsEndpoint() {
-		return ipdsEndpoint;
-	}
 	public String getCrossrefProtocol() {
 		return crossrefProtocol;
 	}

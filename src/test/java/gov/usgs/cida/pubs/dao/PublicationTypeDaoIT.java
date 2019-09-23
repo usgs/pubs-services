@@ -28,7 +28,7 @@ import gov.usgs.cida.pubs.springinit.DbTestConfig;
 })
 public class PublicationTypeDaoIT extends BaseIT {
 
-	public static final int pubTypeCnt = 11;
+	public static final int pubTypeCnt = 12;
 
 	@Autowired
 	PublicationTypeDao publicationTypeDao;
@@ -62,7 +62,7 @@ public class PublicationTypeDaoIT extends BaseIT {
 		filters.clear();
 		filters.put("text", "p");
 		pubTypes = publicationTypeDao.getByMap(filters);
-		assertEquals(2, pubTypes.size());
+		assertEquals(3, pubTypes.size());
 	}
 
 	@Test

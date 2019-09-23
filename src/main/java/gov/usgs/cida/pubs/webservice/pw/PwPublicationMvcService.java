@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.entity.mime.MIME;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -35,8 +37,10 @@ import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
 import gov.usgs.cida.pubs.dao.resulthandler.StreamingResultHandler;
 import gov.usgs.cida.pubs.domain.ContributorType;
+import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationFilterParams;
+import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.json.View;
@@ -47,12 +51,14 @@ import gov.usgs.cida.pubs.transform.PublicationColumnsHelper;
 import gov.usgs.cida.pubs.transform.XlsxTransformer;
 import gov.usgs.cida.pubs.transform.intfc.ITransformer;
 import gov.usgs.cida.pubs.utility.PubsUtils;
+import gov.usgs.cida.pubs.utility.XmlUtils;
 import gov.usgs.cida.pubs.webservice.MvcService;
 
 @RestController
 @RequestMapping(value="publication")
 @ResponseBody
 public class PwPublicationMvcService extends MvcService<PwPublication> {
+	private static final Logger LOG = LoggerFactory.getLogger(PwPublicationMvcService.class);
 
 	private final IPwPublicationBusService busService;
 	private final ConfigurationService configurationService;
@@ -215,6 +221,46 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	}
 
 	/**
+	 *   Get the Html document for the publication specified by indexId
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
+	@GetMapping(
+		path = "/full/{indexId}",
+		produces = { PubsConstantsHelper.MEDIA_TYPE_HTML_VALUE }
+	)
+	public void getPublicationHtml(HttpServletRequest request,
+						HttpServletResponse response, @PathVariable("indexId") String indexId) throws IOException {
+		PwPublication publication = getPwPublicationJSON(indexId, response);
+		String xmlUrl = getXmlDocUrl(publication);
+		String doi = publication == null || publication.getDoi() == null ? "[Unknown]" : String.format("'%s'",publication.getDoi());
+		String htmlOutput = "";
+
+		if(publication == null) {
+			response.setStatus(HttpStatus.NOT_FOUND.value());
+			htmlOutput = formatHtmlErrMess(String.format("Publication with indexId '%s' not found.", indexId));
+		} else if(xmlUrl == null) {
+			response.setStatus(HttpStatus.NOT_FOUND.value());
+			htmlOutput = formatHtmlErrMess(String.format("Full publication link not found (indexId '%s' doi %s)", indexId, doi));
+		} else {
+			try {
+				htmlOutput = XmlUtils.getPublicationHtml(xmlUrl, request.getServletContext());
+			} catch (Exception ex) {
+				response.setStatus(HttpStatus.CONFLICT.value());
+				String mess = String.format("Error retrieving publication html (indexId: '%s' doi %s): %s)", indexId, doi, ex.getMessage());
+				htmlOutput = formatHtmlErrMess(mess);
+				LOG.error(mess, ex);
+			}
+		}
+
+		response.setCharacterEncoding(PubsConstantsHelper.DEFAULT_ENCODING);
+		response.setContentType(PubsConstantsHelper.MEDIA_TYPE_HTML_VALUE);
+		response.getOutputStream().write(htmlOutput.getBytes());
+
+	}
+
+	/**
 	 * 
 	 * @param mediaTypes the media types as specified by the user in the request headers
 	 * @return true if the user has requested crossref xml either through the query string or the headers, false otherwise
@@ -282,5 +328,20 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	protected boolean isUsgsSeries(PwPublication pub){
 		PublicationSubtype subtype = pub.getPublicationSubtype();
 		return PubsUtils.isUsgsNumberedSeries(subtype) || PubsUtils.isUsgsUnnumberedSeries(subtype);
+	}
+
+	protected String getXmlDocUrl(PwPublication pub) {
+		String url = null;
+
+		if(pub != null && pub.getLinks() != null) {
+			for(PublicationLink<?> link : pub.getLinks()) {
+				if(link.getId() != null && LinkType.PUBLICATION_XML == link.getId()) {
+					url = link.getUrl();
+					break;
+				}
+			}
+		}
+
+		return url;
 	}
 }

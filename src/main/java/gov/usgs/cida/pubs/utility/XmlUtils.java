@@ -109,21 +109,21 @@ public class XmlUtils {
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 */
-	public static String getDocumentHtml(URL xmlDoc, File xlsStylesheet, boolean validate)
+	public static String getDocumentHtml(URL xmlDoc, File xslStylesheet, boolean validate)
 			throws TransformerException, IOException, ParserConfigurationException, SAXException {
 		// Create a transform factory instance.
 		TransformerFactory tfactory = TransformerFactory.newInstance();
 
 		// Create a transformer for the stylesheet.
-		InputStream xslIS = new BufferedInputStream(new FileInputStream(xlsStylesheet));
-		StreamSource xslSource = new StreamSource(xslIS, "file://" + xlsStylesheet.getPath());
+		InputStream xslIS = new BufferedInputStream(new FileInputStream(xslStylesheet));
+		StreamSource xslSource = new StreamSource(xslIS, "file://" + xslStylesheet.getPath());
 		Transformer transformer = tfactory.newTransformer(xslSource);
 
 		DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 		dfactory.setValidating(validate);
 
 		DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
-		docBuilder.setEntityResolver(new PubsEntityResolver(xlsStylesheet.getParent()));
+		docBuilder.setEntityResolver(new PubsEntityResolver(xslStylesheet.getParent()));
 		Document doc = docBuilder.parse(new InputSource(xmlDoc.openStream()));
 		updateImageLinks(xmlDoc, doc.getDocumentElement());
 
@@ -165,7 +165,7 @@ public class XmlUtils {
 	}
 
 	private static class PubsEntityResolver implements EntityResolver {
-		String dtdDirectory = "";
+		private String dtdDirectory = "";
 
 		PubsEntityResolver(String dtdDirectory) {
 			this.dtdDirectory = dtdDirectory;

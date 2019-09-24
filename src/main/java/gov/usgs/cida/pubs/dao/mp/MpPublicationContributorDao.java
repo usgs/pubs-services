@@ -15,7 +15,7 @@ import gov.usgs.cida.pubs.utility.PubsUtils;
 @Repository
 public class MpPublicationContributorDao extends MpDao<MpPublicationContributor> {
 
-	private static final String NS = "mpPublicationContributor";
+	public static final String NS = "mpPublicationContributor";
 
 	@Autowired
 	public MpPublicationContributorDao(SqlSessionFactory sqlSessionFactory) {

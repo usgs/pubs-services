@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <publication_index
+        publication_id = "4"
+        q="'2':13 '4':1 'abstract':4 'affili':10 'book':2 'center':12 'chapter':3 'cost':11 'public':8 'resourc':7 'rp':9 'summari':6"
+    />
+    <publication_index
+        publication_id = "5"
+        q="'2':15 '9':1 'abstract':4 'affili':12 'book':2 'center':14 'chapter':3 'cost':13 'file':9 'ofr':11 'open':8 'open-fil':7 'report':10 'summari':6"
+    />
+    <publication_index
+        publication_id = "6"
+        q="'abstract':4 'book':2 'chapter':3 'sir6':1 'summari':6"
+    />
+</dataset>

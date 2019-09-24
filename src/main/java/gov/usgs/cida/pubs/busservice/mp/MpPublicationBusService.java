@@ -23,6 +23,7 @@ import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationLinkDao;
+import gov.usgs.cida.pubs.domain.DeletedPublication;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
@@ -133,11 +134,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 				if (!validations.isEmpty()) {
 					pub.setValidationErrors(validations);
 				} else {
-					MpListPublication.getDao().deleteByParent(objectId);
-					MpPublicationContributor.getDao().deleteByParent(objectId);
-					MpPublicationCostCenter.getDao().deleteByParent(objectId);
-					MpPublicationLink.getDao().deleteByParent(objectId);
-					MpPublication.getDao().delete(pub);
+					deleteMpPublication(objectId);
 				}
 			}
 			return pub.getValidationErrors();
@@ -394,5 +391,37 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 	@Override
 	public MpPublication getByIndexId(String indexId) {
 		return MpPublication.getDao().getByIndexId(indexId);
+	}
+
+	@Override
+	@Transactional
+	public ValidationResults purgePublication(Integer publicationId) {
+		ValidationResults validationResults = new ValidationResults();
+		if (null != publicationId) {
+			PwPublication pwPub = PwPublication.getDao().getById(publicationId);
+			MpPublication mpPub = MpPublication.getDao().getById(publicationId);
+
+			if (null == mpPub && null == pwPub) {
+				validationResults.addValidatorResult(new ValidatorResult("Publication", "Publication does not exist.", SeverityLevel.FATAL, publicationId.toString()));
+			} else {
+				if (null != mpPub) {
+					deleteMpPublication(publicationId);
+				}
+
+				if (null != pwPub) {
+					DeletedPublication.getDao().add(new DeletedPublication(pwPub));
+					deletePwPublication(publicationId);
+				}
+			}
+		}
+		return validationResults;
+	}
+
+	protected void deleteMpPublication(Integer publicationId) {
+		MpPublication.getDao().purgePublication(publicationId);
+	}
+
+	protected void deletePwPublication(Integer publicationId) {
+		PwPublication.getDao().purgePublication(publicationId);
 	}
 }

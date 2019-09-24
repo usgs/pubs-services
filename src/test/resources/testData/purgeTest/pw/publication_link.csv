@@ -1,0 +1,4 @@
+publication_link_id,publication_id,rank,link_type_id,url,text,object_size,link_file_type_id,description,help_text
+3,2,1,6,http://www.abc.org,wowline,16 MB,4,Whatup?,Go Help!
+10,4,1,1,url,text,12 GB,1,just a normal description,Super Help
+11,5,1,1,url,text,12 GB,1,just a normal description,Help Me!!!

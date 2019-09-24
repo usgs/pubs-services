@@ -13,7 +13,7 @@ import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
 @Repository
 public class MpPublicationCostCenterDao extends MpDao<MpPublicationCostCenter> {
 
-	private static final String NS = "mpPublicationCostCenter";
+	public static final String NS = "mpPublicationCostCenter";
 
 	@Autowired
 	public MpPublicationCostCenterDao(SqlSessionFactory sqlSessionFactory) {
@@ -38,9 +38,6 @@ public class MpPublicationCostCenterDao extends MpDao<MpPublicationCostCenter> {
 		return getSqlSession().selectList(NS + GET_BY_MAP, filters);
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#update(java.lang.Object)
-	 */
 	@Transactional
 	@Override
 	public void update(MpPublicationCostCenter domainObject) {

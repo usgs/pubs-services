@@ -52,4 +52,11 @@ public interface IMpPublicationBusService extends IBusService<MpPublication> {
 			String chapter,
 			String subchapterNumber
 			);
+
+	/**
+	 * Purge the publication identified by the publicationId from both the manager and warehouse tables.
+	 * @param publicationId to purge.
+	 * @return any validation errors that may have prevented the purging of this publication
+	 */
+	ValidationResults purgePublication(final Integer publicationId);
 }

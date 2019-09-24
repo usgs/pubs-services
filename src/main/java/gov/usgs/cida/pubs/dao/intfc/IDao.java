@@ -15,7 +15,7 @@ public interface IDao<D> {
 	 * @param domainObject domain object to add
 	 * @return the new domain id
 	 */
-	 Integer add(D domainObject);
+	Integer add(D domainObject);
 
 	/** 
 	 * Get a domain object by it's unique id.

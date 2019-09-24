@@ -1,0 +1,12 @@
+publication_type_id,name
+2,Article
+4,Book
+5,Book chapter
+15,Pamphlet
+16,Patent
+18,Report
+20,Speech
+21,Thesis
+22,Videorecording
+23,Dataset
+24,Conference Paper

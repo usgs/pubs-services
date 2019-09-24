@@ -329,4 +329,9 @@
         <include refid="base.pagingRowLimit"/>
     </select>
 
+    <delete id="delete">
+        delete from publication <include refid="base.deleteAuditHack"/>
+         where publication_id = #{id,jdbcType=INTEGER}::int
+    </delete>
+
 </mapper>

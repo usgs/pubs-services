@@ -42,6 +42,7 @@ public class DbTestConfig {
 		DatabaseConfigBean dbUnitDbConfig = new DatabaseConfigBean();
 		dbUnitDbConfig.setDatatypeFactory(new PubsDataTypeFactory());
 		dbUnitDbConfig.setQualifiedTableNames(false);
+		dbUnitDbConfig.setTableType(new String[] {"TABLE","MATERIALIZED VIEW"});
 		return dbUnitDbConfig;
 	}
 

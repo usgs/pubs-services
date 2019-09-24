@@ -1,0 +1,5 @@
+publication_id,index_id,display_to_public_date,publication_type_id,publication_subtype_id,publication_series_id,larger_work_type_id,larger_work_subtype_id,publishing_service_center_id,is_part_of_id,superseded_by_id,title,doi_name
+2,2,2014-07-22 20:06:10,18,5,331,null,null,7,4,6,title2,10.3133/2
+4,4,2014-07-22 17:09:24,5,18,332,23,23,5,6,5,title4,doi
+5,9,2100-12-31 23:59:59,5,18,330,null,null,null,null,null, future title,null
+6,sir6,2001-12-31 23:59:59,5,18,null,null,null,null,null,null, a xitle,null

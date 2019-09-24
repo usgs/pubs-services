@@ -19,6 +19,8 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
+import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
@@ -31,14 +33,22 @@ import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
+import gov.usgs.cida.pubs.domain.mp.MpListPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={DbTestConfig.class, MpPublication.class, MpPublicationDao.class,
-			PublicationDao.class, PwPublicationDao.class})
+			PublicationDao.class, PwPublicationDao.class,
+			MpListPublication.class, MpListPublicationDao.class,
+			MpPublicationContributor.class, MpPublicationContributorDao.class,
+			MpPublicationCostCenter.class, MpPublicationCostCenterDao.class,
+			MpPublicationLink.class, MpPublicationLinkDao.class})
 public class MpPublicationDaoIT extends BaseIT {
 
 	//TODO contributors, links, & CostCenters in test.
@@ -271,6 +281,24 @@ public class MpPublicationDaoIT extends BaseIT {
 
 		//This one is only in Publication, so we shouldn't frind it
 		assertNull(mpPublicationDao.getByIndexId("9"));
+	}
+
+	@Test
+	@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
+	@DatabaseSetup("classpath:/testData/purgeTest/common/")
+	@DatabaseSetup("classpath:/testData/purgeTest/mp/")
+	@ExpectedDatabase(
+			value="classpath:/testResult/purgeTest/mp/",
+			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+	@ExpectedDatabase(
+			value="classpath:/testResult/purgeTest/common/",
+			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+	public void purgePublication() {
+		//This one is not found and should not cause an error
+		mpPublicationDao.purgePublication(668);
+
+		//This one should delete
+		mpPublicationDao.purgePublication(2);
 	}
 
 	public static void assertMpPub1(Publication<?> pub, String expectedLockUsername) {

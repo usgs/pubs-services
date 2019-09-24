@@ -1,0 +1,6 @@
+publication_type
+publication_subtype
+publication_series
+affiliation
+contributor
+contributor_affiliation

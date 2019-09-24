@@ -1,0 +1,17 @@
+publication_series_id,publication_subtype_id,name,code,print_issn,online_issn,is_active
+1,1,Administrative Report,null,null,null,false
+133,2,Report,null,null,null,false
+135,5,Report,null,null,null,false
+309,5,Coal Map,COAL,null,null,false
+323,5,Mineral Commodities Summaries,MINERAL,0076-8952,null,true
+330,5,Open-File Report,OFR,0196-1497,2331-1258,true
+331,5,Professional Paper,PP,1044-9612,2330-7102,true
+332,5,Resource Publication,RP,null,null,false
+333,5,Scientific Investigations Map,SIM,2329-1311,2329-132X,true
+334,5,Scientific Investigations Report,SIR,2328-031X,2328-0328,true
+341,5,Water Supply Paper,WSP,null,null,false
+350,6,Water Data Report,null,null,9999-9999,true
+501,22,Unclassified,null,null,null,false
+3803,10,Zeitschrift fur Geomorphologie,null,null,null,true
+3804,10,"Zeitschrift fur Geomorphologie, Supplementband",null,null,null,true
+3805,10,Zeitschrift fur Tierpsychologie,null,null,null,true

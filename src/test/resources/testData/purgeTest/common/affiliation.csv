@@ -1,0 +1,8 @@
+affiliation_id,name,affiliation_ipds_id,is_cost_center,is_active
+1,Affiliation Cost Center 1,4,true,true
+2,Affiliation Cost Center 2,3,true,true
+3,xAffiliation Cost Center 3,2,true,false
+4,xAffiliation Cost Center 4,1,true,true
+5,Outside Affiliation 1,null,false,true
+6,xOutside Affiliation 2,null,false,false
+7,Outside Affiliation 3,null,false,true

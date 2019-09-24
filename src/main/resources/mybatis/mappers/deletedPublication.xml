@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="deletedPublication">
+
+    <resultMap id="result" type="DeletedPublication" extends="base.result">
+        <id property="id" column="publication_id"/>
+        <result property="indexId" column="index_id"/>
+        <result property="title" column="title"/>
+        <result property="doi" column="doi_name"/>
+        <result property="deleteDate" column="delete_date"/>
+        <result property="deleteUsername" column="delete_username"/>
+    </resultMap>
+
+    <sql id="filters">
+        <where>
+            <if test="deletedSince != null">
+                and delete_date &gt;= #{deletedSince,jdbcType=DATE}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="add" parameterType="DeletedPublication">
+        insert
+            into deleted_publication (publication_id,
+                                      index_id,
+                                      title,
+                                      doi_name,
+                                      delete_date,
+                                      delete_username)
+            values (#{id,jdbcType=NUMERIC},
+                    #{indexId,jdbcType=VARCHAR},
+                    #{title,jdbcType=VARCHAR},
+                    #{doi,jdbcType=VARCHAR},
+                    (now() at time zone 'UTC'),
+                    #{deleteUsername,jdbcType=VARCHAR})
+    </insert>
+
+    <select id="getByMap" parameterType="map" resultMap="result">
+        select publication_id,
+               index_id,
+               title,
+               doi_name,
+               delete_date,
+               delete_username
+          from deleted_publication
+        <include refid="filters"/>
+            order by delete_date desc,
+                     index_id asc
+        <include refid="base.pagingRowLimit"/>
+    </select>
+
+    <select id="getCount" parameterType="map" resultType="Integer">
+        select count(*)
+          from deleted_publication
+        <include refid="filters"/>
+    </select>
+
+</mapper>

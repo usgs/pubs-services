@@ -1,0 +1,4 @@
+publication_id,index_id,display_to_public_date,publication_type_id,publication_subtype_id,publication_series_id,larger_work_type_id,larger_work_subtype_id,publishing_service_center_id,is_part_of_id,superseded_by_id
+1,sir20145083,2014-07-14 17:27:36,18,5,334,23,23,6,4,6
+2,2,2014-07-22 20:06:10,18,5,331,null,null,7,4,6
+3,ofr20141147,2014-07-17 16:46:00,18,5,330,null,null,null,null,null

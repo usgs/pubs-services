@@ -359,6 +359,48 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 		verify(busService, times(1)).releaseLocksPub(anyInt());
 	}
 
+
+	@Test
+	public void purgePubTest() throws Exception {
+		ValidationResults vrnf = new ValidationResults();
+		vrnf.addValidatorResult(new ValidatorResult("Publication", "Publication does not exist.", SeverityLevel.FATAL, "3"));
+		ValidationResults vrOther = new ValidationResults();
+		vrOther.addValidatorResult(new ValidatorResult("Publication", "Something else validated wrong.", SeverityLevel.FATAL, "3"));
+		when(busService.purgePublication(1)).thenReturn(new ValidationResults());
+		when(busService.purgePublication(3)).thenReturn(vrnf);
+		when(busService.purgePublication(4)).thenReturn(vrOther);
+
+		//Happy Path
+		MvcResult rtn = mockMvc.perform(delete("/mppublications/1/purge").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
+				.andReturn();
+		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
+
+		//Not available (locked by somebody)
+		rtn = mockMvc.perform(delete("/mppublications/2/purge").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isConflict())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
+				.andReturn();
+		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject(LOCK_MSG)));
+
+		//Pub not found
+		rtn = mockMvc.perform(delete("/mppublications/3/purge").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound())
+				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
+				.andReturn();
+		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject("{\"validationErrors\":[{\"field\":\"Publication\",\"message\":\"Publication does not exist.\",\"level\":\"FATAL\",\"value\":\"3\"}]}")));
+
+		//Pub not found
+		rtn = mockMvc.perform(delete("/mppublications/4/purge").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
+				.andReturn();
+		assertThat(getRtnAsJSONObject(rtn), sameJSONObjectAs(new JSONObject("{\"validationErrors\":[{\"field\":\"Publication\",\"message\":\"Something else validated wrong.\",\"level\":\"FATAL\",\"value\":\"3\"}]}")));
+	}
+
 	public MpPublication buildAPub(Integer id) {
 		MpPublication pub = MpPublicationDaoIT.buildAPub(id);
 		return pub;

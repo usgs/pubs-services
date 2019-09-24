@@ -1,0 +1,30 @@
+publication_subtype_id,publication_type_id,name
+1,18,Federal Government Series
+2,18,State/Local Government Series
+3,18,Organization Series
+4,18,Other Government Series
+5,18,USGS Numbered Series
+6,18,USGS Unnumbered Series
+7,23,USGS Data Website
+8,23,Website
+9,18,Other Report
+10,2,Journal Article
+11,4,Bibliography
+12,4,Conference publication
+13,4,Handbook
+14,4,Instruction
+15,4,Monograph
+16,2,Letter
+17,2,Newspaper Article
+18,24,Abstract or summary
+19,24,Conference Paper
+20,24,Poster
+21,2,Review
+22,23,Database-nonspatial
+23,23,Database-spatial
+24,5,Book Chapter
+25,15,Pamphlet
+26,16,Patent
+27,20,Speech
+28,21,Thesis
+29,22,Videorecording

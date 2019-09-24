@@ -49,7 +49,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 
 	private final IBusService<Publication<?>> pubBusService;
 	private final IMpPublicationBusService busService;
-	private final ISippProcess sippService;
+	private final ISippProcess sippProcess;
 
 	@Autowired
 	public MpPublicationMvcService(@Qualifier("publicationBusService")
@@ -57,10 +57,10 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 			@Qualifier("mpPublicationBusService")
 			final IMpPublicationBusService busService,
 			@Qualifier("sippProcess")
-			final ISippProcess sippService) {
+			final ISippProcess sippProcess) {
 		this.pubBusService = pubBusService;
 		this.busService = busService;
-		this.sippService = sippService;
+		this.sippProcess = sippProcess;
 	}
 
 	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
@@ -146,7 +146,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 	@Transactional
 	public @ResponseBody MpPublication createPubViaSipp(@Valid @RequestBody SippMpPubRequest req, HttpServletResponse response) {
 		setHeaders(response);
-		MpPublication newPub = sippService.processInformationProduct(req.getProcessTypeEnum(), req.getIpNumber());
+		MpPublication newPub = sippProcess.processInformationProduct(req.getProcessTypeEnum(), req.getIpNumber());
 		if (null != newPub && newPub.isValid()) {
 			response.setStatus(HttpServletResponse.SC_CREATED);
 		} else {
@@ -199,6 +199,31 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 			rtn = busService.deleteObject(id);
 			if (null != rtn && rtn.isEmpty()) {
 				response.setStatus(HttpServletResponse.SC_OK);
+			} else {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			}
+		} else {
+			rtn.addValidatorResult(locked);
+			response.setStatus(HttpStatus.CONFLICT.value());
+		}
+		return rtn;
+	}
+
+	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+	@DeleteMapping(value = "{publicationId}/purge")
+	@JsonView(View.PW.class)
+	@Transactional
+	public @ResponseBody ValidationResults purgePub(@PathVariable String publicationId, HttpServletResponse response) {
+		setHeaders(response);
+		Integer id = PubsUtils.parseInteger(publicationId);
+		ValidationResults rtn = new ValidationResults();
+		ValidatorResult locked = busService.checkAvailability(id);
+		if (null == locked) {
+			rtn = busService.purgePublication(id);
+			if (null != rtn && rtn.isEmpty()) {
+				response.setStatus(HttpServletResponse.SC_OK);
+			} else if (null != rtn && rtn.toString().contains("Publication does not exist.")) {
+				response.setStatus(HttpStatus.NOT_FOUND.value());
 			} else {
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			}

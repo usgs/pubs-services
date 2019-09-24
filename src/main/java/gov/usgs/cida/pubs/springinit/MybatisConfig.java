@@ -21,6 +21,7 @@ import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CorporateContributor;
 import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.CrossRefLog;
+import gov.usgs.cida.pubs.domain.DeletedPublication;
 import gov.usgs.cida.pubs.domain.LinkFileType;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
@@ -93,6 +94,7 @@ public class MybatisConfig {
 	private void registerAliases(TypeAliasRegistry registry) {
 		registry.registerAlias("baseDomain", BaseDomain.class);
 		registry.registerAlias("crossRefLog", CrossRefLog.class);
+		registry.registerAlias("deletedPublication", DeletedPublication.class);
 
 		registry.registerAlias("mpList", MpList.class);
 		registry.registerAlias("mpListPublication", MpListPublication.class);

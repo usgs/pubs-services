@@ -150,7 +150,7 @@ public class DeletedPublicationDaoIT extends BaseIT {
 	@Test
 	@DatabaseSetup("classpath:/testData/deletedPublication.xml")
 	@ExpectedDatabase(
-			value="xxxxxx",
+			value="classpath:/testResult/deletedPublication.xml",
 			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
 			table=DeletedPublicationHelper.TABLE_NAME,
 			query=DeletedPublicationHelper.QUERY_TEXT)

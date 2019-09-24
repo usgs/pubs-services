@@ -57,5 +57,5 @@ public final class DeletedPublicationHelper {
 	public static final String TABLE_NAME = "deleted_publication";
 	public static final String QUERY_TEXT = "select publication_id, index_id, title, doi_name,"
 			+ " case when (now() - delete_date) > make_interval(mins => 1) then delete_date end delete_date, "
-			+ " (now() - delete_date) < make_interval(mins => 1) delete_date_recent from deleted_publication";
+			+ " (now() - delete_date) < make_interval(mins => 1) delete_date_recent, delete_username from deleted_publication";
 }

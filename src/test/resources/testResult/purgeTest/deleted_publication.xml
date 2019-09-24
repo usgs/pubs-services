@@ -6,5 +6,6 @@
         title="title2"
         doi_name="10.3133/2"
         delete_date_recent="true"
+        delete_username="anonymous"
     />
 </dataset>

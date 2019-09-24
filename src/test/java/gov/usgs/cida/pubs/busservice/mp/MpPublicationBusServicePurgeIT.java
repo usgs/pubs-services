@@ -33,6 +33,7 @@ import gov.usgs.cida.pubs.domain.DeletedPublication;
 import gov.usgs.cida.pubs.domain.DeletedPublicationHelper;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
+import gov.usgs.cida.pubs.domain.PublicationIndexHelper;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.mp.MpListPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
@@ -122,8 +123,8 @@ public class MpPublicationBusServicePurgeIT extends BaseIT {
 	@ExpectedDatabase(
 			value="classpath:/testResult/purgeTest/publication_index.xml",
 			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
-			table="publication_index",
-			query="select publication_id, q from publication_index")
+			table=PublicationIndexHelper.TABLE_NAME,
+			query=PublicationIndexHelper.QUERY_TEXT)
 	@ExpectedDatabase(
 			value="classpath:/testResult/purgeTest/deleted_publication.xml",
 			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
@@ -152,8 +153,8 @@ public class MpPublicationBusServicePurgeIT extends BaseIT {
 	@ExpectedDatabase(
 			value="classpath:/testResult/purgeTest/publication_index.xml",
 			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
-			table="publication_index",
-			query="select publication_id, q from publication_index")
+			table=PublicationIndexHelper.TABLE_NAME,
+			query=PublicationIndexHelper.QUERY_TEXT)
 	@ExpectedDatabase(
 			value="classpath:/testResult/purgeTest/deleted_publication.xml",
 			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,

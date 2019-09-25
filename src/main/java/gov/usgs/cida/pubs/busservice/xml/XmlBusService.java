@@ -101,8 +101,6 @@ public class XmlBusService implements IXmlBusService {
 			throw new FileNotFoundException("xslt resource directory not found.");
 		}
 
-		System.out.println("spn image url = " + getImageUrl());
-
 		File xlsStylesheet = new File(xsltDir.getAbsolutePath() + "/" + PUBS_STYLESHEET);
 		if (!xlsStylesheet.exists()) {
 			throw new FileNotFoundException(
@@ -145,29 +143,13 @@ public class XmlBusService implements IXmlBusService {
 		DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
 		docBuilder.setEntityResolver(new PubsEntityResolver(xslStylesheet.getParent()));
 		Document doc = docBuilder.parse(new InputSource(xmlDoc.openStream()));
-		updateImageLinks(xmlDoc, doc.getDocumentElement(), getImageUrl());
+		updateImageLinks(xmlDoc, doc.getDocumentElement(), configurationService.getSpnImageUrl());
 
 		// Transform the source XML to bytes
 		ByteArrayOutputStream htmlBytes = new ByteArrayOutputStream();
 		transformer.transform(new DOMSource(doc), new StreamResult(htmlBytes));
 
 		return htmlBytes.toString();
-	}
-
-	// make sure the image link to add to the html is a valid Url
-	private String getImageUrl() {
-		String imageUrl = configurationService.getSpnImageUrl();
-		try {
-			// see if value in configuration service is a valid url
-			new URL(imageUrl);
-		} catch (MalformedURLException ex) {
-			LOG.error(String.format(
-					"configuration parameter spnImageUrl '%s' is not a valid URL, using default. Exception message: %s",
-					imageUrl, ex.getMessage()), ex);
-			imageUrl = SPN_IMAGE_URL;
-		}
-
-		return imageUrl;
 	}
 
 	private static void updateImageLinks(URL xmlUrl, Node node, String imageUrl) {

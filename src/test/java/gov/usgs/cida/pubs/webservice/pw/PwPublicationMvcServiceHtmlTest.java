@@ -30,16 +30,13 @@ import gov.usgs.cida.pubs.busservice.PublicationBusService;
 import gov.usgs.cida.pubs.busservice.pw.PwPublicationBusService;
 import gov.usgs.cida.pubs.busservice.xml.XmlBusService;
 import gov.usgs.cida.pubs.busservice.xml.XmlBusServiceTest;
-import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
 import gov.usgs.cida.pubs.dao.intfc.IPwPublicationDao;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationLink;
 import gov.usgs.cida.pubs.springinit.FreemarkerConfig;
-import gov.usgs.cida.pubs.springinit.SpringConfig;
 import gov.usgs.cida.pubs.springinit.TestSpringConfig;
-import gov.usgs.cida.pubs.utility.CustomStringToArrayConverter;
 import gov.usgs.cida.pubs.utility.CustomStringToStringConverter;
 import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
 import gov.usgs.cida.pubs.webservice.MvcService;
@@ -49,9 +46,7 @@ import gov.usgs.cida.pubs.webservice.MvcService;
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK,
 	classes={ConfigurationService.class, TestSpringConfig.class, PwPublicationMvcService.class,
 			PwPublicationBusService.class, XmlBusService.class, LocalValidatorFactoryBean.class,
-			FreemarkerConfig.class, PublicationBusService.class, PwPublication.class,
-			SpringConfig.class, CustomStringToArrayConverter.class, StringArrayCleansingConverter.class,
-			CustomStringToStringConverter.class})
+			FreemarkerConfig.class, PublicationBusService.class, PwPublication.class})
 public class PwPublicationMvcServiceHtmlTest extends BaseTest {
 	@MockBean
 	public IPublicationDao publicationDao;

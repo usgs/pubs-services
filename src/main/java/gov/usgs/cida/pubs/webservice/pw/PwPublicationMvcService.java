@@ -252,9 +252,11 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 				htmlOutput = xmlBusService.getPublicationHtml(xmlUrl);
 			} catch (Exception ex) {
 				response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-				String mess = String.format("Error retrieving publication html (indexId: '%s' doi %s): %s)", indexId, doi, ex.getMessage());
-				htmlOutput = formatHtmlErrMess(mess);
-				LOG.error(mess, ex);
+				String messSummary = String.format("Unexpected error encountered while retrieving publication html (indexId: '%s' doi %s)", indexId, doi);
+				String userMess = "\nPlease try again later. If problem persists, contact us with Reference Number: " + ex.hashCode();
+				String logMess = String.format(", Reference Number is %d, exception mess: %s", ex.hashCode(), ex.getMessage());
+				htmlOutput = formatHtmlErrMess(messSummary + userMess);
+				LOG.error(messSummary + logMess, ex);
 			}
 		}
 

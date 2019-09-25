@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.io.IOException;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,69 +23,68 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseSetups;
-
-import gov.usgs.cida.pubs.BaseIT;
+import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.PublicationBusService;
 import gov.usgs.cida.pubs.busservice.pw.PwPublicationBusService;
+import gov.usgs.cida.pubs.busservice.xml.XmlBusService;
+import gov.usgs.cida.pubs.busservice.xml.XmlBusServiceTest;
 import gov.usgs.cida.pubs.dao.PublicationDao;
+import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
 import gov.usgs.cida.pubs.dao.intfc.IPwPublicationDao;
-import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationLink;
-import gov.usgs.cida.pubs.springinit.DbTestConfig;
 import gov.usgs.cida.pubs.springinit.FreemarkerConfig;
 import gov.usgs.cida.pubs.springinit.SpringConfig;
 import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 import gov.usgs.cida.pubs.utility.CustomStringToArrayConverter;
 import gov.usgs.cida.pubs.utility.CustomStringToStringConverter;
 import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
-import gov.usgs.cida.pubs.utility.XmlUtilsTest;
 import gov.usgs.cida.pubs.webservice.MvcService;
 
 @EnableWebMvc
 @AutoConfigureMockMvc(secure=false)
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK,
-	classes={DbTestConfig.class, ConfigurationService.class, TestSpringConfig.class, PwPublicationMvcService.class,
-			PwPublicationBusService.class, LocalValidatorFactoryBean.class,
+	classes={ConfigurationService.class, TestSpringConfig.class, PwPublicationMvcService.class,
+			PwPublicationBusService.class, XmlBusService.class, LocalValidatorFactoryBean.class,
 			FreemarkerConfig.class, PublicationBusService.class, PwPublication.class,
-			PwPublicationDao.class, PublicationDao.class, SpringConfig.class,
-			CustomStringToArrayConverter.class, StringArrayCleansingConverter.class,
+			SpringConfig.class, CustomStringToArrayConverter.class, StringArrayCleansingConverter.class,
 			CustomStringToStringConverter.class})
-@DatabaseSetups({
-	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-	@DatabaseSetup("classpath:/testData/publicationType.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-	@DatabaseSetup("classpath:/testData/publicationStream.xml")
-})
-public class PwPublicationMvcServiceHtmlIT extends BaseIT {
+public class PwPublicationMvcServiceHtmlTest extends BaseTest {
 	@MockBean
-	IPwPublicationDao publicationDao;
+	public IPublicationDao publicationDao;
+
+	@MockBean
+	public IPwPublicationDao pwPublicationDao;
 
 	@Autowired
 	private MockMvc mockMvc;
 
+	@Before
+	public void setup() {
+		///mockMvc = MockMvcBuilders.standaloneSetup(pwPublicationMvcService).build();
+	}
+
 	@Test
 	public void indexIdNotFoundTest() throws Exception {
+		when(pwPublicationDao.getByIndexId("3")).thenReturn(null);
 		MvcResult rtn = doGetPublicationHtml("3", status().isNotFound());
 		assertEquals("Unexpected error message", MvcService.formatHtmlErrMess("Publication with indexId '3' not found."), rtn.getResponse().getContentAsString());
 	}
 
 	@Test
 	public void getPublicationHtmlTest() throws Exception {
-		when(publicationDao.getByIndexId("4")).thenReturn(getPwPublication4()); // adds the publication XML link
+		when(pwPublicationDao.getByIndexId("4")).thenReturn(getPwPublication4()); // adds the publication XML link
 		MvcResult rtn = doGetPublicationHtml("4", status().isOk());
-		assertEquals("publication html does not match", XmlUtilsTest.getPublicationHtml(), rtn.getResponse().getContentAsString());
+		assertEquals("publication html does not match", XmlBusServiceTest.getPublicationHtml(), rtn.getResponse().getContentAsString());
 	}
 
 	private MvcResult doGetPublicationHtml(String indexId, ResultMatcher expectedStatus) throws Exception {
 		MockHttpServletRequestBuilder request = getPubHtmlReq("/publication/full/" + indexId);
 		MvcResult rtn = mockMvc.perform(request)
-			//.andExpect(expectedStatus)
+			.andExpect(expectedStatus)
 			.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_HTML_VALUE))
 			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 			.andReturn();
@@ -103,7 +103,7 @@ public class PwPublicationMvcServiceHtmlIT extends BaseIT {
 		pub.setIndexId("4");
 		PwPublicationLink link = new PwPublicationLink();
 		link.setId(LinkType.PUBLICATION_XML);
-		link.setUrl(XmlUtilsTest.getXmlPubUrl().toString());
+		link.setUrl(XmlBusServiceTest.getXmlPubUrl().toString());
 		pub.setLinks(List.of(link));
 
 		return pub;

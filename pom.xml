@@ -249,6 +249,8 @@
                         <PUBS_AUTHORIZED_GROUPS>SPN_AUTHORITY, PUBS_AUTHORITY</PUBS_AUTHORIZED_GROUPS>
                         <PUBS_SPN_GROUPS>SPN_AUTHORITY</PUBS_SPN_GROUPS>
 
+                        <SPN_IMAGE_URL>https://pubs.usgs.gov/xml_test/Images/</SPN_IMAGE_URL>
+
                         <SWAGGER_DISPLAY_HOST>localhost:8444</SWAGGER_DISPLAY_HOST>
                         <SWAGGER_DISPLAY_PATH>/pubs-services</SWAGGER_DISPLAY_PATH>
                         <SWAGGER_DISPLAY_PROTOCOL>https</SWAGGER_DISPLAY_PROTOCOL>

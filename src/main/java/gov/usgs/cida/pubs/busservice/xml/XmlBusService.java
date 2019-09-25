@@ -1,4 +1,4 @@
-package gov.usgs.cida.pubs.utility;
+package gov.usgs.cida.pubs.busservice.xml;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -8,10 +8,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -23,7 +23,11 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -31,10 +35,16 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-public class XmlUtils {
+import gov.usgs.cida.pubs.ConfigurationService;
+import gov.usgs.cida.pubs.busservice.intfc.IXmlBusService;
+
+@Service
+public class XmlBusService implements IXmlBusService {
+	private static final Logger LOG = LoggerFactory.getLogger(XmlBusService.class);
+
 	// This files are from BITS-XHTML-TABLES-DTD.zip :
 	// ftp://ftp.ncbi.nih.gov/pub/jats/extensions/bits/2.0/
-	private static final String[] PUBS_DTDS = {"BITS-book-part-wrap2.ent", "BITS-book-part2.ent", "BITS-book2.dtd",
+	private static final String[] PUBS_DTDS = { "BITS-book-part-wrap2.ent", "BITS-book-part2.ent", "BITS-book2.dtd",
 			"BITS-bookcustom-classes2.ent", "BITS-bookcustom-mixes2.ent", "BITS-bookcustom-models2.ent",
 			"BITS-bookcustom-modules2.ent", "BITS-bookmeta2.ent", "BITS-common2.ent", "BITS-embedded-index2.ent",
 			"BITS-index2.ent", "BITS-question-answer2.ent", "BITS-toc-index-nav2.ent", "BITS-toc2.ent",
@@ -55,17 +65,24 @@ public class XmlUtils {
 
 	private static final List<String> IMAGE_NODE_NAMES = List.of("graphic");
 
-	public static final String xsltResourceDir = "xslt";
-	public static final String pubsStyleSheet = "pubs-html.xsl";
+	protected final ConfigurationService configurationService;
 
-	// TODO: make this a configurable parameter
-	// This is a url for pulling images from SPN
+	public static final String XSLT_RESOURCE_DIR = "xslt";
+	public static final String PUBS_STYLESHEET = "pubs-html.xsl";
+
+	// This is a url for pulling images from SPN, default is no ConfigurationService
 	public static final String SPN_IMAGE_URL = "https://pubs.usgs.gov/xml_test/Images/";
 
+	@Autowired
+	XmlBusService(ConfigurationService configurationService) {
+		this.configurationService = configurationService;
+	}
+
 	/**
-	 * Return HTML derived from the given xml document. This html is generating by applying a pubs xslt
-	 * style sheet. DTD schema validation is not done during the transform, the dtd is still read during the 
-	 * transform to bring in Xml entities as needed.
+	 * Return HTML derived from the given xml document. This html is generating by
+	 * applying a pubs xslt style sheet. DTD schema validation is not done during
+	 * the transform, the dtd is still read during the transform to bring in Xml
+	 * entities as needed.
 	 * 
 	 * @param xmlDocUrl The url to the xml doc to convert to HTML.
 	 * @param context
@@ -76,17 +93,20 @@ public class XmlUtils {
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 */
-	public static String getPublicationHtml(String xmlDocUrl, ServletContext context)
+	@Override
+	public String getPublicationHtml(String xmlDocUrl)
 			throws TransformerException, IOException, ParserConfigurationException, SAXException {
-		File xsltDir = new ClassPathResource(xsltResourceDir).getFile();
+		File xsltDir = new ClassPathResource(XSLT_RESOURCE_DIR).getFile();
 		if (xsltDir == null || !xsltDir.exists() || !xsltDir.isDirectory()) {
 			throw new FileNotFoundException("xslt resource directory not found.");
 		}
 
-		File xlsStylesheet = new File(xsltDir.getAbsolutePath() + "/" + pubsStyleSheet);
+		System.out.println("spn image url = " + getImageUrl());
+
+		File xlsStylesheet = new File(xsltDir.getAbsolutePath() + "/" + PUBS_STYLESHEET);
 		if (!xlsStylesheet.exists()) {
 			throw new FileNotFoundException(
-					String.format("xslt stylesheet '%s' not found in resource directory", pubsStyleSheet));
+					String.format("xslt stylesheet '%s' not found in resource directory", PUBS_STYLESHEET));
 		}
 
 		return getDocumentHtml(new URL(xmlDocUrl), xlsStylesheet, false);
@@ -97,10 +117,9 @@ public class XmlUtils {
 	 * transformation.
 	 * 
 	 * @param xmlDoc        The xml doc to convert to HTML.
-	 * @param xlsStylesheet The xsl style sheet to apply during the
-	 *                        transformation.
-	 * @param validate      If true, perform xml DTD schema validation as part
-	 *                        of the xslt transformation.
+	 * @param xlsStylesheet The xsl style sheet to apply during the transformation.
+	 * @param validate      If true, perform xml DTD schema validation as part of
+	 *                      the xslt transformation.
 	 * 
 	 * @return The HTML text corresponding to the xml document.
 	 * 
@@ -109,7 +128,8 @@ public class XmlUtils {
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 */
-	public static String getDocumentHtml(URL xmlDoc, File xslStylesheet, boolean validate)
+	@Override
+	public String getDocumentHtml(URL xmlDoc, File xslStylesheet, boolean validate)
 			throws TransformerException, IOException, ParserConfigurationException, SAXException {
 		// Create a transform factory instance.
 		TransformerFactory tfactory = TransformerFactory.newInstance();
@@ -125,7 +145,7 @@ public class XmlUtils {
 		DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
 		docBuilder.setEntityResolver(new PubsEntityResolver(xslStylesheet.getParent()));
 		Document doc = docBuilder.parse(new InputSource(xmlDoc.openStream()));
-		updateImageLinks(xmlDoc, doc.getDocumentElement());
+		updateImageLinks(xmlDoc, doc.getDocumentElement(), getImageUrl());
 
 		// Transform the source XML to bytes
 		ByteArrayOutputStream htmlBytes = new ByteArrayOutputStream();
@@ -134,13 +154,28 @@ public class XmlUtils {
 		return htmlBytes.toString();
 	}
 
-	private static void updateImageLinks(URL xmlUrl, Node node) {
+	// make sure the image link to add to the html is a valid Url
+	private String getImageUrl() {
+		String imageUrl = configurationService.getSpnImageUrl();
+		try {
+			// see if value in configuration service is a valid url
+			new URL(imageUrl);
+		} catch (MalformedURLException ex) {
+			LOG.error(String.format(
+					"configuration parameter spnImageUrl '%s' is not a valid URL, using default. Exception message: %s",
+					imageUrl, ex.getMessage()), ex);
+			imageUrl = SPN_IMAGE_URL;
+		}
+
+		return imageUrl;
+	}
+
+	private static void updateImageLinks(URL xmlUrl, Node node, String imageUrl) {
 		if (node.hasAttributes() && IMAGE_NODE_NAMES.contains(node.getNodeName())) {
 			for (int i = 0; i < node.getAttributes().getLength(); i++) {
 				Node attrNode = node.getAttributes().item(i);
 				if ("xlink:href".equals(attrNode.getNodeName()) && !attrNode.getNodeValue().contains(":/")) {
 					// update relative path
-					String imageUrl = SPN_IMAGE_URL;
 					if (!imageUrl.endsWith("/")) {
 						imageUrl = imageUrl + "/";
 					}
@@ -159,7 +194,7 @@ public class XmlUtils {
 			Node currentNode = nodeList.item(i);
 			// recurse on children Element nodes
 			if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-				updateImageLinks(xmlUrl, currentNode);
+				updateImageLinks(xmlUrl, currentNode, imageUrl);
 			}
 		}
 	}

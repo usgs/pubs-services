@@ -1,3 +1,7 @@
 # This file is empty to override all of the environment for the regular JUnit tests.
 
 logging.config: classpath:logback-test.xml
+
+spn:
+  image:
+    url: ${SPN_IMAGE_URL:https://pubs.usgs.gov/xml_test/Images/}

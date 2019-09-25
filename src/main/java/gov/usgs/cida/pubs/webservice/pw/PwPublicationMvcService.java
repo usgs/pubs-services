@@ -33,6 +33,7 @@ import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
+import gov.usgs.cida.pubs.busservice.intfc.IXmlBusService;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
 import gov.usgs.cida.pubs.dao.resulthandler.StreamingResultHandler;
@@ -51,7 +52,6 @@ import gov.usgs.cida.pubs.transform.PublicationColumnsHelper;
 import gov.usgs.cida.pubs.transform.XlsxTransformer;
 import gov.usgs.cida.pubs.transform.intfc.ITransformer;
 import gov.usgs.cida.pubs.utility.PubsUtils;
-import gov.usgs.cida.pubs.utility.XmlUtils;
 import gov.usgs.cida.pubs.webservice.MvcService;
 
 @RestController
@@ -65,10 +65,13 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	private final ContentNegotiationStrategy contentStrategy;
 	private final Configuration templateConfiguration;
 	private final IPublicationBusService pubBusService;
+	private final IXmlBusService xmlBusService;
 	@Autowired
 	public PwPublicationMvcService(
 			@Qualifier("pwPublicationBusService")
 			IPwPublicationBusService busService,
+			@Qualifier("xmlBusService")
+			IXmlBusService xmlBusService,
 			ConfigurationService configurationService,
 			ContentNegotiationStrategy contentStrategy,
 			@Qualifier("freeMarkerConfiguration")
@@ -76,6 +79,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 			IPublicationBusService publicationBusService
 	) {
 		this.busService = busService;
+		this.xmlBusService = xmlBusService;
 		this.configurationService = configurationService;
 		this.contentStrategy = contentStrategy;
 		this.templateConfiguration = templateConfiguration;
@@ -232,7 +236,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	)
 	public void getPublicationHtml(HttpServletRequest request,
 						HttpServletResponse response, @PathVariable("indexId") String indexId) throws IOException {
-		PwPublication publication = getPwPublicationJSON(indexId, response);
+		PwPublication publication = busService.getByIndexId(indexId);
 		String xmlUrl = getXmlDocUrl(publication);
 		String doi = publication == null || publication.getDoi() == null ? "[Unknown]" : String.format("'%s'",publication.getDoi());
 		String htmlOutput = "";
@@ -245,9 +249,9 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 			htmlOutput = formatHtmlErrMess(String.format("Full publication link not found (indexId '%s' doi %s)", indexId, doi));
 		} else {
 			try {
-				htmlOutput = XmlUtils.getPublicationHtml(xmlUrl, request.getServletContext());
+				htmlOutput = xmlBusService.getPublicationHtml(xmlUrl);
 			} catch (Exception ex) {
-				response.setStatus(HttpStatus.CONFLICT.value());
+				response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 				String mess = String.format("Error retrieving publication html (indexId: '%s' doi %s): %s)", indexId, doi, ex.getMessage());
 				htmlOutput = formatHtmlErrMess(mess);
 				LOG.error(mess, ex);

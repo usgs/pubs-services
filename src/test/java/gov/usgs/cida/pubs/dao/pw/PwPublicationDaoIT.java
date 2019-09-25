@@ -406,6 +406,32 @@ public class PwPublicationDaoIT extends BaseIT {
 		pwPublicationDao.purgePublication(2);
 	}
 
+	@Test
+	@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
+	@DatabaseSetup("classpath:/testData/relatedPublications.xml")
+	public void getRelatedPublications() {
+		//Just a part of
+		List<Map<String, Object>> related = pwPublicationDao.getRelatedPublications(1);
+		assertEquals(1, related.size());
+		assertEquals("[publication_id, index_id, doi_name, relation]", related.get(0).keySet().toString());
+		assertEquals("[2, index2, doi2, isPartOf]", related.get(0).values().toString());
+
+		//Just a supersedes
+		related = pwPublicationDao.getRelatedPublications(2);
+		assertEquals(1, related.size());
+		assertEquals("[publication_id, index_id, doi_name, relation]", related.get(0).keySet().toString());
+		assertEquals("[3, index3, doi3, supersededBy]", related.get(0).values().toString());
+
+		//List of both in specified order
+		related = pwPublicationDao.getRelatedPublications(4);
+		assertEquals(4, related.size());
+		assertEquals("[publication_id, index_id, doi_name, relation]", related.get(0).keySet().toString());
+		assertEquals("[5, index5, doi5, isPartOf]", related.get(0).values().toString());
+		assertEquals("[6, index6, doi6, isPartOf]", related.get(1).values().toString());
+		assertEquals("[7, index7, doi7, supersededBy]", related.get(2).values().toString());
+		assertEquals("[8, index8, doi8, supersededBy]", related.get(3).values().toString());
+	}
+
 	private List<String> getOrcids(Publication<?> pub) {
 		ArrayList<String> orcidList = new ArrayList<>();
 

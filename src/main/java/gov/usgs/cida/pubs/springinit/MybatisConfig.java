@@ -1,5 +1,7 @@
 package gov.usgs.cida.pubs.springinit;
 
+import java.util.LinkedHashMap;
+
 import javax.sql.DataSource;
 
 import org.apache.ibatis.type.EnumOrdinalTypeHandler;
@@ -92,6 +94,8 @@ public class MybatisConfig {
 	}
 
 	private void registerAliases(TypeAliasRegistry registry) {
+		registry.registerAlias("LinkedHashMap", LinkedHashMap.class);
+
 		registry.registerAlias("baseDomain", BaseDomain.class);
 		registry.registerAlias("crossRefLog", CrossRefLog.class);
 		registry.registerAlias("deletedPublication", DeletedPublication.class);

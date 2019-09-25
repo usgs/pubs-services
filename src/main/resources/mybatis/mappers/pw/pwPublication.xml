@@ -334,4 +334,21 @@
          where publication_id = #{id,jdbcType=INTEGER}::int
     </delete>
 
+    <select id="getRelatedPublications" parameterType="Integer" resultType="LinkedHashMap">
+        select publication_id,
+               index_id,
+               doi_name,
+               'isPartOf' relation
+          from publication
+         where publication.is_part_of_id = #{value,jdbcType=INTEGER}::int
+        union all
+        select publication_id,
+               index_id,
+               doi_name,
+               'supersededBy' relation
+          from publication
+         where publication.superseded_by_id = #{value,jdbcType=INTEGER}::int
+           order by relation, index_id
+    </select>
+
 </mapper>

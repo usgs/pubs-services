@@ -56,6 +56,8 @@ public class SecurityConfig extends ResourceServerConfigurerAdapter {
 					.antMatchers("/mppublications/*/preview*", "/auth/logout").fullyAuthenticated()
 					//authorized
 					.antMatchers("/**").hasAnyAuthority(configurationService.getAuthorizedAuthorities())
+					//admin
+					.antMatchers("/**").hasAnyAuthority(configurationService.getAdminAuthorities())
 //			.and()
 //				.requiresChannel().anyRequest().requiresSecure()
 			.and()

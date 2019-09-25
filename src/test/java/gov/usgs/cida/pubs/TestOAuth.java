@@ -26,12 +26,14 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 @EnableAuthorizationServer
 public class TestOAuth extends AuthorizationServerConfigurerAdapter {
 
+	public static final String ADMIN_USER = "admin";
 	public static final String AUTHENTICATED_USER = "authenticated";
 	public static final String AUTHORIZED_USER = "authorized";
 	public static final String SPN_USER = "spn";
 
 	public static final String SPN_AUTHORITY = "SPN_AUTHORITY";
 	public static final String AUTHORIZED_AUTHORITY = "PUBS_AUTHORITY";
+	public static final String ADMIN_AUTHORITY = "ADMIN_AUTHORITY";
 
 	@Autowired
 	AuthorizationServerTokenServices tokenservice;
@@ -88,7 +90,10 @@ public class TestOAuth extends AuthorizationServerConfigurerAdapter {
 			.authorities(AUTHORIZED_AUTHORITY, SPN_AUTHORITY)
 		.and()
 			.withClient(SPN_USER)
-			.authorities(SPN_AUTHORITY);
+			.authorities(SPN_AUTHORITY)
+		.and()
+			.withClient(ADMIN_USER)
+			.authorities(ADMIN_AUTHORITY);
 	}
 
 }

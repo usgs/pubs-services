@@ -41,6 +41,7 @@ import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
 import gov.usgs.cida.pubs.validation.constraint.PublishChecks;
+import gov.usgs.cida.pubs.validation.constraint.PurgeChecks;
 
 @Service
 public class MpPublicationBusService extends MpBusService<MpPublication> implements IMpPublicationBusService {
@@ -399,18 +400,16 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 		ValidationResults validationResults = new ValidationResults();
 		if (null != publicationId) {
 			PwPublication pwPub = PwPublication.getDao().getById(publicationId);
-			MpPublication mpPub = MpPublication.getDao().getById(publicationId);
-
-			if (null == mpPub && null == pwPub) {
+			if (null == pwPub) {
 				validationResults.addValidatorResult(new ValidatorResult("Publication", "Publication does not exist.", SeverityLevel.FATAL, publicationId.toString()));
 			} else {
-				if (null != mpPub) {
+				pwPub.setValidationErrors(validator.validate(pwPub, PurgeChecks.class));
+				if (pwPub.isValid()) {
 					deleteMpPublication(publicationId);
-				}
-
-				if (null != pwPub) {
 					DeletedPublication.getDao().add(new DeletedPublication(pwPub));
 					deletePwPublication(publicationId);
+				} else {
+					validationResults = pwPub.getValidationErrors();
 				}
 			}
 		}

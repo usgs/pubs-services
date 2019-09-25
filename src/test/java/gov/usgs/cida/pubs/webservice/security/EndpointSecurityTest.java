@@ -3,15 +3,12 @@ package gov.usgs.cida.pubs.webservice.security;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import gov.usgs.cida.pubs.TestOAuth;
 
-//TODO Reactivate
-@Ignore
 public class EndpointSecurityTest extends BaseEndpointSecurityTest {
 
 	RequestPostProcessor requestPostProcessor;
@@ -57,4 +54,15 @@ public class EndpointSecurityTest extends BaseEndpointSecurityTest {
 		pubsAuthorizedTestPuts(requestPostProcessor, status().isForbidden());
 	}
 
+
+	@Test
+	public void adminTest() throws Exception {
+		requestPostProcessor = testOAuth.bearerToken(TestOAuth.ADMIN_USER);
+		publicTest(requestPostProcessor, status().isOk());
+		authenticatedTest(requestPostProcessor, status().isOk());
+		pubsAuthorizedTestGets(requestPostProcessor, status().isForbidden());
+		pubsAuthorizedTestDeletes(requestPostProcessor, status().isForbidden());
+		pubsAuthorizedTestPosts(requestPostProcessor, status().isForbidden());
+		pubsAuthorizedTestPuts(requestPostProcessor, status().isForbidden());
+	}
 }

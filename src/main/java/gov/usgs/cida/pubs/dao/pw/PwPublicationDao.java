@@ -30,6 +30,7 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	private static final String GET_BY_IPDS_ID = ".getByIpdsId";
 	public static final String GET_CROSSREF_PUBLICATIONS = ".getCrossrefPubs";
 	public static final String GET_STREAM_BY_MAP = ".getStreamByMap";
+	public static final String GET_RELATED_PUBLICATIONS = ".getRelatedPublications";
 
 	public static final String SUBTYPE_ID = "subtypeId";
 	public static final String CHORUS = "chorus";
@@ -98,4 +99,11 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 		delete(MpPublicationCostCenterDao.NS + MpDao.PUBLISH_DELETE, publicationId);
 		delete(MpPublicationLinkDao.NS + MpDao.PUBLISH_DELETE, publicationId);
 		delete(NS + DELETE, publicationId);
-	}}
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public List<Map<String, Object>> getRelatedPublications(Integer publicationId) {
+		return getSqlSession().selectList(NS + GET_RELATED_PUBLICATIONS, publicationId);
+	}
+}

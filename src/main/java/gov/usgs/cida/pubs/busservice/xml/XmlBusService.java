@@ -176,15 +176,13 @@ public class XmlBusService implements IXmlBusService {
 				Node attrNode = node.getAttributes().item(i);
 				if ("xlink:href".equals(attrNode.getNodeName()) && !attrNode.getNodeValue().contains(":/")) {
 					// update relative path
-					if (!imageUrl.endsWith("/")) {
-						imageUrl = imageUrl + "/";
-					}
 					String imageName = attrNode.getNodeValue();
 					String ext = FilenameUtils.getExtension(imageName);
 					if (ext == null || ext.isEmpty()) {
 						imageName = imageName + ".png";
 					}
-					attrNode.setNodeValue(imageUrl + imageName);
+					String trailingSlash = imageUrl.endsWith("/") ? "" : "/";
+					attrNode.setNodeValue(imageUrl + trailingSlash + imageName);
 				}
 			}
 		}

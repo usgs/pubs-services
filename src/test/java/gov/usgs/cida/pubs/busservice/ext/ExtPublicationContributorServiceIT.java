@@ -6,45 +6,31 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import javax.validation.Validator;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseIT;
-import gov.usgs.cida.pubs.busservice.CostCenterBusService;
-import gov.usgs.cida.pubs.busservice.OutsideAffiliationBusService;
 import gov.usgs.cida.pubs.busservice.PersonContributorBusService;
+import gov.usgs.cida.pubs.dao.ContributorDao;
+import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
-	classes={DbTestConfig.class, LocalValidatorFactoryBean.class, CostCenterBusService.class, OutsideAffiliationBusService.class,
-			PersonContributorBusService.class, ExtPublicationContributorService.class})
+	classes={DbTestConfig.class, OutsideContributor.class, PersonContributorDao.class, ContributorDao.class})
 @DatabaseSetups({
 	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 	@DatabaseSetup("classpath:/testData/affiliation.xml"),
 	@DatabaseSetup("classpath:/testData/contributor.xml")
 })
 public class ExtPublicationContributorServiceIT extends BaseIT {
-	@Autowired
-	public Validator validator;
-
-	@MockBean
-	public CostCenterBusService costCenterBusService;
-
-	@MockBean
-	public OutsideAffiliationBusService outsideAffiliationBusService;
 
 	@MockBean
 	public PersonContributorBusService personContributorBusService;
@@ -56,7 +42,6 @@ public class ExtPublicationContributorServiceIT extends BaseIT {
 
 	@Before
 	public void initTest() throws Exception {
-		MockitoAnnotations.initMocks(this);
 		extPublicationContributorService = new ExtPublicationContributorService(extAffiliationBusService, personContributorBusService);
 	}
 

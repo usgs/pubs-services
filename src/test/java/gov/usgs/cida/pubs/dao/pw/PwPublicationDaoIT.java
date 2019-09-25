@@ -20,6 +20,8 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
+import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.google.common.collect.ImmutableMap;
 
 import gov.usgs.cida.pubs.BaseIT;
@@ -378,6 +380,30 @@ public class PwPublicationDaoIT extends BaseIT {
 	@Test
 	public void refreshIndexTest() {
 		pwPublicationDao.refreshTextIndex();
+	}
+
+	@Test
+	@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
+	@DatabaseSetup("classpath:/testData/purgeTest/common/")
+	@DatabaseSetup("classpath:/testData/purgeTest/pw/")
+	@ExpectedDatabase(
+			value="classpath:/testResult/purgeTest/pw/",
+			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+	@ExpectedDatabase(
+			value="classpath:/testResult/purgeTest/common/",
+			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
+	//AFTER PUBSTWO-1627
+//	@ExpectedDatabase(
+//			value="classpath:/testResult/purgeTest/publication_index.xml",
+//			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
+//			table=PublicationIndexHelper.TABLE_NAME,
+//			query=PublicationIndexHelper.QUERY_TEXT)
+	public void purgePublication() {
+		//This one is not found and should not cause an error
+		pwPublicationDao.purgePublication(668);
+
+		//This one should delete
+		pwPublicationDao.purgePublication(2);
 	}
 
 	private List<String> getOrcids(Publication<?> pub) {

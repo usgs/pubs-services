@@ -1,0 +1,6 @@
+contributor_id,given,family,suffix,email,literal,text,orcid,is_corporation,is_usgs,is_preferred
+1,ConGiven,ConFamily,ConSuffix,con@usgs.gov,null,"ConFamily, ConGiven ConSuffix con@usgs.gov",null,false,true,true
+2,null,null,null,null,US Geological Survey Ice Survey Team,US Geological Survey Ice Survey Team,null,true,false,false
+3,outerGiven,outerfamily,outerSuffix,outer@gmail.com,null,"outerfamily, outerGiven outerSuffix outer@gmail.com",0000-0000-0000-0001,false,false,false
+4,4Given,4Family,4Suffix,con4@usgs.gov,null,"4Family, 4Given 4Suffix con4@usgs.gov",0000-0000-0000-0004,false,true,true
+60,null,null,null,null,Preferred Geological Survey Ice Survey Team,Preferred Geological Survey Ice Survey Team,null,true,false,true

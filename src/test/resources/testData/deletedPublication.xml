@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <deleted_publication publication_id="661" index_id="sir20105033" title="Deleted One" doi_name="10.3133/sir20105040" delete_date="2018-12-31 08:10:15" delete_username = "pubgerone"/>
+    <deleted_publication publication_id="662" index_id="ofr20111030" title="Deleted Two" doi_name="10.1139/f75-258" delete_date="2018-12-31 08:10:15" delete_username = "pubgerone"/>
+    <deleted_publication publication_id="663" index_id="ds469" title="Deleted Three" doi_name="10.1002/etc.5620091110" delete_date="2017-12-31 08:10:15" delete_username = "pubgerone"/>
+    <deleted_publication publication_id="664" index_id="fs20103096" title="Deleted Four" doi_name="10.1577/1548-8659(1961)90[404:ROTHLT]2.0.CO;2" delete_date="2016-12-31 08:10:15" delete_username = "pubgertwo"/>
+    <deleted_publication publication_id="665" index_id="665" title="Deleted Five" doi_name="10.3133/93891" delete_date="2015-12-31 08:10:15" delete_username = "pubgerone"/>
+</dataset>

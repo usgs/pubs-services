@@ -11,6 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.intfc.IPwPublicationDao;
+import gov.usgs.cida.pubs.dao.mp.MpDao;
+import gov.usgs.cida.pubs.dao.mp.MpPublicationContributorDao;
+import gov.usgs.cida.pubs.dao.mp.MpPublicationCostCenterDao;
+import gov.usgs.cida.pubs.dao.mp.MpPublicationLinkDao;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 
 /**
@@ -26,7 +30,7 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	private static final String GET_BY_IPDS_ID = ".getByIpdsId";
 	public static final String GET_CROSSREF_PUBLICATIONS = ".getCrossrefPubs";
 	public static final String GET_STREAM_BY_MAP = ".getStreamByMap";
-	
+
 	public static final String SUBTYPE_ID = "subtypeId";
 	public static final String CHORUS = "chorus";
 	public static final String G = "g";
@@ -81,9 +85,17 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	public void stream(String statement, Map<String, Object> filters, ResultHandler<PwPublication> handler) {
 		getSqlSession().select(statement, filters, handler);
 	}
-	
+
 	@Override
 	public List<PwPublication> getCrossrefPublications(Map<String, Object> filters){
 		return getSqlSession().selectList(NS + GET_CROSSREF_PUBLICATIONS, filters);
 	}
-}
+
+	@Transactional
+	@Override
+	public void purgePublication(Integer publicationId) {
+		delete(MpPublicationContributorDao.NS + MpDao.PUBLISH_DELETE, publicationId);
+		delete(MpPublicationCostCenterDao.NS + MpDao.PUBLISH_DELETE, publicationId);
+		delete(MpPublicationLinkDao.NS + MpDao.PUBLISH_DELETE, publicationId);
+		delete(NS + DELETE, publicationId);
+	}}

@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <deleted_publication
+        publication_id="2"
+        index_id="2"
+        title="title2"
+        doi_name="10.3133/2"
+        delete_date_recent="true"
+        delete_username="anonymous"
+    />
+</dataset>

@@ -63,7 +63,7 @@
             and upper(name) like upper(#{text}) || '%'
         </if>
         <if test="active != null">
-            and is_active = #{active}
+            and is_active = #{active,jdbcType=BOOLEAN}
         </if>
         <if test="usgs != null">
             and is_cost_center = #{usgs}

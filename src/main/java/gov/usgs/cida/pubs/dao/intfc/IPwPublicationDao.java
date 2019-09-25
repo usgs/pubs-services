@@ -4,7 +4,7 @@ import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import java.util.List;
 import java.util.Map;
 
-public interface IPwPublicationDao extends IDao<PwPublication>, IStreamingDao<PwPublication> {
+public interface IPwPublicationDao extends IDao<PwPublication>, IStreamingDao<PwPublication>, IPurgeDao<PwPublication> {
 
 	/** 
 	 * Get a publication by it's index id.

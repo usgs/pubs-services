@@ -10,13 +10,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import gov.usgs.cida.pubs.dao.intfc.IMpPublicationDao;
+import gov.usgs.cida.pubs.domain.mp.MpListPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
+import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 
-/**
- * @author drsteini
- *
- */
 @Repository
 public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublicationDao {
 
@@ -128,4 +128,13 @@ public class MpPublicationDao extends MpDao<MpPublication> implements IMpPublica
 		return (MpPublication) getSqlSession().selectOne(NS + GET_BY_INDEX_ID, indexID);
 	}
 
+	@Transactional
+	@Override
+	public void purgePublication(Integer publicationId) {
+		MpListPublication.getDao().deleteByParent(publicationId);
+		MpPublicationContributor.getDao().deleteByParent(publicationId);
+		MpPublicationCostCenter.getDao().deleteByParent(publicationId);
+		MpPublicationLink.getDao().deleteByParent(publicationId);
+		deleteById(publicationId);
+	}
 }

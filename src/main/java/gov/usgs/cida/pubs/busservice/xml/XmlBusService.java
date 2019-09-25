@@ -8,7 +8,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
@@ -23,8 +22,6 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.FilenameUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -40,7 +37,6 @@ import gov.usgs.cida.pubs.busservice.intfc.IXmlBusService;
 
 @Service
 public class XmlBusService implements IXmlBusService {
-	private static final Logger LOG = LoggerFactory.getLogger(XmlBusService.class);
 
 	// This files are from BITS-XHTML-TABLES-DTD.zip :
 	// ftp://ftp.ncbi.nih.gov/pub/jats/extensions/bits/2.0/

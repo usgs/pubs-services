@@ -228,7 +228,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	 */
 	@GetMapping(
 		path = "/full/{indexId}",
-		produces = { PubsConstantsHelper.MEDIA_TYPE_HTML_VALUE }
+		produces = { MediaType.TEXT_HTML_VALUE }
 	)
 	public void getPublicationHtml(HttpServletRequest request,
 						HttpServletResponse response, @PathVariable("indexId") String indexId) throws Exception {
@@ -248,7 +248,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		}
 
 		response.setCharacterEncoding(PubsConstantsHelper.DEFAULT_ENCODING);
-		response.setContentType(PubsConstantsHelper.MEDIA_TYPE_HTML_VALUE);
+		response.setContentType(MediaType.TEXT_HTML_VALUE);
 		response.getOutputStream().write(htmlOutput.getBytes());
 
 	}

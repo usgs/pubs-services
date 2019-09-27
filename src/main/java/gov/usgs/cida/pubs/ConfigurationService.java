@@ -53,6 +53,9 @@ public class ConfigurationService {
 	@Value("${sipp.infoProduct.url}")
 	private String infoProductUrl;
 
+	@Value("${spn.image.url}")
+	private String spnImageUrl;
+
 	public String getCrossrefProtocol() {
 		return crossrefProtocol;
 	}
@@ -121,5 +124,11 @@ public class ConfigurationService {
 	}
 	public void setInfoProductUrl(String infoProductUrl) {
 		this.infoProductUrl = infoProductUrl;
+	}
+	public String getSpnImageUrl() {
+		return spnImageUrl;
+	}
+	public void setSpnImageUrl(String spnImageUrl) {
+		this.spnImageUrl = spnImageUrl;
 	}
 }

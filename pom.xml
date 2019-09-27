@@ -168,6 +168,12 @@
             <version>1.13.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
+            <version>9.9.1-5</version>
+        </dependency>
+
         <!-- Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -242,6 +248,8 @@
                         <PUBS_WAREHOUSE_ENPOINT>http://pubs.er.usgs.gov</PUBS_WAREHOUSE_ENPOINT>
                         <PUBS_AUTHORIZED_GROUPS>SPN_AUTHORITY, PUBS_AUTHORITY</PUBS_AUTHORIZED_GROUPS>
                         <PUBS_SPN_GROUPS>SPN_AUTHORITY</PUBS_SPN_GROUPS>
+
+                        <SPN_IMAGE_URL>https://pubs.usgs.gov/xml_test/Images/</SPN_IMAGE_URL>
 
                         <SWAGGER_DISPLAY_HOST>localhost:8444</SWAGGER_DISPLAY_HOST>
                         <SWAGGER_DISPLAY_PATH>/pubs-services</SWAGGER_DISPLAY_PATH>

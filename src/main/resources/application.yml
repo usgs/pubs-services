@@ -24,6 +24,10 @@ sipp:
   infoProduct:
     url: ${INFOPRODUCT_URL}
 
+spn:
+  image:
+    url: ${SPN_IMAGE_URL:https://pubs.usgs.gov/xml_test/Images/}
+
 crossref:
   protocol: ${CROSSREF_PROTOCOL}
   host: ${CROSSREF_HOST}

@@ -31,12 +31,15 @@ import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
+import gov.usgs.cida.pubs.busservice.intfc.IXmlBusService;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
 import gov.usgs.cida.pubs.dao.resulthandler.StreamingResultHandler;
 import gov.usgs.cida.pubs.domain.ContributorType;
+import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationFilterParams;
+import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.json.View;
@@ -53,16 +56,18 @@ import gov.usgs.cida.pubs.webservice.MvcService;
 @RequestMapping(value="publication")
 @ResponseBody
 public class PwPublicationMvcService extends MvcService<PwPublication> {
-
 	private final IPwPublicationBusService busService;
 	private final ConfigurationService configurationService;
 	private final ContentNegotiationStrategy contentStrategy;
 	private final Configuration templateConfiguration;
 	private final IPublicationBusService pubBusService;
+	private final IXmlBusService xmlBusService;
 	@Autowired
 	public PwPublicationMvcService(
 			@Qualifier("pwPublicationBusService")
 			IPwPublicationBusService busService,
+			@Qualifier("xmlBusService")
+			IXmlBusService xmlBusService,
 			ConfigurationService configurationService,
 			ContentNegotiationStrategy contentStrategy,
 			@Qualifier("freeMarkerConfiguration")
@@ -70,6 +75,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 			IPublicationBusService publicationBusService
 	) {
 		this.busService = busService;
+		this.xmlBusService = xmlBusService;
 		this.configurationService = configurationService;
 		this.contentStrategy = contentStrategy;
 		this.templateConfiguration = templateConfiguration;
@@ -215,6 +221,39 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	}
 
 	/**
+	 *   Get the Html document for the publication specified by indexId
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@GetMapping(
+		path = "/full/{indexId}",
+		produces = { PubsConstantsHelper.MEDIA_TYPE_HTML_VALUE }
+	)
+	public void getPublicationHtml(HttpServletRequest request,
+						HttpServletResponse response, @PathVariable("indexId") String indexId) throws Exception {
+		PwPublication publication = busService.getByIndexId(indexId);
+		String xmlUrl = getXmlDocUrl(publication);
+		String doi = publication == null || publication.getDoi() == null ? "[Unknown]" : String.format("'%s'",publication.getDoi());
+		String htmlOutput = "";
+
+		if(publication == null) {
+			response.setStatus(HttpStatus.NOT_FOUND.value());
+			htmlOutput = formatHtmlErrMess(String.format("Publication with indexId '%s' not found.", indexId));
+		} else if(xmlUrl == null) {
+			response.setStatus(HttpStatus.NOT_FOUND.value());
+			htmlOutput = formatHtmlErrMess(String.format("Full publication link not found (indexId '%s' doi %s)", indexId, doi));
+		} else {
+			htmlOutput = xmlBusService.getPublicationHtml(xmlUrl);
+		}
+
+		response.setCharacterEncoding(PubsConstantsHelper.DEFAULT_ENCODING);
+		response.setContentType(PubsConstantsHelper.MEDIA_TYPE_HTML_VALUE);
+		response.getOutputStream().write(htmlOutput.getBytes());
+
+	}
+
+	/**
 	 * 
 	 * @param mediaTypes the media types as specified by the user in the request headers
 	 * @return true if the user has requested crossref xml either through the query string or the headers, false otherwise
@@ -282,5 +321,20 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	protected boolean isUsgsSeries(PwPublication pub){
 		PublicationSubtype subtype = pub.getPublicationSubtype();
 		return PubsUtils.isUsgsNumberedSeries(subtype) || PubsUtils.isUsgsUnnumberedSeries(subtype);
+	}
+
+	protected String getXmlDocUrl(PwPublication pub) {
+		String url = null;
+
+		if(pub != null && pub.getLinks() != null) {
+			for(PublicationLink<?> link : pub.getLinks()) {
+				if(link.getId() != null && LinkType.PUBLICATION_XML == link.getId()) {
+					url = link.getUrl();
+					break;
+				}
+			}
+		}
+
+		return url;
 	}
 }

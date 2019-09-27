@@ -15,23 +15,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
-import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
-import gov.usgs.cida.pubs.TestOAuth;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpListPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
+import gov.usgs.cida.pubs.busservice.intfc.ISippProcess;
 import gov.usgs.cida.pubs.dao.CorporateContributorDaoIT;
 import gov.usgs.cida.pubs.dao.PersonContributorDaoIT;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
@@ -51,6 +49,7 @@ import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.OutsideAffiliation;
 import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
+import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
@@ -60,7 +59,11 @@ import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
+import gov.usgs.cida.pubs.security.AuthorizationTestServer;
+import gov.usgs.cida.pubs.security.BaseSecurityTest;
+import gov.usgs.cida.pubs.security.UserDetailTestService;
 import gov.usgs.cida.pubs.springinit.CustomUserAuthenticationConverter;
+import gov.usgs.cida.pubs.springinit.FreemarkerConfig;
 import gov.usgs.cida.pubs.springinit.SecurityConfig;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.webservice.AffliliationMvcService;
@@ -76,22 +79,20 @@ import gov.usgs.cida.pubs.webservice.mp.MpPublicationMvcService;
 import gov.usgs.cida.pubs.webservice.pw.PwPublicationMvcService;
 import gov.usgs.cida.pubs.webservice.pw.PwPublicationRssMvcService;
 
-@WebMvcTest({SecurityConfig.class, TestOAuth.class, AuthController.class, ConfigurationService.class,
-	AffliliationMvcService.class, PublicationSeriesMvcService.class,
-	MpPublicationMvcService.class, PwPublicationMvcService.class, PwPublicationRssMvcService.class,
-	ContributorMvcService.class, MpListMvcService.class, MpListPublicationMvcService.class,
-	VersionController.class, LookupMvcService.class, PublicationType.class, PublicationSubtype.class,
-	PublicationSeries.class, CostCenter.class, OutsideAffiliation.class, ContributorType.class,
-	LinkType.class, LinkFileType.class, PersonContributor.class, CorporateContributor.class,
-	PublishingServiceCenter.class, Publication.class, Contributor.class, OutsideContributor.class,
-	UsgsContributor.class, CustomUserAuthenticationConverter.class})
-public abstract class BaseEndpointSecurityTest extends BaseTest {
+@SpringBootTest(webEnvironment=WebEnvironment.MOCK,
+	classes={SecurityConfig.class, AuthorizationTestServer.class, AuthController.class, ConfigurationService.class,
+		AffliliationMvcService.class, PublicationSeriesMvcService.class, UserDetailTestService.class,
+		MpPublicationMvcService.class, PwPublicationMvcService.class, PwPublicationRssMvcService.class,
+		ContributorMvcService.class, MpListMvcService.class, MpListPublicationMvcService.class,
+		VersionController.class, LookupMvcService.class, PublicationType.class, PublicationSubtype.class,
+		PublicationSeries.class, CostCenter.class, OutsideAffiliation.class, ContributorType.class,
+		LinkType.class, LinkFileType.class, PersonContributor.class, CorporateContributor.class,
+		PublishingServiceCenter.class, Publication.class, Contributor.class, OutsideContributor.class,
+		UsgsContributor.class, CustomUserAuthenticationConverter.class, FreemarkerConfig.class})
+public abstract class BaseEndpointSecurityTest extends BaseSecurityTest {
 
 	private static final String CONTENT_ID_1_JSON = "{\"id\":\"1\"}";
 	private static final String CONTRIBUTOR_ID_1_JSON = "{\"contributorId\":\"1\"}";
-
-	@Autowired
-	private MockMvc mockMvc;
 
 	@MockBean(name="affiliationDao")
 	protected IDao<?> affiliationDao;
@@ -148,6 +149,8 @@ public abstract class BaseEndpointSecurityTest extends BaseTest {
 	protected IMpListPublicationBusService mpListPublicationBusService;
 	@MockBean(name="publicationSeriesBusService")
 	protected IBusService<PublicationSeries> publicationSeriesBusService;
+	@MockBean(name="sippProcess")
+	protected ISippProcess sippProcess;
 
 	public void mockSetup() {
 		when(costCenterBusService.getObject(anyInt())).thenReturn(new CostCenter());
@@ -178,6 +181,7 @@ public abstract class BaseEndpointSecurityTest extends BaseTest {
 		when(mpPublicationBusService.publish(anyInt())).thenReturn(new ValidationResults());
 		when(mpPublicationBusService.getByIndexId(anyString())).thenReturn(MpPublicationDaoIT.buildAPub(1));
 		when(mpPublicationBusService.updateObject(any(MpPublication.class))).thenReturn(MpPublicationDaoIT.buildAPub(1));
+		when(mpPublicationBusService.purgePublication(anyInt())).thenReturn(new ValidationResults());
 
 		when(corporateContributorBusService.getObject(anyInt())).thenReturn(CorporateContributorDaoIT.buildACorp(1));
 		when(corporateContributorBusService.createObject(any(CorporateContributor.class))).thenReturn(CorporateContributorDaoIT.buildACorp(1));
@@ -210,6 +214,8 @@ public abstract class BaseEndpointSecurityTest extends BaseTest {
 		when(publicationSubtypeDao.getByMap(anyMap())).thenReturn(null);
 		when(publicationTypeDao.getByMap(anyMap())).thenReturn(null);
 		when(publishingServiceCenterDao.getByMap(anyMap())).thenReturn(null);
+
+		when(sippProcess.processInformationProduct(any(ProcessType.class), anyString())).thenReturn(new MpPublication());
 	}
 
 	public void publicTest(RequestPostProcessor requestPostProcessor, ResultMatcher expectedStatus) throws Exception {
@@ -429,6 +435,9 @@ public abstract class BaseEndpointSecurityTest extends BaseTest {
 		mockMvc.perform(post("/mppublications").content("{}").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
 				.secure(true).with(csrf()).with(requestPostProcessor))
 			.andExpect(expectedStatus);
+		mockMvc.perform(post("/mppublications/sipp").content("{\"ProcessType\": \"dissemination\", \"IPNumber\": \"IP-123456\"}").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
+				.secure(true).with(csrf()).with(requestPostProcessor))
+			.andExpect(expectedStatus);
 
 		//Publication Series
 		mockMvc.perform(post("/publicationSeries").content("{}").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
@@ -469,5 +478,13 @@ public abstract class BaseEndpointSecurityTest extends BaseTest {
 				.secure(true).with(csrf()).with(requestPostProcessor))
 			.andExpect(expectedStatus);
 	}
+
+	public void administratorTest(RequestPostProcessor requestPostProcessor, ResultMatcher expectedStatus) throws Exception {
+		//purge
+		mockMvc.perform(delete("/mppublications/1/purge").accept(MediaType.APPLICATION_JSON)
+				.secure(true).with(csrf()).with(requestPostProcessor))
+			.andExpect(expectedStatus);
+	}
+
 
 }

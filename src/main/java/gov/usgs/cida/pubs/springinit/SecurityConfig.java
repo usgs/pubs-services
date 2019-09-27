@@ -54,12 +54,10 @@ public class SecurityConfig extends ResourceServerConfigurerAdapter {
 					.antMatchers("/swagger-ui.html", "/webjars/**", "/swagger-resources/**", "/v2/api-docs", "/v3/api-docs").permitAll()
 					//authenticated
 					.antMatchers("/mppublications/*/preview*", "/auth/logout").fullyAuthenticated()
+					//admin
+					.antMatchers("/mppublications/*/purge*").hasAnyAuthority(configurationService.getAdminAuthorities())
 					//authorized
 					.antMatchers("/**").hasAnyAuthority(configurationService.getAuthorizedAuthorities())
-					//admin
-					.antMatchers("/**").hasAnyAuthority(configurationService.getAdminAuthorities())
-//			.and()
-//				.requiresChannel().anyRequest().requiresSecure()
 			.and()
 				.anonymous()
 				.and().cors()

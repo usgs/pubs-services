@@ -26,7 +26,7 @@ public class NoRelatedValidatorForPwPublication implements ConstraintValidator<N
 			if (0 != relatedList.size()) {
 				rtn = false;
 				context.disableDefaultConstraintViolation();
-				Object[] messageArguments = new String[]{value.getId().toString(), getRelatedText(relatedList)};
+				Object[] messageArguments = new String[]{value.getIndexId(), getRelatedText(relatedList)};
 				String errorMsg = PubsUtils.buildErrorMsg(context.getDefaultConstraintMessageTemplate(), messageArguments); 
 				context.buildConstraintViolationWithTemplate(errorMsg).addPropertyNode("id").addConstraintViolation();
 			}
@@ -38,7 +38,7 @@ public class NoRelatedValidatorForPwPublication implements ConstraintValidator<N
 	protected String getRelatedText(List<Map<String, Object>> relatedList) {
 		StringBuilder relatedText = new StringBuilder();
 		for (Map<String, Object> related : relatedList) {
-			relatedText.append("/nIndexId: ").append(related.get("index_id"))
+			relatedText.append("/nIndex ID: ").append(related.get("index_id"))
 				.append(" relationship: ").append(related.get("relation"));
 		}
 		return relatedText.toString();

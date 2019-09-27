@@ -22,10 +22,11 @@ import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.TestOAuth;
 import gov.usgs.cida.pubs.dao.mp.MpListDao;
 import gov.usgs.cida.pubs.domain.mp.MpList;
+import gov.usgs.cida.pubs.security.UserDetailTestService;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
+import gov.usgs.cida.pubs.utility.PubsUtilitiesTest;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={DbTestConfig.class, LocalValidatorFactoryBean.class, ConfigurationService.class,
@@ -81,7 +82,7 @@ public class MpListBusServiceIT extends BaseIT {
 	}
 
 	@Test
-	@WithMockUser(username=TestOAuth.SPN_USER, authorities={TestOAuth.SPN_AUTHORITY})
+	@WithMockUser(username=UserDetailTestService.SPN_USER, authorities={PubsUtilitiesTest.SPN_AUTHORITY})
 	public void getSpnObjectsTest() {
 		//Now we want just spn...
 		Collection<MpList> mpLists = busService.getObjects(new HashMap<>());

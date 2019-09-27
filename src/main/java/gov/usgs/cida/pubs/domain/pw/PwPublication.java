@@ -34,6 +34,14 @@ public class PwPublication extends Publication<PwPublication> {
 	@JsonView(View.PW.class)
 	private Collection<PwStore> stores;
 
+	public PwPublication() {
+	}
+
+	public PwPublication(Integer id, String indexId) {
+		setId(id);
+		setIndexId(indexId);
+	}
+
 	public String getScienceBaseUri() {
 		return scienceBaseUri;
 	}

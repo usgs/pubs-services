@@ -1,3 +1,9 @@
-# This file is empty to override all of the environment for the regular JUnit tests.
+# This file is mostly empty to override mostly all of the environment for the regular JUnit tests.
 
 logging.config: classpath:logback-test.xml
+security.oauth2.resource.jwk.keySetUri: file://abc.txt
+pubs:
+  authorities:
+    admin: ADMIN_AUTHORITY
+    authorized: SPN_AUTHORITY, PUBS_AUTHORITY
+    spn: SPN_AUTHORITY

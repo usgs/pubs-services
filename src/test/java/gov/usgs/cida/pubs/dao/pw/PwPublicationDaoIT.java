@@ -328,7 +328,7 @@ public class PwPublicationDaoIT extends BaseIT {
 		assertFalse(pubs.isEmpty());
 		assertEquals(4, pubs.size());
 	}
-	
+
 	@Test
 	@DatabaseSetups({
 		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
@@ -346,7 +346,7 @@ public class PwPublicationDaoIT extends BaseIT {
 		List<PwPublication> pubs = pwPublicationDao.getCrossrefPublications(filters);
 		assertEquals(1, pubs.size());
 		assertEquals("sir2", pubs.get(0).getIndexId());
-		
+
 		//get exactly one numbered usgs series pubs with a doi
 		filters = ImmutableMap.of(
 			PwPublicationDao.SUBTYPE_ID, new int[]{PublicationSubtype.USGS_UNNUMBERED_SERIES}
@@ -354,7 +354,7 @@ public class PwPublicationDaoIT extends BaseIT {
 		pubs = pwPublicationDao.getCrossrefPublications(filters);
 		assertEquals(1, pubs.size());
 		assertEquals("sir3", pubs.get(0).getIndexId());
-		
+
 		//get exactly two usgs series pubs with dois
 		filters = ImmutableMap.of(
 			PwPublicationDao.SUBTYPE_ID, new int[]{
@@ -362,13 +362,13 @@ public class PwPublicationDaoIT extends BaseIT {
 				PublicationSubtype.USGS_UNNUMBERED_SERIES
 			}
 		);
-		
+
 		pubs = pwPublicationDao.getCrossrefPublications(filters);
 		assertEquals(2, pubs.size());
 		List<String> actualIndexIds = pubs.stream().map((pub) -> pub.getIndexId()).sorted().collect(Collectors.toList());
 		List<String> expectedIndexIds = List.of("sir2", "sir3").stream().sorted().collect(Collectors.toList());
 		assertEquals(expectedIndexIds, actualIndexIds);
-		
+
 		//verify that none of an unknown subtype ID are returned
 		filters = ImmutableMap.of(
 			PwPublicationDao.SUBTYPE_ID, new int[]{-999}

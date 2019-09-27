@@ -39,8 +39,16 @@ import gov.usgs.cida.pubs.validation.constraint.norelated.NoRelatedValidatorForP
 @DatabaseSetup("classpath:/testData/relatedPublications.xml")
 public class NoRelatedValidatorForPwPublicationIT extends BaseIT {
 
+	public static final String INDEX4_VALIDATION_RESULTS = 
+			"[Field:id - Message:Index ID: index4 is linked to other publications: /n"
+			+ "Index ID: index5 relationship: isPartOf/n"
+			+ "Index ID: index6 relationship: isPartOf/n"
+			+ "Index ID: index7 relationship: supersededBy/n"
+			+ "Index ID: index8 relationship: supersededBy."
+			+ " - Level:FATAL - Value:null]";
+
 	@Autowired
-	public Validator validator;
+	protected Validator validator;
 
 	protected ConstraintValidatorContextImpl context;
 	protected List<String> methodParameterNames = new ArrayList<>();
@@ -55,7 +63,6 @@ public class NoRelatedValidatorForPwPublicationIT extends BaseIT {
 	public void setUp() throws Exception {
 		context = new ConstraintValidatorContextImpl(methodParameterNames, DefaultClockProvider.INSTANCE, propertyPath, constraintDescriptor, null);
 		noRelatedValidator = new NoRelatedValidatorForPwPublication();
-		pub = new PwPublication();
 	}
 
 	@Test
@@ -69,33 +76,28 @@ public class NoRelatedValidatorForPwPublicationIT extends BaseIT {
 
 	@Test
 	public void isValidDirect() {
-		pub.setId(8);
+		pub = new PwPublication(8, "index8");
 		assertTrue(noRelatedValidator.isValid(pub, context));
 	}
 
 	@Test
 	public void isNotValidDirect() {
-		pub.setId(4);
+		pub = new PwPublication(4, "index4");
 		assertFalse(noRelatedValidator.isValid(pub, context));
 	}
 
 	@Test
 	public void isValidWired() {
-		pub.setId(8);
+		pub = new PwPublication(8, "index4");
 		pub.setValidationErrors(validator.validate(pub, PurgeChecks.class));
 		assertTrue(pub.isValid());
 	}
 
 	@Test
 	public void isNotValidWired() {
-		pub.setId(4);
+		pub = new PwPublication(4, "index4");
 		pub.setValidationErrors(validator.validate(pub, PurgeChecks.class));
 		assertFalse(pub.isValid());
-		assertEquals("[Field:id - Message:4 is linked to other publications: /n"
-				+ "IndexId: index5 relationship: isPartOf/n"
-				+ "IndexId: index6 relationship: isPartOf/n"
-				+ "IndexId: index7 relationship: supersededBy/n"
-				+ "IndexId: index8 relationship: supersededBy."
-				+ " - Level:FATAL - Value:null]", pub.getValidationErrors().getValidationErrors().toString());
+		assertEquals(INDEX4_VALIDATION_RESULTS, pub.getValidationErrors().getValidationErrors().toString());
 	}
 }

@@ -48,8 +48,12 @@ public final class PubsUtils {
 		String username = PubsConstantsHelper.ANONYMOUS_USER;
 		Authentication auth = getAuthentication();
 
-		if (null != auth && auth.getPrincipal() instanceof User) {
-			username = ((User) auth.getPrincipal()).getUsername();
+		if (null != auth) {
+			if (auth.getPrincipal() instanceof User) {
+				username = ((User) auth.getPrincipal()).getUsername();
+			} else if (auth.getPrincipal() instanceof String){
+				username = ((String) auth.getPrincipal());
+			}
 		}
 		return username;
 	}
@@ -150,6 +154,10 @@ public final class PubsUtils {
 			rtn = true;
 		}
 		return rtn;
+	}
+
+	public static boolean isUsgsSeries(final PublicationSubtype pubSubtype){
+		return isUsgsNumberedSeries(pubSubtype) || isUsgsUnnumberedSeries(pubSubtype);
 	}
 
 	public static boolean isPublicationTypeArticle(final PublicationType pubType) {

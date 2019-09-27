@@ -400,18 +400,31 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 		ValidationResults validationResults = new ValidationResults();
 		if (null != publicationId) {
 			PwPublication pwPub = PwPublication.getDao().getById(publicationId);
-			if (null == pwPub) {
+			MpPublication mpPub = MpPublication.getDao().getById(publicationId);
+			if (null == pwPub && null == mpPub) {
 				validationResults.addValidatorResult(new ValidatorResult("Publication", "Publication does not exist.", SeverityLevel.FATAL, publicationId.toString()));
 			} else {
-				pwPub.setValidationErrors(validator.validate(pwPub, PurgeChecks.class));
-				if (pwPub.isValid()) {
-					deleteMpPublication(publicationId);
-					DeletedPublication.getDao().add(new DeletedPublication(pwPub));
-					deletePwPublication(publicationId);
-				} else {
-					validationResults = pwPub.getValidationErrors();
-				}
+				validationResults = validateAndDelete(pwPub, mpPub);
 			}
+		}
+		return validationResults;
+	}
+
+	protected ValidationResults validateAndDelete(PwPublication pwPub, MpPublication mpPub) {
+		ValidationResults validationResults = new ValidationResults();
+		PwPublication pubToValidate = pwPub != null ? pwPub : new PwPublication(mpPub.getId(), mpPub.getIndexId());
+		pubToValidate.setValidationErrors(validator.validate(pubToValidate, PurgeChecks.class));
+		if (pubToValidate.isValid()) {
+			if (null != mpPub) {
+				deleteMpPublication(mpPub.getId());
+			}
+
+			if (null != pwPub) {
+				DeletedPublication.getDao().add(new DeletedPublication(pwPub));
+				deletePwPublication(pwPub.getId());
+			}
+		} else {
+			validationResults = pubToValidate.getValidationErrors();
 		}
 		return validationResults;
 	}

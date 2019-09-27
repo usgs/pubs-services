@@ -16,24 +16,27 @@ import org.springframework.security.test.context.support.WithMockUser;
 import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
-import gov.usgs.cida.pubs.TestOAuth;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
+import gov.usgs.cida.pubs.security.UserDetailTestService;
 
 @SecurityTestExecutionListeners
 public class PubsUtilitiesTest extends BaseTest {
 
 	public static final String ID_NOT_MATCH_VALIDATION_JSON = "\"validationErrors\":[{\"field\":\"id\",\"level\":\"FATAL\",\"message\":\"The id in the URL does not match the id in the request.\",\"value\":\"30\"}]";
 
+	public static final String SPN_AUTHORITY = "SPN_AUTHORITY";
+	public static final String AUTHORIZED_AUTHORITY = "PUBS_AUTHORITY";
+
 	@Mock
-	ConfigurationService configurationService;
+	private ConfigurationService configurationService;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		when(configurationService.getAuthorizedAuthorities()).thenReturn(new String[] {TestOAuth.AUTHORIZED_AUTHORITY, TestOAuth.SPN_AUTHORITY, "silly", "willy"});
-		when(configurationService.getSpnAuthorities()).thenReturn(new String[] {TestOAuth.SPN_AUTHORITY, "silly"});
+		when(configurationService.getAuthorizedAuthorities()).thenReturn(new String[] {AUTHORIZED_AUTHORITY, SPN_AUTHORITY, "silly", "willy"});
+		when(configurationService.getSpnAuthorities()).thenReturn(new String[] {SPN_AUTHORITY, "silly"});
 	}
 
 	@Test
@@ -119,9 +122,9 @@ public class PubsUtilitiesTest extends BaseTest {
 	}
 
 	@Test
-	@WithMockUser(username=TestOAuth.AUTHENTICATED_USER)
+	@WithMockUser(username=UserDetailTestService.AUTHENTICATED_USER)
 	public void getUsernameTest_authenticated() {
-		assertEquals("Is Authenticated", TestOAuth.AUTHENTICATED_USER, PubsUtils.getUsername());
+		assertEquals("Is Authenticated", UserDetailTestService.AUTHENTICATED_USER, PubsUtils.getUsername());
 	}
 
 	@Test
@@ -160,25 +163,25 @@ public class PubsUtilitiesTest extends BaseTest {
 	}
 
 	@Test
-	@WithMockUser(username=TestOAuth.AUTHENTICATED_USER)
+	@WithMockUser(username=UserDetailTestService.AUTHENTICATED_USER)
 	public void isSpnUserTest_noAuthorities() {
 		assertFalse(PubsUtils.isSpnUser(configurationService));
 	}
 
 	@Test
-	@WithMockUser(username=TestOAuth.SPN_USER, authorities={TestOAuth.SPN_AUTHORITY})
+	@WithMockUser(username=UserDetailTestService.SPN_USER, authorities={SPN_AUTHORITY})
 	public void isSpnUserTest() {
 		assertTrue(PubsUtils.isSpnUser(configurationService));
 	}
 
 	@Test
-	@WithMockUser(username=TestOAuth.AUTHORIZED_USER,authorities={TestOAuth.SPN_AUTHORITY, TestOAuth.AUTHORIZED_AUTHORITY})
+	@WithMockUser(username=UserDetailTestService.AUTHORIZED_USER,authorities={SPN_AUTHORITY, AUTHORIZED_AUTHORITY})
 	public void isSpnUserTest_plus() {
 		assertTrue(PubsUtils.isSpnUser(configurationService));
 	}
 
 	@Test
-	@WithMockUser(username=TestOAuth.AUTHORIZED_USER, authorities={TestOAuth.AUTHORIZED_AUTHORITY})
+	@WithMockUser(username=UserDetailTestService.AUTHORIZED_USER, authorities={AUTHORIZED_AUTHORITY})
 	public void isSpnUserTest_pubs() {
 		assertFalse(PubsUtils.isSpnUser(configurationService));
 	}
@@ -189,25 +192,25 @@ public class PubsUtilitiesTest extends BaseTest {
 	}
 
 	@Test
-	@WithMockUser(username=TestOAuth.AUTHENTICATED_USER)
+	@WithMockUser(username=UserDetailTestService.AUTHENTICATED_USER)
 	public void isSpnOnlyTest_noAuthorities() {
 		assertFalse(PubsUtils.isSpnOnly(configurationService));
 	}
 
 	@Test
-	@WithMockUser(username=TestOAuth.SPN_USER, authorities={TestOAuth.SPN_AUTHORITY})
+	@WithMockUser(username=UserDetailTestService.SPN_USER, authorities={SPN_AUTHORITY})
 	public void isSpnOnlyTest() {
 		assertTrue(PubsUtils.isSpnOnly(configurationService));
 	}
 
 	@Test
-	@WithMockUser(username=TestOAuth.AUTHORIZED_USER,authorities={TestOAuth.SPN_AUTHORITY, TestOAuth.AUTHORIZED_AUTHORITY})
+	@WithMockUser(username=UserDetailTestService.AUTHORIZED_USER,authorities={SPN_AUTHORITY, AUTHORIZED_AUTHORITY})
 	public void isSpnOnlyTest_plus() {
 		assertFalse(PubsUtils.isSpnOnly(configurationService));
 	}
 
 	@Test
-	@WithMockUser(username=TestOAuth.AUTHORIZED_USER, authorities={TestOAuth.AUTHORIZED_AUTHORITY})
+	@WithMockUser(username=UserDetailTestService.AUTHORIZED_USER, authorities={AUTHORIZED_AUTHORITY})
 	public void isSpnOnlyTest_pubs() {
 		assertFalse(PubsUtils.isSpnOnly(configurationService));
 	}

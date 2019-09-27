@@ -85,7 +85,7 @@ public class PublicationDaoIT extends BaseIT {
 		filters.put(PublicationDao.IPDS_ID, new String[] {"ipds_id"});
 		pubs = publicationDao.getByMap(filters);
 		assertEquals(0, pubs.size());
-		
+
 		filters.clear();
 		filters.put(MpPublicationDao.SEARCH_TERMS, List.of("a").toArray());
 		pubs = publicationDao.getByMap(filters);
@@ -393,7 +393,7 @@ public class PublicationDaoIT extends BaseIT {
 		filters.put(PwPublicationDao.CHORUS, true);
 		filters.put(PublicationDao.CONTRIBUTING_OFFICE, new String[]{"contributingOffice1", "contributingOffice2"});
 		filters.put(PublicationDao.CONTRIBUTOR, "contributor1" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX + MvcService.TEXT_SEARCH_AND + "contributor2" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX);
-		
+
 		filters.put(PublicationDao.DOI, new String[]{"DOI-123", "DOI-456"});
 		filters.put(PublicationDao.HAS_DOI, true);
 

@@ -9,9 +9,11 @@ import javax.validation.Validator;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
@@ -42,21 +44,22 @@ import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
 import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.validation.norelated.NoRelatedValidatorForPwPublicationIT;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
-	classes={DbTestConfig.class,
+	classes={DbTestConfig.class, LocalValidatorFactoryBean.class,
 			MpPublication.class, MpPublicationDao.class,
 			PublicationDao.class, PwPublicationDao.class,
 			MpListPublication.class, MpListPublicationDao.class,
 			MpPublicationContributor.class, MpPublicationContributorDao.class,
 			MpPublicationCostCenter.class, MpPublicationCostCenterDao.class,
 			MpPublicationLink.class, MpPublicationLinkDao.class,
-			PwPublication.class, PwPublicationDao.class,
+			PwPublication.class,
 			DeletedPublication.class, DeletedPublicationDao.class})
 @DatabaseSetup("classpath:/testCleanup/clearAll.xml")
 public class MpPublicationBusServicePurgeIT extends BaseIT {
 
-	@MockBean
+	@Autowired
 	private Validator validator;
 	@MockBean
 	private ICrossRefBusService crossRefBusService;
@@ -165,5 +168,14 @@ public class MpPublicationBusServicePurgeIT extends BaseIT {
 		ValidationResults validationResults = busService.purgePublication(2);
 		assertNotNull(validationResults);
 		assertTrue(validationResults.isEmpty());
+	}
+
+	@Test
+	@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
+	@DatabaseSetup("classpath:/testData/relatedPublications.xml")
+	public void notValid() {
+		ValidationResults validationResults = busService.purgePublication(4);
+		assertNotNull(validationResults);
+		assertEquals(NoRelatedValidatorForPwPublicationIT.INDEX4_VALIDATION_RESULTS, validationResults.getValidationErrors().toString());
 	}
 }

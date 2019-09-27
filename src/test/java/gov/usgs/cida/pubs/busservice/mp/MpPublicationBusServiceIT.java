@@ -34,7 +34,6 @@ import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.SeverityLevel;
-import gov.usgs.cida.pubs.TestOAuth;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IListBusService;
 import gov.usgs.cida.pubs.dao.AffiliationDao;
@@ -77,7 +76,9 @@ import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
+import gov.usgs.cida.pubs.security.UserDetailTestService;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
+import gov.usgs.cida.pubs.utility.PubsUtilitiesTest;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
@@ -845,7 +846,7 @@ public class MpPublicationBusServiceIT extends BaseIT {
 	}
 
 	@Test
-	@WithMockUser(username=TestOAuth.SPN_USER, authorities={TestOAuth.SPN_AUTHORITY})
+	@WithMockUser(username=UserDetailTestService.SPN_USER, authorities={PubsUtilitiesTest.SPN_AUTHORITY})
 	public void publishSPNTest() {
 		//Stuff published by an SPN User should end up in both the warehouse and MyPubs on the USGS Series list.
 		ValidationResults valRes = busService.publish(2);
@@ -859,7 +860,7 @@ public class MpPublicationBusServiceIT extends BaseIT {
 
 		//Still in MP
 		MpPublication mpPub = MpPublication.getDao().getById(2);
-		MpPublicationDaoIT.assertMpPub2(mpPub, TestOAuth.SPN_USER);
+		MpPublicationDaoIT.assertMpPub2(mpPub, UserDetailTestService.SPN_USER);
 
 		//On the list
 		Map<String, Object> filters = new HashMap<>();

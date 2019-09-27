@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -14,12 +15,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.entity.mime.MIME;
 import org.apache.ibatis.session.ResultHandler;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,8 +28,8 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.web.accept.ContentNegotiationStrategy;
 
 import freemarker.template.Configuration;
 import gov.usgs.cida.pubs.BaseTest;
@@ -46,7 +47,6 @@ import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.springinit.FreemarkerConfig;
 import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 
-@Ignore
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK,
 	classes={TestSpringConfig.class, ConfigurationService.class, FreemarkerConfig.class, ContributorType.class})
 public class PwPublicationMvcServiceTest extends BaseTest {
@@ -60,8 +60,6 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 	private PwPublicationMvcService mvcService;
 	private Map<String, Object> filters;
 
-	@MockBean
-	private ContentNegotiationStrategy contentStrategy;
 	@Autowired
 	private Configuration templateConfiguration;
 	@MockBean
@@ -75,7 +73,6 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 		mvcService = new PwPublicationMvcService(
 			busService,
 			configurationService,
-			contentStrategy,
 			templateConfiguration,
 			publicationBusService
 		);
@@ -86,6 +83,7 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 		filters.put(BaseDao.PAGE_NUMBER, "8");
 		when(contributorTypeDao.getById(ContributorType.AUTHORS)).thenReturn(ContributorTypeDaoIT.getAuthor());
 		when(contributorTypeDao.getById(ContributorType.EDITORS)).thenReturn(ContributorTypeDaoIT.getEditor());
+		reset(busService);
 	}
 
 	@Test
@@ -164,7 +162,8 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 	public void testCrossrefPubNotFound() throws IOException {
 		when(busService.getByIndexId(anyString())).thenReturn(null);
 		HttpServletResponse response = new MockHttpServletResponse();
-		mvcService.getPwPublicationCrossRef("non-existent pub", response);
+		HttpServletRequest request = new MockHttpServletRequest();
+		mvcService.getPwPublicationCrossref(request, response, "non-existent pub");
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 	}
 
@@ -180,8 +179,9 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 		when(busService.getByIndexId(anyString())).thenReturn(nonUsgsSeriesPub);
 
 		HttpServletResponse response = new MockHttpServletResponse();
+		HttpServletRequest request = new MockHttpServletRequest();
 
-		mvcService.getPwPublicationCrossRef("existent non-USGS series pub", response);
+		mvcService.getPwPublicationCrossref(request, response, "existent non-USGS series pub");
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 	}
 
@@ -199,7 +199,8 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 		when(busService.getByIndexId(anyString())).thenReturn(usgsSeriesPub);
 
 		HttpServletResponse response = new MockHttpServletResponse();
-		mvcService.getPwPublicationCrossRef("existent non-USGS series pub", response);
+		HttpServletRequest request = new MockHttpServletRequest();
+		mvcService.getPwPublicationCrossref(request, response, "existent non-USGS series pub");
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
 

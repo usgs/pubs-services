@@ -151,6 +151,12 @@
 				"id": 2,
 				"text": "Additional Report Piece"
 			}
+		}, {
+			"id": 4,
+			"type": {
+				"id": 31,
+				"text": "Publication XML"
+			}
 		}],
 		"scale": "100",
 		"projection": "EPSG:3857",

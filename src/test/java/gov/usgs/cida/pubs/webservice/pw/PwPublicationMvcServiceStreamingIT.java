@@ -29,6 +29,7 @@ import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.PublicationBusService;
 import gov.usgs.cida.pubs.busservice.pw.PwPublicationBusService;
+import gov.usgs.cida.pubs.busservice.xml.XmlBusService;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
@@ -44,7 +45,7 @@ import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
 @AutoConfigureMockMvc(secure=false)
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK,
 	classes={DbTestConfig.class, ConfigurationService.class, TestSpringConfig.class, PwPublicationMvcService.class,
-			PwPublicationBusService.class, LocalValidatorFactoryBean.class,
+			PwPublicationBusService.class, XmlBusService.class, LocalValidatorFactoryBean.class,
 			FreemarkerConfig.class, PublicationBusService.class, PwPublication.class,
 			PwPublicationDao.class, PublicationDao.class, SpringConfig.class,
 			CustomStringToArrayConverter.class, StringArrayCleansingConverter.class,

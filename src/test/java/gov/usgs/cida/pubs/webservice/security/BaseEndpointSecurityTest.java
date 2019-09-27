@@ -30,6 +30,7 @@ import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.ISippProcess;
+import gov.usgs.cida.pubs.busservice.intfc.IXmlBusService;
 import gov.usgs.cida.pubs.dao.CorporateContributorDaoIT;
 import gov.usgs.cida.pubs.dao.PersonContributorDaoIT;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
@@ -126,6 +127,8 @@ public abstract class BaseEndpointSecurityTest extends BaseSecurityTest {
 	protected IPublicationDao publicationDao;
 	@MockBean(name="pwPublicationDao")
 	protected IPwPublicationDao pwPublicationDao;
+	@MockBean(name="xmlBusService")
+	protected IXmlBusService xmlBusService;
 
 	@MockBean(name="costCenterBusService")
 	protected IBusService<CostCenter> costCenterBusService;
@@ -291,6 +294,10 @@ public abstract class BaseEndpointSecurityTest extends BaseSecurityTest {
 			.andExpect(expectedStatus);
 
 		mockMvc.perform(get("/publication/crossref").accept(PubsConstantsHelper.MEDIA_TYPE_CROSSREF_VALUE)
+				.secure(true).with(csrf()).with(requestPostProcessor))
+			.andExpect(expectedStatus);
+
+		mockMvc.perform(get("/publication/full/1").accept(MediaType.TEXT_HTML)
 				.secure(true).with(csrf()).with(requestPostProcessor))
 			.andExpect(expectedStatus);
 

@@ -37,6 +37,7 @@ import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
+import gov.usgs.cida.pubs.busservice.intfc.IXmlBusService;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.ContributorTypeDao;
 import gov.usgs.cida.pubs.dao.ContributorTypeDaoIT;
@@ -53,6 +54,9 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 
 	@Autowired
 	public ConfigurationService configurationService;
+
+	@MockBean
+	private IXmlBusService xmlBusService;
 
 	@MockBean
 	private IPwPublicationBusService busService;
@@ -72,6 +76,7 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 	public void setup() {
 		mvcService = new PwPublicationMvcService(
 			busService,
+			xmlBusService,
 			configurationService,
 			templateConfiguration,
 			publicationBusService

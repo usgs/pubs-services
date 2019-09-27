@@ -115,7 +115,7 @@ public class PwPublicationDaoStreamingIT extends BaseIT {
 		assertEquals("ConFamily, ConGiven ConSuffix con@usgs.gov; US Geological Survey Ice Survey Team; outerfamily, outerGiven outerSuffix outer@gmail.com", pub.get("authors"));
 		assertEquals("outerfamily, outerGiven outerSuffix outer@gmail.com; US Geological Survey Ice Survey Team; ConFamily, ConGiven ConSuffix con@usgs.gov", pub.get("editors"));
 		assertEquals("outerfamily, outerGiven outerSuffix outer@gmail.com; ConFamily, ConGiven ConSuffix con@usgs.gov; US Geological Survey Ice Survey Team", pub.get("compilers"));
-		assertEquals(Long.valueOf("2"), pub.get("number_of_links"));
+		assertEquals(Long.valueOf("3"), pub.get("number_of_links"));
 		assertEquals("http://sciencebase.org", pub.get("sciencebase_uri"));
 		assertEquals("http://doi.org", pub.get("chrs_doi"));
 		assertEquals("http://dx.doi.org/10.1002/ece3.1813", pub.get("chrs_url"));

@@ -237,4 +237,13 @@ public abstract class MvcService<D> {
 		response.setCharacterEncoding(PubsConstantsHelper.DEFAULT_ENCODING);
 	}
 
+	public static String formatHtmlErrMess(String message) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<h3>");
+		sb.append(message.replace("\n", "<br>")); // replace newlines with Html Line Break element
+		sb.append("</h3>");
+
+		return sb.toString();
+	}
+
 }

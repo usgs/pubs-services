@@ -7,3 +7,7 @@ pubs:
     admin: ADMIN_AUTHORITY
     authorized: SPN_AUTHORITY, PUBS_AUTHORITY
     spn: SPN_AUTHORITY
+
+spn:
+  image:
+    url: ${SPN_IMAGE_URL:https://pubs.usgs.gov/xml_test/Images/}

@@ -271,7 +271,8 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 
 		if(pub != null && pub.getLinks() != null) {
 			for(PublicationLink<?> link : pub.getLinks()) {
-				if(link.getId() != null && LinkType.PUBLICATION_XML == link.getId()) {
+				if(link.getLinkType() != null && link.getLinkType().getId() != null &&
+						LinkType.PUBLICATION_XML == link.getLinkType().getId()) {
 					url = link.getUrl();
 					break;
 				}

@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -37,8 +36,6 @@ import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationLink;
 import gov.usgs.cida.pubs.springinit.FreemarkerConfig;
 import gov.usgs.cida.pubs.springinit.TestSpringConfig;
-import gov.usgs.cida.pubs.utility.CustomStringToStringConverter;
-import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
 import gov.usgs.cida.pubs.webservice.MvcService;
 
 @EnableWebMvc
@@ -56,11 +53,6 @@ public class PwPublicationMvcServiceHtmlTest extends BaseTest {
 
 	@Autowired
 	private MockMvc mockMvc;
-
-	@Before
-	public void setup() {
-		///mockMvc = MockMvcBuilders.standaloneSetup(pwPublicationMvcService).build();
-	}
 
 	@Test
 	public void indexIdNotFoundTest() throws Exception {
@@ -97,8 +89,13 @@ public class PwPublicationMvcServiceHtmlTest extends BaseTest {
 		pub.setId(4);
 		pub.setIndexId("4");
 		PwPublicationLink link = new PwPublicationLink();
-		link.setId(LinkType.PUBLICATION_XML);
+		link.setId(99);
 		link.setUrl(XmlBusServiceTest.getXmlPubUrl().toString());
+
+		LinkType linkType = new LinkType();
+		linkType.setId(LinkType.PUBLICATION_XML);
+		link.setLinkType(linkType);
+
 		pub.setLinks(List.of(link));
 
 		return pub;

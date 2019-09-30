@@ -11,8 +11,11 @@ import com.fasterxml.jackson.annotation.JsonView;
 import gov.usgs.cida.pubs.dao.intfc.IPwPublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.json.View;
+import gov.usgs.cida.pubs.validation.constraint.NoRelated;
+import gov.usgs.cida.pubs.validation.constraint.PurgeChecks;
 
 @Component
+@NoRelated(groups = PurgeChecks.class)
 public class PwPublication extends Publication<PwPublication> {
 
 	private static final long serialVersionUID = 1176886529474726822L;
@@ -30,6 +33,14 @@ public class PwPublication extends Publication<PwPublication> {
 	@JsonProperty("stores")
 	@JsonView(View.PW.class)
 	private Collection<PwStore> stores;
+
+	public PwPublication() {
+	}
+
+	public PwPublication(Integer id, String indexId) {
+		setId(id);
+		setIndexId(indexId);
+	}
 
 	public String getScienceBaseUri() {
 		return scienceBaseUri;

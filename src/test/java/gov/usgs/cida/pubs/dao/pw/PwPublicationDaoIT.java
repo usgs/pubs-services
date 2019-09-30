@@ -328,7 +328,7 @@ public class PwPublicationDaoIT extends BaseIT {
 		assertFalse(pubs.isEmpty());
 		assertEquals(4, pubs.size());
 	}
-	
+
 	@Test
 	@DatabaseSetups({
 		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
@@ -346,7 +346,7 @@ public class PwPublicationDaoIT extends BaseIT {
 		List<PwPublication> pubs = pwPublicationDao.getCrossrefPublications(filters);
 		assertEquals(1, pubs.size());
 		assertEquals("sir2", pubs.get(0).getIndexId());
-		
+
 		//get exactly one numbered usgs series pubs with a doi
 		filters = ImmutableMap.of(
 			PwPublicationDao.SUBTYPE_ID, new int[]{PublicationSubtype.USGS_UNNUMBERED_SERIES}
@@ -354,7 +354,7 @@ public class PwPublicationDaoIT extends BaseIT {
 		pubs = pwPublicationDao.getCrossrefPublications(filters);
 		assertEquals(1, pubs.size());
 		assertEquals("sir3", pubs.get(0).getIndexId());
-		
+
 		//get exactly two usgs series pubs with dois
 		filters = ImmutableMap.of(
 			PwPublicationDao.SUBTYPE_ID, new int[]{
@@ -362,13 +362,13 @@ public class PwPublicationDaoIT extends BaseIT {
 				PublicationSubtype.USGS_UNNUMBERED_SERIES
 			}
 		);
-		
+
 		pubs = pwPublicationDao.getCrossrefPublications(filters);
 		assertEquals(2, pubs.size());
 		List<String> actualIndexIds = pubs.stream().map((pub) -> pub.getIndexId()).sorted().collect(Collectors.toList());
 		List<String> expectedIndexIds = List.of("sir2", "sir3").stream().sorted().collect(Collectors.toList());
 		assertEquals(expectedIndexIds, actualIndexIds);
-		
+
 		//verify that none of an unknown subtype ID are returned
 		filters = ImmutableMap.of(
 			PwPublicationDao.SUBTYPE_ID, new int[]{-999}
@@ -404,6 +404,32 @@ public class PwPublicationDaoIT extends BaseIT {
 
 		//This one should delete
 		pwPublicationDao.purgePublication(2);
+	}
+
+	@Test
+	@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
+	@DatabaseSetup("classpath:/testData/relatedPublications.xml")
+	public void getRelatedPublications() {
+		//Just a part of
+		List<Map<String, Object>> related = pwPublicationDao.getRelatedPublications(1);
+		assertEquals(1, related.size());
+		assertEquals("[publication_id, index_id, doi_name, relation]", related.get(0).keySet().toString());
+		assertEquals("[2, index2, doi2, isPartOf]", related.get(0).values().toString());
+
+		//Just a supersedes
+		related = pwPublicationDao.getRelatedPublications(2);
+		assertEquals(1, related.size());
+		assertEquals("[publication_id, index_id, doi_name, relation]", related.get(0).keySet().toString());
+		assertEquals("[3, index3, doi3, supersededBy]", related.get(0).values().toString());
+
+		//List of both in specified order
+		related = pwPublicationDao.getRelatedPublications(4);
+		assertEquals(4, related.size());
+		assertEquals("[publication_id, index_id, doi_name, relation]", related.get(0).keySet().toString());
+		assertEquals("[5, index5, doi5, isPartOf]", related.get(0).values().toString());
+		assertEquals("[6, index6, doi6, isPartOf]", related.get(1).values().toString());
+		assertEquals("[7, index7, doi7, supersededBy]", related.get(2).values().toString());
+		assertEquals("[8, index8, doi8, supersededBy]", related.get(3).values().toString());
 	}
 
 	private List<String> getOrcids(Publication<?> pub) {

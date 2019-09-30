@@ -51,6 +51,7 @@ pubs:
   authorities:
     authorized: ${PUBS_AUTHORIZED_GROUPS}
     spn: ${PUBS_SPN_GROUPS}
+    admin: ${PUBS_ADMIN_GROUPS}
 
 security:
   oauth2:

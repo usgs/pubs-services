@@ -23,6 +23,8 @@ public class ConfigurationService {
 	@Value("${crossref.depositorEmail}")
 	private String crossrefDepositorEmail;
 
+	@Value("${pubs.authorities.admin}")
+	private String[] adminAuthorities;
 	@Value("${pubs.authorities.spn}")
 	private String[] spnAuthorities;
 	@Value("${pubs.authorities.authorized}")
@@ -106,6 +108,9 @@ public class ConfigurationService {
 	}
 	public String getKeySetUri() {
 		return keySetUri;
+	}
+	public String[] getAdminAuthorities() {
+		return adminAuthorities;
 	}
 	public String[] getSpnAuthorities() {
 		return spnAuthorities;

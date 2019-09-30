@@ -41,6 +41,7 @@ import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
 import gov.usgs.cida.pubs.validation.constraint.PublishChecks;
+import gov.usgs.cida.pubs.validation.constraint.PurgeChecks;
 
 @Service
 public class MpPublicationBusService extends MpBusService<MpPublication> implements IMpPublicationBusService {
@@ -400,19 +401,30 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 		if (null != publicationId) {
 			PwPublication pwPub = PwPublication.getDao().getById(publicationId);
 			MpPublication mpPub = MpPublication.getDao().getById(publicationId);
-
-			if (null == mpPub && null == pwPub) {
+			if (null == pwPub && null == mpPub) {
 				validationResults.addValidatorResult(new ValidatorResult("Publication", "Publication does not exist.", SeverityLevel.FATAL, publicationId.toString()));
 			} else {
-				if (null != mpPub) {
-					deleteMpPublication(publicationId);
-				}
-
-				if (null != pwPub) {
-					DeletedPublication.getDao().add(new DeletedPublication(pwPub));
-					deletePwPublication(publicationId);
-				}
+				validationResults = validateAndDelete(pwPub, mpPub);
 			}
+		}
+		return validationResults;
+	}
+
+	protected ValidationResults validateAndDelete(PwPublication pwPub, MpPublication mpPub) {
+		ValidationResults validationResults = new ValidationResults();
+		PwPublication pubToValidate = pwPub != null ? pwPub : new PwPublication(mpPub.getId(), mpPub.getIndexId());
+		pubToValidate.setValidationErrors(validator.validate(pubToValidate, PurgeChecks.class));
+		if (pubToValidate.isValid()) {
+			if (null != mpPub) {
+				deleteMpPublication(mpPub.getId());
+			}
+
+			if (null != pwPub) {
+				DeletedPublication.getDao().add(new DeletedPublication(pwPub));
+				deletePwPublication(pwPub.getId());
+			}
+		} else {
+			validationResults = pubToValidate.getValidationErrors();
 		}
 		return validationResults;
 	}

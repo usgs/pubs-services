@@ -246,8 +246,9 @@
                         <pubs.mailHost>changeMe</pubs.mailHost>
                         <PUBS_LOCK_TIMEOUT_HOURS>1</PUBS_LOCK_TIMEOUT_HOURS>
                         <PUBS_WAREHOUSE_ENPOINT>http://pubs.er.usgs.gov</PUBS_WAREHOUSE_ENPOINT>
-                        <PUBS_AUTHORIZED_GROUPS>SPN_AUTHORITY, PUBS_AUTHORITY</PUBS_AUTHORIZED_GROUPS>
+                        <PUBS_AUTHORIZED_GROUPS>SPN_AUTHORITY, PUBS_AUTHORITY, ADMIN_AUTHORITY</PUBS_AUTHORIZED_GROUPS>
                         <PUBS_SPN_GROUPS>SPN_AUTHORITY</PUBS_SPN_GROUPS>
+                        <PUBS_ADMIN_GROUPS>ADMIN_AUTHORITY</PUBS_ADMIN_GROUPS>
 
                         <SPN_IMAGE_URL>https://pubs.usgs.gov/xml_test/Images/</SPN_IMAGE_URL>
 

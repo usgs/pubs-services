@@ -38,8 +38,9 @@ pubs.emailList: changeMe
 pubs.mailHost: changeMe
 PUBS_LOCK_TIMEOUT_HOURS: 1
 PUBS_WAREHOUSE_ENPOINT: http://pubs.er.usgs.gov
-PUBS_AUTHORIZED_GROUPS: group1, group2, spnGroup
+PUBS_AUTHORIZED_GROUPS: group1, group2, spnGroup, admGroup
 PUBS_SPN_GROUPS: spnGroup
+PUBS_ADMIN_GROUPS: admGroup
 
 DISSEMINATION_SCHEDULE: <cron type syntax use just a single hyphen for not scheduled>
 DISSEMINATION_LIST_URL: https://something.gov

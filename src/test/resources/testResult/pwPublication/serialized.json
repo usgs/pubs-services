@@ -105,5 +105,11 @@
 		"publicationDate": "published 14Jun2016",
 		"auditedOn": "audit 14Jun2016",
 		"publiclyAccessibleDate": "avail 14Jun2016"
-	}
+	},
+	"links": [{
+		"type": {
+			"id": 31
+		},
+		"url": "http://usgs.gov/12354"
+	}]
 }

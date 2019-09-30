@@ -25,7 +25,7 @@ public interface IPwPublicationDao extends IDao<PwPublication>, IStreamingDao<Pw
 	 * @param filters
 	 * @return eligible publications
 	 */
-	List<PwPublication> getCrossrefPublications(Map<String, Object> filters);
+	public List<PwPublication> getCrossrefPublications(Map<String, Object> filters);
 
 	/**
 	 * Get a list of publications related to the given id.
@@ -33,9 +33,4 @@ public interface IPwPublicationDao extends IDao<PwPublication>, IStreamingDao<Pw
 	 * @return List of related publications (metadata only)
 	 */
 	List<Map<String, Object>> getRelatedPublications(Integer publicationId);
-
-	/**
-	 * Rebuild the materialized view used for the "q" searches
-	 */
-	void refreshTextIndex();
 }

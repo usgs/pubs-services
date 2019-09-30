@@ -25,7 +25,6 @@ public final class PubsConstantsHelper {
 
 	public static final String MEDIA_TYPE_RSS_VALUE = MediaType.TEXT_XML_VALUE;
 	public static final String MEDIA_TYPE_CSV_VALUE = "text/csv";
-	public static final String MEDIA_TYPE_HTML_VALUE = MediaType.TEXT_HTML_VALUE;
 	public static final String MEDIA_TYPE_TSV_VALUE = "text/tab-separated-values";
 	public static final String MEDIA_TYPE_XLSX_VALUE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 	public static final String MEDIA_TYPE_CROSSREF_VALUE = "application/vnd.crossref.deposit+xml";
@@ -40,6 +39,7 @@ public final class PubsConstantsHelper {
 	public static final String MEDIA_TYPE_TSV_EXTENSION = "tsv";
 	public static final String MEDIA_TYPE_XLSX_EXTENSION = "xlsx";
 	public static final String MEDIA_TYPE_XML_EXTENSION = "xml";
+	public static final String MEDIA_TYPE_HTML_EXTENSION = "html";
 	public static final String MEDIA_TYPE_JSON_EXTENSION = "json";
 	public static final String MEDIA_TYPE_RSS_EXTENSION = "rss";
 	public static final String MEDIA_TYPE_CROSSREF_EXTENSION = "crossref.xml";

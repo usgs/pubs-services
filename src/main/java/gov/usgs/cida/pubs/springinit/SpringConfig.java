@@ -57,6 +57,7 @@ public class SpringConfig implements WebMvcConfigurer {
 			.mediaType(PubsConstantsHelper.MEDIA_TYPE_JSON_EXTENSION, MediaType.APPLICATION_JSON)
 			.mediaType(PubsConstantsHelper.MEDIA_TYPE_XLSX_EXTENSION, PubsConstantsHelper.MEDIA_TYPE_XLSX)
 			.mediaType(PubsConstantsHelper.MEDIA_TYPE_CROSSREF_EXTENSION, PubsConstantsHelper.MEDIA_TYPE_CROSSREF)
+			.mediaType(PubsConstantsHelper.MEDIA_TYPE_HTML_EXTENSION, MediaType.TEXT_HTML )
 			;
 	}
 

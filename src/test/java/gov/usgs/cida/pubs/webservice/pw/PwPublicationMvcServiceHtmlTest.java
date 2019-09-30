@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -72,7 +73,7 @@ public class PwPublicationMvcServiceHtmlTest extends BaseTest {
 		MockHttpServletRequestBuilder request = getPubHtmlReq("/publication/full/" + indexId);
 		MvcResult rtn = mockMvc.perform(request)
 			.andExpect(expectedStatus)
-			.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_HTML_VALUE))
+			.andExpect(content().contentType(MediaType.TEXT_HTML_VALUE))
 			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 			.andReturn();
 		
@@ -80,7 +81,7 @@ public class PwPublicationMvcServiceHtmlTest extends BaseTest {
 	}
 
 	private MockHttpServletRequestBuilder getPubHtmlReq(String path) {
-		MockHttpServletRequestBuilder req = get(path).accept(PubsConstantsHelper.MEDIA_TYPE_HTML_VALUE);
+		MockHttpServletRequestBuilder req = get(path).accept(MediaType.TEXT_HTML_VALUE);
 		return req;
 	}
 	

@@ -30,6 +30,7 @@ import gov.usgs.cida.pubs.dao.PublicationDaoIT;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
+import gov.usgs.cida.pubs.domain.PublicationIndexHelper;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
@@ -392,12 +393,11 @@ public class PwPublicationDaoIT extends BaseIT {
 	@ExpectedDatabase(
 			value="classpath:/testResult/purgeTest/common/",
 			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED)
-	//AFTER PUBSTWO-1627
-//	@ExpectedDatabase(
-//			value="classpath:/testResult/purgeTest/publication_index.xml",
-//			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
-//			table=PublicationIndexHelper.TABLE_NAME,
-//			query=PublicationIndexHelper.QUERY_TEXT)
+	@ExpectedDatabase(
+			value="classpath:/testResult/purgeTest/publication_index.xml",
+			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
+			table=PublicationIndexHelper.TABLE_NAME,
+			query=PublicationIndexHelper.QUERY_TEXT)
 	public void purgePublication() {
 		//This one is not found and should not cause an error
 		pwPublicationDao.purgePublication(668);

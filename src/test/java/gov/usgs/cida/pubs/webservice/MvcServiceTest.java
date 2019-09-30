@@ -30,8 +30,8 @@ import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
-import gov.usgs.cida.pubs.domain.PersonContributorFilterParams;
-import gov.usgs.cida.pubs.domain.PublicationFilterParams;
+import gov.usgs.cida.pubs.domain.query.PersonContributorFilterParams;
+import gov.usgs.cida.pubs.domain.query.PublicationFilterParams;
 import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
 
 public class MvcServiceTest {

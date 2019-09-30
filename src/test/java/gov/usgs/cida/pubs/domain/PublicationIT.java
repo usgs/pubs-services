@@ -27,6 +27,7 @@ import gov.usgs.cida.pubs.dao.ContributorTypeDao;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
+import gov.usgs.cida.pubs.domain.pw.PwPublicationLink;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
@@ -269,6 +270,12 @@ public class PublicationIT extends BaseIT {
 		newPub.setPublished(true);
 		newPub.setSourceDatabase("mypubs");
 
+		LinkType linkType = new LinkType();
+		linkType.setId(LinkType.PUBLICATION_XML);
+		PwPublicationLink pwl = new PwPublicationLink();
+		pwl.setLinkType(linkType);
+		pwl.setUrl("http://usgs.gov/12354");
+		newPub.setLinks(List.of(pwl));
 		return newPub;
 	}
 

@@ -13,7 +13,7 @@ public class EndpointSecurityTest extends BaseEndpointSecurityTest {
 	RequestPostProcessor requestPostProcessor;
 
 	@Before
-	public void setup() {
+	public void setup() throws Exception {
 		mockSetup();
 	}
 

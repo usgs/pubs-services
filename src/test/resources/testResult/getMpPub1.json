@@ -96,5 +96,11 @@
 	"lastModifiedDate": "2015-12-31T12:01:02",
 	"published": true,
 	"sourceDatabase": "mypubs",
-	"noUsgsAuthors": false
+	"noUsgsAuthors": false,
+	"links": [{
+		"type": {
+			"id": 31
+		},
+		"url": "http://usgs.gov/12354"
+	}]
 }

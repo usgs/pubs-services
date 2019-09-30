@@ -155,7 +155,7 @@ public abstract class BaseEndpointSecurityTest extends BaseSecurityTest {
 	@MockBean(name="sippProcess")
 	protected ISippProcess sippProcess;
 
-	public void mockSetup() {
+	public void mockSetup() throws Exception {
 		when(costCenterBusService.getObject(anyInt())).thenReturn(new CostCenter());
 		when(costCenterBusService.getObjects(anyMap())).thenReturn(null);
 		when(costCenterBusService.createObject(any(CostCenter.class))).thenReturn(new CostCenter());
@@ -219,6 +219,7 @@ public abstract class BaseEndpointSecurityTest extends BaseSecurityTest {
 		when(publishingServiceCenterDao.getByMap(anyMap())).thenReturn(null);
 
 		when(sippProcess.processInformationProduct(any(ProcessType.class), anyString())).thenReturn(new MpPublication());
+		when(xmlBusService.getPublicationHtml(anyString())).thenReturn("");
 	}
 
 	public void publicTest(RequestPostProcessor requestPostProcessor, ResultMatcher expectedStatus) throws Exception {

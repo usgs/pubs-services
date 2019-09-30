@@ -1,4 +1,4 @@
-package gov.usgs.cida.pubs.domain;
+package gov.usgs.cida.pubs.domain.query;
 
 import java.util.Arrays;
 

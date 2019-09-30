@@ -1,6 +1,5 @@
 package gov.usgs.cida.pubs.domain;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -15,8 +14,7 @@ import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 
 @Component
-public class DeletedPublication implements Serializable{
-	private static final long serialVersionUID = -3944489191198049433L;
+public class DeletedPublication extends BaseDomain<DeletedPublication> {
 	private static IDeletedPublicationDao deletedPublicationDao;
 
 	@JsonProperty("id")

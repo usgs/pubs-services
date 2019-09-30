@@ -2,14 +2,14 @@
  * Class to hold Query parameters used as a search filter in a Http Get on a publication end point. This field will be populated by Spring
  * when cqalling the method in the controller.
  */
-package gov.usgs.cida.pubs.domain;
+package gov.usgs.cida.pubs.domain.query;
 
 import java.util.Arrays;
 
 import io.swagger.annotations.Api;
 
 @Api
-public class PublicationFilterParams {
+public class PublicationFilterParams extends PagingFilter {
 	private Boolean chorus;
 
 	private String[] contributingOffice;
@@ -41,12 +41,6 @@ public class PublicationFilterParams {
 	private String modXDays;
 
 	private String orderBy;
-
-	private String pageNumber;
-
-	private String pageRowStart;
-
-	private String pageSize;
 
 	private String[] prodId;
 
@@ -204,30 +198,6 @@ public class PublicationFilterParams {
 
 	public void setOrderBy(String orderBy) {
 		this.orderBy = orderBy;
-	}
-
-	public String getPageNumber() {
-		return pageNumber;
-	}
-
-	public void setPageNumber(String pageNumber) {
-		this.pageNumber = pageNumber;
-	}
-
-	public String getPageRowStart() {
-		return pageRowStart;
-	}
-
-	public void setPageRowStart(String pageRowStart) {
-		this.pageRowStart = pageRowStart;
-	}
-
-	public String getPageSize() {
-		return pageSize;
-	}
-
-	public void setPageSize(String pageSize) {
-		this.pageSize = pageSize;
 	}
 
 	public String[] getProdId() {

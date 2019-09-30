@@ -1,16 +1,16 @@
 package gov.usgs.cida.pubs.dao.intfc;
 
 import java.util.List;
-import java.util.Map;
 
 import gov.usgs.cida.pubs.domain.DeletedPublication;
+import gov.usgs.cida.pubs.domain.query.DeletedPublicationFilter;
 
 public interface IDeletedPublicationDao {
 
 	void add(DeletedPublication deletedPublication);
 
-	List<DeletedPublication> getByMap(Map<String, Object> filters);
+	List<DeletedPublication> getByFilter(DeletedPublicationFilter filter);
 
-	Integer getObjectCount(Map<String, Object> filters);
+	Integer getObjectCount(DeletedPublicationFilter filter);
 
 }

@@ -272,6 +272,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 						beginPublicationEdit(publicationId);
 						setList(MpPublication.getDao().getById(publicationId), MpList.IPDS_USGS_NUMBERED_SERIES);
 					}
+					PwPublication.getDao().refreshTextIndex();
 				} else {
 					mpPub.setValidationErrors(validations);
 					validationResults.addValidationResults(mpPub.getValidationErrors());

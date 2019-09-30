@@ -99,6 +99,7 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 		delete(MpPublicationCostCenterDao.NS + MpDao.PUBLISH_DELETE, publicationId);
 		delete(MpPublicationLinkDao.NS + MpDao.PUBLISH_DELETE, publicationId);
 		delete(NS + DELETE, publicationId);
+		refreshTextIndex();
 	}
 
 	@Transactional(readOnly = true)

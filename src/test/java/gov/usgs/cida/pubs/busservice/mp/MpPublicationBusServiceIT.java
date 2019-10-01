@@ -29,6 +29,8 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
+import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.ConfigurationService;
@@ -63,6 +65,7 @@ import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
+import gov.usgs.cida.pubs.domain.PublicationIndexHelper;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
@@ -828,6 +831,11 @@ public class MpPublicationBusServiceIT extends BaseIT {
 	}
 
 	@Test
+	@ExpectedDatabase(
+			value="classpath:/testResult/publish_publication_index.xml",
+			assertionMode=DatabaseAssertionMode.NON_STRICT_UNORDERED,
+			table=PublicationIndexHelper.TABLE_NAME,
+			query=PublicationIndexHelper.QUERY_TEXT)
 	public void publishTest() {
 		assertTrue(busService.publish(null).isEmpty());
 		assertEquals("Field:Publication - Message:Publication does not exist. - Level:FATAL - Value:-1\nValidator Results: 1 result(s)\n",

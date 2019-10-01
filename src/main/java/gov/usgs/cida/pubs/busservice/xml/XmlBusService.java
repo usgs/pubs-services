@@ -1,11 +1,6 @@
 package gov.usgs.cida.pubs.busservice.xml;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -92,18 +87,8 @@ public class XmlBusService implements IXmlBusService {
 	@Override
 	public String getPublicationHtml(String xmlDocUrl)
 			throws TransformerException, IOException, ParserConfigurationException, SAXException {
-		File xsltDir = new ClassPathResource(XSLT_RESOURCE_DIR).getFile();
-		if (xsltDir == null || !xsltDir.exists() || !xsltDir.isDirectory()) {
-			throw new FileNotFoundException("xslt resource directory not found.");
-		}
 
-		File xlsStylesheet = new File(xsltDir.getAbsolutePath() + "/" + PUBS_STYLESHEET);
-		if (!xlsStylesheet.exists()) {
-			throw new FileNotFoundException(
-					String.format("xslt stylesheet '%s' not found in resource directory", PUBS_STYLESHEET));
-		}
-
-		return getDocumentHtml(new URL(xmlDocUrl), xlsStylesheet, false);
+		return getDocumentHtml(new URL(xmlDocUrl), new ClassPathResource(XSLT_RESOURCE_DIR).getURL(), false);
 	}
 
 	/**
@@ -123,21 +108,22 @@ public class XmlBusService implements IXmlBusService {
 	 * @throws SAXException
 	 */
 	@Override
-	public String getDocumentHtml(URL xmlDoc, File xslStylesheet, boolean validate)
+	public String getDocumentHtml(URL xmlDoc, URL xsltDir, boolean validate)
 			throws TransformerException, IOException, ParserConfigurationException, SAXException {
 		// Create a transform factory instance.
 		TransformerFactory tfactory = TransformerFactory.newInstance();
 
 		// Create a transformer for the stylesheet.
-		InputStream xslIS = new BufferedInputStream(new FileInputStream(xslStylesheet));
-		StreamSource xslSource = new StreamSource(xslIS, "file://" + xslStylesheet.getPath());
+		String systemId = xsltDir.toString() + "/" + PUBS_STYLESHEET;
+		InputStream xslIS = new URL(systemId).openStream();
+		StreamSource xslSource = new StreamSource(xslIS, systemId);
 		Transformer transformer = tfactory.newTransformer(xslSource);
 
 		DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 		dfactory.setValidating(validate);
 
 		DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
-		docBuilder.setEntityResolver(new PubsEntityResolver(xslStylesheet.getParent()));
+		docBuilder.setEntityResolver(new PubsEntityResolver(xsltDir.toString()));
 		Document doc = docBuilder.parse(new InputSource(xmlDoc.openStream()));
 		updateImageLinks(xmlDoc, doc.getDocumentElement(), configurationService.getSpnImageUrl());
 
@@ -187,7 +173,7 @@ public class XmlBusService implements IXmlBusService {
 			InputSource inputSource = null;
 			for (String dtd : PUBS_DTDS) {
 				if (systemId.contains(dtd)) {
-					inputSource = new InputSource(new FileReader(dtdDirectory + "/" + dtd));
+					inputSource = new InputSource(new URL(dtdDirectory + "/" + dtd).openStream());
 					break;
 				}
 			}

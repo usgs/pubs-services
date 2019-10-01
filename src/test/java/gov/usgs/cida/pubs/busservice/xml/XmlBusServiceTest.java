@@ -2,7 +2,6 @@ package gov.usgs.cida.pubs.busservice.xml;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -24,10 +23,9 @@ public class XmlBusServiceTest extends BaseTest {
 	// path in resource
 	private static final String PUB_XML = "testData/sac19-4232_text4LAYOUT.xml";
 	private static final String PUB_HTML = "sac19-4232_text4LAYOUT.html"; // in testResult resource directory
-	private static final String XSLT_STYLE_SHEET = "xslt/pubs-html.xsl";
 
 	private URL xmlPubUrl;
-	private File xslStylesheet;
+	private URL xsltDir;
 
 	@Autowired
 	public ConfigurationService configurationService;
@@ -38,15 +36,13 @@ public class XmlBusServiceTest extends BaseTest {
 	public void setUp() throws Exception {
 		ClassLoader classLoader = getClass().getClassLoader();
 		xmlPubUrl = getXmlPubUrl();
-		xslStylesheet = new File(classLoader.getResource(XSLT_STYLE_SHEET).getFile());
+		xsltDir = new URL(classLoader.getResource(XmlBusService.XSLT_RESOURCE_DIR).toString());
 		xmlBusService = new XmlBusService(configurationService);
 	}
 
 	@Test
 	public void getDocumentHtmlTest() throws Exception {
-		String docHtml = xmlBusService.getDocumentHtml(xmlPubUrl, xslStylesheet, true);
-		String m = docHtml == null ? "doc is null" : "doc has test=" +docHtml;
-		System.out.println(m);
+		String docHtml = xmlBusService.getDocumentHtml(xmlPubUrl, xsltDir, true);
 		assertEquals("publication html does not match", getCompareFile(PUB_HTML), docHtml);
 	}
 

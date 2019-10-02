@@ -9,7 +9,7 @@ import java.util.Arrays;
 import io.swagger.annotations.Api;
 
 @Api
-public class PublicationFilterParams extends PagingFilter {
+public class PublicationFilterParams {
 	private Boolean chorus;
 
 	private String[] contributingOffice;
@@ -41,6 +41,12 @@ public class PublicationFilterParams extends PagingFilter {
 	private String modXDays;
 
 	private String orderBy;
+
+	private String pageNumber;
+
+	private String pageRowStart;
+
+	private String pageSize;
 
 	private String[] prodId;
 
@@ -198,6 +204,30 @@ public class PublicationFilterParams extends PagingFilter {
 
 	public void setOrderBy(String orderBy) {
 		this.orderBy = orderBy;
+	}
+
+	public String getPageNumber() {
+		return pageNumber;
+	}
+
+	public void setPageNumber(String pageNumber) {
+		this.pageNumber = pageNumber;
+	}
+
+	public String getPageRowStart() {
+		return pageRowStart;
+	}
+
+	public void setPageRowStart(String pageRowStart) {
+		this.pageRowStart = pageRowStart;
+	}
+
+	public String getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(String pageSize) {
+		this.pageSize = pageSize;
 	}
 
 	public String[] getProdId() {

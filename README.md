@@ -14,7 +14,6 @@ This application utilizes a PostgreSQL database.
 To run the project you will need to create the file application.yml in the project's root directory and add the following:
 
 ``` yaml
-QUEUE_URL: vm://localhost?broker.persistent=false
 PUBS_DB_HOST: hostNameOfDatabase
 PUBS_DB_PORT: portNumberForDatabase
 PUBS_DB_NAME: dbName
@@ -78,7 +77,7 @@ mvn package
 To additionally start up a Docker database and run the integration tests of the application use:
 
 ```shell
-mvn verify -DTESTING_DATABASE_PORT=5445 -DTESTING_DATABASE_ADDRESS=localhost -DTESTING_DATABASE_NETWORK=pubsServices -DTESTING_CROSSREF_USERNAME=changeMe -DTESTING_CROSSREF_PASSWORD=changeMe
+mvn verify -DTESTING_DATABASE_PORT=5433 -DTESTING_DATABASE_ADDRESS=localhost -DTESTING_DATABASE_NETWORK=pubsServices -DTESTING_CROSSREF_USERNAME=changeMe -DTESTING_CROSSREF_PASSWORD=changeMe
 ```
 
 It is also possible to build the project using the Maven Docker image. Commands to follow are in the .travis.yml file.

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased](https://github.com/usgs/pubs-services/compare/pubs-services-1.0.0...master)
 ### Added
   - Ability to bypass security for local development
+  - Ability to purge publications
+  - Ability to retrieve list of purged publications
+  - Push logs to a Graylog server
 ### Changed
   - Source of IPDS data for dissemination step.
 

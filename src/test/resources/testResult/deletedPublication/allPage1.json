@@ -1,0 +1,19 @@
+{
+	"pageSize": "2",
+	"pageRowStart": "0",
+	"pageNumber": "1",
+	"recordCount": 5,
+	"records": [{
+		"id": 662,
+		"indexId": "ofr20111030",
+		"title": "Deleted Two",
+		"doi": "10.1139/f75-258",
+		"deleteDate": "2018-12-31T08:10:15"
+	}, {
+		"id": 661,
+		"indexId": "sir20105033",
+		"title": "Deleted One",
+		"doi": "10.3133/sir20105040",
+		"deleteDate": "2018-12-31T08:10:15"
+	}]
+}

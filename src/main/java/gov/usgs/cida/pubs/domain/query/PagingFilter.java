@@ -1,27 +1,35 @@
 package gov.usgs.cida.pubs.domain.query;
 
+import javax.validation.constraints.Positive;
+
+import io.swagger.annotations.ApiModelProperty;
+
 public class PagingFilter {
+	@Positive
+	@ApiModelProperty(value="Used in conjunction with pageSize to page through the deleted Publications.")
+	protected Integer pageNumber;
+	@ApiModelProperty(hidden=true)
+	protected Integer pageRowStart;
+	@Positive
+	@ApiModelProperty(value="Used in conjunction with pageNumber to page through the deleted Publications.")
+	protected Integer pageSize;
 
-	protected String pageNumber;
-	protected String pageRowStart;
-	protected String pageSize;
-
-	public String getPageNumber() {
+	public Integer getPageNumber() {
 		return pageNumber;
 	}
-	public void setPageNumber(String pageNumber) {
+	public void setPageNumber(Integer pageNumber) {
 		this.pageNumber = pageNumber;
 	}
-	public String getPageRowStart() {
+	public Integer getPageRowStart() {
 		return pageRowStart;
 	}
-	public void setPageRowStart(String pageRowStart) {
+	public void setPageRowStart(Integer pageRowStart) {
 		this.pageRowStart = pageRowStart;
 	}
-	public String getPageSize() {
+	public Integer getPageSize() {
 		return pageSize;
 	}
-	public void setPageSize(String pageSize) {
+	public void setPageSize(Integer pageSize) {
 		this.pageSize = pageSize;
 	}
 }

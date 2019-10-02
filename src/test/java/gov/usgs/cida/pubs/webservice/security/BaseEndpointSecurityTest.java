@@ -306,6 +306,11 @@ public abstract class BaseEndpointSecurityTest extends BaseSecurityTest {
 		mockMvc.perform(get("/publication/rss").accept(PubsConstantsHelper.MEDIA_TYPE_RSS)
 				.secure(true).with(csrf()).with(requestPostProcessor))
 			.andExpect(expectedStatus);
+
+		//Deleted Publication
+		mockMvc.perform(get("/publication/deleted").accept(MediaType.APPLICATION_JSON)
+				.secure(true).with(csrf()).with(requestPostProcessor))
+			.andExpect(expectedStatus);
 	}
 
 	public void authenticatedTest(RequestPostProcessor requestPostProcessor, ResultMatcher expectedStatus) throws Exception {

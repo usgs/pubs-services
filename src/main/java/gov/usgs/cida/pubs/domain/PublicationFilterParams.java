@@ -1,6 +1,9 @@
 /**
- * Class to hold Query parameters used as a search filter in a Http Get on a publication end point. This field will be populated by Spring
- * when cqalling the method in the controller.
+ * Class to hold Query parameters used as a search filter in a http Get on a publication end point. This field will be populated by Spring
+ * when calling the method in the controller.
+ * Since paging request parameters are not camel case, two set of getters and setters will be used. The first form (getPage_number()) will
+ * be used by Spring to bind the http request parameter to the pojo field.
+ * The second form is used by the rest of the code to maintain consistency with Java naming convention and standards.
  */
 package gov.usgs.cida.pubs.domain;
 
@@ -42,11 +45,11 @@ public class PublicationFilterParams {
 
 	private String orderBy;
 
-	private String pageNumber;
+	private String page_number;
 
-	private String pageRowStart;
+	private String page_row_start;
 
-	private String pageSize;
+	private String page_size;
 
 	private String[] prodId;
 
@@ -207,27 +210,51 @@ public class PublicationFilterParams {
 	}
 
 	public String getPageNumber() {
-		return pageNumber;
+		return page_number;
 	}
 
-	public void setPageNumber(String pageNumber) {
-		this.pageNumber = pageNumber;
+	public void setPageNumber(String page_number) {
+		this.page_number = page_number;
+	}
+
+	public String getPage_number() {
+		return page_number;
+	}
+
+	public void setPage_number(String page_number) {
+		this.page_number = page_number;
 	}
 
 	public String getPageRowStart() {
-		return pageRowStart;
+		return page_row_start;
 	}
 
-	public void setPageRowStart(String pageRowStart) {
-		this.pageRowStart = pageRowStart;
+	public void setPageRowStart(String page_row_start) {
+		this.page_row_start = page_row_start;
+	}
+
+	public String getPage_row_start() {
+		return page_row_start;
+	}
+
+	public void setPage_row_start(String page_row_start) {
+		this.page_row_start = page_row_start;
 	}
 
 	public String getPageSize() {
-		return pageSize;
+		return page_size;
 	}
 
-	public void setPageSize(String pageSize) {
-		this.pageSize = pageSize;
+	public void setPageSize(String page_size) {
+		this.page_size = page_size;
+	}
+
+	public String getPage_size() {
+		return page_size;
+	}
+
+	public void setPage_size(String page_size) {
+		this.page_size = page_size;
 	}
 
 	public String[] getProdId() {
@@ -352,13 +379,13 @@ public class PublicationFilterParams {
 
 	@Override
 	public String toString() {
-		return "PwPublicationFilterParams [chorus=" + chorus + ", contributingOffice="
+		return "PublicationFilterParams [chorus=" + chorus + ", contributingOffice="
 				+ Arrays.toString(contributingOffice) + ", contributor=" + Arrays.toString(contributor) + ", orcid="
 				+ Arrays.toString(orcid) + ", doi=" + Arrays.toString(doi) + ", hasDoi=" + hasDoi + ", endYear="
 				+ endYear + ", g=" + g + ", global=" + global + ", indexId=" + Arrays.toString(indexId) + ", ipdsId="
 				+ Arrays.toString(ipdsId) + ", listId=" + Arrays.toString(listId) + ", modDateHigh=" + modDateHigh
-				+ ", modDateLow=" + modDateLow + ", modXDays=" + modXDays + ", orderBy=" + orderBy + ", pageNumber="
-				+ pageNumber + ", pageRowStart=" + pageRowStart + ", pageSize=" + pageSize + ", prodId="
+				+ ", modDateLow=" + modDateLow + ", modXDays=" + modXDays + ", orderBy=" + orderBy + ", page_number="
+				+ page_number + ", page_row_start=" + page_row_start + ", page_size=" + page_size + ", prodId="
 				+ Arrays.toString(prodId) + ", pubAbstract=" + Arrays.toString(pubAbstract) + ", pubDateHigh="
 				+ pubDateHigh + ", pubDateLow=" + pubDateLow + ", pubXDays=" + pubXDays + ", q=" + q + ", linkType="
 				+ Arrays.toString(linkType) + ", noLinkType=" + Arrays.toString(noLinkType) + ", reportNumber="

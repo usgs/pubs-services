@@ -1,6 +1,9 @@
 package gov.usgs.cida.pubs.webservice.mp;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -118,4 +121,26 @@ public class MpPublicationMvcServiceIT extends BaseIT {
 		assertThat(getRtnAsJSONObject(result), sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
 	}
 
+	@Test
+	public void verifyPagingParams() throws Exception {
+		// check that the paging parameters are passed to the service
+		// do not expect any records to be returned, but pageSize should be set
+		String pageSize = "33";
+		String pageRowStart = "56";
+		String queryParms =  String.format("?page_size=%s&page_row_start=%s", pageSize, pageRowStart);
+
+		MvcResult result = mockMvc.perform(get("/mppublications/" + queryParms))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
+				.andReturn();
+
+		JSONObject rtnAsJson = getRtnAsJSONObject(result);
+
+		assertNotNull(rtnAsJson.get("pageSize"));
+		assertEquals(rtnAsJson.get("pageSize"), pageSize);
+
+		assertNotNull(rtnAsJson.get("pageRowStart"));
+		assertEquals(rtnAsJson.get("pageRowStart"), pageRowStart);
+	}
 }

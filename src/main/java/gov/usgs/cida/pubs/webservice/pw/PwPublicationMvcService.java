@@ -80,7 +80,10 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	@JsonView(View.PW.class)
 	public void getStreamPubs(
 			HttpServletResponse response, HttpServletRequest request, PublicationFilterParams filterParams,
-			@RequestParam(value=PubsConstantsHelper.CONTENT_PARAMETER_NAME, required=false, defaultValue="json") String mimeType) {
+			@RequestParam(value=PubsConstantsHelper.CONTENT_PARAMETER_NAME, required=false, defaultValue="json") String mimeType,
+			@RequestParam(value=BaseDao.PAGE_ROW_START, required=false) String pageRowStart,
+			@RequestParam(value=BaseDao.PAGE_NUMBER, required=false) String pageNumber,
+			@RequestParam(value=BaseDao.PAGE_SIZE, required=false) String pageSize) {
 
 		setHeaders(response);
 
@@ -89,8 +92,10 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 
 		filters.put("url", configurationService.getWarehouseEndpoint() + "/publication/");
 
-		if (PubsConstantsHelper.MEDIA_TYPE_JSON_EXTENSION.equalsIgnoreCase(mimeType)) {
-			filters.putAll(buildPaging(filterParams.getPageRowStart(), filterParams.getPageSize(), filterParams.getPageNumber()));
+		if (!PubsConstantsHelper.MEDIA_TYPE_TSV_EXTENSION.equalsIgnoreCase(mimeType) &&
+		    !PubsConstantsHelper.MEDIA_TYPE_XLSX_EXTENSION.equalsIgnoreCase(mimeType) &&
+		    !PubsConstantsHelper.MEDIA_TYPE_CSV_EXTENSION.equalsIgnoreCase(mimeType)) {
+			filters.putAll(buildPaging(pageRowStart, pageSize, pageNumber));
 		}
 		streamResults(filters, mimeType, response);
 	}

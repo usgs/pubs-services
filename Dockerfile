@@ -1,4 +1,9 @@
-FROM ${MAVEN_IMAGE:-maven:3.6.0-jdk-11} AS build
+ARG maven_image=maven
+ARG maven_image_tag=3.6.0-jdk-11
+ARG openjdk_image=usgswma/openjdk
+ARG openjdk_image_tag=11.0.4-jre-baa3726df925e679dedf110bc1dca29b323e5324
+
+FROM ${maven_image}:${maven_image_tag} AS build
 LABEL maintainer="gs-w_eto_eb_federal_employees@usgs.gov"
 
 # Add pom.xml and install dependencies
@@ -10,7 +15,7 @@ RUN mvn -B dependency:go-offline
 COPY src /build/src
 RUN mvn -B clean package -Dmaven.test.skip=true
 
-FROM ${OPENJDK_IMAGE:-usgswma/openjdk:11.0.4-jre-baa3726df925e679dedf110bc1dca29b323e5324}
+FROM ${openjdk_image}:${openjdk_image_tag}
 
 RUN apt-get update && apt-get install --no-install-recommends --no-upgrade -y \
     curl \

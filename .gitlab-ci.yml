@@ -17,10 +17,10 @@
 #     The Docker image tag. The default is to use the branch:short_sha
 #     This variable is sent to the deployment trigger.
 #
-#   MAVEN_IMAGE
+#   maven_image
 #     The Docker image name for maven. Used by the Docker image build for the Maven image source.
 #
-#   OPENJDK_IMAGE
+#   openjdk_image
 #     The Docker image name for OpenJDK. Used by the Docker image build for the OpenJDK image source.
 #
 #   DEPLOY_TRIGGER_REF
@@ -30,59 +30,81 @@
 #     Space-delimited list of variables to pass along with the deployment trigger.
 #     This is used to pass the PUBSWH_SERVICES_IMAGE and PUBSWH_SERVICES_IMAGE_TAG variables along.
 #
+
+# Include common SAS defined jobs from a repository available to ci/cd.
 include:
-  - project: 'sas/ops/gitlab-ci-pipeline'
+  - project: 'sas/ops/ci-pipeline/gitlab-ci-pipeline'
     file: '/build/docker.yml'
-  - project: 'sas/ops/gitlab-ci-pipeline'
+  - project: 'sas/ops/ci-pipeline/gitlab-ci-pipeline'
     file: '/deploy/api_trigger.yml'
 
+# These stages are defined on the jobs in the included files above.
 stages:
   - docker_build
   - docker_tag_latest
   - deploy_trigger
 
 variables:
-  # This is passed to deployment
+  # These variables are referenced by the deployment triggers to specify the
+  # image and image tag to deploy dynamically.
   PUBSWH_SERVICES_IMAGE: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
   PUBSWH_SERVICES_IMAGE_TAG: ${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHORT_SHA}
+  # This variable is referenced by the deployment trigger jobs and sets the
+  # variable names to pass along with the deployment trigger.
+  DEPLOY_TRIGGER_VARS: PUBSWH_SERVICES_IMAGE PUBSWH_SERVICES_IMAGE_TAG
 
+# The 'docker_build' job is defined in the '/build/docker.yml' file listed above.
+# The keys defined here are overrides/supplemental to the job.
+# Only build on pushes to the 'master' branch.
 docker_build:
   variables:
-    MAVEN_IMAGE: "code.chs.usgs.gov:5001/sas/ops/docker/base-images/maven:3.6.0-jdk-11-latest"
-    # TODO: source internally
-    OPENJDK_IMAGE: "usgswma/openjdk:11.0.4-jre-baa3726df925e679dedf110bc1dca29b323e5324"
-    DOCKER_BUILD_ARGS: --build-arg MAVEN_IMAGE=${MAVEN_IMAGE} --build-arg OPENJDK_IMAGE=${OPENJDK_IMAGE}
+    # Use SAS-built base images for building
+    maven_image: 'code.chs.usgs.gov:5001/sas/ops/docker/base-images/maven'
+    maven_image_tag: '3.6.0-jdk-11-latest'
+    openjdk_image: 'code.chs.usgs.gov:5001/sas/ops/docker/base-images/openjdk'
+    openjdk_image_tag: '11.0.4-jre-latest'
+    DOCKER_BUILD_ARGS: >-
+      --build-arg maven_image=${maven_image}
+      --build-arg openjdk_image=${openjdk_image}
+      --build-arg maven_image_tag=${maven_image_tag}
+      --build-arg openjdk_image_tag=${openjdk_image_tag}
   only:
     refs:
       - master
 
+# The 'docker_tag' job is defined in the '/build/docker.yml' file listed above.
+# The keys defined here are overrides/supplemental to the job.
+# This simply labels the built image as '${ref}-latest' and pushes to the registry.
 docker_tag_latest:
   only:
     refs:
       - master
 
+# The 'trigger_deploy_*' jobs are defined in the '/deploy/api_trigger.yml' file listed above.
+# The keys defined here are overrides/supplemental to the job.
+# This uses the GitLab trigger API to trigger the "deployment repo" pipeline, passing along
+# the image information (DEPLOY_TRIGGER_VARS).
+
+# This triggers a 'development' environment deployment on successful builds of
+# the 'master' branch.
 trigger_deploy_development:
   extends: .deploy_trigger
   variables:
-    DEPLOY_TRIGGER_VARS: PUBSWH_SERVICES_IMAGE PUBSWH_SERVICES_IMAGE_TAG
     ENVIRONMENT: development
-    DEPLOY_TRIGGER_REF: master
+    DEPLOY_TRIGGER_REF: develop
   only:
     refs:
       - master
-    variables:
-      - DEPLOY_TRIGGER_TOKEN
-      - DEPLOY_TRIGGER_URL
+  when: on_success
 
+# This triggers a 'staging' environment deployment on successful builds of
+# the 'master' branch.
 trigger_deploy_staging:
   extends: .deploy_trigger
   variables:
-    DEPLOY_TRIGGER_VARS: PUBSWH_SERVICES_IMAGE PUBSWH_SERVICES_IMAGE_TAG
     ENVIRONMENT: staging
     DEPLOY_TRIGGER_REF: master
   only:
     refs:
       - master
-    variables:
-      - DEPLOY_TRIGGER_TOKEN
-      - DEPLOY_TRIGGER_URL
+  when: on_success

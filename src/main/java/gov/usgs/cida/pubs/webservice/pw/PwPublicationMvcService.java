@@ -83,12 +83,19 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 			@RequestParam(value=PubsConstantsHelper.CONTENT_PARAMETER_NAME, required=false, defaultValue="json") String mimeType,
 			@RequestParam(value=BaseDao.PAGE_ROW_START, required=false) String pageRowStart,
 			@RequestParam(value=BaseDao.PAGE_NUMBER, required=false) String pageNumber,
-			@RequestParam(value=BaseDao.PAGE_SIZE, required=false) String pageSize) {
+			@RequestParam(value=BaseDao.PAGE_SIZE, required=false) String pageSize,
+			@RequestParam(value=PwPublicationDao.PUB_X_DAYS, required=false) String pubXDays,
+			@RequestParam(value=PwPublicationDao.PUB_DATE_LOW, required=false) String pubDateLow,
+			@RequestParam(value=PwPublicationDao.PUB_DATE_HIGH, required=false) String pubDateHigh,
+			@RequestParam(value=PwPublicationDao.MOD_X_DAYS, required=false) String modXDays,
+			@RequestParam(value=PwPublicationDao.MOD_DATE_LOW, required=false) String modDateLow,
+			@RequestParam(value=PwPublicationDao.MOD_DATE_HIGH, required=false) String modDateHigh) {
 
 		setHeaders(response);
 
 		//Note that paging is only applied to the json format
 		Map<String, Object> filters = buildFilters(filterParams);
+		filters.putAll(buildFilters(modDateHigh, modDateLow, modXDays, pubDateHigh, pubDateLow, pubXDays));
 
 		filters.put("url", configurationService.getWarehouseEndpoint() + "/publication/");
 

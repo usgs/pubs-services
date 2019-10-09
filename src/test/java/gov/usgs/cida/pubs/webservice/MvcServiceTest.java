@@ -89,6 +89,9 @@ public class MvcServiceTest {
 				pubDateHigh, pubDateLow, pubXDays, q, linkType, noLinkType, reportNumber, seriesName, startYear, subtypeName, title, typeName, year);
 
 		Map<String, Object> filters = testMvcService.buildFilters(filterParams);
+		filters.put(BaseDao.PAGE_NUMBER, page_number);
+		filters.put(PublicationDao.PAGE_ROW_START, page_row_start);
+		filters.put(PublicationDao.PAGE_SIZE, page_size);
 
 		assertTrue(filters.containsKey(PublicationDao.PUB_ABSTRACT ));
 		assertEquals(pubAbstract, filters.get(PublicationDao.PUB_ABSTRACT));
@@ -412,9 +415,6 @@ public class MvcServiceTest {
 			filterParams.setModDateLow(modDateLow);
 			filterParams.setModXDays(modXDays);
 			filterParams.setOrderBy(orderBy);
-			filterParams.setPageNumber(pageNumber);
-			filterParams.setPageRowStart(pageRowStart);
-			filterParams.setPageSize(pageSize);
 			filterParams.setProdId(prodId);
 			filterParams.setPubAbstract(pubAbstract);
 			filterParams.setPubDateHigh(pubDateHigh);

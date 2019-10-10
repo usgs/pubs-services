@@ -56,14 +56,8 @@ public abstract class MvcService<D> {
 		filters.put(PublicationDao.INDEX_ID, filterParams.getIndexId());
 		filters.put(PublicationDao.IPDS_ID, filterParams.getIpdsId());
 		filters.put(MpPublicationDao.LIST_ID, null == filterParams.getListId() ? null : mapListId(filterParams.getListId()));
-		filters.put(PwPublicationDao.MOD_DATE_HIGH, filterParams.getModDateHigh());
-		filters.put(PwPublicationDao.MOD_DATE_LOW, filterParams.getModDateLow());
-		filters.put(PwPublicationDao.MOD_X_DAYS, filterParams.getModXDays());
 		filters.put(PublicationDao.ORDER_BY, filterParams.getOrderBy());
 		filters.put(PublicationDao.PROD_ID, filterParams.getProdId());
-		filters.put(PwPublicationDao.PUB_DATE_HIGH, filterParams.getPubDateHigh());
-		filters.put(PwPublicationDao.PUB_DATE_LOW, filterParams.getPubDateLow());
-		filters.put(PwPublicationDao.PUB_X_DAYS, filterParams.getPubXDays());
 		filters.putAll(configureSingleSearchFilters(filterParams.getQ()));
 		filters.put(PublicationDao.LINK_TYPE, filterParams.getLinkType());
 		filters.put(PublicationDao.NO_LINK_TYPE, filterParams.getNoLinkType());
@@ -90,6 +84,21 @@ public abstract class MvcService<D> {
 		filters.put(PersonContributorDao.EMAIL,filterParams.getEmail());
 		filters.put(PersonContributorDao.ORCID,DataNormalizationUtils.normalizeOrcid(filterParams.getOrcid()));
 		filters.put(PersonContributorDao.PREFERRED,filterParams.getPreferred());
+
+		return filters;
+	}
+
+	protected Map<String, Object> buildFilters(String modDateHigh, String modDateLow, String modXDays,
+			String pubDateHigh, String pubDateLow, String pubXDays) {
+		Map<String, Object> filters = new HashMap<>();
+
+		filters.put(PwPublicationDao.MOD_DATE_HIGH, modDateHigh);
+		filters.put(PwPublicationDao.MOD_DATE_LOW, modDateLow);
+		filters.put(PwPublicationDao.MOD_X_DAYS, modXDays);
+
+		filters.put(PwPublicationDao.PUB_DATE_HIGH, pubDateHigh);
+		filters.put(PwPublicationDao.PUB_DATE_LOW, pubDateLow);
+		filters.put(PwPublicationDao.PUB_X_DAYS, pubXDays);
 
 		return filters;
 	}

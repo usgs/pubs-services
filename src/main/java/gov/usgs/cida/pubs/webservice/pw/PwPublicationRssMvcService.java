@@ -78,13 +78,14 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 		 * 
 		 * 	"if mod_x_days is there, and pub_x_days is not, mod_x_days should override the default pub_x_days = 30"
 		 */
+		String pubXDaysOverride = pubXDays;
 		if (((pubXDays == null) || (pubXDays.isEmpty()))
 				&& ((modXDays == null) || (modXDays.isEmpty()))) {
-			pubXDays = DEFAULT_RECORDS;
+			pubXDaysOverride = DEFAULT_RECORDS;
 		}
 
 		Map<String, Object> filters = buildFilters(filterParams);
-		filters.putAll(buildFilters(modDateHigh, modDateLow, modXDays, pubDateHigh, pubDateLow, pubXDays));
+		filters.putAll(buildFilters(modDateHigh, modDateLow, modXDays, pubDateHigh, pubDateLow, pubXDaysOverride));
 
 		List<PwPublication> pubs = busService.getObjects(filters);
 

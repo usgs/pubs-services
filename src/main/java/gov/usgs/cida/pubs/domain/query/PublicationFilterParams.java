@@ -1,8 +1,8 @@
 /**
- * Class to hold Query parameters used as a search filter in a Http Get on a publication end point. This field will be populated by Spring
- * when cqalling the method in the controller.
+ * Class to hold Query parameters used as a search filter in a http Get on a publication end point. This field will be populated by Spring
+ * when calling the method in the controller.
  */
-package gov.usgs.cida.pubs.domain.query;
+package gov.usgs.cida.pubs.domain;
 
 import java.util.Arrays;
 
@@ -34,29 +34,11 @@ public class PublicationFilterParams {
 
 	private String[] listId;
 
-	private String modDateHigh;
-
-	private String modDateLow;
-
-	private String modXDays;
-
 	private String orderBy;
-
-	private String pageNumber;
-
-	private String pageRowStart;
-
-	private String pageSize;
 
 	private String[] prodId;
 
 	private String[] pubAbstract;
-
-	private String pubDateHigh;
-
-	private String pubDateLow;
-
-	private String pubXDays;
 
 	private String q;
 
@@ -174,60 +156,12 @@ public class PublicationFilterParams {
 		this.listId = listId;
 	}
 
-	public String getModDateHigh() {
-		return modDateHigh;
-	}
-
-	public void setModDateHigh(String modDateHigh) {
-		this.modDateHigh = modDateHigh;
-	}
-
-	public String getModDateLow() {
-		return modDateLow;
-	}
-
-	public void setModDateLow(String modDateLow) {
-		this.modDateLow = modDateLow;
-	}
-
-	public String getModXDays() {
-		return modXDays;
-	}
-
-	public void setModXDays(String modXDays) {
-		this.modXDays = modXDays;
-	}
-
 	public String getOrderBy() {
 		return orderBy;
 	}
 
 	public void setOrderBy(String orderBy) {
 		this.orderBy = orderBy;
-	}
-
-	public String getPageNumber() {
-		return pageNumber;
-	}
-
-	public void setPageNumber(String pageNumber) {
-		this.pageNumber = pageNumber;
-	}
-
-	public String getPageRowStart() {
-		return pageRowStart;
-	}
-
-	public void setPageRowStart(String pageRowStart) {
-		this.pageRowStart = pageRowStart;
-	}
-
-	public String getPageSize() {
-		return pageSize;
-	}
-
-	public void setPageSize(String pageSize) {
-		this.pageSize = pageSize;
 	}
 
 	public String[] getProdId() {
@@ -244,30 +178,6 @@ public class PublicationFilterParams {
 
 	public void setPubAbstract(String[] pubAbstract) {
 		this.pubAbstract = pubAbstract;
-	}
-
-	public String getPubDateHigh() {
-		return pubDateHigh;
-	}
-
-	public void setPubDateHigh(String pubDateHigh) {
-		this.pubDateHigh = pubDateHigh;
-	}
-
-	public String getPubDateLow() {
-		return pubDateLow;
-	}
-
-	public void setPubDateLow(String pubDateLow) {
-		this.pubDateLow = pubDateLow;
-	}
-
-	public String getPubXDays() {
-		return pubXDays;
-	}
-
-	public void setPubXDays(String pubXDays) {
-		this.pubXDays = pubXDays;
 	}
 
 	public String getQ() {
@@ -352,15 +262,12 @@ public class PublicationFilterParams {
 
 	@Override
 	public String toString() {
-		return "PwPublicationFilterParams [chorus=" + chorus + ", contributingOffice="
+		return "PublicationFilterParams [chorus=" + chorus + ", contributingOffice="
 				+ Arrays.toString(contributingOffice) + ", contributor=" + Arrays.toString(contributor) + ", orcid="
 				+ Arrays.toString(orcid) + ", doi=" + Arrays.toString(doi) + ", hasDoi=" + hasDoi + ", endYear="
 				+ endYear + ", g=" + g + ", global=" + global + ", indexId=" + Arrays.toString(indexId) + ", ipdsId="
-				+ Arrays.toString(ipdsId) + ", listId=" + Arrays.toString(listId) + ", modDateHigh=" + modDateHigh
-				+ ", modDateLow=" + modDateLow + ", modXDays=" + modXDays + ", orderBy=" + orderBy + ", pageNumber="
-				+ pageNumber + ", pageRowStart=" + pageRowStart + ", pageSize=" + pageSize + ", prodId="
-				+ Arrays.toString(prodId) + ", pubAbstract=" + Arrays.toString(pubAbstract) + ", pubDateHigh="
-				+ pubDateHigh + ", pubDateLow=" + pubDateLow + ", pubXDays=" + pubXDays + ", q=" + q + ", linkType="
+				+ Arrays.toString(ipdsId) + ", listId=" + Arrays.toString(listId) + ", orderBy=" + orderBy + ", prodId="
+				+ Arrays.toString(prodId) + ", pubAbstract=" + Arrays.toString(pubAbstract) + ", q=" + q + ", linkType="
 				+ Arrays.toString(linkType) + ", noLinkType=" + Arrays.toString(noLinkType) + ", reportNumber="
 				+ Arrays.toString(reportNumber) + ", seriesName=" + Arrays.toString(seriesName) + ", startYear="
 				+ startYear + ", subtypeName=" + Arrays.toString(subtypeName) + ", title=" + Arrays.toString(title)

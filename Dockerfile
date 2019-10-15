@@ -1,5 +1,5 @@
 ARG maven_image=maven
-ARG maven_image_tag=3.6.0-jdk-11
+ARG maven_image_tag=3.6.2-jdk-11
 ARG openjdk_image=usgswma/openjdk
 ARG openjdk_image_tag=11.0.4-jre-baa3726df925e679dedf110bc1dca29b323e5324
 

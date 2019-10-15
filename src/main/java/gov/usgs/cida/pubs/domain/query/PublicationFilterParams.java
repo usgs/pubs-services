@@ -2,7 +2,7 @@
  * Class to hold Query parameters used as a search filter in a http Get on a publication end point. This field will be populated by Spring
  * when calling the method in the controller.
  */
-package gov.usgs.cida.pubs.domain;
+package gov.usgs.cida.pubs.domain.query;
 
 import java.util.Arrays;
 

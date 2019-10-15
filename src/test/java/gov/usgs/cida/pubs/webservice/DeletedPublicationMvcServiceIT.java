@@ -54,7 +54,7 @@ public class DeletedPublicationMvcServiceIT extends BaseIT {
 
 	@Test
 	public void getAllPageOne() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/publication/deleted?pageNumber=1&pageSize=2").accept(MediaType.APPLICATION_JSON))
+		MvcResult rtn = mockMvc.perform(get("/publication/deleted?page_number=1&page_size=2").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
@@ -66,7 +66,7 @@ public class DeletedPublicationMvcServiceIT extends BaseIT {
 
 	@Test
 	public void getAllPageThree() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/publication/deleted?pageNumber=3&pageSize=2").accept(MediaType.APPLICATION_JSON))
+		MvcResult rtn = mockMvc.perform(get("/publication/deleted?page_number=3&page_size=2").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
@@ -90,7 +90,7 @@ public class DeletedPublicationMvcServiceIT extends BaseIT {
 
 	@Test
 	public void getSincePageOne() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/publication/deleted?deletedSince=2017-12-31&pageNumber=1&pageSize=1").accept(MediaType.APPLICATION_JSON))
+		MvcResult rtn = mockMvc.perform(get("/publication/deleted?deletedSince=2017-12-31&page_number=1&page_size=1").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
@@ -102,7 +102,7 @@ public class DeletedPublicationMvcServiceIT extends BaseIT {
 
 	@Test
 	public void getSincePageThree() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/publication/deleted?deletedSince=2017-12-31&pageNumber=3&pageSize=1").accept(MediaType.APPLICATION_JSON))
+		MvcResult rtn = mockMvc.perform(get("/publication/deleted?deletedSince=2017-12-31&page_number=3&page_size=1").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))

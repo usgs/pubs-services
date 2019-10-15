@@ -84,11 +84,15 @@ public class MvcServiceTest {
 		String[] year = new String[]{"year1","year2"};
 
 		PublicationFilterParams filterParams = buildPwPubFilterParams(chorus, contributingOffice, contributor, orcid, doi, hasDoi, endYear, g,
-				global, indexId, ipdsId, listId, modDateHigh, modDateLow, modXDays, orderBy, String.valueOf(page_number), String.valueOf(page_row_start),
-				String.valueOf(page_size), prodId, pubAbstract,
-				pubDateHigh, pubDateLow, pubXDays, q, linkType, noLinkType, reportNumber, seriesName, startYear, subtypeName, title, typeName, year);
+				global, indexId, ipdsId, listId, orderBy, prodId, pubAbstract,
+				q, linkType, noLinkType, reportNumber, seriesName, startYear, subtypeName, title, typeName, year);
 
 		Map<String, Object> filters = testMvcService.buildFilters(filterParams);
+		filters.put(BaseDao.PAGE_NUMBER, page_number);
+		filters.put(PublicationDao.PAGE_ROW_START, page_row_start);
+		filters.put(PublicationDao.PAGE_SIZE, page_size);
+
+		filters.putAll(testMvcService.buildFilters(modDateHigh, modDateLow, modXDays, pubDateHigh, pubDateLow, pubXDays));
 
 		assertTrue(filters.containsKey(PublicationDao.PUB_ABSTRACT ));
 		assertEquals(pubAbstract, filters.get(PublicationDao.PUB_ABSTRACT));
@@ -213,8 +217,7 @@ public class MvcServiceTest {
 	@Test
 	public void buildFiltersBadGTest() {
 		PublicationFilterParams filterParams = buildPwPubFilterParams(null, null, null, null, null, null, "abc", null, null,
-				null, null, null, null, null, null, null, null, null, null, null, null, null,
-				null, null, null, null, null, null, null, null, null, null, null, null);
+				null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
 		Map<String, Object> filters = testMvcService.buildFilters(filterParams);
 		assertFalse(filters.containsKey(PwPublicationDao.G));
 	}
@@ -390,9 +393,8 @@ public class MvcServiceTest {
 
 	protected PublicationFilterParams buildPwPubFilterParams(Boolean chorus, String[] contributingOffice, String[] contributor,
 			String[] orcid, String[] doi, Boolean hasDoi, String endYear, String g, String global, String[] indexId, String[] ipdsId, String[] listId,
-			String modDateHigh, String modDateLow, String modXDays, String orderBy, String pageNumber,
-			String pageRowStart, String pageSize, String[] prodId, String[] pubAbstract, String pubDateHigh,
-			String pubDateLow, String pubXDays, String q, String[] linkType, String[] noLinkType, String[] reportNumber, String[] seriesName,
+			String orderBy, String[] prodId, String[] pubAbstract,
+			String q, String[] linkType, String[] noLinkType, String[] reportNumber, String[] seriesName,
 			String startYear, String[] subtypeName, String[] title, String[] typeName, String[] year) {
 
 			PublicationFilterParams filterParams = new PublicationFilterParams();
@@ -408,18 +410,9 @@ public class MvcServiceTest {
 			filterParams.setIndexId(indexId);
 			filterParams.setIpdsId(ipdsId);
 			filterParams.setListId(listId);
-			filterParams.setModDateHigh(modDateHigh);
-			filterParams.setModDateLow(modDateLow);
-			filterParams.setModXDays(modXDays);
 			filterParams.setOrderBy(orderBy);
-			filterParams.setPageNumber(pageNumber);
-			filterParams.setPageRowStart(pageRowStart);
-			filterParams.setPageSize(pageSize);
 			filterParams.setProdId(prodId);
 			filterParams.setPubAbstract(pubAbstract);
-			filterParams.setPubDateHigh(pubDateHigh);
-			filterParams.setPubDateLow(pubDateLow);
-			filterParams.setPubXDays(pubXDays);
 			filterParams.setQ(q);
 			filterParams.setLinkType(linkType);
 			filterParams.setNoLinkType(noLinkType);

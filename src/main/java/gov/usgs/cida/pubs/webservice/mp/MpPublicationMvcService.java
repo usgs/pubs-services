@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,6 +30,7 @@ import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.ISippProcess;
+import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
@@ -66,13 +68,13 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@GetMapping
 	@JsonView(View.MP.class)
-	public @ResponseBody SearchResults getPubs(HttpServletResponse response, PublicationFilterParams filterParams) {
+	public @ResponseBody SearchResults getPubs(HttpServletResponse response, PublicationFilterParams filterParams,
+			@RequestParam(value=BaseDao.PAGE_SIZE, required=false, defaultValue = "25") String pageSize,
+			@RequestParam(value=BaseDao.PAGE_ROW_START, required=false, defaultValue = "0") String pageRowStart) {
 
 		setHeaders(response);
 
 		// set Query parameter defaults
-		filterParams.setPageSize(filterParams.getPageSize() == null ? "25" : filterParams.getPageSize());
-		filterParams.setPageRowStart(filterParams.getPageRowStart() == null ? "0" : filterParams.getPageRowStart());
 		filterParams.setGlobal(filterParams.getGlobal() == null ? "true" : filterParams.getGlobal());
 
 		Map<String, Object> filters = buildFilters(filterParams);
@@ -80,8 +82,8 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		List<Publication<?>> pubs = pubBusService.getObjects(filters);
 		Integer totalPubsCount = pubBusService.getObjectCount(filters);
 		SearchResults results = new SearchResults();
-		results.setPageSize(filterParams.getPageSize());
-		results.setPageRowStart(filterParams.getPageRowStart());
+		results.setPageSize(pageSize);
+		results.setPageRowStart(pageRowStart);
 		results.setRecords(pubs);
 		results.setRecordCount(totalPubsCount);
 

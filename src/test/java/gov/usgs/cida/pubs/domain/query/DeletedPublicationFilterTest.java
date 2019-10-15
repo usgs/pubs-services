@@ -12,18 +12,18 @@ public class DeletedPublicationFilterTest {
 	@Test
 	public void getPageNumber() {
 		DeletedPublicationFilter dpf = new DeletedPublicationFilter();
-		dpf.setPageNumber(PAGE_99);
+		dpf.setPage_number(PAGE_99);
 
 		//bad pageSize = null pageNumber
-		dpf.setPageSize(null);
-		assertNull(dpf.getPageNumber());
+		dpf.setPage_size(null);
+		assertNull(dpf.getPage_number());
 
-		dpf.setPageSize(0);
-		assertNull(dpf.getPageNumber());
+		dpf.setPage_size(0);
+		assertNull(dpf.getPage_number());
 
 		//good pageSize = use pageNumber
-		dpf.setPageSize(PAGE_SIZE_12);
-		assertEquals(PAGE_99, dpf.getPageNumber());
+		dpf.setPage_size(PAGE_SIZE_12);
+		assertEquals(PAGE_99, dpf.getPage_number());
 	}
 
 	@Test
@@ -31,41 +31,41 @@ public class DeletedPublicationFilterTest {
 		DeletedPublicationFilter dpf = new DeletedPublicationFilter();
 
 		//bad pageSize &/or bad pageNumber = null pageRowStart
-		dpf.setPageNumber(null);
-		dpf.setPageSize(null);
-		assertNull(dpf.getPageRowStart());
+		dpf.setPage_number(null);
+		dpf.setPage_size(null);
+		assertNull(dpf.getPage_row_start());
 
-		dpf.setPageNumber(0);
-		dpf.setPageSize(null);
-		assertNull(dpf.getPageRowStart());
+		dpf.setPage_number(0);
+		dpf.setPage_size(null);
+		assertNull(dpf.getPage_row_start());
 
-		dpf.setPageNumber(null);
-		dpf.setPageSize(0);
-		assertNull(dpf.getPageRowStart());
+		dpf.setPage_number(null);
+		dpf.setPage_size(0);
+		assertNull(dpf.getPage_row_start());
 
-		dpf.setPageNumber(PAGE_99);
-		dpf.setPageSize(null);
-		assertNull(dpf.getPageRowStart());
+		dpf.setPage_number(PAGE_99);
+		dpf.setPage_size(null);
+		assertNull(dpf.getPage_row_start());
 
-		dpf.setPageNumber(null);
-		dpf.setPageSize(PAGE_SIZE_12);
-		assertNull(dpf.getPageRowStart());
+		dpf.setPage_number(null);
+		dpf.setPage_size(PAGE_SIZE_12);
+		assertNull(dpf.getPage_row_start());
 
-		dpf.setPageNumber(0);
-		dpf.setPageSize(0);
-		assertNull(dpf.getPageRowStart());
+		dpf.setPage_number(0);
+		dpf.setPage_size(0);
+		assertNull(dpf.getPage_row_start());
 
-		dpf.setPageNumber(PAGE_99);
-		dpf.setPageSize(0);
-		assertNull(dpf.getPageRowStart());
+		dpf.setPage_number(PAGE_99);
+		dpf.setPage_size(0);
+		assertNull(dpf.getPage_row_start());
 
-		dpf.setPageNumber(0);
-		dpf.setPageSize(PAGE_SIZE_12);
-		assertNull(dpf.getPageRowStart());
+		dpf.setPage_number(0);
+		dpf.setPage_size(PAGE_SIZE_12);
+		assertNull(dpf.getPage_row_start());
 
 		//good pageSize & good pageNumber = get a pageRowStart
-		dpf.setPageNumber(PAGE_99);
-		dpf.setPageSize(PAGE_SIZE_12);
-		assertEquals(1176, dpf.getPageRowStart().intValue());
+		dpf.setPage_number(PAGE_99);
+		dpf.setPage_size(PAGE_SIZE_12);
+		assertEquals(1176, dpf.getPage_row_start().intValue());
 	}
 }

@@ -21,11 +21,13 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
+import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
 import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.ContributorType;
@@ -64,18 +66,26 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 
 	@GetMapping
 	@RequestMapping(method=RequestMethod.GET)
-	public void getRSS(HttpServletResponse response, PublicationFilterParams filterParams) {
+	public void getRSS(HttpServletResponse response, PublicationFilterParams filterParams,
+			@RequestParam(value=PwPublicationDao.PUB_X_DAYS, required=false) String pubXDays,
+			@RequestParam(value=PwPublicationDao.PUB_DATE_LOW, required=false) String pubDateLow,
+			@RequestParam(value=PwPublicationDao.PUB_DATE_HIGH, required=false) String pubDateHigh,
+			@RequestParam(value=PwPublicationDao.MOD_X_DAYS, required=false) String modXDays,
+			@RequestParam(value=PwPublicationDao.MOD_DATE_LOW, required=false) String modDateLow,
+			@RequestParam(value=PwPublicationDao.MOD_DATE_HIGH, required=false) String modDateHigh) {
 		/**
 		 * Per JIMK on JIRA PUBSTWO-971:
 		 * 
 		 * 	"if mod_x_days is there, and pub_x_days is not, mod_x_days should override the default pub_x_days = 30"
 		 */
-		if (((filterParams.getPubXDays() == null) || (filterParams.getPubXDays().isEmpty()))
-				&& ((filterParams.getModXDays() == null) || (filterParams.getModXDays().isEmpty()))) {
-			filterParams.setPubXDays(DEFAULT_RECORDS);
+		String pubXDaysOverride = pubXDays;
+		if (((pubXDays == null) || (pubXDays.isEmpty()))
+				&& ((modXDays == null) || (modXDays.isEmpty()))) {
+			pubXDaysOverride = DEFAULT_RECORDS;
 		}
 
 		Map<String, Object> filters = buildFilters(filterParams);
+		filters.putAll(buildFilters(modDateHigh, modDateLow, modXDays, pubDateHigh, pubDateLow, pubXDaysOverride));
 
 		List<PwPublication> pubs = busService.getObjects(filters);
 

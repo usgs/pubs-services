@@ -37,11 +37,11 @@
     </sql>
 
     <sql id="pagingRowLimit">
-        <if test="pageSize != null">
-            limit #{pageSize}
+        <if test="page_size != null">
+            limit #{page_size}
         </if>
-        <if test="pageRowStart != null">
-           offset #{pageRowStart}
+        <if test="page_row_start != null">
+           offset #{page_row_start}
         </if>
     </sql>
 

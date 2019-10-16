@@ -1,0 +1,25 @@
+{
+	"pageSize": "null",
+	"pageRowStart": "null",
+	"pageNumber": "null",
+	"recordCount": 3,
+	"records": [{
+		"id": 662,
+		"indexId": "ofr20111030",
+		"title": "Deleted Two",
+		"doi": "10.1139/f75-258",
+		"deleteDate": "2018-12-31T08:10:15"
+	}, {
+		"id": 661,
+		"indexId": "sir20105033",
+		"title": "Deleted One",
+		"doi": "10.3133/sir20105040",
+		"deleteDate": "2018-12-31T08:10:15"
+	}, {
+		"id": 663,
+		"indexId": "ds469",
+		"title": "Deleted Three",
+		"doi": "10.1002/etc.5620091110",
+		"deleteDate": "2017-12-31T08:10:15"
+	}]
+}

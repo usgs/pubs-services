@@ -1,0 +1,13 @@
+{
+	"pageSize": "1",
+	"pageRowStart": "2",
+	"pageNumber": "3",
+	"recordCount": 3,
+	"records": [{
+		"id": 663,
+		"indexId": "ds469",
+		"title": "Deleted Three",
+		"doi": "10.1002/etc.5620091110",
+		"deleteDate": "2017-12-31T08:10:15"
+	}]
+}

@@ -1,0 +1,13 @@
+{
+	"pageSize": "2",
+	"pageRowStart": "4",
+	"pageNumber": "3",
+	"recordCount": 5,
+	"records": [{
+		"id": 665,
+		"indexId": "665",
+		"title": "Deleted Five",
+		"doi": "10.3133/93891",
+		"deleteDate": "2015-12-31T08:10:15"
+	}]
+}

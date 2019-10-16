@@ -1,7 +1,6 @@
 package gov.usgs.cida.pubs.dao;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
@@ -11,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import gov.usgs.cida.pubs.dao.intfc.IDeletedPublicationDao;
 import gov.usgs.cida.pubs.domain.DeletedPublication;
+import gov.usgs.cida.pubs.domain.query.DeletedPublicationFilter;
 
 @Repository
 public class DeletedPublicationDao extends SqlSessionDaoSupport implements IDeletedPublicationDao {
@@ -31,14 +31,14 @@ public class DeletedPublicationDao extends SqlSessionDaoSupport implements IDele
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<DeletedPublication> getByMap(Map<String, Object> filters) {
-		return getSqlSession().selectList(NS + BaseDao.GET_BY_MAP, filters);
+	public List<DeletedPublication> getByFilter(DeletedPublicationFilter filter) {
+		return getSqlSession().selectList(NS + BaseDao.GET_BY_MAP, filter);
 	}
 
 	@Transactional(readOnly = true)
 	@Override
-	public Integer getObjectCount(Map<String, Object> filters) {
-		return getSqlSession().selectOne(NS + BaseDao.GET_COUNT, filters);
+	public Integer getObjectCount(DeletedPublicationFilter filter) {
+		return getSqlSession().selectOne(NS + BaseDao.GET_COUNT, filter);
 	}
 
 }

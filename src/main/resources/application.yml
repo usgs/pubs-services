@@ -1,6 +1,4 @@
 spring:
-  activemq:
-    broker-url: ${QUEUE_URL}
   datasource:
     url: jdbc:postgresql://${PUBS_DB_HOST}:${PUBS_DB_PORT}/${PUBS_DB_NAME}
     username: ${PUBS_DB_READ_ONLY_USERNAME}

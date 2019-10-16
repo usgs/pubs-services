@@ -14,11 +14,6 @@ import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 
-/**
- * @author drsteini
- * @param <D> the specific domain of the object 
- *
- */
 public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D> {
 
 	public static final String ADD = ".add";
@@ -43,56 +38,36 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
 		setSqlSessionFactory(sqlSessionFactory);
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#add(java.lang.Object)
-	 */
 	@Transactional(readOnly = true)
 	@Override
 	public Integer add(D domainObject) {
 		throw new RuntimeException(PubsConstantsHelper.NOT_IMPLEMENTED);
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
-	 */
 	@Transactional(readOnly = true)
 	@Override
 	public D getById(Integer domainID) {
 		throw new RuntimeException(PubsConstantsHelper.NOT_IMPLEMENTED);
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#getById(java.lang.Integer)
-	 */
 	@Transactional(readOnly = true)
 	@Override
 	public D getById(String domainID) {
 		throw new RuntimeException(PubsConstantsHelper.NOT_IMPLEMENTED);
 	}
 
-	/** 
-	 * {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#getByMap(Map)
-	 */
 	@Transactional(readOnly = true)
 	@Override
 	public List<D> getByMap(Map<String, Object> filters) {
 		throw new RuntimeException(PubsConstantsHelper.NOT_IMPLEMENTED);
 	}
 
-	/** 
-	 * {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#getObjectCount(Map)
-	 */
 	@Transactional(readOnly = true)
 	@Override
 	public Integer getObjectCount(Map<String, Object> filters) {
 		throw new RuntimeException(PubsConstantsHelper.NOT_IMPLEMENTED);
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#update(java.lang.Object)
-	 */
 	@Transactional(readOnly = true)
 	@Override
 	public void update(D domainObject) {
@@ -108,29 +83,18 @@ public abstract class BaseDao<D> extends SqlSessionDaoSupport implements IDao<D>
 		throw new RuntimeException(PubsConstantsHelper.NOT_IMPLEMENTED);
 	}
 
-	/** {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#deleteById(java.lang.Integer)
-	 */
 	@Transactional(readOnly = true)
 	@Override
 	public void deleteById(Integer domainID) {
 		throw new RuntimeException(PubsConstantsHelper.NOT_IMPLEMENTED);
 	}
 
-	/** 
-	 * {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#deleteByParent(java.lang.Integer)
-	 */
 	@Transactional(readOnly = true)
 	@Override
 	public void deleteByParent(Integer parentID) {
 		throw new RuntimeException(PubsConstantsHelper.NOT_IMPLEMENTED);
 	}
 
-	/** 
-	 * {@inheritDoc}
-	 * @see gov.usgs.cida.pubs.dao.intfc.IDao#uniqueCheck(java.lang.Object)
-	 */
 	@Transactional(readOnly = true)
 	@Override
 	public Map<Integer, Map<String, Object>> uniqueCheck(D domainObject) {

@@ -115,7 +115,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
 			@PathVariable("publicationTypeId") Integer publicationTypeId,
 			@PathVariable("publicationSubtypeId") Integer publicationSubtypeId,
 			@RequestParam(value=TEXT_SEARCH, required=false) String[] text,
-			@RequestParam(value=ACTIVE_SEARCH, required=false) String[] active) {
+			@RequestParam(value=ACTIVE_SEARCH, required=false) Boolean active) {
 		LOG.debug("publicationSeries");
 		Collection<PublicationSeries> rtn = new ArrayList<>();
 		if (validateParametersSetHeaders(request, response)) {
@@ -124,8 +124,8 @@ public class LookupMvcService extends MvcService<PublicationType> {
 			if (null != text && 0 < text.length) {
 				filters.put(PublicationSeriesDao.TEXT_SEARCH, text[0]);
 			}
-			if (null != active && 0 < active.length) {
-				filters.put(PublicationSeriesDao.ACTIVE_SEARCH, active[0].toUpperCase());
+			if (null != active) {
+				filters.put(PublicationSeriesDao.ACTIVE_SEARCH, active);
 			}
 			rtn = PublicationSeries.getDao().getByMap(filters);
 		}
@@ -137,7 +137,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
 	public @ResponseBody Collection<PublicationSeries> getPublicationSeriesQuery(HttpServletRequest request, HttpServletResponse response,
 				@RequestParam(value=TEXT_SEARCH, required=false) String[] text,
 				@RequestParam(value="publicationsubtypeid", required=false) Integer[] publicationSubtypeId,
-				@RequestParam(value=ACTIVE_SEARCH, required=false) String[] active) {
+				@RequestParam(value=ACTIVE_SEARCH, required=false) Boolean active) {
 		LOG.debug("publicationSeries");
 		Collection<PublicationSeries> rtn = new ArrayList<>();
 		if (validateParametersSetHeaders(request, response)) {
@@ -148,8 +148,8 @@ public class LookupMvcService extends MvcService<PublicationType> {
 			if (null != text && 0 < text.length) {
 				filters.put(PublicationSeriesDao.TEXT_SEARCH, text[0]);
 			}
-			if (null != active && 0 < active.length) {
-				filters.put(PublicationSeriesDao.ACTIVE_SEARCH, active[0].toUpperCase());
+			if (null != active) {
+				filters.put(PublicationSeriesDao.ACTIVE_SEARCH, active);
 			}
 			rtn = PublicationSeries.getDao().getByMap(filters);
 		}
@@ -160,7 +160,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
 	@JsonView(View.Lookup.class)
 	public @ResponseBody Collection<CostCenter> getCostCentersLookup(HttpServletRequest request, HttpServletResponse response,
 				@RequestParam(value=TEXT_SEARCH, required=false) String[] text,
-				@RequestParam(value=ACTIVE_SEARCH, required=false) String[] active) {
+				@RequestParam(value=ACTIVE_SEARCH, required=false) Boolean active) {
 		LOG.debug("CostCenter");
 		Collection<CostCenter> rtn = new ArrayList<>();
 		if (validateParametersSetHeaders(request, response)) {
@@ -168,8 +168,8 @@ public class LookupMvcService extends MvcService<PublicationType> {
 			if (null != text && 0 < text.length) {
 				filters.put(CostCenterDao.TEXT_SEARCH, text[0]);
 			}
-			if (null != active && 0 < active.length) {
-				filters.put(CostCenterDao.ACTIVE_SEARCH, active[0].toUpperCase());
+			if (null != active) {
+				filters.put(CostCenterDao.ACTIVE_SEARCH, active);
 			}
 			rtn = CostCenter.getDao().getByMap(filters);
 		}
@@ -180,7 +180,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
 	@JsonView(View.Lookup.class)
 	public @ResponseBody Collection<OutsideAffiliation> getOutsideAffiliates(HttpServletRequest request, HttpServletResponse response,
 				@RequestParam(value=TEXT_SEARCH, required=false) String[] text,
-				@RequestParam(value=ACTIVE_SEARCH, required=false) String[] active) {
+				@RequestParam(value=ACTIVE_SEARCH, required=false) Boolean active) {
 		LOG.debug("OutsideAffiliate");
 		Collection<OutsideAffiliation> rtn = new ArrayList<>();
 		if (validateParametersSetHeaders(request, response)) {
@@ -188,8 +188,8 @@ public class LookupMvcService extends MvcService<PublicationType> {
 			if (null != text && 0 < text.length) {
 				filters.put(OutsideAffiliationDao.TEXT_SEARCH, text[0]);
 			}
-			if (null != active && 0 < active.length) {
-				filters.put(OutsideAffiliationDao.ACTIVE_SEARCH, active[0].toUpperCase());
+			if (null != active) {
+				filters.put(OutsideAffiliationDao.ACTIVE_SEARCH, active);
 			}
 			rtn = OutsideAffiliation.getDao().getByMap(filters);
 		}

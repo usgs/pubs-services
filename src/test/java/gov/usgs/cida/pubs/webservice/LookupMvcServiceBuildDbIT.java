@@ -134,7 +134,8 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 
 	@Test
 	public void getCostCenters() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/lookup/costcenters?mimetype=json").accept(MediaType.APPLICATION_JSON))
+		String endPoint = "/lookup/costcenters";
+		MvcResult rtn = mockMvc.perform(get(endPoint + "?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
@@ -142,7 +143,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 
 		assertEquals(CostCenterDaoIT.COST_CENTER_CNT, getRtnAsJSONArray(rtn).length());
 
-		rtn = mockMvc.perform(get("/lookup/costcenters?text=xa").accept(MediaType.APPLICATION_JSON))
+		rtn = mockMvc.perform(get(endPoint + "?text=xa").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
@@ -150,11 +151,18 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 
 		assertThat(getRtnAsJSONArray(rtn),
 				sameJSONArrayAs(new JSONArray("[{\"id\":3,\"text\":\"xAffiliation Cost Center 3\"},{\"id\":4,\"text\":\"xAffiliation Cost Center 4\"}]")));
+
+		rtn = performGetRequest(endPoint + "?active=false");
+		assertEquals(1, getRtnAsJSONArray(rtn).length());
+
+		rtn = performGetRequest(endPoint + "?active=true");
+		assertEquals(4, getRtnAsJSONArray(rtn).length());
 	}
 
 	@Test
 	public void getOutsideAffiliates() throws Exception {
-		MvcResult rtn = mockMvc.perform(get("/lookup/outsideaffiliates?mimetype=json").accept(MediaType.APPLICATION_JSON))
+		String endPoint = "/lookup/outsideaffiliates?mimetype=json";
+		MvcResult rtn = mockMvc.perform(get(endPoint).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
@@ -170,6 +178,12 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 
 		assertThat(getRtnAsJSONArray(rtn),
 				sameJSONArrayAs(new JSONArray("[{\"id\":6,\"text\":\"xOutside Affiliation 2\"}]")));
+
+		rtn = performGetRequest(endPoint + "&active=false");
+		assertEquals(1, getRtnAsJSONArray(rtn).length());
+
+		rtn = performGetRequest(endPoint + "&active=true");
+		assertEquals(2, getRtnAsJSONArray(rtn).length());
 	}
 
 	@Test
@@ -206,6 +220,16 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 				sameJSONArrayAs(new JSONArray("[{\"id\":3803,\"text\":\"Zeitschrift fur Geomorphologie\"},"
 						+ "{\"id\":3804,\"text\":\"Zeitschrift fur Geomorphologie, Supplementband\"},"
 						+ "{\"id\":3805,\"text\":\"Zeitschrift fur Tierpsychologie\"}]")));
+
+		String endPoint = "/lookup/publicationseries";
+		rtn = performGetRequest(endPoint);
+		assertEquals(16, getRtnAsJSONArray(rtn).length());
+
+		rtn = performGetRequest(endPoint + "?active=false");
+		assertEquals(7, getRtnAsJSONArray(rtn).length());
+
+		rtn = performGetRequest(endPoint + "?active=true");
+		assertEquals(9, getRtnAsJSONArray(rtn).length());
 	}
 
 	@Test
@@ -221,6 +245,16 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 				sameJSONArrayAs(new JSONArray("[{\"id\":3803,\"text\":\"Zeitschrift fur Geomorphologie\"},"
 						+ "{\"id\":3804,\"text\":\"Zeitschrift fur Geomorphologie, Supplementband\"},"
 						+ "{\"id\":3805,\"text\":\"Zeitschrift fur Tierpsychologie\"}]")));
+
+		String endPoint = "/lookup/publicationtype/5/publicationsubtype/5/publicationseries";
+		rtn = performGetRequest(endPoint);
+		assertEquals(9, getRtnAsJSONArray(rtn).length());
+
+		rtn = performGetRequest(endPoint + "?active=false");
+		assertEquals(4, getRtnAsJSONArray(rtn).length());
+
+		rtn = performGetRequest(endPoint + "?active=true");
+		assertEquals(5, getRtnAsJSONArray(rtn).length());
 	}
 
 	@Test
@@ -245,6 +279,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 
 		assertThat(getRtnAsJSONArray(rtn),
 				sameJSONArrayAs(new JSONArray("[{\"id\":11,\"text\":\"Bibliography\"}]")).allowingAnyArrayOrdering());
+
 	}
 
 	@Test
@@ -284,6 +319,13 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 				sameJSONArrayAs(new JSONArray(
 						"[{\"id\":4,\"text\":\"Rolla PSC\"},{\"id\":8,\"text\":\"Raleigh PSC\"},{\"id\":9,\"text\":\"Reston PSC\"}]"))
 								.allowingAnyArrayOrdering());
+	}
+
+	private MvcResult performGetRequest(String path) throws Exception {
+		MvcResult rtn = mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING)).andReturn();
+		return rtn;
 	}
 
 	private JSONArray contributor3JsonArray() throws JSONException {

@@ -179,10 +179,10 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 		assertThat(getRtnAsJSONArray(rtn),
 				sameJSONArrayAs(new JSONArray("[{\"id\":6,\"text\":\"xOutside Affiliation 2\"}]")));
 
-		rtn = performGetRequest(endPoint + "?active=false");
+		rtn = performGetRequest(endPoint + "&active=false");
 		assertEquals(1, getRtnAsJSONArray(rtn).length());
 
-		rtn = performGetRequest(endPoint + "?active=true");
+		rtn = performGetRequest(endPoint + "&active=true");
 		assertEquals(2, getRtnAsJSONArray(rtn).length());
 	}
 

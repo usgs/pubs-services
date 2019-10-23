@@ -99,7 +99,7 @@
             and is_preferred = #{preferred}
         </if>
         <if test="text != null">
-            and to_tsvector(text) @@ to_tsquery(#{text})
+            and to_tsvector('english', text) @@ to_tsquery('english', #{text})
         </if>
         <if test="given != null and given.length > 0">
             <foreach item="given" collection="given" open="and (" separator="or" close=")">

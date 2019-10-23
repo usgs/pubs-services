@@ -11,9 +11,6 @@ import org.springframework.util.FileCopyUtils;
 @Configuration
 public class BusServiceConfig {
 
-	@Value("classpath:templates/crossref.4.3.3/numberedSeries.xml")
-	private Resource numberedSeriesResource;
-
 	@Value("classpath:templates/crossref.4.3.3/unNumberedSeries.xml")
 	private Resource unNumberedSeriesResource;
 
@@ -25,11 +22,6 @@ public class BusServiceConfig {
 
 	@Value("classpath:templates/crossref.4.3.3/pages.xml")
 	private Resource pagesResource;
-
-	@Bean
-	public String numberedSeriesXml() throws IOException {
-		return new String(FileCopyUtils.copyToByteArray(numberedSeriesResource.getInputStream()));
-	}
 
 	@Bean
 	public String unNumberedSeriesXml() throws IOException {

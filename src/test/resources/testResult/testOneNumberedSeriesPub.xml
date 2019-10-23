@@ -24,6 +24,9 @@
                 <publication_date media_type="online">
                     <year>2013</year>
                 </publication_date>
+                <publisher_item xmlns="http://www.crossref.org/schema/4.4.2">
+                    <identifier id_type="report-number">2013-1259</identifier>
+                </publisher_item>
             </report-paper_series_metadata>
             <content_item component_type="other">
                 <contributors>
@@ -43,7 +46,6 @@
                 <titles>
                     <title>Postwildfire debris-flow hazard assessment of the area burned by the 2013 West Fork Fire Complex, southwestern Colorado</title>
                 </titles>
-                <component_number>2013-1259</component_number>
                 <publication_date media_type="online">
                     <year>2013</year>
                 </publication_date>

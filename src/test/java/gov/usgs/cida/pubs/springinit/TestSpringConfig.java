@@ -33,13 +33,6 @@ public class TestSpringConfig {
 		return new String(FileCopyUtils.copyToByteArray(rssPub.getInputStream()));
 	}
 
-	@Value("classpath:testResult/ofr20131259.xml")
-	private Resource ofr20131259;
-	@Bean
-	public String ofr20131259Xml() throws IOException {
-		return new String(FileCopyUtils.copyToByteArray(ofr20131259.getInputStream()));
-	}
-
 	@Value("classpath:testResult/testUnNumberedSeries.xml")
 	private Resource testUnNumberedSeries;
 	@Bean

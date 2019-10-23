@@ -39,7 +39,7 @@
             and exists (select null
                           from publication_index
                          where pub.publication_id = publication_index.publication_id and
-                               publication_index.q @@ to_tsquery(#{q})
+                               publication_index.q @@ to_tsquery('english', #{q})
                        )
         </if>
 
@@ -85,7 +85,7 @@
                                join contributor
                                  on publication_contributor.contributor_id = contributor.contributor_id 
                          where pub.publication_id = publication_contributor.publication_id and
-                               to_tsvector(text) @@ to_tsquery(#{contributor})
+                               to_tsvector('english', text) @@ to_tsquery('english', #{contributor})
                        )
         </if>
 

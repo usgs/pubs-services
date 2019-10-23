@@ -74,7 +74,7 @@
                                    join contributor
                                      on mp_pub_contributor.contributor_id = contributor.contributor_id
                              where pub.publication_id = mp_pub_contributor.publication_id and
-                                   to_tsvector(text) @@ to_tsquery(#{contributor})
+                                   to_tsvector('english', text) @@ to_tsquery('english', #{contributor})
                    )
             </if>
 

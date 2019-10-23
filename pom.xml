@@ -13,7 +13,7 @@
         <springfox-version>2.9.2</springfox-version>
         <commons-io-version>2.6</commons-io-version>
         <commons-text-version>1.8</commons-text-version>
-        <poi-ooxml-version>4.1.0</poi-ooxml-version>
+        <poi-ooxml-version>4.1.1</poi-ooxml-version>
         <mybatis-spring-boot-starter-version>2.1.1</mybatis-spring-boot-starter-version>
         <mybatis-typehandlers-jsr310-version>1.0.2</mybatis-typehandlers-jsr310-version>
         <oauth2-autoconfigure-version>2.2.0.RELEASE</oauth2-autoconfigure-version>

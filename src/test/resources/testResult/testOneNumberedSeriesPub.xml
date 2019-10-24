@@ -24,7 +24,7 @@
                 <publication_date media_type="online">
                     <year>2013</year>
                 </publication_date>
-                <publisher_item xmlns="http://www.crossref.org/schema/4.4.2">
+                <publisher_item>
                     <identifier id_type="report-number">2013-1259</identifier>
                 </publisher_item>
             </report-paper_series_metadata>

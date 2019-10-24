@@ -52,14 +52,13 @@ import gov.usgs.cida.pubs.domain.CrossRefLog;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.springinit.FreemarkerConfig;
-import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 import gov.usgs.cida.pubs.transform.CrossrefTestPubBuilder;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
 import gov.usgs.cida.pubs.validation.xml.XMLValidationException;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={ConfigurationService.class, FreemarkerConfig.class,
-			PublicationBusService.class, TestSpringConfig.class,
+			PublicationBusService.class,
 			ContributorType.class})
 public class CrossRefBusServiceTest extends BaseTest {
 

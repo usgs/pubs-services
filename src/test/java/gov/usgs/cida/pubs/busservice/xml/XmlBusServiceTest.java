@@ -14,10 +14,9 @@ import org.springframework.core.io.ClassPathResource;
 
 import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK,
-classes={TestSpringConfig.class, ConfigurationService.class})
+classes={ConfigurationService.class})
 public class XmlBusServiceTest extends BaseTest {
 	
 	// path in resource

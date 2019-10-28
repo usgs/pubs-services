@@ -55,7 +55,7 @@
                 </pages>
                 <doi_data>
                     <doi>10.3133/ofr20131259</doi>
-                    <resource>http://pubs.usgs.gov/of/2013/1259/</resource>
+                    <resource>{WarehouseEndpoint}/publication/numbered</resource>
                 </doi_data>
             </content_item>
         </report-paper>

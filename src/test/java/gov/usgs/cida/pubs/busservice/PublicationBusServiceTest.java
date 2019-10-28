@@ -72,38 +72,15 @@ public class PublicationBusServiceTest extends BaseTest {
 	}
 
 	@Test
-	public void getIndexPageTest() {
-		assertEquals("", service.getIndexPage(null));
+	public void getWarehousePageTest() {
+		assertEquals("", service.getWarehousePage(null));
 
 		MpPublication pub = new MpPublication();
-		assertEquals("", service.getIndexPage(pub));
+		assertEquals("", service.getWarehousePage(pub));
 		
 		pub.setIndexId("abcdef123");
 		String newUrl = configurationService.getWarehouseEndpoint()+"/publication/abcdef123";
-		assertEquals(newUrl, service.getIndexPage(pub));
-		
-		Collection<PublicationLink<?>> links = new ArrayList<>();
-		pub.setLinks(links);
-		assertEquals(newUrl, service.getIndexPage(pub));
+		assertEquals(newUrl, service.getWarehousePage(pub));
 
-		PublicationLink<?> link = new MpPublicationLink();
-		links.add(link);
-		assertEquals(newUrl, service.getIndexPage(pub));
-
-		link.setUrl("xyz");
-		assertEquals(newUrl, service.getIndexPage(pub));
-
-		LinkType linkType = new LinkType();
-		linkType.setId(LinkType.THUMBNAIL);
-		link.setLinkType(linkType);
-		assertEquals(newUrl, service.getIndexPage(pub));
-
-		PublicationLink<?> link2 = new MpPublicationLink();
-		LinkType linkType2 = new LinkType();
-		linkType2.setId(LinkType.INDEX_PAGE);
-		link2.setLinkType(linkType2);
-		link2.setUrl("http://pubs.usgs.gov/of/2013/1259/");
-		links.add(link2);
-		assertEquals("http://pubs.usgs.gov/of/2013/1259/", service.getIndexPage(pub));
 	}
 }

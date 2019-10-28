@@ -130,49 +130,85 @@ public class CrossrefTransformer extends Transformer {
 	/**
 	 * 
 	 * @param pub
-	 * @return true if result was written successfully, false otherwise.
 	 * @throws IOException 
 	 */
-	protected boolean writeResult(Publication<?> pub) throws IOException {
-		boolean success = false;
+	protected void writeResult(Publication<?> pub) throws IOException {
+		boolean retry = true;
+		String template = "crossref/body.ftlx";
+		List<PublicationContributor<?>> contributors = getContributors(pub);
+		String xmlComment = getMinimalRecordComment(pub, contributors);
+
+		if(!xmlComment.isEmpty()) {
+			template = "crossref/body_minimal.ftlx";
+			retry = false;
+		}
+
+		Map<String, Object> model = makeModel(pub, contributors);
 		try {
 			LOG.trace("Writing crossref report entry for publication with indexId = '" + pub.getIndexId() + "'");
-
-			List<PublicationContributor<?>> contributors = this.getContributors(pub);
-			if (contributors.isEmpty()) {
-				String message = getExcludedErrorMessage(pub);
-				LOG.error(message + ". Publication had no contributors.");
-				writeComment(message);
-			} else {
-				Map<String, Object> model = new HashMap<>();
-				model.put("pub", pub);
-				boolean isNumberedSeries = PubsUtils.isUsgsNumberedSeries(pub.getPublicationSubtype());
-				model.put("isNumberedSeries", isNumberedSeries);
-
-				model.put("warehousePage", pubBusService.getWarehousePage(pub));
-
-				model.put("pubContributors", contributors);
-
-				model.put("authorKey", ContributorType.AUTHORS);
-				model.put("editorKey", ContributorType.EDITORS);
-				model.put("compilerKey", ContributorType.COMPILERS);
-				writeModelToTemplate(model, "crossref/body.ftlx");
-				success = true;
-			}
+			writeModelToTemplate(model, template);
+			retry = false;
 		} catch (TemplateException | IOException e) {
-			/**
-			 * Since publications are of varying quality, we omit 
-			 * erroneous publications and continue on to the next
-			 * publication.
-			 */
-			String message = getExcludedErrorMessage(pub);
-			LOG.error("Error transforming object into Crossref XML. "
-				+ message, e);
-
-			//add error message as a comment to the xml document
-			writeComment(message);
+			String logMessage = String.format("Error transforming publication (%s) into Crossref XML.",
+								getPubIdMsg(pub));
+			if(retry) {
+				logMessage += " Retrying, creating minimal Crossref XML";
+				template = "crossref/body_minimal.ftlx";
+			} else {
+				xmlComment = getExcludedErrorMessage(pub);
+			}
+			LOG.error(logMessage, e);
 		}
-		return success;
+
+		if(retry) {
+			String logMessage = "";
+			try {
+				writeModelToTemplate(model, template);
+				xmlComment = "Minimal doi record shown due to errors transforming full publication.";
+				logMessage = String.format("Created minimal Crossref XML (%s)", getPubIdMsg(pub));
+				LOG.info(logMessage);
+			} catch (TemplateException | IOException e) {
+				logMessage = String.format("Error transforming publication (%s) into minimal Crossref XML.",
+									getPubIdMsg(pub));
+				xmlComment = getExcludedErrorMessage(pub);
+				LOG.error(logMessage, e);
+			}
+		}
+
+		//add error message as a comment to the xml document
+		if(!xmlComment.isEmpty()) {
+			writeComment(xmlComment);
+		}
+	}
+
+	// return the reason the minimal record created or empty string if the minimal record does not need to be created.
+	protected String getMinimalRecordComment(Publication<?> pub, List<PublicationContributor<?>> contributors) {
+		String comment="";
+		boolean isNumberedSeries = PubsUtils.isUsgsNumberedSeries(pub.getPublicationSubtype());
+		if(contributors.isEmpty()){
+			comment = "Minimal doi record shown due to publication having no Authors or Editors listed.";
+		} else if(pub.getSeriesTitle() == null || pub.getSeriesTitle().getText() == null) {
+			comment = "Minimal doi record shown due to publication missing series title.";
+		} else if(isNumberedSeries && pub.getSeriesTitle().getOnlineIssn() == null) {
+			comment = "Minimal doi record shown due to publication missing series online issn number.";
+		}
+		return comment;
+	}
+
+	protected Map<String, Object> makeModel(Publication<?> pub, List<PublicationContributor<?>> contributors) {
+		Map<String, Object> model = new HashMap<>();
+		model.put("pub", pub);
+		boolean isNumberedSeries = PubsUtils.isUsgsNumberedSeries(pub.getPublicationSubtype());
+		model.put("isNumberedSeries", isNumberedSeries);
+
+		model.put("warehousePage", pubBusService.getWarehousePage(pub));
+
+		model.put("pubContributors", contributors);
+
+		model.put("authorKey", ContributorType.AUTHORS);
+		model.put("editorKey", ContributorType.EDITORS);
+		model.put("compilerKey", ContributorType.COMPILERS);
+		return model;
 	}
 
 	protected String wrapInComment(String message) {
@@ -188,7 +224,11 @@ public class CrossrefTransformer extends Transformer {
 		//add error message as a comment to the xml document
 		bufferedWriter.append(wrapInComment(message));
 	}
-	
+
+	protected String getPubIdMsg(Publication<?> pub) {
+		return String.format("indexId: %s  doi: %s", pub.getIndexId(), pub.getDoi());
+	}
+
 	/**
 	 * 
 	 * @param pub
@@ -197,8 +237,7 @@ public class CrossrefTransformer extends Transformer {
 	protected String getExcludedErrorMessage(Publication<?> pub) {
 		String message = "Excluded Problematic Publication";
 		if (null != pub) {
-			message += " with Index Id: " 
-				+ pub.getIndexId();
+			message += " with "  + getPubIdMsg(pub);
 		}
 		return message;
 	}

@@ -1,0 +1,14 @@
+<report-paper>
+    <report-paper_metadata language="en">
+        <titles>
+            <title>${pub.title}</title>
+        </titles>
+        <publication_date media_type="online">
+            <year>${pub.publicationYear}</year>
+        </publication_date>
+        <doi_data>
+            <doi>${pub.doi}</doi>
+            <resource>${warehousePage}</resource>
+        </doi_data> 
+    </report-paper_metadata>
+</report-paper>

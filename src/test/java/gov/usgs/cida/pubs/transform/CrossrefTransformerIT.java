@@ -38,6 +38,7 @@ import gov.usgs.cida.pubs.dao.ContributorTypeDaoIT;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
+import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
 import gov.usgs.cida.pubs.springinit.FreemarkerConfig;
 import gov.usgs.cida.pubs.springinit.TestSpringConfig;
@@ -59,8 +60,16 @@ public class CrossrefTransformerIT extends BaseIT {
 	private String testOneUnNumberedSeriesXml;
 
 	@Autowired
+	@Qualifier("testOneUnNumberedSeriesPubXmlMin")
+	private String testOneUnNumberedSeriesXmlMin;
+
+	@Autowired
 	@Qualifier("testOneNumberedSeriesPubXml")
 	private String testOneNumberedSeriesXml;
+
+	@Autowired
+	@Qualifier("testOneNumberedSeriesPubXmlMin")
+	private String testOneNumberedSeriesXmlMin;
 
 	private CrossrefTransformer instance;
 	private ByteArrayOutputStream target;
@@ -172,44 +181,59 @@ public class CrossrefTransformerIT extends BaseIT {
 	public void testPubWithoutContributors() throws IOException, UnsupportedEncodingException {
 		Publication<?> pub = CrossrefTestPubBuilder.buildUnNumberedSeriesPub(new Publication<>());
 		pub.setContributors(Collections.emptyList());
-		boolean success = instance.writeResult(pub);
-		assertFalse("A publication should not have an entry written if it has no contributors", success);
-
-		//we expect the rest of the document to get written, even if
-		//one publication can't be successfully written
-
+		instance.writeResult(pub);
 		instance.end();
+
 		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
 	
 		assertNotNull(output);
-		assertTrue(0 < output.length());
 		assertWellFormed(output);
 	
-		assertTrue("There should be a minimal comment about the missing publication in the output.",
-			output.contains(instance.wrapInComment(instance.getExcludedErrorMessage(pub)))
-		);
+		String expected = harmonizeXml(updateWarehouseEndpoint(testOneUnNumberedSeriesXmlMin));
+		expected = expected.replace("{reasonForMinimalCrossRef}",
+									"Minimal doi record shown due to publication having no Authors or Editors listed.");
+		String actual = harmonizeXml(output);
+		assertEquals(expected, actual);
 	}
 
 	@Test
 	public void testPubWithoutSeriesTitle() throws IOException, UnsupportedEncodingException {
 		Publication<?> pub = CrossrefTestPubBuilder.buildUnNumberedSeriesPub(new Publication<>());
 		pub.setSeriesTitle(null);
-		boolean success = instance.writeResult(pub);
-		assertFalse("A publication should not have an entry written if it has no associated series", success);
 
-		//we expect the rest of the document to get written, even if
-		//one publication can't be successfully written
-
+		instance.writeResult(pub);
 		instance.end();
 		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
 
 		assertNotNull(output);
 		assertTrue(0 < output.length());
 		assertWellFormed(output);
-		
-		assertTrue("There should be a minimal comment about the missing publication in the output.",
-			output.contains(instance.wrapInComment(instance.getExcludedErrorMessage(pub)))
-		);
+
+		String expected = harmonizeXml(updateWarehouseEndpoint(testOneUnNumberedSeriesXmlMin));
+		expected = expected.replace("{reasonForMinimalCrossRef}",
+									"Minimal doi record shown due to publication missing series title.");
+		String actual = harmonizeXml(output);
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testPubWithoutIssn() throws IOException, UnsupportedEncodingException {
+		Publication<?> pub = CrossrefTestPubBuilder.buildNumberedSeriesPub(new Publication<>());
+		pub.getSeriesTitle().setOnlineIssn(null);
+
+		instance.writeResult(pub);
+		instance.end();
+		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
+
+		assertNotNull(output);
+		assertTrue(0 < output.length());
+		assertWellFormed(output);
+
+		String expected = harmonizeXml(updateWarehouseEndpoint(testOneNumberedSeriesXmlMin));
+		expected = expected.replace("{reasonForMinimalCrossRef}",
+									"Minimal doi record shown due to publication missing series online issn number.");
+		String actual = harmonizeXml(output);
+		assertEquals(expected, actual);
 	}
 
 	/**
@@ -218,8 +242,7 @@ public class CrossrefTransformerIT extends BaseIT {
 	@Test
 	public void testOneUnNumberedSeriesPub() throws IOException {
 		Publication<?> pub = CrossrefTestPubBuilder.buildUnNumberedSeriesPub(new Publication<>());
-		boolean success = instance.writeResult(pub);
-		assertTrue("should be able to write a valid publication", success);
+		instance.writeResult(pub);
 		instance.end();
 		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
 		assertNotNull(output);
@@ -236,8 +259,7 @@ public class CrossrefTransformerIT extends BaseIT {
 	@Test
 	public void testOneNumberedSeriesPub() throws IOException {
 		Publication<?> pub = CrossrefTestPubBuilder.buildNumberedSeriesPub(new Publication<>());
-		boolean success = instance.writeResult(pub);
-		assertTrue("should be able to write a valid publication", success);
+		instance.writeResult(pub);
 		instance.end();
 		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
 		assertNotNull(output);
@@ -268,9 +290,7 @@ public class CrossrefTransformerIT extends BaseIT {
 		contributors.add(strangePublicationContributor);
 		pub.setContributors(contributors);
 
-		boolean success = instance.writeResult(pub);
-		assertTrue("should be able to write a valid publication, even if one of its contributors is of an unknown type", success);
-
+		instance.writeResult(pub);
 		instance.end();
 		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
 		assertNotNull(output);

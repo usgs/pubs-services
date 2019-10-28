@@ -225,7 +225,7 @@ public class CrossrefTransformerIT extends BaseIT {
 		assertNotNull(output);
 		assertTrue(0 < output.length());
 		assertWellFormed(output);
-		String expected = harmonizeXml(testOneUnNumberedSeriesXml);
+		String expected = harmonizeXml(updateWarehouseEndpoint(testOneUnNumberedSeriesXml));
 		String actual = harmonizeXml(output);
 		assertEquals(expected, actual);
 	}
@@ -243,7 +243,7 @@ public class CrossrefTransformerIT extends BaseIT {
 		assertNotNull(output);
 		assertTrue(0 < output.length());
 		assertWellFormed(output);
-		String expected = harmonizeXml(testOneNumberedSeriesXml);
+		String expected = harmonizeXml(updateWarehouseEndpoint(testOneNumberedSeriesXml));
 		String actual = harmonizeXml(output);
 		assertEquals(expected, actual);
 	}
@@ -276,9 +276,15 @@ public class CrossrefTransformerIT extends BaseIT {
 		assertNotNull(output);
 		assertTrue(0 < output.length());
 		assertWellFormed(output);
-		String expected = harmonizeXml(testOneNumberedSeriesXml);
+		String expected = harmonizeXml(updateWarehouseEndpoint(testOneNumberedSeriesXml));
 		String actual = harmonizeXml(output);
 		assertEquals(expected, actual);
+	}
+
+	private String updateWarehouseEndpoint(String xml) {
+		String updated = xml;
+		updated = updated.replace("{WarehouseEndpoint}", configurationService.getWarehouseEndpoint());
+		return updated;
 	}
 
 }

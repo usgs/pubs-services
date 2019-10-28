@@ -80,7 +80,7 @@
 				</#if>
 				<doi_data>
 					<doi>${pub.doi}</doi>
-					<resource>${indexPage}</resource>
+					<resource>${warehousePage}</resource>
 				</doi_data>
 			</content_item>
 		</report-paper>

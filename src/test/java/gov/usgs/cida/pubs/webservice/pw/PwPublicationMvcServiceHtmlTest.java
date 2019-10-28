@@ -36,13 +36,12 @@ import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationLink;
 import gov.usgs.cida.pubs.springinit.FreemarkerConfig;
-import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 import gov.usgs.cida.pubs.webservice.MvcService;
 
 @EnableWebMvc
 @AutoConfigureMockMvc(secure=false)
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK,
-	classes={ConfigurationService.class, TestSpringConfig.class, PwPublicationMvcService.class,
+	classes={ConfigurationService.class, PwPublicationMvcService.class,
 			PwPublicationBusService.class, XmlBusService.class, LocalValidatorFactoryBean.class,
 			FreemarkerConfig.class, PublicationBusService.class, PwPublication.class})
 public class PwPublicationMvcServiceHtmlTest extends BaseTest {

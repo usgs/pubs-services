@@ -149,8 +149,7 @@ public class CrossrefTransformer extends Transformer {
 				boolean isNumberedSeries = PubsUtils.isUsgsNumberedSeries(pub.getPublicationSubtype());
 				model.put("isNumberedSeries", isNumberedSeries);
 
-				String indexPage = pubBusService.getIndexPage(pub);
-				model.put("indexPage", indexPage);
+				model.put("warehousePage", pubBusService.getWarehousePage(pub));
 
 				model.put("pubContributors", contributors);
 

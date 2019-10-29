@@ -46,10 +46,9 @@ import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.springinit.FreemarkerConfig;
-import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK,
-	classes={TestSpringConfig.class, ConfigurationService.class, FreemarkerConfig.class, ContributorType.class})
+	classes={ConfigurationService.class, FreemarkerConfig.class, ContributorType.class})
 public class PwPublicationMvcServiceTest extends BaseTest {
 
 	@Autowired

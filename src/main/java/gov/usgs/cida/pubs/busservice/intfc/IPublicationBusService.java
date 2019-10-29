@@ -7,10 +7,10 @@ import java.util.Map;
 
 public interface IPublicationBusService {
 
-	String getIndexPage(Publication<?> pub);
+	String getWarehousePage(Publication<?> pub);
 
 	Integer getObjectCount(Map<String, Object> filters);
 
 	List<Publication<?>> getObjects(Map<String, Object> filters);
-	
+
 }

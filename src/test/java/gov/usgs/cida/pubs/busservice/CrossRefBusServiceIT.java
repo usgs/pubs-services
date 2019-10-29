@@ -31,13 +31,12 @@ import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
 import gov.usgs.cida.pubs.springinit.FreemarkerConfig;
-import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 import gov.usgs.cida.pubs.transform.CrossrefTestPubBuilder;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
 import gov.usgs.cida.pubs.validation.xml.XMLValidationException;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
-	classes={DbTestConfig.class, LocalValidatorFactoryBean.class, TestSpringConfig.class, CrossRefLogDao.class,
+	classes={DbTestConfig.class, LocalValidatorFactoryBean.class, CrossRefLogDao.class,
 			PublicationBusService.class, ConfigurationService.class,
 			FreemarkerConfig.class, ContributorType.class, ContributorTypeDao.class})
 public class CrossRefBusServiceIT extends BaseIT {

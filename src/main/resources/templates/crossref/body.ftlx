@@ -13,6 +13,9 @@
 				<publication_date media_type="online">
 					<year>${pub.publicationYear}</year>
 				</publication_date>
+				<publisher_item>
+					<identifier id_type="report-number">${pub.seriesNumber}</identifier>
+				</publisher_item>
 			</report-paper_series_metadata>
 			<#else>
 				<report-paper_metadata language="en">
@@ -66,9 +69,6 @@
 				<titles>
 					<title>${pub.title}</title>
 				</titles>
-				<#if isNumberedSeries>
-					<component_number>${pub.seriesNumber}</component_number>
-				</#if>
 				<publication_date media_type="online">
 					<year>${pub.publicationYear}</year>
 				</publication_date>
@@ -80,7 +80,7 @@
 				</#if>
 				<doi_data>
 					<doi>${pub.doi}</doi>
-					<resource>${indexPage}</resource>
+					<resource>${warehousePage}</resource>
 				</doi_data>
 			</content_item>
 		</report-paper>

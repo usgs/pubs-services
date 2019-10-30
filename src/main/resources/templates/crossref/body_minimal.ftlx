@@ -11,4 +11,7 @@
             <resource>${warehousePage}</resource>
         </doi_data> 
     </report-paper_metadata>
+    <#if reasonForMinRec??>
+        <!-- ${reasonForMinRec} -->
+    </#if>
 </report-paper>

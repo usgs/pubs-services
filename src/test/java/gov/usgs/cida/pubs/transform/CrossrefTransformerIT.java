@@ -1,7 +1,6 @@
 package gov.usgs.cida.pubs.transform;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -34,11 +33,9 @@ import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.PublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.dao.ContributorTypeDao;
-import gov.usgs.cida.pubs.dao.ContributorTypeDaoIT;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
-import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
 import gov.usgs.cida.pubs.springinit.FreemarkerConfig;
 import gov.usgs.cida.pubs.springinit.TestSpringConfig;
@@ -95,8 +92,7 @@ public class CrossrefTransformerIT extends BaseIT {
 	@Before
 	public void setUp() {
 		this.target = new ByteArrayOutputStream();
-		instance = new CrossrefTransformer(this.target, templateConfig, configurationService, publicationBusService,
-				ContributorTypeDaoIT.AUTHOR_KEY, ContributorTypeDaoIT.EDITOR_KEY){
+		instance = new CrossrefTransformer(this.target, templateConfig, configurationService, publicationBusService) {
 			/**
 			 * Override randomly-generated value so we can compare
 			 * consistent values over time
@@ -142,8 +138,7 @@ public class CrossrefTransformerIT extends BaseIT {
 	 */
 	@Test
 	public void testTimestampIsInitialized() throws IOException {
-		CrossrefTransformer myInstance = new CrossrefTransformer(this.target, templateConfig, configurationService, publicationBusService,
-				ContributorTypeDaoIT.AUTHOR_KEY, ContributorTypeDaoIT.EDITOR_KEY);
+		CrossrefTransformer myInstance = new CrossrefTransformer(this.target, templateConfig, configurationService, publicationBusService);
 		assertNotNull(myInstance.getTimestamp());
 		assertTrue("timestamp should be of nonzero length", 0 < myInstance.getTimestamp().length());
 		myInstance.close();
@@ -158,8 +153,7 @@ public class CrossrefTransformerIT extends BaseIT {
 	 */
 	@Test
 	public void testBatchIdIsInitialized() throws IOException {
-		CrossrefTransformer myInstance = new CrossrefTransformer(this.target, templateConfig, configurationService, publicationBusService,
-				ContributorTypeDaoIT.AUTHOR_KEY, ContributorTypeDaoIT.EDITOR_KEY);
+		CrossrefTransformer myInstance = new CrossrefTransformer(this.target, templateConfig, configurationService, publicationBusService);
 		assertNotNull(myInstance.getBatchId());
 		assertTrue("batch id should be of nonzero length", 0 < myInstance.getBatchId().length());
 		myInstance.close();
@@ -217,6 +211,26 @@ public class CrossrefTransformerIT extends BaseIT {
 	}
 
 	@Test
+	public void testPubWithoutSeriesNumber() throws IOException, UnsupportedEncodingException {
+		Publication<?> pub = CrossrefTestPubBuilder.buildNumberedSeriesPub(new Publication<>());
+		pub.setSeriesNumber(null);
+
+		instance.writeResult(pub);
+		instance.end();
+		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
+
+		assertNotNull(output);
+		assertTrue(0 < output.length());
+		assertWellFormed(output);
+
+		String expected = harmonizeXml(updateWarehouseEndpoint(testOneNumberedSeriesXmlMin));
+		expected = expected.replace("{reasonForMinimalCrossRef}",
+									"Minimal doi record shown due to publication missing series number.");
+		String actual = harmonizeXml(output);
+		assertEquals(expected, actual);
+	}
+
+	@Test
 	public void testPubWithoutIssn() throws IOException, UnsupportedEncodingException {
 		Publication<?> pub = CrossrefTestPubBuilder.buildNumberedSeriesPub(new Publication<>());
 		pub.getSeriesTitle().setOnlineIssn(null);
@@ -232,6 +246,26 @@ public class CrossrefTransformerIT extends BaseIT {
 		String expected = harmonizeXml(updateWarehouseEndpoint(testOneNumberedSeriesXmlMin));
 		expected = expected.replace("{reasonForMinimalCrossRef}",
 									"Minimal doi record shown due to publication missing series online issn number.");
+		String actual = harmonizeXml(output);
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testPubWithoutPublicationYear() throws IOException, UnsupportedEncodingException {
+		Publication<?> pub = CrossrefTestPubBuilder.buildUnNumberedSeriesPub(new Publication<>());
+		pub.setPublicationYear(null);
+
+		instance.writeResult(pub);
+		instance.end();
+		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
+
+		assertNotNull(output);
+		assertTrue(0 < output.length());
+		assertWellFormed(output);
+
+		String expected = harmonizeXml(updateWarehouseEndpoint(testOneUnNumberedSeriesXml));
+		String comment = instance.wrapInComment("Excluded Problematic Publication (indexId: unnumbered doi: 10.3133/ofr20131259)");
+		expected = expected.replaceAll("<body>.*</body>", "<body>" + comment + "</body>").replace("\n","");
 		String actual = harmonizeXml(output);
 		assertEquals(expected, actual);
 	}

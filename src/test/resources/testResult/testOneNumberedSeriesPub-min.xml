@@ -23,7 +23,7 @@
                     <resource>{WarehouseEndpoint}/publication/numbered</resource>
                 </doi_data>
             </report-paper_metadata>
+                <!-- {reasonForMinimalCrossRef} -->
         </report-paper>
-<!-- {reasonForMinimalCrossRef} -->
     </body>
 </doi_batch>

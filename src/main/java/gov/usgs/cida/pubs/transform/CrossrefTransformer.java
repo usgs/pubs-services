@@ -188,7 +188,6 @@ public class CrossrefTransformer extends Transformer {
 
 		model.put("authorKey", ContributorType.AUTHORS);
 		model.put("editorKey", ContributorType.EDITORS);
-		model.put("compilerKey", ContributorType.COMPILERS);
 		return model;
 	}
 

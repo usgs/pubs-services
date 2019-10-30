@@ -39,7 +39,7 @@
 						
 						<#if pubContributor.contributorType.id == authorKey>
 							<#assign contributorTypeText = "author">
-						<#elseif pubContributor.contributorType.id == editorKey || pubContributor.contributorType.id == compilersKey>
+						<#elseif pubContributor.contributorType.id == editorKey>
 							<#assign contributorTypeText = "editor">
 						</#if>
 						

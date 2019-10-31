@@ -145,7 +145,6 @@ public class CrossrefTransformer extends Transformer {
 		if(createMinimal) {
 			String logMessage = "";
 			try {
-				model.put("reasonForMinRec", getMinimalRecordComment(pub));
 				writeModelToTemplate(model, "crossref/body_minimal.ftlx");
 				logMessage = String.format("Created minimal Crossref XML (indexId: %s doi: %s)", pub.getIndexId(), pub.getDoi());
 				LOG.info(logMessage);
@@ -156,24 +155,6 @@ public class CrossrefTransformer extends Transformer {
 				writeComment(String.format("Excluded Problematic Publication (indexId: %s doi: %s)", pub.getIndexId(), pub.getDoi()));
 			}
 		}
-	}
-
-	// return the reason the minimal record was created
-	protected String getMinimalRecordComment(Publication<?> pub) {
-		String comment="";
-		boolean isNumberedSeries = PubsUtils.isUsgsNumberedSeries(pub.getPublicationSubtype());
-		if(getCrossrefContributors(pub) == null){
-			comment = "Minimal doi record shown due to publication having no Authors or Editors listed.";
-		} else if(pub.getSeriesTitle() == null || pub.getSeriesTitle().getText() == null) {
-			comment = "Minimal doi record shown due to publication missing series title.";
-		} else if(isNumberedSeries && pub.getSeriesTitle().getOnlineIssn() == null) {
-			comment = "Minimal doi record shown due to publication missing series online issn number.";
-		} else if(isNumberedSeries && pub.getSeriesNumber() == null) {
-			comment = "Minimal doi record shown due to publication missing series number.";
-		} else {
-			comment = "Minimal doi record shown due to error creating full crossref record.";
-		}
-		return comment;
 	}
 
 	protected Map<String, Object> makeModel(Publication<?> pub) {

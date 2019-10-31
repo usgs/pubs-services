@@ -184,8 +184,6 @@ public class CrossrefTransformerIT extends BaseIT {
 		assertWellFormed(output);
 	
 		String expected = harmonizeXml(updateWarehouseEndpoint(testOneUnNumberedSeriesXmlMin));
-		expected = expected.replace("{reasonForMinimalCrossRef}",
-									"Minimal doi record shown due to publication having no Authors or Editors listed.");
 		String actual = harmonizeXml(output);
 		assertEquals(expected, actual);
 	}
@@ -204,8 +202,6 @@ public class CrossrefTransformerIT extends BaseIT {
 		assertWellFormed(output);
 
 		String expected = harmonizeXml(updateWarehouseEndpoint(testOneUnNumberedSeriesXmlMin));
-		expected = expected.replace("{reasonForMinimalCrossRef}",
-									"Minimal doi record shown due to publication missing series title.");
 		String actual = harmonizeXml(output);
 		assertEquals(expected, actual);
 	}
@@ -244,8 +240,6 @@ public class CrossrefTransformerIT extends BaseIT {
 		assertWellFormed(output);
 
 		String expected = harmonizeXml(updateWarehouseEndpoint(testOneNumberedSeriesXmlMin));
-		expected = expected.replace("{reasonForMinimalCrossRef}",
-									"Minimal doi record shown due to publication missing series online issn number.");
 		String actual = harmonizeXml(output);
 		assertEquals(expected, actual);
 	}

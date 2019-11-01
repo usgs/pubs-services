@@ -34,7 +34,6 @@ import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.dao.intfc.ICrossRefLogDao;
-import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CrossRefLog;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
@@ -81,9 +80,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 					baos,
 					templateConfiguration,
 					configurationService,
-					pubBusService,
-					ContributorType.AUTHOR_KEY,
-					ContributorType.EDITOR_KEY
+					pubBusService
 				);
 			){
 

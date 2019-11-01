@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doi_batch xmlns="http://www.crossref.org/schema/4.4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.crossref.org/schema/4.4.0 http://www.crossref.org/schema/deposit/crossref4.4.0.xsd" version="4.4.0">
+    <head>
+        <doi_batch_id>82adfd8d-1737-4e62-86bc-5e7be1c07b7d</doi_batch_id>
+        <timestamp>1493070447545</timestamp>
+        <depositor>
+            <depositor_name>USGS</depositor_name>
+            <email_address>nobody@usgs.gov</email_address>
+        </depositor>
+        <registrant>U.S. Geological Survey</registrant>
+    </head>
+    <body>
+        <report-paper>
+            <report-paper_metadata language="en">
+                <titles>
+                    <title>Postwildfire debris-flow hazard assessment of the area burned by the 2013 West Fork Fire Complex, southwestern Colorado</title>
+                </titles>
+                <publication_date media_type="online">
+                    <year>2013</year>
+                </publication_date>
+                <doi_data>
+                    <doi>10.3133/ofr20131259</doi>
+                    <resource>{WarehouseEndpoint}/publication/unnumbered</resource>
+                </doi_data>
+            </report-paper_metadata>
+        </report-paper>
+    </body>
+</doi_batch>

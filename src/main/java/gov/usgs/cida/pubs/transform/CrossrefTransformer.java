@@ -45,8 +45,6 @@ public class CrossrefTransformer extends Transformer {
 	protected BufferedWriter bufferedWriter;
 	protected ConfigurationService configurationService;
 	protected IPublicationBusService pubBusService;
-	protected final String authorKey;
-	protected final String editorKey;
 	protected final String batchId;
 	protected final String timestamp;
 
@@ -62,9 +60,7 @@ public class CrossrefTransformer extends Transformer {
 		OutputStream target,
 		Configuration templateConfiguration,
 		ConfigurationService configurationService,
-		IPublicationBusService pubBusService,
-		String authorKey,
-		String editorKey
+		IPublicationBusService pubBusService
 	) {
 		super(target, null);
 		this.templateConfiguration = templateConfiguration;
@@ -77,8 +73,6 @@ public class CrossrefTransformer extends Transformer {
 		}
 		this.bufferedWriter = new BufferedWriter(streamWriter);
 		this.pubBusService = pubBusService;
-		this.authorKey = authorKey;
-		this.editorKey = editorKey;
 		this.batchId = UUID.randomUUID().toString();
 		this.timestamp = String.valueOf(new Date().getTime());
 		init();
@@ -130,49 +124,52 @@ public class CrossrefTransformer extends Transformer {
 	/**
 	 * 
 	 * @param pub
-	 * @return true if result was written successfully, false otherwise.
 	 * @throws IOException 
 	 */
-	protected boolean writeResult(Publication<?> pub) throws IOException {
-		boolean success = false;
+	protected void writeResult(Publication<?> pub) throws IOException {
+		Map<String, Object> model = makeModel(pub);
+		boolean createMinimal = false;
+
+		// first try to write the full Crossref document
 		try {
 			LOG.trace("Writing crossref report entry for publication with indexId = '" + pub.getIndexId() + "'");
-
-			List<PublicationContributor<?>> contributors = this.getContributors(pub);
-			if (contributors.isEmpty()) {
-				String message = getExcludedErrorMessage(pub);
-				LOG.error(message + ". Publication had no contributors.");
-				writeComment(message);
-			} else {
-				Map<String, Object> model = new HashMap<>();
-				model.put("pub", pub);
-				boolean isNumberedSeries = PubsUtils.isUsgsNumberedSeries(pub.getPublicationSubtype());
-				model.put("isNumberedSeries", isNumberedSeries);
-
-				model.put("warehousePage", pubBusService.getWarehousePage(pub));
-
-				model.put("pubContributors", contributors);
-
-				model.put("authorKey", ContributorType.AUTHORS);
-				model.put("editorKey", ContributorType.EDITORS);
-				model.put("compilerKey", ContributorType.COMPILERS);
-				writeModelToTemplate(model, "crossref/body.ftlx");
-				success = true;
-			}
+			writeModelToTemplate(model, "crossref/body.ftlx");
 		} catch (TemplateException | IOException e) {
-			/**
-			 * Since publications are of varying quality, we omit 
-			 * erroneous publications and continue on to the next
-			 * publication.
-			 */
-			String message = getExcludedErrorMessage(pub);
-			LOG.error("Error transforming object into Crossref XML. "
-				+ message, e);
-
-			//add error message as a comment to the xml document
-			writeComment(message);
+			String logMessage = String.format("Error transforming publication (indexId: %s doi: %s) into Crossref XML, retrying with minimal crossref",
+								pub.getIndexId(), pub.getDoi());
+			LOG.error(logMessage, e);
+			createMinimal = true;
 		}
-		return success;
+
+		// if full document failed, try creating a minimal Crossref
+		if(createMinimal) {
+			String logMessage = "";
+			try {
+				writeModelToTemplate(model, "crossref/body_minimal.ftlx");
+				logMessage = String.format("Created minimal Crossref XML (indexId: %s doi: %s)", pub.getIndexId(), pub.getDoi());
+				LOG.info(logMessage);
+			} catch (TemplateException | IOException e) {
+				logMessage = String.format("Error transforming publication (indexId: %s doi: %s) into minimal Crossref XML.",
+											pub.getIndexId(), pub.getDoi());
+				LOG.error(logMessage, e);
+				writeComment(String.format("Excluded Problematic Publication (indexId: %s doi: %s)", pub.getIndexId(), pub.getDoi()));
+			}
+		}
+	}
+
+	protected Map<String, Object> makeModel(Publication<?> pub) {
+		Map<String, Object> model = new HashMap<>();
+		model.put("pub", pub);
+		boolean isNumberedSeries = PubsUtils.isUsgsNumberedSeries(pub.getPublicationSubtype());
+		model.put("isNumberedSeries", isNumberedSeries);
+
+		model.put("warehousePage", pubBusService.getWarehousePage(pub));
+
+		model.put("pubContributors", getCrossrefContributors(pub));
+
+		model.put("authorKey", ContributorType.AUTHORS);
+		model.put("editorKey", ContributorType.EDITORS);
+		return model;
 	}
 
 	protected String wrapInComment(String message) {
@@ -187,20 +184,6 @@ public class CrossrefTransformer extends Transformer {
 	protected void writeComment(String message) throws IOException {
 		//add error message as a comment to the xml document
 		bufferedWriter.append(wrapInComment(message));
-	}
-	
-	/**
-	 * 
-	 * @param pub
-	 * @return a message that helps identify a problematic pub.
-	 */
-	protected String getExcludedErrorMessage(Publication<?> pub) {
-		String message = "Excluded Problematic Publication";
-		if (null != pub) {
-			message += " with Index Id: " 
-				+ pub.getIndexId();
-		}
-		return message;
 	}
 
 	/** output the closing tags and close stuff as appropriate. */
@@ -254,22 +237,23 @@ public class CrossrefTransformer extends Transformer {
 		}
 	}
 
-	protected List<PublicationContributor<?>> getContributors(Publication<?> pub) {
+	// null is returned so that an empty contributors section is not added to the Crossref xml
+	protected List<PublicationContributor<?>> getCrossrefContributors(Publication<?> pub) {
 		List<PublicationContributor<?>> rtn = new ArrayList<>();
-		//This process requires that the contributors are in rank order.
-		//And that the contributor is valid.
+		// This process requires that the contributors are in rank order.
+		// And that the contributor is valid.
 		if (null != pub && null != pub.getContributors() && !pub.getContributors().isEmpty()) {
 			Map<String, List<PublicationContributor<?>>> contributors = pub.getContributorsToMap();
-			List<PublicationContributor<?>> authors = contributors.get(authorKey);
+			List<PublicationContributor<?>> authors = contributors.get(ContributorType.AUTHOR_KEY);
 			if (null != authors && !authors.isEmpty()) {
 				rtn.addAll(authors);
 			}
-			List<PublicationContributor<?>> editors = contributors.get(editorKey);
+			List<PublicationContributor<?>> editors = contributors.get(ContributorType.EDITOR_KEY);
 			if (null != editors && !editors.isEmpty()) {
 				rtn.addAll(editors);
 			}
 		}
-		return rtn;
+		return rtn.isEmpty() ? null : rtn;
 	}
 
 	protected void closeQuietly(final Closeable closeable) {

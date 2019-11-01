@@ -83,4 +83,14 @@ public class CrossRefBusServiceIT extends BaseIT {
 		}
 		verify(pubsEMailer, Mockito.never()).sendMail(any(), any());
 	}
+
+	@Test
+	public void submitMinimalCrossRefTest() throws IOException, XMLValidationException, UnsupportedEncodingException, HttpException, URISyntaxException {
+		MpPublication pub = (MpPublication) CrossrefTestPubBuilder.buildNumberedSeriesPub(new MpPublication());
+		pub.setContributors(null);
+		try (CloseableHttpClient httpClient = HttpClients.createDefault()){
+			busService.submitCrossRef(pub, httpClient);
+		}
+		verify(pubsEMailer, Mockito.never()).sendMail(any(), any());
+	}
 }

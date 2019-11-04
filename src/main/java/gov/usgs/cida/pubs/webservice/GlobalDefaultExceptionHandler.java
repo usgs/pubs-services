@@ -59,7 +59,7 @@ public class GlobalDefaultExceptionHandler {
 			int hashValue = response.hashCode();
 			//Note: we are giving the user a generic message.  
 			//Server logs can be used to troubleshoot problems.
-			String msgText = "Something bad happened. Contact us with Reference Number: " + hashValue;
+			String msgText = "Unexpected error occurred. Contact us with Reference Number: " + hashValue;
 			LOG.error(msgText, ex);
 			responseMap.put(ERROR_MESSAGE_KEY, msgText);
 		}

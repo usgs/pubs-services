@@ -31,7 +31,6 @@ import gov.usgs.cida.pubs.busservice.intfc.IXmlBusService;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
 import gov.usgs.cida.pubs.dao.resulthandler.StreamingResultHandler;
-import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
@@ -196,9 +195,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 						outputStream,
 						templateConfiguration,
 						configurationService,
-						pubBusService,
-						ContributorType.AUTHOR_KEY,
-						ContributorType.EDITOR_KEY
+						pubBusService
 					);
 			) {
 
@@ -265,9 +262,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 						outputStream,
 						templateConfiguration,
 						configurationService,
-						pubBusService,
-						ContributorType.AUTHOR_KEY,
-						ContributorType.EDITOR_KEY
+						pubBusService
 					);
 			) {
 			response.setCharacterEncoding(PubsConstantsHelper.DEFAULT_ENCODING);

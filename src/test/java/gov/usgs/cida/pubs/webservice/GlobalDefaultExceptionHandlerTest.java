@@ -27,7 +27,7 @@ public class GlobalDefaultExceptionHandlerTest {
 	@Test
 	public void handleUncaughtExceptionTest() throws IOException {
 		HttpServletResponse response = new MockHttpServletResponse();
-		String expected = "Something bad happened. Contact us with Reference Number: ";
+		String expected = "Unexpected error occurred. Contact us with Reference Number: ";
 		Map<String, String> actual = controller.handleUncaughtException(new RuntimeException(), request, response);
 		assertEquals(expected, actual.get(GlobalDefaultExceptionHandler.ERROR_MESSAGE_KEY).substring(0, expected.length()));
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatus());

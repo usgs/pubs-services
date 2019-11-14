@@ -32,10 +32,24 @@ public class TestSpringConfig {
 		return new String(FileCopyUtils.copyToByteArray(testOneUnNumberedSeries.getInputStream()));
 	}
 
+	@Value("classpath:testResult/testOneUnNumberedSeriesPub-min.xml")
+	private Resource testOneUnNumberedSeriesMin;
+	@Bean
+	public String testOneUnNumberedSeriesPubXmlMin() throws IOException{
+		return new String(FileCopyUtils.copyToByteArray(testOneUnNumberedSeriesMin.getInputStream()));
+	}
+
 	@Value("classpath:testResult/testOneNumberedSeriesPub.xml")
 	private Resource testOneNumberedSeries;
 	@Bean
 	public String testOneNumberedSeriesPubXml() throws IOException{
 		return new String(FileCopyUtils.copyToByteArray(testOneNumberedSeries.getInputStream()));
+	}
+
+	@Value("classpath:testResult/testOneNumberedSeriesPub-min.xml")
+	private Resource testOneNumberedSeriesMin;
+	@Bean
+	public String testOneNumberedSeriesPubXmlMin() throws IOException{
+		return new String(FileCopyUtils.copyToByteArray(testOneNumberedSeriesMin.getInputStream()));
 	}
 }

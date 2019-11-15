@@ -20,6 +20,7 @@ import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
+import gov.usgs.cida.pubs.validation.ValidationResults;
 
 @Service
 public class ExtPublicationContributorService {
@@ -37,12 +38,15 @@ public class ExtPublicationContributorService {
 		this.personContributorBusService = personContributorBusService;
 	}
 
-	public void processPublicationContributors(Collection<PublicationContributor<?>> publicationContributors) {
+	public ValidationResults processPublicationContributors(Collection<PublicationContributor<?>> publicationContributors) {
+		ValidationResults validationErrors = new ValidationResults();
 		if (!publicationContributors.isEmpty()) {
 			for (PublicationContributor<?> publicationContributor : publicationContributors) {
 				publicationContributor = processPublicationContributor(publicationContributor);
+				validationErrors.addValidationResults(publicationContributor.getContributor().getValidationErrors());
 			}
 		}
+		return validationErrors;
 	}
 
 	protected PublicationContributor<?> processPublicationContributor(PublicationContributor<?> publicationContributor) {

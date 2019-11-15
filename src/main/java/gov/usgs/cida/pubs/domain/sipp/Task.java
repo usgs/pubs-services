@@ -1,5 +1,7 @@
 package gov.usgs.cida.pubs.domain.sipp;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Task {
@@ -31,79 +33,79 @@ public class Task {
 	@JsonProperty("ModifiedBy")
 	private String modifiedBy;
 	public String getIpNumber() {
-		return ipNumber;
+		return StringUtils.trimToNull(ipNumber);
 	}
 	public void setIpNumber(String ipNumber) {
 		this.ipNumber = ipNumber;
 	}
 	public String getComments() {
-		return comments;
+		return StringUtils.trimToNull(comments);
 	}
 	public void setComments(String comments) {
 		this.comments = comments;
 	}
 	public String getTaskStartDate() {
-		return taskStartDate;
+		return StringUtils.trimToNull(taskStartDate);
 	}
 	public void setTaskStartDate(String taskStartDate) {
 		this.taskStartDate = taskStartDate;
 	}
 	public String getTaskCompletionDate() {
-		return taskCompletionDate;
+		return StringUtils.trimToNull(taskCompletionDate);
 	}
 	public void setTaskCompletionDate(String taskCompletionDate) {
 		this.taskCompletionDate = taskCompletionDate;
 	}
 	public String getStatus() {
-		return status;
+		return StringUtils.trimToNull(status);
 	}
 	public void setStatus(String status) {
 		this.status = status;
 	}
 	public String getTaskName() {
-		return taskName;
+		return StringUtils.trimToNull(taskName);
 	}
 	public void setTaskName(String taskName) {
 		this.taskName = taskName;
 	}
 	public String getTaskAssignedTo() {
-		return taskAssignedTo;
+		return StringUtils.trimToNull(taskAssignedTo);
 	}
 	public void setTaskAssignedTo(String taskAssignedTo) {
 		this.taskAssignedTo = taskAssignedTo;
 	}
 	public String getNextTask() {
-		return nextTask;
+		return StringUtils.trimToNull(nextTask);
 	}
 	public void setNextTask(String nextTask) {
 		this.nextTask = nextTask;
 	}
 	public String getTaskApprover() {
-		return taskApprover;
+		return StringUtils.trimToNull(taskApprover);
 	}
 	public void setTaskApprover(String taskApprover) {
 		this.taskApprover = taskApprover;
 	}
 	public String getCreated() {
-		return created;
+		return StringUtils.trimToNull(created);
 	}
 	public void setCreated(String created) {
 		this.created = created;
 	}
 	public String getCreatedBy() {
-		return createdBy;
+		return StringUtils.trimToNull(createdBy);
 	}
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
 	public String getModified() {
-		return modified;
+		return StringUtils.trimToNull(modified);
 	}
 	public void setModified(String modified) {
 		this.modified = modified;
 	}
 	public String getModifiedBy() {
-		return modifiedBy;
+		return StringUtils.trimToNull(modifiedBy);
 	}
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;

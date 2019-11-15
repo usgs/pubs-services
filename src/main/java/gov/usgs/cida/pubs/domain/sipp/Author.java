@@ -1,5 +1,7 @@
 package gov.usgs.cida.pubs.domain.sipp;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Author {
@@ -37,80 +39,81 @@ public class Author {
 		this.ipNumber = ipNumber;
 	}
 	public String getAuthorName() {
-		return authorName;
+		return StringUtils.trimToNull(authorName);
 	}
 	public void setAuthorName(String authorName) {
 		this.authorName = authorName;
 	}
 	public String getAuthorNameText() {
-		return authorNameText;
+		return StringUtils.trimToNull(authorNameText);
 	}
 	public void setAuthorNameText(String authorNameText) {
 		this.authorNameText = authorNameText;
 	}
 	public String getOrcid() {
 		return orcid;
+//		return StringUtils.trimToNull(orcid);
 	}
 	public void setOrcid(String orcid) {
 		this.orcid = orcid;
 	}
 	public String getCostCenter() {
-		return costCenter;
+		return StringUtils.trimToNull(costCenter);
 	}
 	public void setCostCenter(String costCenter) {
 		this.costCenter = costCenter;
 	}
 	public String getContributorRole() {
-		return contributorRole;
+		return StringUtils.trimToNull(contributorRole);
 	}
 	public void setContributorRole(String contributorRole) {
 		this.contributorRole = contributorRole;
 	}
 	public String getNonUSGSAffiliation() {
-		return nonUSGSAffiliation;
+		return StringUtils.trimToNull(nonUSGSAffiliation);
 	}
 	public void setNonUSGSAffiliation(String nonUSGSAffiliation) {
 		this.nonUSGSAffiliation = nonUSGSAffiliation;
 	}
 	public String getNonUSGSContributor() {
-		return nonUSGSContributor;
+		return StringUtils.trimToNull(nonUSGSContributor);
 	}
 	public void setNonUSGSContributor(String nonUSGSContributor) {
 		this.nonUSGSContributor = nonUSGSContributor;
 	}
 	public String getRank() {
-		return rank;
+		return StringUtils.trimToNull(rank);
 	}
 	public void setRank(String rank) {
 		this.rank = rank;
 	}
 	public String getCreated() {
-		return created;
+		return StringUtils.trimToNull(created);
 	}
 	public void setCreated(String created) {
 		this.created = created;
 	}
 	public String getCreatedBy() {
-		return createdBy;
+		return StringUtils.trimToNull(createdBy);
 	}
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
 	public String getModified() {
-		return modified;
+		return StringUtils.trimToNull(modified);
 	}
 	public void setModified(String modified) {
 		this.modified = modified;
 	}
 	public String getModifiedBy() {
-		return modifiedBy;
+		return StringUtils.trimToNull(modifiedBy);
 	}
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
 	public String[] splitFullName() {
 		String[] familyGiven = new String[] {null, null};
-		if (null != authorNameText) {
+		if (null != StringUtils.trimToNull(authorNameText)) {
 			String[] nameParts = authorNameText.split(",");
 	
 			if (0 < nameParts.length) {

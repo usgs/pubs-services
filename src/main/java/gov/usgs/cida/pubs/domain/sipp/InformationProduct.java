@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.domain.sipp;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -138,307 +139,307 @@ public class InformationProduct {
 	private String indexId;
 	private boolean usgsPeriodical;
 	public String getIpNumber() {
-		return ipNumber;
+		return StringUtils.trimToNull(ipNumber);
 	}
 	public void setIpNumber(String ipNumber) {
 		this.ipNumber = ipNumber;
 	}
 	public String getAbstractText() {
-		return abstractText;
+		return StringUtils.trimToNull(abstractText);
 	}
 	public void setAbstractText(String abstractText) {
 		this.abstractText = abstractText;
 	}
 	public String getBasisNumber() {
-		return basisNumber;
+		return StringUtils.trimToNull(basisNumber);
 	}
 	public void setBasisNumber(String basisNumber) {
 		this.basisNumber = basisNumber;
 	}
 	public String getCostCenter() {
-		return costCenter;
+		return StringUtils.trimToNull(costCenter);
 	}
 	public void setCostCenter(String costCenter) {
 		this.costCenter = costCenter;
 	}
 	public String getIppaNumber() {
-		return ippaNumber;
+		return StringUtils.trimToNull(ippaNumber);
 	}
 	public void setIppaNumber(String ippaNumber) {
 		this.ippaNumber = ippaNumber;
 	}
 	public String getCooperators() {
-		return cooperators;
+		return StringUtils.trimToNull(cooperators);
 	}
 	public void setCooperators(String cooperators) {
 		this.cooperators = cooperators;
 	}
 	public String getEditionNumber() {
-		return editionNumber;
+		return StringUtils.trimToNull(editionNumber);
 	}
 	public void setEditionNumber(String editionNumber) {
 		this.editionNumber = editionNumber;
 	}
 	public String getFinalTitle() {
-		return finalTitle;
+		return StringUtils.trimToNull(finalTitle);
 	}
 	public void setFinalTitle(String finalTitle) {
 		this.finalTitle = finalTitle;
 	}
 	public String getJournalTitle() {
-		return journalTitle;
+		return StringUtils.trimToNull(journalTitle);
 	}
 	public void setJournalTitle(String journalTitle) {
 		this.journalTitle = journalTitle;
 	}
 	public String getNumberOfMapsOrPlates() {
-		return numberOfMapsOrPlates;
+		return StringUtils.trimToNull(numberOfMapsOrPlates);
 	}
 	public void setNumberOfMapsOrPlates(String numberOfMapsOrPlates) {
 		this.numberOfMapsOrPlates = numberOfMapsOrPlates;
 	}
 	public String getPageRange() {
-		return pageRange;
+		return StringUtils.trimToNull(pageRange);
 	}
 	public void setPageRange(String pageRange) {
 		this.pageRange = pageRange;
 	}
 	public String getPhysicalDescription() {
-		return physicalDescription;
+		return StringUtils.trimToNull(physicalDescription);
 	}
 	public void setPhysicalDescription(String physicalDescription) {
 		this.physicalDescription = physicalDescription;
 	}
 	public String getPlannedDisseminationDate() {
-		return plannedDisseminationDate;
+		return StringUtils.trimToNull(plannedDisseminationDate);
 	}
 	public void setPlannedDisseminationDate(String plannedDisseminationDate) {
 		this.plannedDisseminationDate = plannedDisseminationDate;
 	}
 	public String getSupersedesIPNumber() {
-		return supersedesIPNumber;
+		return StringUtils.trimToNull(supersedesIPNumber);
 	}
 	public void setSupersedesIPNumber(String supersedesIPNumber) {
 		this.supersedesIPNumber = supersedesIPNumber;
 	}
 	public String getTeamProjectName() {
-		return teamProjectName;
+		return StringUtils.trimToNull(teamProjectName);
 	}
 	public void setTeamProjectName(String teamProjectName) {
 		this.teamProjectName = teamProjectName;
 	}
 	public String getViSpecialist() {
-		return viSpecialist;
+		return StringUtils.trimToNull(viSpecialist);
 	}
 	public void setViSpecialist(String viSpecialist) {
 		this.viSpecialist = viSpecialist;
 	}
 	public String getVolume() {
-		return volume;
+		return StringUtils.trimToNull(volume);
 	}
 	public void setVolume(String volume) {
 		this.volume = volume;
 	}
 	public String getWorkingTitle() {
-		return workingTitle;
+		return StringUtils.trimToNull(workingTitle);
 	}
 	public void setWorkingTitle(String workingTitle) {
 		this.workingTitle = workingTitle;
 	}
 	public String getUsgsSeriesNumber() {
-		return usgsSeriesNumber;
+		return StringUtils.trimToNull(usgsSeriesNumber);
 	}
 	public void setUsgsSeriesNumber(String usgsSeriesNumber) {
 		this.usgsSeriesNumber = usgsSeriesNumber;
 	}
 	public String getUsgsRegion() {
-		return usgsRegion;
+		return StringUtils.trimToNull(usgsRegion);
 	}
 	public void setUsgsRegion(String usgsRegion) {
 		this.usgsRegion = usgsRegion;
 	}
 	public String getUsgsProgram() {
-		return usgsProgram;
+		return StringUtils.trimToNull(usgsProgram);
 	}
 	public void setUsgsProgram(String usgsProgram) {
 		this.usgsProgram = usgsProgram;
 	}
 	public String getUsgsSeriesType() {
-		return usgsSeriesType;
+		return StringUtils.trimToNull(usgsSeriesType);
 	}
 	public void setUsgsSeriesType(String usgsSeriesType) {
 		this.usgsSeriesType = usgsSeriesType;
 	}
 	public String getSeniorUSGSAuthor() {
-		return seniorUSGSAuthor;
+		return StringUtils.trimToNull(seniorUSGSAuthor);
 	}
 	public void setSeniorUSGSAuthor(String seniorUSGSAuthor) {
 		this.seniorUSGSAuthor = seniorUSGSAuthor;
 	}
 	public String getLocationOfSupportingData() {
-		return locationOfSupportingData;
+		return StringUtils.trimToNull(locationOfSupportingData);
 	}
 	public void setLocationOfSupportingData(String locationOfSupportingData) {
 		this.locationOfSupportingData = locationOfSupportingData;
 	}
 	public String getPscChief() {
-		return pscChief;
+		return StringUtils.trimToNull(pscChief);
 	}
 	public void setPscChief(String pscChief) {
 		this.pscChief = pscChief;
 	}
 	public String getPublishedURL() {
-		return publishedURL;
+		return StringUtils.trimToNull(publishedURL);
 	}
 	public void setPublishedURL(String publishedURL) {
 		this.publishedURL = publishedURL;
 	}
 	public String getCostCenterChief() {
-		return costCenterChief;
+		return StringUtils.trimToNull(costCenterChief);
 	}
 	public void setCostCenterChief(String costCenterChief) {
 		this.costCenterChief = costCenterChief;
 	}
 	public String getAuthorsSupervisor() {
-		return authorsSupervisor;
+		return StringUtils.trimToNull(authorsSupervisor);
 	}
 	public void setAuthorsSupervisor(String authorsSupervisor) {
 		this.authorsSupervisor = authorsSupervisor;
 	}
 	public String getBureauApprovingOfficial() {
-		return bureauApprovingOfficial;
+		return StringUtils.trimToNull(bureauApprovingOfficial);
 	}
 	public void setBureauApprovingOfficial(String bureauApprovingOfficial) {
 		this.bureauApprovingOfficial = bureauApprovingOfficial;
 	}
 	public String getCitation() {
-		return citation;
+		return StringUtils.trimToNull(citation);
 	}
 	public void setCitation(String citation) {
 		this.citation = citation;
 	}
 	public String getDigitalObjectIdentifier() {
-		return digitalObjectIdentifier;
+		return StringUtils.trimToNull(digitalObjectIdentifier);
 	}
 	public void setDigitalObjectIdentifier(String digitalObjectIdentifier) {
 		this.digitalObjectIdentifier = digitalObjectIdentifier;
 	}
 	public String getInterpretivePublication() {
-		return interpretivePublication;
+		return StringUtils.trimToNull(interpretivePublication);
 	}
 	public void setInterpretivePublication(String interpretivePublication) {
 		this.interpretivePublication = interpretivePublication;
 	}
 	public String getIssue() {
-		return issue;
+		return StringUtils.trimToNull(issue);
 	}
 	public void setIssue(String issue) {
 		this.issue = issue;
 	}
 	public String getProductType() {
-		return productType;
+		return StringUtils.trimToNull(productType);
 	}
 	public void setProductType(String productType) {
 		this.productType = productType;
 	}
 	public String getDataManagementPlan() {
-		return dataManagementPlan;
+		return StringUtils.trimToNull(dataManagementPlan);
 	}
 	public void setDataManagementPlan(String dataManagementPlan) {
 		this.dataManagementPlan = dataManagementPlan;
 	}
 	public String getUsgsFunded() {
-		return usgsFunded;
+		return StringUtils.trimToNull(usgsFunded);
 	}
 	public void setUsgsFunded(String usgsFunded) {
 		this.usgsFunded = usgsFunded;
 	}
 	public String getUsgsMissionArea() {
-		return usgsMissionArea;
+		return StringUtils.trimToNull(usgsMissionArea);
 	}
 	public void setUsgsMissionArea(String usgsMissionArea) {
 		this.usgsMissionArea = usgsMissionArea;
 	}
 	public String getProductSummary() {
-		return productSummary;
+		return StringUtils.trimToNull(productSummary);
 	}
 	public void setProductSummary(String productSummary) {
 		this.productSummary = productSummary;
 	}
 	public String getTaskAssignedTo() {
-		return taskAssignedTo;
+		return StringUtils.trimToNull(taskAssignedTo);
 	}
 	public void setTaskAssignedTo(String taskAssignedTo) {
 		this.taskAssignedTo = taskAssignedTo;
 	}
 	public String getNonUSGSPublisher() {
-		return nonUSGSPublisher;
+		return StringUtils.trimToNull(nonUSGSPublisher);
 	}
 	public void setNonUSGSPublisher(String nonUSGSPublisher) {
 		this.nonUSGSPublisher = nonUSGSPublisher;
 	}
 	public String getRelatedIPNumber() {
-		return relatedIPNumber;
+		return StringUtils.trimToNull(relatedIPNumber);
 	}
 	public void setRelatedIPNumber(String relatedIPNumber) {
 		this.relatedIPNumber = relatedIPNumber;
 	}
 	public String getUsgsSeriesLetter() {
-		return usgsSeriesLetter;
+		return StringUtils.trimToNull(usgsSeriesLetter);
 	}
 	public void setUsgsSeriesLetter(String usgsSeriesLetter) {
 		this.usgsSeriesLetter = usgsSeriesLetter;
 	}
 	public String getTask() {
-		return task;
+		return StringUtils.trimToNull(task);
 	}
 	public void setTask(String task) {
 		this.task = task;
 	}
 	public String getTaskStartDate() {
-		return taskStartDate;
+		return StringUtils.trimToNull(taskStartDate);
 	}
 	public void setTaskStartDate(String taskStartDate) {
 		this.taskStartDate = taskStartDate;
 	}
 	public String getGeologicalNames() {
-		return geologicalNames;
+		return StringUtils.trimToNull(geologicalNames);
 	}
 	public void setGeologicalNames(String geologicalNames) {
 		this.geologicalNames = geologicalNames;
 	}
 	public String getEditor() {
-		return editor;
+		return StringUtils.trimToNull(editor);
 	}
 	public void setEditor(String editor) {
 		this.editor = editor;
 	}
 	public String getPublishingServiceCenter() {
-		return publishingServiceCenter;
+		return StringUtils.trimToNull(publishingServiceCenter);
 	}
 	public void setPublishingServiceCenter(String publishingServiceCenter) {
 		this.publishingServiceCenter = publishingServiceCenter;
 	}
 	public String getCreated() {
-		return created;
+		return StringUtils.trimToNull(created);
 	}
 	public void setCreated(String created) {
 		this.created = created;
 	}
 	public String getCreatedBy() {
-		return createdBy;
+		return StringUtils.trimToNull(createdBy);
 	}
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
 	public String getModified() {
-		return modified;
+		return StringUtils.trimToNull(modified);
 	}
 	public void setModified(String modified) {
 		this.modified = modified;
 	}
 	public String getModifiedBy() {
-		return modifiedBy;
+		return StringUtils.trimToNull(modifiedBy);
 	}
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;
@@ -504,7 +505,7 @@ public class InformationProduct {
 		this.usgsNumberedSeries = usgsNumberedSeries;
 	}
 	public String getIndexId() {
-		return indexId;
+		return StringUtils.trimToNull(indexId);
 	}
 	public void setIndexId(String indexId) {
 		this.indexId = indexId;

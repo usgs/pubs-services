@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import gov.usgs.cida.pubs.busservice.intfc.ISippProcess;
@@ -27,7 +26,7 @@ public class DisseminationListService {
 		this.sippProcess = sippProcess;
 	}
 
-	@Transactional(propagation=Propagation.REQUIRES_NEW)
+	@Transactional
 	public void processDisseminationList(final int daysLastDisseminated) {
 		SippProcessLog sippProcessLog = logProcessStart();
 
@@ -62,11 +61,11 @@ public class DisseminationListService {
 		ProcessSummary processSummary = new ProcessSummary();
 		if (mpPublication.isValid()) {
 			processSummary.setAdditions(1);
-			processSummary.setProcessingDetails("\n\tAdded to MyPubs as ProdId: " + mpPublication.getId());
+			processSummary.setProcessingDetails(String.format("\n(%s) added to MyPubs as ProdId: %s", mpPublication.getIpdsId(), mpPublication.getId()));
 		} else {
 			processSummary.setErrors(1);
-			processSummary.setProcessingDetails("\nERROR: Failed validation.\n\t"
-					+ mpPublication.getValidationErrors().toString().replaceAll("\n", "\n\t"));
+			processSummary.setProcessingDetails(String.format("\n(%s) not added:\n\t%s", mpPublication.getIpdsId(),
+					mpPublication.getValidationErrors().toString().replaceAll("\n", "\n\t")));
 		}
 		return processSummary;
 	}

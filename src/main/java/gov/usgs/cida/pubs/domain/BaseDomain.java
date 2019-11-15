@@ -126,4 +126,11 @@ public abstract class BaseDomain<D> {
 		validationErrors.addValidatorResult(inValidatorResult);
 	}
 
+	public void addValidationResults(final ValidationResults inValidationResults) {
+		if (null == validationErrors) {
+			validationErrors = new ValidationResults();
+		}
+		validationErrors.addValidationResults(inValidationResults);
+	}
+
 }

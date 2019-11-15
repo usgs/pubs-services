@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.domain.CostCenter;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.validation.ValidationResults;
 
 @Service
 public class ExtPublicationService {
@@ -28,22 +30,29 @@ public class ExtPublicationService {
 	}
 
 	public MpPublication create(MpPublication mpPublication) {
-		extPublicationContributorBusService.processPublicationContributors(mpPublication.getContributors());
-		processCostCenters(mpPublication.getCostCenters());
-
-		return pubBusService.createObject(mpPublication);
+		ValidationResults validationErrors = new ValidationResults();
+		validationErrors.addValidationResults(extPublicationContributorBusService.processPublicationContributors(mpPublication.getContributors()));
+		validationErrors.addValidationResults(processCostCenters(mpPublication.getCostCenters()));
+		mpPublication.addValidationResults(validationErrors);
+		if (mpPublication.isValid()) {
+			mpPublication = pubBusService.createObject(mpPublication);
+		}
+		return mpPublication;
 	}
 
-	protected void processCostCenters(Collection<PublicationCostCenter<?>> publicationCostCenters) {
+	protected ValidationResults processCostCenters(Collection<PublicationCostCenter<?>> publicationCostCenters) {
+		ValidationResults validationErrors = new ValidationResults();
 		if (!publicationCostCenters.isEmpty()) {
 			for (PublicationCostCenter<?> publicationCostCenter : publicationCostCenters) {
-				processPublicationCostCenter(publicationCostCenter);
+				validationErrors.addValidationResults(processPublicationCostCenter(publicationCostCenter));
 			}
 		}
+		return validationErrors;
 	}
 
-	protected void processPublicationCostCenter(PublicationCostCenter<?> publicationCostCenter) {
-		publicationCostCenter.setCostCenter(
-				extAffiliationBusService.processCostCenter(publicationCostCenter.getCostCenter()));
+	protected ValidationResults processPublicationCostCenter(PublicationCostCenter<?> publicationCostCenter) {
+		CostCenter costCenter = extAffiliationBusService.processCostCenter(publicationCostCenter.getCostCenter());
+		publicationCostCenter.setCostCenter(costCenter);
+		return costCenter.getValidationErrors();
 	}
 }

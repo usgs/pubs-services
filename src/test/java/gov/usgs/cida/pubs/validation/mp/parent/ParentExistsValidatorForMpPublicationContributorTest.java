@@ -67,13 +67,13 @@ public class ParentExistsValidatorForMpPublicationContributorTest extends BaseVa
 		assertTrue(validator.isValid(null, context));
 		assertTrue(validator.isValid(mpPubContributor, null));
 
-		assertTrue(validator.isValid(mpPubContributor, context));
+		assertFalse(validator.isValid(mpPubContributor, context));
 
 		mpPubContributor.setContributor(contributor);
-		assertTrue(validator.isValid(mpPubContributor, context));
+		assertFalse(validator.isValid(mpPubContributor, context));
 
 		mpPubContributor.setContributorType(contributorType);
-		assertTrue(validator.isValid(mpPubContributor, context));
+		assertFalse(validator.isValid(mpPubContributor, context));
 	}
 
 	@Test
@@ -93,30 +93,12 @@ public class ParentExistsValidatorForMpPublicationContributorTest extends BaseVa
 		verify(contributorDao).getById(any(Integer.class));
 		verify(contributorTypeDao).getById(any(Integer.class));
 
-		//works with mpPubContributor set
-		mpPubContributor.setPublicationId(1);
-		contributor.setId("");
-		contributorType.setId("");
-		assertTrue(validator.isValid(mpPubContributor, context));
-		verify(mpPublicationDao, times(2)).getById(any(Integer.class));
-		verify(contributorDao).getById(any(Integer.class));
-		verify(contributorTypeDao).getById(any(Integer.class));
-
-		//works with contributor set
+		//works with contributor & contributorType set
 		mpPubContributor.setPublicationId(null);
 		contributor.setId(1);
-		contributorType.setId("");
-		assertTrue(validator.isValid(mpPubContributor, context));
-		verify(mpPublicationDao, times(2)).getById(any(Integer.class));
-		verify(contributorDao, times(2)).getById(any(Integer.class));
-		verify(contributorTypeDao).getById(any(Integer.class));
-
-		//works with contributorType set
-		mpPubContributor.setPublicationId(null);
-		contributor.setId("");
 		contributorType.setId(1);
 		assertTrue(validator.isValid(mpPubContributor, context));
-		verify(mpPublicationDao, times(2)).getById(any(Integer.class));
+		verify(mpPublicationDao).getById(any(Integer.class));
 		verify(contributorDao, times(2)).getById(any(Integer.class));
 		verify(contributorTypeDao, times(2)).getById(any(Integer.class));
 	}

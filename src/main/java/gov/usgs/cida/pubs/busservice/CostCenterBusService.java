@@ -44,7 +44,7 @@ public class CostCenterBusService extends BusService<CostCenter> {
 
 	@Override
 	@Transactional
-	public CostCenter updateObject(CostCenter object) {
+	public CostCenter updateObject(CostCenter object, Class<?>... groups) {
 		CostCenter result = object;
 		if (null != object && null != object.getId()) {
 			Integer id = object.getId();
@@ -59,7 +59,7 @@ public class CostCenterBusService extends BusService<CostCenter> {
 
 	@Override
 	@Transactional
-	public CostCenter createObject(CostCenter object) {
+	public CostCenter createObject(CostCenter object, Class<?>... groups) {
 		CostCenter result = object;
 		if (null != object) {
 			object.setValidationErrors(validator.validate(object));
@@ -73,7 +73,7 @@ public class CostCenterBusService extends BusService<CostCenter> {
 
 	@Override
 	@Transactional
-	public ValidationResults deleteObject(Integer objectId) {
+	public ValidationResults deleteObject(Integer objectId, Class<?>... groups) {
 		if (null != objectId) {
 			CostCenter costCenter = CostCenter.getDao().getById(objectId);
 			if (null == costCenter) {

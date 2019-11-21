@@ -1,7 +1,6 @@
 package gov.usgs.cida.pubs.validation.mp;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import javax.validation.Validator;
 
@@ -17,6 +16,7 @@ import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
+import gov.usgs.cida.pubs.validation.PublicationLinkValidationTest;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
@@ -52,14 +52,9 @@ public class MpPublicationLinkValidationTest extends BaseValidatorTest {
 		assertValidationResults(pubLink.getValidationErrors().getValidationErrors(),
 				//From PublicationLink
 				NOT_NULL_LINK_TYPE,
-				NOT_NULL_URL
+				NOT_NULL_URL,
+				PublicationLinkValidationTest.INVALID_LINK_TYPE
 				);
-	}
-
-	@Test
-	public void notNullTrueTest() {
-		pubLink.setValidationErrors(validator.validate(pubLink));
-		assertTrue(pubLink.isValid());
 	}
 
 	@Test
@@ -70,7 +65,8 @@ public class MpPublicationLinkValidationTest extends BaseValidatorTest {
 		assertFalse(pubLink.isValid());
 		assertValidationResults(pubLink.getValidationErrors().getValidationErrors(),
 				//From PublicationLink
-				BAD_URL
+				BAD_URL,
+				PublicationLinkValidationTest.INVALID_LINK_TYPE
 				);
 	}
 
@@ -85,7 +81,8 @@ public class MpPublicationLinkValidationTest extends BaseValidatorTest {
 				//From PublicationLink
 				INVALID_DESCRIPTION_LENGTH,
 				INVALID_SIZE_LENGTH,
-				INVALID_TEXT_LENGTH
+				INVALID_TEXT_LENGTH,
+				PublicationLinkValidationTest.INVALID_LINK_TYPE
 				);
 	}
 
@@ -95,7 +92,10 @@ public class MpPublicationLinkValidationTest extends BaseValidatorTest {
 		pubLink.setDescription(StringUtils.repeat('Y', 4000));
 		pubLink.setSize(StringUtils.repeat('Z', 100));
 		pubLink.setValidationErrors(validator.validate(pubLink));
-		assertTrue(pubLink.isValid());
+		assertFalse(pubLink.isValid());
+		assertValidationResults(pubLink.getValidationErrors().getValidationErrors(),
+				PublicationLinkValidationTest.INVALID_LINK_TYPE
+				);
 	}
 
 }

@@ -107,11 +107,13 @@ public class PublicationLinkValidationTest extends BaseValidatorTest {
 		pubLink.setUrl(null);
 		pubLink.setValidationErrors(validator.validate(pubLink));
 		assertFalse(pubLink.isValid());
-		assertEquals(2, pubLink.getValidationErrors().getValidationErrors().size());
+		assertEquals(3, pubLink.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(pubLink.getValidationErrors().getValidationErrors(),
 				//From PublicationLink
 				NOT_NULL_LINK_TYPE,
-				NOT_NULL_URL
+				NOT_NULL_URL,
+				//From ParentExistsValidatorForMpPublicationLink
+				INVALID_LINK_TYPE
 				);
 	}
 

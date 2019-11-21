@@ -17,12 +17,12 @@ import com.fasterxml.jackson.annotation.JsonView;
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.utility.PubsUtils;
+import gov.usgs.cida.pubs.validation.PayloadSeverityLevel;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 
 /**
  * All Domain Objects extend this base class.
- * @author drsteini
  * @param <D> the specific domain of the object 
  */
 @JsonInclude(Include.NON_NULL)
@@ -96,7 +96,7 @@ public abstract class BaseDomain<D> {
 
 	@JsonIgnore
 	public boolean isValid() {
-		return getValidationErrors().isEmpty();
+		return getValidationErrors().isValid();
 	}
 
 	public ValidationResults getValidationErrors() {
@@ -112,7 +112,11 @@ public abstract class BaseDomain<D> {
 		if (null != inValidationErrors) {
 			List<ValidatorResult> vResults = new ArrayList<ValidatorResult>();
 			for (ConstraintViolation<D> vError : inValidationErrors) {
-				ValidatorResult vResult = new ValidatorResult(vError.getPropertyPath().toString(), vError.getMessage(), SeverityLevel.FATAL, null);
+				//If the validation had a SEVERITY in the payload, convert it to a SeverityLevel.
+				boolean isFatal = vError.getConstraintDescriptor().getPayload().isEmpty()
+						|| vError.getConstraintDescriptor().getPayload().contains(PayloadSeverityLevel.FATAL.class);
+				ValidatorResult vResult = new ValidatorResult(vError.getPropertyPath().toString(), vError.getMessage(),
+						isFatal ? SeverityLevel.FATAL : SeverityLevel.INFORMATIONAL, null);
 				vResults.add(vResult);
 			}
 			validationErrors.setValidationErrors(vResults);

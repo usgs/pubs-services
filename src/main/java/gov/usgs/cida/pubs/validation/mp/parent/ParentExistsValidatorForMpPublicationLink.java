@@ -35,7 +35,7 @@ public class ParentExistsValidatorForMpPublicationLink implements ConstraintVali
 					.addPropertyNode("publicationId").addConstraintViolation();
 			}
 	
-			if (null == value.getLinkFileType()
+			if (null == value.getLinkType()
 					|| (null != value.getLinkType()
 						&& (null == value.getLinkType().getId()
 							|| (null != value.getLinkType().getId()
@@ -46,11 +46,8 @@ public class ParentExistsValidatorForMpPublicationLink implements ConstraintVali
 					.addPropertyNode("linkType").addConstraintViolation();
 			}
 	
-			if (null == value.getLinkFileType()
-					|| (null != value.getLinkFileType()
-						&& (null == value.getLinkFileType().getId()
-							|| (null != value.getLinkFileType().getId()
-								&& null == LinkFileType.getDao().getById(value.getLinkFileType().getId()))))) {
+			if (null != value.getLinkFileType() && null != value.getLinkFileType().getId()
+					&& null == LinkFileType.getDao().getById(value.getLinkFileType().getId())) {
 				rtn = false;
 				context.disableDefaultConstraintViolation();
 				context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())

@@ -9,10 +9,6 @@ import java.util.Map;
 
 import javax.validation.Validator;
 
-/**
- * @author drsteini
- *
- */
 public abstract class BusService<D> implements IBusService<D> {
 
 	protected Validator validator;
@@ -33,17 +29,17 @@ public abstract class BusService<D> implements IBusService<D> {
 	}
 
 	@Override
-	public D createObject(D object) {
+	public D createObject(D object, Class<?>... groups) {
 		throw new RuntimeException(PubsConstantsHelper.NOT_IMPLEMENTED);
 	}
 
 	@Override
-	public D updateObject(D object) {
+	public D updateObject(D object, Class<?>... groups) {
 		throw new RuntimeException(PubsConstantsHelper.NOT_IMPLEMENTED);
 	}
 
 	@Override
-	public ValidationResults deleteObject(Integer objectId) {
+	public ValidationResults deleteObject(Integer objectId, Class<?>... groups) {
 		throw new RuntimeException(PubsConstantsHelper.NOT_IMPLEMENTED);
 	}
 

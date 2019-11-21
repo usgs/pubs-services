@@ -104,7 +104,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		LOG.debug("deleteCostCenter");
 		setHeaders(response);
 		ValidationResults result = costCenterBusService.deleteObject(PubsUtils.parseInteger(id));
-		if (null != result && result.isEmpty()) {
+		if (null != result && result.isValid()) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -188,7 +188,7 @@ public class AffliliationMvcService extends MvcService<Affiliation<?>> {
 		LOG.debug("deleteOutsideAffiliation");
 		setHeaders(response);
 		ValidationResults result = outsideAffiliationBusService.deleteObject(PubsUtils.parseInteger(id));
-		if (null != result && result.isEmpty()) {
+		if (null != result && result.isValid()) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

@@ -21,6 +21,7 @@ import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.validation.constraint.SippChecks;
 
 @Service
 public class ExtPublicationContributorService {
@@ -91,7 +92,7 @@ public class ExtPublicationContributorService {
 		Set<Affiliation<? extends Affiliation<?>>> affiliations = extAffiliationBusService.processAffiliations(contributor.getAffiliations());
 		contributor.setAffiliations(affiliations);
 
-		return (UsgsContributor) personContributorBusService.createObject(contributor);
+		return (UsgsContributor) personContributorBusService.createObject(contributor, SippChecks.class);
 	}
 
 	protected OutsideContributor processOutsideContributor(OutsideContributor contributor) {
@@ -147,6 +148,6 @@ public class ExtPublicationContributorService {
 		Set<Affiliation<? extends Affiliation<?>>> affiliations = extAffiliationBusService.processAffiliations(contributor.getAffiliations());
 		contributor.setAffiliations(affiliations);
 
-		return (OutsideContributor) personContributorBusService.createObject(contributor);
+		return (OutsideContributor) personContributorBusService.createObject(contributor, SippChecks.class);
 	}
 }

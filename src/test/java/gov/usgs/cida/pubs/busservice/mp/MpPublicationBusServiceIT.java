@@ -187,7 +187,7 @@ public class MpPublicationBusServiceIT extends BaseIT {
 		MpPublication mpPub = new MpPublication();
 		MpPublication newPub = busService.createObject(mpPub);
 		ValidationResults validationErrors = newPub.getValidationErrors();
-		assertFalse("Should be invalid", validationErrors.isEmpty());
+		assertFalse("Should be invalid", validationErrors.isValid());
 		assertEquals("Two required fields", 2, validationErrors.getValidationErrors().size());
 		for (ValidatorResult result : validationErrors.getValidationErrors()) {
 			assertEquals(SeverityLevel.FATAL, result.getLevel());
@@ -206,7 +206,7 @@ public class MpPublicationBusServiceIT extends BaseIT {
 		MpPublication newPub = busService.createObject(mpPub);
 		ValidationResults validationErrors = newPub.getValidationErrors();
 
-		assertTrue("Should be valid", validationErrors.isEmpty());
+		assertTrue("Should be valid", validationErrors.isValid());
 		assertNotNull(newPub.getId());
 		assertEquals("newPubTitle", newPub.getTitle());
 		assertEquals("zeroToFifteen", newPub.getIpdsId());
@@ -837,12 +837,12 @@ public class MpPublicationBusServiceIT extends BaseIT {
 			table=PublicationIndexHelper.TABLE_NAME,
 			query=PublicationIndexHelper.QUERY_TEXT)
 	public void publishTest() {
-		assertTrue(busService.publish(null).isEmpty());
+		assertTrue(busService.publish(null).isValid());
 		assertEquals("Field:Publication - Message:Publication does not exist. - Level:FATAL - Value:-1\nValidator Results: 1 result(s)\n",
 				busService.publish(-1).toString());
 
 		ValidationResults valRes = busService.publish(2);
-		assertTrue(valRes.isEmpty());
+		assertTrue(valRes.isValid());
 		Publication<?> pub = PwPublication.getDao().getById(2);
 		MpPublicationDaoIT.assertPwPub2(pub);
 		assertEquals(2, pub.getContributors().size());
@@ -858,7 +858,7 @@ public class MpPublicationBusServiceIT extends BaseIT {
 	public void publishSPNTest() {
 		//Stuff published by an SPN User should end up in both the warehouse and MyPubs on the USGS Series list.
 		ValidationResults valRes = busService.publish(2);
-		assertTrue(valRes.isEmpty());
+		assertTrue(valRes.isValid());
 		Publication<?> pub = PwPublication.getDao().getById(2);
 		MpPublicationDaoIT.assertPwPub2(pub);
 		assertEquals(2, pub.getContributors().size());

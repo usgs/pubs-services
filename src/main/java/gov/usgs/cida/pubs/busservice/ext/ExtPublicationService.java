@@ -33,10 +33,10 @@ public class ExtPublicationService {
 		ValidationResults validationErrors = new ValidationResults();
 		validationErrors.addValidationResults(extPublicationContributorBusService.processPublicationContributors(mpPublication.getContributors()));
 		validationErrors.addValidationResults(processCostCenters(mpPublication.getCostCenters()));
-		mpPublication.addValidationResults(validationErrors);
-		if (mpPublication.isValid()) {
+		if (validationErrors.isValid()) {
 			mpPublication = pubBusService.createObject(mpPublication);
 		}
+		mpPublication.addValidationResults(validationErrors);
 		return mpPublication;
 	}
 

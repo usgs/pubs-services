@@ -1,7 +1,5 @@
 package gov.usgs.cida.pubs.domain;
 
-import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +20,13 @@ import com.fasterxml.jackson.annotation.JsonView;
 import gov.usgs.cida.pubs.dao.intfc.IPersonContributorDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
 import gov.usgs.cida.pubs.json.View;
+import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
+import gov.usgs.cida.pubs.validation.PayloadSeverityLevel.FATAL;
+import gov.usgs.cida.pubs.validation.PayloadSeverityLevel.INFORMATIONAL;
+import gov.usgs.cida.pubs.validation.constraint.ManagerChecks;
+import gov.usgs.cida.pubs.validation.constraint.Orcid;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
+import gov.usgs.cida.pubs.validation.constraint.SippChecks;
 
 @Component
 @ParentExists
@@ -36,7 +40,7 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 
 	public static final String ORCID_VALIDATION_REGEX = "^" + DataNormalizationUtils.ORCID_REGEX + "$"; // only storing short form in db
 	public static final String ORCID_VALIDATION_MESS = "The value of orcid=${validatedValue} must include " +
-	                             "16 digits [0-9] separated into groups of 4 by hyphens, final character optionally the letter X";
+			"16 digits [0-9] separated into groups of 4 by hyphens, final character optionally the letter X";
 
 	private static IPersonContributorDao personContributorDao;
 
@@ -62,7 +66,10 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 	@Email
 	private String email;
 
-	@Pattern(regexp=ORCID_VALIDATION_REGEX, message=ORCID_VALIDATION_MESS)
+	@Pattern(regexp=ORCID_VALIDATION_REGEX, message=ORCID_VALIDATION_MESS, payload=INFORMATIONAL.class, groups=SippChecks.class)
+	@Pattern(regexp=ORCID_VALIDATION_REGEX, message=ORCID_VALIDATION_MESS, payload=FATAL.class, groups=ManagerChecks.class)
+	@Orcid(payload=INFORMATIONAL.class, groups=SippChecks.class)
+	@Orcid(payload=FATAL.class, groups=ManagerChecks.class)
 	private String orcid;
 
 	@JsonProperty("affiliations")

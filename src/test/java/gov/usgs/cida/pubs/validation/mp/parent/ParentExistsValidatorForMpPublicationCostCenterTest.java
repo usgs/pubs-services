@@ -60,10 +60,10 @@ public class ParentExistsValidatorForMpPublicationCostCenterTest extends BaseVal
 		assertTrue(validator.isValid(null, context));
 		assertTrue(validator.isValid(mpPubCostCenter, null));
 
-		assertTrue(validator.isValid(mpPubCostCenter, context));
+		assertFalse(validator.isValid(mpPubCostCenter, context));
 
 		mpPubCostCenter.setCostCenter(costCenter);
-		assertTrue(validator.isValid(mpPubCostCenter, context));
+		assertFalse(validator.isValid(mpPubCostCenter, context));
 	}
 
 	@Test
@@ -79,18 +79,11 @@ public class ParentExistsValidatorForMpPublicationCostCenterTest extends BaseVal
 		verify(mpPublicationDao).getById(any(Integer.class));
 		verify(costCenterDao).getById(any(Integer.class));
 
-		//works with just mpPublication set
-		mpPubCostCenter.setPublicationId(1);
-		costCenter.setId("");
-		assertTrue(validator.isValid(mpPubCostCenter, context));
-		verify(mpPublicationDao, times(2)).getById(any(Integer.class));
-		verify(costCenterDao).getById(any(Integer.class));
-
 		//works with just mpPubCostCenter set
 		mpPubCostCenter.setPublicationId("");
 		costCenter.setId(1);
 		assertTrue(validator.isValid(mpPubCostCenter, context));
-		verify(mpPublicationDao, times(2)).getById(any(Integer.class));
+		verify(mpPublicationDao).getById(any(Integer.class));
 		verify(costCenterDao, times(2)).getById(any(Integer.class));
 	}
 

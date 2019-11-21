@@ -26,6 +26,7 @@ import gov.usgs.cida.pubs.domain.OutsideContributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
+import gov.usgs.cida.pubs.validation.constraint.ManagerChecks;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={DbTestConfig.class, LocalValidatorFactoryBean.class, Contributor.class,
@@ -59,7 +60,7 @@ public class PersonContributorBusServiceIT extends BaseIT {
 		person.setEmail("email@usgs.gov");
 		person.setOrcid("http://orcid.org/0000-0002-1825-0097");
 		person.setPreferred(true);
-		busService.createObject(person);
+		busService.createObject(person, ManagerChecks.class);
 		assertTrue("Expected isValid() true, got validation errors: " + person.getValidationErrors(), person.isValid());
 		assertNotNull(person.getId());
 		UsgsContributor persisted = (UsgsContributor) Contributor.getDao().getById(person.getId());
@@ -73,7 +74,7 @@ public class PersonContributorBusServiceIT extends BaseIT {
 		outperson.setEmail("outemail@usgs.gov");
 		outperson.setOrcid("0000-0002-1825-0097"); // service stores normalized orcid
 		outperson.setPreferred(true);
-		busService.createObject(outperson);
+		busService.createObject(outperson, ManagerChecks.class);
 		assertNotNull(outperson.getId());
 		OutsideContributor outpersisted = (OutsideContributor) Contributor.getDao().getById(outperson.getId());
 		assertDaoTestResults(OutsideContributor.class, outperson, outpersisted, ContributorDaoIT.IGNORE_PROPERTIES_PERSON, true, true);
@@ -88,7 +89,7 @@ public class PersonContributorBusServiceIT extends BaseIT {
 		person.setEmail("email@usgs.gov");
 		person.setOrcid("http://orcid.org/0000-0002-1825-009R");
 		person.setPreferred(true);
-		busService.createObject(person);
+		busService.createObject(person, ManagerChecks.class);
 
 		assertTrue("Expected id not to be set: " + person.getId(), person.getId() == null || person.getId() == 0);
 
@@ -96,7 +97,7 @@ public class PersonContributorBusServiceIT extends BaseIT {
 		String expectedMess = PersonContributor.ORCID_VALIDATION_MESS.replace("${validatedValue}", person.getOrcid());
 		String validationMessage = "[no validation message found]";
 
-		if(person.getValidationErrors() != null && !person.getValidationErrors().isEmpty()) {
+		if(person.getValidationErrors() != null && !person.getValidationErrors().isValid()) {
 			validationMessage = person.getValidationErrors().toString();
 			if(validationMessage.contains(expectedMess)) {
 				hasValidationMess = true;

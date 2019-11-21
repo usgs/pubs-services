@@ -30,6 +30,7 @@ import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
 import gov.usgs.cida.pubs.domain.PublicationCostCenterHelper;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.validation.ValidationResults;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={CostCenterHelper.class})
@@ -54,6 +55,9 @@ public class ExtPublicationServiceTest extends BaseTest {
 
 	@Test
 	public void createTest() {
+		when(extPublicationContributorBusService.processPublicationContributors(isNull())).thenReturn(new ValidationResults());
+		when(extAffiliationBusService.processCostCenter(any(CostCenter.class))).thenReturn(new CostCenter());
+		when(pubBusService.createObject(any(MpPublication.class))).thenReturn(new MpPublication());
 		extPublicationService.create(MpPublicationDaoIT.buildAPub(12));
 		verify(extPublicationContributorBusService).processPublicationContributors(isNull());
 		verify(extAffiliationBusService).processCostCenter(any(CostCenter.class));

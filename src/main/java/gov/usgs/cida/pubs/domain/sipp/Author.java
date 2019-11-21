@@ -51,8 +51,7 @@ public class Author {
 		this.authorNameText = authorNameText;
 	}
 	public String getOrcid() {
-		return orcid;
-//		return StringUtils.trimToNull(orcid);
+		return StringUtils.trimToNull(orcid);
 	}
 	public void setOrcid(String orcid) {
 		this.orcid = orcid;

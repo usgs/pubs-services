@@ -63,13 +63,13 @@ public class ParentExistsValidatorForMpPublicationLinkTest extends BaseValidator
 		assertTrue(validator.isValid(null, context));
 		assertTrue(validator.isValid(mpPubLink, null));
 
-		assertTrue(validator.isValid(mpPubLink, context));
+		assertFalse(validator.isValid(mpPubLink, context));
 
 		mpPubLink.setLinkType(linkType);
-		assertTrue(validator.isValid(mpPubLink, context));
+		assertFalse(validator.isValid(mpPubLink, context));
 
 		mpPubLink.setLinkFileType(linkFileType);
-		assertTrue(validator.isValid(mpPubLink, context));
+		assertFalse(validator.isValid(mpPubLink, context));
 	}
 
 	@Test
@@ -89,32 +89,14 @@ public class ParentExistsValidatorForMpPublicationLinkTest extends BaseValidator
 		verify(linkTypeDao).getById(any(Integer.class));
 		verify(linkFileTypeDao).getById(any(Integer.class));
 
-		//works with mpPublication set
-		mpPubLink.setPublicationId(1);
-		linkType.setId("");
-		linkFileType.setId("");
-		assertTrue(validator.isValid(mpPubLink, context));
-		verify(mpPublicationDao, times(2)).getById(any(Integer.class));
-		verify(linkTypeDao).getById(any(Integer.class));
-		verify(linkFileTypeDao).getById(any(Integer.class));
-
 		//works with linkType set
 		mpPubLink.setPublicationId(null);
 		linkType.setId(1);
 		linkFileType.setId("");
 		assertTrue(validator.isValid(mpPubLink, context));
-		verify(mpPublicationDao, times(2)).getById(any(Integer.class));
+		verify(mpPublicationDao).getById(any(Integer.class));
 		verify(linkTypeDao, times(2)).getById(any(Integer.class));
 		verify(linkFileTypeDao).getById(any(Integer.class));
-
-		//works with linkFileType set
-		mpPubLink.setPublicationId(null);
-		linkType.setId("");
-		linkFileType.setId(1);
-		assertTrue(validator.isValid(mpPubLink, context));
-		verify(mpPublicationDao, times(2)).getById(any(Integer.class));
-		verify(linkTypeDao, times(2)).getById(any(Integer.class));
-		verify(linkFileTypeDao, times(2)).getById(any(Integer.class));
 	}
 
 	@Test

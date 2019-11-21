@@ -27,6 +27,7 @@ import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.sipp.InformationProduct;
 import gov.usgs.cida.pubs.domain.sipp.IpdsPubTypeConv;
+import gov.usgs.cida.pubs.domain.sipp.RollbackException;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 
@@ -62,15 +63,14 @@ public class SippProcess implements ISippProcess {
 			if (rtn.isValid() && !txStatus.isRollbackOnly()) {
 				txnMgr.commit(txStatus);
 			} else {
-				throw new RuntimeException("Transaction set to rollbackOnly!!" + ipNumber);
+				throw new RollbackException("Transaction set to rollbackOnly!!" + ipNumber, null);
 			}
+		} catch (RollbackException e) {
+			LOG.debug(e.getLocalizedMessage());
+			txnMgr.rollback(txStatus);
 		} catch (Exception e) {
-			if (e instanceof RuntimeException && null != e.getMessage() && e.getMessage().startsWith("Transaction set to rollbackOnly!!")) {
-				LOG.debug(e.getLocalizedMessage());
-			} else {
-				rtn.addValidatorResult(new ValidatorResult("MpPublication", e.getLocalizedMessage(), SeverityLevel.FATAL, ipNumber));
-				LOG.info(ipNumber + ": " + e.getLocalizedMessage(), e);
-			}
+			rtn.addValidatorResult(new ValidatorResult("MpPublication", e.getLocalizedMessage(), SeverityLevel.FATAL, ipNumber));
+			LOG.info(ipNumber + ": " + e.getLocalizedMessage(), e);
 			txnMgr.rollback(txStatus);
 		}
 

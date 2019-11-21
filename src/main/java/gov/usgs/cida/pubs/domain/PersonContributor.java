@@ -31,12 +31,6 @@ import gov.usgs.cida.pubs.validation.constraint.SippChecks;
 @Component
 @ParentExists
 public class PersonContributor<D> extends Contributor<PersonContributor<D>> implements ILookup {
-	@Override
-	public String toString() {
-		return "PersonContributor [family=" + family + ", given=" + given + ", suffix=" + suffix + ", email=" + email
-				+ ", orcid=" + orcid + ", affiliations=" + affiliations + ", preferred=" + preferred + ", corporation="
-				+ corporation + ", usgs=" + usgs + ", id=" + id + ", validationErrors=" + validationErrors + "]";
-	}
 
 	public static final String ORCID_VALIDATION_REGEX = "^" + DataNormalizationUtils.ORCID_REGEX + "$"; // only storing short form in db
 	public static final String ORCID_VALIDATION_MESS = "The value of orcid=${validatedValue} must include " +
@@ -175,4 +169,12 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 	public void setPersonContributorDao(final IPersonContributorDao inPersonContributorDao) {
 		personContributorDao = inPersonContributorDao;
 	}
+
+	@Override
+	public String toString() {
+		return "PersonContributor [family=" + family + ", given=" + given + ", suffix=" + suffix + ", email=" + email
+				+ ", orcid=" + orcid + ", affiliations=" + affiliations + ", preferred=" + preferred + ", corporation="
+				+ corporation + ", usgs=" + usgs + ", id=" + id + ", validationErrors=" + validationErrors + "]";
+	}
+
 }

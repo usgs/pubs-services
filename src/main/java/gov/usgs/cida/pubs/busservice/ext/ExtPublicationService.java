@@ -30,14 +30,17 @@ public class ExtPublicationService {
 	}
 
 	public MpPublication create(MpPublication mpPublication) {
+		MpPublication rtn;
 		ValidationResults validationErrors = new ValidationResults();
 		validationErrors.addValidationResults(extPublicationContributorBusService.processPublicationContributors(mpPublication.getContributors()));
 		validationErrors.addValidationResults(processCostCenters(mpPublication.getCostCenters()));
 		if (validationErrors.isValid()) {
-			mpPublication = pubBusService.createObject(mpPublication);
+			rtn = pubBusService.createObject(mpPublication);
+		} else {
+			rtn = mpPublication;
 		}
 		mpPublication.addValidationResults(validationErrors);
-		return mpPublication;
+		return rtn;
 	}
 
 	protected ValidationResults processCostCenters(Collection<PublicationCostCenter<?>> publicationCostCenters) {

@@ -36,10 +36,8 @@ public class ParentExistsValidatorForMpPublicationLink implements ConstraintVali
 			}
 	
 			if (null == value.getLinkType()
-					|| (null != value.getLinkType()
-						&& (null == value.getLinkType().getId()
-							|| (null != value.getLinkType().getId()
-								&& null == LinkType.getDao().getById(value.getLinkType().getId()))))) {
+					|| null == value.getLinkType().getId()
+					|| null == LinkType.getDao().getById(value.getLinkType().getId())) {
 				rtn = false;
 				context.disableDefaultConstraintViolation();
 				context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())

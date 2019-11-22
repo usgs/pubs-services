@@ -36,10 +36,8 @@ public class ParentExistsValidatorForMpPublicationContributor implements Constra
 			}
 
 			if (null == value.getContributor()
-					|| (null != value.getContributor()
-						&& (null == value.getContributor().getId() 
-							|| (null != value.getContributor().getId()
-								&& null == Contributor.getDao().getById(value.getContributor().getId()))))) {
+					|| null == value.getContributor().getId() 
+					|| null == Contributor.getDao().getById(value.getContributor().getId())) {
 				rtn = false;
 				context.disableDefaultConstraintViolation();
 				context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
@@ -47,10 +45,8 @@ public class ParentExistsValidatorForMpPublicationContributor implements Constra
 			}
 
 			if (null == value.getContributorType()
-					|| (null != value.getContributorType()
-						&& (null == value.getContributorType().getId()
-							|| (null != value.getContributorType().getId()
-								&& null == ContributorType.getDao().getById(value.getContributorType().getId()))))) {
+					|| null == value.getContributorType().getId()
+					|| null == ContributorType.getDao().getById(value.getContributorType().getId())) {
 				rtn = false;
 				context.disableDefaultConstraintViolation();
 				context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())

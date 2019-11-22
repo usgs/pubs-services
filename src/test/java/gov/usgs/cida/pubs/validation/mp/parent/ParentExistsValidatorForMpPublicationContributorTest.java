@@ -62,7 +62,7 @@ public class ParentExistsValidatorForMpPublicationContributorTest extends BaseVa
 	}
 
 	@Test
-	public void isValidNPETest() {
+	public void npeTests() {
 		assertTrue(validator.isValid(null, null));
 		assertTrue(validator.isValid(null, context));
 		assertTrue(validator.isValid(mpPubContributor, null));

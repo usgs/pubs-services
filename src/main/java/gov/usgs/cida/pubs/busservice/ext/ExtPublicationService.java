@@ -39,7 +39,7 @@ public class ExtPublicationService {
 		} else {
 			rtn = mpPublication;
 		}
-		mpPublication.addValidationResults(validationErrors);
+		rtn.addValidationResults(validationErrors);
 		return rtn;
 	}
 

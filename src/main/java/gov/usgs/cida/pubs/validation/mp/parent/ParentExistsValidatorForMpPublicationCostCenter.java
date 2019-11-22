@@ -34,10 +34,8 @@ public class ParentExistsValidatorForMpPublicationCostCenter implements Constrai
 			}
 			
 			if (null == value.getCostCenter()
-					|| (null != value.getCostCenter()
-						&& (null == value.getCostCenter().getId()
-							|| (null != value.getCostCenter().getId()
-								&& null == CostCenter.getDao().getById(value.getCostCenter().getId()))))) {
+					|| null == value.getCostCenter().getId()
+					|| null == CostCenter.getDao().getById(value.getCostCenter().getId())) {
 				rtn = false;
 				context.disableDefaultConstraintViolation();
 				context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())

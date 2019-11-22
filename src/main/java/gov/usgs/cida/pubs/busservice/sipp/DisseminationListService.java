@@ -2,14 +2,13 @@ package gov.usgs.cida.pubs.busservice.sipp;
 
 import java.util.List;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.busservice.intfc.ISippProcess;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
@@ -27,7 +26,7 @@ public class DisseminationListService {
 		this.sippProcess = sippProcess;
 	}
 
-	@Transactional(propagation=Propagation.REQUIRES_NEW)
+	@Transactional
 	public void processDisseminationList(final int daysLastDisseminated) {
 		SippProcessLog sippProcessLog = logProcessStart();
 
@@ -41,16 +40,15 @@ public class DisseminationListService {
 			try {
 				MpPublication pub = sippProcess.processInformationProduct(ProcessType.DISSEMINATION, ipdsBureauApproval.getIpNumber());
 
-				ProcessSummary processSummary = buildPublicationProcessSummary(pub);
+				ProcessSummary processSummary = buildPublicationProcessSummary(ipdsBureauApproval.getIpNumber(), pub);
 				processingDetails.append(processSummary.getProcessingDetails());
 				additions = additions + processSummary.getAdditions();
 				errors = errors + processSummary.getErrors();
 			} catch (Exception e) {
 				String errMess = String.format("Error processing IPNumber '%s': %s",
 					ipdsBureauApproval.getIpNumber(), e.getMessage());
-				LOG.error(errMess + String.format(" [Exception: %s]", e.getClass().getName()));
-				LOG.error(ExceptionUtils.getStackTrace(e));
-				processingDetails.append("\n\t").append(errMess);
+				LOG.error(errMess + String.format(" [Exception: %s]", e.getClass().getName()), e);
+				processingDetails.append("\n").append(errMess);
 				errors = errors + 1;
 			}
 		}
@@ -58,16 +56,22 @@ public class DisseminationListService {
 
 	}
 
-	protected ProcessSummary buildPublicationProcessSummary(MpPublication mpPublication) {
+	protected ProcessSummary buildPublicationProcessSummary(String ipNumber, MpPublication mpPublication) {
 		ProcessSummary processSummary = new ProcessSummary();
+		StringBuilder details = new StringBuilder("\n\n(").append(ipNumber).append(")");
 		if (mpPublication.isValid()) {
 			processSummary.setAdditions(1);
-			processSummary.setProcessingDetails("\n\tAdded to MyPubs as ProdId: " + mpPublication.getId());
+			details.append(" added to MyPubs as ProdId: ").append(mpPublication.getId());
 		} else {
-			processSummary.setErrors(1);
-			processSummary.setProcessingDetails("\nERROR: Failed validation.\n\t"
-					+ mpPublication.getValidationErrors().toString().replaceAll("\n", "\n\t"));
+			if (SeverityLevel.FATAL == mpPublication.getValidationErrors().maxSeverityLevel()) {
+				processSummary.setErrors(1);
+			}
+			details.append(" not added:");
 		}
+		if (!mpPublication.getValidationErrors().isEmpty()) {
+			details.append("\n\t").append(mpPublication.getValidationErrors().toString().replaceAll("\n", "\n\t"));
+		}
+		processSummary.setProcessingDetails(details.toString());
 		return processSummary;
 	}
 

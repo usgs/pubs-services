@@ -28,7 +28,7 @@ public class CorporateContributorBusService extends BusService<CorporateContribu
 
 	@Override
 	@Transactional
-	public CorporateContributor updateObject(CorporateContributor object) {
+	public CorporateContributor updateObject(CorporateContributor object, Class<?>... groups) {
 		CorporateContributor result = null;
 		if (null != object && null != object.getId()) {
 			Integer id = object.getId();
@@ -44,7 +44,7 @@ public class CorporateContributorBusService extends BusService<CorporateContribu
 
 	@Override
 	@Transactional
-	public CorporateContributor createObject(final CorporateContributor object) {
+	public CorporateContributor createObject(final CorporateContributor object, Class<?>... groups) {
 		CorporateContributor result = object;
 		if (null != object) {
 			Contributor<CorporateContributor> castObject = object;

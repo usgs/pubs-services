@@ -1,5 +1,7 @@
 package gov.usgs.cida.pubs.domain.sipp;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Note {
@@ -17,37 +19,37 @@ public class Note {
 	@JsonProperty("ModifiedBy")
 	private String modifiedBy;
 	public String getIpNumber() {
-		return ipNumber;
+		return StringUtils.trimToNull(ipNumber);
 	}
 	public void setIpNumber(String ipNumber) {
 		this.ipNumber = ipNumber;
 	}
 	public String getNoteComment() {
-		return noteComment;
+		return StringUtils.trimToNull(noteComment);
 	}
 	public void setNoteComment(String noteComment) {
 		this.noteComment = noteComment;
 	}
 	public String getCreated() {
-		return created;
+		return StringUtils.trimToNull(created);
 	}
 	public void setCreated(String created) {
 		this.created = created;
 	}
 	public String getCreatedBy() {
-		return createdBy;
+		return StringUtils.trimToNull(createdBy);
 	}
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
 	public String getModified() {
-		return modified;
+		return StringUtils.trimToNull(modified);
 	}
 	public void setModified(String modified) {
 		this.modified = modified;
 	}
 	public String getModifiedBy() {
-		return modifiedBy;
+		return StringUtils.trimToNull(modifiedBy);
 	}
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;

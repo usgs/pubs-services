@@ -33,15 +33,16 @@ public class ParentExistsValidatorForMpPublicationCostCenter implements Constrai
 					.addPropertyNode("publicationId").addConstraintViolation();
 			}
 			
-			if (null != value.getCostCenter() && null != value.getCostCenter().getId() 
-					&& null == CostCenter.getDao().getById(value.getCostCenter().getId())) {
+			if (null == value.getCostCenter()
+					|| null == value.getCostCenter().getId()
+					|| null == CostCenter.getDao().getById(value.getCostCenter().getId())) {
 				rtn = false;
 				context.disableDefaultConstraintViolation();
 				context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
 					.addPropertyNode("costCenter").addConstraintViolation();
 			}
 		}
-		
+
 		return rtn;
 	}
 

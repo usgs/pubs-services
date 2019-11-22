@@ -1,5 +1,7 @@
 package gov.usgs.cida.pubs.domain.sipp;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SpecialProductAlert {
@@ -9,13 +11,13 @@ public class SpecialProductAlert {
 	@JsonProperty("SpecialProductAlert")
 	private String specialProductAlert;
 	public String getIpNumber() {
-		return ipNumber;
+		return StringUtils.trimToNull(ipNumber);
 	}
 	public void setIpNumber(String ipNumber) {
 		this.ipNumber = ipNumber;
 	}
 	public String getSpecialProductAlert() {
-		return specialProductAlert;
+		return StringUtils.trimToNull(specialProductAlert);
 	}
 	public void setSpecialProductAlert(String specialProductAlert) {
 		this.specialProductAlert = specialProductAlert;

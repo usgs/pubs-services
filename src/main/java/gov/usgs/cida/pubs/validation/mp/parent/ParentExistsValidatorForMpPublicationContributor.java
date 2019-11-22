@@ -27,30 +27,33 @@ public class ParentExistsValidatorForMpPublicationContributor implements Constra
 		boolean rtn = true;
 
 		if (null != value && null != context) {
-			if (null != value.getPublicationId() && null == MpPublication.getDao().getById(value.getPublicationId())) {
+			if (null != value.getPublicationId()
+					&& null == MpPublication.getDao().getById(value.getPublicationId())) {
 				rtn = false;
 				context.disableDefaultConstraintViolation();
 				context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
 					.addPropertyNode("publicationId").addConstraintViolation();
 			}
-			
-			if (null != value.getContributor() && null != value.getContributor().getId() 
-					&& null == Contributor.getDao().getById(value.getContributor().getId())) {
+
+			if (null == value.getContributor()
+					|| null == value.getContributor().getId() 
+					|| null == Contributor.getDao().getById(value.getContributor().getId())) {
 				rtn = false;
 				context.disableDefaultConstraintViolation();
 				context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
 					.addPropertyNode("contributor").addConstraintViolation();
 			}
 
-			if (null != value.getContributorType() && null != value.getContributorType().getId() 
-					&& null == ContributorType.getDao().getById(value.getContributorType().getId())) {
+			if (null == value.getContributorType()
+					|| null == value.getContributorType().getId()
+					|| null == ContributorType.getDao().getById(value.getContributorType().getId())) {
 				rtn = false;
 				context.disableDefaultConstraintViolation();
 				context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
 					.addPropertyNode("contributorType").addConstraintViolation();
 			}
 		}
-		
+
 		return rtn;
 	}
 

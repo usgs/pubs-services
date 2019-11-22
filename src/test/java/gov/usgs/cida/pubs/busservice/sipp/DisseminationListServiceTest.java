@@ -74,7 +74,7 @@ public class DisseminationListServiceTest extends BaseTest {
 		assertEquals(2, valueCapture.getValue().getTotalEntries().intValue());
 		assertEquals(1, valueCapture.getValue().getPublicationsAdded().intValue());
 		assertEquals(1, valueCapture.getValue().getErrorsEncountered().intValue());
-		assertEquals("\n\tAdded to MyPubs as ProdId: 1234\n\t" + "Error processing IPNumber 'IP-5678': oops", valueCapture.getValue().getProcessingDetails());
+		assertEquals("\n\n(IP-1234) added to MyPubs as ProdId: 1234\n" + "Error processing IPNumber 'IP-5678': oops", valueCapture.getValue().getProcessingDetails());
 	}
 
 	@Test
@@ -120,18 +120,18 @@ public class DisseminationListServiceTest extends BaseTest {
 		mpPublication.setTitle("test");
 		mpPublication.setIndexId("ds1");
 
-		ProcessSummary processSummary = service.buildPublicationProcessSummary(mpPublication);
+		ProcessSummary processSummary = service.buildPublicationProcessSummary("IP-12345", mpPublication);
 
 		assertEquals(0, processSummary.getErrors());
 		assertEquals(1, processSummary.getAdditions());
-		assertEquals("\n\tAdded to MyPubs as ProdId: 1234", processSummary.getProcessingDetails());
+		assertEquals("\n\n(IP-12345) added to MyPubs as ProdId: 1234", processSummary.getProcessingDetails());
 
 		mpPublication.addValidatorResult(new ValidatorResult("publicationType", "must not be null", SeverityLevel.FATAL, null));
-		processSummary = service.buildPublicationProcessSummary(mpPublication);
+		processSummary = service.buildPublicationProcessSummary("IP-12345", mpPublication);
 
 		assertEquals(1, processSummary.getErrors());
 		assertEquals(0, processSummary.getAdditions());
-		assertEquals("\nERROR: Failed validation.\n" +
+		assertEquals("\n\n(IP-12345) not added:\n" +
 				"\tField:publicationType - Message:must not be null - Level:FATAL - Value:null\n" +
 				"\tValidator Results: 1 result(s)\n\t", processSummary.getProcessingDetails());
 	}

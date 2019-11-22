@@ -95,10 +95,12 @@ public class PublicationCostCenterValidationTest extends BaseValidatorTest {
 		pubCostCenter.setCostCenter(null);
 		pubCostCenter.setValidationErrors(validator.validate(pubCostCenter));
 		assertFalse(pubCostCenter.isValid());
-		assertEquals(1, pubCostCenter.getValidationErrors().getValidationErrors().size());
+		assertEquals(2, pubCostCenter.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(pubCostCenter.getValidationErrors().getValidationErrors(),
 				//From PublicationCostCenter
-				NOT_NULL_COST_CENTER
+				NOT_NULL_COST_CENTER,
+				//From ParentExistsValidatorForMpPublicationCostCenter
+				INVALID_COST_CENTER
 				);
 	}
 

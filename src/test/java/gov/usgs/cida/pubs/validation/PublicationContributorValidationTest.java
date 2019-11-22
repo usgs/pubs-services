@@ -106,10 +106,13 @@ public class PublicationContributorValidationTest extends BaseValidatorTest {
 		pubContributor.setContributor(null);
 		pubContributor.setValidationErrors(validator.validate(pubContributor));
 		assertFalse(pubContributor.isValid());
-		assertEquals(1, pubContributor.getValidationErrors().getValidationErrors().size());
+		assertEquals(3, pubContributor.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(pubContributor.getValidationErrors().getValidationErrors(),
 				//From PublicationContributor
-				NOT_NULL_CONTRIBUTOR
+				NOT_NULL_CONTRIBUTOR,
+				//From ParentExistsValidatorForMpPublicationContributor
+				INVALID_CONTRIBUTOR,
+				INVALID_CONTRIBUTOR_TYPE
 				);
 	}
 

@@ -199,7 +199,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		ValidatorResult locked = busService.checkAvailability(id);
 		if (null == locked) {
 			rtn = busService.deleteObject(id);
-			if (null != rtn && rtn.isEmpty()) {
+			if (null != rtn && rtn.isValid()) {
 				response.setStatus(HttpServletResponse.SC_OK);
 			} else {
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -222,7 +222,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		ValidatorResult locked = busService.checkAvailability(id);
 		if (null == locked) {
 			rtn = busService.purgePublication(id);
-			if (null != rtn && rtn.isEmpty()) {
+			if (null != rtn && rtn.isValid()) {
 				response.setStatus(HttpServletResponse.SC_OK);
 			} else if (null != rtn && rtn.toString().contains("Publication does not exist.")) {
 				response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -246,7 +246,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		ValidatorResult locked = busService.checkAvailability(pub.getId());
 		if (null == locked) {
 			rtn = busService.publish(pub.getId());
-			if (null != rtn && rtn.isEmpty()) {
+			if (null != rtn && rtn.isValid()) {
 				response.setStatus(HttpServletResponse.SC_OK);
 			} else if (null != rtn && rtn.toString().contains("Publication does not exist.")) {
 				response.setStatus(HttpStatus.NOT_FOUND.value());

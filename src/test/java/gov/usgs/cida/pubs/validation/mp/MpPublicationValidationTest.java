@@ -109,11 +109,15 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 	public static final String DUPLICATE_INDEX_ID = new ValidatorResult("indexId", "indexId 123 is already in use on Prod Id 1.", SeverityLevel.FATAL, null).toString();
 
 	public static final String NOT_NULL_CONTRIBUTOR = new ValidatorResult("contributors[0].contributor", NOT_NULL_MSG, SeverityLevel.FATAL, null).toString();
+	public static final String INVALID_CONTRIBUTOR = new ValidatorResult("contributors[0].contributor", NO_PARENT_MSG, SeverityLevel.FATAL, null).toString();
+	public static final String INVALID_CONTRIBUTOR_TYPE = new ValidatorResult("contributors[0].contributorType", NO_PARENT_MSG, SeverityLevel.FATAL, null).toString();
 
 	public static final String NOT_NULL_COST_CENTER = new ValidatorResult("costCenters[0].costCenter", NOT_NULL_MSG, SeverityLevel.FATAL, null).toString();
+	public static final String INVALID_COST_CENTER = new ValidatorResult("costCenters[0].costCenter", NO_PARENT_MSG, SeverityLevel.FATAL, null).toString();
 
 	public static final String NOT_NULL_LINK_URL = new ValidatorResult("links[0].url", NOT_NULL_MSG, SeverityLevel.FATAL, null).toString();
 	public static final String NOT_NULL_LINK_TYPE = new ValidatorResult("links[0].linkType", NOT_NULL_MSG, SeverityLevel.FATAL, null).toString();
+	public static final String INVALID_LINK_TYPE = new ValidatorResult("links[0].linkType", NO_PARENT_MSG, SeverityLevel.FATAL, null).toString();
 
 
 	public static final String USGS_NUMBERED_SERIES_NEED_SERIES_TITLE = new ValidatorResult("", "USGS Numbered Series must have a Series Title.", SeverityLevel.FATAL, null).toString();
@@ -198,7 +202,7 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 
 		mpPub.setValidationErrors(validator.validate(mpPub));
 		assertFalse(mpPub.isValid());
-		assertEquals(13, mpPub.getValidationErrors().getValidationErrors().size());
+		assertEquals(17, mpPub.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(mpPub.getValidationErrors().getValidationErrors(),
 				//From ParentExistsValidatorForMpPublication
 				INVALID_PUBLICATION_TYPE,
@@ -213,11 +217,15 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 				DUPLICATE_INDEX_ID,
 				//From PublicationContributor
 				NOT_NULL_CONTRIBUTOR,
+				INVALID_CONTRIBUTOR,
+				INVALID_CONTRIBUTOR_TYPE,
 				//From PublicationCostCenter
 				NOT_NULL_COST_CENTER,
+				INVALID_COST_CENTER,
 				//From PublicationLink
 				NOT_NULL_LINK_URL,
-				NOT_NULL_LINK_TYPE
+				NOT_NULL_LINK_TYPE,
+				INVALID_LINK_TYPE
 				);
 	}
 

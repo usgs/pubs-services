@@ -47,7 +47,7 @@ public class PublicationSeriesBusService extends BusService<PublicationSeries> {
 
 	@Override
 	@Transactional
-	public PublicationSeries updateObject(PublicationSeries object) {
+	public PublicationSeries updateObject(PublicationSeries object, Class<?>... groups) {
 		PublicationSeries result = object;
 		if (null != object && null != object.getId()) {
 			Integer id = object.getId();
@@ -65,7 +65,7 @@ public class PublicationSeriesBusService extends BusService<PublicationSeries> {
 	 */
 	@Override
 	@Transactional
-	public PublicationSeries createObject(PublicationSeries object) {
+	public PublicationSeries createObject(PublicationSeries object, Class<?>... groups) {
 		PublicationSeries result = object;
 		if (null != object) {
 			object.setValidationErrors(validator.validate(object));
@@ -82,7 +82,7 @@ public class PublicationSeriesBusService extends BusService<PublicationSeries> {
 	 */
 	@Override
 	@Transactional
-	public ValidationResults deleteObject(Integer objectId) {
+	public ValidationResults deleteObject(Integer objectId, Class<?>... groups) {
 		if (null != objectId) {
 			PublicationSeries publicationSeries = PublicationSeries.getDao().getById(objectId);
 			if (null == publicationSeries) {

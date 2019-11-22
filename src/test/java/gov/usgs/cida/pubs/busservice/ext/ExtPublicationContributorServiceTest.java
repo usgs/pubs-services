@@ -57,10 +57,13 @@ public class ExtPublicationContributorServiceTest extends BaseTest {
 	protected List<Contributor<?>> emptyContributorList = new ArrayList<>();
 	protected PersonContributor<?> personContributor = new PersonContributor<>();
 
+	protected ArgumentCaptor<Class<?>> varargCapture;
+
 	@Before
 	public void setUp() throws Exception {
 		extPublicationContributorService = new ExtPublicationContributorService(extAffiliationBusService, personContributorBusService);
 		reset(contributorDao, extAffiliationBusService, personContributorBusService, personContributorDao);
+		varargCapture = ArgumentCaptor.forClass(Class.class);
 	}
 
 	@Test
@@ -115,25 +118,25 @@ public class ExtPublicationContributorServiceTest extends BaseTest {
 				emptyContributorList,
 				List.of(UsgsContributorHelper.JANE_N_DOE)
 				);
-		doReturn(UsgsContributorHelper.JANE_DOE).when(personContributorBusService).createObject(any(PersonContributor.class));
+		doReturn(UsgsContributorHelper.JANE_DOE).when(personContributorBusService).createObject(any(PersonContributor.class), varargCapture.capture());
 		UsgsContributor contributor = new UsgsContributor();
 
 		//orcid null
 		assertEquals(UsgsContributorHelper.JANE_DOE, extPublicationContributorService.processUsgsContributor(contributor));
 		verify(personContributorDao, never()).getByPreferred(any(UsgsContributor.class));
-		verify(personContributorBusService).createObject(any(PersonContributor.class));
+		verify(personContributorBusService).createObject(any(PersonContributor.class), varargCapture.capture());
 
 		//not found
 		contributor.setOrcid("0000-0000-0000-0001");
 		assertEquals(UsgsContributorHelper.JANE_DOE, extPublicationContributorService.processUsgsContributor(contributor));
 		verify(personContributorDao).getByPreferred(any(UsgsContributor.class));
-		verify(personContributorBusService, times(2)).createObject(any(PersonContributor.class));
+		verify(personContributorBusService, times(2)).createObject(any(PersonContributor.class), varargCapture.capture());
 
 		//found
 		contributor.setOrcid("0000-0000-0000-0001");
 		assertEquals(UsgsContributorHelper.JANE_N_DOE, extPublicationContributorService.processUsgsContributor(contributor));
 		verify(personContributorDao, times(2)).getByPreferred(any(UsgsContributor.class));
-		verify(personContributorBusService, times(2)).createObject(any(PersonContributor.class));
+		verify(personContributorBusService, times(2)).createObject(any(PersonContributor.class), varargCapture.capture());
 	}
 
 	@Test
@@ -165,14 +168,14 @@ public class ExtPublicationContributorServiceTest extends BaseTest {
 		//with appropriate id's
 		ArgumentCaptor<UsgsContributor> valueCapture = ArgumentCaptor.forClass(UsgsContributor.class);
 		when(extAffiliationBusService.processAffiliations(anyCollection())).thenReturn(Set.of(CostCenterHelper.VOLCANO_HAZARDS_PROGRAM));
-		when(personContributorBusService.createObject(valueCapture.capture())).thenReturn(null);
-		doReturn(UsgsContributorHelper.JANE_DOE).when(personContributorBusService).createObject(valueCapture.capture());
+		when(personContributorBusService.createObject(valueCapture.capture(), varargCapture.capture())).thenReturn(null);
+		doReturn(UsgsContributorHelper.JANE_DOE).when(personContributorBusService).createObject(valueCapture.capture(), varargCapture.capture());
 
 		assertEquals(UsgsContributorHelper.JANE_DOE, extPublicationContributorService.createUsgsContributor(UsgsContributorHelper.JANE_DOE));
 		assertEquals(1, valueCapture.getValue().getAffiliations().size());
 		assertTrue(valueCapture.getValue().getAffiliations().contains(CostCenterHelper.VOLCANO_HAZARDS_PROGRAM));
 		verify(extAffiliationBusService).processAffiliations(anyCollection());
-		verify(personContributorBusService).createObject(any(PersonContributor.class));
+		verify(personContributorBusService).createObject(any(PersonContributor.class), varargCapture.capture());
 	}
 
 	@Test
@@ -185,48 +188,48 @@ public class ExtPublicationContributorServiceTest extends BaseTest {
 				emptyContributorList,								//not found by orcid - found by name (orcid call)
 				List.of(OutsideContributorHelper.JANE_Q_ODOUL)		//not found by orcid - found by name (name call)
 				);
-		doReturn(OutsideContributorHelper.JANE_M_DOE).when(personContributorBusService).createObject(any(PersonContributor.class));
+		doReturn(OutsideContributorHelper.JANE_M_DOE).when(personContributorBusService).createObject(any(PersonContributor.class), varargCapture.capture());
 		OutsideContributor contributor = new OutsideContributor();
 
 		//all null
 		assertEquals(OutsideContributorHelper.JANE_M_DOE, extPublicationContributorService.processOutsideContributor(contributor));
 		verify(personContributorDao, never()).getByMap(anyMap());
-		verify(personContributorBusService).createObject(any(PersonContributor.class));
+		verify(personContributorBusService).createObject(any(PersonContributor.class), varargCapture.capture());
 
 		//orcid null - family null
 		contributor.setGiven("given");
 		assertEquals(OutsideContributorHelper.JANE_M_DOE, extPublicationContributorService.processOutsideContributor(contributor));
 		verify(personContributorDao, never()).getByMap(anyMap());
-		verify(personContributorBusService, times(2)).createObject(any(PersonContributor.class));
+		verify(personContributorBusService, times(2)).createObject(any(PersonContributor.class), varargCapture.capture());
 
 		//orcid null - given null
 		contributor.setFamily("family");
 		contributor.setGiven(null);
 		assertEquals(OutsideContributorHelper.JANE_M_DOE, extPublicationContributorService.processOutsideContributor(contributor));
 		verify(personContributorDao, never()).getByMap(anyMap());
-		verify(personContributorBusService, times(3)).createObject(any(PersonContributor.class));
+		verify(personContributorBusService, times(3)).createObject(any(PersonContributor.class), varargCapture.capture());
 
 		//orcid null - not found by name
 		contributor.setGiven("given");
 		assertEquals(OutsideContributorHelper.JANE_M_DOE, extPublicationContributorService.processOutsideContributor(contributor));
 		verify(personContributorDao).getByMap(anyMap());
-		verify(personContributorBusService, times(4)).createObject(any(PersonContributor.class));
+		verify(personContributorBusService, times(4)).createObject(any(PersonContributor.class), varargCapture.capture());
 
 		//orcid null - found by name
 		assertEquals(OutsideContributorHelper.JANE_Q_ODOUL, extPublicationContributorService.processOutsideContributor(contributor));
 		verify(personContributorDao, times(2)).getByMap(anyMap());
-		verify(personContributorBusService, times(4)).createObject(any(PersonContributor.class));
+		verify(personContributorBusService, times(4)).createObject(any(PersonContributor.class), varargCapture.capture());
 
 		//found by orcid
 		contributor.setOrcid("0000-0000-0000-0001");
 		assertEquals(OutsideContributorHelper.JANE_M_DOE, extPublicationContributorService.processOutsideContributor(contributor));
 		verify(personContributorDao, times(3)).getByMap(anyMap());
-		verify(personContributorBusService, times(4)).createObject(any(PersonContributor.class));
+		verify(personContributorBusService, times(4)).createObject(any(PersonContributor.class), varargCapture.capture());
 
 		//not found by orcid - found by name
 		assertEquals(OutsideContributorHelper.JANE_Q_ODOUL, extPublicationContributorService.processOutsideContributor(contributor));
 		verify(personContributorDao, times(5)).getByMap(anyMap());
-		verify(personContributorBusService, times(4)).createObject(any(PersonContributor.class));
+		verify(personContributorBusService, times(4)).createObject(any(PersonContributor.class), varargCapture.capture());
 	}
 
 	@Test
@@ -280,12 +283,12 @@ public class ExtPublicationContributorServiceTest extends BaseTest {
 		//with appropriate id's
 		ArgumentCaptor<OutsideContributor> valueCapture = ArgumentCaptor.forClass(OutsideContributor.class);
 		when(extAffiliationBusService.processAffiliations(anyCollection())).thenReturn(Set.of(OutsideAffiliationHelper.UNIVERSITY_HAWAII_HILO));
-		doReturn(OutsideContributorHelper.JANE_M_DOE).when(personContributorBusService).createObject(valueCapture.capture());
+		doReturn(OutsideContributorHelper.JANE_M_DOE).when(personContributorBusService).createObject(valueCapture.capture(), varargCapture.capture());
 
 		assertEquals(OutsideContributorHelper.JANE_M_DOE, extPublicationContributorService.createOutsideContributor(OutsideContributorHelper.JANE_M_DOE));
 		assertEquals(1, valueCapture.getValue().getAffiliations().size());
 		assertTrue(valueCapture.getValue().getAffiliations().contains(OutsideAffiliationHelper.UNIVERSITY_HAWAII_HILO));
 		verify(extAffiliationBusService).processAffiliations(anyCollection());
-		verify(personContributorBusService).createObject(any(PersonContributor.class));
+		verify(personContributorBusService).createObject(any(PersonContributor.class), varargCapture.capture());
 	}
 }

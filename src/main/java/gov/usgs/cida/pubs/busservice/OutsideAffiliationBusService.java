@@ -44,7 +44,7 @@ public class OutsideAffiliationBusService extends BusService<OutsideAffiliation>
 
 	@Override
 	@Transactional
-	public OutsideAffiliation updateObject(OutsideAffiliation object) {
+	public OutsideAffiliation updateObject(OutsideAffiliation object, Class<?>... groups) {
 		OutsideAffiliation result = object;
 		if (null != object && null != object.getId()) {
 			Integer id = object.getId();
@@ -59,7 +59,7 @@ public class OutsideAffiliationBusService extends BusService<OutsideAffiliation>
 
 	@Override
 	@Transactional
-	public OutsideAffiliation createObject(OutsideAffiliation object) {
+	public OutsideAffiliation createObject(OutsideAffiliation object, Class<?>... groups) {
 		OutsideAffiliation result = object;
 		if (null != object) {
 			object.setValidationErrors(validator.validate(object));
@@ -73,7 +73,7 @@ public class OutsideAffiliationBusService extends BusService<OutsideAffiliation>
 
 	@Override
 	@Transactional
-	public ValidationResults deleteObject(Integer objectId) {
+	public ValidationResults deleteObject(Integer objectId, Class<?>... groups) {
 		if (null != objectId) {
 			OutsideAffiliation outsideAffiliation = OutsideAffiliation.getDao().getById(objectId);
 			if (null == outsideAffiliation) {

@@ -31,6 +31,7 @@ import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
+import gov.usgs.cida.pubs.validation.constraint.ManagerChecks;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 
@@ -83,7 +84,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	public @ResponseBody UsgsContributor createUsgsContributor(@RequestBody UsgsContributor person, HttpServletResponse response) {
 		LOG.debug("createUsgsContributor");
 		setHeaders(response);
-		UsgsContributor result = (UsgsContributor) personContributorBusService.createObject(person);
+		UsgsContributor result = (UsgsContributor) personContributorBusService.createObject(person, ManagerChecks.class);
 		if (null != result && result.isValid()) {
 			response.setStatus(HttpServletResponse.SC_CREATED);
 		} else {
@@ -104,7 +105,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		ValidatorResult idNotMatched = PubsUtils.validateIdsMatch(id, person);
 
 		if (null == idNotMatched) {
-			result = (UsgsContributor) personContributorBusService.updateObject(person);
+			result = (UsgsContributor) personContributorBusService.updateObject(person, ManagerChecks.class);
 		} else {
 			result.addValidatorResult(idNotMatched);
 		}
@@ -125,7 +126,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 			HttpServletResponse response) {
 		LOG.debug("createOutsideContributor");
 		setHeaders(response);
-		OutsideContributor result = (OutsideContributor) personContributorBusService.createObject(person);
+		OutsideContributor result = (OutsideContributor) personContributorBusService.createObject(person, ManagerChecks.class);
 		if (null != result && result.isValid()) {
 			response.setStatus(HttpServletResponse.SC_CREATED);
 		} else {
@@ -146,7 +147,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		ValidatorResult idNotMatched = PubsUtils.validateIdsMatch(id, person);
 
 		if (null == idNotMatched) {
-			result = (OutsideContributor) personContributorBusService.updateObject(person);
+			result = (OutsideContributor) personContributorBusService.updateObject(person, ManagerChecks.class);
 		} else {
 			result.addValidatorResult(idNotMatched);
 		}
@@ -180,7 +181,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 	public @ResponseBody CorporateContributor createCorporation(@RequestBody CorporateContributor corporation, HttpServletResponse response) {
 		LOG.debug("createCorporation");
 		setHeaders(response);
-		CorporateContributor result = corporateContributorBusService.createObject(corporation);
+		CorporateContributor result = corporateContributorBusService.createObject(corporation, ManagerChecks.class);
 		if (null != result && result.isValid()) {
 			response.setStatus(HttpServletResponse.SC_CREATED);
 		} else {
@@ -201,7 +202,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		ValidatorResult idNotMatched = PubsUtils.validateIdsMatch(id, corporation);
 
 		if (null == idNotMatched) {
-			result = (CorporateContributor) corporateContributorBusService.updateObject(corporation);
+			result = (CorporateContributor) corporateContributorBusService.updateObject(corporation, ManagerChecks.class);
 		} else {
 			result.addValidatorResult(idNotMatched);
 		}

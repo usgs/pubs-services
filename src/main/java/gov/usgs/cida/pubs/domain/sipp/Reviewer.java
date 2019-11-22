@@ -1,5 +1,7 @@
 package gov.usgs.cida.pubs.domain.sipp;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Reviewer {
@@ -21,49 +23,49 @@ public class Reviewer {
 	@JsonProperty("ModifiedBy")
 	private String modifiedBy;
 	public String getIpNumber() {
-		return ipNumber;
+		return StringUtils.trimToNull(ipNumber);
 	}
 	public void setIpNumber(String ipNumber) {
 		this.ipNumber = ipNumber;
 	}
 	public String getReviewerType() {
-		return reviewerType;
+		return StringUtils.trimToNull(reviewerType);
 	}
 	public void setReviewerType(String reviewerType) {
 		this.reviewerType = reviewerType;
 	}
 	public String getReviewerName() {
-		return reviewerName;
+		return StringUtils.trimToNull(reviewerName);
 	}
 	public void setReviewerName(String reviewerName) {
 		this.reviewerName = reviewerName;
 	}
 	public String getReviewerAffiliation() {
-		return reviewerAffiliation;
+		return StringUtils.trimToNull(reviewerAffiliation);
 	}
 	public void setReviewerAffiliation(String reviewerAffiliation) {
 		this.reviewerAffiliation = reviewerAffiliation;
 	}
 	public String getCreated() {
-		return created;
+		return StringUtils.trimToNull(created);
 	}
 	public void setCreated(String created) {
 		this.created = created;
 	}
 	public String getCreatedBy() {
-		return createdBy;
+		return StringUtils.trimToNull(createdBy);
 	}
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
 	public String getModified() {
-		return modified;
+		return StringUtils.trimToNull(modified);
 	}
 	public void setModified(String modified) {
 		this.modified = modified;
 	}
 	public String getModifiedBy() {
-		return modifiedBy;
+		return StringUtils.trimToNull(modifiedBy);
 	}
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;

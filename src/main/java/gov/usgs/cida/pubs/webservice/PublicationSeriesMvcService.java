@@ -149,7 +149,7 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 	public @ResponseBody ValidationResults deletePublicationSeries(@PathVariable String id, HttpServletResponse response) {
 		setHeaders(response);
 		ValidationResults result = busService.deleteObject(PubsUtils.parseInteger(id));
-		if (null != result && result.isEmpty()) {
+		if (null != result && result.isValid()) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

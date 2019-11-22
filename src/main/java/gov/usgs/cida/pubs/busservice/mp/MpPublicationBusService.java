@@ -92,7 +92,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 
 	@Override
 	@Transactional
-	public MpPublication createObject(MpPublication object) {
+	public MpPublication createObject(MpPublication object, Class<?>... groups) {
 		if (null != object) {
 			MpPublication pub = publicationPreProcessing(object);
 			pub.setValidationErrors(validator.validate(pub));
@@ -108,7 +108,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 
 	@Override
 	@Transactional
-	public MpPublication updateObject(MpPublication object) {
+	public MpPublication updateObject(MpPublication object, Class<?>... groups) {
 		if (null != object) {
 			beginPublicationEdit(object.getId());
 			MpPublication pub = publicationPreProcessing(object);
@@ -124,7 +124,7 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 
 	@Override
 	@Transactional
-	public ValidationResults deleteObject(Integer objectId) {
+	public ValidationResults deleteObject(Integer objectId, Class<?>... groups) {
 		if (null != objectId) {
 			MpPublication pub = MpPublication.getDao().getById(objectId);
 			if (null == pub) {

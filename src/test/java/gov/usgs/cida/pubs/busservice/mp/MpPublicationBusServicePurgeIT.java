@@ -84,14 +84,14 @@ public class MpPublicationBusServicePurgeIT extends BaseIT {
 	public void nullID() {
 		ValidationResults validationResults = busService.purgePublication(null);
 		assertNotNull(validationResults);
-		assertTrue(validationResults.isEmpty());
+		assertTrue(validationResults.isValid());
 	}
 
 	@Test
 	public void notFound() {
 		ValidationResults validationResults = busService.purgePublication(123);
 		assertNotNull(validationResults);
-		assertFalse(validationResults.isEmpty());
+		assertFalse(validationResults.isValid());
 		assertEquals("Field:Publication - Message:Publication does not exist. - Level:FATAL - Value:123\n" + 
 				"Validator Results: 1 result(s)\n",
 				validationResults.toString());
@@ -110,7 +110,7 @@ public class MpPublicationBusServicePurgeIT extends BaseIT {
 	public void onlyMp() {
 		ValidationResults validationResults = busService.purgePublication(2);
 		assertNotNull(validationResults);
-		assertTrue(validationResults.isEmpty());
+		assertTrue(validationResults.isValid());
 	}
 
 	@Test
@@ -136,7 +136,7 @@ public class MpPublicationBusServicePurgeIT extends BaseIT {
 	public void onlyPw() {
 		ValidationResults validationResults = busService.purgePublication(2);
 		assertNotNull(validationResults);
-		assertTrue(validationResults.isEmpty());
+		assertTrue(validationResults.isValid());
 	}
 
 	@Test
@@ -166,7 +166,7 @@ public class MpPublicationBusServicePurgeIT extends BaseIT {
 	public void both() {
 		ValidationResults validationResults = busService.purgePublication(2);
 		assertNotNull(validationResults);
-		assertTrue(validationResults.isEmpty());
+		assertTrue(validationResults.isValid());
 	}
 
 	@Test

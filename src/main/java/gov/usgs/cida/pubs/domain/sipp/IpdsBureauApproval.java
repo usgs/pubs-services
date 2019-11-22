@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.domain.sipp;
 
 import java.time.LocalDateTime;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -53,49 +54,49 @@ public class IpdsBureauApproval {
 	@JsonProperty("CostCenterCode")
 	private String costCenterCode;
 	public String getIpNumber() {
-		return ipNumber;
+		return StringUtils.trimToNull(ipNumber);
 	}
 	public void setIpNumber(String ipNumber) {
 		this.ipNumber = ipNumber;
 	}
 	public String getWorkingTitle() {
-		return workingTitle;
+		return StringUtils.trimToNull(workingTitle);
 	}
 	public void setWorkingTitle(String workingTitle) {
 		this.workingTitle = workingTitle;
 	}
 	public String getSeniorUSGSAuthor() {
-		return seniorUSGSAuthor;
+		return StringUtils.trimToNull(seniorUSGSAuthor);
 	}
 	public void setSeniorUSGSAuthor(String seniorUSGSAuthor) {
 		this.seniorUSGSAuthor = seniorUSGSAuthor;
 	}
 	public String getTeamProjectName() {
-		return teamProjectName;
+		return StringUtils.trimToNull(teamProjectName);
 	}
 	public void setTeamProjectName(String teamProjectName) {
 		this.teamProjectName = teamProjectName;
 	}
 	public String getCitation() {
-		return citation;
+		return StringUtils.trimToNull(citation);
 	}
 	public void setCitation(String citation) {
 		this.citation = citation;
 	}
 	public String getProductType() {
-		return productType;
+		return StringUtils.trimToNull(productType);
 	}
 	public void setProductType(String productType) {
 		this.productType = productType;
 	}
 	public String getUsgsSeriesType() {
-		return usgsSeriesType;
+		return StringUtils.trimToNull(usgsSeriesType);
 	}
 	public void setUsgsSeriesType(String usgsSeriesType) {
 		this.usgsSeriesType = usgsSeriesType;
 	}
 	public String getUsgsSeriesNumber() {
-		return usgsSeriesNumber;
+		return StringUtils.trimToNull(usgsSeriesNumber);
 	}
 	public void setUsgsSeriesNumber(String usgsSeriesNumber) {
 		this.usgsSeriesNumber = usgsSeriesNumber;
@@ -107,7 +108,7 @@ public class IpdsBureauApproval {
 		this.bureauApprovalDate = bureauApprovalDate;
 	}
 	public String getBureauApprovalBy() {
-		return bureauApprovalBy;
+		return StringUtils.trimToNull(bureauApprovalBy);
 	}
 	public void setBureauApprovalBy(String bureauApprovalBy) {
 		this.bureauApprovalBy = bureauApprovalBy;
@@ -119,7 +120,7 @@ public class IpdsBureauApproval {
 		this.disseminatedDate = disseminatedDate;
 	}
 	public String getCurrentTask() {
-		return currentTask;
+		return StringUtils.trimToNull(currentTask);
 	}
 	public void setCurrentTask(String currentTask) {
 		this.currentTask = currentTask;
@@ -131,37 +132,37 @@ public class IpdsBureauApproval {
 		this.currentTaskStarted = currentTaskStarted;
 	}
 	public String getCostCenter() {
-		return costCenter;
+		return StringUtils.trimToNull(costCenter);
 	}
 	public void setCostCenter(String costCenter) {
 		this.costCenter = costCenter;
 	}
 	public String getPublishingServiceCenter() {
-		return publishingServiceCenter;
+		return StringUtils.trimToNull(publishingServiceCenter);
 	}
 	public void setPublishingServiceCenter(String publishingServiceCenter) {
 		this.publishingServiceCenter = publishingServiceCenter;
 	}
 	public String getUsgsMissionArea() {
-		return usgsMissionArea;
+		return StringUtils.trimToNull(usgsMissionArea);
 	}
 	public void setUsgsMissionArea(String usgsMissionArea) {
 		this.usgsMissionArea = usgsMissionArea;
 	}
 	public String getUsgsRegion() {
-		return usgsRegion;
+		return StringUtils.trimToNull(usgsRegion);
 	}
 	public void setUsgsRegion(String usgsRegion) {
 		this.usgsRegion = usgsRegion;
 	}
 	public String getUsgsProgram() {
-		return usgsProgram;
+		return StringUtils.trimToNull(usgsProgram);
 	}
 	public void setUsgsProgram(String usgsProgram) {
 		this.usgsProgram = usgsProgram;
 	}
 	public String getCostCenterCode() {
-		return costCenterCode;
+		return StringUtils.trimToNull(costCenterCode);
 	}
 	public void setCostCenterCode(String costCenterCode) {
 		this.costCenterCode = costCenterCode;

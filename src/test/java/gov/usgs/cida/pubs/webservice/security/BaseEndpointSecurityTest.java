@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
+import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -155,7 +156,11 @@ public abstract class BaseEndpointSecurityTest extends BaseSecurityTest {
 	@MockBean(name="sippProcess")
 	protected ISippProcess sippProcess;
 
+	protected ArgumentCaptor<Class<?>> varargCapture;
+
 	public void mockSetup() throws Exception {
+		varargCapture = ArgumentCaptor.forClass(Class.class);
+
 		when(costCenterBusService.getObject(anyInt())).thenReturn(new CostCenter());
 		when(costCenterBusService.getObjects(anyMap())).thenReturn(null);
 		when(costCenterBusService.createObject(any(CostCenter.class))).thenReturn(new CostCenter());
@@ -187,8 +192,8 @@ public abstract class BaseEndpointSecurityTest extends BaseSecurityTest {
 		when(mpPublicationBusService.purgePublication(anyInt())).thenReturn(new ValidationResults());
 
 		when(corporateContributorBusService.getObject(anyInt())).thenReturn(CorporateContributorDaoIT.buildACorp(1));
-		when(corporateContributorBusService.createObject(any(CorporateContributor.class))).thenReturn(CorporateContributorDaoIT.buildACorp(1));
-		when(corporateContributorBusService.updateObject(any(CorporateContributor.class))).thenReturn(CorporateContributorDaoIT.buildACorp(1));
+		when(corporateContributorBusService.createObject(any(CorporateContributor.class), varargCapture.capture())).thenReturn(CorporateContributorDaoIT.buildACorp(1));
+		when(corporateContributorBusService.updateObject(any(CorporateContributor.class), varargCapture.capture())).thenReturn(CorporateContributorDaoIT.buildACorp(1));
 
 		when(mpListBusService.updateObject(any(MpList.class))).thenReturn(MpListDaoIT.buildMpList(66));
 		when(mpListBusService.getObjects(anyMap())).thenReturn(MpListMvcServiceTest.getListOfMpList());
@@ -196,10 +201,10 @@ public abstract class BaseEndpointSecurityTest extends BaseSecurityTest {
 		when(mpListBusService.deleteObject(anyInt())).thenReturn(new ValidationResults());
 
 		doReturn(PersonContributorDaoIT.buildAPerson(1, "USGS")).when(personContributorBusService).getObject(anyInt());
-		doReturn(PersonContributorDaoIT.buildAPerson(1, "USGS")).when(personContributorBusService).createObject(any(UsgsContributor.class));
-		doReturn(PersonContributorDaoIT.buildAPerson(1, "OUTSIDE")).when(personContributorBusService).createObject(any(OutsideContributor.class));
-		doReturn(PersonContributorDaoIT.buildAPerson(1, "USGS")).when(personContributorBusService).updateObject(any(UsgsContributor.class));
-		doReturn(PersonContributorDaoIT.buildAPerson(1, "OUTSIDE")).when(personContributorBusService).updateObject(any(OutsideContributor.class));
+		doReturn(PersonContributorDaoIT.buildAPerson(1, "USGS")).when(personContributorBusService).createObject(any(UsgsContributor.class), varargCapture.capture());
+		doReturn(PersonContributorDaoIT.buildAPerson(1, "OUTSIDE")).when(personContributorBusService).createObject(any(OutsideContributor.class), varargCapture.capture());
+		doReturn(PersonContributorDaoIT.buildAPerson(1, "USGS")).when(personContributorBusService).updateObject(any(UsgsContributor.class), varargCapture.capture());
+		doReturn(PersonContributorDaoIT.buildAPerson(1, "OUTSIDE")).when(personContributorBusService).updateObject(any(OutsideContributor.class), varargCapture.capture());
 		when(personContributorBusService.deleteObject(anyInt())).thenReturn(new ValidationResults());
 
 		when(affiliationDao.getByMap(anyMap())).thenReturn(null);

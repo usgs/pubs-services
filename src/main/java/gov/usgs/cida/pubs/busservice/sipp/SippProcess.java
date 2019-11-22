@@ -9,8 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.busservice.ext.ExtPublicationService;
@@ -25,6 +27,7 @@ import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.sipp.InformationProduct;
 import gov.usgs.cida.pubs.domain.sipp.IpdsPubTypeConv;
+import gov.usgs.cida.pubs.domain.sipp.RollbackException;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 
@@ -35,22 +38,47 @@ public class SippProcess implements ISippProcess {
 	private final ExtPublicationService extPublicationBusService;
 	private final IMpPublicationBusService pubBusService;
 	private final SippConversionService sippConversionService;
+	protected PlatformTransactionManager txnMgr;
 
 	@Autowired
 	public SippProcess(
 			final ExtPublicationService extPublicationBusService,
 			final IMpPublicationBusService pubBusService,
-			final SippConversionService sippConversionService
+			final SippConversionService sippConversionService,
+			final PlatformTransactionManager transactionManager
 			) {
 		this.extPublicationBusService = extPublicationBusService;
 		this.pubBusService = pubBusService;
 		this.sippConversionService = sippConversionService;
+		this.txnMgr = transactionManager;
 	}
 
-	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public MpPublication processInformationProduct(ProcessType processType, String ipNumber) {
-		MpPublication rtn = null;
+		TransactionDefinition txDef = new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+		TransactionStatus txStatus = txnMgr.getTransaction(txDef);
+		MpPublication rtn = new MpPublication();
 
+		try {
+			rtn = processInNewTransaction(processType, ipNumber);
+			if (rtn.isValid() && !txStatus.isRollbackOnly()) {
+				txnMgr.commit(txStatus);
+			} else {
+				throw new RollbackException("Transaction set to rollbackOnly!!" + ipNumber, null);
+			}
+		} catch (RollbackException e) {
+			LOG.debug(e.getLocalizedMessage());
+			txnMgr.rollback(txStatus);
+		} catch (Exception e) {
+			rtn.addValidatorResult(new ValidatorResult("MpPublication", e.getLocalizedMessage(), SeverityLevel.FATAL, ipNumber));
+			LOG.info(ipNumber + ": " + e.getLocalizedMessage(), e);
+			txnMgr.rollback(txStatus);
+		}
+
+		return rtn;
+	}
+
+	protected MpPublication processInNewTransaction(ProcessType processType, String ipNumber) {
+		MpPublication rtn = null;
 		MpPublication mpPublication = null;
 		InformationProduct informationProduct = getInformationProduct(ipNumber);
 
@@ -58,21 +86,19 @@ public class SippProcess implements ISippProcess {
 			mpPublication = getMpPublication(informationProduct);
 		}
 
-		if (okToProcess(processType, informationProduct, mpPublication)) {
-			Integer prodId = null == mpPublication ? null : mpPublication.getId();
-			rtn = processPublication(processType, informationProduct, prodId);
+		ValidatorResult processDetermination = okToProcess(processType, informationProduct, mpPublication);
+		if (null == processDetermination) {
+				Integer prodId = null == mpPublication ? null : mpPublication.getId();
+				rtn = processPublication(processType, informationProduct, prodId);
 		} else {
-			String errMess = buildNotOkDetails(processType, informationProduct, ipNumber);
-			ValidatorResult validatorResult = new ValidatorResult("MpPublication", errMess, SeverityLevel.FATAL, ipNumber);
 			if(mpPublication == null) {
 				rtn = new MpPublication();
 			} else {
 				rtn = mpPublication;
 			}
 
-			rtn.addValidatorResult(validatorResult);
+			rtn.addValidatorResult(processDetermination);
 		}
-
 		return rtn;
 	}
 
@@ -92,7 +118,7 @@ public class SippProcess implements ISippProcess {
 				informationProduct.setUsgsNumberedSeries(
 					PubsUtils.isUsgsNumberedSeries(idsPubTypeConv.getPublicationSubtype()));
 			} else {
-				LOG.info("IpdsPubTypeConv not found for: {} {}", informationProduct.getIpNumber(), informationProduct.getProductType());
+				LOG.debug("IpdsPubTypeConv not found for: {} {}", informationProduct.getIpNumber(), informationProduct.getProductType());
 			}
 
 			if (informationProduct.isUsgsNumberedSeries()) {
@@ -145,7 +171,7 @@ public class SippProcess implements ISippProcess {
 		return pwPublication;
 	}
 
-	protected boolean okToProcess(ProcessType inProcessType, InformationProduct informationProduct, MpPublication mpPublication) {
+	protected ValidatorResult okToProcess(ProcessType inProcessType, InformationProduct informationProduct, MpPublication mpPublication) {
 		if (null != inProcessType && null != informationProduct && null != informationProduct.getPublicationType()) {
 			switch (inProcessType) {
 			case DISSEMINATION:
@@ -156,48 +182,58 @@ public class SippProcess implements ISippProcess {
 				break;
 			}
 		}
-		return false;
+		return new ValidatorResult("MpPublication",
+				String.format("ProcessType (%s) or PublicationType (%s) invalid (ProductType: %s).",
+						inProcessType,
+						informationProduct == null ? "null" : informationProduct.getPublicationType(),
+						informationProduct == null ? "null" : informationProduct.getProductType()),
+				SeverityLevel.SKIPPED, informationProduct == null ? "null" : informationProduct.getIpNumber());
 	}
 
-	protected boolean okToProcessDissemination(InformationProduct informationProduct, MpPublication mpPublication) {
-		boolean rtn = false;
+	protected ValidatorResult okToProcessDissemination(InformationProduct informationProduct, MpPublication mpPublication) {
+		ValidatorResult rtn = null;
 		if (null == informationProduct) {
 			//Do not proceed if the new data is null
-			LOG.info("Not okToProcessDissemination - new data is null");
+			rtn = buildNotOkDetails(ProcessType.DISSEMINATION, informationProduct, "Not okToProcessDissemination - new data is null.");
 		} else if (null != getPwPublication(informationProduct)) {
 			//Do not proceed if the pub has been published
-			LOG.info("Not okToProcessDissemination - Pub {} already published", informationProduct.getIpNumber());
+			rtn = buildNotOkDetails(ProcessType.DISSEMINATION, informationProduct, "Not okToProcessDissemination - Pub is already published.");
 		} else if (informationProduct.isUsgsNumberedSeries()
 				&& null == informationProduct.getUsgsSeriesTitle()) {
 			//Do not process USGS numbered series without an actual series.
-			LOG.info("Not okToProcessDissemination - Pub {} is a USGS Nmber Series, but Series Title is empty", informationProduct.getIpNumber());
+			rtn = buildNotOkDetails(ProcessType.DISSEMINATION, informationProduct, "Not okToProcessDissemination - Pub is a USGS Nmber Series, but Series Title is empty.");
 		} else if (null == mpPublication) {
 			//OK to process at this point if we have no record of the pub
-			LOG.info("okToProcessDissemination - Pub {} not in MP", informationProduct.getIpNumber());
-			rtn = true;
+			LOG.debug("Is okToProcessDissemination - Pub {} not in MP", informationProduct.getIpNumber());
+			rtn = null;
 		} else if (StringUtils.isEmpty(mpPublication.getIpdsReviewProcessState())
 				|| ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(mpPublication.getIpdsReviewProcessState())) {
 			//It is ok to process a publication already in MyPubs if has no review state or is in the SPN Production state.
-			LOG.info("okToProcessDissemination - Pub {} in SPN_PRODUCTION", informationProduct.getIpNumber());
-			rtn = true;
+			LOG.debug("Is okToProcessDissemination - Pub {} in SPN_PRODUCTION", informationProduct.getIpNumber());
+			rtn = null;
 		} else {
-			LOG.info("Not okToProcessDissemination - did not hit either OK options {}", informationProduct.getIpNumber());
+			rtn = buildNotOkDetails(ProcessType.SPN_PRODUCTION, informationProduct, "Not okToProcessDissemination - Already in Manager.");
 		}
 		return rtn;
 	}
 
-	protected boolean okToProcessSpnProduction(InformationProduct informationProduct) {
-		boolean rtn = false;
-		if (null != informationProduct) {
-			if (StringUtils.isNotBlank(informationProduct.getDigitalObjectIdentifier())) {
-				//Skip if we have already assigned a DOI (shouldn't happen as we are querying for null DOI publications)
-				LOG.info("Not okToProcessSpnProduction - Pub {} already has a DOI assigned", informationProduct.getIpNumber());
-			} else if (null == informationProduct.getTask() || !ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(informationProduct.getTask())) {
-				//Skip if not in SPN Production (shouldn't happen as we are querying SPN Production only)
-				LOG.info("Not okToProcessSpnProduction - Pub {} is in {} status, rather than SPN_PRODUCTION", informationProduct.getIpNumber(), informationProduct.getTask());
-			} else if (informationProduct.isUsgsNumberedSeries()) {
-				rtn = true;
-			}
+	protected ValidatorResult okToProcessSpnProduction(InformationProduct informationProduct) {
+		ValidatorResult rtn = null;
+		if (null == informationProduct) {
+			//Do not proceed if the new data is null
+			rtn = buildNotOkDetails(ProcessType.SPN_PRODUCTION, informationProduct, "Not okToProcessSpnProduction - new data is null.");
+		} else if (StringUtils.isNotBlank(informationProduct.getDigitalObjectIdentifier())) {
+			//Skip if we have already assigned a DOI (shouldn't happen as we are querying for null DOI publications)
+			rtn = buildNotOkDetails(ProcessType.SPN_PRODUCTION, informationProduct, "Not okToProcessSpnProduction - Pub already has a DOI assigned.");
+		} else if (null == informationProduct.getTask() || !ProcessType.SPN_PRODUCTION.getIpdsValue().contentEquals(informationProduct.getTask())) {
+			//Skip if not in SPN Production (shouldn't happen as we are querying SPN Production only)
+			rtn = buildNotOkDetails(ProcessType.SPN_PRODUCTION, informationProduct,
+					String.format("Not okToProcessSpnProduction - Pub is in %s status, rather than SPN_PRODUCTION.", informationProduct.getTask()));
+		} else if (informationProduct.isUsgsNumberedSeries()) {
+			LOG.debug("Is okToProcessSpnProduction - isUsgsNumberedSeries", informationProduct.getIpNumber());
+			rtn = null;
+		} else {
+			rtn = buildNotOkDetails(ProcessType.SPN_PRODUCTION, informationProduct, "Not okToProcessSpnProduction - Not a USGS Number Series.");
 		}
 		return rtn;
 	}
@@ -226,14 +262,11 @@ public class SippProcess implements ISippProcess {
 		return rtnPub;
 	}
 
-	protected String buildNotOkDetails(ProcessType processType, InformationProduct informationProduct, String ipNumber) {
+	protected ValidatorResult buildNotOkDetails(ProcessType processType, InformationProduct informationProduct, String msg) {
 		String productType = informationProduct == null || informationProduct.getProductType() == null
 				? "[Not Found]" : informationProduct.getProductType();
 
-		String notProcessedMess = String.format("IPDS record for IPNumber '%s' not processed", ipNumber);
-
-		StringBuilder notOkDetails = new StringBuilder("\n\t").append(notProcessedMess).append(" (\"").append(processType).append("\") -")
-				.append(" ProductType: ").append(productType);
+		StringBuilder notOkDetails = new StringBuilder(msg).append(" ProductType: ").append(productType);
 
 		if (informationProduct != null) {
 			if (null != informationProduct.getPublicationType()) {
@@ -247,6 +280,6 @@ public class SippProcess implements ISippProcess {
 			}
 			notOkDetails.append(" Process State: ").append(informationProduct.getTask()).append(" DOI: ").append(informationProduct.getDigitalObjectIdentifier());
 		}
-		return notOkDetails.toString();
+		return new ValidatorResult("MpPublication", notOkDetails.toString(), SeverityLevel.SKIPPED, informationProduct == null ? null : informationProduct.getIpNumber());
 	}
 }

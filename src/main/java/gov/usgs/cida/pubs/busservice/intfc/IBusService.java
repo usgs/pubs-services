@@ -6,10 +6,6 @@ import gov.usgs.cida.pubs.validation.ValidationResults;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author drsteini
- *
- */
 public interface IBusService <D> {
 
 	/**
@@ -42,7 +38,7 @@ public interface IBusService <D> {
 	 * @param object to create
 	 * @return The created object.
 	 */
-	D createObject(final D object);
+	D createObject(final D object, Class<?>... groups);
 
 	/**
 	 * Update an object.
@@ -50,7 +46,7 @@ public interface IBusService <D> {
 	 * @param object to update
 	 * @return The updated object.
 	 */
-	D updateObject(final D object);
+	D updateObject(final D object, Class<?>... groups);
 
 	/**
 	 * Delete an object
@@ -58,6 +54,6 @@ public interface IBusService <D> {
 	 * @param objectId to delete
 	 * @return TODO
 	 */
-	ValidationResults deleteObject(final Integer objectId);
+	ValidationResults deleteObject(final Integer objectId, Class<?>... groups);
 
 }

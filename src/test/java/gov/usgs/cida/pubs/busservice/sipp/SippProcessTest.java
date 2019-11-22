@@ -26,9 +26,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import gov.usgs.cida.pubs.BaseTest;
+import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.busservice.ext.ExtPublicationService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
@@ -77,6 +81,10 @@ public class SippProcessTest extends BaseTest {
 	protected IPublishingServiceCenterDao publishingServiceCenterDao;
 	@MockBean
 	protected SippConversionService sippConversionService;
+	@MockBean
+	protected PlatformTransactionManager transactionManager;
+	@MockBean
+	protected TransactionStatus transactionStatus;
 
 	protected SippProcess sippProcess;
 	protected List<MpPublication> emptyList = new ArrayList<>();
@@ -87,7 +95,7 @@ public class SippProcessTest extends BaseTest {
 
 	@Before
 	public void setUp() throws Exception {
-		sippProcess = new SippProcess(extPublicationBusService, pubBusService, sippConversionService);
+		sippProcess = new SippProcess(extPublicationBusService, pubBusService, sippConversionService, transactionManager);
 		mpPublication9 = (MpPublication) PublicationIT.buildAPub(new MpPublication(), 9);
 		mpPublication11 = (MpPublication) PublicationIT.buildAPub(new MpPublication(), 11);
 		mpPublication11.setId(11);
@@ -112,6 +120,8 @@ public class SippProcessTest extends BaseTest {
 		when(sippConversionService.buildMpPublication(any(InformationProduct.class), isNull())).thenReturn(new MpPublication());
 		when(sippConversionService.buildMpPublication(any(InformationProduct.class), anyInt())).thenReturn(new MpPublication());
 		when(extPublicationBusService.create(any(MpPublication.class))).thenReturn(mpPublicationx);
+		when(transactionManager.getTransaction(any(TransactionDefinition.class))).thenReturn(transactionStatus);
+		when(transactionStatus.isRollbackOnly()).thenReturn(false);
 
 		MpPublication pub = sippProcess.processInformationProduct(ProcessType.DISSEMINATION, "IP-12344354");
 		assertTrue(pub.isValid());
@@ -122,9 +132,10 @@ public class SippProcessTest extends BaseTest {
 		assertEquals(pub.getId() + "", "123");
 
 		pub = sippProcess.processInformationProduct(ProcessType.DISSEMINATION, "IP-12344354");
-		assertEquals("Field:MpPublication - Message:\n\tIPDS record for IPNumber 'IP-12344354' not processed (\"DISSEMINATION\") - ProductType: Cooperator publication Publication Type: Report"
-				+ " PublicationSubtype: USGS Numbered Series Series: Scientific Investigations Report Process State: Dissemination DOI:"
-				+ "  - Level:FATAL - Value:IP-12344354\nValidator Results: 1 result(s)\n", pub.getValidationErrors().toString());
+		assertEquals("Field:MpPublication - Message:Not okToProcessDissemination - Already in Manager. ProductType: Cooperator publication"
+				+ " Publication Type: Report PublicationSubtype: USGS Numbered Series Series: Scientific Investigations Report"
+				+ " Process State: Dissemination DOI: null - Level:SKIPPED - Value:IP-108541\nValidator Results: 1 result(s)\n",
+				pub.getValidationErrors().toString());
 	}
 
 	@Test
@@ -138,35 +149,38 @@ public class SippProcessTest extends BaseTest {
 				);
 		when(ipdsPubTypeConvDao.getByIpdsValue("Cooperator publication")).thenReturn(null, getIpdsPubTypeConv6(), getIpdsPubTypeConv13());
 		when(publicationSeriesDao.getByMap(anyMap())).thenReturn(List.of(PublicationSeriesHelper.THREE_THIRTY_FOUR));
-		when(pubBusService.getUsgsNumberedSeriesIndexId(any(PublicationSeries.class), anyString(), anyString(), isNull())).thenReturn("sir1bc123");
+		when(pubBusService.getUsgsNumberedSeriesIndexId(any(PublicationSeries.class), isNull(), isNull(), isNull())).thenReturn("sir1bc123");
 
 		//Didn't find InformationProduct
 		assertNull(sippProcess.getInformationProduct("IPDS_123"));
 		verify(informationProductDao).getInformationProduct("IPDS_123");
 		verify(ipdsPubTypeConvDao, never()).getByIpdsValue(anyString());
 		verify(publicationSeriesDao, never()).getByMap(anyMap());
-		verify(pubBusService, never()).getUsgsNumberedSeriesIndexId(any(PublicationSeries.class), anyString(), anyString(), isNull());
+		verify(pubBusService, never()).getUsgsNumberedSeriesIndexId(any(PublicationSeries.class), isNull(), isNull(), isNull());
 
 		//Didn't find IpdsPubTypeConv
-		assertDaoTestResults(InformationProduct.class, InformationProductHelper.getInformationProduct108541(), sippProcess.getInformationProduct("IPDS_123"), null, false, false, true);
+		assertDaoTestResults(InformationProduct.class, InformationProductHelper.getInformationProduct108541(),
+				sippProcess.getInformationProduct("IPDS_123"), null, false, false, true);
 		verify(informationProductDao, times(2)).getInformationProduct("IPDS_123");
 		verify(ipdsPubTypeConvDao).getByIpdsValue("Cooperator publication");
 		verify(publicationSeriesDao, never()).getByMap(anyMap());
-		verify(pubBusService, never()).getUsgsNumberedSeriesIndexId(any(PublicationSeries.class), anyString(), anyString(), isNull());
+		verify(pubBusService, never()).getUsgsNumberedSeriesIndexId(any(PublicationSeries.class), isNull(), isNull(), isNull());
 
 		//Found both, not USGS Series
-		assertDaoTestResults(InformationProduct.class, InformationProductHelper.getExtendedInformationProduct108541(null), sippProcess.getInformationProduct("IPDS_123"), null, false, false, true);
+		assertDaoTestResults(InformationProduct.class, InformationProductHelper.getExtendedInformationProduct108541(null),
+				sippProcess.getInformationProduct("IPDS_123"), null, false, false, true);
 		verify(informationProductDao, times(3)).getInformationProduct("IPDS_123");
 		verify(ipdsPubTypeConvDao, times(2)).getByIpdsValue("Cooperator publication");
 		verify(publicationSeriesDao, never()).getByMap(anyMap());
-		verify(pubBusService, never()).getUsgsNumberedSeriesIndexId(any(PublicationSeries.class), anyString(), anyString(), isNull());
+		verify(pubBusService, never()).getUsgsNumberedSeriesIndexId(any(PublicationSeries.class), isNull(), isNull(), isNull());
 
 		//Found both, is USGS Number Series
-		assertDaoTestResults(InformationProduct.class, InformationProductHelper.getExtendedInformationProduct108541(PublicationSeriesHelper.THREE_THIRTY_FOUR), sippProcess.getInformationProduct("IPDS_123"), null, false, false, true);
+		assertDaoTestResults(InformationProduct.class, InformationProductHelper.getExtendedInformationProduct108541(PublicationSeriesHelper.THREE_THIRTY_FOUR),
+				sippProcess.getInformationProduct("IPDS_123"), null, false, false, true);
 		verify(informationProductDao, times(4)).getInformationProduct("IPDS_123");
 		verify(ipdsPubTypeConvDao, times(3)).getByIpdsValue("Cooperator publication");
 		verify(publicationSeriesDao).getByMap(anyMap());
-		verify(pubBusService).getUsgsNumberedSeriesIndexId(any(PublicationSeries.class), anyString(), anyString(), isNull());
+		verify(pubBusService).getUsgsNumberedSeriesIndexId(any(PublicationSeries.class), isNull(), isNull(), isNull());
 	}
 
 	@Test
@@ -274,31 +288,31 @@ public class SippProcessTest extends BaseTest {
 		PublicationType pubType = new PublicationType();
 
 		//NPE tests
-		assertFalse(sippProcess.okToProcess(null, null, null));
-		assertFalse(sippProcess.okToProcess(ProcessType.DISSEMINATION, null, null));
-		assertFalse(sippProcess.okToProcess(null, informationProduct, null));
-		assertFalse(sippProcess.okToProcess(null, null, mpPublication));
-		assertFalse(sippProcess.okToProcess(null, informationProduct, mpPublication));
-		assertFalse(sippProcess.okToProcess(ProcessType.DISSEMINATION, informationProduct, mpPublication));
+		assertEquals(SeverityLevel.SKIPPED, sippProcess.okToProcess(null, null, null).getLevel());
+		assertEquals(SeverityLevel.SKIPPED, sippProcess.okToProcess(ProcessType.DISSEMINATION, null, null).getLevel());
+		assertEquals(SeverityLevel.SKIPPED, sippProcess.okToProcess(null, informationProduct, null).getLevel());
+		assertEquals(SeverityLevel.SKIPPED, sippProcess.okToProcess(null, null, mpPublication).getLevel());
+		assertEquals(SeverityLevel.SKIPPED, sippProcess.okToProcess(null, informationProduct, mpPublication).getLevel());
+		assertEquals(SeverityLevel.SKIPPED, sippProcess.okToProcess(ProcessType.DISSEMINATION, informationProduct, mpPublication).getLevel());
 
 		informationProduct.setPublicationType(pubType);
-		assertFalse(sippProcess.okToProcess(null, informationProduct, mpPublication));
+		assertEquals(SeverityLevel.SKIPPED, sippProcess.okToProcess(null, informationProduct, mpPublication).getLevel());
 
 		//Good Dissemination (brand new)
-		assertTrue(sippProcess.okToProcess(ProcessType.DISSEMINATION, informationProduct, mpPublication));
+		assertNull(sippProcess.okToProcess(ProcessType.DISSEMINATION, informationProduct, mpPublication));
 		//Bad Dissemination (in warehouse)
 		informationProduct.setIpNumber("IPDS-1");
-		assertFalse(sippProcess.okToProcess(ProcessType.DISSEMINATION, informationProduct, mpPublication));
+		assertEquals(SeverityLevel.SKIPPED, sippProcess.okToProcess(ProcessType.DISSEMINATION, informationProduct, mpPublication).getLevel());
 
 		//Good SPN Production
 		informationProduct = new InformationProduct();
 		informationProduct.setPublicationType(pubType);
 		informationProduct.setTask(ProcessType.SPN_PRODUCTION.getIpdsValue());
 		informationProduct.setUsgsNumberedSeries(true);
-		assertTrue(sippProcess.okToProcess(ProcessType.SPN_PRODUCTION, informationProduct, mpPublication));
+		assertNull(sippProcess.okToProcess(ProcessType.SPN_PRODUCTION, informationProduct, mpPublication));
 		//Bad SPN Production
 		informationProduct.setTask("garbage");
-		assertFalse(sippProcess.okToProcess(ProcessType.SPN_PRODUCTION, informationProduct, mpPublication));
+		assertEquals(SeverityLevel.SKIPPED, sippProcess.okToProcess(ProcessType.SPN_PRODUCTION, informationProduct, mpPublication).getLevel());
 	}
 
 	@Test
@@ -311,77 +325,77 @@ public class SippProcessTest extends BaseTest {
 		MpPublication mpPublication = new MpPublication();
 
 		//Do not process if new data is null
-		assertFalse(sippProcess.okToProcessDissemination(null, null));
-		assertFalse(sippProcess.okToProcessDissemination(null, mpPublication));
+		assertEquals(SeverityLevel.SKIPPED, sippProcess.okToProcessDissemination(null, null).getLevel());
+		assertEquals(SeverityLevel.SKIPPED, sippProcess.okToProcessDissemination(null, mpPublication).getLevel());
 
 		//Do not process if already in Pubs Warehouse.
 		informationProduct.setIpNumber("IPDS-1");
-		assertFalse(sippProcess.okToProcessDissemination(informationProduct, mpPublication));
+		assertEquals(SeverityLevel.SKIPPED, sippProcess.okToProcessDissemination(informationProduct, mpPublication).getLevel());
 
 		//Do not process USGS numbered series without an actual series.
 		informationProduct = new InformationProduct();
 		informationProduct.setUsgsNumberedSeries(true);
-		assertFalse(sippProcess.okToProcessDissemination(informationProduct, null));
+		assertEquals(SeverityLevel.SKIPPED, sippProcess.okToProcessDissemination(informationProduct, null).getLevel());
 
 		//OK to process USGS Numbered Series when new
 		informationProduct.setUsgsSeriesTitle(new PublicationSeries());
-		assertTrue(sippProcess.okToProcessDissemination(informationProduct, null));
+		assertNull(sippProcess.okToProcessDissemination(informationProduct, null));
 
 		//OK to process USGS Numbered Series in MyPubs if has no review state
-		assertTrue(sippProcess.okToProcessDissemination(informationProduct, mpPublication));
+		assertNull(sippProcess.okToProcessDissemination(informationProduct, mpPublication));
 
 		//OK to process USGS Numbered Series in MyPubs if in the SPN Production state
 		mpPublication.setIpdsReviewProcessState(ProcessType.SPN_PRODUCTION.getIpdsValue());
-		assertTrue(sippProcess.okToProcessDissemination(informationProduct, mpPublication));
+		assertNull(sippProcess.okToProcessDissemination(informationProduct, mpPublication));
 
 		//Do not process USGS Numbered Series if already in MyPubs (with a Dissemination state).
 		mpPublication.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
-		assertFalse(sippProcess.okToProcessDissemination(informationProduct,  mpPublication));
+		assertEquals(SeverityLevel.SKIPPED, sippProcess.okToProcessDissemination(informationProduct,  mpPublication).getLevel());
 
 		//OK to process other than USGS Numbered Series when new
 		informationProduct = new InformationProduct();
-		assertTrue(sippProcess.okToProcessDissemination(informationProduct, null));
+		assertNull(sippProcess.okToProcessDissemination(informationProduct, null));
 
 		//OK to process other than USGS Numbered Series in MyPubs if has no review state
 		mpPublication = new MpPublication();
-		assertTrue(sippProcess.okToProcessDissemination(informationProduct, mpPublication));
+		assertNull(sippProcess.okToProcessDissemination(informationProduct, mpPublication));
 
 		//OK to process other than USGS Numbered Series in MyPubs if in the SPN Production state
 		mpPublication.setIpdsReviewProcessState(ProcessType.SPN_PRODUCTION.getIpdsValue());
-		assertTrue(sippProcess.okToProcessDissemination(informationProduct, mpPublication));
+		assertNull(sippProcess.okToProcessDissemination(informationProduct, mpPublication));
 
 		//Do not process other than USGS Numbered Series if already in MyPubs (with a Dissemination state).
 		mpPublication.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
-		assertFalse(sippProcess.okToProcessDissemination(informationProduct, mpPublication));
+		assertEquals(SeverityLevel.SKIPPED, sippProcess.okToProcessDissemination(informationProduct, mpPublication).getLevel());
 	}
 
 	@Test
 	public void okToProcessSpnProductionTest() {
 		//Do not process if new data is null
-		assertFalse(sippProcess.okToProcessSpnProduction(null));
+		assertEquals(SeverityLevel.SKIPPED, sippProcess.okToProcessSpnProduction(null).getLevel());
 
 		//Skip if we have already assigned a DOI (shouldn't happen as we are querying for null DOI publications)
 		InformationProduct informationProduct = new InformationProduct();
 		informationProduct.setDigitalObjectIdentifier("something");
-		assertFalse(sippProcess.okToProcessSpnProduction(informationProduct));
+		assertEquals(SeverityLevel.SKIPPED, sippProcess.okToProcessSpnProduction(informationProduct).getLevel());
 
 		//Skip if not in SPN Production
 		informationProduct = new InformationProduct();
-		assertFalse(sippProcess.okToProcessSpnProduction(informationProduct));
+		assertEquals(SeverityLevel.SKIPPED, sippProcess.okToProcessSpnProduction(informationProduct).getLevel());
 		informationProduct.setTask("garbage");
-		assertFalse(sippProcess.okToProcessSpnProduction(informationProduct));
+		assertEquals(SeverityLevel.SKIPPED, sippProcess.okToProcessSpnProduction(informationProduct).getLevel());
 
 		//Skip if not USGS number series
 		informationProduct.setTask(ProcessType.SPN_PRODUCTION.getIpdsValue());
-		assertFalse(sippProcess.okToProcessSpnProduction(informationProduct));
+		assertEquals(SeverityLevel.SKIPPED, sippProcess.okToProcessSpnProduction(informationProduct).getLevel());
 
 		informationProduct.setUsgsNumberedSeries(true);
 		//Process USGS numbered series in SPN Production
-		assertTrue(sippProcess.okToProcessSpnProduction(informationProduct));
+		assertNull(sippProcess.okToProcessSpnProduction(informationProduct));
 
 		//Otherwise Skip
 		informationProduct.setTask("garbage");
-		assertFalse(sippProcess.okToProcessSpnProduction(informationProduct));
+		assertEquals(SeverityLevel.SKIPPED, sippProcess.okToProcessSpnProduction(informationProduct).getLevel());
 	}
 
 	@Test
@@ -418,13 +432,13 @@ public class SippProcessTest extends BaseTest {
 
 	@Test
 	public void buildNotOkDetailsTest() {
-		assertEquals("\n\tIPDS record for IPNumber 'IP-1234' not processed (\"DISSEMINATION\") - ProductType: [Not Found] Process State: null DOI: null",
-				sippProcess.buildNotOkDetails(ProcessType.DISSEMINATION, new InformationProduct(), "IP-1234"));
+		assertEquals("Field:MpPublication - Message:IP-1234 ProductType: [Not Found] Process State: null DOI: null - Level:SKIPPED - Value:null",
+				sippProcess.buildNotOkDetails(ProcessType.DISSEMINATION, new InformationProduct(), "IP-1234").toString());
 
 		InformationProduct informationProduct = InformationProductHelper.getExtendedInformationProduct108541(PublicationSeriesHelper.THREE_ZERO_NINE);
 		informationProduct.setDigitalObjectIdentifier("http://dx.doi.org/10.1016/j.gca.2003.11.028");
-		assertEquals("\n\tIPDS record for IPNumber 'IP-108541' not processed (\"DISSEMINATION\") - ProductType: Cooperator publication Publication Type: Report PublicationSubtype: USGS Numbered Series Series: Coal Map Process State: Dissemination DOI: http://dx.doi.org/10.1016/j.gca.2003.11.028",
-				sippProcess.buildNotOkDetails(ProcessType.DISSEMINATION, informationProduct, "IP-108541"));
+		assertEquals("Field:MpPublication - Message:IP-108541 ProductType: Cooperator publication Publication Type: Report PublicationSubtype: USGS Numbered Series Series: Coal Map Process State: Dissemination DOI: http://dx.doi.org/10.1016/j.gca.2003.11.028 - Level:SKIPPED - Value:IP-108541",
+				sippProcess.buildNotOkDetails(ProcessType.DISSEMINATION, informationProduct, "IP-108541").toString());
 	}
 
 	private IpdsPubTypeConv getIpdsPubTypeConv6() {

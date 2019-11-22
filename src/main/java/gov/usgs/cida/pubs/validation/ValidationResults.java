@@ -1,12 +1,14 @@
 package gov.usgs.cida.pubs.validation;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 
+import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.json.View;
 
 
@@ -33,8 +35,18 @@ public class ValidationResults {
 	}
 
 	@JsonIgnore
+	public boolean isValid() {
+		return null == validationErrors || validationErrors.isEmpty() || SeverityLevel.INFORMATIONAL == maxSeverityLevel();
+	}
+
+	@JsonIgnore
 	public boolean isEmpty() {
 		return null == validationErrors || validationErrors.isEmpty();
+	}
+
+	@JsonIgnore
+	public SeverityLevel maxSeverityLevel() {
+		return validationErrors.stream().map(ValidatorResult::getLevel).max(Comparator.comparing(SeverityLevel::ordinal)).get();
 	}
 
 	/** {@inheritDoc}

@@ -16,10 +16,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 
 import org.mockito.ArgumentCaptor;
+import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
@@ -65,7 +67,6 @@ import gov.usgs.cida.pubs.security.AuthorizationTestServer;
 import gov.usgs.cida.pubs.security.BaseSecurityTest;
 import gov.usgs.cida.pubs.security.UserDetailTestService;
 import gov.usgs.cida.pubs.springinit.CustomUserAuthenticationConverter;
-import gov.usgs.cida.pubs.springinit.FreemarkerConfig;
 import gov.usgs.cida.pubs.springinit.SecurityConfig;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.webservice.AffliliationMvcService;
@@ -81,6 +82,7 @@ import gov.usgs.cida.pubs.webservice.mp.MpPublicationMvcService;
 import gov.usgs.cida.pubs.webservice.pw.PwPublicationMvcService;
 import gov.usgs.cida.pubs.webservice.pw.PwPublicationRssMvcService;
 
+@ContextConfiguration(classes = FreeMarkerAutoConfiguration.class)
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK,
 	classes={SecurityConfig.class, AuthorizationTestServer.class, AuthController.class, ConfigurationService.class,
 		AffliliationMvcService.class, PublicationSeriesMvcService.class, UserDetailTestService.class,
@@ -90,7 +92,7 @@ import gov.usgs.cida.pubs.webservice.pw.PwPublicationRssMvcService;
 		PublicationSeries.class, CostCenter.class, OutsideAffiliation.class, ContributorType.class,
 		LinkType.class, LinkFileType.class, PersonContributor.class, CorporateContributor.class,
 		PublishingServiceCenter.class, Publication.class, Contributor.class, OutsideContributor.class,
-		UsgsContributor.class, CustomUserAuthenticationConverter.class, FreemarkerConfig.class})
+		UsgsContributor.class, CustomUserAuthenticationConverter.class})
 public abstract class BaseEndpointSecurityTest extends BaseSecurityTest {
 
 	private static final String CONTENT_ID_1_JSON = "{\"id\":\"1\"}";

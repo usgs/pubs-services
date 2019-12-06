@@ -13,11 +13,13 @@ import org.json.JSONObject;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.context.ContextConfiguration;;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -34,7 +36,6 @@ import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
-import gov.usgs.cida.pubs.springinit.FreemarkerConfig;
 import gov.usgs.cida.pubs.springinit.SpringConfig;
 import gov.usgs.cida.pubs.utility.CustomStringToArrayConverter;
 import gov.usgs.cida.pubs.utility.CustomStringToStringConverter;
@@ -42,10 +43,11 @@ import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
 
 @EnableWebMvc
 @AutoConfigureMockMvc(secure=false)
+@ContextConfiguration(classes = FreeMarkerAutoConfiguration.class)
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK,
 	classes={DbTestConfig.class, ConfigurationService.class, PwPublicationMvcService.class,
 			PwPublicationBusService.class, XmlBusService.class, LocalValidatorFactoryBean.class,
-			FreemarkerConfig.class, PublicationBusService.class, PwPublication.class,
+			PublicationBusService.class, PwPublication.class,
 			PwPublicationDao.class, PublicationDao.class, SpringConfig.class,
 			CustomStringToArrayConverter.class, StringArrayCleansingConverter.class,
 			CustomStringToStringConverter.class})

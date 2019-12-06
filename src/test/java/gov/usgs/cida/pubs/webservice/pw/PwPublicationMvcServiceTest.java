@@ -23,6 +23,7 @@ import org.apache.ibatis.session.ResultHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -30,6 +31,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.ContextConfiguration;
 
 import freemarker.template.Configuration;
 import gov.usgs.cida.pubs.BaseTest;
@@ -45,10 +47,10 @@ import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
-import gov.usgs.cida.pubs.springinit.FreemarkerConfig;
 
+@ContextConfiguration(classes = FreeMarkerAutoConfiguration.class)
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK,
-	classes={ConfigurationService.class, FreemarkerConfig.class, ContributorType.class})
+	classes={ConfigurationService.class, ContributorType.class})
 public class PwPublicationMvcServiceTest extends BaseTest {
 
 	@Autowired

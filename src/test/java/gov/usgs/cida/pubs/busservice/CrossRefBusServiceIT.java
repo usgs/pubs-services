@@ -15,9 +15,11 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import freemarker.template.Configuration;
@@ -30,15 +32,15 @@ import gov.usgs.cida.pubs.dao.intfc.ICrossRefLogDao;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
-import gov.usgs.cida.pubs.springinit.FreemarkerConfig;
 import gov.usgs.cida.pubs.transform.CrossrefTestPubBuilder;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
 import gov.usgs.cida.pubs.validation.xml.XMLValidationException;
 
+@ContextConfiguration(classes = FreeMarkerAutoConfiguration.class)
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={DbTestConfig.class, LocalValidatorFactoryBean.class, CrossRefLogDao.class,
 			PublicationBusService.class, ConfigurationService.class,
-			FreemarkerConfig.class, ContributorType.class, ContributorTypeDao.class})
+			ContributorType.class, ContributorTypeDao.class})
 public class CrossRefBusServiceIT extends BaseIT {
 
 	@MockBean

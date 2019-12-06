@@ -20,8 +20,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.test.context.ContextConfiguration;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -37,11 +39,11 @@ import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
-import gov.usgs.cida.pubs.springinit.FreemarkerConfig;
 import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 
+@ContextConfiguration(classes = FreeMarkerAutoConfiguration.class)
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
-	classes={DbTestConfig.class, ConfigurationService.class, TestSpringConfig.class, FreemarkerConfig.class,
+	classes={DbTestConfig.class, ConfigurationService.class, TestSpringConfig.class,
 			PublicationBusService.class, ContributorType.class, ContributorTypeDao.class})
 public class CrossrefTransformerIT extends BaseIT {
 

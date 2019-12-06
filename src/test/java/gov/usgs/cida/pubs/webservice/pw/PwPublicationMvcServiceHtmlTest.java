@@ -12,6 +12,7 @@ import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.context.ContextConfiguration;;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -35,15 +37,15 @@ import gov.usgs.cida.pubs.dao.intfc.IPwPublicationDao;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationLink;
-import gov.usgs.cida.pubs.springinit.FreemarkerConfig;
 import gov.usgs.cida.pubs.webservice.MvcService;
 
 @EnableWebMvc
 @AutoConfigureMockMvc(secure=false)
+@ContextConfiguration(classes = FreeMarkerAutoConfiguration.class)
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK,
 	classes={ConfigurationService.class, PwPublicationMvcService.class,
 			PwPublicationBusService.class, XmlBusService.class, LocalValidatorFactoryBean.class,
-			FreemarkerConfig.class, PublicationBusService.class, PwPublication.class})
+			PublicationBusService.class, PwPublication.class})
 public class PwPublicationMvcServiceHtmlTest extends BaseTest {
 	@MockBean
 	public IPublicationDao publicationDao;

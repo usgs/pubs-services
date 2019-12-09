@@ -1,12 +1,13 @@
 #
 # .gitlab-ci.yml
 #
+# This file is used by the USGS SAS team for building on code.usgs.gov
+#
 # This builds a Docker image and tags it as the latest for its branch.
 # After building, it will trigger a deployment pipeline in another repo.
 #
 # Reference:
 #   - https://docs.gitlab.com/ee/ci/yaml/
-#   - https://docs.gitlab.com/ee/ci/multi_project_pipelines.html
 #
 # CI Variables:
 #   PUBSWH_SERVICES_IMAGE
@@ -33,8 +34,13 @@
 
 # Include common SAS defined jobs from a repository available to ci/cd.
 include:
+  # Include common variables
+  - project: 'sas/ops/ci-pipeline/gitlab-ci-pipeline'
+    file: '/common-vars.yml'
+  # Docker build jobs
   - project: 'sas/ops/ci-pipeline/gitlab-ci-pipeline'
     file: '/build/docker.yml'
+  # Job for triggering deployment via GitLab API
   - project: 'sas/ops/ci-pipeline/gitlab-ci-pipeline'
     file: '/deploy/api_trigger.yml'
 
@@ -58,11 +64,12 @@ variables:
 # Only build on pushes to the 'master' branch.
 docker_build:
   variables:
-    # Use SAS-built base images for building
+    # Use local base images for building
+    # These are based on the upstream
     maven_image: 'code.chs.usgs.gov:5001/sas/ops/docker/base-images/maven'
-    maven_image_tag: '3.6.0-jdk-11-latest'
+    maven_image_tag: '3.6.0-jdk-11'
     openjdk_image: 'code.chs.usgs.gov:5001/sas/ops/docker/base-images/openjdk'
-    openjdk_image_tag: '11.0.4-jre-latest'
+    openjdk_image_tag: '11.0.4-jre'
     DOCKER_BUILD_ARGS: >-
       --build-arg maven_image=${maven_image}
       --build-arg openjdk_image=${openjdk_image}

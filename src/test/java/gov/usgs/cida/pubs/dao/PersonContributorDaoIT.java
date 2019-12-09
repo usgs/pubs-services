@@ -221,7 +221,7 @@ public class PersonContributorDaoIT extends BaseIT {
 	@Test
 	public void getByPreferredByEmail() {
 		UsgsContributor filter = new UsgsContributor();
-		filter.setEmail("con@usgs.gov");;
+		filter.setEmail("con@usgs.gov");
 		List<Contributor<?>> contributors = personContributorDao.getByPreferred(filter);
 		// verify that 'order by' in the query returned results in the expected order
 		assertEquals(2, contributors.size());

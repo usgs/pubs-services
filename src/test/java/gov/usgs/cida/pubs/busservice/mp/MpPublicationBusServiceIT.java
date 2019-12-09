@@ -432,7 +432,7 @@ public class MpPublicationBusServiceIT extends BaseIT {
 		assertNull(busService.getUsgsNumberedSeriesIndexId(null, null, null, null));
 		assertNull(busService.getUsgsNumberedSeriesIndexId(new PublicationSeries(), null, null, null));
 		PublicationSeries pubSeries = new PublicationSeries();
-		pubSeries.setCode("ofr");;
+		pubSeries.setCode("ofr");
 		assertNull(busService.getUsgsNumberedSeriesIndexId(pubSeries, null, null, null));
 		assertEquals("ofr123456", busService.getUsgsNumberedSeriesIndexId(pubSeries,"1- 2-3,4,5 6", null, null));
 		assertEquals("ofr123456ABC", busService.getUsgsNumberedSeriesIndexId(pubSeries,"1- 2-3,4,5 6", "abc", null));

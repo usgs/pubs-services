@@ -40,6 +40,7 @@ public class CrossrefTestPubBuilder {
 		contributors.add(PublicationContributorHelper.buildPersonPublicationAuthor());
 		contributors.add(PublicationContributorHelper.buildPersonPublicationEditor());
 		contributors.add(PublicationContributorHelper.buildCorporatePublicationAuthor());
+		contributors.add(PublicationContributorHelper.buildPersonPublicationCompiler());
 		contributors.add(PublicationContributorHelper.buildCorporatePublicationEditor());
 
 		pub.setContributors(contributors);
@@ -70,6 +71,7 @@ public class CrossrefTestPubBuilder {
 		Collection<PublicationContributor<?>> contributors = new ArrayList<>();
 		contributors.add(PublicationContributorHelper.buildPersonPublicationAuthor());
 		contributors.add(PublicationContributorHelper.buildPersonPublicationEditor());
+		contributors.add(PublicationContributorHelper.buildPersonPublicationCompiler());
 		contributors.add(PublicationContributorHelper.buildCorporatePublicationAuthor());
 		contributors.add(PublicationContributorHelper.buildCorporatePublicationEditor());
 		pub.setContributors(contributors);

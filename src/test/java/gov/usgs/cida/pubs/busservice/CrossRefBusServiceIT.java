@@ -19,7 +19,7 @@ import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfigura
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ContextConfiguration;;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import freemarker.template.Configuration;

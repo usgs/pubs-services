@@ -49,8 +49,6 @@ import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.dao.intfc.ICrossRefLogDao;
-import gov.usgs.cida.pubs.dao.intfc.IDao;
-import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CrossRefLog;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributorHelper;
@@ -62,9 +60,7 @@ import gov.usgs.cida.pubs.validation.xml.XMLValidationException;
 
 @ContextConfiguration(classes = FreeMarkerAutoConfiguration.class)
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
-	classes={ConfigurationService.class,
-			PublicationBusService.class,
-			ContributorType.class})
+	classes={ConfigurationService.class})
 public class CrossRefBusServiceTest extends BaseTest {
 
 	@Captor
@@ -78,8 +74,6 @@ public class CrossRefBusServiceTest extends BaseTest {
 	protected PubsEMailer pubsEMailer;
 	@MockBean
 	protected ICrossRefLogDao crossRefLogDao;
-	@MockBean(name="contributorTypeDao")
-	protected IDao<ContributorType> contributorTypeDao;
 	@Autowired
 	protected Configuration templateConfiguration;
 	@MockBean

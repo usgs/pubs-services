@@ -62,5 +62,10 @@ public class ContributorType extends BaseDomain<ContributorType> implements ILoo
 		} catch (NullPointerException e) {
 			//Leave the default value alone.
 		}
+		try {
+			COMPILER_KEY = contributorTypeDao.getById(COMPILERS).getText().toLowerCase();
+		} catch (NullPointerException e) {
+			//Leave the default value alone.
+		}
 	}
 }

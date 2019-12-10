@@ -16,6 +16,8 @@ public class LinkType extends BaseDomain<LinkType> implements ILookup {
 
 	public static final Integer THUMBNAIL = 24;
 
+	public static final Integer DATA_RELEASE = 30;
+
 	public static final Integer PUBLICATION_XML = 31;
 
 	private String text;

@@ -38,6 +38,7 @@ import gov.usgs.cida.pubs.dao.ContributorTypeDao;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
+import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
 import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 
@@ -301,6 +302,32 @@ public class CrossrefTransformerIT extends BaseIT {
 	}
 
 	/**
+	 * Test publication containing a data release.
+	 */
+	@Test
+	public void testPubWithDataRelease() throws IOException {
+		Publication<?> pub = CrossrefTestPubBuilder.buildNumberedSeriesPub(new Publication<>());
+		PublicationLink<?> link = CrossrefTestPubBuilder.buildDataReleaseLink();
+		pub.getLinks().add(link);
+
+		instance.writeResult(pub);
+		instance.end();
+		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
+		assertNotNull(output);
+		assertTrue(0 < output.length());
+		assertWellFormed(output);
+
+		String expected = harmonizeXml(updateWarehouseEndpoint(testOneNumberedSeriesXml));
+		String dataReleaseDesc = link.getDescription() + link.getHelpText();
+		String doi = "10.5066/P944FPA4";
+		String dataReleaseXml = getDataReleaseXml(dataReleaseDesc, doi);
+		expected = expected.replace("<doi_data>", dataReleaseXml + "<doi_data>");
+
+		String actual = harmonizeXml(output);
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test that contributors of unknown type are omitted
 	 */
 	@Test
@@ -335,6 +362,15 @@ public class CrossrefTransformerIT extends BaseIT {
 		String updated = xml;
 		updated = updated.replace("{WarehouseEndpoint}", configurationService.getWarehouseEndpoint());
 		return updated;
+	}
+
+	private String getDataReleaseXml(String desc, String doi) {
+		String format = "<program xmlns=\"http://www.crossref.org/relations.xsd\"><related_item>"
+				+ "<description>%s</description><inter_work_relation relationship-type=\"isSupplementedBy\" "
+				+ "identifier-type=\"doi\">%s</inter_work_relation></related_item></program>";
+		String xml = String.format(format, desc, doi);
+		xml = harmonizeXml(xml);
+		return xml;
 	}
 
 }

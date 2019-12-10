@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.webservice.pw;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -276,13 +277,11 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	protected String getXmlDocUrl(PwPublication pub) {
 		String url = null;
 
-		if(pub != null && pub.getLinks() != null) {
-			for(PublicationLink<?> link : pub.getLinks()) {
-				if(link.getLinkType() != null && link.getLinkType().getId() != null &&
-						LinkType.PUBLICATION_XML == link.getLinkType().getId()) {
-					url = link.getUrl();
-					break;
-				}
+		if(pub != null) {
+			List<PublicationLink<?>> xmlLinks = pub.getLinksByLinkTypeId(LinkType.PUBLICATION_XML);
+
+			if(xmlLinks.size() > 0) {
+				url = xmlLinks.get(0).getUrl();
 			}
 		}
 

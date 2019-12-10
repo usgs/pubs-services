@@ -3,6 +3,7 @@ package gov.usgs.cida.pubs.transform;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationContributorHelper;
@@ -85,4 +86,17 @@ public class CrossrefTestPubBuilder {
 
 		return pub;
 	}
+
+	public static PublicationLink<?> buildDataReleaseLink(){
+		PublicationLink<?> link = new PublicationLink<>();
+		LinkType linkType = new LinkType();
+		linkType.setId(LinkType.DATA_RELEASE);
+		link.setDescription("USGS data release");
+		link.setHelpText("- Barrier Island Geomorphology and Shorebird Habitat Metrics—Four Sites in New York, New Jersey, and Virginia, 2010–2014");
+		link.setLinkType(linkType);
+		link.setRank(3);
+		link.setUrl("https://doi.org/10.5066/P944FPA4");
+		return link;
+	}
+
 }

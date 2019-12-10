@@ -17,6 +17,7 @@ public class ContributorType extends BaseDomain<ContributorType> implements ILoo
 	public static final Integer COMPILERS = 3;
 	public static String AUTHOR_KEY = "authors";
 	public static String EDITOR_KEY = "editors";
+	public static String COMPILER_KEY = "compilers";
 
 	private static IDao<ContributorType> contributorTypeDao;
 
@@ -58,6 +59,11 @@ public class ContributorType extends BaseDomain<ContributorType> implements ILoo
 		}
 		try {
 			EDITOR_KEY = contributorTypeDao.getById(EDITORS).getText().toLowerCase();
+		} catch (NullPointerException e) {
+			//Leave the default value alone.
+		}
+		try {
+			COMPILER_KEY = contributorTypeDao.getById(COMPILERS).getText().toLowerCase();
 		} catch (NullPointerException e) {
 			//Leave the default value alone.
 		}

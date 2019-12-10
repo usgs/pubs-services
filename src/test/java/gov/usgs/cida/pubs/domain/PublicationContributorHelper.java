@@ -1,8 +1,6 @@
 
 package gov.usgs.cida.pubs.domain;
 
-import gov.usgs.cida.pubs.dao.ContributorTypeDaoIT;
-
 public final class PublicationContributorHelper {
 	private PublicationContributorHelper() {
 	}
@@ -34,26 +32,27 @@ public final class PublicationContributorHelper {
 	}
 
 	public static PublicationContributor<?> buildCorporatePublicationEditor() {
-		return buildCorporatePublicationContributor(ContributorTypeDaoIT.EDITOR_KEY, ContributorType.EDITORS);
+		return buildCorporatePublicationContributor(ContributorType.EDITOR_KEY, ContributorType.EDITORS);
 	}
 
 	public static PublicationContributor<?> buildCorporatePublicationAuthor() {
-		return buildCorporatePublicationContributor(ContributorTypeDaoIT.AUTHOR_KEY, ContributorType.AUTHORS);
+		return buildCorporatePublicationContributor(ContributorType.AUTHOR_KEY, ContributorType.AUTHORS);
 	}
 
 	public static PublicationContributor<?> buildPersonPublicationAuthor() {
-		return buildPersonPublicationContributor(ContributorTypeDaoIT.AUTHOR_KEY, ContributorType.AUTHORS);
+		return buildPersonPublicationContributor(ContributorType.AUTHOR_KEY, ContributorType.AUTHORS);
 	}
 
 	public static PublicationContributor<?> buildPersonPublicationEditor() {
-		return buildPersonPublicationContributor(ContributorTypeDaoIT.EDITOR_KEY, ContributorType.EDITORS);
+		return buildPersonPublicationContributor(ContributorType.EDITOR_KEY, ContributorType.EDITORS);
+	}
+
+	public static PublicationContributor<?> buildPersonPublicationCompiler() {
+		return buildPersonPublicationContributor(ContributorType.COMPILER_KEY, ContributorType.COMPILERS);
 	}
 
 	public static PublicationContributor<?> buildPersonPublicationContributor(String typeText, int typeId) {
-		UsgsContributor contributor = new UsgsContributor();
-		contributor.setGiven("John");
-		contributor.setFamily("Powell");
-		contributor.setSuffix("Jr.");
+		UsgsContributor contributor = getContribubtorByType(typeId);
 		ContributorType contributorTypeAuthor = new ContributorType();
 		contributorTypeAuthor.setText(typeText);
 		contributorTypeAuthor.setId(typeId);
@@ -61,6 +60,24 @@ public final class PublicationContributorHelper {
 		pubContributor.setContributor(contributor);
 		pubContributor.setContributorType(contributorTypeAuthor);
 		return pubContributor;
+	}
+
+	public static UsgsContributor getContribubtorByType(int typeId) {
+		UsgsContributor contributor = new UsgsContributor();
+		contributor.setGiven("John");
+		String family = "";
+		if (typeId == ContributorType.AUTHORS) {
+			family = "Author";
+		} else if (typeId == ContributorType.EDITORS) {
+			family = "Editor";
+		} else if (typeId == ContributorType.COMPILERS) {
+			family = "Compiler";
+		} else {
+			family = "Unknown";
+		}
+		contributor.setFamily(family);
+		contributor.setSuffix("Jr.");
+		return contributor;
 	}
 
 }

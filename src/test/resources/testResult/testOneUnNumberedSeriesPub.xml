@@ -23,16 +23,21 @@
                 <contributors>
                     <person_name sequence="first" contributor_role="author">
                         <given_name>John</given_name>
-                        <surname>Powell</surname>
+                        <surname>Author</surname>
                         <suffix>Jr.</suffix>
                     </person_name>
                     <organization sequence="additional" contributor_role="author">Evil Corp</organization>
                     <person_name sequence="additional" contributor_role="editor">
                         <given_name>John</given_name>
-                        <surname>Powell</surname>
+                        <surname>Editor</surname>
                         <suffix>Jr.</suffix>
                     </person_name>
                     <organization sequence="additional" contributor_role="editor">Evil Corp</organization>
+                    <person_name sequence="additional" contributor_role="editor">
+                        <given_name>John</given_name>
+                        <surname>Compiler</surname>
+                        <suffix>Jr.</suffix>
+                    </person_name>
                 </contributors>
                 <titles>
                     <title>Postwildfire debris-flow hazard assessment of the area burned by the 2013 West Fork Fire Complex, southwestern Colorado</title>

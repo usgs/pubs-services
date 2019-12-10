@@ -22,8 +22,6 @@ import gov.usgs.cida.pubs.springinit.DbTestConfig;
 public class ContributorTypeDaoIT extends BaseIT {
 
 	public static final int CONTRIBUTOR_TYPE_CNT = 3;
-	public static final String AUTHOR_KEY = "authors";
-	public static final String EDITOR_KEY = "editors";
 
 	@Autowired
 	ContributorTypeDao contributorTypeDao;
@@ -104,15 +102,22 @@ public class ContributorTypeDaoIT extends BaseIT {
 	public static ContributorType getAuthor() {
 		ContributorType author = new ContributorType();
 		author.setId(ContributorType.AUTHORS);
-		author.setText(ContributorTypeDaoIT.AUTHOR_KEY);
+		author.setText(ContributorType.AUTHOR_KEY);
 		return author;
 	}
 
 	public static ContributorType getEditor() {
 		ContributorType editor = new ContributorType();
 		editor.setId(ContributorType.EDITORS);
-		editor.setText(ContributorTypeDaoIT.EDITOR_KEY);
+		editor.setText(ContributorType.EDITOR_KEY);
 		return editor;
+	}
+
+	public static ContributorType getCompiler() {
+		ContributorType compiler = new ContributorType();
+		compiler.setId(ContributorType.COMPILERS);
+		compiler.setText(ContributorType.COMPILER_KEY);
+		return compiler;
 	}
 
 }

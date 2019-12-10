@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
@@ -48,10 +49,10 @@ import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.dao.intfc.ICrossRefLogDao;
-import gov.usgs.cida.pubs.dao.intfc.IDao;
-import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.CrossRefLog;
 import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.PublicationContributorHelper;
+import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.transform.CrossrefTestPubBuilder;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
@@ -59,9 +60,7 @@ import gov.usgs.cida.pubs.validation.xml.XMLValidationException;
 
 @ContextConfiguration(classes = FreeMarkerAutoConfiguration.class)
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
-	classes={ConfigurationService.class,
-			PublicationBusService.class,
-			ContributorType.class})
+	classes={ConfigurationService.class})
 public class CrossRefBusServiceTest extends BaseTest {
 
 	@Captor
@@ -75,15 +74,12 @@ public class CrossRefBusServiceTest extends BaseTest {
 	protected PubsEMailer pubsEMailer;
 	@MockBean
 	protected ICrossRefLogDao crossRefLogDao;
-	@MockBean(name="contributorTypeDao")
-	protected IDao<ContributorType> contributorTypeDao;
 	@Autowired
 	protected Configuration templateConfiguration;
 	@MockBean
 	protected IPublicationBusService publicationBusService;
 
 	protected CrossRefBusService busService;
-	protected ContributorType contributorType;
 
 	@Before
 	public void initTest() throws Exception {
@@ -94,7 +90,6 @@ public class CrossRefBusServiceTest extends BaseTest {
 			templateConfiguration,
 			publicationBusService
 		);
-		contributorType = new ContributorType();
 	}
 
 	@Test
@@ -246,9 +241,8 @@ public class CrossRefBusServiceTest extends BaseTest {
 
 	@Test
 	public void getGoodCrossrefXml() throws XMLValidationException, IOException {
-		when(contributorTypeDao.getById(ContributorType.AUTHORS)).thenReturn(buildContributorTypeAuthor());
-		when(contributorTypeDao.getById(ContributorType.EDITORS)).thenReturn(buildContributorTypeEditor());
 		Publication<?> pub = CrossrefTestPubBuilder.buildUnNumberedSeriesPub(new Publication<>());
+		when(publicationBusService.getWarehousePage(pub)).thenReturn("http://localhost/publication/" + pub.getIndexId());
 		String xml = busService.getCrossRefXml(pub);
 
 		//verify that the attempt was logged
@@ -256,6 +250,26 @@ public class CrossRefBusServiceTest extends BaseTest {
 
 		assertNotNull(xml);
 		assertTrue("should get some XML", 0 < xml.length());
+
+		xml = harmonizeXml(xml);
+
+		String beginContrib = ".*\\<contributors\\>";
+		String endContrib = ".*\\</contributors\\>.*";
+
+		// verify that the author is the first contributor
+		UsgsContributor contributor = (UsgsContributor) PublicationContributorHelper.buildPersonPublicationAuthor().getContributor();
+		assertTrue("Author not first contributor in Crossref",
+				xml.matches(beginContrib + getPersonContributorXmlRegex("first", "author", contributor) + endContrib));
+
+		// verify that the editor was added
+		contributor = (UsgsContributor) PublicationContributorHelper.buildPersonPublicationEditor().getContributor();
+		assertTrue("Editor not in Crossref",
+				xml.matches(beginContrib + ".*" + getPersonContributorXmlRegex("additional", "editor", contributor) + endContrib));
+
+		// verify that the compiler was added as an editor
+		contributor = (UsgsContributor) PublicationContributorHelper.buildPersonPublicationCompiler().getContributor();
+		assertTrue("Compiler not in Crossref or not an editor",
+				xml.matches(beginContrib + ".*" + getPersonContributorXmlRegex("additional", "editor", contributor) + endContrib));
 	}
 
 	@Test
@@ -320,17 +334,13 @@ public class CrossRefBusServiceTest extends BaseTest {
 		assertTrue(emailBody.contains(pub.getIndexId()));
 	}
 
-	private ContributorType buildContributorTypeAuthor() {
-		ContributorType author = new ContributorType();
-		author.setId(ContributorType.AUTHORS);
-		author.setText("author");
-		return author;
-	}
-
-	private ContributorType buildContributorTypeEditor() {
-		ContributorType editor = new ContributorType();
-		editor.setId(ContributorType.EDITORS);
-		editor.setText("editor");
-		return editor;
+	private String getPersonContributorXmlRegex(String sequence, String role, UsgsContributor contributor) {
+		String format = "<person_name sequence=\"%s\" contributor_role=\"%s\">"
+				+ "<given_name>%s</given_name> <surname>%s</surname>" + " <suffix>%s</suffix> </person_name>";
+		String xml = String.format(format, sequence, role, contributor.getGiven(),
+				contributor.getFamily(), contributor.getSuffix());
+		xml = harmonizeXml(xml);
+		xml = Pattern.quote(xml);
+		return xml;
 	}
 }

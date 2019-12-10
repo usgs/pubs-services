@@ -89,6 +89,7 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 		filters.put(BaseDao.PAGE_NUMBER, "8");
 		when(contributorTypeDao.getById(ContributorType.AUTHORS)).thenReturn(ContributorTypeDaoIT.getAuthor());
 		when(contributorTypeDao.getById(ContributorType.EDITORS)).thenReturn(ContributorTypeDaoIT.getEditor());
+		when(contributorTypeDao.getById(ContributorType.COMPILERS)).thenReturn(ContributorTypeDaoIT.getCompiler());
 		reset(busService);
 	}
 

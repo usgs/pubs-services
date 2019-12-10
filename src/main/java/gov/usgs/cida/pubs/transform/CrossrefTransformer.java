@@ -48,6 +48,8 @@ public class CrossrefTransformer extends Transformer {
 	protected final String batchId;
 	protected final String timestamp;
 
+	public static final String[] CONTRIBUTOR_KEYS = {ContributorType.AUTHOR_KEY, ContributorType.EDITOR_KEY, ContributorType.COMPILER_KEY};
+
 	/**
 	 * Constructs and initializes a transformer with a particular batch id
 	 * and timestamp every time.
@@ -169,6 +171,7 @@ public class CrossrefTransformer extends Transformer {
 
 		model.put("authorKey", ContributorType.AUTHORS);
 		model.put("editorKey", ContributorType.EDITORS);
+		model.put("compilerKey", ContributorType.COMPILERS);
 		return model;
 	}
 
@@ -243,14 +246,12 @@ public class CrossrefTransformer extends Transformer {
 		// This process requires that the contributors are in rank order.
 		// And that the contributor is valid.
 		if (null != pub && null != pub.getContributors() && !pub.getContributors().isEmpty()) {
-			Map<String, List<PublicationContributor<?>>> contributors = pub.getContributorsToMap();
-			List<PublicationContributor<?>> authors = contributors.get(ContributorType.AUTHOR_KEY);
-			if (null != authors && !authors.isEmpty()) {
-				rtn.addAll(authors);
-			}
-			List<PublicationContributor<?>> editors = contributors.get(ContributorType.EDITOR_KEY);
-			if (null != editors && !editors.isEmpty()) {
-				rtn.addAll(editors);
+			Map<String, List<PublicationContributor<?>>> contributorMap = pub.getContributorsToMap();
+			for (String key : CONTRIBUTOR_KEYS) {
+				List<PublicationContributor<?>> contributors = contributorMap.get(key);
+				if (null != contributors && !contributors.isEmpty()) {
+					rtn.addAll(contributors);
+				}
 			}
 		}
 		return rtn.isEmpty() ? null : rtn;

@@ -707,6 +707,19 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 		}
 	}
 
+	public List<PublicationLink<?>> getLinksByLinkTypeId(int linkTypeId) {
+		List<PublicationLink<?>> links = new ArrayList<>();
+		if (getLinks() != null) {
+			for (PublicationLink<?> link : getLinks()) {
+				if (link.getLinkType() != null && link.getLinkType().getId() != null
+						&& linkTypeId == link.getLinkType().getId()) {
+					links.add(link);
+				}
+			}
+		}
+		return links;
+	}
+
 	public Collection<PublicationLink<?>> getLinks() {
 		return links;
 	}

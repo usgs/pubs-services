@@ -78,6 +78,14 @@
 					<last_page>${pub.endPage}</last_page>
 				</pages>
 				</#if>
+				<#if hasDataRelease>
+				<program xmlns="http://www.crossref.org/relations.xsd">
+					<related_item>
+						<description>${dataReleaseDescription}</description>
+						<inter_work_relation relationship-type="isSupplementedBy" identifier-type="doi">${dataReleaseDoi}</inter_work_relation>
+					</related_item>
+				</program>
+				</#if>
 				<doi_data>
 					<doi>${pub.doi}</doi>
 					<resource>${warehousePage}</resource>

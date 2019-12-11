@@ -29,8 +29,10 @@ import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.domain.ContributorType;
+import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
+import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 
 /**
@@ -172,6 +174,33 @@ public class CrossrefTransformer extends Transformer {
 		model.put("authorKey", ContributorType.AUTHORS);
 		model.put("editorKey", ContributorType.EDITORS);
 		model.put("compilerKey", ContributorType.COMPILERS);
+
+		model.putAll(makeDataReleaseModel(pub));
+		return model;
+	}
+
+	protected Map<String, Object> makeDataReleaseModel(Publication<?> pub) {
+		List<PublicationLink<?>> dataReleaseLinks = pub.getLinksByLinkTypeId(LinkType.DATA_RELEASE);
+		Map<String, Object> model = new HashMap<>();
+
+		if (dataReleaseLinks.isEmpty()) {
+			model.put("hasDataRelease", false);
+		} else {
+			PublicationLink<?> link = dataReleaseLinks.get(0);
+			String url = link.getUrl();
+			String doi = url == null ? "" : url.replaceAll("^https?://doi.org/", "");
+			if (doi.isEmpty() || doi.equals(url)) { // drop dataset linkage block if doi not found
+				LOG.error(String.format(
+						"reference doi not found in publication's (indexId: %s doi: %s) Data Release link.",
+						pub.getIndexId(), pub.getDoi()));
+				LOG.error("Data Release dropped from Crossref XML");
+				model.put("hasDataRelease", false);
+			} else {
+				model.put("hasDataRelease", true);
+				model.put("dataReleaseDescription", link.getDescription() + link.getHelpText());
+				model.put("dataReleaseDoi", doi);
+			}
+		}
 		return model;
 	}
 

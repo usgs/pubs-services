@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - Push logs to a Graylog server
 ### Changed
   - Source of IPDS data for dissemination step.
+  - Updated USGS ci/cd configuration to reflect trivial upstream changes.
 
 ## [1.0.0](https://github.com/usgs/pubs-services/compare/pubs-services-0.9.4...pubs-services-1.0.0)
 ### Changed

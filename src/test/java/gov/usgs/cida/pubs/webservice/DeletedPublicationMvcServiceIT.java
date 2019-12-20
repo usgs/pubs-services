@@ -44,7 +44,7 @@ public class DeletedPublicationMvcServiceIT extends BaseIT {
 	private MockMvc mockMvc;
 
 	@Before
-	public void setup() {
+	public void setUp() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 	}
 
@@ -52,7 +52,7 @@ public class DeletedPublicationMvcServiceIT extends BaseIT {
 	public void getAllNoPaging() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/publication/deleted").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 
@@ -64,7 +64,7 @@ public class DeletedPublicationMvcServiceIT extends BaseIT {
 	public void getAllPageOne() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/publication/deleted?page_number=1&page_size=2").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 
@@ -76,7 +76,7 @@ public class DeletedPublicationMvcServiceIT extends BaseIT {
 	public void getAllPageThree() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/publication/deleted?page_number=3&page_size=2").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 
@@ -88,7 +88,7 @@ public class DeletedPublicationMvcServiceIT extends BaseIT {
 	public void getSinceNoPaging() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/publication/deleted?deletedSince=2017-12-31").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 
@@ -100,7 +100,7 @@ public class DeletedPublicationMvcServiceIT extends BaseIT {
 	public void getSincePageOne() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/publication/deleted?deletedSince=2017-12-31&page_number=1&page_size=1").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 
@@ -112,7 +112,7 @@ public class DeletedPublicationMvcServiceIT extends BaseIT {
 	public void getSincePageThree() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/publication/deleted?deletedSince=2017-12-31&page_number=3&page_size=1").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 

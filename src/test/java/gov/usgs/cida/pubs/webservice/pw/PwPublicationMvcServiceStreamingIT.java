@@ -113,7 +113,7 @@ public class PwPublicationMvcServiceStreamingIT extends BaseIT {
 	public void getAsJsonTest() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/publication?mimeType=json"))
 			.andExpect(status().isOk())
-			.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 			.andReturn();
 	
@@ -125,7 +125,7 @@ public class PwPublicationMvcServiceStreamingIT extends BaseIT {
 		//dot in index
 		MvcResult rtn = mockMvc.perform(get("/publication/6.1?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 

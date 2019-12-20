@@ -14,7 +14,6 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -75,7 +74,7 @@ public class PwPublicationMvcServiceSinglePubIT extends BaseIT {
 	private MockMvc mockMvc;
 
 	@Before
-	public void setup() {
+	public void setUp() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 	}
 
@@ -83,7 +82,7 @@ public class PwPublicationMvcServiceSinglePubIT extends BaseIT {
 	public void getJSONWhenNoAcceptHeaderIsSpecified () throws Exception {
 		MvcResult result = mockMvc.perform(get("/publication/" + CROSSREF_PUB_ID))
 			.andExpect(status().isOk())
-			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 			.andReturn();
 		JSONObject content = getRtnAsJSONObject(result);
@@ -106,7 +105,7 @@ public class PwPublicationMvcServiceSinglePubIT extends BaseIT {
 				"*/*;q=0.8"
 			))
 			.andExpect(status().isOk())
-			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 			.andReturn();
 		JSONObject content = getRtnAsJSONObject(result);
@@ -122,10 +121,10 @@ public class PwPublicationMvcServiceSinglePubIT extends BaseIT {
 	public void getJSONWhenAcceptHeaderAsksForJSON () throws Exception {
 		MvcResult result = mockMvc.perform(get("/publication/" + CROSSREF_PUB_ID)
 			.accept(
-				MediaType.APPLICATION_JSON
+				MediaType.APPLICATION_JSON_UTF8
 			))
 			.andExpect(status().isOk())
-			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 			.andReturn();
 		JSONObject content = getRtnAsJSONObject(result);
@@ -141,7 +140,7 @@ public class PwPublicationMvcServiceSinglePubIT extends BaseIT {
 	public void getJSONWhenQueryStringAsksForJSON () throws Exception {
 		MvcResult result = mockMvc.perform(get("/publication/" + CROSSREF_PUB_ID + "?" + PubsConstantsHelper.CONTENT_PARAMETER_NAME +"=" + PubsConstantsHelper.MEDIA_TYPE_JSON_EXTENSION))
 			.andExpect(status().isOk())
-			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 			.andReturn();
 		JSONObject content = getRtnAsJSONObject(result);

@@ -17,13 +17,14 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import gov.usgs.cida.pubs.BaseTest;
@@ -37,7 +38,6 @@ import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
 
 @EnableWebMvc
-@AutoConfigureMockMvc(secure=false)
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK,
 	classes={ConfigurationService.class, LookupMvcService.class, PersonContributor.class, Contributor.class})
 public class LkupMvcServiceTest extends BaseTest {
@@ -47,11 +47,15 @@ public class LkupMvcServiceTest extends BaseTest {
 	@MockBean(name="contributorDao")
 	IDao<Contributor<?>> contributorDao;
 	PersonContributor<?> personContributor;
+
 	@Autowired
-	MockMvc mockMvc;
+	private WebApplicationContext webApplicationContext;
+
+	private MockMvc mockMvc;
 
 	@Before
 	public void setup() {
+		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		personContributor = new UsgsContributor();
 	}
 
@@ -63,7 +67,7 @@ public class LkupMvcServiceTest extends BaseTest {
 
 		MvcResult rtn = mockMvc.perform(get("/lookup/people?text=kr").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 		assertThat(getRtnAsJSONArray(rtn),

@@ -44,7 +44,7 @@ public class MpListMvcServiceTest extends BaseTest {
 		when(busService.getObjects(anyMap())).thenReturn(getListOfMpList());
 		MvcResult rtn = mockMvc.perform(get("/lists?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 

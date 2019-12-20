@@ -71,7 +71,10 @@ public class SpringConfig implements WebMvcConfigurer {
 	public MappingJackson2HttpMessageConverter jackson2HttpMessageConverter() {
 		Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
 		builder.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-		return new MappingJackson2HttpMessageConverter(builder.build());
+		MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter(builder.build());
+		// Set the default Charset to pubs default
+		converter.setDefaultCharset(PubsConstantsHelper.DEFAULT_CHARSET);
+		return converter;
 	}
 
 	@Override

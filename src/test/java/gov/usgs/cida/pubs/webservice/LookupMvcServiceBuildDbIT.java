@@ -10,14 +10,16 @@ import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONArrayAs;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -57,7 +59,6 @@ import gov.usgs.cida.pubs.springinit.DbTestConfig;
 import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
 
 @EnableWebMvc
-@AutoConfigureMockMvc(secure=false)
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK,
 	classes={DbTestConfig.class, ConfigurationService.class, LookupMvcService.class,
 			CostCenter.class, CostCenterDao.class, AffiliationDao.class,
@@ -78,13 +79,20 @@ import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
 public class LookupMvcServiceBuildDbIT extends BaseIT {
 
 	@Autowired
+	private WebApplicationContext webApplicationContext;
+
 	private MockMvc mockMvc;
+
+	@Before
+	public void setup() {
+		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+	}
 
 	@Test
 	public void getCorporations() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/lookup/corporations?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -92,7 +100,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 
 		rtn = mockMvc.perform(get("/lookup/corporations?text=us geo").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -109,7 +117,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 	public void getPeople() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/lookup/people?text=oute").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -121,7 +129,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 
 		rtn = mockMvc.perform(get("/lookup/people?orcid=0000-0000-0000-0004").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 
@@ -137,7 +145,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 		String endPoint = "/lookup/costcenters";
 		MvcResult rtn = mockMvc.perform(get(endPoint + "?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -145,7 +153,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 
 		rtn = mockMvc.perform(get(endPoint + "?text=xa").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -164,7 +172,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 		String endPoint = "/lookup/outsideaffiliates?mimetype=json";
 		MvcResult rtn = mockMvc.perform(get(endPoint).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -172,7 +180,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 
 		rtn = mockMvc.perform(get("/lookup/outsideaffiliates?text=xo").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -190,7 +198,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 	public void getPublications() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/lookup/publications?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -198,7 +206,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 
 		rtn = mockMvc.perform(get("/lookup/publications?text=9").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -212,7 +220,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 	public void getPublicationSeriesQuery() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/lookup/publicationseries?text=zeit&publicationsubtypeid=10").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -237,7 +245,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 		MvcResult rtn = mockMvc.perform(get("/lookup/publicationtype/"
 				+ PublicationType.REPORT + "/publicationsubtype/10/publicationseries?text=zeit").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -261,7 +269,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 	public void getPublicationSubtypeQuery() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/lookup/publicationsubtypes?text=b&publicationtypeid=4").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -273,7 +281,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 	public void getPublicationSubtypeREST() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/lookup/publicationtype/4/publicationsubtypes?text=b").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -286,7 +294,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 	public void getPublicationType() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/lookup/publicationtypes?text=b").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -299,7 +307,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 	public void getPublishingServiceCenters() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/lookup/publishingServiceCenters?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -307,7 +315,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 
 		rtn = mockMvc.perform(get("/lookup/publishingServiceCenters?text=r").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -323,7 +331,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 
 	private MvcResult performGetRequest(String path) throws Exception {
 		MvcResult rtn = mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING)).andReturn();
 		return rtn;
 	}

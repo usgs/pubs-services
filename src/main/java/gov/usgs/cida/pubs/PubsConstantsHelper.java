@@ -1,10 +1,14 @@
 package gov.usgs.cida.pubs;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 import org.springframework.http.MediaType;
 
 public final class PubsConstantsHelper {
 
 	public static final String DEFAULT_ENCODING = "UTF-8";
+	public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
 	/**
 	 * The URL_ENCODING constant should only be used when calling 

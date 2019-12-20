@@ -11,6 +11,7 @@ import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
 
 import org.apache.http.entity.mime.MIME;
 import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,8 +21,10 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -45,7 +48,6 @@ import gov.usgs.cida.pubs.utility.CustomStringToStringConverter;
 import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
 
 @EnableWebMvc
-@AutoConfigureMockMvc(secure=false)
 @ContextConfiguration(classes = FreeMarkerAutoConfiguration.class)
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK,
 	classes={DbTestConfig.class, ConfigurationService.class, PwPublicationMvcService.class,
@@ -68,13 +70,20 @@ public class PwPublicationMvcServiceSinglePubIT extends BaseIT {
 	private static final String CROSSREF_PUB_JSON_FILE = "pwPublication/sir2.json";
 
 	@Autowired
+	private WebApplicationContext webApplicationContext;
+
 	private MockMvc mockMvc;
+
+	@Before
+	public void setup() {
+		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+	}
 
 	@Test
 	public void getJSONWhenNoAcceptHeaderIsSpecified () throws Exception {
 		MvcResult result = mockMvc.perform(get("/publication/" + CROSSREF_PUB_ID))
 			.andExpect(status().isOk())
-			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 			.andReturn();
 		JSONObject content = getRtnAsJSONObject(result);
@@ -97,7 +106,7 @@ public class PwPublicationMvcServiceSinglePubIT extends BaseIT {
 				"*/*;q=0.8"
 			))
 			.andExpect(status().isOk())
-			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 			.andReturn();
 		JSONObject content = getRtnAsJSONObject(result);
@@ -113,10 +122,10 @@ public class PwPublicationMvcServiceSinglePubIT extends BaseIT {
 	public void getJSONWhenAcceptHeaderAsksForJSON () throws Exception {
 		MvcResult result = mockMvc.perform(get("/publication/" + CROSSREF_PUB_ID)
 			.accept(
-				MediaType.APPLICATION_JSON_UTF8
+				MediaType.APPLICATION_JSON
 			))
 			.andExpect(status().isOk())
-			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 			.andReturn();
 		JSONObject content = getRtnAsJSONObject(result);
@@ -132,7 +141,7 @@ public class PwPublicationMvcServiceSinglePubIT extends BaseIT {
 	public void getJSONWhenQueryStringAsksForJSON () throws Exception {
 		MvcResult result = mockMvc.perform(get("/publication/" + CROSSREF_PUB_ID + "?" + PubsConstantsHelper.CONTENT_PARAMETER_NAME +"=" + PubsConstantsHelper.MEDIA_TYPE_JSON_EXTENSION))
 			.andExpect(status().isOk())
-			.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 			.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 			.andReturn();
 		JSONObject content = getRtnAsJSONObject(result);

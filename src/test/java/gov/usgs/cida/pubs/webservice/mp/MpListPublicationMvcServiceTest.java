@@ -56,7 +56,7 @@ public class MpListPublicationMvcServiceTest extends BaseTest {
 		MvcResult rtn = mockMvc.perform(post("/lists/66/pubs?publicationId=12")
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isCreated())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
@@ -70,7 +70,7 @@ public class MpListPublicationMvcServiceTest extends BaseTest {
 		MvcResult rtn = mockMvc.perform(delete("/lists/66/pubs/12")
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 		

@@ -10,18 +10,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
 
 import org.json.JSONObject;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -60,6 +58,7 @@ import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
 
 @EnableWebMvc
+@AutoConfigureMockMvc
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK,
 classes={DbTestConfig.class, MpPublicationMvcService.class,
 		LocalValidatorFactoryBean.class,
@@ -76,11 +75,9 @@ classes={DbTestConfig.class, MpPublicationMvcService.class,
 		MpPublicationContributorBusService.class, SippProcess.class})
 @DatabaseSetup("classpath:/testCleanup/clearAll.xml")
 public class MpPublicationMvcServiceIT extends BaseIT {
+
 	@Autowired
-	private WebApplicationContext webApplicationContext;
-
 	private MockMvc mockMvc;
-
 	@MockBean
 	private ICrossRefBusService crossRefBusService;
 	@MockBean
@@ -89,11 +86,6 @@ public class MpPublicationMvcServiceIT extends BaseIT {
 	private ExtPublicationService extPublicationService;
 	@MockBean
 	private SippConversionService sippConversionService;
-
-	@Before
-	public void setup() {
-		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-	}
 
 	@Test
 	@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
@@ -123,7 +115,7 @@ public class MpPublicationMvcServiceIT extends BaseIT {
 		//happy path in both databases
 		MvcResult result = mockMvc.perform(delete("/mppublications/2/purge"))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 		assertThat(getRtnAsJSONObject(result), sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
@@ -139,7 +131,7 @@ public class MpPublicationMvcServiceIT extends BaseIT {
 
 		MvcResult result = mockMvc.perform(get("/mppublications/" + queryParms))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 

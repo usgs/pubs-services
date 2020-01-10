@@ -7,16 +7,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
 
 import org.json.JSONObject;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -31,6 +29,7 @@ import gov.usgs.cida.pubs.utility.CustomStringToStringConverter;
 import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
 
 @EnableWebMvc
+@AutoConfigureMockMvc
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK,
 	classes={DbTestConfig.class, SpringConfig.class, CustomStringToArrayConverter.class,
 			StringArrayCleansingConverter.class, CustomStringToStringConverter.class, GlobalDefaultExceptionHandler.class,
@@ -39,20 +38,13 @@ import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
 public class DeletedPublicationMvcServiceIT extends BaseIT {
 
 	@Autowired
-	private WebApplicationContext webApplicationContext;
-
 	private MockMvc mockMvc;
-
-	@Before
-	public void setUp() {
-		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-	}
 
 	@Test
 	public void getAllNoPaging() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/publication/deleted").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 
@@ -64,7 +56,7 @@ public class DeletedPublicationMvcServiceIT extends BaseIT {
 	public void getAllPageOne() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/publication/deleted?page_number=1&page_size=2").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 
@@ -76,7 +68,7 @@ public class DeletedPublicationMvcServiceIT extends BaseIT {
 	public void getAllPageThree() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/publication/deleted?page_number=3&page_size=2").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 
@@ -88,7 +80,7 @@ public class DeletedPublicationMvcServiceIT extends BaseIT {
 	public void getSinceNoPaging() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/publication/deleted?deletedSince=2017-12-31").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 
@@ -100,7 +92,7 @@ public class DeletedPublicationMvcServiceIT extends BaseIT {
 	public void getSincePageOne() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/publication/deleted?deletedSince=2017-12-31&page_number=1&page_size=1").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 
@@ -112,7 +104,7 @@ public class DeletedPublicationMvcServiceIT extends BaseIT {
 	public void getSincePageThree() throws Exception {
 		MvcResult rtn = mockMvc.perform(get("/publication/deleted?deletedSince=2017-12-31&page_number=3&page_size=1").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 

@@ -3,48 +3,48 @@
   <Abstract>There is an increasing need to provide actionable science for water management planning and ecological drought preparedness. However, questions remain regarding the most effective and efficient methods for extending scientific knowledge and products into management action and decision-making. This study analyzed two unique cases of water management in the context of ecologically available water to understand the translation of scientific knowledge into management. In particular, the research examined and compared (1) characteristics of the science being assessed and applied and (2) ideal types of scientific knowledge or products that facilitate the translation process towards action, management, and decision-making. The first case, beaver mimicry, is an emerging nature-based solution used to restore riparian areas, increase groundwater infiltration, and slow surface water flow that is rapidly being adopted by the natural resource management community. The second, Colorado Dust on Snow, is an established research program funded by several agencies and water conservation districts that provides water managers with scientific information regarding how movement of dust influences hydrology and timing of water runoff in critical water sources. For each case, ethnographic conversations with scientists and practitioners were used to understand how scientific knowledge translates into action and decision making. Conversations were transcribed and analyzed using qualitative methods. Results explore how the salience, credibility, and legitimacy of information is viewed differently by scientists and practitioners. A manuscript describing these results is in preparation for the journal Environmental Management.</Abstract>
   <BasisNumber>RB00H5X.2</BasisNumber>
   <CostCenter>Fort Collins Science Center</CostCenter>
-  <IPPANumber/>
+  <IPPANumber xsi:nil="true" />
   <Cooperators>North Central Climate Adaptation Science Center</Cooperators>
-  <EditionNumber/>
+  <EditionNumber xsi:nil="true" />
   <FinalTitle>Identifying Characteristics of Actionable Science for Drought Planning and Adaptation: Final Report to the North Central Climate Adaptation Science Center</FinalTitle>
   <JournalTitle>ScienceBase</JournalTitle>
-  <NumberOfMapsOrPlates/>
-  <PageRange/>
-  <PhysicalDescription/>
+  <NumberOfMapsOrPlates xsi:nil="true" />
+  <PageRange xsi:nil="true" />
+  <PhysicalDescription xsi:nil="true" />
   <PlannedDisseminationDate>2019-07-01T05:00:00</PlannedDisseminationDate>
-  <SupersedesIPNumber/>
-  <TeamProjectName/>
-  <VISpecialist/>
-  <Volume/>
+  <SupersedesIPNumber xsi:nil="true" />
+  <TeamProjectName xsi:nil="true" />
+  <VISpecialist xsi:nil="true" />
+  <Volume xsi:nil="true" />
   <WorkingTitle>Identifying Characteristics of Actionable Science for Drought Planning and Adaptation: Final Report to the North Central Climate Adaptation Science Center</WorkingTitle>
-  <USGSSeriesNumber/>
+  <USGSSeriesNumber xsi:nil="true" />
   <USGSRegion>Southwest Region</USGSRegion>
   <USGSProgram>NCCWSC/DOI Climate Science Centers; Status and Trends</USGSProgram>
-  <USGSSeriesType/>
+  <USGSSeriesType xsi:nil="true" />
   <SeniorUSGSAuthor>Cravens, Amanda Emily</SeniorUSGSAuthor>
-  <LocationOfSupportingData/>
+  <LocationOfSupportingData xsi:nil="true" />
   <PSCChief>Larson, Tania M.</PSCChief>
   <PublishedURL>https://www.sciencebase.gov/catalog/item/5d2cf2bbe4b038fabe22cff2</PublishedURL>
   <CostCenterChief>Schuster, Rudy</CostCenterChief>
   <AuthorsSupervisor>Schuster, Rudy</AuthorsSupervisor>
   <BureauApprovingOfficial>Carter, Janet M.</BureauApprovingOfficial>
   <Citation>Adam Wilke and Amanda Cravens, 2019, Identifying Characteristics of Actionable Science for Drought Planning and Adaptation. US Geological Survey:</Citation>
-  <DigitalObjectIdentifier/>
-  <InterpretivePublication/>
-  <Issue/>
+  <DigitalObjectIdentifier xsi:nil="true" />
+  <InterpretivePublication xsi:nil="true" />
+  <Issue xsi:nil="true" />
   <ProductType>Cooperator publication</ProductType>
-  <DataManagementPlan/>
+  <DataManagementPlan xsi:nil="true" />
   <USGSFunded>Yes</USGSFunded>
   <USGSMissionArea>Ecosystems</USGSMissionArea>
   <ProductSummary>There is an increasing need to provide actionable science for water management planning and ecological drought preparedness. However, questions remain regarding the most effective and efficient methods for extending scientific knowledge and products into management action and decision-making. This study analyzed two unique cases of water management in the context of ecologically available water to understand the translation of scientific knowledge into management. In particular, the research examined and compared (1) characteristics of the science being assessed and applied and (2) ideal types of scientific knowledge or products that facilitate the translation process towards action, management, and decision-making. The first case, beaver mimicry, is an emerging nature-based solution used to restore riparian areas, increase groundwater infiltration, and slow surface water flow that is rapidly being adopted by the natural resource management community. The second, Colorado Dust on Snow, is an established research program funded by several agencies and water conservation districts that provides water managers with scientific information regarding how movement of dust influences hydrology and timing of water runoff in critical water sources. For each case, ethnographic conversations with scientists and practitioners were used to understand how scientific knowledge translates into action and decision making. Conversations were transcribed and analyzed using qualitative methods. Results explore how the salience, credibility, and legitimacy of information is viewed differently by scientists and practitioners. A manuscript describing these results is in preparation for the journal Environmental Management.</ProductSummary>
   <TaskAssignedTo>Cravens, Amanda Emily</TaskAssignedTo>
   <NonUSGSPublisher>North Central Climate Adaptation Science Center</NonUSGSPublisher>
-  <RelatedIPNumber/>
-  <USGSSeriesLetter/>
+  <RelatedIPNumber xsi:nil="true" />
+  <USGSSeriesLetter xsi:nil="true" />
   <Task>Dissemination</Task>
   <TaskStartDate>2019-06-25T22:44:26</TaskStartDate>
   <GeologicalNames>No</GeologicalNames>
-  <Editor/>
+  <Editor xsi:nil="true" />
   <PublishingServiceCenter>Denver PSC</PublishingServiceCenter>
   <Created>2019-05-22T17:04:04</Created>
   <CreatedBy>Cravens, Amanda Emily</CreatedBy>
@@ -53,10 +53,10 @@
   <Authors xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <Author>
       <IPNumber>IP-108541</IPNumber>
-      <AuthorName/>
+      <AuthorName xsi:nil="true" />
       <AuthorNameText>Wilke, Adam</AuthorNameText>
-      <ORCID/>
-      <CostCenter/>
+      <ORCID xsi:nil="true" />
+      <CostCenter xsi:nil="true" />
       <ContributorRole>1</ContributorRole>
       <NonUSGSAffiliation>former USGS employee</NonUSGSAffiliation>
       <NonUSGSContributor>Wilke, Adam</NonUSGSContributor>
@@ -73,8 +73,8 @@
       <ORCID>0000-0002-0271-7967</ORCID>
       <CostCenter>Fort Collins Science Center</CostCenter>
       <ContributorRole>1</ContributorRole>
-      <NonUSGSAffiliation/>
-      <NonUSGSContributor/>
+      <NonUSGSAffiliation xsi:nil="true" />
+      <NonUSGSContributor xsi:nil="true" />
       <Rank>2</Rank>
       <Created>2019-05-22T17:04:05</Created>
       <CreatedBy>Cravens, Amanda Emily</CreatedBy>
@@ -153,7 +153,7 @@
     </Task>
     <Task>
       <IPNumber>IP-108541</IPNumber>
-      <Comments/>
+      <Comments xsi:nil="true" />
       <TaskStartDate>2019-06-24T18:05:58</TaskStartDate>
       <TaskCompletionDate>2019-06-24T18:06:03</TaskCompletionDate>
       <Status>Approve</Status>
@@ -168,7 +168,7 @@
     </Task>
     <Task>
       <IPNumber>IP-108541</IPNumber>
-      <Comments/>
+      <Comments xsi:nil="true" />
       <TaskStartDate>2019-06-22T21:36:14</TaskStartDate>
       <TaskCompletionDate>2019-06-24T18:05:58</TaskCompletionDate>
       <Status>Approve</Status>
@@ -183,7 +183,7 @@
     </Task>
     <Task>
       <IPNumber>IP-108541</IPNumber>
-      <Comments/>
+      <Comments xsi:nil="true" />
       <TaskStartDate>2019-05-24T17:09:37</TaskStartDate>
       <TaskCompletionDate>2019-06-22T21:36:14</TaskCompletionDate>
       <Status>Approve</Status>
@@ -198,7 +198,7 @@
     </Task>
     <Task>
       <IPNumber>IP-108541</IPNumber>
-      <Comments/>
+      <Comments xsi:nil="true" />
       <TaskStartDate>2019-05-22T19:14:09</TaskStartDate>
       <TaskCompletionDate>2019-05-24T17:09:37</TaskCompletionDate>
       <Status>Approve</Status>
@@ -213,14 +213,14 @@
     </Task>
     <Task>
       <IPNumber>IP-108541</IPNumber>
-      <Comments/>
+      <Comments xsi:nil="true" />
       <TaskStartDate>2019-05-22T17:04:05</TaskStartDate>
       <TaskCompletionDate>2019-05-22T17:04:05</TaskCompletionDate>
       <Status>Create</Status>
-      <task/>
+      <task xsi:nil="true" />
       <TaskAssignedTo>Cravens, Amanda Emily</TaskAssignedTo>
       <NextTask>Request Peer Review</NextTask>
-      <TaskApprover/>
+      <TaskApprover xsi:nil="true" />
       <Created>2019-05-22T17:04:05</Created>
       <CreatedBy>Cravens, Amanda Emily</CreatedBy>
       <Modified>2019-05-22T17:04:05</Modified>
@@ -228,7 +228,7 @@
     </Task>
     <Task>
       <IPNumber>IP-108541</IPNumber>
-      <Comments/>
+      <Comments xsi:nil="true" />
       <TaskStartDate>2019-05-22T17:04:04</TaskStartDate>
       <TaskCompletionDate>2019-05-22T19:14:09</TaskCompletionDate>
       <Status>Approve</Status>

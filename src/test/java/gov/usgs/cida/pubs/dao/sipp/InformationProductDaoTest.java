@@ -1,5 +1,7 @@
 package gov.usgs.cida.pubs.dao.sipp;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
@@ -7,8 +9,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -56,7 +60,15 @@ public class InformationProductDaoTest extends BaseTest {
 
 	public InformationProduct getDisseminationFromXml() throws Exception {
 		XmlMapper xmlMapper = new XmlMapper();
-		return xmlMapper.readValue(getFile("testData/sipp/dissemination.xml"), InformationProduct.class);
+		InformationProduct informationProduct = xmlMapper.readValue(getFile("testData/sipp/dissemination.xml"),
+				InformationProduct.class);
+		;
+
+		assertNotNull(informationProduct);
+		assertNull(informationProduct.getIppaNumber());
+		assertEquals("North Central Climate Adaptation Science Center", informationProduct.getCooperators());
+
+		return informationProduct;
 	}
 
 }

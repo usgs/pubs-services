@@ -17,13 +17,14 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -35,11 +36,19 @@ import gov.usgs.cida.pubs.dao.intfc.IPersonContributorDao;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
+import gov.usgs.cida.pubs.springinit.SpringConfig;
+import gov.usgs.cida.pubs.utility.CustomStringToArrayConverter;
+import gov.usgs.cida.pubs.utility.CustomStringToStringConverter;
 import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
+import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
 
 @EnableWebMvc
+@AutoConfigureMockMvc
+@WithMockUser
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK,
-	classes={ConfigurationService.class, LookupMvcService.class, PersonContributor.class, Contributor.class})
+	classes={ConfigurationService.class, LookupMvcService.class, PersonContributor.class, Contributor.class,
+		SpringConfig.class, CustomStringToArrayConverter.class, StringArrayCleansingConverter.class, CustomStringToStringConverter.class,
+		GlobalDefaultExceptionHandler.class})
 public class LkupMvcServiceTest extends BaseTest {
 
 	@MockBean(name="personContributorDao")
@@ -47,15 +56,11 @@ public class LkupMvcServiceTest extends BaseTest {
 	@MockBean(name="contributorDao")
 	IDao<Contributor<?>> contributorDao;
 	PersonContributor<?> personContributor;
-
 	@Autowired
-	private WebApplicationContext webApplicationContext;
-
-	private MockMvc mockMvc;
+	MockMvc mockMvc;
 
 	@Before
 	public void setup() {
-		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		personContributor = new UsgsContributor();
 	}
 

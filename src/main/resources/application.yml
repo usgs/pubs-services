@@ -7,7 +7,7 @@ spring:
       auto-commit: false
 
   profiles:
-    active: default,swagger
+    active: default
 
 server:
   port: ${SERVER_PORT}

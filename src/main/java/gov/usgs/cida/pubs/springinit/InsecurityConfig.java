@@ -22,6 +22,7 @@ public class InsecurityConfig extends WebSecurityConfigurerAdapter {
 				.anonymous()
 				.and().cors()
 			.and()
-				.csrf().disable();
+				.csrf().disable()
+		;
 	}
 }

@@ -1,117 +1,123 @@
+# .gitlab-ci.yml for pubs-services
 #
-# .gitlab-ci.yml
-#
-# This file is used by the USGS SAS team for building on code.usgs.gov
-#
-# This builds a Docker image and tags it as the latest for its branch.
-# After building, it will trigger a deployment pipeline in another repo.
-#
-# Reference:
+# == Reference:
+#   - https://sas.cr.usgs.gov/
 #   - https://docs.gitlab.com/ee/ci/yaml/
+#   - https://docs.gitlab.com/ee/ci/multi_project_pipelines.html
 #
-# CI Variables:
-#   PUBSWH_SERVICES_IMAGE
-#     Should be the full value of the Docker image to produce. This should include the full registry address.
-#     This variable is sent to the deployment trigger.
+# == CI Variables:
+#   The following CI variables are expected to be set outside of this file in
+#   GitLab group variables.
 #
-#   PUBSWH_SERVICES_IMAGE_TAG
-#     The Docker image tag. The default is to use the branch:short_sha
-#     This variable is sent to the deployment trigger.
+#   CI_REGISTRY
+#     Address to the Docker image registry.
+#     This is a built-in Docker variable that, by default, points to the internal
+#     Docker Image registry.
 #
-#   maven_image
-#     The Docker image name for maven. Used by the Docker image build for the Maven image source.
+#   CI_REGISTRY_USER
+#     The username for authenticating with the Docker image registry.
+#     Defaults to "gitlab-ci-token"
 #
-#   openjdk_image
-#     The Docker image name for OpenJDK. Used by the Docker image build for the OpenJDK image source.
+#   CI_REGISTRY_PASS
+#     The password. for authenticating with the Docker image registry.
+#     Defaults to "$CI_JOB_TOKEN"
 #
-#   DEPLOY_TRIGGER_REF
-#     Set on the individual deployment jobs below. This is the branch name to trigger on the deployment pipeline.
+#   DEPLOY_TRIGGER_TOKEN
+#     The API token for the deployment pipeline as configured on the deployment
+#     repository.
 #
-#   DEPLOY_TRIGGER_VARS
-#     Space-delimited list of variables to pass along with the deployment trigger.
-#     This is used to pass the PUBSWH_SERVICES_IMAGE and PUBSWH_SERVICES_IMAGE_TAG variables along.
+#   DEPLOY_TRIGGER_URL
+#     The API URL for the deployment pipeline as configured on the deployment
+#     repository.
 #
-
-# Include common SAS defined jobs from a repository available to ci/cd.
-include:
-  # Include common variables
-  - project: 'sas/ops/ci-pipeline/gitlab-ci-pipeline'
-    file: '/common-vars.yml'
-  # Docker build jobs
-  - project: 'sas/ops/ci-pipeline/gitlab-ci-pipeline'
-    file: '/build/docker.yml'
-  # Job for triggering deployment via GitLab API
-  - project: 'sas/ops/ci-pipeline/gitlab-ci-pipeline'
-    file: '/deploy/api_trigger.yml'
-
-# These stages are defined on the jobs in the included files above.
+#   SAS_IMAGES_URL
+#     The base URL for USGS SAS Docker images.
+#
 stages:
-  - docker_build
-  - docker_tag_latest
-  - deploy_trigger
+  - Docker Build
+  - Trigger Deployment
 
 variables:
-  # These variables are referenced by the deployment triggers to specify the
-  # image and image tag to deploy dynamically.
-  PUBSWH_SERVICES_IMAGE: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
-  PUBSWH_SERVICES_IMAGE_TAG: ${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHORT_SHA}
-  # This variable is referenced by the deployment trigger jobs and sets the
-  # variable names to pass along with the deployment trigger.
-  DEPLOY_TRIGGER_VARS: PUBSWH_SERVICES_IMAGE PUBSWH_SERVICES_IMAGE_TAG
+  # The full name of the Docker image to produce, including the registry address.
+  # In most cases, this should be left alone.
+  IMAGE_NAME: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
+  # How to tag the docker image. For now, tag an image per commit.
+  IMAGE_TAG: ${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHORT_SHA}
 
-# The 'docker_build' job is defined in the '/build/docker.yml' file listed above.
-# The keys defined here are overrides/supplemental to the job.
-# Only build on pushes to the 'master' branch.
-docker_build:
-  variables:
-    # Use local base images for building
-    # These are based on the upstream
-    maven_image: 'code.chs.usgs.gov:5001/sas/ops/docker/base-images/maven'
-    maven_image_tag: '3.6.0-jdk-11'
-    openjdk_image: 'code.chs.usgs.gov:5001/sas/ops/docker/base-images/openjdk'
-    openjdk_image_tag: '11.0.4-jre'
-    DOCKER_BUILD_ARGS: >-
-      --build-arg maven_image=${maven_image}
-      --build-arg openjdk_image=${openjdk_image}
-      --build-arg maven_image_tag=${maven_image_tag}
-      --build-arg openjdk_image_tag=${openjdk_image_tag}
+#
+# == Docker Build
+#
+Build Docker Image:
+  image: ${SAS_IMAGES_URL}/docker:19-latest
+  stage: Docker Build
+  services:
+    - docker:dind
+  tags:
+    - docker
   only:
-    refs:
-      - master
+    variables:
+      # We must run on a protected branch to access the CI_REGISTRY_PASS
+      # variable.
+      - $CI_COMMIT_REF_PROTECTED == "true"
+  before_script:
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASS} ${CI_REGISTRY}
+  script:
+    # Use locally sourced images for building
+    # These imagess are based on the official upstream images.
+    # SAS_IMAGES_URL is a GitLab group variable set to the base URL for our
+    # internal image registry.
+    - docker build --pull
+      -t ${IMAGE_NAME}:${IMAGE_TAG}
+      --build-arg maven_image=${SAS_IMAGES_URL}/maven
+      --build-arg openjdk_image=${SAS_IMAGES_URL}/openjdk
+      --build-arg maven_image_tag=3.6.0-jdk-11
+      --build-arg openjdk_image_tag=11.0.4-jre
+      -f Dockerfile .
+    - docker push ${IMAGE_NAME}:${IMAGE_TAG}
 
-# The 'docker_tag' job is defined in the '/build/docker.yml' file listed above.
-# The keys defined here are overrides/supplemental to the job.
-# This simply labels the built image as '${ref}-latest' and pushes to the registry.
-docker_tag_latest:
+#
+# == Deployment Triggers
+#
+# These jobs use 'curl' to make a request to the GitLab API to trigger the
+# deployment repository's pipeline. The pipeline trigger is configured on
+# the deployment repository under "Settings -> CI/CD -> Pipeline Triggers",
+# which provides an API URL and token.
+#
+# References:
+#   - https://docs.gitlab.com/ee/ci/triggers/README.html
+#
+.deploy_trigger:
+  image: ${SAS_IMAGES_URL}/curl:master-latest
+  stage: Trigger Deployment
+  tags:
+    - docker
   only:
-    refs:
-      - master
+    variables:
+      # Limit the deployment triggers to protected refs.
+      - $CI_COMMIT_REF_PROTECTED == "true"
+  script:
+    # In the trigger, pass along our image variables.
+    - curl -X POST
+      -F variables[PUBSWH_SERVICES_IMAGE]=${IMAGE_NAME}
+      -F variables[PUBSWH_SERVICES_IMAGE_TAG]=${IMAGE_TAG}
+      -F token=${DEPLOY_TRIGGER_TOKEN}
+      -F ref=${DEPLOY_TRIGGER_REF}
+      ${DEPLOY_TRIGGER_URL}
 
-# The 'trigger_deploy_*' jobs are defined in the '/deploy/api_trigger.yml' file listed above.
-# The keys defined here are overrides/supplemental to the job.
-# This uses the GitLab trigger API to trigger the "deployment repo" pipeline, passing along
-# the image information (DEPLOY_TRIGGER_VARS).
-
-# This triggers a 'development' environment deployment on successful builds of
-# the 'master' branch.
-trigger_deploy_development:
+Development deployment:
   extends: .deploy_trigger
+  only:
+    refs:
+      - master
   variables:
-    ENVIRONMENT: development
+    # The branch on the deployment repository to trigger.
     DEPLOY_TRIGGER_REF: develop
-  only:
-    refs:
-      - master
-  when: on_success
 
-# This triggers a 'staging' environment deployment on successful builds of
-# the 'master' branch.
-trigger_deploy_staging:
+Staging deployment:
   extends: .deploy_trigger
-  variables:
-    ENVIRONMENT: staging
-    DEPLOY_TRIGGER_REF: master
   only:
     refs:
       - master
-  when: on_success
+  variables:
+    # The branch on the deployment repository to trigger.
+    DEPLOY_TRIGGER_REF: release

@@ -39,13 +39,13 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 	private static IPersonContributorDao personContributorDao;
 
 	@JsonProperty("family")
-	@JsonView({View.PW.class, View.Lookup.class})
+	@JsonView(View.PW.class)
 	@NotNull
 	@Length(min=1, max=40)
 	private String family;
 
 	@JsonProperty("given")
-	@JsonView({View.PW.class, View.Lookup.class})
+	@JsonView(View.PW.class)
 	@Length(min=0, max=40)
 	private String given;
 
@@ -55,7 +55,7 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 	private String suffix;
 
 	@JsonProperty("email")
-	@JsonView({View.PW.class, View.Lookup.class})
+	@JsonView(View.PW.class)
 	@Length(min=0, max=400)
 	@Email
 	private String email;
@@ -67,7 +67,7 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 	private String orcid;
 
 	@JsonProperty("affiliations")
-	@JsonView({View.PW.class, View.Lookup.class})
+	@JsonView(View.PW.class)
 	private Set<Affiliation<? extends Affiliation<?>>> affiliations;
 
 	@JsonProperty("preferred")
@@ -111,7 +111,7 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 	}
 
 	@JsonProperty("orcid")
-	@JsonView({View.PW.class, View.Lookup.class})
+	@JsonView(View.PW.class)
 	public String getDenormalizeOrcid() {
 		return DataNormalizationUtils.denormalizeOrcid(orcid);
 	}

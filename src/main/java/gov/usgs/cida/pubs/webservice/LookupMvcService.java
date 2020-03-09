@@ -250,7 +250,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
 	@ApiResponses(value={
 			@ApiResponse(code=HttpStatus.SC_BAD_REQUEST, message="Invalid query parameters provided.") }
 	)
-	@JsonView(View.PW.class)
+	@JsonView(View.Lookup.class)
 	public @ResponseBody Collection<Contributor<?>> getContributorsPeople(HttpServletRequest request, HttpServletResponse response,
 			PersonContributorFilterParams filterParams) {
 		Collection<Contributor<?>> rtn = new ArrayList<>();

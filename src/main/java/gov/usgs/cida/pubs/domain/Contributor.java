@@ -19,13 +19,13 @@ public class Contributor<D> extends BaseDomain<Contributor<D>> {
 	private static IDao<Contributor<?>> contributorDao;
 
 	@JsonProperty("corporation")
-	@JsonView(View.PW.class)
+	@JsonView({View.PW.class, View.Lookup.class})
 	@NotNull
 	//TODO cross-field validations
 	protected Boolean corporation;
 
 	@JsonProperty("usgs")
-	@JsonView(View.PW.class)
+	@JsonView({View.PW.class, View.Lookup.class})
 	@NotNull
 	//TODO cross-field validations
 	protected Boolean usgs;

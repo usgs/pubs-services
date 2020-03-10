@@ -93,7 +93,7 @@ public class LkupMvcServiceTest extends BaseTest {
 	private JSONArray contributorJsonArray(PersonContributor<?> contributor) throws JSONException {
 		JSONObject json = new JSONObject();
 
-		json.put("contributorId", contributor.getId());
+		json.put("id", contributor.getId());
 		json.put("email", contributor.getEmail());
 		json.put("given", contributor.getGiven());
 		json.put("preferred", contributor.isPreferred());

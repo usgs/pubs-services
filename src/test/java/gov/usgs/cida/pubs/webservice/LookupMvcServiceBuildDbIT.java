@@ -101,7 +101,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 		assertEquals(1, rtnAsJSONArray.length());
 
 		assertThat(rtnAsJSONArray,
-				sameJSONArrayAs(new JSONArray("[{\"id\":2,\"text\":\"US Geological Survey Ice Survey Team\"}]"))
+				sameJSONArrayAs(new JSONArray("[{\"id\":2,\"text\":\"US Geological Survey Ice Survey Team\", \"corporation\":true, \"usgs\":false}]"))
 						.allowingAnyArrayOrdering());
 	}
 
@@ -358,7 +358,7 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 	private JSONArray contributorJsonArray(PersonContributor<?> contributor) throws JSONException {
 		JSONObject json = new JSONObject();
 
-		json.put("contributorId", contributor.getId());
+		json.put("id", contributor.getId());
 		json.put("email", contributor.getEmail());
 		json.put("given", contributor.getGiven());
 		json.put("preferred", contributor.isPreferred());

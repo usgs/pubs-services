@@ -22,7 +22,7 @@
 
         <!-- test scope versions -->
         <spring-test-dbunit-version>1.3.0</spring-test-dbunit-version>
-        <dbunit-version>2.6.0</dbunit-version>
+        <dbunit-version>2.7.0</dbunit-version>
         <hamcrest-json-version>0.2</hamcrest-json-version>
     </properties>
 

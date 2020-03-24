@@ -1,7 +1,6 @@
 package gov.usgs.cida.pubs.busservice;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,9 +8,10 @@ import org.springframework.stereotype.Service;
 import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.query.IFilterParams;
 
 @Service
-public class PublicationBusService extends BusService<Publication<?>> implements IPublicationBusService {
+public class PublicationBusService implements IPublicationBusService {
 	protected final ConfigurationService configurationService;
 
 	@Autowired
@@ -20,22 +20,13 @@ public class PublicationBusService extends BusService<Publication<?>> implements
 	}
 	
 	@Override
-	public List<Publication<?>> getObjects(Map<String, Object> filters) {
-		return Publication.getPublicationDao().getByMap(filters);
+	public List<Publication<?>> getObjects(IFilterParams filters) {
+		return Publication.getPublicationDao().getByFilter(filters);
 	}
 
 	@Override
-	public Integer getObjectCount(Map<String, Object> filters) {
-		return Publication.getPublicationDao().getObjectCount(filters);
-	}
-
-	@Override
-	public String getWarehousePage(Publication<?> pub) {
-		String rtn = "";
-		if(pub != null && pub.getIndexId() != null) {
-			rtn = configurationService.getWarehouseEndpoint() + "/publication/" + pub.getIndexId();
-		}
-		return rtn;
+	public Integer getObjectCount(IFilterParams filters) {
+		return Publication.getPublicationDao().getCountByFilter(filters);
 	}
 
 }

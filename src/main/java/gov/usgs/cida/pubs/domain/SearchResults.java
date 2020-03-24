@@ -13,47 +13,47 @@ public class SearchResults implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@JsonProperty("pageSize")
-	@JsonView(View.PW.class)
+	@JsonView({View.PW.class, View.ManagerGrid.class})
 	private String pageSize;
 
 	@JsonProperty("pageRowStart")
-	@JsonView(View.PW.class)
+	@JsonView({View.PW.class, View.ManagerGrid.class})
 	private String pageRowStart;
 
 	@JsonProperty("pageNumber")
-	@JsonView(View.PW.class)
+	@JsonView({View.PW.class, View.ManagerGrid.class})
 	private String pageNumber;
 
 	@JsonProperty("recordCount")
-	@JsonView(View.PW.class)
+	@JsonView({View.PW.class, View.ManagerGrid.class})
 	private Integer recordCount;
 
 	@JsonProperty("records")
-	@JsonView(View.PW.class)
+	@JsonView({View.PW.class, View.ManagerGrid.class})
 	private List<? extends BaseDomain<?>> records;
 
 	public String getPageSize() {
 		return pageSize;
 	}
 
-	public void setPageSize(String pageSize) {
-		this.pageSize = pageSize;
+	public void setPageSize(Integer pageSize) {
+		this.pageSize = String.valueOf(pageSize);
 	}
 
 	public String getPageRowStart() {
 		return pageRowStart;
 	}
 
-	public void setPageRowStart(String pageRowStart) {
-		this.pageRowStart = pageRowStart;
+	public void setPageRowStart(Integer pageRowStart) {
+		this.pageRowStart = String.valueOf(pageRowStart);
 	}
 
 	public String getPageNumber() {
 		return pageNumber;
 	}
 
-	public void setPageNumber(String pageNumber) {
-		this.pageNumber = pageNumber;
+	public void setPageNumber(Integer pageNumber) {
+		this.pageNumber = String.valueOf(pageNumber);
 	}
 
 	public Integer getRecordCount() {

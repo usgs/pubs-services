@@ -2,7 +2,7 @@ package gov.usgs.cida.pubs.validation.nochildren;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
@@ -32,6 +32,7 @@ public class NoChildrenValidatorForPublicationSeriesTest extends BaseValidatorTe
 		super.setUp();
 		validator = new NoChildrenValidatorForPublicationSeries();
 		series = new PublicationSeries();
+		series.setId(1);
 
 		reset(publicationDao);
 	}
@@ -45,13 +46,13 @@ public class NoChildrenValidatorForPublicationSeriesTest extends BaseValidatorTe
 
 	@Test
 	public void isValidTrueTest() {
-		when(publicationDao.getObjectCount(anyMap())).thenReturn(0);
+		when(publicationDao.getSeriesCount(any(Integer.class))).thenReturn(0);
 		assertTrue(validator.isValid(series, context));
 	}
 
 	@Test
 	public void isValidFalseTest() {
-		when(publicationDao.getObjectCount(anyMap())).thenReturn(10);
+		when(publicationDao.getSeriesCount(any(Integer.class))).thenReturn(10);
 		assertFalse(validator.isValid(series, context));
 	}
 

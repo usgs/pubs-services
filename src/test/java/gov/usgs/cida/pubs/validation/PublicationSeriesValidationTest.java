@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
@@ -159,7 +158,8 @@ public class PublicationSeriesValidationTest extends BaseValidatorTest {
 
 	@Test
 	public void deleteTest() {
-		when(pubDao.getObjectCount(anyMap())).thenReturn(5);
+		when(pubDao.getSeriesCount(any(Integer.class))).thenReturn(5);
+		pubSeries.setId(1);
 		pubSeries.setValidationErrors(validator.validate(pubSeries, DeleteChecks.class));
 		assertFalse(pubSeries.isValid());
 		assertEquals(1, pubSeries.getValidationErrors().getValidationErrors().size());

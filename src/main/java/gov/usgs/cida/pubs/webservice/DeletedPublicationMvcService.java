@@ -38,9 +38,9 @@ public class DeletedPublicationMvcService extends MvcService<DeletedPublication>
 
 	protected SearchResults getCountAndPaging(DeletedPublicationFilter deletedPublicationFilter) {
 		SearchResults results = new SearchResults();
-		results.setPageSize(String.valueOf(deletedPublicationFilter.getPage_size()));
-		results.setPageRowStart(String.valueOf(deletedPublicationFilter.getPage_row_start()));
-		results.setPageNumber(String.valueOf(deletedPublicationFilter.getPage_number()));
+		results.setPageSize(deletedPublicationFilter.getPage_size());
+		results.setPageRowStart(deletedPublicationFilter.getPage_row_start());
+		results.setPageNumber(deletedPublicationFilter.getPage_number());
 		results.setRecordCount(deletedPublicationDao.getObjectCount(deletedPublicationFilter));
 		return results;
 	}

@@ -63,6 +63,7 @@ import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
+import gov.usgs.cida.pubs.domain.query.PwPublicationFilterParams;
 import gov.usgs.cida.pubs.security.AuthorizationTestServer;
 import gov.usgs.cida.pubs.security.BaseSecurityTest;
 import gov.usgs.cida.pubs.security.UserDetailTestService;
@@ -92,7 +93,7 @@ import gov.usgs.cida.pubs.webservice.pw.PwPublicationRssMvcService;
 		PublicationSeries.class, CostCenter.class, OutsideAffiliation.class, ContributorType.class,
 		LinkType.class, LinkFileType.class, PersonContributor.class, CorporateContributor.class,
 		PublishingServiceCenter.class, Publication.class, Contributor.class, OutsideContributor.class,
-		UsgsContributor.class, CustomUserAuthenticationConverter.class})
+		UsgsContributor.class, CustomUserAuthenticationConverter.class, PwPublicationFilterParams.class})
 public abstract class BaseEndpointSecurityTest extends BaseSecurityTest {
 
 	private static final String CONTENT_ID_1_JSON = "{\"id\":\"1\"}";
@@ -137,12 +138,10 @@ public abstract class BaseEndpointSecurityTest extends BaseSecurityTest {
 	protected IBusService<CostCenter> costCenterBusService;
 	@MockBean(name="outsideAffiliationBusService")
 	protected IBusService<OutsideAffiliation> outsideAffiliationBusService;
-	@MockBean(name="publicationBusService")
-	protected IBusService<Publication<?>> publicationBusService;
 	@MockBean(name="mpPublicationBusService")
 	protected IMpPublicationBusService mpPublicationBusService;
-	@MockBean
-	protected IPublicationBusService iPublicationBusService;
+	@MockBean(name="publicationBusService")
+	protected IPublicationBusService publicationBusService;
 	@MockBean(name="pwPublicationBusService")
 	protected IPwPublicationBusService pwPublicationBusService;
 	@MockBean(name="corporateContributorBusService")
@@ -181,7 +180,7 @@ public abstract class BaseEndpointSecurityTest extends BaseSecurityTest {
 		when(publicationSeriesBusService.deleteObject(anyInt())).thenReturn(new ValidationResults());
 		when(publicationSeriesBusService.updateObject(any(PublicationSeries.class))).thenReturn(new PublicationSeries());
 
-		when(pwPublicationBusService.getObjects(anyMap())).thenReturn(List.of(PwPublicationTest.buildAPub(1)));
+		when(pwPublicationBusService.getObjects(any(PwPublicationFilterParams.class))).thenReturn(List.of(PwPublicationTest.buildAPub(1)));
 		when(pwPublicationBusService.getByIndexId(anyString())).thenReturn(PwPublicationTest.buildAPub(1));
 
 		when(mpPublicationBusService.getObject(anyInt())).thenReturn(MpPublicationDaoIT.buildAPub(1));

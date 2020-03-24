@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.intfc.IPwPublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpDao;
@@ -16,6 +17,7 @@ import gov.usgs.cida.pubs.dao.mp.MpPublicationContributorDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationCostCenterDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationLinkDao;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
+import gov.usgs.cida.pubs.domain.query.IFilterParams;
 
 /**
  * NOTE: getbyId shows ALL data - this method should only be used for business logic related to MyPubs
@@ -76,6 +78,12 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 		return getSqlSession().selectOne(NS + GET_COUNT, filters);
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public Integer getCountByFilter(IFilterParams filters) {
+		return getSqlSession().selectOne(NS + GET_COUNT, filters);
+	}
+
 	@Transactional(readOnly = true)
 	@Override
 	public PwPublication getByIndexId(String indexId) {
@@ -83,7 +91,7 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	}
 
 	@Override
-	public void stream(String statement, Map<String, Object> filters, ResultHandler<PwPublication> handler) {
+	public void stream(String statement, IFilterParams filters, ResultHandler<PwPublication> handler) {
 		getSqlSession().select(statement, filters, handler);
 	}
 
@@ -106,5 +114,10 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 	@Override
 	public List<Map<String, Object>> getRelatedPublications(Integer publicationId) {
 		return getSqlSession().selectList(NS + GET_RELATED_PUBLICATIONS, publicationId);
+	}
+
+	@Override
+	public List<PwPublication> getByFilter(IFilterParams filters) {
+		throw new RuntimeException(PubsConstantsHelper.NOT_IMPLEMENTED);
 	}
 }

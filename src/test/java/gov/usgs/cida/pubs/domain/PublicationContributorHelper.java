@@ -1,5 +1,7 @@
-
 package gov.usgs.cida.pubs.domain;
+
+import java.util.Collection;
+import java.util.Set;
 
 public final class PublicationContributorHelper {
 	private PublicationContributorHelper() {
@@ -80,4 +82,8 @@ public final class PublicationContributorHelper {
 		return contributor;
 	}
 
+	public static Collection<PublicationContributor<?>> getContributors() {
+		Collection<PublicationContributor<?>> contributors = Set.of(USGS_AUTHOR);
+		return contributors;
+	}
 }

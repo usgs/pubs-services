@@ -3,33 +3,33 @@ package gov.usgs.cida.pubs.webservice.pw;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.entity.mime.MIME;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.accept.ContentNegotiationStrategy;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.ServletWebRequest;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.google.common.collect.ImmutableMap;
 
 import freemarker.template.Configuration;
 import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
-import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IXmlBusService;
-import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
 import gov.usgs.cida.pubs.dao.resulthandler.StreamingResultHandler;
 import gov.usgs.cida.pubs.domain.LinkType;
@@ -37,7 +37,8 @@ import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
-import gov.usgs.cida.pubs.domain.query.PublicationFilterParams;
+import gov.usgs.cida.pubs.domain.query.CrossRefFilterParams;
+import gov.usgs.cida.pubs.domain.query.PwPublicationFilterParams;
 import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.transform.CrossrefTransformer;
 import gov.usgs.cida.pubs.transform.DelimitedTransformer;
@@ -52,11 +53,12 @@ import gov.usgs.cida.pubs.webservice.MvcService;
 @RequestMapping(value="publication")
 @ResponseBody
 public class PwPublicationMvcService extends MvcService<PwPublication> {
+	private static final Logger LOG = LoggerFactory.getLogger(PwPublicationMvcService.class);
 	private final IPwPublicationBusService busService;
 	private final ConfigurationService configurationService;
 	private final Configuration templateConfiguration;
-	private final IPublicationBusService pubBusService;
 	private final IXmlBusService xmlBusService;
+	private final ContentNegotiationStrategy contentStrategy;
 	@Autowired
 	public PwPublicationMvcService(
 			@Qualifier("pwPublicationBusService")
@@ -66,71 +68,61 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 			ConfigurationService configurationService,
 			@Qualifier("freeMarkerConfiguration")
 			Configuration templateConfiguration,
-			IPublicationBusService publicationBusService
+			ContentNegotiationStrategy contentStrategy
 	) {
 		this.busService = busService;
 		this.xmlBusService = xmlBusService;
 		this.configurationService = configurationService;
 		this.templateConfiguration = templateConfiguration;
-		this.pubBusService = publicationBusService;
+		this.contentStrategy = contentStrategy;
 	}
 
 	@GetMapping(produces={MediaType.APPLICATION_JSON_VALUE,
 			PubsConstantsHelper.MEDIA_TYPE_XLSX_VALUE, PubsConstantsHelper.MEDIA_TYPE_CSV_VALUE, PubsConstantsHelper.MEDIA_TYPE_TSV_VALUE})
 	@JsonView(View.PW.class)
-	public void getStreamPubs(
-			HttpServletResponse response, HttpServletRequest request, PublicationFilterParams filterParams,
-			@RequestParam(value=PubsConstantsHelper.CONTENT_PARAMETER_NAME, required=false, defaultValue="json") String mimeType,
-			@RequestParam(value=BaseDao.PAGE_ROW_START, required=false) String pageRowStart,
-			@RequestParam(value=BaseDao.PAGE_NUMBER, required=false) String pageNumber,
-			@RequestParam(value=BaseDao.PAGE_SIZE, required=false) String pageSize,
-			@RequestParam(value=PwPublicationDao.PUB_X_DAYS, required=false) String pubXDays,
-			@RequestParam(value=PwPublicationDao.PUB_DATE_LOW, required=false) String pubDateLow,
-			@RequestParam(value=PwPublicationDao.PUB_DATE_HIGH, required=false) String pubDateHigh,
-			@RequestParam(value=PwPublicationDao.MOD_X_DAYS, required=false) String modXDays,
-			@RequestParam(value=PwPublicationDao.MOD_DATE_LOW, required=false) String modDateLow,
-			@RequestParam(value=PwPublicationDao.MOD_DATE_HIGH, required=false) String modDateHigh) {
+	public void getStreamPubs(HttpServletResponse response,
+			HttpServletRequest request,
+			PwPublicationFilterParams filterParams) {
+		LOG.debug(filterParams.toString());
 
 		setHeaders(response);
 
-		//Note that paging is only applied to the json format
-		Map<String, Object> filters = buildFilters(filterParams);
-		filters.putAll(buildFilters(modDateHigh, modDateLow, modXDays, pubDateHigh, pubDateLow, pubXDays));
-
-		filters.put("url", configurationService.getWarehouseEndpoint() + "/publication/");
-
-		if (!PubsConstantsHelper.MEDIA_TYPE_TSV_EXTENSION.equalsIgnoreCase(mimeType) &&
-		    !PubsConstantsHelper.MEDIA_TYPE_XLSX_EXTENSION.equalsIgnoreCase(mimeType) &&
-		    !PubsConstantsHelper.MEDIA_TYPE_CSV_EXTENSION.equalsIgnoreCase(mimeType)) {
-			filters.putAll(buildPaging(pageRowStart, pageSize, pageNumber));
+		try {
+			List<MediaType> mediaTypes = contentStrategy.resolveMediaTypes(new ServletWebRequest(request));
+			if (mediaTypes.contains(MediaType.APPLICATION_JSON)) {
+				filterParams.setMimetype(PubsConstantsHelper.MEDIA_TYPE_JSON_EXTENSION);
+			}
+		} catch (HttpMediaTypeNotAcceptableException e) {
+			LOG.debug(e.getLocalizedMessage());
 		}
-		streamResults(filters, mimeType, response);
+
+		streamResults(filterParams, response);
 	}
 
-	protected void streamResults(Map<String, Object> filters, String mimeType, HttpServletResponse response) {
+	protected void streamResults(PwPublicationFilterParams filters, HttpServletResponse response) {
 		response.setCharacterEncoding(PubsConstantsHelper.DEFAULT_ENCODING);
 		String statement = PwPublicationDao.NS;
 
 		try {
 			ITransformer transformer;
 			SearchResults searchResults = null;
-			switch (mimeType) {
+			switch (filters.getMimeType()) {
 			case PubsConstantsHelper.MEDIA_TYPE_TSV_EXTENSION:
 				statement = statement + PwPublicationDao.GET_STREAM_BY_MAP;
 				response.setContentType(PubsConstantsHelper.MEDIA_TYPE_TSV_VALUE);
-				response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + mimeType);
+				response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + filters.getMimeType());
 				transformer = new DelimitedTransformer(response.getOutputStream(), PublicationColumnsHelper.getMappings(), "\t");
 				break;
 			case PubsConstantsHelper.MEDIA_TYPE_XLSX_EXTENSION:
 				statement = statement + PwPublicationDao.GET_STREAM_BY_MAP;
 				response.setContentType(PubsConstantsHelper.MEDIA_TYPE_XLSX_VALUE);
-				response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + mimeType);
+				response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + filters.getMimeType());
 				transformer = new XlsxTransformer(response.getOutputStream(), PublicationColumnsHelper.getMappings());
 				break;
 			case PubsConstantsHelper.MEDIA_TYPE_CSV_EXTENSION:
 				statement = statement + PwPublicationDao.GET_STREAM_BY_MAP;
 				response.setContentType(PubsConstantsHelper.MEDIA_TYPE_CSV_VALUE);
-				response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + mimeType);
+				response.setHeader(MIME.CONTENT_DISPOSITION, "attachment; filename=publications." + filters.getMimeType());
 				transformer = new DelimitedTransformer(response.getOutputStream(), PublicationColumnsHelper.getMappings(), ",");
 				break;
 			default:
@@ -152,12 +144,11 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		response.setStatus(HttpStatus.OK.value());
 	}
 
-	protected SearchResults getCountAndPaging(Map<String, Object> filters) {
+	protected SearchResults getCountAndPaging(PwPublicationFilterParams filters) {
 		SearchResults results = new SearchResults();
-		results.setPageSize(filters.get(BaseDao.PAGE_SIZE).toString());
-		results.setPageRowStart(filters.get(BaseDao.PAGE_ROW_START).toString());
-		Object pageNumber = filters.get(BaseDao.PAGE_NUMBER);
-		results.setPageNumber(null == pageNumber ? null : pageNumber.toString());
+		results.setPageSize(filters.getPage_size());
+		results.setPageRowStart(filters.getPage_row_start());
+		results.setPageNumber(filters.getPage_number());
 		results.setRecordCount(busService.getObjectCount(filters));
 		return results;
 	}
@@ -195,8 +186,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 				CrossrefTransformer transformer = new CrossrefTransformer(
 						outputStream,
 						templateConfiguration,
-						configurationService,
-						pubBusService
+						configurationService
 					);
 			) {
 
@@ -205,7 +195,8 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 
 			String statement = PwPublicationDao.NS + PwPublicationDao.GET_CROSSREF_PUBLICATIONS;
 
-			Map<String, Object> filters = ImmutableMap.of(PwPublicationDao.SUBTYPE_ID, new int[]{
+			CrossRefFilterParams filters = new CrossRefFilterParams();
+			filters.setSubtypeId(new int[]{
 					PublicationSubtype.USGS_NUMBERED_SERIES,
 					PublicationSubtype.USGS_UNNUMBERED_SERIES
 				}
@@ -262,8 +253,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 				CrossrefTransformer transformer = new CrossrefTransformer(
 						outputStream,
 						templateConfiguration,
-						configurationService,
-						pubBusService
+						configurationService
 					);
 			) {
 			response.setCharacterEncoding(PubsConstantsHelper.DEFAULT_ENCODING);

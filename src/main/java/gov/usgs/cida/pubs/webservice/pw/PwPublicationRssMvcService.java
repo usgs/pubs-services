@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -21,13 +20,11 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
-import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
 import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.ContributorType;
@@ -38,7 +35,7 @@ import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
-import gov.usgs.cida.pubs.domain.query.PublicationFilterParams;
+import gov.usgs.cida.pubs.domain.query.PwPublicationFilterParams;
 import gov.usgs.cida.pubs.webservice.MvcService;
 
 /**
@@ -49,9 +46,9 @@ import gov.usgs.cida.pubs.webservice.MvcService;
 @RestController
 @RequestMapping(value = "publication/rss", produces={PubsConstantsHelper.MEDIA_TYPE_RSS_VALUE, MediaType.APPLICATION_JSON_VALUE})
 public class PwPublicationRssMvcService extends MvcService<PwPublication> {
-	private static final String DEFAULT_RECORDS = "30";
-
 	private static final Logger LOG = LoggerFactory.getLogger(PwPublicationRssMvcService.class);
+
+	private static final String DEFAULT_RECORDS = "30";
 
 	private final IPwPublicationBusService busService;
 	private final ConfigurationService configurationService;
@@ -66,28 +63,17 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 
 	@GetMapping
 	@RequestMapping(method=RequestMethod.GET)
-	public void getRSS(HttpServletResponse response, PublicationFilterParams filterParams,
-			@RequestParam(value=PwPublicationDao.PUB_X_DAYS, required=false) String pubXDays,
-			@RequestParam(value=PwPublicationDao.PUB_DATE_LOW, required=false) String pubDateLow,
-			@RequestParam(value=PwPublicationDao.PUB_DATE_HIGH, required=false) String pubDateHigh,
-			@RequestParam(value=PwPublicationDao.MOD_X_DAYS, required=false) String modXDays,
-			@RequestParam(value=PwPublicationDao.MOD_DATE_LOW, required=false) String modDateLow,
-			@RequestParam(value=PwPublicationDao.MOD_DATE_HIGH, required=false) String modDateHigh) {
-		/**
-		 * Per JIMK on JIRA PUBSTWO-971:
-		 * 
-		 * 	"if mod_x_days is there, and pub_x_days is not, mod_x_days should override the default pub_x_days = 30"
-		 */
-		String pubXDaysOverride = pubXDays;
-		if (((pubXDays == null) || (pubXDays.isEmpty()))
-				&& ((modXDays == null) || (modXDays.isEmpty()))) {
-			pubXDaysOverride = DEFAULT_RECORDS;
+	public void getRSS(HttpServletResponse response,
+			PwPublicationFilterParams filterParams
+			) {
+		LOG.debug(filterParams.toString());
+
+		if (((filterParams.getPub_x_days() == null) || (filterParams.getPub_x_days().isEmpty()))
+				&& ((filterParams.getMod_date_low() == null) || (filterParams.getMod_date_low().isEmpty()))) {
+			filterParams.setPub_x_days(DEFAULT_RECORDS);
 		}
 
-		Map<String, Object> filters = buildFilters(filterParams);
-		filters.putAll(buildFilters(modDateHigh, modDateLow, modXDays, pubDateHigh, pubDateLow, pubXDaysOverride));
-
-		List<PwPublication> pubs = busService.getObjects(filters);
+		List<PwPublication> pubs = busService.getObjects(filterParams);
 
 		String rssResults = getSearchResultsAsRSS(pubs);
 

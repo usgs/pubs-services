@@ -18,6 +18,13 @@ public class TestSpringConfig {
 		return new String(FileCopyUtils.copyToByteArray(mpPub1.getInputStream()));
 	}
 
+	@Value("classpath:testResult/expectedGetPubsDefault.json")
+	private Resource mpExpectedGetPubsDefault;
+	@Bean
+	public String expectedGetPubsDefault() throws IOException {
+		return new String(FileCopyUtils.copyToByteArray(mpExpectedGetPubsDefault.getInputStream()));
+	}
+
 	@Value("classpath:testResult/getRssPub.xml")
 	private Resource rssPub;
 	@Bean

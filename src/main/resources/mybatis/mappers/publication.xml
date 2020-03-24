@@ -347,7 +347,7 @@
 
             <if test="prodId != null and prodId.length > 0">
                 and <foreach item="i" collection="prodId" open="(" separator="or" close=")">
-                    pub.publication_id = #{i}
+                    pub.publication_id = #{i,jdbcType=NUMERIC}::numeric
                 </foreach>
             </if>
 
@@ -429,10 +429,6 @@
                 </otherwise>
             </choose>
         </if>
-
-            <if test="publicationSeriesId != null">
-                and pub.publication_series_id = #{publicationSeriesId}
-            </if>
     </sql>
 
     <sql id="orderBy">
@@ -491,6 +487,21 @@
                                   except
                                   select publication_id from mp_publication)
                <include refid="pwPublication.filters"/>
+    </select>
+
+    <select id="getCountBySeries" parameterType="Integer" resultType="Integer">
+        select count(*)
+          from (select publication_id
+                  from mp_publication pub
+                 where pub.publication_series_id = #{value,jdbcType=INTEGER}::int
+                union all
+                select publication_id
+                  from publication pub
+                 where publication_id in (select publication_id from publication
+                                          except
+                                          select publication_id from mp_publication) and
+                       pub.publication_series_id = #{value,jdbcType=INTEGER}::int
+               ) pubs
     </select>
 
     <select id="getByMap" parameterType="map" resultMap="genericResult">

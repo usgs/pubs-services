@@ -1,7 +1,7 @@
 package gov.usgs.cida.pubs.webservice.pw;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -26,10 +26,12 @@ import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
+import gov.usgs.cida.pubs.domain.query.PwPublicationFilterParams;
 import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK,
-	classes={TestSpringConfig.class, ConfigurationService.class})
+	classes={TestSpringConfig.class, ConfigurationService.class,
+			PwPublicationFilterParams.class})
 public class PwPublicationRssMvcServiceTest extends BaseTest {
 	@MockBean
 	private IPwPublicationBusService busService;
@@ -67,7 +69,7 @@ public class PwPublicationRssMvcServiceTest extends BaseTest {
 	@Test
 	public void getRssPubsTest() throws Exception {
 		//Happy Path
-		when(busService.getObjects(anyMap())).thenReturn(List.of(PwPublicationTest.buildAPub(1)));
+		when(busService.getObjects(any(PwPublicationFilterParams.class))).thenReturn(List.of(PwPublicationTest.buildAPub(1)));
 		
 		MvcResult rtn = mockMvc.perform(get("/publication/rss?orderby=dispPubDate").accept(PubsConstantsHelper.MEDIA_TYPE_RSS))
 		.andExpect(status().isOk())

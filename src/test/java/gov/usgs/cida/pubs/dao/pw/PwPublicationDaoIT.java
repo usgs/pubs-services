@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
@@ -25,6 +26,8 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.google.common.collect.ImmutableMap;
 
 import gov.usgs.cida.pubs.BaseIT;
+import gov.usgs.cida.pubs.ConfigurationService;
+import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.PublicationDaoIT;
 import gov.usgs.cida.pubs.domain.PersonContributor;
@@ -35,6 +38,7 @@ import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
+import gov.usgs.cida.pubs.domain.query.PwPublicationFilterParams;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
@@ -42,7 +46,9 @@ import gov.usgs.cida.pubs.springinit.DbTestConfig;
 public class PwPublicationDaoIT extends BaseIT {
 
 	@Autowired
-	PwPublicationDao pwPublicationDao;
+	private PwPublicationDao pwPublicationDao;
+	@MockBean
+	private ConfigurationService configurationService;
 
 	@Test
 	@DatabaseSetups({
@@ -113,7 +119,7 @@ public class PwPublicationDaoIT extends BaseIT {
 		String[] orcids = new String[] { "0000-0000-0000-0001", "0000-0000-0000-0004" };
 		for(String orcid : orcids) {
 			filters.clear();
-			filters.put(PublicationDao.ORCID, new String[] {orcid});
+			filters.put(PersonContributorDao.ORCID, new String[] {orcid});
 
 			List<PwPublication> pubs = pwPublicationDao.getByMap(filters);
 			assertNotNull(pubs);
@@ -133,7 +139,7 @@ public class PwPublicationDaoIT extends BaseIT {
 
 		// try both orcids in a single query
 		filters.clear();
-		filters.put(PublicationDao.ORCID, orcids);
+		filters.put(PersonContributorDao.ORCID, orcids);
 		List<PwPublication> pubs = pwPublicationDao.getByMap(filters);
 		assertNotNull(pubs);
 		assertTrue(String.format("Expected two matches on orcids '%s', got none", Arrays.toString(orcids)), pubs.size() == 2);
@@ -151,7 +157,7 @@ public class PwPublicationDaoIT extends BaseIT {
 		String[] emptyOrcids = new String[]{ null, ""};
 		for(String orcid : emptyOrcids) {
 			filters.clear();
-			filters.put(PublicationDao.ORCID, new String[]{orcid});
+			filters.put(PersonContributorDao.ORCID, new String[]{orcid});
 			pubs = pwPublicationDao.getByMap(filters);
 			assertNotNull(pubs);
 			String orcidDesc = orcid == null ? "null" : orcid.isEmpty() ? "empty string" : orcid;
@@ -162,7 +168,7 @@ public class PwPublicationDaoIT extends BaseIT {
 		String[] badOrcids = new String[]{"0000", "0000-0000-0000-00001", "0000-0000-0000-000A", "any"};
 		for(String orcid : badOrcids) {
 			filters.clear();
-			filters.put(PublicationDao.ORCID, new String[]{orcid});
+			filters.put(PersonContributorDao.ORCID, new String[]{orcid});
 			pubs = pwPublicationDao.getByMap(filters);
 			assertNotNull(pubs);
 			assertTrue(String.format("Expected no matches on filter with orcid '%s', got %d", orcid, pubs.size()), pubs.size() == 0);
@@ -235,14 +241,14 @@ public class PwPublicationDaoIT extends BaseIT {
 	@Test
 	public void getStreamByMapTest() {
 		//This only checks that the final query is syntactically correct, not that it is logically correct!
-		pwPublicationDao.stream(PwPublicationDao.NS + PwPublicationDao.GET_STREAM_BY_MAP, PublicationDaoIT.buildAllParms(), null);
+		pwPublicationDao.stream(PwPublicationDao.NS + PwPublicationDao.GET_STREAM_BY_MAP, buildAllFilterParms(), null);
 		//TODO add in real filter tests
 	}
 
 	@Test
 	public void getPoJoStreamByMapTest() {
 		//This only checks that the final query is syntactically correct, not that it is logically correct!
-		pwPublicationDao.stream(PwPublicationDao.NS + PwPublicationDao.GET_BY_MAP, PublicationDaoIT.buildAllParms(), null);
+		pwPublicationDao.stream(PwPublicationDao.NS + PwPublicationDao.GET_BY_MAP, buildAllFilterParms(), null);
 		//TODO add in real filter tests
 	}
 
@@ -447,4 +453,52 @@ public class PwPublicationDaoIT extends BaseIT {
 		return orcidList;
 	}
 
+	public PwPublicationFilterParams buildAllFilterParms() {
+		PwPublicationFilterParams filters = new PwPublicationFilterParams();
+
+		filters.setPubAbstract(new String[]{"abstract1", "abstractp"});
+		filters.setChorus(true);
+		filters.setContributingOffice(new String[]{"contributingOffice1", "contributingOffice2"});
+		filters.setContributor(new String[] {"contributor1", "contributor2"});
+
+		filters.setDoi(new String[]{"DOI-123", "DOI-456"});
+		filters.setHasDoi(true);
+
+		filters.setEndYear("yearEnd");
+		filters.setG(SEARCH_POLYGON);
+		filters.setIndexId(new String[]{"indexId1", "indexId2"});
+		filters.setIpdsId(new String[]{"ipdsId1", "ipdsId2"});
+
+		filters.setListId(new String[]{"1", "2"});
+		filters.setMod_date_high("2012-12-12");
+		filters.setMod_date_low("2010-10-10");
+		filters.setMod_x_days("3");
+		filters.setOrderBy("title");
+
+		filters.setPage_number("66");
+		filters.setPage_row_start("19");
+		filters.setPage_size("54");
+		filters.setProdId(new String[]{"1", "2"});
+		filters.setPub_date_high("2012-12-12");
+
+		filters.setPub_date_low("2010-10-10");
+		filters.setPub_x_days("1");
+		filters.setQ("$turtles");
+
+		filters.setLinkType(new String[]{"linkType1", "linkType2"});
+		filters.setNoLinkType(new String[]{"noLinkType1", "noLinkType2"});
+		filters.setReportNumber(new String[]{"reportNumber1", "reportNumber2"});
+		filters.setSearchTerms(new String[]{"searchTerms1", "searchTerms2"});
+
+//		filters.put(PublicationDao.SERIES_ID_SEARCH, 330);
+		filters.setSeriesName(new String[]{"reportSeries1", "reportSeries2"});
+		filters.setStartYear("yearStart");
+		filters.setSubtypeName(new String[]{"subtype1", "subtype2"});
+		filters.setTitle(new String[]{"title1", "title2"});
+
+		filters.setTypeName(new String[]{"type1", "type2"});
+		filters.setYear(new String[]{"year1", "year2"});
+
+		return filters;
+	}
 }

@@ -63,7 +63,7 @@
                  and publication_id in (select publication_id
                                           from mp_list_publication
                                          where mp_list_id in <foreach item="list" collection="listId" open="(" separator="," close=")">
-                                                                 #{list,jdbcType=NUMERIC}
+                                                                 #{list,jdbcType=NUMERIC}::numeric
                                                              </foreach>
                                        )
             </if>

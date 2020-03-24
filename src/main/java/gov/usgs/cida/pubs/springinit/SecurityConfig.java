@@ -14,7 +14,6 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.jwk.JwkTokenStore;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import gov.usgs.cida.pubs.ConfigurationService;
 

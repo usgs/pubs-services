@@ -27,7 +27,6 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
-import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.Publication;
@@ -46,7 +45,6 @@ public class CrossrefTransformer extends Transformer {
 	protected OutputStreamWriter streamWriter;
 	protected BufferedWriter bufferedWriter;
 	protected ConfigurationService configurationService;
-	protected IPublicationBusService pubBusService;
 	protected final String batchId;
 	protected final String timestamp;
 
@@ -58,13 +56,11 @@ public class CrossrefTransformer extends Transformer {
 	 * @param target
 	 * @param templateConfiguration
 	 * @param crossRefDepositorEmail String email used in Crossref submission
-	 * @param pubBusService
 	 */
 	public CrossrefTransformer(
 		OutputStream target,
 		Configuration templateConfiguration,
-		ConfigurationService configurationService,
-		IPublicationBusService pubBusService
+		ConfigurationService configurationService
 	) {
 		super(target, null);
 		this.templateConfiguration = templateConfiguration;
@@ -76,7 +72,6 @@ public class CrossrefTransformer extends Transformer {
 			throw new RuntimeException(ex);
 		}
 		this.bufferedWriter = new BufferedWriter(streamWriter);
-		this.pubBusService = pubBusService;
 		this.batchId = UUID.randomUUID().toString();
 		this.timestamp = String.valueOf(new Date().getTime());
 		init();
@@ -167,7 +162,7 @@ public class CrossrefTransformer extends Transformer {
 		boolean isNumberedSeries = PubsUtils.isUsgsNumberedSeries(pub.getPublicationSubtype());
 		model.put("isNumberedSeries", isNumberedSeries);
 
-		model.put("warehousePage", pubBusService.getWarehousePage(pub));
+		model.put("warehousePage", getWarehousePage(pub));
 
 		model.put("pubContributors", getCrossrefContributors(pub));
 
@@ -177,6 +172,14 @@ public class CrossrefTransformer extends Transformer {
 
 		model.putAll(makeDataReleaseModel(pub));
 		return model;
+	}
+
+	public String getWarehousePage(Publication<?> pub) {
+		String rtn = "";
+		if(pub != null && pub.getIndexId() != null) {
+			rtn = configurationService.getWarehouseEndpoint() + "/publication/" + pub.getIndexId();
+		}
+		return rtn;
 	}
 
 	protected Map<String, Object> makeDataReleaseModel(Publication<?> pub) {

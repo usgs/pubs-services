@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -39,8 +38,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.SeverityLevel;
-import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.ISippProcess;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoIT;
 import gov.usgs.cida.pubs.domain.ProcessType;
@@ -48,6 +47,7 @@ import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
+import gov.usgs.cida.pubs.domain.query.MpPublicationFilterParams;
 import gov.usgs.cida.pubs.springinit.SpringConfig;
 import gov.usgs.cida.pubs.springinit.TestSpringConfig;
 import gov.usgs.cida.pubs.utility.CustomStringToArrayConverter;
@@ -84,13 +84,13 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 	public static final ValidatorResult VR_LOCKED = new ValidatorResult("Publication", "This Publication is being edited by somebody", SeverityLevel.FATAL, "somebody");
 	public static final ValidatorResult VR_NOT_LOCKED = null;
 
-	public static final String NO_RECORDS = "{\"pageSize\":\"25\",\"pageRowStart\":\"0\",\"pageNumber\":null,\"recordCount\":0,\"records\":[]}";
+	public static final String NO_RECORDS = "{\"pageSize\":\"25\",\"pageRowStart\":\"0\",\"pageNumber\":\"1\",\"recordCount\":0,\"records\":[]}";
 
 	@Autowired
 	protected MappingJackson2HttpMessageConverter jackson2HttpMessageConverter;
 
 	@MockBean
-	private IBusService<Publication<?>> pubBusService;
+	private IPublicationBusService pubBusService;
 	@MockBean
 	private IMpPublicationBusService busService;
 	@MockBean
@@ -99,8 +99,8 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 	@Resource(name="expectedGetMpPub1")
 	public String expectedGetMpPub1;
 
+	@Resource(name="expectedGetPubsDefault")
 	public String expectedGetPubsDefault;
-
 	private MockMvc mockMvc;
 
 	private MpPublicationMvcService mvcService;
@@ -114,19 +114,13 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 		when(busService.checkAvailability(1)).thenReturn(VR_NOT_LOCKED);
 		when(busService.checkAvailability(2)).thenReturn(VR_LOCKED);
 		when(busService.checkAvailability(3)).thenReturn(VR_NOT_LOCKED);
-
-		StringBuilder temp = new StringBuilder("{\"pageSize\":\"25\",\"pageRowStart\":\"0\",");
-		temp.append("\"pageNumber\":null,\"recordCount\":12,\"records\":[");
-		temp.append(expectedGetMpPub1);
-		temp.append("]}");
-		expectedGetPubsDefault = temp.toString();
 	}
 
 	@Test
 	public void getPubsTest() throws Exception {
 		//Happy Path
-		when(pubBusService.getObjects(anyMap())).thenReturn(buildAPubList());
-		when(pubBusService.getObjectCount(anyMap())).thenReturn(Integer.valueOf(12));
+		when(pubBusService.getObjects(any(MpPublicationFilterParams.class))).thenReturn(buildAPubList());
+		when(pubBusService.getObjectCount(any(MpPublicationFilterParams.class))).thenReturn(Integer.valueOf(12));
 
 		MvcResult rtn = mockMvc.perform(get("/mppublications?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
@@ -183,8 +177,8 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void getPubsTest_singleSearchTerm() throws Exception {
-		when(pubBusService.getObjects(anyMap())).thenReturn(buildAPubList(), new ArrayList<Publication<?>>());
-		when(pubBusService.getObjectCount(anyMap())).thenReturn(Integer.valueOf(12), 0);
+		when(pubBusService.getObjects(any(MpPublicationFilterParams.class))).thenReturn(buildAPubList(), new ArrayList<Publication<?>>());
+		when(pubBusService.getObjectCount(any(MpPublicationFilterParams.class))).thenReturn(Integer.valueOf(12), 0);
 		MvcResult rtn = mockMvc.perform(get("/mppublications?q=1").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))

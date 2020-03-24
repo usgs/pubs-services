@@ -1,7 +1,6 @@
 package gov.usgs.cida.pubs.webservice.mp;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,21 +19,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
 import gov.usgs.cida.pubs.PubsConstantsHelper;
-import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.ISippProcess;
-import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
-import gov.usgs.cida.pubs.domain.query.PublicationFilterParams;
+import gov.usgs.cida.pubs.domain.query.MpPublicationFilterParams;
 import gov.usgs.cida.pubs.domain.sipp.SippMpPubRequest;
 import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.utility.PubsUtils;
@@ -49,17 +46,19 @@ import io.swagger.annotations.Authorization;
 public class MpPublicationMvcService extends MvcService<MpPublication> {
 	private static final Logger LOG = LoggerFactory.getLogger(MpPublicationMvcService.class);
 
-	private final IBusService<Publication<?>> pubBusService;
+	private final IPublicationBusService pubBusService;
 	private final IMpPublicationBusService busService;
 	private final ISippProcess sippProcess;
 
 	@Autowired
-	public MpPublicationMvcService(@Qualifier("publicationBusService")
-			final IBusService<Publication<?>> pubBusService,
+	public MpPublicationMvcService(
+			@Qualifier("publicationBusService")
+			final IPublicationBusService pubBusService,
 			@Qualifier("mpPublicationBusService")
 			final IMpPublicationBusService busService,
 			@Qualifier("sippProcess")
-			final ISippProcess sippProcess) {
+			final ISippProcess sippProcess
+			) {
 		this.pubBusService = pubBusService;
 		this.busService = busService;
 		this.sippProcess = sippProcess;
@@ -67,23 +66,18 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 
 	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@GetMapping
-	@JsonView(View.MP.class)
-	public @ResponseBody SearchResults getPubs(HttpServletResponse response, PublicationFilterParams filterParams,
-			@RequestParam(value=BaseDao.PAGE_SIZE, required=false, defaultValue = "25") String pageSize,
-			@RequestParam(value=BaseDao.PAGE_ROW_START, required=false, defaultValue = "0") String pageRowStart) {
-
+	@JsonView(View.ManagerGrid.class)
+	public @ResponseBody SearchResults getPubs(HttpServletResponse response,
+			MpPublicationFilterParams filterParams) {
+		LOG.debug(filterParams.toString());
 		setHeaders(response);
 
-		// set Query parameter defaults
-		filterParams.setGlobal(filterParams.getGlobal() == null ? "true" : filterParams.getGlobal());
-
-		Map<String, Object> filters = buildFilters(filterParams);
-
-		List<Publication<?>> pubs = pubBusService.getObjects(filters);
-		Integer totalPubsCount = pubBusService.getObjectCount(filters);
+		List<Publication<?>> pubs = pubBusService.getObjects(filterParams);
+		Integer totalPubsCount = pubBusService.getObjectCount(filterParams);
 		SearchResults results = new SearchResults();
-		results.setPageSize(pageSize);
-		results.setPageRowStart(pageRowStart);
+		results.setPageSize(filterParams.getPage_size());
+		results.setPageRowStart(filterParams.getPage_row_start());
+		results.setPageNumber(filterParams.getPage_number());
 		results.setRecords(pubs);
 		results.setRecordCount(totalPubsCount);
 

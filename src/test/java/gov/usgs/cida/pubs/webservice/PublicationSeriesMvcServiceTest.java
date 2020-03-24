@@ -53,7 +53,7 @@ public class PublicationSeriesMvcServiceTest extends BaseTest {
 		//Happy Path
 		when(busService.getObjects(anyMap())).thenReturn(buildAPublicationSeriesList());
 		when(busService.getObjectCount(anyMap())).thenReturn(Integer.valueOf(12));
-		
+
 		MvcResult rtn = mockMvc.perform(get("/publicationSeries?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -136,7 +136,7 @@ public class PublicationSeriesMvcServiceTest extends BaseTest {
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
-		
+
 		String expectedJSON = PublicationSeriesTest.DEFAULT_AS_JSON.replaceFirst("}$", "," + PubsUtilitiesTest.ID_NOT_MATCH_VALIDATION_JSON + "}");
 		assertThat(getRtnAsJSONObject(rtn),
 				sameJSONObjectAs(new JSONObject(expectedJSON)));

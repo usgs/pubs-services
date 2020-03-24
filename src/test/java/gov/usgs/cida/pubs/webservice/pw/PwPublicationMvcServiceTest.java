@@ -3,7 +3,6 @@ package gov.usgs.cida.pubs.webservice.pw;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
@@ -12,8 +11,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,30 +29,32 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.web.accept.ContentNegotiationStrategy;
 
 import freemarker.template.Configuration;
 import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
-import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPwPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IXmlBusService;
-import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.ContributorTypeDao;
 import gov.usgs.cida.pubs.dao.ContributorTypeDaoIT;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
+import gov.usgs.cida.pubs.domain.query.PwPublicationFilterParams;
 
 @ContextConfiguration(classes = FreeMarkerAutoConfiguration.class)
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK,
-	classes={ConfigurationService.class, ContributorType.class})
+	classes={ConfigurationService.class, ContributorType.class,
+			PwPublicationFilterParams.class})
 public class PwPublicationMvcServiceTest extends BaseTest {
 
 	@Autowired
 	public ConfigurationService configurationService;
-
+	@MockBean
+	private ContentNegotiationStrategy contentStrategy;
 	@MockBean
 	private IXmlBusService xmlBusService;
 
@@ -63,12 +62,10 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 	private IPwPublicationBusService busService;
 
 	private PwPublicationMvcService mvcService;
-	private Map<String, Object> filters;
+	private PwPublicationFilterParams filters;
 
 	@Autowired
 	private Configuration templateConfiguration;
-	@MockBean
-	private IPublicationBusService publicationBusService;
 	@MockBean(name="contributorTypeDao")
 	private ContributorTypeDao contributorTypeDao;
 
@@ -80,13 +77,14 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 			xmlBusService,
 			configurationService,
 			templateConfiguration,
-			publicationBusService
+			contentStrategy
 		);
 
-		filters = new HashMap<>();
-		filters.put(BaseDao.PAGE_SIZE, "13");
-		filters.put(BaseDao.PAGE_ROW_START, "4");
-		filters.put(BaseDao.PAGE_NUMBER, "8");
+		filters = new PwPublicationFilterParams();
+		filters.setPage_size("13");
+		filters.setPage_row_start("4");
+		filters.setPage_number("8");
+		filters.setMimetype("json");
 		when(contributorTypeDao.getById(ContributorType.AUTHORS)).thenReturn(ContributorTypeDaoIT.getAuthor());
 		when(contributorTypeDao.getById(ContributorType.EDITORS)).thenReturn(ContributorTypeDaoIT.getEditor());
 		when(contributorTypeDao.getById(ContributorType.COMPILERS)).thenReturn(ContributorTypeDaoIT.getCompiler());
@@ -95,21 +93,21 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 
 	@Test
 	public void getCountAndPagingTest() {
-		when(busService.getObjectCount(anyMap())).thenReturn(18);
+		when(busService.getObjectCount(any(PwPublicationFilterParams.class))).thenReturn(18);
 
 		SearchResults sr = mvcService.getCountAndPaging(filters);
 		assertEquals("13", sr.getPageSize());
-		assertEquals("4", sr.getPageRowStart());
+		assertEquals("91", sr.getPageRowStart());
 		assertEquals("8", sr.getPageNumber());
 		assertEquals(18, sr.getRecordCount().intValue());
 		assertNull(sr.getRecords());
 
-		filters.remove(BaseDao.PAGE_NUMBER);
+		filters.setPage_number(null);
 
 		sr = mvcService.getCountAndPaging(filters);
 		assertEquals("13", sr.getPageSize());
 		assertEquals("4", sr.getPageRowStart());
-		assertNull(sr.getPageNumber());
+		assertEquals("1", sr.getPageNumber());
 		assertEquals(18, sr.getRecordCount().intValue());
 		assertNull(sr.getRecords());
 	}
@@ -118,51 +116,55 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 	@SuppressWarnings("unchecked")
 	public void streamResultsTsvTest() {
 		HttpServletResponse response = new MockHttpServletResponse();
-		mvcService.streamResults(filters, PubsConstantsHelper.MEDIA_TYPE_TSV_EXTENSION, response);
+		filters.setMimeType(PubsConstantsHelper.MEDIA_TYPE_TSV_EXTENSION);
+		mvcService.streamResults(filters, response);
 		assertEquals(PubsConstantsHelper.DEFAULT_ENCODING, response.getCharacterEncoding());
 		assertEquals("attachment; filename=publications.tsv", response.getHeader(MIME.CONTENT_DISPOSITION));
 		assertEquals(PubsConstantsHelper.MEDIA_TYPE_TSV_VALUE, response.getContentType());
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
-		verify(busService).stream(eq("pwPublication.getStreamByMap"), anyMap(), any(ResultHandler.class));
-		verify(busService, never()).getObjectCount(anyMap());
+		verify(busService).stream(eq("pwPublication.getStreamByMap"), any(PwPublicationFilterParams.class), any(ResultHandler.class));
+		verify(busService, never()).getObjectCount(any(PwPublicationFilterParams.class));
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
 	public void streamResultsCsvTest() {
 		HttpServletResponse response = new MockHttpServletResponse();
-		mvcService.streamResults(filters, PubsConstantsHelper.MEDIA_TYPE_CSV_EXTENSION, response);
+		filters.setMimeType(PubsConstantsHelper.MEDIA_TYPE_CSV_EXTENSION);
+		mvcService.streamResults(filters, response);
 		assertEquals(PubsConstantsHelper.DEFAULT_ENCODING, response.getCharacterEncoding());
 		assertEquals("attachment; filename=publications.csv", response.getHeader(MIME.CONTENT_DISPOSITION));
 		assertEquals(PubsConstantsHelper.MEDIA_TYPE_CSV_VALUE, response.getContentType());
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
-		verify(busService).stream(eq("pwPublication.getStreamByMap"), anyMap(), any(ResultHandler.class));
-		verify(busService, never()).getObjectCount(anyMap());
+		verify(busService).stream(eq("pwPublication.getStreamByMap"), any(PwPublicationFilterParams.class), any(ResultHandler.class));
+		verify(busService, never()).getObjectCount(any(PwPublicationFilterParams.class));
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
 	public void streamResultsXlsxTest() {
 		HttpServletResponse response = new MockHttpServletResponse();
-		mvcService.streamResults(filters, PubsConstantsHelper.MEDIA_TYPE_XLSX_EXTENSION, response);
+		filters.setMimeType(PubsConstantsHelper.MEDIA_TYPE_XLSX_EXTENSION);
+		mvcService.streamResults(filters, response);
 		assertEquals(PubsConstantsHelper.DEFAULT_ENCODING, response.getCharacterEncoding());
 		assertEquals("attachment; filename=publications.xlsx", response.getHeader(MIME.CONTENT_DISPOSITION));
 		assertEquals(PubsConstantsHelper.MEDIA_TYPE_XLSX_VALUE, response.getContentType());
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
-		verify(busService).stream(eq("pwPublication.getStreamByMap"), anyMap(), any(ResultHandler.class));
-		verify(busService, never()).getObjectCount(anyMap());
+		verify(busService).stream(eq("pwPublication.getStreamByMap"), any(PwPublicationFilterParams.class), any(ResultHandler.class));
+		verify(busService, never()).getObjectCount(any(PwPublicationFilterParams.class));
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
 	public void streamResultsJsonTest() {
 		HttpServletResponse response = new MockHttpServletResponse();
-		mvcService.streamResults(filters, PubsConstantsHelper.MEDIA_TYPE_JSON_EXTENSION, response);
+		filters.setMimeType(PubsConstantsHelper.MEDIA_TYPE_JSON_EXTENSION);
+		mvcService.streamResults(filters, response);
 		assertEquals(PubsConstantsHelper.DEFAULT_ENCODING, response.getCharacterEncoding());
 		assertEquals(MediaType.APPLICATION_JSON_UTF8_VALUE, response.getContentType());
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
-		verify(busService).stream(eq("pwPublication.getByMap"), anyMap(), any(ResultHandler.class));
-		verify(busService).getObjectCount(anyMap());
+		verify(busService).stream(eq("pwPublication.getByMap"), any(PwPublicationFilterParams.class), any(ResultHandler.class));
+		verify(busService).getObjectCount(any(PwPublicationFilterParams.class));
 	}
 
 	@Test

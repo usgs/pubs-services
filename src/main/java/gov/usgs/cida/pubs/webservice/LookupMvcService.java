@@ -1,5 +1,7 @@
 package gov.usgs.cida.pubs.webservice;
 
+import static gov.usgs.cida.pubs.dao.BaseDao.TEXT_SEARCH;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.ContributorTypeDao;
 import gov.usgs.cida.pubs.dao.CostCenterDao;
 import gov.usgs.cida.pubs.dao.LinkFileTypeDao;
@@ -268,7 +269,7 @@ public class LookupMvcService extends MvcService<PublicationType> {
 		LOG.debug("Contributor - Corporations");
 		Collection<Contributor<?>> rtn = new ArrayList<>();
 		Map<String, Object> filters = new HashMap<>();
-		filters.put(BaseDao.TEXT_SEARCH, configureContributorFilter(text));
+		filters.put(TEXT_SEARCH, configureContributorFilter(text));
 		if (validateParametersSetHeaders(request, response)) {
 			rtn = CorporateContributor.getDao().getByMap(filters);
 		}

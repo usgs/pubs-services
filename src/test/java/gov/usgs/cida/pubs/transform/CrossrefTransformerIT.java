@@ -33,7 +33,6 @@ import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.PublicationBusService;
-import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.dao.ContributorTypeDao;
 import gov.usgs.cida.pubs.domain.ContributorType;
 import gov.usgs.cida.pubs.domain.Publication;
@@ -75,9 +74,6 @@ public class CrossrefTransformerIT extends BaseIT {
 	private ByteArrayOutputStream target;
 	private static DocumentBuilder docBuilder; 
 
-	@Autowired
-	private IPublicationBusService publicationBusService;
-
 	private static final String TEST_TIMESTAMP = "1493070447545";
 	private static final String TEST_BATCH_ID = "82adfd8d-1737-4e62-86bc-5e7be1c07b7d";
 
@@ -95,7 +91,7 @@ public class CrossrefTransformerIT extends BaseIT {
 	@Before
 	public void setUp() {
 		this.target = new ByteArrayOutputStream();
-		instance = new CrossrefTransformer(this.target, templateConfig, configurationService, publicationBusService) {
+		instance = new CrossrefTransformer(this.target, templateConfig, configurationService) {
 			/**
 			 * Override randomly-generated value so we can compare
 			 * consistent values over time
@@ -141,7 +137,7 @@ public class CrossrefTransformerIT extends BaseIT {
 	 */
 	@Test
 	public void testTimestampIsInitialized() throws IOException {
-		CrossrefTransformer myInstance = new CrossrefTransformer(this.target, templateConfig, configurationService, publicationBusService);
+		CrossrefTransformer myInstance = new CrossrefTransformer(this.target, templateConfig, configurationService);
 		assertNotNull(myInstance.getTimestamp());
 		assertTrue("timestamp should be of nonzero length", 0 < myInstance.getTimestamp().length());
 		myInstance.close();
@@ -156,7 +152,7 @@ public class CrossrefTransformerIT extends BaseIT {
 	 */
 	@Test
 	public void testBatchIdIsInitialized() throws IOException {
-		CrossrefTransformer myInstance = new CrossrefTransformer(this.target, templateConfig, configurationService, publicationBusService);
+		CrossrefTransformer myInstance = new CrossrefTransformer(this.target, templateConfig, configurationService);
 		assertNotNull(myInstance.getBatchId());
 		assertTrue("batch id should be of nonzero length", 0 < myInstance.getBatchId().length());
 		myInstance.close();

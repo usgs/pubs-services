@@ -35,6 +35,8 @@
     </sql>
 
     <sql id="filters">
+        <include refid="publication.filters"/>
+
         <if test="null != q">
             and exists (select null
                           from publication_index
@@ -43,40 +45,10 @@
                        )
         </if>
 
-        <if test="null != g and g.length > 0">
-            and st_intersects(geom, ST_GeomFromText(#{g,jdbcType=VARCHAR}::text))
-        </if>
-
-        <include refid="publication.filters"/>
-
         <if test="null != listId">
             <if test="listId.length > 0">
                 and 1 = 0 
             </if>
-        </if>
-
-        <if test="null != pub_x_days">
-            and display_to_public_date::date &gt;= (current_date - (#{pub_x_days} ||' day')::interval)
-        </if>
-
-        <if test="null != pub_date_low">
-            and display_to_public_date::date &gt;= to_date(#{pub_date_low}, <include refid="base.dateFormat"/>)
-        </if>
-        
-        <if test="null != pub_date_high">
-            and display_to_public_date::date &lt;= to_date(#{pub_date_high}, <include refid="base.dateFormat"/>)
-        </if>
-        
-        <if test="null != mod_x_days">
-            and display_to_public_date::date &gt;= (current_date - (#{mod_x_days} ||' day')::interval)
-        </if>
-
-        <if test="null != mod_date_low">
-            and display_to_public_date::date &gt;= to_date(#{mod_date_low}, <include refid="base.dateFormat"/>)
-        </if>
-
-        <if test="null != mod_date_high">
-            and display_to_public_date::date &lt;= to_date(#{mod_date_high}, <include refid="base.dateFormat"/>)
         </if>
 
         <if test="contributor != null">
@@ -87,6 +59,50 @@
                          where pub.publication_id = publication_contributor.publication_id and
                                to_tsvector('english', text) @@ to_tsquery('english', #{contributor})
                        )
+        </if>
+
+        <if test="orcid != null and orcid.length > 0">
+            and exists (select null
+                          from publication_contributor
+                               join contributor
+                                 on publication_contributor.contributor_id = contributor.contributor_id 
+                         where pub.publication_id = publication_contributor.publication_id and
+                               <foreach item="oid" collection="orcid" open="(" separator="or" close=")">
+                                   contributor.orcid = #{oid}
+                               </foreach>
+                       )
+        </if>
+
+        <if test="contributingOffice != null and contributingOffice.length > 0">
+            and exists (select null
+                          from publication_cost_center
+                               join affiliation
+                                 on publication_cost_center.cost_center_id = affiliation.affiliation_id 
+                         where pub.publication_id = publication_cost_center.publication_id and
+                               <foreach item="co" collection="contributingOffice" open="(" separator="or" close=")"> 
+                                   upper(name) like '%' || upper(#{co}) || '%'
+                               </foreach>
+                       )
+        </if>
+
+    </sql>
+
+    <sql id="whFilters">
+        <include refid="pwPublication.filters"/>
+
+        <if test="null != chorus">
+            <choose>
+                <when test="chorus">
+                    and chrs_url is not null
+                </when>
+                <otherwise>
+                    and chrs_url is null
+                </otherwise>
+            </choose>
+        </if>
+
+        <if test="null != g and g.length > 0">
+            and st_intersects(geom, ST_GeomFromText(#{g,jdbcType=VARCHAR}::text))
         </if>
 
         <if test="linkType != null and linkType.length > 0">
@@ -113,40 +129,30 @@
                        )
         </if>
 
-        <if test="orcid != null and orcid.length > 0">
-            and exists (select null
-                          from publication_contributor
-                               join contributor
-                                 on publication_contributor.contributor_id = contributor.contributor_id 
-                         where pub.publication_id = publication_contributor.publication_id and
-                               <foreach item="oid" collection="orcid" open="(" separator="or" close=")">
-                                   contributor.orcid = #{oid}
-                               </foreach>
-                       )
+        <if test="null != pub_x_days">
+            and display_to_public_date::date &gt;= (current_date - (#{pub_x_days} ||' day')::interval)
         </if>
-           
-        <if test="contributingOffice != null and contributingOffice.length > 0">
-            and exists (select null
-                          from publication_cost_center
-                               join affiliation
-                                 on publication_cost_center.cost_center_id = affiliation.affiliation_id 
-                         where pub.publication_id = publication_cost_center.publication_id and
-                               <foreach item="co" collection="contributingOffice" open="(" separator="or" close=")"> 
-                                   upper(name) like '%' || upper(#{co}) || '%'
-                               </foreach>
-                       )
+
+        <if test="null != pub_date_low">
+            and display_to_public_date::date &gt;= to_date(#{pub_date_low}, <include refid="base.dateFormat"/>)
         </if>
         
-        <if test="null != chorus">
-            <choose>
-                <when test="chorus">
-                    and chrs_url is not null
-                </when>
-                <otherwise>
-                    and chrs_url is null
-                </otherwise>
-            </choose>
+        <if test="null != pub_date_high">
+            and display_to_public_date::date &lt;= to_date(#{pub_date_high}, <include refid="base.dateFormat"/>)
         </if>
+        
+        <if test="null != mod_x_days">
+            and display_to_public_date::date &gt;= (current_date - (#{mod_x_days} ||' day')::interval)
+        </if>
+
+        <if test="null != mod_date_low">
+            and display_to_public_date::date &gt;= to_date(#{mod_date_low}, <include refid="base.dateFormat"/>)
+        </if>
+
+        <if test="null != mod_date_high">
+            and display_to_public_date::date &lt;= to_date(#{mod_date_high}, <include refid="base.dateFormat"/>)
+        </if>
+
     </sql>
 
     <sql id="baseSelect">
@@ -189,7 +195,7 @@
         <include refid="baseSelect"/>
         <where>
             <include refid="pwPublication.wherePublic"/>
-            <include refid="filters"/>
+            <include refid="whFilters"/>
         </where>
         <include refid="publication.orderBy"/>
         <include refid="base.pagingRowLimit"/>
@@ -200,7 +206,7 @@
           from publication pub
         <where>
             <include refid="pwPublication.wherePublic"/>
-            <include refid="filters"/>
+            <include refid="whFilters"/>
         </where>
     </select>
 
@@ -323,7 +329,7 @@
                  on pub.publication_id = pub_link.publication_id
         <where>
             <include refid="pwPublication.wherePublic"/>
-            <include refid="filters"/>
+            <include refid="whFilters"/>
         </where>
         <include refid="publication.orderBy"/>
         <include refid="base.pagingRowLimit"/>

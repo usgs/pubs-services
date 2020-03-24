@@ -21,6 +21,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseIT;
+import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoIT;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
@@ -31,7 +32,8 @@ import gov.usgs.cida.pubs.springinit.DbTestConfig;
 import gov.usgs.cida.pubs.webservice.MvcService;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
-	classes={DbTestConfig.class, PublicationDao.class})
+	classes={DbTestConfig.class, PublicationDao.class, ConfigurationService.class,
+			MpPublicationFilterParams.class})
 @DatabaseSetup("classpath:/testCleanup/clearAll.xml")
 public class PublicationDaoIT extends BaseIT {
 

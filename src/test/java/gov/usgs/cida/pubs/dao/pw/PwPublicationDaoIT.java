@@ -42,7 +42,8 @@ import gov.usgs.cida.pubs.domain.query.PwPublicationFilterParams;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
-	classes={DbTestConfig.class, PwPublicationDao.class})
+	classes={DbTestConfig.class, PwPublicationDao.class, ConfigurationService.class,
+			PwPublicationFilterParams.class})
 public class PwPublicationDaoIT extends BaseIT {
 
 	@Autowired
@@ -490,7 +491,6 @@ public class PwPublicationDaoIT extends BaseIT {
 		filters.setReportNumber(new String[]{"reportNumber1", "reportNumber2"});
 		filters.setSearchTerms(new String[]{"searchTerms1", "searchTerms2"});
 
-//		filters.put(PublicationDao.SERIES_ID_SEARCH, 330);
 		filters.setSeriesName(new String[]{"reportSeries1", "reportSeries2"});
 		filters.setStartYear("yearStart");
 		filters.setSubtypeName(new String[]{"subtype1", "subtype2"});

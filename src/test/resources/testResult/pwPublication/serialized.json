@@ -3,17 +3,17 @@
 	"text": "indexid1 - 2001 - Title",
 	"isPartOf": {
 		"id": 1,
+		"text": "ABC1 - 2015 - A Master Title",
 		"indexId": "ABC1",
 		"publicationYear": "2015",
 		"noYear": false,
-		"text": "ABC1 - 2015 - A Master Title",
 		"title": "A Master Title"
 	},
 	"supersededBy": {
 		"id": 2,
+		"text": "XYZ2 - No Year - A Super Title",
 		"indexId": "XYZ2",
 		"noYear": true,
-		"text": "XYZ2 - No Year - A Super Title",
 		"title": "A Super Title"
 	},
 	"lastModifiedDate": "2015-12-31T12:01:02",
@@ -75,6 +75,12 @@
 		"active": true,
 		"usgs": true
 	}],
+	"links": [{
+		"type": {
+			"id": 31
+		},
+		"url": "http://usgs.gov/12354"
+	}],
 	"scale": "100",
 	"projection": "EPSG:3857",
 	"datum": "NAD83",
@@ -106,10 +112,20 @@
 		"auditedOn": "audit 14Jun2016",
 		"publiclyAccessibleDate": "avail 14Jun2016"
 	},
-	"links": [{
-		"type": {
-			"id": 31
-		},
-		"url": "http://usgs.gov/12354"
-	}]
+	"contributors": {
+		"authors": [{
+			"text": "ODoul, Jane q",
+			"orcid": "https://orcid.org/0000-0000-0080-0000",
+			"corporation": false,
+			"usgs": true,
+			"family": "ODoul",
+			"given": "Jane q",
+			"affiliations": [],
+			"contributorType": {
+				"id": 1,
+				"text": "Authors"
+			},
+			"rank": 12
+		}]
+	}
 }

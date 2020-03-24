@@ -35,6 +35,7 @@ import gov.usgs.cida.pubs.busservice.xml.XmlBusService;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
+import gov.usgs.cida.pubs.domain.query.PwPublicationFilterParams;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
 import gov.usgs.cida.pubs.springinit.SpringConfig;
 import gov.usgs.cida.pubs.utility.CustomStringToArrayConverter;
@@ -50,7 +51,7 @@ import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
 			PublicationBusService.class, PwPublication.class,
 			PwPublicationDao.class, PublicationDao.class, SpringConfig.class,
 			CustomStringToArrayConverter.class, StringArrayCleansingConverter.class,
-			CustomStringToStringConverter.class})
+			CustomStringToStringConverter.class, PwPublicationFilterParams.class})
 @DatabaseSetups({
 	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
 	@DatabaseSetup("classpath:/testData/publicationType.xml"),

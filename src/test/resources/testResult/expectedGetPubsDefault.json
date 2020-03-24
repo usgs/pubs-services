@@ -1,0 +1,34 @@
+{
+	"pageSize": "25",
+	"pageRowStart": "0",
+	"pageNumber": "1",
+	"recordCount": 12,
+	"records": [{
+		"id": 1,
+		"indexId": "indexid1",
+		"publicationType": {
+			"id": 18,
+			"text": "Report"
+		},
+		"seriesTitle": {
+			"id": 334,
+			"text": "Scientific Investigations Report"
+		},
+		"seriesNumber": "Series Number",
+		"chapter": "chapter",
+		"title": "Title",
+		"publicationYear": "2001",
+		"contributors": {
+			"authors": [{
+				"text": "ODoul, Jane q",
+				"contributorType": {
+					"id": 1,
+					"text": "Authors"
+				}
+			}]
+		},
+		"sourceDatabase": "mypubs",
+		"published": true,
+		"text": "indexid1 - 2001 - Title"
+	}]
+}

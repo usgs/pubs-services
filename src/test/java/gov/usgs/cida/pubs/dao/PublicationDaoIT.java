@@ -21,16 +21,19 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseIT;
+import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoIT;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.pw.PwPublicationTest;
+import gov.usgs.cida.pubs.domain.query.MpPublicationFilterParams;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
 import gov.usgs.cida.pubs.webservice.MvcService;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
-	classes={DbTestConfig.class, PublicationDao.class})
+	classes={DbTestConfig.class, PublicationDao.class, ConfigurationService.class,
+			MpPublicationFilterParams.class})
 @DatabaseSetup("classpath:/testCleanup/clearAll.xml")
 public class PublicationDaoIT extends BaseIT {
 
@@ -61,79 +64,76 @@ public class PublicationDaoIT extends BaseIT {
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
 		@DatabaseSetup("classpath:/testData/dataset.xml")
 	})
-	public void getByMapTest() {
-		Map<String, Object> filters = new HashMap<>();
-		filters.put(PublicationDao.PROD_ID, new int[] { 2 });
-		Collection<Publication<?>> pubs = publicationDao.getByMap(filters);
+	public void getByFilterTest() {
+		MpPublicationFilterParams filters = new MpPublicationFilterParams();
+		filters.setGlobal("false");
+		filters.setProdId(new String[] { "2" });
+		Collection<Publication<?>> pubs = publicationDao.getByFilter(filters);
 		assertEquals(1, pubs.size());
 		assertEquals(2, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
 
-		filters.clear();
-		filters.put(PublicationDao.INDEX_ID, new String[] { "4" });
-		pubs = publicationDao.getByMap(filters);
+		filters = new MpPublicationFilterParams();
+		filters.setGlobal("false");
+		filters.setIndexId(new String[] { "4" });
+		pubs = publicationDao.getByFilter(filters);
 		assertEquals(0, pubs.size());
 
-		filters.clear();
-		filters.put(PublicationDao.IPDS_ID, new String[] {"IP-056327"});
-		pubs = publicationDao.getByMap(filters);
+		filters = new MpPublicationFilterParams();
+		filters.setGlobal("false");
+		filters.setIpdsId(new String[] {"IP-056327"});
+		pubs = publicationDao.getByFilter(filters);
 		assertEquals(1, pubs.size());
 		assertEquals(3, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
 
-		filters.clear();
-		filters.put(PublicationDao.PROD_ID, new int[] { 4 });
-		filters.put(PublicationDao.INDEX_ID, new String[] { "4" });
-		filters.put(PublicationDao.IPDS_ID, new String[] {"ipds_id"});
-		pubs = publicationDao.getByMap(filters);
+		filters = new MpPublicationFilterParams();
+		filters.setGlobal("false");
+		filters.setProdId(new String[] { "4" });
+		filters.setIndexId(new String[] { "4" });
+		filters.setIpdsId(new String[] {"ipds_id"});
+		pubs = publicationDao.getByFilter(filters);
 		assertEquals(0, pubs.size());
 
-		filters.clear();
-		filters.put(MpPublicationDao.SEARCH_TERMS, List.of("a").toArray());
-		pubs = publicationDao.getByMap(filters);
+		filters = new MpPublicationFilterParams();
+		filters.setSearchTerms(new String[] {"a"});
+		pubs = publicationDao.getByFilter(filters);
 
-		filters.put(MpPublicationDao.GLOBAL, "true");
-		filters.put(PublicationDao.PROD_ID, new int[] { 2 });
-		pubs = publicationDao.getByMap(filters);
+		filters.setGlobal("true");
+		filters.setProdId(new String[] { "2" });
+		pubs = publicationDao.getByFilter(filters);
 		assertEquals(1, pubs.size());
 		assertEquals(2, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
 
-		filters.clear();
-		filters.put(MpPublicationDao.GLOBAL, "true");
-		filters.put(PublicationDao.INDEX_ID, new String[] { "4" });
-		pubs = publicationDao.getByMap(filters);
+		filters = new MpPublicationFilterParams();
+		filters.setGlobal("true");
+		filters.setIndexId(new String[] { "4" });
+		pubs = publicationDao.getByFilter(filters);
 		assertEquals(1, pubs.size());
 		assertEquals(4, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
 
-		filters.clear();
-		filters.put(MpPublicationDao.GLOBAL, "true");
-		filters.put(PublicationDao.IPDS_ID, new String[] {"IP-056327"});
-		pubs = publicationDao.getByMap(filters);
+		filters = new MpPublicationFilterParams();
+		filters.setGlobal("true");
+		filters.setIpdsId(new String[] {"IP-056327"});
+		pubs = publicationDao.getByFilter(filters);
 		assertEquals(1, pubs.size());
 		assertEquals(3, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
 
-		filters.clear();
-		filters.put(MpPublicationDao.GLOBAL, "true");
-		filters.put(PublicationDao.PROD_ID, new int[] { 4 });
-		filters.put(PublicationDao.INDEX_ID, new String[] { "4"});
-		filters.put(PublicationDao.IPDS_ID, new String[] {"ipds_id"});
-		pubs = publicationDao.getByMap(filters);
+		filters = new MpPublicationFilterParams();
+		filters.setGlobal("true");
+		filters.setProdId(new String[] { "4" });
+		filters.setIndexId(new String[] { "4"});
+		filters.setIpdsId(new String[] {"ipds_id"});
+		pubs = publicationDao.getByFilter(filters);
 		assertEquals(1, pubs.size());
 		assertEquals(4, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
 
-		filters.clear();
-		filters.put(MpPublicationDao.GLOBAL, "true");
-		filters.put(MpPublicationDao.SEARCH_TERMS, List.of("a").toArray());
-		pubs = publicationDao.getByMap(filters);
-
-		filters.clear();
-		filters.put(MpPublicationDao.GLOBAL, "true");
-		filters.put(PublicationDao.SERIES_ID_SEARCH, 330);
-		pubs = publicationDao.getByMap(filters);
-		assertEquals(2, pubs.size());
+		filters = new MpPublicationFilterParams();
+		filters.setGlobal("true");
+		filters.setSearchTerms(new String[] {"a"});
+		pubs = publicationDao.getByFilter(filters);
 
 		//This only checks that the final query is syntactically correct, not that it is logically correct!
-		pubs = publicationDao.getByMap(buildAllParms());
+		pubs = publicationDao.getByFilter(buildAllFilterParms());
 	}
-
 	@Test
 	@DatabaseSetups({
 		@DatabaseSetup("classpath:/testData/publicationType.xml"),
@@ -141,10 +141,11 @@ public class PublicationDaoIT extends BaseIT {
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
 		@DatabaseSetup("classpath:/testData/dataset.xml")
 	})
-	public void getByMapTestDoi() {
-		Map<String, Object> filters = new HashMap<>();
-		filters.put(PublicationDao.DOI, new String[] { "10.3133/sir20145083" });
-		List<Publication<?>> pubs = publicationDao.getByMap(filters);
+	public void getByFilterTestDoi() {
+		MpPublicationFilterParams filters = new MpPublicationFilterParams();
+		filters.setGlobal("false");
+		filters.setDoi(new String[] { "10.3133/sir20145083" });
+		List<Publication<?>> pubs = publicationDao.getByFilter(filters);
 		assertEquals(1, pubs.size());
 		assertEquals("10.3133/sir20145083", pubs.get(0).getDoi());
 		assertEquals("sir20145083", pubs.get(0).getIndexId());
@@ -153,18 +154,17 @@ public class PublicationDaoIT extends BaseIT {
 		assertEquals(23, pubs.get(0).getLargerWorkSubtype().getId().intValue());
 		assertEquals("EPSG:3857", pubs.get(0).getProjection());
 
-		filters.clear();
 		String[] doiIds = new String[] { "10.3133/ofr20141147", "10.3133/sir20145083", };
-		filters.put(PublicationDao.DOI, doiIds);
-		pubs = publicationDao.getByMap(filters);
+		filters.setDoi(doiIds);
+		pubs = publicationDao.getByFilter(filters);
 		assertEquals(2, pubs.size());
 		String[] foundDois = getDoiIds(pubs);
 		assertTrue(Arrays.equals(doiIds, foundDois));
 
-		filters.clear();
-		filters.put(PublicationDao.HAS_DOI, Boolean.TRUE);
+		filters.setHasDoi(Boolean.TRUE);
 		doiIds = new String[] {"10.3133/ofr20141147", "10.3133/sir20145083", "doi"};
-		pubs = publicationDao.getByMap(filters);
+		filters.setDoi(doiIds);
+		pubs = publicationDao.getByFilter(filters);
 		assertEquals(3, pubs.size());
 		foundDois = getDoiIds(pubs);
 		assertTrue(String.format("Expected doi values '%s', got '%s'", Arrays.toString(doiIds), Arrays.toString(foundDois)),
@@ -176,10 +176,11 @@ public class PublicationDaoIT extends BaseIT {
 		@DatabaseSetup("classpath:/testData/publicationOrderBy.xml"),
 		@DatabaseSetup("classpath:/testData/mpPublicationOrderBy.xml")
 	})
-	public void getByMapOrderByTest() {
-		Map<String, Object> filters = new HashMap<>();
-		filters.put(MpPublicationDao.GLOBAL, "true");
-		List<Publication<?>> pubs = publicationDao.getByMap(filters);
+	public void getByFilterOrderByTest() {
+		MpPublicationFilterParams filters = new MpPublicationFilterParams();
+		filters.setPage_size("1000");
+		filters.setGlobal("true");
+		List<Publication<?>> pubs = publicationDao.getByFilter(filters);
 		assertEquals(36, pubs.size());
 		assertEquals(830, pubs.get(0).getId().intValue());
 		assertEquals(810, pubs.get(1).getId().intValue());
@@ -218,8 +219,8 @@ public class PublicationDaoIT extends BaseIT {
 		assertEquals(560, pubs.get(34).getId().intValue());
 		assertEquals(320, pubs.get(35).getId().intValue());
 
-		filters.put(PublicationDao.ORDER_BY, "mpNewest");
-		pubs = publicationDao.getByMap(filters);
+		filters.setOrderBy("mpNewest");
+		pubs = publicationDao.getByFilter(filters);
 		assertEquals(36, pubs.size());
 		assertEquals(770, pubs.get(0).getId().intValue());
 		assertEquals(750, pubs.get(1).getId().intValue());
@@ -258,8 +259,8 @@ public class PublicationDaoIT extends BaseIT {
 		assertEquals(560, pubs.get(34).getId().intValue());
 		assertEquals(320, pubs.get(35).getId().intValue());
 
-		filters.put(PublicationDao.ORDER_BY, "title");
-		pubs = publicationDao.getByMap(filters);
+		filters.setOrderBy("title");
+		pubs = publicationDao.getByFilter(filters);
 		assertEquals(36, pubs.size());
 		assertEquals(100, pubs.get(0).getId().intValue());
 		assertEquals(610, pubs.get(1).getId().intValue());
@@ -304,10 +305,11 @@ public class PublicationDaoIT extends BaseIT {
 		@DatabaseSetup("classpath:/testData/publicationOrigin.xml"),
 		@DatabaseSetup("classpath:/testData/mpPublicationOrigin.xml")
 	})
-	public void getByMapOriginTest() {
-		Map<String, Object> filters = new HashMap<>();
+	public void getByFilterOriginTest() {
+		MpPublicationFilterParams filters = new MpPublicationFilterParams();
 		//mypubs only
-		List<Publication<?>> pubs = publicationDao.getByMap(filters);
+		filters.setGlobal("false");
+		List<Publication<?>> pubs = publicationDao.getByFilter(filters);
 		assertEquals(4, pubs.size());
 
 		assertEquals(130, pubs.get(0).getId().intValue());
@@ -326,8 +328,8 @@ public class PublicationDaoIT extends BaseIT {
 		assertEquals("mypubs", pubs.get(3).getSourceDatabase());
 		assertTrue(pubs.get(3).isPublished());
 
-		filters.put(MpPublicationDao.GLOBAL, "true");
-		pubs = publicationDao.getByMap(filters);
+		filters.setGlobal("true");
+		pubs = publicationDao.getByFilter(filters);
 		assertEquals(6, pubs.size());
 
 		assertEquals(130, pubs.get(0).getId().intValue());
@@ -362,76 +364,75 @@ public class PublicationDaoIT extends BaseIT {
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
 		@DatabaseSetup("classpath:/testData/dataset.xml")
 	})
-	public void getObjectCountTest() {
-		Map<String, Object> filters = new HashMap<>();
-		Integer cnt = publicationDao.getObjectCount(null);
+	public void getCountByFilterTest() {
+		MpPublicationFilterParams filters = new MpPublicationFilterParams();
+		Integer cnt = publicationDao.getCountByFilter(null);
 		assertEquals(3, cnt.intValue());
 
-		filters.put(MpPublicationDao.GLOBAL, "false");
-		cnt = publicationDao.getObjectCount(filters);
+		filters.setGlobal("false");
+		cnt = publicationDao.getCountByFilter(filters);
 		assertEquals(3, cnt.intValue());
 
-		filters.put(MpPublicationDao.GLOBAL, "true");
-		cnt = publicationDao.getObjectCount(filters);
+		filters.setGlobal("true");
+		cnt = publicationDao.getCountByFilter(filters);
 		assertEquals(8, cnt.intValue());
 
-		filters.put(PublicationDao.IPDS_ID, new String[] { "ipds_id" });
-		cnt = publicationDao.getObjectCount(filters);
+		filters.setIpdsId(new String[] { "ipds_id" });
+		cnt = publicationDao.getCountByFilter(filters);
 		assertEquals(1, cnt.intValue());
 
-		filters.clear();
-		filters.put(MpPublicationDao.GLOBAL, "true");
-		filters.put(PublicationDao.SERIES_ID_SEARCH, 330);
-		cnt = publicationDao.getObjectCount(filters);
+
+		//This only checks that the final query is syntactically correct, not that it is logically correct!
+		cnt = publicationDao.getCountByFilter(buildAllFilterParms());
+	}
+
+	@Test
+	@DatabaseSetups({
+		@DatabaseSetup("classpath:/testData/publicationType.xml"),
+		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
+		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
+		@DatabaseSetup("classpath:/testData/dataset.xml")
+	})
+	public void getSeriesCountTest() {
+		Integer cnt = publicationDao.getSeriesCount(330);
 		assertEquals(2, cnt.intValue());
 	}
 
-	public static Map<String, Object> buildAllParms() {
-		Map<String, Object> filters = new HashMap<>();
+	public static MpPublicationFilterParams buildAllFilterParms() {
+		MpPublicationFilterParams filters = new MpPublicationFilterParams();
 
-		filters.put(PublicationDao.PUB_ABSTRACT, new String[]{"abstract1", "abstractp"});
-		filters.put(PwPublicationDao.CHORUS, true);
-		filters.put(PublicationDao.CONTRIBUTING_OFFICE, new String[]{"contributingOffice1", "contributingOffice2"});
-		filters.put(PublicationDao.CONTRIBUTOR, "contributor1" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX + MvcService.TEXT_SEARCH_AND + "contributor2" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX);
+		filters.setPubAbstract(new String[]{"abstract1", "abstractp"});
+		filters.setContributingOffice(new String[]{"contributingOffice1", "contributingOffice2"});
+		filters.setContributor(new String[] {"contributor1", "contributor2"});
 
-		filters.put(PublicationDao.DOI, new String[]{"DOI-123", "DOI-456"});
-		filters.put(PublicationDao.HAS_DOI, true);
+		filters.setDoi(new String[]{"DOI-123", "DOI-456"});
+		filters.setHasDoi(true);
 
-		filters.put(PublicationDao.END_YEAR, "yearEnd");
-		filters.put(PwPublicationDao.G, SEARCH_POLYGON);
-		filters.put(MpPublicationDao.GLOBAL, "yes");
-		filters.put(PublicationDao.INDEX_ID, new String[]{"indexId1", "indexId2"});
-		filters.put(PublicationDao.IPDS_ID, new String[]{"ipdsId1", "ipdsId2"});
+		filters.setEndYear("yearEnd");
+		filters.setGlobal("yes");
+		filters.setIndexId(new String[]{"indexId1", "indexId2"});
+		filters.setIpdsId(new String[]{"ipdsId1", "ipdsId2"});
 
-		filters.put(MpPublicationDao.LIST_ID, new int[]{1, 2});
-		filters.put(PwPublicationDao.MOD_DATE_HIGH, "2012-12-12");
-		filters.put(PwPublicationDao.MOD_DATE_LOW, "2010-10-10");
-		filters.put(PwPublicationDao.MOD_X_DAYS, 3);
-		filters.put(PublicationDao.ORDER_BY, "title");
+		filters.setListId(new String[]{"1", "2"});
+		filters.setOrderBy("title");
 
-		filters.put(BaseDao.PAGE_NUMBER, "66");
-		filters.put(PublicationDao.PAGE_ROW_START, 19);
-		filters.put(PublicationDao.PAGE_SIZE, 54);
-		filters.put(PublicationDao.PROD_ID, new int[]{1, 2});
-		filters.put(PwPublicationDao.PUB_DATE_HIGH, "2012-12-12");
+		filters.setPage_number("66");
+		filters.setPage_row_start("19");
+		filters.setPage_size("54");
+		filters.setProdId(new String[]{"1", "2"});
 
-		filters.put(PwPublicationDao.PUB_DATE_LOW, "2010-10-10");
-		filters.put(PwPublicationDao.PUB_X_DAYS, 1);
-		filters.put(PublicationDao.Q, "$turtles");
+		filters.setQ("$turtles");
 
-		filters.put(PublicationDao.LINK_TYPE, new String[]{"linkType1", "linkType2"});
-		filters.put(PublicationDao.NO_LINK_TYPE, new String[]{"noLinkType1", "noLinkType2"});
-		filters.put(PublicationDao.REPORT_NUMBER, new String[]{"reportNumber1", "reportNumber2"});
-		filters.put(MpPublicationDao.SEARCH_TERMS, new String[]{"searchTerms1", "searchTerms2"});
+		filters.setReportNumber(new String[]{"reportNumber1", "reportNumber2"});
+		filters.setSearchTerms(new String[]{"searchTerms1", "searchTerms2"});
 
-		filters.put(PublicationDao.SERIES_ID_SEARCH, 330);
-		filters.put(PublicationDao.SERIES_NAME, new String[]{"reportSeries1", "reportSeries2"});
-		filters.put(PublicationDao.START_YEAR, "yearStart");
-		filters.put(PublicationDao.SUBTYPE_NAME, new String[]{"subtype1", "subtype2"});
-		filters.put(PublicationDao.TITLE, new String[]{"title1", "title2"});
+		filters.setSeriesName(new String[]{"reportSeries1", "reportSeries2"});
+		filters.setStartYear("yearStart");
+		filters.setSubtypeName(new String[]{"subtype1", "subtype2"});
+		filters.setTitle(new String[]{"title1", "title2"});
 
-		filters.put(PublicationDao.TYPE_NAME, new String[]{"type1", "type2"});
-		filters.put(PublicationDao.YEAR, new String[]{"year1", "year2"});
+		filters.setTypeName(new String[]{"type1", "type2"});
+		filters.setYear(new String[]{"year1", "year2"});
 
 		return filters;
 	}
@@ -505,7 +506,58 @@ public class PublicationDaoIT extends BaseIT {
 		assertEquals(4, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
 
 		//This only checks that the final query is syntactically correct, not that it is logically correct!
-		pubs = publicationDao.getByMap(buildAllParms());
+		pubs = publicationDao.validateByMap(buildAllParms());
+	}
+
+
+	public static Map<String, Object> buildAllParms() {
+		Map<String, Object> filters = new HashMap<>();
+
+		filters.put(PublicationDao.PUB_ABSTRACT, new String[]{"abstract1", "abstractp"});
+		filters.put(PwPublicationDao.CHORUS, true);
+		filters.put(PublicationDao.CONTRIBUTING_OFFICE, new String[]{"contributingOffice1", "contributingOffice2"});
+		filters.put(PublicationDao.CONTRIBUTOR, "contributor1" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX + MvcService.TEXT_SEARCH_AND + "contributor2" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX);
+
+		filters.put(PublicationDao.DOI, new String[]{"DOI-123", "DOI-456"});
+		filters.put(PublicationDao.HAS_DOI, true);
+
+		filters.put(PublicationDao.END_YEAR, "yearEnd");
+		filters.put(PwPublicationDao.G, SEARCH_POLYGON);
+		filters.put(MpPublicationDao.GLOBAL, "yes");
+		filters.put(PublicationDao.INDEX_ID, new String[]{"indexId1", "indexId2"});
+		filters.put(PublicationDao.IPDS_ID, new String[]{"ipdsId1", "ipdsId2"});
+
+		filters.put(MpPublicationDao.LIST_ID, new int[]{1, 2});
+		filters.put(PwPublicationDao.MOD_DATE_HIGH, "2012-12-12");
+		filters.put(PwPublicationDao.MOD_DATE_LOW, "2010-10-10");
+		filters.put(PwPublicationDao.MOD_X_DAYS, 3);
+		filters.put(PublicationDao.ORDER_BY, "title");
+
+		filters.put(BaseDao.PAGE_NUMBER, "66");
+		filters.put(PublicationDao.PAGE_ROW_START, 19);
+		filters.put(PublicationDao.PAGE_SIZE, 54);
+		filters.put(PublicationDao.PROD_ID, new int[]{1, 2});
+		filters.put(PwPublicationDao.PUB_DATE_HIGH, "2012-12-12");
+
+		filters.put(PwPublicationDao.PUB_DATE_LOW, "2010-10-10");
+		filters.put(PwPublicationDao.PUB_X_DAYS, 1);
+		filters.put(PublicationDao.Q, "$turtles");
+
+		filters.put(PublicationDao.LINK_TYPE, new String[]{"linkType1", "linkType2"});
+		filters.put(PublicationDao.NO_LINK_TYPE, new String[]{"noLinkType1", "noLinkType2"});
+		filters.put(PublicationDao.REPORT_NUMBER, new String[]{"reportNumber1", "reportNumber2"});
+		filters.put(MpPublicationDao.SEARCH_TERMS, new String[]{"searchTerms1", "searchTerms2"});
+
+		filters.put(PublicationDao.SERIES_ID_SEARCH, 330);
+		filters.put(PublicationDao.SERIES_NAME, new String[]{"reportSeries1", "reportSeries2"});
+		filters.put(PublicationDao.START_YEAR, "yearStart");
+		filters.put(PublicationDao.SUBTYPE_NAME, new String[]{"subtype1", "subtype2"});
+		filters.put(PublicationDao.TITLE, new String[]{"title1", "title2"});
+
+		filters.put(PublicationDao.TYPE_NAME, new String[]{"type1", "type2"});
+		filters.put(PublicationDao.YEAR, new String[]{"year1", "year2"});
+
+		return filters;
 	}
 
 	private String[] getDoiIds(List<Publication<?>> pubs) {

@@ -3,9 +3,9 @@ package gov.usgs.cida.pubs.dao.pw;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,23 +15,27 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseIT;
-import gov.usgs.cida.pubs.dao.BaseDao;
-import gov.usgs.cida.pubs.dao.PublicationDao;
+import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
+import gov.usgs.cida.pubs.domain.query.PwPublicationFilterParams;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
 import gov.usgs.cida.pubs.transform.PublicationColumnsHelper;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
-	classes={DbTestConfig.class, PwPublicationDao.class})
+	classes={DbTestConfig.class, PwPublicationDao.class, ConfigurationService.class,
+			PwPublicationFilterParams.class})
 public class PwPublicationDaoStreamingIT extends BaseIT {
 
 	@Autowired
-	PwPublicationDao pwPublicationDao;
+	private PwPublicationDao pwPublicationDao;
+	@MockBean
+	private ConfigurationService configurationService;
 
 	private class TestResultHandler<T> implements ResultHandler<T> {
 		public ArrayList<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
@@ -50,10 +54,10 @@ public class PwPublicationDaoStreamingIT extends BaseIT {
 		@DatabaseSetup("classpath:/testData/publicationStream.xml")
 	})
 	public void getStreamByMapTest() {
+		when(configurationService.getWarehouseEndpoint()).thenReturn("https://test.gov");
 		TestResultHandler<PwPublication> handler = new TestResultHandler<>();
-		Map<String, Object> filters = new HashMap<>();
-		filters.put(PublicationDao.ORDER_BY, "publication_year");
-		filters.put("url", "https://test.gov/");
+		PwPublicationFilterParams filters = new PwPublicationFilterParams();
+		filters.setOrderBy("publication_year");
 		pwPublicationDao.stream(PwPublicationDao.NS + PwPublicationDao.GET_STREAM_BY_MAP, filters, handler);
 		List<Map<String, Object>> pubs = handler.results;
 		assertNotNull(pubs);
@@ -65,7 +69,7 @@ public class PwPublicationDaoStreamingIT extends BaseIT {
 		assertTrue(pubs.get(1).keySet().containsAll(PublicationColumnsHelper.getMappings().keySet()));
 
 		Map<String, Object> pub = pubs.get(0);
-		assertEquals("https://test.gov/4", pub.get("warehouse_url"));
+		assertEquals("https://test.gov/publication/4", pub.get("warehouse_url"));
 		assertEquals(4, pub.get("publication_id"));
 		assertEquals("4", pub.get("index_id"));
 		assertEquals("Book chapter", pub.get("publication_type"));
@@ -151,7 +155,9 @@ public class PwPublicationDaoStreamingIT extends BaseIT {
 	})
 	public void streamOrderByTest() {
 		TestResultHandler<PwPublication> handler = new TestResultHandler<>();
-		pwPublicationDao.stream(PwPublicationDao.NS + PwPublicationDao.GET_STREAM_BY_MAP, new HashMap<>(), handler);
+		PwPublicationFilterParams filters = new PwPublicationFilterParams();
+		filters.setMimetype("tsv");
+		pwPublicationDao.stream(PwPublicationDao.NS + PwPublicationDao.GET_STREAM_BY_MAP, filters, handler);
 		List<Map<String, Object>> pubs = handler.results;
 		assertEquals(24, pubs.size());
 		assertEquals(340, pubs.get(0).get("publication_id"));
@@ -180,38 +186,37 @@ public class PwPublicationDaoStreamingIT extends BaseIT {
 		assertEquals(320, pubs.get(23).get("publication_id"));
 	}
 
-	public Map<String, Object> buildAllFilters() {
-		Map<String, Object> filters = new HashMap<>();
-		filters.put(PublicationDao.Q, "test");
-		filters.put(PwPublicationDao.G, SEARCH_POLYGON);
-		filters.put(PublicationDao.TITLE, new String[] {"test","this","is"});
-		filters.put(PublicationDao.PUB_ABSTRACT, new String[] {"test","this","is"});
-		filters.put(PublicationDao.CONTRIBUTOR, "test");
-		filters.put(PublicationDao.PROD_ID, new Integer[] {1,2,3});
-		filters.put(PublicationDao.INDEX_ID, new String[] {"test","this","is"});
-		filters.put(PublicationDao.IPDS_ID, new String[] {"test","this","is"});
-		filters.put(PublicationDao.YEAR, new String[] {"test","this","is"});
-		filters.put(PublicationDao.START_YEAR, "test");
-		filters.put(PublicationDao.END_YEAR, "test");
-		filters.put(PublicationDao.CONTRIBUTING_OFFICE, new String[] {"test","this","is"});
-		filters.put(PublicationDao.TYPE_NAME, new String[] {"test","this","is"});
-		filters.put(PublicationDao.SUBTYPE_NAME, new String[] {"test","this","is"});
-		filters.put(PublicationDao.SERIES_NAME, new String[] {"test","this","is"});
-		filters.put(PublicationDao.REPORT_NUMBER, new String[] {"test","this","is"});
-		filters.put(PublicationDao.LINK_TYPE, new String[] {"test","this","is"});
-		filters.put(PublicationDao.NO_LINK_TYPE, new String[] {"test","this","is"});
-		filters.put(BaseDao.PAGE_ROW_START, 1);
-		filters.put(BaseDao.PAGE_NUMBER, 1);
-		filters.put(BaseDao.PAGE_SIZE, 1);
-		filters.put(PwPublicationDao.PUB_X_DAYS, 1);
-		filters.put(PwPublicationDao.PUB_DATE_LOW, "2001-01-01");
-		filters.put(PwPublicationDao.PUB_DATE_HIGH, "2001-01-01");
-		filters.put(PwPublicationDao.MOD_X_DAYS, 1);
-		filters.put(PwPublicationDao.MOD_DATE_LOW, "2001-01-01");
-		filters.put(PwPublicationDao.MOD_DATE_HIGH, "2001-01-01");
-		filters.put(PublicationDao.ORDER_BY, "publication_year");
-		filters.put(PwPublicationDao.CHORUS, true);
-
+	public PwPublicationFilterParams buildAllFilters() {
+		PwPublicationFilterParams filters = new PwPublicationFilterParams();
+		filters.setQ("test");
+		filters.setG(SEARCH_POLYGON);
+		filters.setTitle(new String[] {"test","this","is"});
+		filters.setPubAbstract(new String[] {"test","this","is"});
+		filters.setContributor(new String[] {"test"});
+		filters.setProdId(new String[] {"1", "2", "3"});
+		filters.setIndexId(new String[] {"test","this","is"});
+		filters.setIpdsId(new String[] {"test","this","is"});
+		filters.setYear(new String[] {"test","this","is"});
+		filters.setStartYear("test");
+		filters.setEndYear("test");
+		filters.setContributingOffice(new String[] {"test","this","is"});
+		filters.setTypeName(new String[] {"test","this","is"});
+		filters.setSubtypeName(new String[] {"test","this","is"});
+		filters.setSeriesName(new String[] {"test","this","is"});
+		filters.setReportNumber(new String[] {"test","this","is"});
+		filters.setLinkType(new String[] {"test","this","is"});
+		filters.setNoLinkType(new String[] {"test","this","is"});
+		filters.setPage_row_start("1");
+		filters.setPage_number("1");
+		filters.setPage_size("1");
+		filters.setPub_x_days("1");
+		filters.setPub_date_low("2001-01-01");
+		filters.setPub_date_high("2001-01-01");
+		filters.setMod_x_days("1");
+		filters.setMod_date_low("2001-01-01");
+		filters.setMod_date_high("2001-01-01");
+		filters.setOrderBy("publication_year");
+		filters.setChorus(true);
 		return filters;
 	}
 }

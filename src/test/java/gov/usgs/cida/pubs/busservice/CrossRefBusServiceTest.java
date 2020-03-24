@@ -47,7 +47,6 @@ import freemarker.template.Configuration;
 import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
-import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.dao.intfc.ICrossRefLogDao;
 import gov.usgs.cida.pubs.domain.CrossRefLog;
 import gov.usgs.cida.pubs.domain.Publication;
@@ -76,8 +75,6 @@ public class CrossRefBusServiceTest extends BaseTest {
 	protected ICrossRefLogDao crossRefLogDao;
 	@Autowired
 	protected Configuration templateConfiguration;
-	@MockBean
-	protected IPublicationBusService publicationBusService;
 
 	protected CrossRefBusService busService;
 
@@ -87,8 +84,7 @@ public class CrossRefBusServiceTest extends BaseTest {
 			configurationService,
 			pubsEMailer,
 			crossRefLogDao,
-			templateConfiguration,
-			publicationBusService
+			templateConfiguration
 		);
 	}
 
@@ -139,8 +135,7 @@ public class CrossRefBusServiceTest extends BaseTest {
 				mockConfigurationService,
 				pubsEMailer,
 				crossRefLogDao,
-				templateConfiguration,
-				publicationBusService
+				templateConfiguration
 			);
 
 		String actual = busService.buildCrossRefUrl();
@@ -170,8 +165,7 @@ public class CrossRefBusServiceTest extends BaseTest {
 				mockConfigurationService,
 				pubsEMailer,
 				crossRefLogDao,
-				templateConfiguration,
-				publicationBusService
+				templateConfiguration
 			);
 
 		try{
@@ -242,7 +236,6 @@ public class CrossRefBusServiceTest extends BaseTest {
 	@Test
 	public void getGoodCrossrefXml() throws XMLValidationException, IOException {
 		Publication<?> pub = CrossrefTestPubBuilder.buildUnNumberedSeriesPub(new Publication<>());
-		when(publicationBusService.getWarehousePage(pub)).thenReturn("http://localhost/publication/" + pub.getIndexId());
 		String xml = busService.getCrossRefXml(pub);
 
 		//verify that the attempt was logged
@@ -321,8 +314,7 @@ public class CrossRefBusServiceTest extends BaseTest {
 			configurationService,
 			pubsEMailer,
 			crossRefLogDao,
-			templateConfiguration,
-			publicationBusService
+			templateConfiguration
 		);
 		MpPublication pub = (MpPublication) CrossrefTestPubBuilder.buildNumberedSeriesPub(new MpPublication());
 

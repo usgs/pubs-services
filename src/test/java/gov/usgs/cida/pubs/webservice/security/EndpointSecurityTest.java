@@ -10,7 +10,7 @@ import gov.usgs.cida.pubs.security.UserDetailTestService;
 
 public class EndpointSecurityTest extends BaseEndpointSecurityTest {
 
-	RequestPostProcessor requestPostProcessor;
+	private RequestPostProcessor requestPostProcessor;
 
 	@Before
 	public void setup() throws Exception {

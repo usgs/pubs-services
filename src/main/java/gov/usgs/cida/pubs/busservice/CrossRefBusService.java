@@ -32,7 +32,6 @@ import freemarker.template.Configuration;
 import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
-import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.dao.intfc.ICrossRefLogDao;
 import gov.usgs.cida.pubs.domain.CrossRefLog;
 import gov.usgs.cida.pubs.domain.Publication;
@@ -49,21 +48,18 @@ public class CrossRefBusService implements ICrossRefBusService {
 	private final PubsEMailer pubsEMailer;
 	private final ICrossRefLogDao crossRefLogDao;
 	private final Configuration templateConfiguration;
-	private final IPublicationBusService pubBusService;
 	@Autowired
 	public CrossRefBusService(
 			final ConfigurationService configurationService,
 			final PubsEMailer pubsEMailer,
 			final ICrossRefLogDao crossRefLogDao,
 			@Qualifier("freeMarkerConfiguration")
-			Configuration templateConfiguration,
-			IPublicationBusService publicationBusService
+			Configuration templateConfiguration
 	) {
 		this.configurationService = configurationService;
 		this.pubsEMailer = pubsEMailer;
 		this.crossRefLogDao = crossRefLogDao;
 		this.templateConfiguration = templateConfiguration;
-		this.pubBusService = publicationBusService;
 	}
 
 	/**
@@ -79,8 +75,7 @@ public class CrossRefBusService implements ICrossRefBusService {
 				CrossrefTransformer transformer = new CrossrefTransformer(
 					baos,
 					templateConfiguration,
-					configurationService,
-					pubBusService
+					configurationService
 				);
 			){
 

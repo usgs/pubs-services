@@ -276,7 +276,11 @@ public class PublicationIT extends BaseIT {
 		pwl.setLinkType(linkType);
 		pwl.setUrl("http://usgs.gov/12354");
 		newPub.setLinks(List.of(pwl));
+
+		newPub.setContributors(PublicationContributorHelper.getContributors());
+
 		return newPub;
 	}
 
+	
 }

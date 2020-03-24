@@ -97,6 +97,22 @@
 	"published": true,
 	"sourceDatabase": "mypubs",
 	"noUsgsAuthors": false,
+	"contributors": {
+		"authors": [{
+			"text": "ODoul, Jane q",
+			"orcid": "https://orcid.org/0000-0000-0080-0000",
+			"corporation": false,
+			"usgs": true,
+			"family": "ODoul",
+			"given": "Jane q",
+			"affiliations": [],
+			"contributorType": {
+				"id": 1,
+				"text": "Authors"
+			},
+			"rank": 12
+		}]
+	},
 	"links": [{
 		"type": {
 			"id": 31

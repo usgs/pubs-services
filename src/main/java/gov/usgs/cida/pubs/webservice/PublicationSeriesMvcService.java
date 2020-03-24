@@ -1,17 +1,9 @@
 package gov.usgs.cida.pubs.webservice;
 
-import gov.usgs.cida.pubs.PubsConstantsHelper;
-import gov.usgs.cida.pubs.busservice.intfc.IBusService;
-import gov.usgs.cida.pubs.dao.BaseDao;
-import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
-import gov.usgs.cida.pubs.domain.PublicationSeries;
-import gov.usgs.cida.pubs.domain.SearchResults;
-import gov.usgs.cida.pubs.json.View;
-import gov.usgs.cida.pubs.utility.PubsUtils;
-import gov.usgs.cida.pubs.validation.ValidationResults;
-import gov.usgs.cida.pubs.validation.ValidatorResult;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
+import static gov.usgs.cida.pubs.dao.BaseDao.PAGE_NUMBER;
+import static gov.usgs.cida.pubs.dao.BaseDao.PAGE_ROW_START;
+import static gov.usgs.cida.pubs.dao.BaseDao.PAGE_SIZE;
+import static gov.usgs.cida.pubs.dao.BaseDao.TEXT_SEARCH;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +31,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
+import gov.usgs.cida.pubs.PubsConstantsHelper;
+import gov.usgs.cida.pubs.busservice.intfc.IBusService;
+import gov.usgs.cida.pubs.dao.PublicationSeriesDao;
+import gov.usgs.cida.pubs.domain.PublicationSeries;
+import gov.usgs.cida.pubs.domain.SearchResults;
+import gov.usgs.cida.pubs.json.View;
+import gov.usgs.cida.pubs.utility.PubsUtils;
+import gov.usgs.cida.pubs.validation.ValidationResults;
+import gov.usgs.cida.pubs.validation.ValidatorResult;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
+
 @RestController
 @RequestMapping(value="publicationSeries", produces=MediaType.APPLICATION_JSON_VALUE)
 public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
@@ -60,9 +64,9 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 			@RequestParam(value=TEXT_SEARCH, required=false) String[] text,
 			@RequestParam(value="publicationsubtypeid", required=false) String[] publicationSubtypeId,
 			@RequestParam(value=ACTIVE_SEARCH, required=false) String[] active,
-			@RequestParam(value=BaseDao.PAGE_ROW_START, required=false, defaultValue = "0") String pageRowStart,
-			@RequestParam(value=BaseDao.PAGE_NUMBER, required=false) String pageNumber,
-			@RequestParam(value=BaseDao.PAGE_SIZE, required=false, defaultValue = "25") String pageSize) {
+			@RequestParam(value=PAGE_ROW_START, required=false, defaultValue = "0") String pageRowStart,
+			@RequestParam(value=PAGE_NUMBER, required=false) String pageNumber,
+			@RequestParam(value=PAGE_SIZE, required=false, defaultValue = "25") String pageSize) {
 		setHeaders(response);
 		LOG.debug("publicationSeries");
 		setHeaders(response);
@@ -78,8 +82,8 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 		}
 		filters.putAll(buildPaging(pageRowStart, pageSize, pageNumber));
 		SearchResults results = new SearchResults();
-		results.setPageSize(pageSize);
-		results.setPageRowStart(pageRowStart);
+		results.setPageSize(filters.get(PAGE_SIZE) instanceof Integer ? (Integer) filters.get(PAGE_SIZE) : null);
+		results.setPageRowStart(filters.get(PAGE_ROW_START) instanceof Integer ? (Integer) filters.get(PAGE_ROW_START) : null);
 		results.setRecords(busService.getObjects(filters));
 		results.setRecordCount(busService.getObjectCount(filters));
 

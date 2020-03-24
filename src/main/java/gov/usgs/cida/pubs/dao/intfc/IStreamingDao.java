@@ -1,8 +1,8 @@
 package gov.usgs.cida.pubs.dao.intfc;
 
-import java.util.Map;
-
 import org.apache.ibatis.session.ResultHandler;
+
+import gov.usgs.cida.pubs.domain.query.IFilterParams;
 
 public interface IStreamingDao<T> {
 
@@ -12,6 +12,6 @@ public interface IStreamingDao<T> {
 	 * @param parameterMap - the map of query parameters from the http request
 	 * @param handler - the row handler to use for streaming data
 	 */
-	void stream(String statement, Map<String, Object> parameterMap, ResultHandler<T> handler);
+	void stream(String statement, IFilterParams parameterMap, ResultHandler<T> handler);
 
 }

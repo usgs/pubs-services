@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.query.IFilterParams;
 
 @Repository
 public class PublicationDao extends BaseDao<Publication<?>> implements IPublicationDao {
@@ -17,13 +18,13 @@ public class PublicationDao extends BaseDao<Publication<?>> implements IPublicat
 	private static final String NS = "publication";
 	private static final String FILTER_BY_INDEX_ID = ".filterLookupByIndexId";
 	private static final String VALIDATE_BY_MAP = ".validateByMap";
+	private static final String GET_COUNT_BY_SERIES = ".getCountBySeries";
 
 	public static final String SERIES_ID_SEARCH = "publicationSeriesId";
 
 	public static final String PUB_ABSTRACT = "abstract";
 	public static final String CONTRIBUTING_OFFICE = "contributingOffice";
 	public static final String CONTRIBUTOR = "contributor";
-	public static final String ORCID = PersonContributorDao.ORCID;
 	public static final String HAS_DOI = "hasDoi";
 	public static final String DOI = "doi";
 	public static final String END_YEAR = "endYear";
@@ -55,7 +56,7 @@ public class PublicationDao extends BaseDao<Publication<?>> implements IPublicat
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<Publication<?>> getByMap(Map<String, Object> filters) {
+	public List<Publication<?>> getByFilter(IFilterParams filters) {
 		return getSqlSession().selectList(NS + GET_BY_MAP, filters);
 	}
 
@@ -67,7 +68,13 @@ public class PublicationDao extends BaseDao<Publication<?>> implements IPublicat
 
 	@Override
 	@Transactional(readOnly = true)
-	public Integer getObjectCount(Map<String, Object> filters) {
+	public Integer getSeriesCount(Integer seriesId) {
+		return getSqlSession().selectOne(NS + GET_COUNT_BY_SERIES, seriesId);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Integer getCountByFilter(IFilterParams filters) {
 		return getSqlSession().selectOne(NS + GET_COUNT, filters);
 	}
 

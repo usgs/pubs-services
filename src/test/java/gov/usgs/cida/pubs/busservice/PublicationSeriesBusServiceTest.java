@@ -25,8 +25,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import gov.usgs.cida.pubs.BaseTest;
-import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
+import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSeriesTest;
@@ -53,7 +53,7 @@ public class PublicationSeriesBusServiceTest extends BaseTest {
 	@MockBean(name="publicationSeriesDao")
 	protected IDao<PublicationSeries> publicationSeriesDao;
 	@MockBean(name="publicationDao")
-	protected PublicationDao publicationDao;
+	protected IPublicationDao publicationDao;
 
 	@Before
 	@SuppressWarnings("unchecked")
@@ -157,7 +157,7 @@ public class PublicationSeriesBusServiceTest extends BaseTest {
 		//Should not be called on a delete
 		verify(publicationSeriesDao, never()).uniqueCheck(any(PublicationSeries.class));
 		//Should be called in NoChildrenValidatorForPublicationSeries
-		verify(publicationDao).getObjectCount(anyMap());
+		verify(publicationDao).getSeriesCount(any(Integer.class));
 		//Should be called in PublicationSeriesBusService
 		verify(publicationSeriesDao).delete(any(PublicationSeries.class));
 	}
@@ -184,7 +184,8 @@ public class PublicationSeriesBusServiceTest extends BaseTest {
 	@Test
 	public void deleteObjectErrorsTest() {
 		when(publicationSeriesDao.getById(any(Integer.class))).thenReturn(pubSeries);
-		when(publicationDao.getObjectCount(anyMap())).thenReturn(12);
+		when(publicationDao.getSeriesCount(any(Integer.class))).thenReturn(12);
+		pubSeries.setId(1);
 
 		ValidationResults vr = busService.deleteObject(1);
 		assertEquals(1, vr.getValidationErrors().size());
@@ -196,7 +197,7 @@ public class PublicationSeriesBusServiceTest extends BaseTest {
 		//Should not be called on a delete
 		verify(publicationSeriesDao, never()).uniqueCheck(any(PublicationSeries.class));
 		//Should be called in NoChildrenValidatorForPublicationSeries
-		verify(publicationDao).getObjectCount(anyMap());
+		verify(publicationDao).getSeriesCount(any(Integer.class));
 		//Should not be called when validation errors
 		verify(publicationSeriesDao, never()).delete(any(PublicationSeries.class));
 	}

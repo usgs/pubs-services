@@ -1,12 +1,8 @@
 package gov.usgs.cida.pubs.validation.nochildren;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.utility.PubsUtils;
@@ -24,9 +20,7 @@ public class NoChildrenValidatorForPublicationSeries implements ConstraintValida
 		boolean rtn = true;
 
 		if (null != value && null != context) {
-			Map<String, Object> filters = new HashMap<>();
-			filters.put(PublicationDao.SERIES_ID_SEARCH, value.getId());
-			Integer cnt = Publication.getPublicationDao().getObjectCount(filters);
+			Integer cnt = Publication.getPublicationDao().getSeriesCount(value.getId());
 			if (0 != cnt) {
 				rtn = false;
 				context.disableDefaultConstraintViolation();

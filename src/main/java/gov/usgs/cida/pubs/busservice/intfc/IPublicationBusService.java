@@ -1,16 +1,15 @@
 package gov.usgs.cida.pubs.busservice.intfc;
 
-import gov.usgs.cida.pubs.domain.Publication;
 import java.util.List;
-import java.util.Map;
+
+import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.query.IFilterParams;
 
 
 public interface IPublicationBusService {
 
-	String getWarehousePage(Publication<?> pub);
+	Integer getObjectCount(IFilterParams filters);
 
-	Integer getObjectCount(Map<String, Object> filters);
-
-	List<Publication<?>> getObjects(Map<String, Object> filters);
+	List<Publication<?>> getObjects(IFilterParams filters);
 
 }

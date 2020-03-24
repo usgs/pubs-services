@@ -25,7 +25,6 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import freemarker.template.Configuration;
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.ConfigurationService;
-import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.dao.ContributorTypeDao;
 import gov.usgs.cida.pubs.dao.CrossRefLogDao;
 import gov.usgs.cida.pubs.dao.intfc.ICrossRefLogDao;
@@ -46,8 +45,6 @@ public class CrossRefBusServiceIT extends BaseIT {
 	@MockBean
 	protected PubsEMailer pubsEMailer;
 	@Autowired
-	protected IPublicationBusService pubBusService;
-	@Autowired
 	@Qualifier("freeMarkerConfiguration")
 	protected Configuration templateConfiguration;
 	@Autowired
@@ -63,8 +60,7 @@ public class CrossRefBusServiceIT extends BaseIT {
 			configurationService,
 			pubsEMailer,
 			crossRefLogDao,
-			templateConfiguration,
-			pubBusService
+			templateConfiguration
 		);
 	}
 

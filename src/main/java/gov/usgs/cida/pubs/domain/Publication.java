@@ -44,7 +44,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	private static IPublicationDao publicationDao;
 
 	@JsonProperty("indexId")
-	@JsonView(View.PW.class)
+	@JsonView({View.PW.class, View.ManagerGrid.class})
 	@Length(min=1, max=100)
 	@NotNull
 	private String indexId;
@@ -55,7 +55,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	private LocalDateTime displayToPublicDate;
 
 	@JsonProperty("publicationYear")
-	@JsonView(View.PW.class)
+	@JsonView({View.PW.class, View.ManagerGrid.class})
 	private String publicationYear;
 
 	@JsonProperty("noYear")
@@ -63,7 +63,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	private Boolean noYear;
 
 	@JsonProperty("publicationType")
-	@JsonView(View.PW.class)
+	@JsonView({View.PW.class, View.ManagerGrid.class})
 	private PublicationType publicationType;
 
 	@JsonProperty("publicationSubtype")
@@ -71,11 +71,11 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	private PublicationSubtype publicationSubtype;
 
 	@JsonProperty("seriesTitle")
-	@JsonView(View.PW.class)
+	@JsonView({View.PW.class, View.ManagerGrid.class})
 	private PublicationSeries seriesTitle;
 
 	@JsonProperty("seriesNumber")
-	@JsonView(View.PW.class)
+	@JsonView({View.PW.class, View.ManagerGrid.class})
 	@Length(min=0, max=100)
 	private String seriesNumber;
 
@@ -85,7 +85,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	private String subseriesTitle;
 
 	@JsonProperty("chapter")
-	@JsonView(View.PW.class)
+	@JsonView({View.PW.class, View.ManagerGrid.class})
 	@Length(min=0, max=255)
 	private String chapter;
 
@@ -100,7 +100,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	private String displayTitle;
 
 	@JsonProperty("title")
-	@JsonView(View.PW.class)
+	@JsonView({View.PW.class, View.ManagerGrid.class})
 	@NotNull
 	@Length(min=1, max=2000)
 	private String title;
@@ -348,11 +348,11 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	private Publication<?> supersededBy;
 
 	@JsonProperty("sourceDatabase")
-	@JsonView(View.MP.class)
+	@JsonView({View.MP.class, View.ManagerGrid.class})
 	private String sourceDatabase;
 
 	@JsonProperty("published")
-	@JsonView(View.MP.class)
+	@JsonView({View.MP.class, View.ManagerGrid.class})
 	private Boolean published;
 
 	@JsonProperty("noUsgsAuthors")
@@ -655,7 +655,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	 * by rank.
 	 */
 	@JsonProperty("contributors")
-	@JsonView(View.PW.class)
+	@JsonView({View.PW.class, View.ManagerGrid.class})
 	public Map<String, List<PublicationContributor<?>>> getContributorsToMap() {
 		if (null != getContributors() && !getContributors().isEmpty()) {
 			Map<String, List<PublicationContributor<?>>> rtn = new HashMap<>();

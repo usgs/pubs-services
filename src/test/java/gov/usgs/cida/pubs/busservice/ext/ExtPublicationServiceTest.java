@@ -3,7 +3,7 @@ package gov.usgs.cida.pubs.busservice.ext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -55,11 +55,11 @@ public class ExtPublicationServiceTest extends BaseTest {
 
 	@Test
 	public void createTest() {
-		when(extPublicationContributorBusService.processPublicationContributors(isNull())).thenReturn(new ValidationResults());
+		when(extPublicationContributorBusService.processPublicationContributors(anyCollection())).thenReturn(new ValidationResults());
 		when(extAffiliationBusService.processCostCenter(any(CostCenter.class))).thenReturn(new CostCenter());
 		when(pubBusService.createObject(any(MpPublication.class))).thenReturn(new MpPublication());
 		extPublicationService.create(MpPublicationDaoIT.buildAPub(12));
-		verify(extPublicationContributorBusService).processPublicationContributors(isNull());
+		verify(extPublicationContributorBusService).processPublicationContributors(anyCollection());
 		verify(extAffiliationBusService).processCostCenter(any(CostCenter.class));
 		verify(pubBusService).createObject(any(MpPublication.class));
 	}

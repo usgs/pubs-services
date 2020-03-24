@@ -1,8 +1,10 @@
 package gov.usgs.cida.pubs.dao.intfc;
 
-import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import java.util.List;
 import java.util.Map;
+
+import gov.usgs.cida.pubs.domain.pw.PwPublication;
+import gov.usgs.cida.pubs.domain.query.IFilterParams;
 
 public interface IPwPublicationDao extends IDao<PwPublication>, IStreamingDao<PwPublication>, IPurgeDao<PwPublication> {
 
@@ -38,4 +40,9 @@ public interface IPwPublicationDao extends IDao<PwPublication>, IStreamingDao<Pw
 	 * Rebuild the materialized view used for the "q" searches
 	 */
 	void refreshTextIndex();
+
+	Integer getCountByFilter(IFilterParams filters);
+
+	List<PwPublication> getByFilter(IFilterParams filters);
+
 }

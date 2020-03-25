@@ -7,10 +7,12 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +31,9 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.accept.ContentNegotiationStrategy;
+import org.springframework.web.context.request.NativeWebRequest;
 
 import freemarker.template.Configuration;
 import gov.usgs.cida.pubs.BaseTest;
@@ -69,6 +73,7 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 	@MockBean(name="contributorTypeDao")
 	private ContributorTypeDao contributorTypeDao;
 
+	private MockHttpServletRequest request;
 
 	@Before
 	public void setup() {
@@ -89,6 +94,8 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 		when(contributorTypeDao.getById(ContributorType.EDITORS)).thenReturn(ContributorTypeDaoIT.getEditor());
 		when(contributorTypeDao.getById(ContributorType.COMPILERS)).thenReturn(ContributorTypeDaoIT.getCompiler());
 		reset(busService);
+
+		request = new MockHttpServletRequest();
 	}
 
 	@Test
@@ -213,4 +220,33 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
 
+	@Test
+	public void determineMimeTypeTest() throws HttpMediaTypeNotAcceptableException {
+		when(contentStrategy.resolveMediaTypes(any(NativeWebRequest.class)))
+				.thenReturn(Arrays.asList(PubsConstantsHelper.MEDIA_TYPE_CSV))
+				.thenReturn(Arrays.asList(PubsConstantsHelper.MEDIA_TYPE_TSV))
+				.thenReturn(Arrays.asList(PubsConstantsHelper.MEDIA_TYPE_XLSX))
+				.thenReturn(Arrays.asList(MediaType.APPLICATION_JSON));
+
+		assertEquals("junk", mvcService.determineMimeType(request, "junk"));
+		verify(contentStrategy, never()).resolveMediaTypes(any(NativeWebRequest.class));
+
+		assertEquals(PubsConstantsHelper.MEDIA_TYPE_JSON_EXTENSION, mvcService.determineMimeType(request, "json"));
+		verify(contentStrategy, never()).resolveMediaTypes(any(NativeWebRequest.class));
+
+		assertEquals(PubsConstantsHelper.MEDIA_TYPE_CSV_EXTENSION, mvcService.determineMimeType(request, null));
+		verify(contentStrategy).resolveMediaTypes(any(NativeWebRequest.class));
+
+		assertEquals(PubsConstantsHelper.MEDIA_TYPE_TSV_EXTENSION, mvcService.determineMimeType(request, null));
+		verify(contentStrategy, times(2)).resolveMediaTypes(any(NativeWebRequest.class));
+
+		assertEquals(PubsConstantsHelper.MEDIA_TYPE_XLSX_EXTENSION, mvcService.determineMimeType(request, null));
+		verify(contentStrategy, times(3)).resolveMediaTypes(any(NativeWebRequest.class));
+
+		assertEquals(PubsConstantsHelper.MEDIA_TYPE_JSON_EXTENSION, mvcService.determineMimeType(request, null));
+		verify(contentStrategy, times(4)).resolveMediaTypes(any(NativeWebRequest.class));
+
+		assertEquals(PubsConstantsHelper.MEDIA_TYPE_JSON_EXTENSION, mvcService.determineMimeType(request, null));
+		verify(contentStrategy, times(5)).resolveMediaTypes(any(NativeWebRequest.class));
+	}
 }

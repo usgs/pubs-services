@@ -87,16 +87,32 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 
 		setHeaders(response);
 
-		try {
-			List<MediaType> mediaTypes = contentStrategy.resolveMediaTypes(new ServletWebRequest(request));
-			if (mediaTypes.contains(MediaType.APPLICATION_JSON)) {
-				filterParams.setMimetype(PubsConstantsHelper.MEDIA_TYPE_JSON_EXTENSION);
-			}
-		} catch (HttpMediaTypeNotAcceptableException e) {
-			LOG.debug(e.getLocalizedMessage());
-		}
+		filterParams.setMimeType(determineMimeType(request, filterParams.getMimeType()));
 
 		streamResults(filterParams, response);
+	}
+
+	protected String determineMimeType(HttpServletRequest request, String mimeType) {
+		if (null != mimeType) {
+			return mimeType;
+		} else {
+			String calculated = PubsConstantsHelper.MEDIA_TYPE_JSON_EXTENSION;
+			try {
+				List<MediaType> mediaTypes = contentStrategy.resolveMediaTypes(new ServletWebRequest(request));
+				if (mediaTypes.contains(PubsConstantsHelper.MEDIA_TYPE_CSV)) {
+					calculated = PubsConstantsHelper.MEDIA_TYPE_CSV_EXTENSION;
+				}
+				if (mediaTypes.contains(PubsConstantsHelper.MEDIA_TYPE_TSV)) {
+					calculated = PubsConstantsHelper.MEDIA_TYPE_TSV_EXTENSION;
+				}
+				if (mediaTypes.contains(PubsConstantsHelper.MEDIA_TYPE_XLSX)) {
+					calculated = PubsConstantsHelper.MEDIA_TYPE_XLSX_EXTENSION;
+				}
+			} catch (HttpMediaTypeNotAcceptableException e) {
+				LOG.debug(e.getLocalizedMessage());
+			}
+			return calculated;
+		}
 	}
 
 	protected void streamResults(PwPublicationFilterParams filters, HttpServletResponse response) {

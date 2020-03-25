@@ -4,11 +4,13 @@ import java.util.Arrays;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import springfox.documentation.annotations.ApiIgnore;
 
+@Component
 public class PwPublicationFilterParams extends PublicationFilterParams {
 	private static final Pattern G_PATTERN = Pattern.compile("^polygon\\(\\((-?\\d+\\.?\\d* -?\\d+\\.?\\d*,){3,}-?\\d+\\.?\\d* -?\\d+\\.?\\d*\\)\\)$");
 	private static ConfigurationService configurationService;

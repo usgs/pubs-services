@@ -25,6 +25,7 @@
                         <given_name>John</given_name>
                         <surname>Author</surname>
                         <suffix>Jr.</suffix>
+                        <ORCID>https://orcid.org/0000-0002-1825-0097</ORCID>
                     </person_name>
                     <organization sequence="additional" contributor_role="author">Evil Corp</organization>
                     <person_name sequence="additional" contributor_role="editor">

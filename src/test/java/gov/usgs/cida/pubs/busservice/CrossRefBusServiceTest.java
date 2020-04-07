@@ -17,7 +17,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
-import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
@@ -50,8 +49,6 @@ import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.dao.intfc.ICrossRefLogDao;
 import gov.usgs.cida.pubs.domain.CrossRefLog;
 import gov.usgs.cida.pubs.domain.Publication;
-import gov.usgs.cida.pubs.domain.PublicationContributorHelper;
-import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.transform.CrossrefTestPubBuilder;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
@@ -61,6 +58,8 @@ import gov.usgs.cida.pubs.validation.xml.XMLValidationException;
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={ConfigurationService.class})
 public class CrossRefBusServiceTest extends BaseTest {
+	protected String UUID_REGEX = "[a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8}";
+	protected String TIMESTAMP_REGEX = "[1-9][0-9]+";
 
 	@Captor
 	protected ArgumentCaptor<String> captor;
@@ -244,25 +243,9 @@ public class CrossRefBusServiceTest extends BaseTest {
 		assertNotNull(xml);
 		assertTrue("should get some XML", 0 < xml.length());
 
-		xml = harmonizeXml(xml);
-
-		String beginContrib = ".*\\<contributors\\>";
-		String endContrib = ".*\\</contributors\\>.*";
-
-		// verify that the author is the first contributor
-		UsgsContributor contributor = (UsgsContributor) PublicationContributorHelper.buildPersonPublicationAuthor().getContributor();
-		assertTrue("Author not first contributor in Crossref",
-				xml.matches(beginContrib + getPersonContributorXmlRegex("first", "author", contributor) + endContrib));
-
-		// verify that the editor was added
-		contributor = (UsgsContributor) PublicationContributorHelper.buildPersonPublicationEditor().getContributor();
-		assertTrue("Editor not in Crossref",
-				xml.matches(beginContrib + ".*" + getPersonContributorXmlRegex("additional", "editor", contributor) + endContrib));
-
-		// verify that the compiler was added as an editor
-		contributor = (UsgsContributor) PublicationContributorHelper.buildPersonPublicationCompiler().getContributor();
-		assertTrue("Compiler not in Crossref or not an editor",
-				xml.matches(beginContrib + ".*" + getPersonContributorXmlRegex("additional", "editor", contributor) + endContrib));
+		xml = replaceUuidAndTimestamp(harmonizeXml(xml));
+		String expectedXml = harmonizeXml(getFile("testResult/goodCrossref.xml"));
+		assertEquals(expectedXml, xml);
 	}
 
 	@Test
@@ -326,13 +309,16 @@ public class CrossRefBusServiceTest extends BaseTest {
 		assertTrue(emailBody.contains(pub.getIndexId()));
 	}
 
-	private String getPersonContributorXmlRegex(String sequence, String role, UsgsContributor contributor) {
-		String format = "<person_name sequence=\"%s\" contributor_role=\"%s\">"
-				+ "<given_name>%s</given_name> <surname>%s</surname>" + " <suffix>%s</suffix> </person_name>";
-		String xml = String.format(format, sequence, role, contributor.getGiven(),
-				contributor.getFamily(), contributor.getSuffix());
-		xml = harmonizeXml(xml);
-		xml = Pattern.quote(xml);
-		return xml;
+	/**
+	 * Replace randomly-generated and time stamp values in xml with test values so that we can compare consistent values.
+	 */
+	private String replaceUuidAndTimestamp(String xml) {
+		String updated = xml;
+		updated = updated.replaceFirst(UUID_REGEX, "fb51e752-ee91-4b4d-a6d8-ec5d20190b80");
+		updated = updated.replaceFirst("<timestamp>" + TIMESTAMP_REGEX + "</timestamp>",
+				"<timestamp>1586278323273</timestamp>");
+
+		return updated;
 	}
+
 }

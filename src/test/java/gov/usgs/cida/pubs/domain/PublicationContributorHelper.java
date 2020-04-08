@@ -70,6 +70,7 @@ public final class PublicationContributorHelper {
 		String family = "";
 		if (typeId == ContributorType.AUTHORS) {
 			family = "Author";
+			contributor.setOrcid("0000-0002-1825-0097");
 		} else if (typeId == ContributorType.EDITORS) {
 			family = "Editor";
 		} else if (typeId == ContributorType.COMPILERS) {

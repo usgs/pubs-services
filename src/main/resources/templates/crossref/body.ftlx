@@ -56,7 +56,7 @@
 										<suffix>${pubContributor.contributor.suffix}</suffix>
 									</#if>
 									<#if pubContributor.contributor.orcid??>
-										<ORCID>https://orcid.org/${pubContributor.contributor.orcid}</ORCID>
+										<ORCID>${ORCID_PREFIX}${pubContributor.contributor.orcid}</ORCID>
 									</#if>
 								</person_name>
 							</#if>

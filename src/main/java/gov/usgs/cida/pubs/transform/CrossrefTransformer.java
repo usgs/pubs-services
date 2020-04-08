@@ -32,6 +32,7 @@ import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationLink;
+import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 
 /**
@@ -165,6 +166,7 @@ public class CrossrefTransformer extends Transformer {
 		model.put("warehousePage", getWarehousePage(pub));
 
 		model.put("pubContributors", getCrossrefContributors(pub));
+		model.put("ORCID_PREFIX", DataNormalizationUtils.ORCID_PREFIX);
 
 		model.put("authorKey", ContributorType.AUTHORS);
 		model.put("editorKey", ContributorType.EDITORS);

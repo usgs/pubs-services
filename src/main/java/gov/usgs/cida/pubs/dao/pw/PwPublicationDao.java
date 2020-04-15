@@ -118,6 +118,6 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 
 	@Override
 	public List<PwPublication> getByFilter(IFilterParams filters) {
-		throw new RuntimeException(PubsConstantsHelper.NOT_IMPLEMENTED);
+		return getSqlSession().selectList(NS + GET_BY_MAP, filters);
 	}
 }

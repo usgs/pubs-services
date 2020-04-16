@@ -436,5 +436,6 @@ public class MpPublicationBusService extends MpBusService<MpPublication> impleme
 
 	protected void deletePwPublication(Integer publicationId) {
 		PwPublication.getDao().purgePublication(publicationId);
+		PwPublication.getDao().refreshTextIndex();
 	}
 }

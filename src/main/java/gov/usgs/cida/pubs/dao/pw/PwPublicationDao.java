@@ -6,10 +6,12 @@ import java.util.Map;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.dao.BaseDao;
 import gov.usgs.cida.pubs.dao.intfc.IPwPublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpDao;
@@ -49,7 +51,8 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 		super(sqlSessionFactory);
 	}
 
-	@Transactional
+	@Transactional(propagation=Propagation.REQUIRES_NEW, isolation=Isolation.READ_UNCOMMITTED)
+	@Async
 	public void refreshTextIndex() {
 		getSqlSession().update(NS + ".refreshTextIndex");
 	}
@@ -107,7 +110,6 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 		delete(MpPublicationCostCenterDao.NS + MpDao.PUBLISH_DELETE, publicationId);
 		delete(MpPublicationLinkDao.NS + MpDao.PUBLISH_DELETE, publicationId);
 		delete(NS + DELETE, publicationId);
-		refreshTextIndex();
 	}
 
 	@Transactional(readOnly = true)

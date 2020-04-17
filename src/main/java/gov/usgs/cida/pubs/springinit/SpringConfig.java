@@ -12,6 +12,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
@@ -27,6 +28,7 @@ import gov.usgs.cida.pubs.utility.CustomStringToStringConverter;
 import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
 
 @Configuration
+@EnableAsync
 public class SpringConfig implements WebMvcConfigurer {
 
 	@Autowired

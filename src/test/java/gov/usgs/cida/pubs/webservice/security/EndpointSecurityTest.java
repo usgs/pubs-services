@@ -2,8 +2,8 @@ package gov.usgs.cida.pubs.webservice.security;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import gov.usgs.cida.pubs.security.UserDetailTestService;
@@ -12,7 +12,7 @@ public class EndpointSecurityTest extends BaseEndpointSecurityTest {
 
 	private RequestPostProcessor requestPostProcessor;
 
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		mockSetup();
 	}

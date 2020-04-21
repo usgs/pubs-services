@@ -1,14 +1,14 @@
 package gov.usgs.cida.pubs.dao;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -180,7 +180,7 @@ public class PersonContributorDaoIT extends BaseIT {
 	public void getObjectCount() {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put(PersonContributorDao.ID_SEARCH, 1);
-		assertEquals("One contrib with id = 1", 1, personContributorDao.getObjectCount(params).intValue());
+		assertEquals(1, personContributorDao.getObjectCount(params).intValue(), "One contrib with id = 1");
 	}
 
 	@Test

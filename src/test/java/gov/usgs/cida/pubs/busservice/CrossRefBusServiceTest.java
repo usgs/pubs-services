@@ -1,9 +1,12 @@
 package gov.usgs.cida.pubs.busservice;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -19,6 +22,7 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
@@ -28,16 +32,14 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
@@ -55,8 +57,7 @@ import gov.usgs.cida.pubs.utility.PubsEMailer;
 import gov.usgs.cida.pubs.validation.xml.XMLValidationException;
 
 @ContextConfiguration(classes = FreeMarkerAutoConfiguration.class)
-@SpringBootTest(webEnvironment=WebEnvironment.NONE,
-	classes={ConfigurationService.class})
+@SpringBootTest
 public class CrossRefBusServiceTest extends BaseTest {
 	protected String UUID_REGEX = "[a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8}";
 	protected String TIMESTAMP_REGEX = "[1-9][0-9]+";
@@ -64,10 +65,8 @@ public class CrossRefBusServiceTest extends BaseTest {
 	@Captor
 	protected ArgumentCaptor<String> captor;
 
-	@Autowired
-	protected ConfigurationService configurationService;
 	@Mock
-	protected ConfigurationService mockConfigurationService;
+	protected ConfigurationService configurationService;
 	@MockBean
 	protected PubsEMailer pubsEMailer;
 	@MockBean
@@ -77,8 +76,27 @@ public class CrossRefBusServiceTest extends BaseTest {
 
 	protected CrossRefBusService busService;
 
-	@Before
-	public void initTest() throws Exception {
+	public static final String CROSSREF_DEPOSITOR_EMAIL = "nobody@usgs.gov";
+	public static final String CROSSREF_PROTOCOL = "https";
+	public static final String CROSSREF_HOST = "test.crossref.org";
+	public static final String CROSSREF_URL = "/servlet/deposit";
+	public static final Integer CROSSREF_PORT = -1;
+	public static final String CROSSREF_USERNAME = "CROSSREF_USERNAME";
+	public static final String CROSSREF_PASSWORD = "CROSSREF_PASSWORD";
+	public static final String CROSSREF_SCHEMA_URL = "http://www.crossref.org/schema/deposit/crossref4.4.0.xsd";
+
+	@BeforeEach
+	public void initTest() {
+		when(configurationService.getCrossrefDepositorEmail()).thenReturn(CROSSREF_DEPOSITOR_EMAIL);
+		when(configurationService.getCrossrefProtocol()).thenReturn(CROSSREF_PROTOCOL);
+		when(configurationService.getCrossrefHost()).thenReturn(CROSSREF_HOST);
+		when(configurationService.getCrossrefUrl()).thenReturn(CROSSREF_URL);
+		when(configurationService.getCrossrefPort()).thenReturn(CROSSREF_PORT);
+		when(configurationService.getCrossrefUser()).thenReturn(CROSSREF_USERNAME);
+		when(configurationService.getCrossrefPwd()).thenReturn(CROSSREF_PASSWORD);
+		when(configurationService.getCrossrefSchemaUrl()).thenReturn(CROSSREF_SCHEMA_URL);
+		when(configurationService.getWarehouseEndpoint()).thenReturn(PUBS_WAREHOUSE_ENDPOINT);
+		when(configurationService.getDisplayHost()).thenReturn(SWAGGER_DISPLAY_HOST);
 		busService = new CrossRefBusService(
 			configurationService,
 			pubsEMailer,
@@ -123,53 +141,39 @@ public class CrossRefBusServiceTest extends BaseTest {
 		String user = "demonstration_username&?%";
 		String password = "demonstration_password&?%";
 
-		when(mockConfigurationService.getCrossrefProtocol()).thenReturn(protocol);
-		when(mockConfigurationService.getCrossrefHost()).thenReturn(host);
-		when(mockConfigurationService.getCrossrefPort()).thenReturn(port);
-		when(mockConfigurationService.getCrossrefUrl()).thenReturn(base);
-		when(mockConfigurationService.getCrossrefUser()).thenReturn(user);
-		when(mockConfigurationService.getCrossrefPwd()).thenReturn(password);
-
-		busService = new CrossRefBusService(
-				mockConfigurationService,
-				pubsEMailer,
-				crossRefLogDao,
-				templateConfiguration
-			);
+		when(configurationService.getCrossrefProtocol()).thenReturn(protocol);
+		when(configurationService.getCrossrefHost()).thenReturn(host);
+		when(configurationService.getCrossrefPort()).thenReturn(port);
+		when(configurationService.getCrossrefUrl()).thenReturn(base);
+		when(configurationService.getCrossrefUser()).thenReturn(user);
+		when(configurationService.getCrossrefPwd()).thenReturn(password);
 
 		String actual = busService.buildCrossRefUrl();
 
-		assertFalse("special user characters should be escaped from url", actual.contains(user));
-		assertFalse("special password characters should be escaped from url", actual.contains(password));
+		assertFalse(actual.contains(user), "special user characters should be escaped from url");
+		assertFalse(actual.contains(password), "special password characters should be escaped from url");
 
 		String encodedUser = URLEncoder.encode(user, "UTF-8");
 		String encodedPassword = URLEncoder.encode(password, "UTF-8");
 
-		assertTrue("special user characters should be escaped from url", actual.contains(encodedUser));
-		assertTrue("special password characters should be escaped from url", actual.contains(encodedPassword));
+		assertTrue(actual.contains(encodedUser), "special user characters should be escaped from url");
+		assertTrue(actual.contains(encodedPassword), "special password characters should be escaped from url");
 	}
 
 	@Test
-	public void verifyCrossrefUrlBuilderDoesNotSwallowURIProblems() throws UnsupportedEncodingException, URISyntaxException {
+	public void verifyCrossrefUrlBuilderDoesNotSwallowURIProblems() throws UnsupportedEncodingException {
 		//do not specify characters that need %-encoding
 		String password = "MockPassword";
-		when(mockConfigurationService.getCrossrefProtocol()).thenReturn("");
-		when(mockConfigurationService.getCrossrefHost()).thenReturn("");
-		when(mockConfigurationService.getCrossrefPort()).thenReturn(-2);
-		when(mockConfigurationService.getCrossrefUrl()).thenReturn("");
-		when(mockConfigurationService.getCrossrefUser()).thenReturn("");
-		when(mockConfigurationService.getCrossrefPwd()).thenReturn(password);
-
-		busService = new CrossRefBusService(
-				mockConfigurationService,
-				pubsEMailer,
-				crossRefLogDao,
-				templateConfiguration
-			);
+		when(configurationService.getCrossrefProtocol()).thenReturn("");
+		when(configurationService.getCrossrefHost()).thenReturn("");
+		when(configurationService.getCrossrefPort()).thenReturn(-2);
+		when(configurationService.getCrossrefUrl()).thenReturn("");
+		when(configurationService.getCrossrefUser()).thenReturn("");
+		when(configurationService.getCrossrefPwd()).thenReturn(password);
 
 		try{
 			busService.buildCrossRefUrl();
-			Assert.fail("Should have raised Exception");
+			fail("Should have raised Exception");
 		} catch (URISyntaxException ex) {
 			assertFalse(ex.getMessage().contains(password));
 			if(null != ex.getCause()){
@@ -179,8 +183,7 @@ public class CrossRefBusServiceTest extends BaseTest {
 	}
 
 	@Test
-	public void performMockCrossRefPost() throws IOException{
-		//whitebox testing of posting to Crossref web services
+	public void performMockCrossRefPost() throws IOException {
 		HttpPost httpPost = mock(HttpPost.class);
 		CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
 		int expectedStatus = 200;
@@ -194,22 +197,21 @@ public class CrossRefBusServiceTest extends BaseTest {
 		assertEquals(expectedStatus, response.getStatusLine().getStatusCode());
 	}
 
-	@Test(expected = IOException.class)
-	public void performFailingCrossRefPost() throws IOException{
-		//whitebox testing to ensure that implementation does not
-		//swallow expected Exception
+	@Test()
+	public void performFailingCrossRefPost() throws IOException {
 		HttpPost httpPost = mock(HttpPost.class);
 		CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
 		when(httpClient.execute(any(), eq(httpPost), any(HttpContext.class))).thenThrow(IOException.class);
-		busService.performCrossRefPost(httpPost, httpClient);
+		assertThrows(IOException.class, () -> {
+			busService.performCrossRefPost(httpPost, httpClient);
+		});
 	}
 
 	@Test
 	public void tetBuildCrossRefPost() throws IOException {
 		String expectedBody = "expectedBody";
-		String expectedUrl = "http://pubs.er.usgs.gov/";
 		String expectedIndexId = "sir123456789";
-		HttpPost post = busService.buildCrossRefPost(expectedBody, expectedUrl, expectedIndexId);
+		HttpPost post = busService.buildCrossRefPost(expectedBody, PUBS_WAREHOUSE_ENDPOINT, expectedIndexId);
 		HttpEntity entity = post.getEntity();
 		assertNotNull(entity);
 		EntityUtils.consume(entity);
@@ -224,8 +226,7 @@ public class CrossRefBusServiceTest extends BaseTest {
 		assertNotNull(content);
 		IOUtils.copy(content, baos);
 		String requestBody = baos.toString(PubsConstantsHelper.DEFAULT_ENCODING);
-		assertNotNull(requestBody);
-		assertTrue(0 < requestBody.length());
+		StringUtils.isNotBlank(requestBody);
 		assertTrue(requestBody.contains(PubsConstantsHelper.DEFAULT_ENCODING));
 		assertTrue(requestBody.contains(PubsConstantsHelper.MEDIA_TYPE_CROSSREF_VALUE));
 		assertTrue(requestBody.contains(expectedBody));
@@ -240,8 +241,7 @@ public class CrossRefBusServiceTest extends BaseTest {
 		//verify that the attempt was logged
 		verify(crossRefLogDao).add(any());
 
-		assertNotNull(xml);
-		assertTrue("should get some XML", 0 < xml.length());
+		assertTrue(StringUtils.isNotBlank(xml), "should get some XML");
 
 		xml = replaceUuidAndTimestamp(harmonizeXml(xml));
 		String expectedXml = harmonizeXml(getFile("testResult/goodCrossref.xml"));
@@ -249,42 +249,52 @@ public class CrossRefBusServiceTest extends BaseTest {
 	}
 
 	@Test
-	public void testHandleGoodResponse() throws HttpException {
+	public void testHandleGoodResponse() {
 		StatusLine statusLine = mock(StatusLine.class);
 		when(statusLine.getStatusCode()).thenReturn(HttpStatus.OK.value());
 		HttpResponse response = mock(HttpResponse.class);
 		when(response.getStatusLine()).thenReturn(statusLine);
-		busService.handleResponse(response);
+		assertDoesNotThrow(() -> {
+			busService.handleResponse(response);
+		});
 	}
 
-	@Test(expected = HttpException.class)
-	public void testHandleNullResponse() throws HttpException {
-		busService.handleResponse(null);
+	@Test()
+	public void testHandleNullResponse() {
+		assertThrows(HttpException.class, () -> {
+			busService.handleResponse(null);
+		});
 	}
 
-	@Test(expected = HttpException.class)
-	public void testEmptyStatusLineResponse() throws HttpException {
+	@Test()
+	public void testEmptyStatusLineResponse() {
 		HttpResponse response = mock(HttpResponse.class);
 		when(response.getStatusLine()).thenReturn(null);
-		busService.handleResponse(response);
+		assertThrows(HttpException.class, () -> {
+			busService.handleResponse(response);
+		});
 	}
 
-	@Test(expected = HttpException.class)
-	public void testHandleNotFoundResponse() throws HttpException {
+	@Test()
+	public void testHandleNotFoundResponse() {
 		StatusLine statusLine = mock(StatusLine.class);
 		when(statusLine.getStatusCode()).thenReturn(HttpStatus.NOT_FOUND.value());
 		HttpResponse response = mock(HttpResponse.class);
 		when(response.getStatusLine()).thenReturn(statusLine);
-		busService.handleResponse(response);
+		assertThrows(HttpException.class, () -> {
+			busService.handleResponse(response);
+		});
 	}
 
-	@Test(expected = HttpException.class)
-	public void testHandleUnauthorizedResponse() throws HttpException {
+	@Test
+	public void testHandleUnauthorizedResponse() {
 		StatusLine statusLine = mock(StatusLine.class);
 		when(statusLine.getStatusCode()).thenReturn(HttpStatus.UNAUTHORIZED.value());
 		HttpResponse response = mock(HttpResponse.class);
 		when(response.getStatusLine()).thenReturn(statusLine);
-		busService.handleResponse(response);
+		assertThrows(HttpException.class, () -> {
+			busService.handleResponse(response);
+		});
 	}
 
 	@Test

@@ -15,8 +15,10 @@ import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,9 +33,10 @@ import gov.usgs.cida.pubs.domain.mp.MpListPublication;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 
+@SpringBootTest(webEnvironment=WebEnvironment.MOCK)
 public class MpListPublicationMvcServiceTest extends BaseTest {
 
-	@MockBean
+	@MockBean(name="mpListPublicationBusService")
 	private IMpListPublicationBusService busService;
 
 	private MockMvc mockMvc;
@@ -43,7 +46,7 @@ public class MpListPublicationMvcServiceTest extends BaseTest {
 	private String expected = "[{\"mpList\":{\"id\":66,\"text\":\"List 66\",\"description\":\"Description 66\",\"type\":\"SPN\"},\"mpPublication\":"
 			+ "{\"id\":12,\"validationErrors\":[],\"text\":\"null - null - null\",\"noYear\":false,\"noUsgsAuthors\":false,\"published\":false}}]";
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		mvcService = new MpListPublicationMvcService(busService);
 		mockMvc = MockMvcBuilders.standaloneSetup(mvcService).build();
@@ -56,11 +59,11 @@ public class MpListPublicationMvcServiceTest extends BaseTest {
 		MvcResult rtn = mockMvc.perform(post("/lists/66/pubs?publicationId=12")
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isCreated())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
-		assertThat(getRtnAsJSONArray(rtn),
+		assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
 				sameJSONArrayAs(new JSONArray(expected)));
 	}
 
@@ -70,11 +73,11 @@ public class MpListPublicationMvcServiceTest extends BaseTest {
 		MvcResult rtn = mockMvc.perform(delete("/lists/66/pubs/12")
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 		
-		assertThat(getRtnAsJSONObject(rtn),
+		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
 				sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
 	}
 

@@ -1,12 +1,12 @@
 package gov.usgs.cida.pubs.busservice;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import javax.validation.Validator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,7 +36,7 @@ public class OutsideAffiliationBusServiceIT extends BaseIT {
 
 	private OutsideAffiliationBusService busService;
 
-	@Before
+	@BeforeEach
 	public void initTest() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		busService = new OutsideAffiliationBusService(validator);

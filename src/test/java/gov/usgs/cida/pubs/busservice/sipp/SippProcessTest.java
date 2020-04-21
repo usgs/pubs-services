@@ -1,9 +1,9 @@
 package gov.usgs.cida.pubs.busservice.sipp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyMap;
@@ -20,8 +20,8 @@ import java.util.List;
 
 import javax.validation.Validator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -93,7 +93,7 @@ public class SippProcessTest extends BaseTest {
 	protected PwPublication pwPublication9;
 	protected PwPublication pwPublication11;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		sippProcess = new SippProcess(extPublicationBusService, pubBusService, sippConversionService, transactionManager);
 		mpPublication9 = (MpPublication) PublicationIT.buildAPub(new MpPublication(), 9);

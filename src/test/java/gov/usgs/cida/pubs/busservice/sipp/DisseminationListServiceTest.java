@@ -1,7 +1,7 @@
 package gov.usgs.cida.pubs.busservice.sipp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.reset;
@@ -10,8 +10,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -42,7 +42,7 @@ public class DisseminationListServiceTest extends BaseTest {
 
 	protected DisseminationListService service;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		service = new DisseminationListService(sippProcess);
 		reset(ipdsBureauApprovalDao, sippProcessLogDao);

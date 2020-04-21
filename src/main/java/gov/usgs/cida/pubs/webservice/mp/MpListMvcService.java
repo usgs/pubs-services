@@ -21,7 +21,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 
 @RestController
-@RequestMapping(value = "lists", produces="application/json")
+@RequestMapping(value = "lists", produces=PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE)
 @ResponseBody 
 public class MpListMvcService extends MvcService<MpList> {
 
@@ -39,5 +39,4 @@ public class MpListMvcService extends MvcService<MpList> {
 		Map<String, Object> filters = new HashMap<String, Object>();
 		return busService.getObjects(filters);
 	}
-	
 }

@@ -28,6 +28,7 @@ public final class PubsConstantsHelper {
 	public static final String MEDIA_TYPE_TSV_VALUE = "text/tab-separated-values";
 	public static final String MEDIA_TYPE_XLSX_VALUE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 	public static final String MEDIA_TYPE_CROSSREF_VALUE = "application/vnd.crossref.deposit+xml";
+	public static final String MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE = "application/json;charset=UTF-8";
 
 	public static final MediaType MEDIA_TYPE_CSV = new MediaType("text", "csv");
 	public static final MediaType MEDIA_TYPE_TSV = new MediaType("text", "tab-separated-values");

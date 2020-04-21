@@ -12,8 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,6 +29,8 @@ import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.dao.mp.MpListDaoIT;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 
+@AutoConfigureMockMvc
+@SpringBootTest(webEnvironment=WebEnvironment.MOCK)
 public class MpListMvcServiceTest extends BaseTest {
 
 	@MockBean
@@ -33,7 +38,7 @@ public class MpListMvcServiceTest extends BaseTest {
 
 	private MockMvc mockMvc;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		MpListMvcService mvcService = new MpListMvcService(busService);
 		mockMvc = MockMvcBuilders.standaloneSetup(mvcService).build();
@@ -44,11 +49,11 @@ public class MpListMvcServiceTest extends BaseTest {
 		when(busService.getObjects(anyMap())).thenReturn(getListOfMpList());
 		MvcResult rtn = mockMvc.perform(get("/lists?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
-		assertThat(getRtnAsJSONArray(rtn),
+		assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
 				sameJSONArrayAs(new JSONArray("[{\"id\":1,\"text\":\"List 1\",\"description\":\"Description 1\",\"type\":\"SPN\"},"
 						+ "{\"id\":2,\"text\":\"List 2\",\"description\":\"Description 2\",\"type\":\"SPN\"}]")));
 	}

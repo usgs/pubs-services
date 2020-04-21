@@ -1,7 +1,7 @@
 package gov.usgs.cida.pubs.webservice.pw;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -19,8 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.entity.mime.MIME;
 import org.apache.ibatis.session.ResultHandler;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -75,7 +75,7 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 
 	private MockHttpServletRequest request;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		mvcService = new PwPublicationMvcService(
 			busService,
@@ -168,7 +168,7 @@ public class PwPublicationMvcServiceTest extends BaseTest {
 		filters.setMimeType(PubsConstantsHelper.MEDIA_TYPE_JSON_EXTENSION);
 		mvcService.streamResults(filters, response);
 		assertEquals(PubsConstantsHelper.DEFAULT_ENCODING, response.getCharacterEncoding());
-		assertEquals(MediaType.APPLICATION_JSON_UTF8_VALUE, response.getContentType());
+		assertEquals(PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE, response.getContentType());
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		verify(busService).stream(eq("pwPublication.getByMap"), any(PwPublicationFilterParams.class), any(ResultHandler.class));
 		verify(busService).getObjectCount(any(PwPublicationFilterParams.class));

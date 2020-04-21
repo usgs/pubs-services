@@ -1,6 +1,6 @@
 package gov.usgs.cida.pubs.webservice.pw;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -11,8 +11,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -48,7 +48,7 @@ public class PwPublicationRssMvcServiceTest extends BaseTest {
 
 	private MockMvc mockMvc;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		PwPublicationRssMvcService mvcRssService = new PwPublicationRssMvcService(busService, configurationService);
 		mockMvc = MockMvcBuilders.standaloneSetup(mvcRssService).build();
@@ -70,7 +70,7 @@ public class PwPublicationRssMvcServiceTest extends BaseTest {
 	public void getRssPubsTest() throws Exception {
 		//Happy Path
 		when(busService.getObjects(any(PwPublicationFilterParams.class))).thenReturn(List.of(PwPublicationTest.buildAPub(1)));
-		
+
 		MvcResult rtn = mockMvc.perform(get("/publication/rss?orderby=dispPubDate").accept(PubsConstantsHelper.MEDIA_TYPE_RSS))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_RSS_VALUE))

@@ -14,8 +14,8 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,10 +24,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import gov.usgs.cida.pubs.BaseTest;
-import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.dao.intfc.IPersonContributorDao;
@@ -36,21 +34,20 @@ import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
 
-@EnableWebMvc
-@AutoConfigureMockMvc(secure=false)
-@SpringBootTest(webEnvironment=WebEnvironment.MOCK,
-	classes={ConfigurationService.class, LookupMvcService.class, PersonContributor.class, Contributor.class})
+@AutoConfigureMockMvc
+@SpringBootTest(webEnvironment=WebEnvironment.MOCK)
 public class LkupMvcServiceTest extends BaseTest {
 
 	@MockBean(name="personContributorDao")
-	IPersonContributorDao personContributorDao;
+	private IPersonContributorDao personContributorDao;
 	@MockBean(name="contributorDao")
-	IDao<Contributor<?>> contributorDao;
-	PersonContributor<?> personContributor;
+	private IDao<Contributor<?>> contributorDao;
+	@SuppressWarnings("unused")
+	private PersonContributor<?> personContributor;
 	@Autowired
-	MockMvc mockMvc;
+	private MockMvc mockMvc;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		personContributor = new UsgsContributor();
 	}
@@ -63,10 +60,11 @@ public class LkupMvcServiceTest extends BaseTest {
 
 		MvcResult rtn = mockMvc.perform(get("/lookup/people?text=kr").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
-		assertThat(getRtnAsJSONArray(rtn),
+
+		assertThat(new JSONArray(rtn.getResponse().getContentAsString()),
 				sameJSONArrayAs(contributorJsonArray(contributor1())).allowingAnyArrayOrdering());
 	}
 

@@ -1,7 +1,7 @@
 package gov.usgs.cida.pubs.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.reset;
@@ -9,8 +9,8 @@ import static org.mockito.Mockito.when;
 
 import javax.validation.Validator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -57,11 +57,10 @@ public class PublicationCostCenterValidationTest extends BaseValidatorTest {
 	//Using MpPublicationCostCenter because it works easier (all validations are the same via PublicationCostCenter...)
 	private MpPublicationCostCenter pubCostCenter;
 
-	@Before
-	@Override
+	@BeforeEach
 	@SuppressWarnings("unchecked")
 	public void setUp() throws Exception {
-		super.setUp();
+		buildContext();
 		pubCostCenter = new MpPublicationCostCenter();
 		costCenter = new CostCenter();
 		costCenter.setId(1);

@@ -1,13 +1,13 @@
 package gov.usgs.cida.pubs.validation.nochildren;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -32,11 +32,10 @@ public class NoChildrenValidatorForAffiliationTest extends BaseValidatorTest {
 	@MockBean(name="personContributorDao")
 	protected PersonContributorDao personContributorDao;
 
-	@Before
-	@Override
+	@BeforeEach
 	@SuppressWarnings("unchecked")
 	public void setUp() throws Exception {
-		super.setUp();
+		buildContext();
 		validator = new NoChildrenValidatorForAffiliation();
 		personContributor = new PersonContributor<>();
 		affiliation = new CostCenter();

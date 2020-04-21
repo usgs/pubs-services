@@ -1,8 +1,8 @@
 package gov.usgs.cida.pubs.validation.mp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.reset;
@@ -15,8 +15,8 @@ import javax.validation.Validator;
 import javax.validation.groups.Default;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -147,11 +147,10 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 	@MockBean(name="publishingServiceCenterDao")
 	protected PublishingServiceCenterDao publishingServiceCenterDao;
 
-	@Before
-	@Override
+	@BeforeEach
 	@SuppressWarnings("unchecked")
 	public void setUp() throws Exception {
-		super.setUp();
+		buildContext();
 		pubType = new PublicationType();
 		pubType.setId(1);
 		largerWorkType = new PublicationType();

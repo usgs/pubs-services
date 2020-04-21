@@ -1,16 +1,16 @@
 package gov.usgs.cida.pubs.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 import gov.usgs.cida.pubs.ConfigurationService;
 
-@Configuration
-public class UserDetailTestService { //implements UserDetailsService {
+@TestConfiguration
+public class UserDetailTestService {
 	@Autowired
 	private ConfigurationService configurationService;
 
@@ -21,6 +21,7 @@ public class UserDetailTestService { //implements UserDetailsService {
 
 	@Bean
 	public UserDetailsService userDetailsService() {
+		//This deprecated method is safe to use here. See the method's javadoc for full explanation.
 		User.UserBuilder users = User.withDefaultPasswordEncoder();
 		InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
 		manager.createUser(users.username("user").password("password").roles("USER").build());

@@ -1,13 +1,13 @@
 package gov.usgs.cida.pubs.busservice;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import javax.validation.Validator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,7 +45,7 @@ public class PersonContributorBusServiceIT extends BaseIT {
 
 	private PersonContributorBusService busService;
 
-	@Before
+	@BeforeEach
 	public void initTest() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		busService = new PersonContributorBusService(validator);
@@ -61,7 +61,7 @@ public class PersonContributorBusServiceIT extends BaseIT {
 		person.setOrcid("http://orcid.org/0000-0002-1825-0097");
 		person.setPreferred(true);
 		busService.createObject(person, ManagerChecks.class);
-		assertTrue("Expected isValid() true, got validation errors: " + person.getValidationErrors(), person.isValid());
+		assertTrue(person.isValid(), "Expected isValid() true, got validation errors: " + person.getValidationErrors());
 		assertNotNull(person.getId());
 		UsgsContributor persisted = (UsgsContributor) Contributor.getDao().getById(person.getId());
 		assertDaoTestResults(UsgsContributor.class, person, persisted, ContributorDaoIT.IGNORE_PROPERTIES_PERSON, true, true);
@@ -91,7 +91,7 @@ public class PersonContributorBusServiceIT extends BaseIT {
 		person.setPreferred(true);
 		busService.createObject(person, ManagerChecks.class);
 
-		assertTrue("Expected id not to be set: " + person.getId(), person.getId() == null || person.getId() == 0);
+		assertTrue(person.getId() == null || person.getId() == 0, "Expected id not to be set: " + person.getId());
 
 		boolean hasValidationMess = false;
 		String expectedMess = PersonContributor.ORCID_VALIDATION_MESS.replace("${validatedValue}", person.getOrcid());
@@ -104,9 +104,9 @@ public class PersonContributorBusServiceIT extends BaseIT {
 			}
 		}
 		String testMess = "Expected validation error message: " + expectedMess + " got: " + validationMessage;
-		assertTrue(testMess, hasValidationMess);
+		assertTrue(hasValidationMess, testMess);
 
-		assertFalse("Expected isValid() to be false", person.isValid());
+		assertFalse(person.isValid(), "Expected isValid() to be false");
 	}
 
 }

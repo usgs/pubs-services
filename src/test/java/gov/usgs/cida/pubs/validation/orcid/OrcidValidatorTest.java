@@ -1,10 +1,10 @@
 package gov.usgs.cida.pubs.validation.orcid;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 
@@ -12,9 +12,9 @@ public class OrcidValidatorTest extends BaseValidatorTest {
 
 	protected OrcidValidator validator;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
-		super.setUp();
+		buildContext();
 		validator = new OrcidValidator();
 	}
 

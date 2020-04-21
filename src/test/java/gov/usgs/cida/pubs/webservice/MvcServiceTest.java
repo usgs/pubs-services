@@ -1,10 +1,10 @@
 package gov.usgs.cida.pubs.webservice;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -77,13 +77,13 @@ public class MvcServiceTest {
 
 		assertTrue(Arrays.equals(id, (Integer[]) filters.get(BaseDao.ID_SEARCH)));
 		assertEquals("text:* & to:* & search:*", (String) filters.get(BaseDao.TEXT_SEARCH));
-		assertTrue("Expected corporation to be true", (Boolean) filters.get(CorporateContributorDao.CORPORATION));
-		assertFalse("Expected usgs to be false", (Boolean) filters.get(PersonContributorDao.USGS));
+		assertTrue((Boolean) filters.get(CorporateContributorDao.CORPORATION), "Expected corporation to be true");
+		assertFalse((Boolean) filters.get(PersonContributorDao.USGS), "Expected usgs to be false");
 		assertTrue(Arrays.equals(family, (Object[]) filters.get(PersonContributorDao.FAMILY)));
 		assertTrue(Arrays.equals(given, (Object[]) filters.get(PersonContributorDao.GIVEN)));
 		assertTrue(Arrays.equals(email, (Object[]) filters.get(PersonContributorDao.EMAIL)));
 		assertTrue(Arrays.equals(orcid, (Object[]) filters.get(PersonContributorDao.ORCID)));
-		assertTrue("Expected perferred to be true", (Boolean) filters.get(PersonContributorDao.PREFERRED));
+		assertTrue((Boolean) filters.get(PersonContributorDao.PREFERRED), "Expected perferred to be true");
 	}
 
 	@Test

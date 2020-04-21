@@ -6,8 +6,8 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -32,7 +32,7 @@ public class AuthControllerTest extends BaseSecurityTest {
 	@MockBean(name="mpPublicationBusService")
 	protected IMpPublicationBusService mpPublicationBusService;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		requestPostProcessor = bearerToken(UserDetailTestService.AUTHENTICATED_USER);
 	}

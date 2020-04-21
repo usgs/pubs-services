@@ -1,8 +1,8 @@
 package gov.usgs.cida.pubs.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
@@ -10,8 +10,8 @@ import static org.mockito.Mockito.when;
 import javax.validation.Validator;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -64,11 +64,10 @@ public class PublicationLinkValidationTest extends BaseValidatorTest {
 	//Using MpPublicationLink because it works easier (all validations are the same via PublicationLink...)
 	private MpPublicationLink pubLink;
 
-	@Before
-	@Override
+	@BeforeEach
 	@SuppressWarnings("unchecked")
 	public void setUp() throws Exception {
-		super.setUp();
+		buildContext();
 		pubLink = new MpPublicationLink();
 		linkType = new LinkType();
 		linkType.setId(1);

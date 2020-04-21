@@ -1,13 +1,77 @@
-# This file is mostly empty to override mostly all of the environment for the regular JUnit tests.
+spring:
+  datasource:
+    url: jdbc:postgresql://${PUBS_DB_HOST}:${PUBS_DB_PORT}/pubs_db_name
+    username: user_name
+    password: changeMe
+    hikari:
+      auto-commit: false
 
-logging.config: classpath:logback-test.xml
-security.oauth2.resource.jwk.keySetUri: file://abc.txt
-pubs:
-  authorities:
-    admin: ADMIN_AUTHORITY
-    authorized: SPN_AUTHORITY, PUBS_AUTHORITY
-    spn: SPN_AUTHORITY
+sipp:
+  dissemination:
+    schedule: "-"
+    list-url: http://localhost
+    daysLastDisseminated: 1
+  infoProduct:
+    url: http://localhost
 
 spn:
   image:
-    url: ${SPN_IMAGE_URL:https://pubs.usgs.gov/xml_test/Images/}
+    url: https://pubs.usgs.gov/xml_test/Images/
+
+crossref:
+  protocol: https
+  host: test.crossref.org
+  url: /servlet/deposit
+  port: -1
+  username: ${CROSSREF_USERNAME}
+  password: ${CROSSREF_PASSWORD}
+  schema:
+    url: http://www.crossref.org/schema/deposit/crossref4.4.0.xsd
+  depositorEmail: nobody@usgs.gov
+
+swagger:
+  display:
+    host: localhost:8444
+    path: /pubs-services
+    protocol: https
+
+pubs:
+  lockTimeoutHours: 1
+  warehouseEndpoint: http://pubs.er.usgs.gov
+  emailList: changeMe
+  mailHost: changeMe
+  authorities:
+    authorized: SPN_AUTHORITY, PUBS_AUTHORITY
+    spn: SPN_AUTHORITY
+    admin: ADMIN_AUTHORITY
+
+security:
+  oauth2:
+    resource:
+      id: changeMe
+      jwk:
+        keySetUri: file://abc.txt
+
+management:
+  endpoints:
+    enabled-by-default: false
+    jmx:
+      exposure:
+        exclude: "*"
+    web:
+      base-path: /about
+      exposure:
+        include:
+        - info
+        - health
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: true
+      show-details: never
+
+PUBS_SCHEMA_NAME: pubs_schema
+
+PUBS_OWNER_USERNAME: owner_name
+PUBS_OWNER_PASSWORD: changeMe

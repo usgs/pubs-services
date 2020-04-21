@@ -1,11 +1,11 @@
 package gov.usgs.cida.pubs.busservice.mp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -15,8 +15,8 @@ import java.util.Optional;
 
 import javax.validation.Validator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -136,7 +136,7 @@ public class MpPublicationBusServiceIT extends BaseIT {
 
 	private MpPublicationBusService busService;
 
-	@Before
+	@BeforeEach
 	public void initTest() throws Exception {
 		busService = new MpPublicationBusService(validator, configurationService, crossRefBusService, ccBusService, linkBusService, contributorBusService);
 	}
@@ -179,7 +179,7 @@ public class MpPublicationBusServiceIT extends BaseIT {
 
 	@Test
 	public void testCreateNull() {
-		assertNull("null should return null", busService.createObject(null));
+		assertNull(busService.createObject(null), "null should return null");
 	}
 
 	@Test
@@ -187,8 +187,8 @@ public class MpPublicationBusServiceIT extends BaseIT {
 		MpPublication mpPub = new MpPublication();
 		MpPublication newPub = busService.createObject(mpPub);
 		ValidationResults validationErrors = newPub.getValidationErrors();
-		assertFalse("Should be invalid", validationErrors.isValid());
-		assertEquals("Two required fields", 2, validationErrors.getValidationErrors().size());
+		assertFalse(validationErrors.isValid(), "Should be invalid");
+		assertEquals(2, validationErrors.getValidationErrors().size(), "Two required fields");
 		for (ValidatorResult result : validationErrors.getValidationErrors()) {
 			assertEquals(SeverityLevel.FATAL, result.getLevel());
 			assertEquals(BaseValidatorTest.NOT_NULL_MSG, result.getMessage());
@@ -206,7 +206,7 @@ public class MpPublicationBusServiceIT extends BaseIT {
 		MpPublication newPub = busService.createObject(mpPub);
 		ValidationResults validationErrors = newPub.getValidationErrors();
 
-		assertTrue("Should be valid", validationErrors.isValid());
+		assertTrue(validationErrors.isValid(), "Should be valid");
 		assertNotNull(newPub.getId());
 		assertEquals("newPubTitle", newPub.getTitle());
 		assertEquals("zeroToFifteen", newPub.getIpdsId());
@@ -214,7 +214,7 @@ public class MpPublicationBusServiceIT extends BaseIT {
 
 	@Test
 	public void testUpdateNull() {
-		assertNull("null should return null", busService.updateObject(null));
+		assertNull(busService.updateObject(null), "null should return null");
 	}
 
 	@Test
@@ -224,12 +224,12 @@ public class MpPublicationBusServiceIT extends BaseIT {
 		
 		MpPublication firstUpdated = busService.updateObject(original);
 		assertDaoTestResults(MpPublication.class, original, firstUpdated, IGNORE_PROPERTIES, true, true);
-		assertEquals("Ipdsid should be set", "firstSetIpds", firstUpdated.getIpdsId());
+		assertEquals("firstSetIpds", firstUpdated.getIpdsId(), "Ipdsid should be set");
 		
 		firstUpdated.setIpdsId("updatedIPDS");
 		MpPublication newUpdate = busService.updateObject(firstUpdated);
 		assertDaoTestResults(MpPublication.class, firstUpdated, newUpdate, IGNORE_PROPERTIES, true, true);
-		assertEquals("Ipdsid should be updated", "updatedIPDS", newUpdate.getIpdsId());
+		assertEquals("updatedIPDS", newUpdate.getIpdsId(), "Ipdsid should be updated");
 	}
 
 	@Test
@@ -237,14 +237,14 @@ public class MpPublicationBusServiceIT extends BaseIT {
 		MpPublication original = MpPublicationDaoIT.addAPub(MpPublication.getDao().getNewProdId());
 		original.setIpdsId(null);
 		MpPublication.getDao().update(original);
-		assertNull("IpdsId should be null", original.getIpdsId());
+		assertNull(original.getIpdsId(), "IpdsId should be null");
 
 		MpPublication.getDao().publishToPw(original.getId());
 
 		original.setIpdsId("firstSetIpds");
 		MpPublication firstUpdated = busService.updateObject(original);
 		assertDaoTestResults(MpPublication.class, original, firstUpdated, IGNORE_PROPERTIES, true, true);
-		assertEquals("IpdsId should be set", "firstSetIpds", firstUpdated.getIpdsId());
+		assertEquals("firstSetIpds", firstUpdated.getIpdsId(), "IpdsId should be set");
 	}
 
 	@Test
@@ -258,7 +258,7 @@ public class MpPublicationBusServiceIT extends BaseIT {
 		original.setIpdsId("updateIpds");
 		MpPublication firstUpdated = busService.updateObject(original);
 		assertDaoTestResults(MpPublication.class, original, firstUpdated, IGNORE_PROPERTIES, true, true);
-		assertEquals("IpdsId should not be changed", published.getIpdsId(), firstUpdated.getIpdsId());
+		assertEquals(published.getIpdsId(), firstUpdated.getIpdsId(), "IpdsId should not be changed");
 	}
 	
 	@Test

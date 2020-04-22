@@ -227,7 +227,7 @@ public class CrossRefBusServiceTest extends BaseTest {
 		assertNotNull(content);
 		IOUtils.copy(content, baos);
 		String requestBody = baos.toString(PubsConstantsHelper.DEFAULT_ENCODING);
-		StringUtils.isNotBlank(requestBody);
+		assertTrue(StringUtils.isNotBlank(requestBody));
 		assertTrue(requestBody.contains(PubsConstantsHelper.DEFAULT_ENCODING));
 		assertTrue(requestBody.contains(PubsConstantsHelper.MEDIA_TYPE_CROSSREF_VALUE));
 		assertTrue(requestBody.contains(expectedBody));

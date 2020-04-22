@@ -10,8 +10,8 @@ import java.net.URISyntaxException;
 import org.apache.http.HttpException;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -54,7 +54,7 @@ public class CrossRefBusServiceIT extends BaseIT {
 
 	protected CrossRefBusService busService;
 
-	@Before
+	@BeforeEach
 	public void initTest() throws Exception {
 		busService = new CrossRefBusService(
 			configurationService,

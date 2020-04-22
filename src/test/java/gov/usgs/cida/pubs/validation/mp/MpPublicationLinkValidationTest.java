@@ -1,12 +1,12 @@
 package gov.usgs.cida.pubs.validation.mp;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import javax.validation.Validator;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -34,9 +34,9 @@ public class MpPublicationLinkValidationTest extends BaseValidatorTest {
 	public Validator validator;
 	protected MpPublicationLink pubLink;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
-		super.setUp();
+		buildContext();
 		pubLink = new MpPublicationLink();
 		pubLink.setUrl("http://usgs.gov");
 		pubLink.setLinkType(new LinkType());

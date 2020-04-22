@@ -1,7 +1,7 @@
 package gov.usgs.cida.pubs.validation.mp.unique;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
@@ -11,8 +11,8 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -36,9 +36,9 @@ public class UniqueKeyValidatorForMpPublicationContributorTest extends BaseValid
 	@MockBean(name="mpPublicationContributorDao")
 	protected MpPublicationContributorDao mpPublicationContributorDao;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
-		super.setUp();
+		buildContext();
 		validator = new UniqueKeyValidatorForMpPublicationContributor();
 		mpPubContributor = new MpPublicationContributor();
 		contributor = new Contributor<>();

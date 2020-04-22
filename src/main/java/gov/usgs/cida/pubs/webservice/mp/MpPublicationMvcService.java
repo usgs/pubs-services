@@ -42,7 +42,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 
 @RestController
-@RequestMapping(value = "mppublications", produces="application/json")
+@RequestMapping(value = "mppublications", produces=PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE)
 public class MpPublicationMvcService extends MvcService<MpPublication> {
 	private static final Logger LOG = LoggerFactory.getLogger(MpPublicationMvcService.class);
 
@@ -157,7 +157,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 	@Transactional
 	public @ResponseBody MpPublication updateMpPublication(@RequestBody MpPublication pub, @PathVariable String publicationId, HttpServletResponse response) {
 		setHeaders(response);
-	
+
 		MpPublication rtn = pub;
 		ValidatorResult idNotMatched = PubsUtils.validateIdsMatch(publicationId, pub);
 

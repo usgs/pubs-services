@@ -1,13 +1,13 @@
 package gov.usgs.cida.pubs.busservice.ext;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -40,7 +40,7 @@ public class ExtPublicationContributorServiceIT extends BaseIT {
 
 	private ExtPublicationContributorService extPublicationContributorService;
 
-	@Before
+	@BeforeEach
 	public void initTest() throws Exception {
 		extPublicationContributorService = new ExtPublicationContributorService(extAffiliationBusService, personContributorBusService);
 	}
@@ -52,7 +52,7 @@ public class ExtPublicationContributorServiceIT extends BaseIT {
 
 		contributor = extPublicationContributorService.getByName("outerfamily", "outergiven");
 		assertNotNull(contributor);
-		assertNotNull("Expected id to be set", contributor.getId());
+		assertNotNull(contributor.getId(), "Expected id to be set");
 		assertEquals(3, contributor.getId().intValue());
 	}
 
@@ -63,7 +63,7 @@ public class ExtPublicationContributorServiceIT extends BaseIT {
 
 		contributor = extPublicationContributorService.getUsgsContributorByOrcid("https://orcid.org/0000-0000-0000-0004");
 		assertNotNull(contributor);
-		assertNotNull("Expected id to be set", contributor.getId());
+		assertNotNull(contributor.getId(), "Expected id to be set");
 		assertEquals(4, contributor.getId().intValue());
 		assertTrue(contributor.isPreferred());
 		assertTrue(contributor.isUsgs());
@@ -80,7 +80,7 @@ public class ExtPublicationContributorServiceIT extends BaseIT {
 
 		contributor = extPublicationContributorService.getOutsideContributorByOrcid("0000-0000-0000-0001");
 		assertNotNull(contributor);
-		assertNotNull("Expected id to be set", contributor.getId());
+		assertNotNull(contributor.getId(), "Expected id to be set");
 		assertEquals(3, contributor.getId().intValue());
 		assertFalse(contributor.isPreferred());
 		assertFalse(contributor.isUsgs());

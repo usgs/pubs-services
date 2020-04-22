@@ -1,7 +1,7 @@
 package gov.usgs.cida.pubs.webservice;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.when;
@@ -16,9 +16,10 @@ import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -42,7 +43,7 @@ public class PublicationSeriesMvcServiceTest extends BaseTest {
 
 	private PublicationSeriesMvcService mvcService;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		mvcService = new PublicationSeriesMvcService(busService);
 		mockMvc = MockMvcBuilders.standaloneSetup(mvcService).build();
@@ -56,11 +57,11 @@ public class PublicationSeriesMvcServiceTest extends BaseTest {
 
 		MvcResult rtn = mockMvc.perform(get("/publicationSeries?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
-		assertThat(getRtnAsJSONObject(rtn),
+		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
 				sameJSONObjectAs(new JSONObject("{\"pageSize\":\"25\",\"pageRowStart\":\"0\",\"pageNumber\":null,\"recordCount\":12,\"records\":["
 						+ PublicationSeriesTest.DEFAULT_AS_JSON + "]}")));
 	}
@@ -71,11 +72,11 @@ public class PublicationSeriesMvcServiceTest extends BaseTest {
 		when(busService.getObject(1)).thenReturn(PublicationSeriesTest.buildAPubSeries(13));
 		MvcResult rtn = mockMvc.perform(get("/publicationSeries/1?mimetype=json").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
-		assertThat(getRtnAsJSONObject(rtn),
+		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
 				sameJSONObjectAs(new JSONObject(PublicationSeriesTest.DEFAULT_AS_JSON)));
 
 		//PublicationSeries not found
@@ -83,7 +84,7 @@ public class PublicationSeriesMvcServiceTest extends BaseTest {
 				.andExpect(status().isNotFound())
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
-		assertEquals(0, rtn.getResponse().getContentAsString().length());
+		assertTrue(StringUtils.isBlank(rtn.getResponse().getContentAsString()));
 	}
 
 	@Test
@@ -92,11 +93,11 @@ public class PublicationSeriesMvcServiceTest extends BaseTest {
 		MvcResult rtn = mockMvc.perform(post("/publicationSeries").content(PublicationSeriesTest.DEFAULT_AS_JSON).contentType(MediaType.APPLICATION_JSON)
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isCreated())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
-		assertThat(getRtnAsJSONObject(rtn),
+		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
 				sameJSONObjectAs(new JSONObject(PublicationSeriesTest.DEFAULT_MAINT_AS_JSON)));
 	}
 
@@ -106,11 +107,11 @@ public class PublicationSeriesMvcServiceTest extends BaseTest {
 		MvcResult rtn = mockMvc.perform(post("/publicationSeries").content(PublicationSeriesTest.DEFAULT_AS_JSON).contentType(MediaType.APPLICATION_JSON)
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isBadRequest())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
-		assertThat(getRtnAsJSONObject(rtn),
+		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
 				sameJSONObjectAs(new JSONObject(PublicationSeriesTest.DEFAULT_WITH_ERRORS_AS_JSON)));
 	}
 
@@ -120,11 +121,11 @@ public class PublicationSeriesMvcServiceTest extends BaseTest {
 		MvcResult rtn = mockMvc.perform(put("/publicationSeries/13").content(PublicationSeriesTest.DEFAULT_AS_JSON).contentType(MediaType.APPLICATION_JSON)
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
-		assertThat(getRtnAsJSONObject(rtn),
+		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
 				sameJSONObjectAs(new JSONObject(PublicationSeriesTest.DEFAULT_MAINT_AS_JSON)));
 	}
 
@@ -133,12 +134,12 @@ public class PublicationSeriesMvcServiceTest extends BaseTest {
 		MvcResult rtn = mockMvc.perform(put("/publicationSeries/30").content(PublicationSeriesTest.DEFAULT_AS_JSON).contentType(MediaType.APPLICATION_JSON)
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isBadRequest())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
 		String expectedJSON = PublicationSeriesTest.DEFAULT_AS_JSON.replaceFirst("}$", "," + PubsUtilitiesTest.ID_NOT_MATCH_VALIDATION_JSON + "}");
-		assertThat(getRtnAsJSONObject(rtn),
+		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
 				sameJSONObjectAs(new JSONObject(expectedJSON)));
 	}
 
@@ -148,10 +149,10 @@ public class PublicationSeriesMvcServiceTest extends BaseTest {
 		when(busService.deleteObject(1)).thenReturn(new ValidationResults());
 		MvcResult rtn = mockMvc.perform(delete("/publicationSeries/1").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE))
 		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
-		assertThat(getRtnAsJSONObject(rtn),
+		assertThat(new JSONObject(rtn.getResponse().getContentAsString()),
 				sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
 	}
 

@@ -77,7 +77,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		this.contentStrategy = contentStrategy;
 	}
 
-	@GetMapping(produces={MediaType.APPLICATION_JSON_VALUE,
+	@GetMapping(produces={PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE,
 			PubsConstantsHelper.MEDIA_TYPE_XLSX_VALUE, PubsConstantsHelper.MEDIA_TYPE_CSV_VALUE, PubsConstantsHelper.MEDIA_TYPE_TSV_VALUE})
 	@JsonView(View.PW.class)
 	public void getStreamPubs(HttpServletResponse response,
@@ -145,7 +145,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 				//Let json be the default
 				searchResults = getCountAndPaging(filters);
 				statement = statement + PwPublicationDao.GET_BY_MAP;
-				response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+				response.setContentType(PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE);
 				transformer = new JsonTransformer(response.getOutputStream(), searchResults);
 				break;
 			}
@@ -169,7 +169,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		return results;
 	}
 
-	@GetMapping(value="{indexId}", produces={MediaType.APPLICATION_JSON_VALUE})
+	@GetMapping(value="{indexId}", produces=PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE)
 	@JsonView(View.PW.class)
 	public PwPublication getPwPublication(HttpServletRequest request, HttpServletResponse response, @PathVariable("indexId") String indexId)
 			throws IOException {

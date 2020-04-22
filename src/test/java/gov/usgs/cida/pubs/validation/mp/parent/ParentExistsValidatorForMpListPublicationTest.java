@@ -1,15 +1,15 @@
 package gov.usgs.cida.pubs.validation.mp.parent;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -39,10 +39,10 @@ public class ParentExistsValidatorForMpListPublicationTest extends BaseValidator
 	@MockBean(name="mpListDao")
 	protected MpListDao mpListDao;
 
-	@Before
+	@BeforeEach
 	@SuppressWarnings("unchecked")
 	public void setUp() throws Exception {
-		super.setUp();
+		buildContext();
 		validator = new ParentExistsValidatorForMpListPublication();
 		mpListPublication = new MpListPublication();
 		mpPublication = new MpPublication();

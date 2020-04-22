@@ -1,10 +1,10 @@
 package gov.usgs.cida.pubs.dao;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -115,9 +115,9 @@ public class ContributorDaoIT extends BaseIT {
 				fail("Got wrong contributor" + contributor.getId());
 			}
 		}
-		assertTrue("Got 1", got1);
-		assertTrue("Got 11", got11);
-		assertTrue("Got 21", got21);
+		assertTrue(got1, "Got 1");
+		assertTrue(got11, "Got 11");
+		assertTrue(got21, "Got 21");
 
 		filters.clear();
 		filters.put(ContributorDao.TEXT_SEARCH, "us" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX + MvcService.TEXT_SEARCH_AND + "ge" + MvcService.TEXT_SEARCH_STARTS_WITH_SUFFIX);
@@ -210,8 +210,9 @@ public class ContributorDaoIT extends BaseIT {
 		assertEquals(CORPORATE_CONTRIBUTOR_CNT, contributors.size());
 		List<Integer> ids = getIds(contributors);
 		List<Integer> expectedIds = List.of(2, 60);
-		assertTrue(String.format("corporation true query expected ids %s, got %s", toString(expectedIds), toString(ids)),
-				ids.equals(expectedIds));
+		assertTrue(ids.equals(expectedIds),
+				String.format("corporation true query expected ids %s, got %s", toString(expectedIds), toString(ids))
+				);
 
 		filters.put(ContributorDao.TEXT_SEARCH, "us:*");
 		contributors = contributorDao.getByMap(filters);
@@ -229,8 +230,9 @@ public class ContributorDaoIT extends BaseIT {
 		assertEquals(3, contributors.size());
 		List<Integer> ids = getIds(contributors);
 		List<Integer> expectedIds = List.of(1, 4, 44);
-		assertTrue(String.format("family query expected ids %s, got %s", toString(expectedIds), toString(ids)),
-				ids.equals(expectedIds));
+		assertTrue(ids.equals(expectedIds),
+				String.format("family query expected ids %s, got %s", toString(expectedIds), toString(ids))
+				);
 
 		filters.clear();
 		filters.put(PersonContributorDao.GIVEN, new String[]{"con", "1"});
@@ -238,8 +240,9 @@ public class ContributorDaoIT extends BaseIT {
 		assertEquals(4, contributors.size());
 		ids = getIds(contributors);
 		expectedIds = List.of(1, 14, 51, 54);
-		assertTrue(String.format("given query expected ids %s, got %s", toString(expectedIds), toString(ids)),
-				ids.equals(expectedIds));
+		assertTrue(ids.equals(expectedIds),
+				String.format("given query expected ids %s, got %s", toString(expectedIds), toString(ids))
+				);
 
 		filters.clear();
 		filters.put(PersonContributorDao.EMAIL, new String[]{"family14@usgs.goy", "con"});
@@ -247,8 +250,9 @@ public class ContributorDaoIT extends BaseIT {
 		assertEquals(4, contributors.size());
 		ids = getIds(contributors);
 		expectedIds = List.of(1, 11, 14, 21);
-		assertTrue(String.format("email query expected ids %s, got %s", toString(expectedIds), toString(ids)),
-				ids.equals(expectedIds));
+		assertTrue(ids.equals(expectedIds),
+				String.format("email query expected ids %s, got %s", toString(expectedIds), toString(ids))
+				);
 
 		filters.clear();
 		filters.put(PersonContributorDao.ORCID, new String[]{"0000-0000-0000-0004", "0000-0000-0000-0104"});
@@ -256,8 +260,9 @@ public class ContributorDaoIT extends BaseIT {
 		ids = getIds(contributors);
 		assertEquals(6, contributors.size());
 		expectedIds = List.of(4, 14, 24, 34, 44, 54);
-		assertTrue(String.format("orcid query expected ids %s, got %s", toString(expectedIds), toString(ids)),
-				ids.equals(expectedIds));
+		assertTrue(ids.equals(expectedIds),
+				String.format("orcid query expected ids %s, got %s", toString(expectedIds), toString(ids))
+				);
 	}
 
 	@Test

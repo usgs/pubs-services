@@ -1,14 +1,14 @@
 package gov.usgs.cida.pubs.busservice.mp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.validation.Validator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -75,7 +75,7 @@ public class MpPublicationBusServicePurgeIT extends BaseIT {
 
 	private MpPublicationBusService busService;
 
-	@Before
+	@BeforeEach
 	public void initTest() throws Exception {
 		busService = new MpPublicationBusService(validator, configurationService, crossRefBusService, ccBusService, linkBusService, contributorBusService);
 	}

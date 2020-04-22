@@ -1,7 +1,7 @@
 package gov.usgs.cida.pubs.busservice.ext;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Mockito.reset;
@@ -14,8 +14,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -47,7 +47,7 @@ public class ExtPublicationServiceTest extends BaseTest {
 	protected List<Contributor<?>> emptyContributorList = new ArrayList<>();
 	protected PersonContributor<?> personContributor = new PersonContributor<>();
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		extPublicationService = new ExtPublicationService(extAffiliationBusService, extPublicationContributorBusService, pubBusService);
 		reset(extAffiliationBusService, extPublicationContributorBusService, pubBusService);

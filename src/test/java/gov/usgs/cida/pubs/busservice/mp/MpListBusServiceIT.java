@@ -1,20 +1,17 @@
 package gov.usgs.cida.pubs.busservice.mp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.security.test.context.support.ReactorContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
-import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -38,8 +35,6 @@ import gov.usgs.cida.pubs.utility.PubsUtilitiesTest;
 	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
 	@DatabaseSetup("classpath:/testData/dataset.xml")
 })
-//Needed to use @WithMockUser - @SecurityTestExecutionListeners and @ContextConfiguration interfere with @SpringBootTest
-@TestExecutionListeners({WithSecurityContextTestExecutionListener.class, ReactorContextTestExecutionListener.class})
 public class MpListBusServiceIT extends BaseIT {
 
 	@Autowired

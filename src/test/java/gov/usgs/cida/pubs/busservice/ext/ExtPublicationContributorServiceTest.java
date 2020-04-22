@@ -1,8 +1,8 @@
 package gov.usgs.cida.pubs.busservice.ext;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyMap;
@@ -18,8 +18,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -59,7 +59,7 @@ public class ExtPublicationContributorServiceTest extends BaseTest {
 
 	protected ArgumentCaptor<Class<?>> varargCapture;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		extPublicationContributorService = new ExtPublicationContributorService(extAffiliationBusService, personContributorBusService);
 		reset(contributorDao, extAffiliationBusService, personContributorBusService, personContributorDao);

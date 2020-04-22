@@ -1,13 +1,13 @@
 package gov.usgs.cida.pubs.utility;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.test.context.annotation.SecurityTestExecutionListeners;
@@ -28,11 +28,12 @@ public class PubsUtilitiesTest extends BaseTest {
 
 	public static final String SPN_AUTHORITY = "SPN_AUTHORITY";
 	public static final String AUTHORIZED_AUTHORITY = "PUBS_AUTHORITY";
+	public static final String ADMIN_AUTHORITY = "ADMIN_AUTHORITY";
 
 	@Mock
 	private ConfigurationService configurationService;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		when(configurationService.getAuthorizedAuthorities()).thenReturn(new String[] {AUTHORIZED_AUTHORITY, SPN_AUTHORITY, "silly", "willy"});
@@ -118,13 +119,13 @@ public class PubsUtilitiesTest extends BaseTest {
 
 	@Test
 	public void getUsernameTest_noAuthentication() {
-		assertEquals("Not Authenticated", PubsConstantsHelper.ANONYMOUS_USER, PubsUtils.getUsername());
+		assertEquals(PubsConstantsHelper.ANONYMOUS_USER, PubsUtils.getUsername(), "Not Authenticated");
 	}
 
 	@Test
 	@WithMockUser(username=UserDetailTestService.AUTHENTICATED_USER)
 	public void getUsernameTest_authenticated() {
-		assertEquals("Is Authenticated", UserDetailTestService.AUTHENTICATED_USER, PubsUtils.getUsername());
+		assertEquals(UserDetailTestService.AUTHENTICATED_USER, PubsUtils.getUsername(), "Is Authenticated");
 	}
 
 	@Test

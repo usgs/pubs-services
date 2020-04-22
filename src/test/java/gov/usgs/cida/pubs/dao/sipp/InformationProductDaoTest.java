@@ -1,12 +1,11 @@
 package gov.usgs.cida.pubs.dao.sipp;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -21,16 +20,15 @@ import gov.usgs.cida.pubs.domain.sipp.InformationProduct;
 public class InformationProductDaoTest extends BaseTest {
 	public static final String MOCK_SIPP_URL = "https://localhost/mock?a=";
 
-	@Mock
+	@MockBean
 	protected RestTemplate restTemplate;
-	@Mock
+	@MockBean
 	protected ConfigurationService configurationService;
 
 	private InformationProductDao dao;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
-		MockitoAnnotations.initMocks(this);
 		dao = new InformationProductDao(configurationService, restTemplate);
 	}
 

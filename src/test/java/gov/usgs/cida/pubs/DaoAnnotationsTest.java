@@ -1,7 +1,7 @@
 package gov.usgs.cida.pubs;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,38 +72,41 @@ public class DaoAnnotationsTest {
 								// Skip setxxxDao Methods
 								continue;
 							} else if (Modifier.PUBLIC == method.getModifiers()) {
-								assertTrue("Method " + method.getName()
-										+ " of Class " + c.getName()
-										+ " does not have annotation :"
-										+ element,
-										method.isAnnotationPresent(element));
+								assertTrue(
+										method.isAnnotationPresent(element),
+										"Method " + method.getName()
+												+ " of Class " + c.getName()
+												+ " does not have annotation :"
+												+ element
+										);
 								if (element
 										.isAssignableFrom(Transactional.class)) {
 									if (method.getName().startsWith("get")
 											|| method.getName().startsWith(
 													"find")) {
 										assertTrue(
+												((Transactional) method
+														.getAnnotation(element))
+														.readOnly(),
 												"Method "
 														+ method.getName()
 														+ " of Class "
 														+ c.getName()
-														+ " has a \"get\" Method that is not ReadOnly",
-												((Transactional) method
-														.getAnnotation(element))
-														.readOnly());
+														+ " has a \"get\" Method that is not ReadOnly"
+												);
 									} else {
 										assertEquals(
+												((Transactional) method
+														.getAnnotation(element))
+														.propagation(),
+												Propagation.REQUIRED,
 												"Method "
 														+ method.getName()
 														+ " of Class "
 														+ c.getName()
 														+ " has a non-\"get\" "
-														+ "Method that is NOT Transaction required",
-												((Transactional) method
-														.getAnnotation(element))
-														.propagation(),
-												Propagation.REQUIRED);
-
+														+ "Method that is NOT Transaction required"
+												);
 									}
 								}
 							}

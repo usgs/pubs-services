@@ -1,11 +1,14 @@
 package gov.usgs.cida.pubs.validation.mp.crossproperty;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
+import gov.usgs.cida.pubs.dao.PublicationDao;
+import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
@@ -19,9 +22,14 @@ public class CrossPropertyValidatorForMpPublicationTest extends BaseValidatorTes
 	protected PublicationSubtype pubSubtype;
 	protected PublicationSeries pubSeries;
 
-	@Before
+	@MockBean(name="mpPublicationDao")
+	protected MpPublicationDao mpPublicationDao;
+	@MockBean(name="publicationDao")
+	protected PublicationDao publicationDao;
+
+	@BeforeEach
 	public void setUp() throws Exception {
-		super.setUp();
+		buildContext();
 		validator = new CrossPropertyValidatorForMpPublication();
 		mpPub = new MpPublication();
 		pubSubtype = new PublicationSubtype();

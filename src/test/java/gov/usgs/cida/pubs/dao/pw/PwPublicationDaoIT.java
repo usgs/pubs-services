@@ -1,10 +1,10 @@
 package gov.usgs.cida.pubs.dao.pw;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -123,17 +123,18 @@ public class PwPublicationDaoIT extends BaseIT {
 
 			List<PwPublication> pubs = pwPublicationDao.getByMap(filters);
 			assertNotNull(pubs);
-			assertTrue(String.format("Expected filter match on orcid '%s', got none", orcid), pubs.size() > 0);
+			assertTrue(pubs.size() > 0, String.format("Expected filter match on orcid '%s', got none", orcid));
 
 			for(Publication<?> pub : pubs) {
-				assertNotNull("Null publication returned from db query", pub);
-				assertNotNull("Pubication returned from db query has null id", pub.getId());
-				assertTrue("Publication returned from query has invalid id: " + pub.getId(), pub.getId() > 0);
-				assertTrue(String.format("Publication (id=%d) has validation errors:",pub.getId(), pub.getValidationErrors().toString()), pub.isValid());
+				assertNotNull(pub, "Null publication returned from db query");
+				assertNotNull(pub.getId(), "Pubication returned from db query has null id");
+				assertTrue(pub.getId() > 0, "Publication returned from query has invalid id: " + pub.getId());
+				assertTrue(pub.isValid(), String.format("Publication (id=%d) has validation errors:",pub.getId(), pub.getValidationErrors().toString()));
 				List<String> orcidList = getOrcids(pub);
-				assertTrue(String.format("Expected orcid '%s' in publication (id=%d) returned from query, got orcids: %s" , 
-							orcid, pub.getId(), Arrays.toString(orcidList.toArray())),
-							orcidList.contains(orcid));
+				assertTrue(orcidList.contains(orcid),
+						String.format("Expected orcid '%s' in publication (id=%d) returned from query, got orcids: %s" , 
+								orcid, pub.getId(), Arrays.toString(orcidList.toArray()))
+						);
 			}
 		}
 
@@ -142,7 +143,7 @@ public class PwPublicationDaoIT extends BaseIT {
 		filters.put(PersonContributorDao.ORCID, orcids);
 		List<PwPublication> pubs = pwPublicationDao.getByMap(filters);
 		assertNotNull(pubs);
-		assertTrue(String.format("Expected two matches on orcids '%s', got none", Arrays.toString(orcids)), pubs.size() == 2);
+		assertEquals(2, pubs.size(), String.format("Expected two matches on orcids '%s', got none", Arrays.toString(orcids)));
 		List<String> foundOrcidList = new ArrayList<>();
 
 		for(Publication<?> pub : pubs) {
@@ -150,8 +151,9 @@ public class PwPublicationDaoIT extends BaseIT {
 		}
 		String[] foundOrcids = foundOrcidList.toArray(new String[foundOrcidList.size()]);
 		Arrays.sort(foundOrcids);
-		assertTrue(String.format("Expected orcids %s from query specifying multiple oids, got: %s", Arrays.toString(orcids), Arrays.toString(foundOrcids)),
-					Arrays.equals(orcids, foundOrcids));
+		assertTrue(Arrays.equals(orcids, foundOrcids),
+				String.format("Expected orcids %s from query specifying multiple oids, got: %s", Arrays.toString(orcids), Arrays.toString(foundOrcids))
+				);
 
 		// test for orcid being undefined in the filter, these queries should match on all publications
 		String[] emptyOrcids = new String[]{ null, ""};
@@ -161,7 +163,7 @@ public class PwPublicationDaoIT extends BaseIT {
 			pubs = pwPublicationDao.getByMap(filters);
 			assertNotNull(pubs);
 			String orcidDesc = orcid == null ? "null" : orcid.isEmpty() ? "empty string" : orcid;
-			assertTrue(String.format("Expected %d matches on filter with orcid %s, got %d", 4, orcidDesc, pubs.size()), pubs.size() == 0);
+			assertTrue(pubs.isEmpty(), String.format("Expected %d matches on filter with orcid %s, got %d", 4, orcidDesc, pubs.size()));
 		}
 
 		// try a few illegal orcids that might fool query into a match
@@ -171,7 +173,7 @@ public class PwPublicationDaoIT extends BaseIT {
 			filters.put(PersonContributorDao.ORCID, new String[]{orcid});
 			pubs = pwPublicationDao.getByMap(filters);
 			assertNotNull(pubs);
-			assertTrue(String.format("Expected no matches on filter with orcid '%s', got %d", orcid, pubs.size()), pubs.size() == 0);
+			assertTrue(pubs.isEmpty(), String.format("Expected no matches on filter with orcid '%s', got %d", orcid, pubs.size()));
 		}
 	}
 

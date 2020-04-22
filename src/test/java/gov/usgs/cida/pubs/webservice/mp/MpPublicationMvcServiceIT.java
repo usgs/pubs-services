@@ -1,91 +1,66 @@
 package gov.usgs.cida.pubs.webservice.mp;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
 
 import org.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import gov.usgs.cida.pubs.BaseIT;
-import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
-import gov.usgs.cida.pubs.busservice.PublicationBusService;
 import gov.usgs.cida.pubs.busservice.ext.ExtPublicationService;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
-import gov.usgs.cida.pubs.busservice.mp.MpPublicationBusService;
-import gov.usgs.cida.pubs.busservice.mp.MpPublicationContributorBusService;
-import gov.usgs.cida.pubs.busservice.mp.MpPublicationCostCenterBusService;
-import gov.usgs.cida.pubs.busservice.mp.MpPublicationLinkBusService;
+import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
+import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
+import gov.usgs.cida.pubs.busservice.intfc.ISippProcess;
 import gov.usgs.cida.pubs.busservice.sipp.SippConversionService;
-import gov.usgs.cida.pubs.busservice.sipp.SippProcess;
-import gov.usgs.cida.pubs.dao.DeletedPublicationDao;
-import gov.usgs.cida.pubs.dao.PublicationDao;
-import gov.usgs.cida.pubs.dao.mp.MpListPublicationDao;
-import gov.usgs.cida.pubs.dao.mp.MpPublicationContributorDao;
-import gov.usgs.cida.pubs.dao.mp.MpPublicationCostCenterDao;
-import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
-import gov.usgs.cida.pubs.dao.mp.MpPublicationLinkDao;
-import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
-import gov.usgs.cida.pubs.domain.DeletedPublication;
 import gov.usgs.cida.pubs.domain.DeletedPublicationHelper;
 import gov.usgs.cida.pubs.domain.PublicationIndexHelper;
-import gov.usgs.cida.pubs.domain.mp.MpListPublication;
-import gov.usgs.cida.pubs.domain.mp.MpPublication;
-import gov.usgs.cida.pubs.domain.mp.MpPublicationContributor;
-import gov.usgs.cida.pubs.domain.mp.MpPublicationCostCenter;
-import gov.usgs.cida.pubs.domain.mp.MpPublicationLink;
-import gov.usgs.cida.pubs.domain.pw.PwPublication;
-import gov.usgs.cida.pubs.springinit.DbTestConfig;
 
-@EnableWebMvc
-@AutoConfigureMockMvc(secure=false)
-@SpringBootTest(webEnvironment=WebEnvironment.MOCK,
-classes={DbTestConfig.class, MpPublicationMvcService.class,
-		LocalValidatorFactoryBean.class,
-		MpPublication.class, MpPublicationDao.class,
-		PublicationDao.class, PwPublicationDao.class,
-		MpListPublication.class, MpListPublicationDao.class,
-		MpPublicationContributor.class, MpPublicationContributorDao.class,
-		MpPublicationCostCenter.class, MpPublicationCostCenterDao.class,
-		MpPublicationLink.class, MpPublicationLinkDao.class,
-		PwPublication.class, PwPublicationDao.class,
-		DeletedPublication.class, DeletedPublicationDao.class,
-		PublicationBusService.class, MpPublicationBusService.class,
-		MpPublicationCostCenterBusService.class, MpPublicationLinkBusService.class,
-		MpPublicationContributorBusService.class, SippProcess.class})
+@SpringBootTest(webEnvironment=WebEnvironment.MOCK)
 @DatabaseSetup("classpath:/testCleanup/clearAll.xml")
 public class MpPublicationMvcServiceIT extends BaseIT {
 
-	@Autowired
 	private MockMvc mockMvc;
 	@MockBean
 	private ICrossRefBusService crossRefBusService;
 	@MockBean
-	private ConfigurationService configurationService;
-	@MockBean
 	private ExtPublicationService extPublicationService;
 	@MockBean
 	private SippConversionService sippConversionService;
+	private MpPublicationMvcService mvcService;
+	@Autowired
+	private IPublicationBusService publicationBusService;
+	@Autowired
+	private IMpPublicationBusService mpPublicationBusService;
+	@Autowired
+	private ISippProcess sippProcess;
+
+	@BeforeEach
+	public void setup() {
+		mvcService = new MpPublicationMvcService(publicationBusService,
+				mpPublicationBusService,
+				sippProcess);
+		mockMvc = MockMvcBuilders.standaloneSetup(mvcService).build();
+	}
 
 	@Test
 	@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
@@ -115,10 +90,12 @@ public class MpPublicationMvcServiceIT extends BaseIT {
 		//happy path in both databases
 		MvcResult result = mockMvc.perform(delete("/mppublications/2/purge"))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
-		assertThat(getRtnAsJSONObject(result), sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
+
+				assertThat(new JSONObject(result.getResponse().getContentAsString()),
+				sameJSONObjectAs(new JSONObject("{\"validationErrors\":[]}")));
 	}
 
 	@Test
@@ -131,11 +108,11 @@ public class MpPublicationMvcServiceIT extends BaseIT {
 
 		MvcResult result = mockMvc.perform(get("/mppublications/" + queryParms))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE))
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
 
-		JSONObject rtnAsJson = getRtnAsJSONObject(result);
+		JSONObject rtnAsJson = new JSONObject(result.getResponse().getContentAsString());
 
 		assertNotNull(rtnAsJson.get("pageSize"));
 		assertEquals(rtnAsJson.get("pageSize"), pageSize);

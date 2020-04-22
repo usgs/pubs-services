@@ -5,7 +5,7 @@
     <timestamp>1586278323273</timestamp>
     <depositor>
       <depositor_name>USGS</depositor_name>
-      <email_address>${crossref.depositorEmail}</email_address>
+      <email_address>nobody@usgs.gov</email_address>
     </depositor>
     <registrant>U.S. Geological Survey</registrant>
   </head>
@@ -52,7 +52,7 @@
         </pages>
         <doi_data>
           <doi>10.3133/ofr20131259</doi>
-          <resource>${pubs.warehouseEndpoint}/publication/unnumbered</resource>
+          <resource>http://pubs.er.usgs.gov/publication/unnumbered</resource>
         </doi_data>
       </content_item>
     </report-paper>

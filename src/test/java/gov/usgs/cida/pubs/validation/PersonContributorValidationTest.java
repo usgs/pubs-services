@@ -1,9 +1,9 @@
 package gov.usgs.cida.pubs.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.reset;
 
 import java.lang.reflect.Field;
@@ -11,8 +11,8 @@ import java.lang.reflect.Field;
 import javax.validation.Validator;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,11 +60,10 @@ public class PersonContributorValidationTest extends BaseValidatorTest {
 	//Using OutsideContributor  because it works easier (all validations are the same via PersonContributor...)
 	private OutsideContributor contributor;
 
-	@Before
-	@Override
+	@BeforeEach
 	@SuppressWarnings("unchecked")
 	public void setUp() throws Exception {
-		super.setUp();
+		buildContext();
 		contributor = new OutsideContributor();
 		contributor.setFamily("a");
 

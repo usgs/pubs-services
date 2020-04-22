@@ -1,8 +1,8 @@
 package gov.usgs.cida.pubs.transform;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -11,13 +11,12 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Collections;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
@@ -26,7 +25,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 import freemarker.template.Configuration;
 import gov.usgs.cida.pubs.BaseIT;
@@ -72,23 +70,16 @@ public class CrossrefTransformerIT extends BaseIT {
 
 	private CrossrefTransformer instance;
 	private ByteArrayOutputStream target;
-	private static DocumentBuilder docBuilder; 
 
 	private static final String TEST_TIMESTAMP = "1493070447545";
 	private static final String TEST_BATCH_ID = "82adfd8d-1737-4e62-86bc-5e7be1c07b7d";
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUpClass() {
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		dbf.setValidating(false);
-		try {
-			docBuilder = dbf.newDocumentBuilder();
-		} catch (ParserConfigurationException ex) {
-			throw new RuntimeException(ex);
-		}
+		setUpDocBuilder();
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		this.target = new ByteArrayOutputStream();
 		instance = new CrossrefTransformer(this.target, templateConfig, configurationService) {
@@ -114,20 +105,6 @@ public class CrossrefTransformerIT extends BaseIT {
 		};
 	}
 
-	private void assertWellFormed(String xml) {
-		String errorMsg = "";
-
-		try{
-			docBuilder.parse(new InputSource(new StringReader(xml)));
-		} catch(SAXParseException e){
-			errorMsg = e.getMessage();
-		} catch (SAXException | IOException ex) {
-			throw new RuntimeException(ex);
-		}
-		//assert there are no error messages
-		assertEquals("The XML is not well-formed.", "", errorMsg);
-	}
-
 	/**
 	 * While in most test cases we override the getTimestamp() method to get
 	 * a consistent result over time, here we construct our own instance 
@@ -138,8 +115,7 @@ public class CrossrefTransformerIT extends BaseIT {
 	@Test
 	public void testTimestampIsInitialized() throws IOException {
 		CrossrefTransformer myInstance = new CrossrefTransformer(this.target, templateConfig, configurationService);
-		assertNotNull(myInstance.getTimestamp());
-		assertTrue("timestamp should be of nonzero length", 0 < myInstance.getTimestamp().length());
+		assertTrue(StringUtils.isNotBlank(myInstance.getTimestamp()), "timestamp should be of nonzero length");
 		myInstance.close();
 	}
 
@@ -153,8 +129,7 @@ public class CrossrefTransformerIT extends BaseIT {
 	@Test
 	public void testBatchIdIsInitialized() throws IOException {
 		CrossrefTransformer myInstance = new CrossrefTransformer(this.target, templateConfig, configurationService);
-		assertNotNull(myInstance.getBatchId());
-		assertTrue("batch id should be of nonzero length", 0 < myInstance.getBatchId().length());
+		assertTrue(StringUtils.isNotBlank(myInstance.getBatchId()), "batch id should be of nonzero length");
 		myInstance.close();
 	}
 
@@ -165,9 +140,10 @@ public class CrossrefTransformerIT extends BaseIT {
 	public void testNoPubs() throws UnsupportedEncodingException, ParserConfigurationException, SAXException, IOException {
 		instance.end();
 		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
-		assertNotNull(output);
-		assertTrue(0 < output.length());
-		assertWellFormed(output);
+		assertTrue(StringUtils.isNotBlank(output), "The XML was null or empty.");
+		assertDoesNotThrow(() -> {
+			docBuilder.parse(new InputSource(new StringReader(output)));
+		}, "The XML is not well-formed.");
 	}
 
 	@Test
@@ -178,9 +154,10 @@ public class CrossrefTransformerIT extends BaseIT {
 		instance.end();
 
 		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
-	
-		assertNotNull(output);
-		assertWellFormed(output);
+		assertTrue(StringUtils.isNotBlank(output), "The XML was null or empty.");
+		assertDoesNotThrow(() -> {
+			docBuilder.parse(new InputSource(new StringReader(output)));
+		}, "The XML is not well-formed.");
 	
 		String expected = harmonizeXml(updateWarehouseEndpoint(testOneUnNumberedSeriesXmlMin));
 		String actual = harmonizeXml(output);
@@ -194,11 +171,12 @@ public class CrossrefTransformerIT extends BaseIT {
 
 		instance.writeResult(pub);
 		instance.end();
-		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
 
-		assertNotNull(output);
-		assertTrue(0 < output.length());
-		assertWellFormed(output);
+		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
+		assertTrue(StringUtils.isNotBlank(output), "The XML was null or empty.");
+		assertDoesNotThrow(() -> {
+			docBuilder.parse(new InputSource(new StringReader(output)));
+		}, "The XML is not well-formed.");
 
 		String expected = harmonizeXml(updateWarehouseEndpoint(testOneUnNumberedSeriesXmlMin));
 		String actual = harmonizeXml(output);
@@ -212,11 +190,12 @@ public class CrossrefTransformerIT extends BaseIT {
 
 		instance.writeResult(pub);
 		instance.end();
-		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
 
-		assertNotNull(output);
-		assertTrue(0 < output.length());
-		assertWellFormed(output);
+		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
+		assertTrue(StringUtils.isNotBlank(output), "The XML was null or empty.");
+		assertDoesNotThrow(() -> {
+			docBuilder.parse(new InputSource(new StringReader(output)));
+		}, "The XML is not well-formed.");
 
 		String expected = harmonizeXml(updateWarehouseEndpoint(testOneNumberedSeriesXmlMin));
 		expected = expected.replace("{reasonForMinimalCrossRef}",
@@ -232,11 +211,12 @@ public class CrossrefTransformerIT extends BaseIT {
 
 		instance.writeResult(pub);
 		instance.end();
-		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
 
-		assertNotNull(output);
-		assertTrue(0 < output.length());
-		assertWellFormed(output);
+		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
+		assertTrue(StringUtils.isNotBlank(output), "The XML was null or empty.");
+		assertDoesNotThrow(() -> {
+			docBuilder.parse(new InputSource(new StringReader(output)));
+		}, "The XML is not well-formed.");
 
 		String expected = harmonizeXml(updateWarehouseEndpoint(testOneNumberedSeriesXmlMin));
 		String actual = harmonizeXml(output);
@@ -250,11 +230,12 @@ public class CrossrefTransformerIT extends BaseIT {
 
 		instance.writeResult(pub);
 		instance.end();
-		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
 
-		assertNotNull(output);
-		assertTrue(0 < output.length());
-		assertWellFormed(output);
+		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
+		assertTrue(StringUtils.isNotBlank(output), "The XML was null or empty.");
+		assertDoesNotThrow(() -> {
+			docBuilder.parse(new InputSource(new StringReader(output)));
+		}, "The XML is not well-formed.");
 
 		String expected = harmonizeXml(updateWarehouseEndpoint(testOneUnNumberedSeriesXml));
 		String comment = instance.wrapInComment("Excluded Problematic Publication (indexId: unnumbered doi: 10.3133/ofr20131259)");
@@ -271,10 +252,13 @@ public class CrossrefTransformerIT extends BaseIT {
 		Publication<?> pub = CrossrefTestPubBuilder.buildUnNumberedSeriesPub(new Publication<>());
 		instance.writeResult(pub);
 		instance.end();
+
 		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
-		assertNotNull(output);
-		assertTrue(0 < output.length());
-		assertWellFormed(output);
+		assertTrue(StringUtils.isNotBlank(output), "The XML was null or empty.");
+		assertDoesNotThrow(() -> {
+			docBuilder.parse(new InputSource(new StringReader(output)));
+		}, "The XML is not well-formed.");
+
 		String expected = harmonizeXml(updateWarehouseEndpoint(testOneUnNumberedSeriesXml));
 		String actual = harmonizeXml(output);
 		assertEquals(expected, actual);
@@ -288,10 +272,13 @@ public class CrossrefTransformerIT extends BaseIT {
 		Publication<?> pub = CrossrefTestPubBuilder.buildNumberedSeriesPub(new Publication<>());
 		instance.writeResult(pub);
 		instance.end();
+
 		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
-		assertNotNull(output);
-		assertTrue(0 < output.length());
-		assertWellFormed(output);
+		assertTrue(StringUtils.isNotBlank(output), "The XML was null or empty.");
+		assertDoesNotThrow(() -> {
+			docBuilder.parse(new InputSource(new StringReader(output)));
+		}, "The XML is not well-formed.");
+
 		String expected = harmonizeXml(updateWarehouseEndpoint(testOneNumberedSeriesXml));
 		String actual = harmonizeXml(output);
 		assertEquals(expected, actual);
@@ -308,10 +295,12 @@ public class CrossrefTransformerIT extends BaseIT {
 
 		instance.writeResult(pub);
 		instance.end();
+
 		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
-		assertNotNull(output);
-		assertTrue(0 < output.length());
-		assertWellFormed(output);
+		assertTrue(StringUtils.isNotBlank(output), "The XML was null or empty.");
+		assertDoesNotThrow(() -> {
+			docBuilder.parse(new InputSource(new StringReader(output)));
+		}, "The XML is not well-formed.");
 
 		String expected = harmonizeXml(updateWarehouseEndpoint(testOneNumberedSeriesXml));
 		String dataReleaseDesc = link.getDescription() + link.getHelpText();
@@ -345,10 +334,13 @@ public class CrossrefTransformerIT extends BaseIT {
 
 		instance.writeResult(pub);
 		instance.end();
+
 		String output = new String(target.toByteArray(), PubsConstantsHelper.DEFAULT_ENCODING);
-		assertNotNull(output);
-		assertTrue(0 < output.length());
-		assertWellFormed(output);
+		assertTrue(StringUtils.isNotBlank(output), "The XML was null or empty.");
+		assertDoesNotThrow(() -> {
+			docBuilder.parse(new InputSource(new StringReader(output)));
+		}, "The XML is not well-formed.");
+
 		String expected = harmonizeXml(updateWarehouseEndpoint(testOneNumberedSeriesXml));
 		String actual = harmonizeXml(output);
 		assertEquals(expected, actual);

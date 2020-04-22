@@ -1,8 +1,8 @@
 package gov.usgs.cida.pubs;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -18,25 +18,24 @@ import java.util.Random;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dbunit.dataset.ReplacementDataSet;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.test.context.support.ReactorContextTestExecutionListener;
+import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.FileCopyUtils;
 
 import com.github.springtestdbunit.dataset.ReplacementDataSetModifier;
 
 import gov.usgs.cida.pubs.domain.BaseDomain;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @TestExecutionListeners({DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
-	MockitoTestExecutionListener.class})
+	MockitoTestExecutionListener.class, WithSecurityContextTestExecutionListener.class, ReactorContextTestExecutionListener.class})
 public abstract class BaseTest {
 	public static final Log LOG = LogFactory.getLog(BaseTest.class);
 
@@ -45,6 +44,9 @@ public abstract class BaseTest {
 	public static final String GEOGRAPHIC_EXTENTS = "{\"type\": \"FeatureCollection\",\"features\": [{\"type\": \"Feature\",\"properties\": {},\"geometry\": {"
 				+ "\"type\": \"Polygon\",\"coordinates\": [[[-91.91162109375,45.69850658738846],[-91.91162109375,47.16730970131578],"
 				+ "[-90.3955078125,47.16730970131578],[-90.3955078125,45.69850658738846],[-91.91162109375,45.69850658738846]]]}}]}";
+	public static final String PUBS_WAREHOUSE_ENDPOINT = "http://pubs.er.usgs.gov";
+	public static final String SWAGGER_DISPLAY_HOST = "localhost:8444";
+
 	/** random for the class. */
 	protected static final Random RANDOM = new Random();
 
@@ -87,12 +89,12 @@ public abstract class BaseTest {
 						Object inProp = prop.getReadMethod().invoke(inObject);
 						Object resultProp = prop.getReadMethod().invoke(resultObject);
 						if (!allowNull) {
-							assertNotNull(prop.getName() + " original is null.", inProp);
-							assertNotNull(prop.getName() + " result is null.", resultProp);
+							assertNotNull(inProp, prop.getName() + " original is null.");
+							assertNotNull(resultProp, prop.getName() + " result is null.");
 						}
 						if (resultProp instanceof Collection) {
 							//TODO - could try to match the lists...
-							assertEquals(prop.getName(), ((Collection<?>) inProp).size(), ((Collection<?>) resultProp).size());
+							assertEquals(((Collection<?>) inProp).size(), ((Collection<?>) resultProp).size(), prop.getName());
 						} else {
 							assertProperty(inProp, resultProp, prop);
 						}
@@ -106,12 +108,12 @@ public abstract class BaseTest {
 
 	private void assertProperty(final Object inProp, final Object resultProp, final PropertyDescriptor prop) throws Exception {
 		if (resultProp instanceof BaseDomain) {
-			LOG.info(prop.getName() + " input ID: " + ((BaseDomain<?>) inProp).getId() 
+			LOG.debug(prop.getName() + " input ID: " + ((BaseDomain<?>) inProp).getId() 
 					+ " result ID: " + ((BaseDomain<?>) resultProp).getId());
-			assertEquals(prop.getName(), ((BaseDomain<?>) inProp).getId(), ((BaseDomain<?>) resultProp).getId());
+			assertEquals(((BaseDomain<?>) inProp).getId(), ((BaseDomain<?>) resultProp).getId(), prop.getName());
 		} else {
-			LOG.info(prop.getName() + " input: " + inProp + " result: " + resultProp);
-			assertEquals(prop.getName(), inProp, resultProp);
+			LOG.debug(prop.getName() + " input: " + inProp + " result: " + resultProp);
+			assertEquals(inProp, resultProp, prop.getName());
 		}
 	}
 
@@ -145,14 +147,6 @@ public abstract class BaseTest {
 
 	public String getFile(String file) throws IOException {
 		return new String(FileCopyUtils.copyToByteArray(new ClassPathResource(file).getInputStream()));
-	}
-
-	public JSONObject getRtnAsJSONObject(MvcResult rtn) throws Exception {
-		return new JSONObject(rtn.getResponse().getContentAsString());		
-	}
-
-	public JSONArray getRtnAsJSONArray(MvcResult rtn) throws Exception {
-		return new JSONArray(rtn.getResponse().getContentAsString());		
 	}
 
 	public String currentYear = String.valueOf(LocalDate.now().getYear());

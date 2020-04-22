@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 
 @RestController
-@RequestMapping(value = "lists/{listId}/pubs", produces="application/json")
+@RequestMapping(value = "lists/{listId}/pubs", produces=PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE)
 public class MpListPublicationMvcService extends MvcService<MpListPublication> {
 
 	private final IMpListPublicationBusService busService;

@@ -61,11 +61,8 @@ public class XmlBusService implements IXmlBusService {
 	public static final String XSLT_RESOURCE_DIR = "xslt";
 	public static final String PUBS_STYLESHEET = "pubs-html.xsl";
 
-	// This is a url for pulling images from SPN, default is no ConfigurationService
-	public static final String SPN_IMAGE_URL = "https://pubs.usgs.gov/xml_test/Images/";
-
 	@Autowired
-	XmlBusService(ConfigurationService configurationService) {
+	public XmlBusService(ConfigurationService configurationService) {
 		this.configurationService = configurationService;
 	}
 

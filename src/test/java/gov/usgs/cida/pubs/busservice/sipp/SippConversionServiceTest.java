@@ -1,9 +1,9 @@
 package gov.usgs.cida.pubs.busservice.sipp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,8 +11,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.domain.Contributor;
@@ -43,7 +43,7 @@ public class SippConversionServiceTest extends BaseTest {
 
 	protected SippConversionService sippConversionService;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		sippConversionService = new SippConversionService();
 	}

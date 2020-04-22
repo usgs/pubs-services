@@ -11,7 +11,6 @@ import javax.validation.metadata.ConstraintDescriptor;
 import org.hibernate.validator.internal.engine.DefaultClockProvider;
 import org.hibernate.validator.internal.engine.constraintvalidation.ConstraintValidatorContextImpl;
 import org.hibernate.validator.internal.engine.path.PathImpl;
-import org.junit.Before;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import gov.usgs.cida.pubs.BaseTest;
@@ -39,8 +38,7 @@ public abstract class BaseValidatorTest extends BaseTest {
 	@MockBean
 	protected ConstraintDescriptor<?> constraintDescriptor;
 
-	@Before
-	public void setUp() throws Exception {
+	public void buildContext() throws Exception {
 		context = new ConstraintValidatorContextImpl(methodParameterNames, DefaultClockProvider.INSTANCE, propertyPath, constraintDescriptor, null);
 	}
 

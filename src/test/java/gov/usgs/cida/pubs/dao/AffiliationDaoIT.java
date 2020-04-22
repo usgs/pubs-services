@@ -1,15 +1,15 @@
 package gov.usgs.cida.pubs.dao;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -64,10 +64,10 @@ public class AffiliationDaoIT extends BaseIT {
 		assertAffiliation1(results.get(0));
 		filters.put(AffiliationDao.TEXT_SEARCH, "Affiliation Cost Center");
 		results = affiliationDao.getByMap(filters);
-		assertEquals("Affiliations starting with 'Affiliation Cost Center'", 2, results.size());
+		assertEquals(2, results.size(), "Affiliations starting with 'Affiliation Cost Center'");
 		filters.put(AffiliationDao.TEXT_SEARCH, "x");
 		results = affiliationDao.getByMap(filters);
-		assertEquals("Affiliations starting with 'x'", 3, results.size());
+		assertEquals(3, results.size(), "Affiliations starting with 'x'");
 	}
 
 	@Test

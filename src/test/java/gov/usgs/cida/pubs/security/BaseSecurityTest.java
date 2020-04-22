@@ -36,12 +36,11 @@ public abstract class BaseSecurityTest extends BaseTest {
 
 		String resultString = "{}";
 		try {
-			ResultActions result = mockMvc.perform(
-					post("/oauth/token")
-							.params(params)
-							.header("Authorization", "Basic " + base64ClientCredentials)
-							.accept("application/json;charset=UTF-8"))
-					.andExpect(status().isOk());
+			ResultActions result = mockMvc.perform(post("/oauth/token")
+				.params(params)
+				.header("Authorization","Basic " + base64ClientCredentials)
+				.accept("application/json;charset=UTF-8"))
+			.andExpect(status().isOk());
 			resultString = result.andReturn().getResponse().getContentAsString();
 		} catch (Exception e) {
 			throw new RuntimeException(e);

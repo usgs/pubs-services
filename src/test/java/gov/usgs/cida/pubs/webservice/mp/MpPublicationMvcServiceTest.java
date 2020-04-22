@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.webservice.mp;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -21,6 +22,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -175,7 +177,7 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 				.andExpect(status().isNotFound())
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
-		assertEquals(0, rtn.getResponse().getContentAsString().length());
+		assertTrue(StringUtils.isBlank(rtn.getResponse().getContentAsString()));
 	}
 
 	@Test
@@ -445,7 +447,6 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 		MvcResult rtn = mockMvc.perform(post(path).content(jsonToPost).contentType(MediaType.APPLICATION_JSON)
 		.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isBadRequest())
-//TODO?		.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 		.andReturn();
 
 		assertThat(desc, new JSONObject(rtn.getResponse().getContentAsString()),

@@ -5,21 +5,27 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
+import gov.usgs.cida.pubs.dao.PublicationDao;
+import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.validation.BaseValidatorTest;
 
-@SpringBootTest
 public class CrossPropertyValidatorForMpPublicationTest extends BaseValidatorTest {
 
 	protected CrossPropertyValidatorForMpPublication validator;
 	protected Publication<MpPublication> mpPub;
 	protected PublicationSubtype pubSubtype;
 	protected PublicationSeries pubSeries;
+
+	@MockBean(name="mpPublicationDao")
+	protected MpPublicationDao mpPublicationDao;
+	@MockBean(name="publicationDao")
+	protected PublicationDao publicationDao;
 
 	@BeforeEach
 	public void setUp() throws Exception {

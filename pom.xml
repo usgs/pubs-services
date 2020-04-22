@@ -237,39 +237,8 @@
                     <environmentVariables>
                         <PUBS_DB_HOST>${TESTING_DATABASE_ADDRESS}</PUBS_DB_HOST>
                         <PUBS_DB_PORT>${TESTING_DATABASE_PORT}</PUBS_DB_PORT>
-                        <PUBS_DB_NAME>pubs_db_name</PUBS_DB_NAME>
-                        <PUBS_SCHEMA_NAME>pubs_schema</PUBS_SCHEMA_NAME>
-                        <PUBS_DB_READ_ONLY_USERNAME>user_name</PUBS_DB_READ_ONLY_USERNAME>
-                        <PUBS_DB_READ_ONLY_PASSWORD>changeMe</PUBS_DB_READ_ONLY_PASSWORD>
-
-                        <PUBS_OWNER_USERNAME>owner_name</PUBS_OWNER_USERNAME>
-                        <PUBS_OWNER_PASSWORD>changeMe</PUBS_OWNER_PASSWORD>
-
-                        <CROSSREF_PROTOCOL>https</CROSSREF_PROTOCOL>
-                        <CROSSREF_HOST>test.crossref.org</CROSSREF_HOST>
-                        <CROSSREF_URL>/servlet/deposit</CROSSREF_URL>
-                        <CROSSREF_PORT>-1</CROSSREF_PORT>
                         <CROSSREF_USERNAME>${TESTING_CROSSREF_USERNAME}</CROSSREF_USERNAME>
                         <CROSSREF_PASSWORD>${TESTING_CROSSREF_PASSWORD}</CROSSREF_PASSWORD>
-                        <CROSSREF_DEPOSITOR_EMAIL>nobody@usgs.gov</CROSSREF_DEPOSITOR_EMAIL>
-                        <CROSSREF_SCHEMA_URL>http://www.crossref.org/schema/deposit/crossref4.4.0.xsd</CROSSREF_SCHEMA_URL>
-
-                        <pubs.emailList>changeMe</pubs.emailList>
-                        <pubs.mailHost>changeMe</pubs.mailHost>
-                        <PUBS_LOCK_TIMEOUT_HOURS>1</PUBS_LOCK_TIMEOUT_HOURS>
-                        <PUBS_WAREHOUSE_ENPOINT>http://pubs.er.usgs.gov</PUBS_WAREHOUSE_ENPOINT>
-                        <PUBS_AUTHORIZED_GROUPS>SPN_AUTHORITY, PUBS_AUTHORITY, ADMIN_AUTHORITY</PUBS_AUTHORIZED_GROUPS>
-                        <PUBS_SPN_GROUPS>SPN_AUTHORITY</PUBS_SPN_GROUPS>
-                        <PUBS_ADMIN_GROUPS>ADMIN_AUTHORITY</PUBS_ADMIN_GROUPS>
-
-                        <SPN_IMAGE_URL>https://pubs.usgs.gov/xml_test/Images/</SPN_IMAGE_URL>
-
-                        <SWAGGER_DISPLAY_HOST>localhost:8444</SWAGGER_DISPLAY_HOST>
-                        <SWAGGER_DISPLAY_PATH>/pubs-services</SWAGGER_DISPLAY_PATH>
-                        <SWAGGER_DISPLAY_PROTOCOL>https</SWAGGER_DISPLAY_PROTOCOL>
-
-                        <security.oauth2.resource.id>changeMe</security.oauth2.resource.id>
-                        <security.oauth2.resource.jwk.keySetUri>changeMe</security.oauth2.resource.jwk.keySetUri>
                     </environmentVariables>
                 </configuration>
                 <executions>
@@ -315,7 +284,7 @@
                                     <name>${TESTING_DATABASE_NETWORK}</name>
                                 </network>
                                 <ports>
-                                    <port>5433:5432</port>
+                                    <port>${TESTING_DATABASE_PORT}:5432</port>
                                 </ports>
                                 <env>
                                     <POSTGRES_PASSWORD>changeMe</POSTGRES_PASSWORD>

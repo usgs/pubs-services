@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${PUBS_DB_HOST}:${PUBS_DB_PORT}/pubs_db_name
+    username: user_name
+    password: changeMe
+    hikari:
+      auto-commit: false

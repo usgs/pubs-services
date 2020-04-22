@@ -18,9 +18,13 @@ import java.util.Random;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dbunit.dataset.ReplacementDataSet;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.test.context.support.ReactorContextTestExecutionListener;
+import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.util.FileCopyUtils;
@@ -29,8 +33,9 @@ import com.github.springtestdbunit.dataset.ReplacementDataSetModifier;
 
 import gov.usgs.cida.pubs.domain.BaseDomain;
 
+@ExtendWith(SpringExtension.class)
 @TestExecutionListeners({DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
-	MockitoTestExecutionListener.class})
+	MockitoTestExecutionListener.class, WithSecurityContextTestExecutionListener.class, ReactorContextTestExecutionListener.class})
 public abstract class BaseTest {
 	public static final Log LOG = LogFactory.getLog(BaseTest.class);
 
@@ -103,11 +108,11 @@ public abstract class BaseTest {
 
 	private void assertProperty(final Object inProp, final Object resultProp, final PropertyDescriptor prop) throws Exception {
 		if (resultProp instanceof BaseDomain) {
-			LOG.info(prop.getName() + " input ID: " + ((BaseDomain<?>) inProp).getId() 
+			LOG.debug(prop.getName() + " input ID: " + ((BaseDomain<?>) inProp).getId() 
 					+ " result ID: " + ((BaseDomain<?>) resultProp).getId());
 			assertEquals(((BaseDomain<?>) inProp).getId(), ((BaseDomain<?>) resultProp).getId(), prop.getName());
 		} else {
-			LOG.info(prop.getName() + " input: " + inProp + " result: " + resultProp);
+			LOG.debug(prop.getName() + " input: " + inProp + " result: " + resultProp);
 			assertEquals(inProp, resultProp, prop.getName());
 		}
 	}

@@ -1,7 +1,7 @@
 package gov.usgs.cida.pubs.webservice;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.when;
@@ -16,11 +16,10 @@ import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONObjectAs;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -35,7 +34,6 @@ import gov.usgs.cida.pubs.domain.PublicationSeriesTest;
 import gov.usgs.cida.pubs.utility.PubsUtilitiesTest;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 
-@SpringBootTest(webEnvironment=WebEnvironment.MOCK)
 public class PublicationSeriesMvcServiceTest extends BaseTest {
 
 	@MockBean
@@ -86,7 +84,7 @@ public class PublicationSeriesMvcServiceTest extends BaseTest {
 				.andExpect(status().isNotFound())
 				.andExpect(content().encoding(PubsConstantsHelper.DEFAULT_ENCODING))
 				.andReturn();
-		assertEquals(0, rtn.getResponse().getContentAsString().length());
+		assertTrue(StringUtils.isBlank(rtn.getResponse().getContentAsString()));
 	}
 
 	@Test

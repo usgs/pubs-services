@@ -1,14 +1,13 @@
 package gov.usgs.cida.pubs.busservice;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import javax.validation.Validator;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -47,7 +46,6 @@ public class PersonContributorBusServiceIT extends BaseIT {
 
 	@BeforeEach
 	public void initTest() throws Exception {
-		MockitoAnnotations.initMocks(this);
 		busService = new PersonContributorBusService(validator);
 	}
 

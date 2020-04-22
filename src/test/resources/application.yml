@@ -1,11 +1,3 @@
-spring:
-  datasource:
-    url: jdbc:postgresql://${PUBS_DB_HOST}:${PUBS_DB_PORT}/pubs_db_name
-    username: user_name
-    password: changeMe
-    hikari:
-      auto-commit: false
-
 sipp:
   dissemination:
     schedule: "-"
@@ -71,7 +63,11 @@ management:
       enabled: true
       show-details: never
 
+logging:
+  config: classpath:logback-test.xml
+
 PUBS_SCHEMA_NAME: pubs_schema
 
 PUBS_OWNER_USERNAME: owner_name
 PUBS_OWNER_PASSWORD: changeMe
+  

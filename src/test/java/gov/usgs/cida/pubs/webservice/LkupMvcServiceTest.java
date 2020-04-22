@@ -16,14 +16,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import gov.usgs.cida.pubs.BaseTest;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
@@ -32,10 +31,10 @@ import gov.usgs.cida.pubs.dao.intfc.IPersonContributorDao;
 import gov.usgs.cida.pubs.domain.Contributor;
 import gov.usgs.cida.pubs.domain.PersonContributor;
 import gov.usgs.cida.pubs.domain.UsgsContributor;
+import gov.usgs.cida.pubs.security.UserDetailTestService;
 import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
 
-@AutoConfigureMockMvc
-@SpringBootTest(webEnvironment=WebEnvironment.MOCK)
+@DirtiesContext
 public class LkupMvcServiceTest extends BaseTest {
 
 	@MockBean(name="personContributorDao")
@@ -44,17 +43,23 @@ public class LkupMvcServiceTest extends BaseTest {
 	private IDao<Contributor<?>> contributorDao;
 	@SuppressWarnings("unused")
 	private PersonContributor<?> personContributor;
-	@Autowired
+
+	private LookupMvcService mvcService;
 	private MockMvc mockMvc;
 
 	@BeforeEach
 	public void setup() {
 		personContributor = new UsgsContributor();
+		personContributor.setContributorDao(contributorDao);
+		personContributor.setPersonContributorDao(personContributorDao);
+		mvcService = new LookupMvcService();
+		mockMvc = MockMvcBuilders.standaloneSetup(mvcService).build();
 	}
 
 	@Test
+	@WithMockUser(username=UserDetailTestService.ANONOMOUS_USER)
 	public void getPeopleTest() throws Exception {
-		mockMvc.perform(get("/lookup/people").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+		mockMvc.perform(get("/lookup/people").accept(MediaType.APPLICATION_JSON)).andReturn();
 		mockMvc.perform(get("/lookup/people?text=a").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 		when(personContributorDao.getByMap(anyMap())).thenReturn(getPeople());
 

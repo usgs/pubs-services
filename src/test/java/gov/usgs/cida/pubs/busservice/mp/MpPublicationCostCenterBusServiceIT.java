@@ -13,7 +13,6 @@ import javax.validation.Validator;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -54,7 +53,6 @@ public class MpPublicationCostCenterBusServiceIT extends BaseIT {
 
 	@BeforeEach
 	public void initTest() throws Exception {
-		MockitoAnnotations.initMocks(this);
 		busService = new MpPublicationCostCenterBusService(validator);
 	}
 

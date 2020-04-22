@@ -14,9 +14,6 @@ import java.util.List;
 import org.json.JSONArray;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,8 +26,6 @@ import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.dao.mp.MpListDaoIT;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 
-@AutoConfigureMockMvc
-@SpringBootTest(webEnvironment=WebEnvironment.MOCK)
 public class MpListMvcServiceTest extends BaseTest {
 
 	@MockBean
@@ -64,5 +59,5 @@ public class MpListMvcServiceTest extends BaseTest {
 		rtn.add(MpListDaoIT.buildMpList(2));
 		return rtn;
 	}
-	
+
 }

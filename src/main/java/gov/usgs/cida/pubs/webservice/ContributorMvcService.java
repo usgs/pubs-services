@@ -31,8 +31,6 @@ import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 import gov.usgs.cida.pubs.validation.constraint.ManagerChecks;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
 
 @RestController
 @RequestMapping(produces=PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE)
@@ -50,7 +48,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		this.personContributorBusService = personContributorBusService;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@GetMapping(value={"/contributor/{id}"})
 	@JsonView(View.PW.class)
 	public @ResponseBody Contributor<?> getContributor(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") String id) {
@@ -63,7 +61,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		return rtn;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@GetMapping(value={"/person/{id}"})
 	@JsonView(View.PW.class)
 	public @ResponseBody Contributor<?> getPerson(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") String id) {
@@ -76,7 +74,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		return rtn;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PostMapping(value={"/usgscontributor"})
 	@JsonView(View.PW.class)
 	@Transactional
@@ -92,7 +90,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		return result;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PutMapping(value="/usgscontributor/{id}")
 	@JsonView(View.PW.class)
 	@Transactional
@@ -117,7 +115,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		return result;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PostMapping(value={"/outsidecontributor"})
 	@JsonView(View.PW.class)
 	@Transactional
@@ -134,7 +132,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		return result;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PutMapping(value="/outsidecontributor/{id}")
 	@JsonView(View.PW.class)
 	@Transactional
@@ -159,7 +157,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		return result;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@GetMapping(value={"/corporation/{id}"})
 	@JsonView(View.PW.class)
 	public @ResponseBody CorporateContributor getCorporation(HttpServletRequest request, HttpServletResponse response,
@@ -173,7 +171,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		return rtn;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PostMapping(value={"/corporation"})
 	@JsonView(View.PW.class)
 	@Transactional
@@ -189,7 +187,7 @@ public class ContributorMvcService extends MvcService<Contributor<?>> {
 		return result;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PutMapping(value="/corporation/{id}")
 	@JsonView(View.PW.class)
 	@Transactional

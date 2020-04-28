@@ -20,8 +20,6 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ImmutableMap;
-
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -88,12 +86,9 @@ public class CrossrefTransformer extends Transformer {
 
 	@Override
 	protected void init() {
-		
-		String timestamp = getTimestamp();
-		String batchId = getBatchId();
-		Map<String, String> model = ImmutableMap.of(
-			"doi_batch_id", batchId,
-			"submission_timestamp", timestamp,
+		Map<String, String> model = Map.of(
+			"doi_batch_id", getBatchId(),
+			"submission_timestamp", getTimestamp(),
 			"depositor_email", configurationService.getCrossrefDepositorEmail()
 		);
 		writeHeader(model);

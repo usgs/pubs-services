@@ -6,6 +6,7 @@ import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
 import gov.usgs.cida.pubs.validation.constraint.NoChildren;
 import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotNull;
 
@@ -64,6 +65,7 @@ public class Affiliation<D extends Affiliation<D>> extends BaseDomain<D> impleme
 
 	@Autowired
 	@Qualifier("affiliationDao")
+	@Schema(hidden = true)
 	public void setAffiliationDao(final IDao<D> inAffiliationDao) {
 		affiliationDao = inAffiliationDao;
 	}

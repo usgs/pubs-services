@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Component
 public class ContributorType extends BaseDomain<ContributorType> implements ILookup {
@@ -32,19 +33,13 @@ public class ContributorType extends BaseDomain<ContributorType> implements ILoo
 		text = inText;
 	}
 
-	/**
-	 * @return the contributorTypeDao
-	 */
 	public static IDao<ContributorType> getDao() {
 		return contributorTypeDao;
 	}
 
-	/**
-	 * The setter for contributorTypeDao.
-	 * @param inContributorTypeDao the contributorTypeDao to set
-	 */
 	@Autowired
 	@Qualifier("contributorTypeDao")
+	@Schema(hidden = true)
 	public void setContributorTypeDao(final IDao<ContributorType> inContributorTypeDao) {
 		contributorTypeDao = inContributorTypeDao;
 	}

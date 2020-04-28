@@ -37,6 +37,8 @@ import gov.usgs.cida.pubs.domain.UsgsContributor;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.query.PwPublicationFilterParams;
 import gov.usgs.cida.pubs.webservice.MvcService;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Note: This service doesn't actually produce JSON, it directly writes XML to the output stream and
@@ -45,6 +47,7 @@ import gov.usgs.cida.pubs.webservice.MvcService;
  */
 @RestController
 @RequestMapping(value = "publication/rss", produces={PubsConstantsHelper.MEDIA_TYPE_RSS_VALUE, MediaType.APPLICATION_JSON_VALUE})
+@Tag(name = "USGS Publications Warehouse RSS Feed", description = "Publicly accessible USGS Publicationsin an RSS feed.")
 public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 	private static final Logger LOG = LoggerFactory.getLogger(PwPublicationRssMvcService.class);
 
@@ -64,7 +67,7 @@ public class PwPublicationRssMvcService extends MvcService<PwPublication> {
 	@GetMapping
 	@RequestMapping(method=RequestMethod.GET)
 	public void getRSS(HttpServletResponse response,
-			PwPublicationFilterParams filterParams
+			@Parameter(hidden=true) PwPublicationFilterParams filterParams
 			) {
 		LOG.debug(filterParams.toString());
 

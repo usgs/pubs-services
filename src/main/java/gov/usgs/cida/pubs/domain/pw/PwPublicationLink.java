@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.domain.pw;
 
 import gov.usgs.cida.pubs.dao.intfc.IMpDao;
 import gov.usgs.cida.pubs.domain.PublicationLink;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -16,6 +17,7 @@ public class PwPublicationLink extends PublicationLink<PwPublicationLink> {
 		return pwPublicationLinkDao;
 	}
 
+	@Schema(hidden = true)
 	public void setPwPublicationLinkDao(final IMpDao<PwPublicationLink> inPwPublicationLinkDao) {
 		pwPublicationLinkDao = inPwPublicationLinkDao;
 	}

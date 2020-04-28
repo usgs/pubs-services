@@ -22,6 +22,7 @@ import gov.usgs.cida.pubs.validation.constraint.DeleteChecks;
 import gov.usgs.cida.pubs.validation.constraint.NoChildren;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Component
 @UniqueKey(message = "{publicationseries.duplicate}")
@@ -137,6 +138,7 @@ public class PublicationSeries extends BaseDomain<PublicationSeries> implements 
 
 	@Autowired
 	@Qualifier("publicationSeriesDao")
+	@Schema(hidden = true)
 	public void setPublicationSeriesDao(final IDao<PublicationSeries> inPublicationSeriesDao) {
 		publicationSeriesDao = inPublicationSeriesDao;
 	}

@@ -38,10 +38,13 @@ crossref:
   depositorEmail: ${CROSSREF_DEPOSITOR_EMAIL}
 
 swagger:
-  display:
-    host: ${SWAGGER_DISPLAY_HOST}
-    path: ${SWAGGER_DISPLAY_PATH}
-    protocol: ${SWAGGER_DISPLAY_PROTOCOL}
+  apiDocsUrl: ${SERVER_CONTEXT_PATH}/v3/api-docs/public
+
+springdoc:
+  api-docs:
+    groups:
+      enabled: true
+  version: "@project.version@"
 
 pubs:
   lockTimeoutHours: ${PUBS_LOCK_TIMEOUT_HOURS}

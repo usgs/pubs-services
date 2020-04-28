@@ -13,6 +13,7 @@ import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.validation.constraint.NoRelated;
 import gov.usgs.cida.pubs.validation.constraint.PurgeChecks;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Component
 @NoRelated(groups = PurgeChecks.class)
@@ -66,18 +67,12 @@ public class PwPublication extends Publication<PwPublication> {
 		this.stores = stores;
 	}
 
-	/**
-	 * @return the pwPublicationDao
-	 */
 	public static IPwPublicationDao getDao() {
 		return pwPublicationDao;
 	}
 
-	/**
-	 * The setter for pwPublicationDao.
-	 * @param inPwPublicationDao the pwPublicationDao to set
-	 */
 	@Autowired
+	@Schema(hidden = true)
 	public void setPwPublicationDao(final IPwPublicationDao inPwPublicationDao) {
 		pwPublicationDao = inPwPublicationDao;
 	}

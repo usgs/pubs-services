@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import gov.usgs.cida.pubs.ConfigurationService;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
-import springfox.documentation.annotations.ApiIgnore;
+import io.swagger.v3.oas.annotations.Parameter;
 
 @Component
 public class PwPublicationFilterParams extends PublicationFilterParams {
@@ -91,7 +91,7 @@ public class PwPublicationFilterParams extends PublicationFilterParams {
 	public void setMod_date_high(String modDateHigh) {
 		this.modDateHigh = modDateHigh;
 	}
-	@ApiIgnore
+	@Parameter(hidden = true)
 	public String getUrl() {
 		return configurationService.getWarehouseEndpoint() + "/publication/";
 	}

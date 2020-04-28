@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
 import gov.usgs.cida.pubs.json.View;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Component
 public class CorporateContributor extends Contributor<CorporateContributor> implements ILookup {
@@ -49,6 +50,7 @@ public class CorporateContributor extends Contributor<CorporateContributor> impl
 
 	@Autowired
 	@Qualifier("corporateContributorDao")
+	@Schema(hidden = true)
 	public void setCorporateContributorDao(final IDao<Contributor<?>> inCorporateContributorDao) {
 		corporateContributorDao = inCorporateContributorDao;
 	}

@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.usgs.cida.pubs.dao.intfc.IDeletedPublicationDao;
 import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.utility.PubsUtils;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Component
 public class DeletedPublication extends BaseDomain<DeletedPublication> {
@@ -100,7 +101,9 @@ public class DeletedPublication extends BaseDomain<DeletedPublication> {
 	public static IDeletedPublicationDao getDao() {
 		return deletedPublicationDao;
 	}
+
 	@Autowired
+	@Schema(hidden = true)
 	public void setPublicationDao(final IDeletedPublicationDao inDeletedPublicationDao) {
 		deletedPublicationDao = inDeletedPublicationDao;
 	}

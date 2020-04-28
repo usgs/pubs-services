@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import gov.usgs.cida.pubs.dao.intfc.IMpDao;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Component
 public class MpPublicationCostCenter extends PublicationCostCenter<MpPublicationCostCenter>{
@@ -25,6 +26,7 @@ public class MpPublicationCostCenter extends PublicationCostCenter<MpPublication
 	 */
 	@Autowired
 	@Qualifier("mpPublicationCostCenterDao")
+	@Schema(hidden = true)
 	public void setMpPublicationCostCenterDao(final IMpDao<MpPublicationCostCenter> inMpPublicationCostCenterDao) {
 		mpPublicationCostCenterDao = inMpPublicationCostCenterDao;
 	}

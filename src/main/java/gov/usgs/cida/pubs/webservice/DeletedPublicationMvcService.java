@@ -14,7 +14,16 @@ import gov.usgs.cida.pubs.dao.intfc.IDeletedPublicationDao;
 import gov.usgs.cida.pubs.domain.DeletedPublication;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.query.DeletedPublicationFilter;
+import gov.usgs.cida.pubs.openapi.Lookup;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "Deleted Publications", description = "Access deleted publications")
 @RestController
 @RequestMapping(value = "publication/deleted", produces={PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE})
 public class DeletedPublicationMvcService extends MvcService<DeletedPublication> {
@@ -28,8 +37,37 @@ public class DeletedPublicationMvcService extends MvcService<DeletedPublication>
 
 	@GetMapping
 	@RequestMapping(method=RequestMethod.GET)
+	@Operation(
+			description = "Return a list of People Contributors.",
+			responses = {
+					@ApiResponse(
+							responseCode = "200",
+							description = "JSON representation of the list.",
+							content = @Content(schema = @Schema(implementation = Lookup.class)))
+			},
+			parameters = {
+					@Parameter(
+							in = ParameterIn.QUERY,
+							name = "deletedSince",
+							description = "Filter to only Publications deleted since this date. For example 2019-01-15.",
+							schema = @Schema(type = "string", format = "date")
+							),
+					@Parameter(
+							in = ParameterIn.QUERY,
+							name = "page_number",
+							description = "Used in conjunction with page_size to page through the deleted Publications.",
+							schema = @Schema(type = "integer")
+							),
+					@Parameter(
+							in = ParameterIn.QUERY,
+							name = "page_size",
+							description = "Used in conjunction with page_number to page through the deleted Publications.",
+							schema = @Schema(type = "integer")
+							)
+			}
+		)
 	public SearchResults getDeletedPublications(HttpServletResponse response,
-			@Valid DeletedPublicationFilter deletedPublicationFilter) {
+			@Parameter(hidden=true) @Valid DeletedPublicationFilter deletedPublicationFilter) {
 		setHeaders(response);
 		SearchResults searchResults = getCountAndPaging(deletedPublicationFilter);
 		searchResults.setRecords(deletedPublicationDao.getByFilter(deletedPublicationFilter));

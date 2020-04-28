@@ -21,8 +21,6 @@ import gov.usgs.cida.pubs.domain.mp.MpListPublication;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.webservice.MvcService;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
 
 @RestController
 @RequestMapping(value = "lists/{listId}/pubs", produces=PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE)
@@ -36,7 +34,7 @@ public class MpListPublicationMvcService extends MvcService<MpListPublication> {
 		this.busService = busService;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PostMapping
 	@Transactional
 	public @ResponseBody Collection<MpListPublication> addPubToList(@PathVariable String listId,
@@ -46,7 +44,7 @@ public class MpListPublicationMvcService extends MvcService<MpListPublication> {
 		return busService.addPubToList(PubsUtils.parseInteger(listId), publicationIds);
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@DeleteMapping(value = "{publicationId}")
 	@Transactional
 	public @ResponseBody ValidationResults removePubFromList(@PathVariable String listId,

@@ -97,7 +97,6 @@ public class CrossRefBusServiceTest extends BaseTest {
 		when(configurationService.getCrossrefPwd()).thenReturn(CROSSREF_PASSWORD);
 		when(configurationService.getCrossrefSchemaUrl()).thenReturn(CROSSREF_SCHEMA_URL);
 		when(configurationService.getWarehouseEndpoint()).thenReturn(PUBS_WAREHOUSE_ENDPOINT);
-		when(configurationService.getDisplayHost()).thenReturn(SWAGGER_DISPLAY_HOST);
 		busService = new CrossRefBusService(
 			configurationService,
 			pubsEMailer,
@@ -316,7 +315,6 @@ public class CrossRefBusServiceTest extends BaseTest {
 		verify(pubsEMailer).sendMail(anyString(), captor.capture());
 		String emailBody = captor.getValue();
 		assertTrue(emailBody.contains(causeMessage));
-		assertTrue(emailBody.contains(configurationService.getDisplayHost()));
 		assertTrue(emailBody.contains(pub.getIndexId()));
 	}
 

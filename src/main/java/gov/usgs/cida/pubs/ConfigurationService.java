@@ -38,12 +38,8 @@ public class ConfigurationService {
 	@Value("${pubs.warehouseEndpoint}")
 	private String warehouseEndpoint;
 
-	@Value("${swagger.display.protocol:https}")
-	private String displayProtocol;
-	@Value("${swagger.display.host}")
-	private String displayHost;
-	@Value("${swagger.display.path}")
-	private String displayPath;
+	@Value("${springdoc.version}")
+	private String appVersion;
 
 	@Value("${security.oauth2.resource.id}")
 	private String resourceId;
@@ -94,15 +90,6 @@ public class ConfigurationService {
 	public String getWarehouseEndpoint() {
 		return warehouseEndpoint;
 	}
-	public String getDisplayProtocol() {
-		return displayProtocol;
-	}
-	public String getDisplayHost() {
-		return displayHost;
-	}
-	public String getDisplayPath() {
-		return displayPath;
-	}
 	public String getResourceId() {
 		return resourceId;
 	}
@@ -121,19 +108,13 @@ public class ConfigurationService {
 	public String getDisseminationListUrl() {
 		return disseminationListUrl;
 	}
-	public void setDisseminationListUrl(String disseminationListUrl) {
-		this.disseminationListUrl = disseminationListUrl;
-	}
 	public String getInfoProductUrl() {
 		return infoProductUrl;
-	}
-	public void setInfoProductUrl(String infoProductUrl) {
-		this.infoProductUrl = infoProductUrl;
 	}
 	public String getSpnImageUrl() {
 		return spnImageUrl;
 	}
-	public void setSpnImageUrl(String spnImageUrl) {
-		this.spnImageUrl = spnImageUrl;
+	public String getAppVersion() {
+		return appVersion;
 	}
 }

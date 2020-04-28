@@ -6,7 +6,7 @@ import javax.validation.constraints.Pattern;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import gov.usgs.cida.pubs.domain.ProcessType;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class SippMpPubRequest {
 	public static final String IPNUMBER_VALIDATION_REGEX = "^IP-\\d{6}$";
@@ -40,7 +40,7 @@ public class SippMpPubRequest {
 		this.ipNumber = ipNumber;
 	}
 
-	@ApiModelProperty(hidden=true)
+	@Schema(hidden=true)
 	public ProcessType getProcessTypeEnum() {
 		return ProcessType.valueOf(processType.toUpperCase());	
 	}

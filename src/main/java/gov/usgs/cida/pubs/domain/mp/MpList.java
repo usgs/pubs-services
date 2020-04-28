@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.BaseDomain;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Component
 @JsonPropertyOrder({"id", "text", "description", "type"})
@@ -92,6 +93,7 @@ public class MpList extends BaseDomain<MpList>  implements Serializable {
 
 	@Autowired
 	@Qualifier("mpListDao")
+	@Schema(hidden = true)
 	public void setMpListDao(final IDao<MpList> inMpListDao) {
 		mpListDao = inMpListDao;
 	}

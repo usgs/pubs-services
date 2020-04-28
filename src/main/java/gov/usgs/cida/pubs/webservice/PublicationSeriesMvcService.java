@@ -39,8 +39,6 @@ import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
 
 @RestController
 @RequestMapping(value="publicationSeries", produces=PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE)
@@ -56,7 +54,7 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 		this.busService = busService;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@GetMapping
 	@JsonView(View.PW.class)
 	public @ResponseBody SearchResults getPublicationSeriesList(HttpServletRequest request, HttpServletResponse response,
@@ -89,7 +87,7 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 		return results;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@GetMapping(value={"/{id}"})
 	@JsonView(View.PW.class)
 	public @ResponseBody PublicationSeries getPublicationSeries(HttpServletRequest request, HttpServletResponse response,
@@ -103,7 +101,7 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 		return rtn;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PostMapping
 	@Transactional
 	@JsonView(View.LookupMaint.class)
@@ -119,7 +117,7 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 		return result;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PutMapping(value="/{id}")
 	@Transactional
 	@JsonView(View.LookupMaint.class)
@@ -145,7 +143,7 @@ public class PublicationSeriesMvcService extends MvcService<PublicationSeries> {
 		return result;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@DeleteMapping(value="/{id}")
 	@Transactional
 	@JsonView(View.LookupMaint.class)

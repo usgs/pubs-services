@@ -23,7 +23,6 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
-import com.google.common.collect.ImmutableMap;
 
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.ConfigurationService;
@@ -349,7 +348,7 @@ public class PwPublicationDaoIT extends BaseIT {
 	})
 	public void selectByPublicationSubtype(){
 		//get exactly one unnumbered usgs series pubs with a doi
-		Map<String, Object> filters = ImmutableMap.of(
+		Map<String, Object> filters = Map.of(
 			PwPublicationDao.SUBTYPE_ID, new int[]{PublicationSubtype.USGS_NUMBERED_SERIES}
 		);
 		List<PwPublication> pubs = pwPublicationDao.getCrossrefPublications(filters);
@@ -357,7 +356,7 @@ public class PwPublicationDaoIT extends BaseIT {
 		assertEquals("sir2", pubs.get(0).getIndexId());
 
 		//get exactly one numbered usgs series pubs with a doi
-		filters = ImmutableMap.of(
+		filters = Map.of(
 			PwPublicationDao.SUBTYPE_ID, new int[]{PublicationSubtype.USGS_UNNUMBERED_SERIES}
 		);
 		pubs = pwPublicationDao.getCrossrefPublications(filters);
@@ -365,7 +364,7 @@ public class PwPublicationDaoIT extends BaseIT {
 		assertEquals("sir3", pubs.get(0).getIndexId());
 
 		//get exactly two usgs series pubs with dois
-		filters = ImmutableMap.of(
+		filters = Map.of(
 			PwPublicationDao.SUBTYPE_ID, new int[]{
 				PublicationSubtype.USGS_NUMBERED_SERIES,
 				PublicationSubtype.USGS_UNNUMBERED_SERIES
@@ -379,7 +378,7 @@ public class PwPublicationDaoIT extends BaseIT {
 		assertEquals(expectedIndexIds, actualIndexIds);
 
 		//verify that none of an unknown subtype ID are returned
-		filters = ImmutableMap.of(
+		filters = Map.of(
 			PwPublicationDao.SUBTYPE_ID, new int[]{-999}
 		);
 		pubs = pwPublicationDao.getCrossrefPublications(filters);

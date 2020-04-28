@@ -32,6 +32,7 @@ import gov.usgs.cida.pubs.validation.constraint.CrossProperty;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 import gov.usgs.cida.pubs.validation.constraint.PublishChecks;
 import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Component
 @UniqueKey(message = "{publication.indexid.duplicate}")
@@ -1009,6 +1010,7 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	}
 
 	@Autowired
+	@Schema(hidden = true)
 	public void setPublicationDao(final IPublicationDao inPublicationDao) {
 		publicationDao = inPublicationDao;
 	}

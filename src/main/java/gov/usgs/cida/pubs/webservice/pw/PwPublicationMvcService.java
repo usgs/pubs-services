@@ -40,6 +40,8 @@ import gov.usgs.cida.pubs.domain.pw.PwPublication;
 import gov.usgs.cida.pubs.domain.query.CrossRefFilterParams;
 import gov.usgs.cida.pubs.domain.query.PwPublicationFilterParams;
 import gov.usgs.cida.pubs.json.View;
+import gov.usgs.cida.pubs.openapi.PublicationFilterParameters;
+import gov.usgs.cida.pubs.openapi.PwPublicationFilterParameters;
 import gov.usgs.cida.pubs.transform.CrossrefTransformer;
 import gov.usgs.cida.pubs.transform.DelimitedTransformer;
 import gov.usgs.cida.pubs.transform.JsonTransformer;
@@ -48,7 +50,15 @@ import gov.usgs.cida.pubs.transform.XlsxTransformer;
 import gov.usgs.cida.pubs.transform.intfc.ITransformer;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.webservice.MvcService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "USGS Publications Warehouse", description = "Publicly accessible USGS Publications.")
 @RestController
 @RequestMapping(value="publication")
 @ResponseBody
@@ -80,9 +90,20 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	@GetMapping(produces={PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE,
 			PubsConstantsHelper.MEDIA_TYPE_XLSX_VALUE, PubsConstantsHelper.MEDIA_TYPE_CSV_VALUE, PubsConstantsHelper.MEDIA_TYPE_TSV_VALUE})
 	@JsonView(View.PW.class)
+	@Operation(
+			description = "Return a list of Publications (The entire paged list or only those matching the optional search parameter).",
+			responses = {
+					@ApiResponse(
+							responseCode = "200",
+							description = "JSON, delimited, or spreadsheet representation of the list.",
+							content = @Content(schema = @Schema(implementation = PwPublication.class)))
+			}
+		)
+	@PublicationFilterParameters
+	@PwPublicationFilterParameters
 	public void getStreamPubs(HttpServletResponse response,
 			HttpServletRequest request,
-			PwPublicationFilterParams filterParams) {
+			@Parameter(hidden=true) PwPublicationFilterParams filterParams) {
 		LOG.debug(filterParams.toString());
 
 		setHeaders(response);
@@ -171,6 +192,24 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 
 	@GetMapping(value="{indexId}", produces=PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE)
 	@JsonView(View.PW.class)
+	@Operation(
+			operationId = "Publication",
+			description = "Return a specific Publication as JSON.",
+			responses = {
+					@ApiResponse(
+							responseCode = "200",
+							description = "JSON representation of the publication."
+							)
+			},
+			parameters = {
+					@Parameter(
+							in = ParameterIn.PATH,
+							name = "indexId",
+							description = "The indexID of the requested publication.",
+							schema = @Schema(type = "string")
+							)
+			}
+		)
 	public PwPublication getPwPublication(HttpServletRequest request, HttpServletResponse response, @PathVariable("indexId") String indexId)
 			throws IOException {
 		setHeaders(response);
@@ -183,6 +222,25 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 
 	@GetMapping(value="{indexId}", produces={PubsConstantsHelper.MEDIA_TYPE_CROSSREF_VALUE})
 	@JsonView(View.PW.class)
+	//TODO Swaggerize this - right now it causes a duplicate error with the JSON version
+//	@Operation(
+//			operationId = "Publication_CrossRef",
+//			description = "Return a specific Publication in the CrossRef submission format.",
+//			responses = {
+//					@ApiResponse(
+//							responseCode = "200",
+//							description = "CrossRef representation of the publication.",
+//							content = @Content(schema = @Schema(implementation = PwPublication.class)))
+//			},
+//			parameters = {
+//					@Parameter(
+//							in = ParameterIn.PATH,
+//							name = "indexId",
+//							description = "The indexID of the requested publication.",
+//							schema = @Schema(type = "string")
+//							)
+//			}
+//		)
 	public void getPwPublicationCrossref(HttpServletRequest request, HttpServletResponse response, @PathVariable("indexId") String indexId)
 			throws IOException {
 		setHeaders(response);
@@ -195,6 +253,15 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	}
 
 	@GetMapping(value = "/crossref", produces = { PubsConstantsHelper.MEDIA_TYPE_CROSSREF_VALUE })
+	@Operation(
+			description = "Return all USGS Series Publications in the CrossRef submission format.",
+			responses = {
+					@ApiResponse(
+							responseCode = "200",
+							description = "CrossRef representation of the publications.",
+							content = @Content(schema = @Schema(implementation = PwPublication.class)))
+			}
+		)
 	public void getBulkCrossref(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		setHeaders(response);
 		try (
@@ -233,6 +300,23 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		path = "/full/{indexId}",
 		produces = { MediaType.TEXT_HTML_VALUE }
 	)
+	@Operation(
+			description = "Return a specific Publication in HTML format.",
+			responses = {
+					@ApiResponse(
+							responseCode = "200",
+							description = "HTML representation of the publication.",
+							content = @Content(schema = @Schema(implementation = PwPublication.class)))
+			},
+			parameters = {
+					@Parameter(
+							in = ParameterIn.PATH,
+							name = "indexId",
+							description = "The indexID of the requested publication.",
+							schema = @Schema(type = "string")
+							)
+			}
+		)
 	public void getPublicationHtml(HttpServletRequest request,
 						HttpServletResponse response, @PathVariable("indexId") String indexId) throws Exception {
 		PwPublication publication = busService.getByIndexId(indexId);

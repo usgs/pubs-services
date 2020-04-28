@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import gov.usgs.cida.pubs.dao.intfc.IPublishingServiceCenterDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Component
 public class PublishingServiceCenter extends BaseDomain<PublishingServiceCenter> implements ILookup, Serializable {
@@ -35,6 +36,7 @@ public class PublishingServiceCenter extends BaseDomain<PublishingServiceCenter>
 	}
 
 	@Autowired
+	@Schema(hidden = true)
 	public void setPublishingServiceCenterDao(final IPublishingServiceCenterDao inPscDao) {
 		pscDao = inPscDao;
 	}

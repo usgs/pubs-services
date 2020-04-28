@@ -27,6 +27,7 @@ import gov.usgs.cida.pubs.validation.constraint.ManagerChecks;
 import gov.usgs.cida.pubs.validation.constraint.Orcid;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 import gov.usgs.cida.pubs.validation.constraint.SippChecks;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Component
 @ParentExists
@@ -166,6 +167,7 @@ public class PersonContributor<D> extends Contributor<PersonContributor<D>> impl
 
 	@Autowired
 	@Qualifier("personContributorDao")
+	@Schema(hidden = true)
 	public void setPersonContributorDao(final IPersonContributorDao inPersonContributorDao) {
 		personContributorDao = inPersonContributorDao;
 	}

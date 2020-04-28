@@ -17,8 +17,6 @@ import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IBusService;
 import gov.usgs.cida.pubs.domain.mp.MpList;
 import gov.usgs.cida.pubs.webservice.MvcService;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
 
 @RestController
 @RequestMapping(value = "lists", produces=PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE)
@@ -32,7 +30,7 @@ public class MpListMvcService extends MvcService<MpList> {
 		this.busService = busService;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@GetMapping
 	public Collection<MpList> getLists(HttpServletResponse response) {
 		setHeaders(response);

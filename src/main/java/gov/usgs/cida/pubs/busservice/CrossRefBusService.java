@@ -169,7 +169,6 @@ public class CrossRefBusService implements ICrossRefBusService {
 				"Error Message: " + ex.getMessage() + "\n" +
 				publicationIndexIdMessage + "\n" +
 				"More information is available in the server logs.\n" +
-				"Host: " + configurationService.getDisplayHost() + ".\n" +
 				"Error ID#: " + errorId + ".\n";
 
 			pubsEMailer.sendMail(subject, emailMessage);

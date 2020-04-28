@@ -8,11 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.utility.PubsUtils;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
 
 @Controller
 public class AuthController {
@@ -25,7 +22,7 @@ public class AuthController {
 		this.mpPublicationBusService = mpPublicationBusService;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@RequestMapping(value="auth/logout", method=RequestMethod.POST)
 	@ResponseStatus(value=HttpStatus.OK)
 	public void logout() {

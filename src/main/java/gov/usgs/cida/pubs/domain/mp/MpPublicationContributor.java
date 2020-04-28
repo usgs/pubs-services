@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.domain.mp;
 
 import gov.usgs.cida.pubs.dao.intfc.IMpDao;
 import gov.usgs.cida.pubs.domain.PublicationContributor;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -30,19 +31,13 @@ public class MpPublicationContributor extends PublicationContributor<MpPublicati
 		this.setRank(pubContributor.getRank());
 	}
 
-	/**
-	 * @return the mpPublicationContributorDao
-	 */
 	public static IMpDao<MpPublicationContributor> getDao() {
 		return mpPublicationContributorDao;
 	}
 
-	/**
-	 * The setter for mpPublicationContributorDao.
-	 * @param inMpPublicationContributorDao the mpPublicationContributorDao to set
-	 */
 	@Autowired
 	@Qualifier("mpPublicationContributorDao")
+	@Schema(hidden = true)
 	public void setMpPublicationContributorDao(final IMpDao<MpPublicationContributor> inMpPublicationContributorDao) {
 		mpPublicationContributorDao = inMpPublicationContributorDao;
 	}

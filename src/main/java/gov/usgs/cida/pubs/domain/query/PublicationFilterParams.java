@@ -14,10 +14,8 @@ import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.utility.DataNormalizationUtils;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.webservice.MvcService;
-import io.swagger.annotations.Api;
-import springfox.documentation.annotations.ApiIgnore;
+import io.swagger.v3.oas.annotations.Parameter;
 
-@Api
 public abstract class PublicationFilterParams implements IFilterParams {
 	private String[] contributingOffice;
 	private String[] contributor;
@@ -223,11 +221,11 @@ public abstract class PublicationFilterParams implements IFilterParams {
 	public void setReportNumber(String[] reportNumber) {
 		this.reportNumber = reportNumber;
 	}
-	@ApiIgnore
+	@Parameter(hidden = true)
 	public String[] getSearchTerms() {
 		return searchTerms;
 	}
-	@ApiIgnore
+	@Parameter(hidden = true)
 	public void setSearchTerms(String[] searchTerms) {
 		this.searchTerms = searchTerms;
 	}

@@ -2,10 +2,6 @@ package gov.usgs.cida.pubs.domain.query;
 
 import java.util.Arrays;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiParam;
-
-@Api
 public class PersonContributorFilterParams {
 	private Integer[] id;
 
@@ -19,13 +15,10 @@ public class PersonContributorFilterParams {
 
 	private String[] email;
 
-	@ApiParam("The ORCID(s) to search for. The http/https prefix is optional. Example: 0000-0002-1825-0097")
 	private String[] orcid;
 
-	@ApiParam("If provided, will limit to either preferred or not preferred contributor information.")
 	private Boolean preferred;
 
-	@ApiParam("A 'contains' search value which if provided, must be at least 2 characters long.")
 	private String[] text;
 
 	public Integer[] getId() {

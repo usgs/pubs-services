@@ -10,27 +10,22 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import gov.usgs.cida.pubs.dao.BaseDao;
-import io.swagger.annotations.ApiModelProperty;
 
 //Note the paging parameters are not camel case/java like because of the API
 public class DeletedPublicationFilter {
 
 	@PastOrPresent
 	@DateTimeFormat(iso=DateTimeFormat.ISO.DATE)
-	@ApiModelProperty(value="Filter to only Publications deleted since this date. For example 2019-01-15")
 	private LocalDate deletedSince;
 
 	@Positive
-	@ApiModelProperty(value="Used in conjunction with pageSize to page through the deleted Publications.")
 	@JsonProperty(BaseDao.PAGE_NUMBER)
 	protected Integer page_number;
 
-	@ApiModelProperty(hidden=true)
 	@JsonProperty(BaseDao.PAGE_ROW_START)
 	protected Integer page_row_start;
 
 	@Positive
-	@ApiModelProperty(value="Used in conjunction with pageNumber to page through the deleted Publications.")
 	@JsonProperty(BaseDao.PAGE_SIZE)
 	protected Integer page_size;
 

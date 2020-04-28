@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.domain;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.utility.PubsUtils;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -40,6 +41,7 @@ public class CostCenter extends Affiliation<CostCenter> {
 
 	@Autowired
 	@Qualifier("costCenterDao")
+	@Schema(hidden = true)
 	public void setCostCenterDao(final IDao<CostCenter> inCostCenterDao) {
 		costCenterDao = inCostCenterDao;
 	}

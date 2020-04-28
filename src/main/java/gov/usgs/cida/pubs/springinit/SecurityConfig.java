@@ -29,6 +29,12 @@ public class SecurityConfig extends ResourceServerConfigurerAdapter {
 	@Autowired
 	private CustomUserAuthenticationConverter customUserAuthenticationConverter;
 
+	public static final String[] ADMIN_PATHS = new String[] {"/mppublications/*/purge*"};
+	public static final String[] AUTHORIZED_PATHS = new String[] {"/**"};
+	public static final String[] PUBLIC_PATHS = new String[] {"/lookup/**", "/publication/**",
+			"/version", "/about/**", "/swagger", "/swagger-ui/**", "/v3/api-docs/**"};
+	public static final String[] SPN_PATHS = new String[] {"/mppublications/*/preview*"};
+
 	@Bean
 	public TokenStore jwkTokenStore() {
 		DefaultAccessTokenConverter tokenConverter = new DefaultAccessTokenConverter();
@@ -49,14 +55,15 @@ public class SecurityConfig extends ResourceServerConfigurerAdapter {
 				.authorizeRequests()
 					//anonymous (public)
 					.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-					.antMatchers("/lookup/**", "/publication/**", "/version", "/about/**").permitAll()
-					.antMatchers("/swagger-ui.html", "/webjars/**", "/swagger-resources/**", "/v2/api-docs", "/v3/api-docs").permitAll()
+					.antMatchers(PUBLIC_PATHS).permitAll()
 					//authenticated
-					.antMatchers("/mppublications/*/preview*", "/auth/logout").fullyAuthenticated()
+					.antMatchers("/auth/logout").fullyAuthenticated()
+					//spn
+					.antMatchers(SPN_PATHS).fullyAuthenticated()
 					//admin
-					.antMatchers("/mppublications/*/purge*").hasAnyAuthority(configurationService.getAdminAuthorities())
+					.antMatchers(ADMIN_PATHS).hasAnyAuthority(configurationService.getAdminAuthorities())
 					//authorized
-					.antMatchers("/**").hasAnyAuthority(configurationService.getAuthorizedAuthorities())
+					.antMatchers(AUTHORIZED_PATHS).hasAnyAuthority(configurationService.getAuthorizedAuthorities())
 			.and()
 				.anonymous()
 				.and().cors()

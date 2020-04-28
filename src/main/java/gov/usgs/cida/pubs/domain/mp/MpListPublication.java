@@ -9,6 +9,7 @@ import gov.usgs.cida.pubs.dao.intfc.IMpDao;
 import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.validation.constraint.ParentExists;
 import gov.usgs.cida.pubs.validation.constraint.UniqueKey;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * @author drsteini
@@ -47,6 +48,7 @@ public class MpListPublication extends BaseDomain<MpListPublication> {
 
 	@Autowired
 	@Qualifier("mpListPublicationDao")
+	@Schema(hidden = true)
 	public void setMpListPublicationDao(final IMpDao<MpListPublication> inMpListPublicationDao) {
 		mpListPublicationDao = inMpListPublicationDao;
 	}

@@ -46,10 +46,6 @@ DISSEMINATION_LIST_URL: https://something.gov
 DAYS_LAST_DISSEMINATED: 1
 INFOPRODUCT_URL: https://something.gov
 
-SWAGGER_DISPLAY_HOST: localhost:8080
-SWAGGER_DISPLAY_PATH: /pubs-services
-SWAGGER_DISPLAY_PROTOCOL: http
-
 SECURITY_RESOURCE_ID: resourceId
 SECURITY_KEYSET_URI: keysetURI
 
@@ -63,7 +59,7 @@ logging.gelf.port: 12201
 Optionally adding the following will disable security for local development. 
 
 ```yml
-spring.profiles.active: default,swagger,insecure
+spring.profiles.active: default,insecure
 ```
 ### Testing
 This project contains JUnit tests. Maven can be used to run them (in addition to the capabilities of your IDE).

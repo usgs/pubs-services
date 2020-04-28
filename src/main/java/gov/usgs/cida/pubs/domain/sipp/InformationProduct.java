@@ -13,6 +13,7 @@ import gov.usgs.cida.pubs.dao.sipp.InformationProductDao;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Component
 public class InformationProduct {
@@ -521,6 +522,7 @@ public class InformationProduct {
 	}
 	@Autowired
 	@Qualifier("informationProductDao")
+	@Schema(hidden = true)
 	public void setInformationProductDao(InformationProductDao inInformationProductDao) {
 		informationProductDao = inInformationProductDao;
 	}

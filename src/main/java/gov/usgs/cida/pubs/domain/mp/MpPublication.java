@@ -4,6 +4,7 @@ import gov.usgs.cida.pubs.dao.intfc.IMpPublicationDao;
 import gov.usgs.cida.pubs.domain.Publication;
 import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.validation.ValidationResults;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -58,6 +59,7 @@ public class MpPublication extends Publication<MpPublication> {
 	}
 
 	@Autowired
+	@Schema(hidden = true)
 	public void setMpPublicationDao(final IMpPublicationDao inMpPublicationDao) {
 		mpPublicationDao = inMpPublicationDao;
 	}

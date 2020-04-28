@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.BaseDomain;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Component
 public class SippRequestLog extends BaseDomain<SippRequestLog> {
@@ -78,6 +79,7 @@ public class SippRequestLog extends BaseDomain<SippRequestLog> {
 	}
 	@Autowired
 	@Qualifier("sippRequestLogDao")
+	@Schema(hidden = true)
 	public void setSippRequestLogDao(IDao<SippRequestLog> inSippRequestLogDao) {
 		sippRequestLogDao = inSippRequestLogDao;
 	}

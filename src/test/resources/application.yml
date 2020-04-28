@@ -22,10 +22,13 @@ crossref:
   depositorEmail: nobody@usgs.gov
 
 swagger:
-  display:
-    host: localhost:8444
-    path: /pubs-services
-    protocol: https
+  apiDocsUrl: ${SERVER_CONTEXT_PATH}/v3/api-docs/public
+
+springdoc:
+  api-docs:
+    groups:
+      enabled: true
+  version: "@project.version@"
 
 pubs:
   lockTimeoutHours: 1

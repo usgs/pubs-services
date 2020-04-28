@@ -20,8 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
-import com.google.common.collect.ImmutableMap;
-
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.dao.ContributorTypeDao;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
@@ -112,7 +110,7 @@ public class PublicationIT extends BaseIT {
 			secondAuthor
 
 		);
-		Map<String, List<PublicationContributor<?>>> expected = ImmutableMap.of(
+		Map<String, List<PublicationContributor<?>>> expected = Map.of(
 			"authors", Arrays.asList(firstAuthor, secondAuthor),
 			"editors", Arrays.asList(firstEditor, secondEditor)
 		);

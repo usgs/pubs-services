@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.domain;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -10,10 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-/**
- * @author drsteini
- *
- */
 @Component
 public class PublicationType extends BaseDomain<PublicationType> implements ILookup, Serializable {
 
@@ -38,33 +35,21 @@ public class PublicationType extends BaseDomain<PublicationType> implements ILoo
 		this.text = text;
 	}
 
-	/**
-	 * @return the publicationSubtypes
-	 */
 	public Collection<PublicationSubtype> getpublicationSubtypes() {
 		return publicationSubtypes;
 	}
 
-	/**
-	 * @param inPublicationSubtypes the publicationSubtypes to set
-	 */
 	public void setPublicationSubtypes(final Collection<PublicationSubtype> inPublicationSubtypes) {
 		publicationSubtypes = inPublicationSubtypes;
 	}
 
-	/**
-	 * @return the publicationTypeDao
-	 */
 	public static IDao<PublicationType> getDao() {
 		return publicationTypeDao;
 	}
 
-	/**
-	 * The setter for publicationTypeDao.
-	 * @param inPublicationTypeDao the publicationTypeDao to set
-	 */
 	@Autowired
 	@Qualifier("publicationTypeDao")
+	@Schema(hidden = true)
 	public void setPublicationTypeDao(final IDao<PublicationType> inPublicationTypeDao) {
 		publicationTypeDao = inPublicationTypeDao;
 	}

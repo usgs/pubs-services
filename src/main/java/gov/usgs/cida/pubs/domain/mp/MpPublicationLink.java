@@ -2,6 +2,7 @@ package gov.usgs.cida.pubs.domain.mp;
 
 import gov.usgs.cida.pubs.dao.intfc.IMpDao;
 import gov.usgs.cida.pubs.domain.PublicationLink;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -40,6 +41,7 @@ public class MpPublicationLink extends PublicationLink<MpPublicationLink> {
 
 	@Autowired
 	@Qualifier("mpPublicationLinkDao")
+	@Schema(hidden = true)
 	public void setMpPublicationLinkDao(final IMpDao<MpPublicationLink> inMpPublicationLinkDao) {
 		mpPublicationLinkDao = inMpPublicationLinkDao;
 	}

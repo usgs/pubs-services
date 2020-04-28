@@ -7,6 +7,7 @@ import gov.usgs.cida.pubs.dao.intfc.IIpdsPubTypeConvDao;
 import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.domain.PublicationSubtype;
 import gov.usgs.cida.pubs.domain.PublicationType;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Component
 public class IpdsPubTypeConv extends BaseDomain <IpdsPubTypeConv> {
@@ -50,6 +51,7 @@ public class IpdsPubTypeConv extends BaseDomain <IpdsPubTypeConv> {
 	}
 
 	@Autowired
+	@Schema(hidden = true)
 	public void setIpdsPubTypeConvDao(final IIpdsPubTypeConvDao inIpdsPubTypeConvDao) {
 		ipdsPubTypeConvDao = inIpdsPubTypeConvDao;
 	}

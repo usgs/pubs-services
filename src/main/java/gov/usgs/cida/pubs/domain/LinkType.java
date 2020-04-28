@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Component
 public class LinkType extends BaseDomain<LinkType> implements ILookup {
@@ -37,6 +38,7 @@ public class LinkType extends BaseDomain<LinkType> implements ILookup {
 
 	@Autowired
 	@Qualifier("linkTypeDao")
+	@Schema(hidden = true)
 	public void setLinkTypeDao(final IDao<LinkType> inLinkTypeDao) {
 		linkTypeDao = inLinkTypeDao;
 	}

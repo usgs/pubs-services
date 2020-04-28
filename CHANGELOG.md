@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
   - Source of IPDS data for dissemination step.
   - Updated USGS ci/cd configuration to reflect trivial upstream changes.
+  - Replaced SpringFox with SpringDoc for OpenAPI definition creation.
 
 ## [1.0.0](https://github.com/usgs/pubs-services/compare/pubs-services-0.9.4...pubs-services-1.0.0)
 ### Changed

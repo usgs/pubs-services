@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import gov.usgs.cida.pubs.dao.sipp.IpdsBureauApprovalDao;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Component
 public class IpdsBureauApproval {
@@ -172,6 +173,7 @@ public class IpdsBureauApproval {
 	}
 	@Autowired
 	@Qualifier("ipdsBureauApprovalDao")
+	@Schema(hidden = true)
 	public void setIpdsBureauApprovalDao(IpdsBureauApprovalDao inIpdsBureauApprovalDao) {
 		ipdsBureauApprovalDao = inIpdsBureauApprovalDao;
 	}

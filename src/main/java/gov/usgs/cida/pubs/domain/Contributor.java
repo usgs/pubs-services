@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.json.View;
 import gov.usgs.cida.pubs.utility.PubsUtils;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Component
 public class Contributor<D> extends BaseDomain<Contributor<D>> {
@@ -58,19 +59,13 @@ public class Contributor<D> extends BaseDomain<Contributor<D>> {
 		return id;
 	}
 
-	/**
-	 * @return the contributorDao
-	 */
 	public static IDao<Contributor<?>> getDao() {
 		return contributorDao;
 	}
 
-	/**
-	 * The setter for contributorDao.
-	 * @param inContributorDao the contributorDao to set
-	 */
 	@Autowired
 	@Qualifier("contributorDao")
+	@Schema(hidden = true)
 	public void setContributorDao(final IDao<Contributor<?>> inContributorDao) {
 		contributorDao = inContributorDao;
 	}

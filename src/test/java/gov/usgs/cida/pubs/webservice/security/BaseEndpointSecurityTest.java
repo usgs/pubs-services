@@ -75,7 +75,7 @@ import gov.usgs.cida.pubs.webservice.AuthController;
 import gov.usgs.cida.pubs.webservice.ContributorMvcService;
 import gov.usgs.cida.pubs.webservice.LookupMvcService;
 import gov.usgs.cida.pubs.webservice.PublicationSeriesMvcService;
-import gov.usgs.cida.pubs.webservice.VersionController;
+import gov.usgs.cida.pubs.webservice.RedirectController;
 import gov.usgs.cida.pubs.webservice.mp.MpListMvcService;
 import gov.usgs.cida.pubs.webservice.mp.MpListMvcServiceTest;
 import gov.usgs.cida.pubs.webservice.mp.MpListPublicationMvcService;
@@ -89,7 +89,7 @@ import gov.usgs.cida.pubs.webservice.pw.PwPublicationRssMvcService;
 		AffliliationMvcService.class, PublicationSeriesMvcService.class, UserDetailTestService.class,
 		MpPublicationMvcService.class, PwPublicationMvcService.class, PwPublicationRssMvcService.class,
 		ContributorMvcService.class, MpListMvcService.class, MpListPublicationMvcService.class,
-		VersionController.class, LookupMvcService.class, PublicationType.class, PublicationSubtype.class,
+		RedirectController.class, LookupMvcService.class, PublicationType.class, PublicationSubtype.class,
 		PublicationSeries.class, CostCenter.class, OutsideAffiliation.class, ContributorType.class,
 		LinkType.class, LinkFileType.class, PersonContributor.class, CorporateContributor.class,
 		PublishingServiceCenter.class, Publication.class, Contributor.class, OutsideContributor.class,

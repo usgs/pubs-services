@@ -38,8 +38,6 @@ import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 import gov.usgs.cida.pubs.webservice.MvcService;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
 
 @RestController
 @RequestMapping(value = "mppublications", produces=PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE)
@@ -64,7 +62,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		this.sippProcess = sippProcess;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@GetMapping
 	@JsonView(View.ManagerGrid.class)
 	public @ResponseBody SearchResults getPubs(HttpServletResponse response,
@@ -84,7 +82,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		return results;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@GetMapping(value="{publicationId}")
 	@JsonView(View.MP.class)
 	@Transactional
@@ -121,7 +119,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		return rtn;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PostMapping
 	@JsonView(View.MP.class)
 	@Transactional
@@ -136,7 +134,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		return newPub;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PostMapping(value="/sipp")
 	@JsonView(View.MP.class)
 	@Transactional
@@ -151,7 +149,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		return newPub;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PutMapping(value = "{publicationId}")
 	@JsonView(View.MP.class)
 	@Transactional
@@ -182,7 +180,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		return rtn;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@DeleteMapping(value = "{publicationId}")
 	@JsonView(View.MP.class)
 	@Transactional
@@ -205,7 +203,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		return rtn;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@DeleteMapping(value = "{publicationId}/purge")
 	@JsonView(View.PW.class)
 	@Transactional
@@ -230,7 +228,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		return rtn;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PostMapping(value = "publish")
 	@JsonView(View.MP.class)
 	@Transactional
@@ -254,7 +252,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		return rtn;
 	}
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
+//	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
 	@PostMapping(value="release")
 	@JsonView(View.MP.class)
 	@Transactional

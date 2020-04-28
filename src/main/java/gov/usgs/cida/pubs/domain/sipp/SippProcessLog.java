@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.BaseDomain;
 import gov.usgs.cida.pubs.domain.ProcessType;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Component
 public class SippProcessLog extends BaseDomain <SippProcessLog> {
@@ -53,6 +54,7 @@ public class SippProcessLog extends BaseDomain <SippProcessLog> {
 	}
 	@Autowired
 	@Qualifier("sippProcessLogDao")
+	@Schema(hidden = true)
 	public void setSippProcessLogDao(final IDao<SippProcessLog> inSippProcessLogDao) {
 		sippProcessLogDao = inSippProcessLogDao;
 	}

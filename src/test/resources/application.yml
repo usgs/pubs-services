@@ -73,4 +73,4 @@ PUBS_SCHEMA_NAME: pubs_schema
 
 PUBS_OWNER_USERNAME: owner_name
 PUBS_OWNER_PASSWORD: changeMe
-  
+SERVER_CONTEXT_PATH: /pubs-services

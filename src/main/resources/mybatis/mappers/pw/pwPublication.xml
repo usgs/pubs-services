@@ -142,15 +142,15 @@
         </if>
         
         <if test="null != mod_x_days">
-            and display_to_public_date::date &gt;= (current_date - (#{mod_x_days} ||' day')::interval)
+            and update_date::date &gt;= (current_date - (#{mod_x_days} ||' day')::interval)
         </if>
 
         <if test="null != mod_date_low">
-            and display_to_public_date::date &gt;= to_date(#{mod_date_low}, <include refid="base.dateFormat"/>)
+            and update_date::date &gt;= to_date(#{mod_date_low}, <include refid="base.dateFormat"/>)
         </if>
 
         <if test="null != mod_date_high">
-            and display_to_public_date::date &lt;= to_date(#{mod_date_high}, <include refid="base.dateFormat"/>)
+            and update_date::date &lt;= to_date(#{mod_date_high}, <include refid="base.dateFormat"/>)
         </if>
 
     </sql>

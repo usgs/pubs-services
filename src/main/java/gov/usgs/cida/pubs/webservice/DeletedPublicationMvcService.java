@@ -14,7 +14,6 @@ import gov.usgs.cida.pubs.dao.intfc.IDeletedPublicationDao;
 import gov.usgs.cida.pubs.domain.DeletedPublication;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.query.DeletedPublicationFilter;
-import gov.usgs.cida.pubs.openapi.Lookup;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -38,12 +37,12 @@ public class DeletedPublicationMvcService extends MvcService<DeletedPublication>
 	@GetMapping
 	@RequestMapping(method=RequestMethod.GET)
 	@Operation(
-			description = "Return a list of People Contributors.",
+			description = "Return a list of Deleted Publicationss.",
 			responses = {
 					@ApiResponse(
 							responseCode = "200",
 							description = "JSON representation of the list.",
-							content = @Content(schema = @Schema(implementation = Lookup.class)))
+							content = @Content(schema = @Schema(implementation = SearchResults.class)))
 			},
 			parameters = {
 					@Parameter(

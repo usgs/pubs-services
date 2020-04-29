@@ -20,7 +20,7 @@ public class ConfigOpenApi {
 	@Bean
 	public OpenAPI customOpenAPI() {
 		return new OpenAPI()
-				.addServersItem(new Server().url(configurationService.getWarehouseEndpoint()))
+				.addServersItem(new Server().url(configurationService.getSwaggerUrl()))
 				.info(new Info().title("USGS Publications Warehouse Web Services API").version(configurationService.getAppVersion()));
 	}
 

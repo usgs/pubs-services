@@ -39,7 +39,7 @@ crossref:
 
 swagger:
   apiDocsUrl: ${SERVER_CONTEXT_PATH}/v3/api-docs/public
-  serverUrl: https://${SWAGGER_DISPLAY_HOST}${SERVER_CONTEXT_PATH}
+  serverUrl: ${SWAGGER_DISPLAY_HOST}${SERVER_CONTEXT_PATH}
 
 springdoc:
   api-docs:

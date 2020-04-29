@@ -40,6 +40,8 @@ public class ConfigurationService {
 
 	@Value("${springdoc.version}")
 	private String appVersion;
+	@Value("${swagger.serverUrl}")
+	private String swaggerUrl;
 
 	@Value("${security.oauth2.resource.id}")
 	private String resourceId;
@@ -116,5 +118,8 @@ public class ConfigurationService {
 	}
 	public String getAppVersion() {
 		return appVersion;
+	}
+	public String getSwaggerUrl() {
+		return swaggerUrl;
 	}
 }

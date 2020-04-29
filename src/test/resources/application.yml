@@ -23,6 +23,7 @@ crossref:
 
 swagger:
   apiDocsUrl: ${SERVER_CONTEXT_PATH}/v3/api-docs/public
+  serverUrl: http://localhost${SERVER_CONTEXT_PATH}
 
 springdoc:
   api-docs:

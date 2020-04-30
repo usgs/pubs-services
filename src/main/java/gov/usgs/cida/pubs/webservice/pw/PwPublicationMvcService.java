@@ -50,6 +50,7 @@ import gov.usgs.cida.pubs.transform.XlsxTransformer;
 import gov.usgs.cida.pubs.transform.intfc.ITransformer;
 import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.webservice.MvcService;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -223,6 +224,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	@GetMapping(value="{indexId}", produces={PubsConstantsHelper.MEDIA_TYPE_CROSSREF_VALUE})
 	@JsonView(View.PW.class)
 	//TODO Swaggerize this - right now it causes a duplicate error with the JSON version
+	@Hidden
 //	@Operation(
 //			operationId = "Publication_CrossRef",
 //			description = "Return a specific Publication in the CrossRef submission format.",

@@ -5,6 +5,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import gov.usgs.cida.pubs.PubsConstantsHelper;
+import gov.usgs.cida.pubs.dao.BaseDao;
+import gov.usgs.cida.pubs.dao.PersonContributorDao;
+import gov.usgs.cida.pubs.dao.PublicationDao;
+import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -14,145 +19,145 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Retention(RetentionPolicy.RUNTIME)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "contributingOffice",
+		name = PublicationDao.CONTRIBUTING_OFFICE,
 		description = "",
 		array = @ArraySchema(schema = @Schema(type = "string"))
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "contributor",
+		name = PublicationDao.CONTRIBUTOR,
 		description = "",
 		array = @ArraySchema(schema = @Schema(type = "string"))
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "doi",
+		name = PublicationDao.DOI,
 		description = "",
 		array = @ArraySchema(schema = @Schema(type = "string"))
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "endYear",
+		name = PublicationDao.END_YEAR,
 		description = "",
 		schema = @Schema(type = "string")
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "hasDoi",
+		name = PublicationDao.HAS_DOI,
 		description = "",
 		schema = @Schema(type = "boolean")
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "indexId",
+		name = PublicationDao.INDEX_ID,
 		description = "",
 		array = @ArraySchema(schema = @Schema(type = "string"))
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "ipdsId",
+		name = PublicationDao.IPDS_ID,
 		description = "",
 		array = @ArraySchema(schema = @Schema(type = "string"))
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "listId",
+		name = MpPublicationDao.LIST_ID,
 		description = "",
 		array = @ArraySchema(schema = @Schema(type = "string"))
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "mimeType",
+		name = PubsConstantsHelper.CONTENT_PARAMETER_NAME,
 		description = "",
 		schema = @Schema(type = "string")
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "orcid",
+		name = PersonContributorDao.ORCID,
 		description = "",
 		array = @ArraySchema(schema = @Schema(type = "string"))
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "orderBy",
+		name = PublicationDao.ORDER_BY,
 		description = "",
 		schema = @Schema(type = "string")
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "page_number",
+		name = BaseDao.PAGE_NUMBER,
 		description = "",
 		schema = @Schema(type = "string")
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "page_row_start",
+		name = BaseDao.PAGE_ROW_START,
 		description = "",
 		schema = @Schema(type = "string")
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "page_size",
+		name = BaseDao.PAGE_SIZE,
 		description = "",
 		schema = @Schema(type = "string")
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "prodId",
+		name = PublicationDao.PROD_ID,
 		description = "",
 		array = @ArraySchema(schema = @Schema(type = "string"))
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "pubAbstract",
+		name = PublicationDao.PUB_ABSTRACT,
 		description = "",
 		array = @ArraySchema(schema = @Schema(type = "string"))
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "q",
+		name = PublicationDao.Q,
 		description = "",
 		schema = @Schema(type = "string")
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "reportNumber",
+		name = PublicationDao.REPORT_NUMBER,
 		description = "",
 		array = @ArraySchema(schema = @Schema(type = "string"))
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "seriesName",
+		name = PublicationDao.SERIES_NAME,
 		description = "",
 		array = @ArraySchema(schema = @Schema(type = "string"))
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "startYear",
+		name = PublicationDao.START_YEAR,
 		description = "",
 		schema = @Schema(type = "string")
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "subtypeName",
+		name = PublicationDao.SUBTYPE_NAME,
 		description = "",
 		array = @ArraySchema(schema = @Schema(type = "string"))
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "title",
+		name = PublicationDao.TITLE,
 		description = "",
 		array = @ArraySchema(schema = @Schema(type = "string"))
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "typeName",
+		name = PublicationDao.TYPE_NAME,
 		description = "",
 		array = @ArraySchema(schema = @Schema(type = "string"))
 		)
 @Parameter(
 		in = ParameterIn.QUERY,
-		name = "year",
+		name = PublicationDao.YEAR,
 		description = "",
 		array = @ArraySchema(schema = @Schema(type = "string"))
 		)

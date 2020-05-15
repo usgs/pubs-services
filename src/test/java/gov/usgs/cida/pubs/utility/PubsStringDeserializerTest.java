@@ -8,20 +8,21 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
-public class CustomStringToStringConverterTest {
-
-	CustomStringToStringConverter conv = new CustomStringToStringConverter();
+public class PubsStringDeserializerTest {
+	PubsStringDeserializer psd = new PubsStringDeserializer();
 
 	@Test
-	public void convertTest() {
+	public void nullIfEmptyTest() {
 		//NPE
-		assertNull(conv.convert(null));
+		assertNull(psd.nullIfEmpty(null));
 
 		//Happy paths
-		assertNull(conv.convert(""));
+		assertNull(psd.nullIfEmpty(""));
 
-		assertEquals("abc", conv.convert("abc"));
+		assertNull(psd.nullIfEmpty("    "));
 
-		assertEquals("a,b,c", conv.convert("a,b,c"));
+		assertEquals("abc", psd.nullIfEmpty("  abc  "));
+
+		assertEquals("a,b,c", psd.nullIfEmpty("a,b,c"));
 	}
 }

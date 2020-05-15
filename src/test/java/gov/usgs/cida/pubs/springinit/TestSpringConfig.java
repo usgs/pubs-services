@@ -11,6 +11,13 @@ import org.springframework.util.FileCopyUtils;
 @Configuration
 public class TestSpringConfig {
 
+	@Value("classpath:testData/emptyStringPub.json")
+	private Resource emptyStringPub;
+	@Bean
+	public String emptyStringPub() throws IOException {
+		return new String(FileCopyUtils.copyToByteArray(emptyStringPub.getInputStream()));
+	}
+
 	@Value("classpath:testResult/getMpPub1.json")
 	private Resource mpPub1;
 	@Bean

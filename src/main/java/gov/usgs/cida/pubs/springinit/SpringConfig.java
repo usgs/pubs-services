@@ -20,11 +20,13 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.utility.CustomStringToArrayConverter;
 import gov.usgs.cida.pubs.utility.CustomStringToStringConverter;
+import gov.usgs.cida.pubs.utility.PubsStringDeserializer;
 import gov.usgs.cida.pubs.utility.StringArrayCleansingConverter;
 
 @Configuration
@@ -39,6 +41,9 @@ public class SpringConfig implements WebMvcConfigurer {
 
 	@Autowired
 	private CustomStringToStringConverter customStringToStringConverter;
+
+	@Autowired
+	private PubsStringDeserializer pubsStringDeserializer;
 
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
@@ -73,6 +78,11 @@ public class SpringConfig implements WebMvcConfigurer {
 	public MappingJackson2HttpMessageConverter jackson2HttpMessageConverter() {
 		Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
 		builder.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		builder.featuresToEnable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+		//We are using a custom StringDeseriealizer to change empty strings into nulls.
+		//DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT does not do String as
+		//empty string ("") is a valid String value. It is for other Objects.
+		builder.deserializerByType(String.class, pubsStringDeserializer);
 		return new MappingJackson2HttpMessageConverter(builder.build());
 	}
 

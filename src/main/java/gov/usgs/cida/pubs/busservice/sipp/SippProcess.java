@@ -111,15 +111,15 @@ public class SippProcess implements ISippProcess {
 				informationProduct.setPublicationType(idsPubTypeConv.getPublicationType());
 				informationProduct.setPublicationSubtype(idsPubTypeConv.getPublicationSubtype());
 
+				String pubSeriesText = "";
 				if (StringUtils.isNotBlank(informationProduct.getJournalTitle())
-						&& PubsUtils.isPublicationTypeArticle(idsPubTypeConv.getPublicationType())
-						&& null != idsPubTypeConv.getPublicationSubtype()) {
-					informationProduct.setUsgsSeriesTitle(getSeriesTitle(idsPubTypeConv.getPublicationSubtype(),
-							informationProduct.getJournalTitle()));
+						&& null != idsPubTypeConv.getPublicationSubtype()
+						&& PubsUtils.isPublicationTypeArticle(idsPubTypeConv.getPublicationType())) {
+					pubSeriesText = informationProduct.getJournalTitle();
 				} else {
-					informationProduct.setUsgsSeriesTitle(getSeriesTitle(idsPubTypeConv.getPublicationSubtype(),
-							informationProduct.getUsgsSeriesType()));
+					pubSeriesText = informationProduct.getUsgsSeriesType();
 				}
+				informationProduct.setUsgsSeriesTitle(getSeriesTitle(idsPubTypeConv.getPublicationSubtype(), pubSeriesText));
 
 				informationProduct.setUsgsNumberedSeries(
 					PubsUtils.isUsgsNumberedSeries(idsPubTypeConv.getPublicationSubtype()));

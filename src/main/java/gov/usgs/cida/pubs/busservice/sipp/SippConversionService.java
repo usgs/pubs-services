@@ -94,10 +94,6 @@ public class SippConversionService {
 		mpPublication.setPublicationType(informationProduct.getPublicationType());
 		mpPublication.setPublicationSubtype(informationProduct.getPublicationSubtype());
 
-		if (null != mpPublication.getPublicationSubtype()) {
-			mpPublication.setSeriesTitle(informationProduct.getUsgsSeriesTitle());
-		}
-
 		mpPublication.setSeriesNumber(cleanseUsgsSeriesNumber(informationProduct.getUsgsSeriesNumber()));
 		mpPublication.setChapter(informationProduct.getUsgsSeriesLetter());
 		mpPublication.setTitle(buildTitle(informationProduct.getFinalTitle(), informationProduct.getWorkingTitle()));
@@ -124,10 +120,8 @@ public class SippConversionService {
 
 		String largerWorkTitle = informationProduct.getJournalTitle();
 		if (StringUtils.isNotBlank(largerWorkTitle)) {
-			if (PubsUtils.isPublicationTypeArticle(mpPublication.getPublicationType())
-					&& null != mpPublication.getPublicationSubtype()) {
-				mpPublication.setSeriesTitle(buildSeriesTitle(mpPublication.getPublicationSubtype(), largerWorkTitle));
-			} else {
+			if (!(PubsUtils.isPublicationTypeArticle(mpPublication.getPublicationType())
+					&& null != mpPublication.getPublicationSubtype())) {
 				mpPublication.setLargerWorkTitle(largerWorkTitle);
 			}
 		}

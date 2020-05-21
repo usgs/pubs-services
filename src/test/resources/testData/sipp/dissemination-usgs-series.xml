@@ -1,0 +1,506 @@
+<?xml version="1.0"?>
+<InformationProduct xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IPNumber>IP-114268</IPNumber>
+  <Abstract>
+Barrier islands, headlands, and coastal shorelines provide numerous valuable ecosystem goods and services, including storm protection and erosion control for the mainland, habitat for fish and wildlife, salinity regulation in estuaries, carbon sequestration in marshes, and areas for recreation and tourism. These coastal features are dynamic environments because of their position at the land-sea interface. Storms, wave energy, tides, currents, and relative sea-level rise are powerful forces that shape local geomorphology and habitat distribution. In order to make more informed decisions, coastal resource managers require insights into how these dynamic systems are changing through time. In 2005, Louisiana&#x2019;s Coastal Protection and Restoration Authority, in partnership with the University of New Orleans and the U.S. Geological Survey, developed the Barrier Island Comprehensive Monitoring (BICM) Program. The goal of the BICM Program is to develop long-term datasets for habitat coverage, shoreline assessments, shoreline position, topobathymetric changes, and sediment characterization to assist with planning, designing, evaluating, and maintaining current and future barrier shorelines. The overall objectives of the study described in this report were to (1) map habitats for 2008 and 2015&#x2013;16 for BICM coastal reaches and (2) map habitat change between these two time periods. This report highlights the second phase of habitat analyses for the BICM Program. This work builds on a previous habitat analysis conducted by the University of New Orleans, which included the development of habitat maps for 1996/1998, 2001, 2004, and 2005, along with habitat change maps. For this current effort, a new 15-class habitat scheme was developed from the original BICM scheme to further delineate various dune habitats, including meadow habitat found along the backslopes of dunes, to distinguish between marsh and mangrove, and to distinguish between beach and unvegetated barrier flat habitats. Additionally, a geographic object-based image analysis-based mapping framework was used to incorporate relative topography and address elevation uncertainty in light detection and ranging data to assist with mapping dune and intertidal habitats. For the entire BICM region, the area experiencing a change in a land/water category (that is, land gain or land loss) was 3.4 percent, of which, 59.2 percent was land gain and 40.8 percent was land loss. Areal coverages of meadow, mangrove, scrub/shrub, and vegetated dune increased from 2008 to 2015&#x2013;16, whereas areal coverages of beach, grassland, and intertidal decreased. The decrease in intertidal, however, was largely due to differing water levels in the orthophotography between the two time periods. Regional analyses of habitat coverage and habitat change captured the dynamic nature of these systems and the effects of restoration efforts, most notably in the Late Lafourche Delta, Modern Delta, and Chandeleur Islands regions. For instance, in the Modern Delta region there was a marked increase in unvegetated flat, meadow, mangrove, scrub/shrub, beach, unvegetated dune, and vegetated dune. As a result, this region experienced the highest percent change for land/water classes (6.6 percent) with land gain accounting for much of this change (70.8 percent). In contrast, the Acadiana Bays region had the highest relative percent loss of all regions. The region had a percent change for land/water classes of 2.8 percent, of which, 79.7 percent was land loss. The results of this study provide information about the areal coverage and distribution of habitats for two recent time periods and change over about an 8-year period. These data can be used to evaluate changes along the Louisiana Gulf of Mexico shoreline, including gradual changes caused by coastal processes, restoration actions, and (or) episodic events, such as hurricanes and extreme storms.
+</Abstract>
+  <BasisNumber>MR00G7C Task 2</BasisNumber>
+  <CostCenter>Wetland and Aquatic Research Center</CostCenter>
+  <IPPANumber xsi:nil="true"/>
+  <Cooperators>
+Louisiana Coastal Protection and Restoration Authority
+</Cooperators>
+  <EditionNumber xsi:nil="true"/>
+  <FinalTitle>
+Louisiana Barrier Island Comprehensive Monitoring Program: Mapping habitats in beach, dune, and intertidal environments along the Louisiana Gulf of Mexico shoreline, 2008 and 2015&#x2013;2016
+</FinalTitle>
+  <JournalTitle xsi:nil="true"/>
+  <NumberOfMapsOrPlates xsi:nil="true"/>
+  <PageRange xsi:nil="true"/>
+  <PhysicalDescription>
+Enwright, N.M., SooHoo, W.M., Dugas, J.L., Lee, D.M., and Borrok, P.S., 2018, Louisiana Barrier Island Comprehensive Monitoring Program &#x2013; habitat mapping: U.S. Geological Survey data release, https://doi:10.5066/F7XP7440. (release date, 2/05/2018)
+</PhysicalDescription>
+  <PlannedDisseminationDate>2020-03-02T06:00:00</PlannedDisseminationDate>
+  <SupersedesIPNumber xsi:nil="true"/>
+  <TeamProjectName xsi:nil="true"/>
+  <VISpecialist xsi:nil="true"/>
+  <Volume xsi:nil="true"/>
+  <WorkingTitle>
+Louisiana Barrier Island Comprehensive Monitoring Program: Mapping habitats in beach, dune, and intertidal environments along the Louisiana Gulf Coast shoreline, 2008 and 2015&#x2013;2016
+</WorkingTitle>
+  <USGSSeriesNumber>2020-1030</USGSSeriesNumber>
+  <USGSRegion>Southeast Region</USGSRegion>
+  <USGSProgram>Environments Program</USGSProgram>
+  <USGSSeriesType>Open-File Report</USGSSeriesType>
+  <SeniorUSGSAuthor>Enwright, Nicholas M.</SeniorUSGSAuthor>
+  <LocationOfSupportingData>https://doi:10.5066/F7XP7440</LocationOfSupportingData>
+  <PSCChief>Trahan, Natalie</PSCChief>
+  <PublishedURL>https://pubs.usgs.gov/ofr20201030</PublishedURL>
+  <CostCenterChief>Doyle, Thomas W.</CostCenterChief>
+  <AuthorsSupervisor>Rice, Kenneth G.</AuthorsSupervisor>
+  <BureauApprovingOfficial>Powell, Janine</BureauApprovingOfficial>
+  <Citation>
+Enwright, N.M., SooHoo, W.M., Dugas, J.L., Conzelmann, C.P., Laurenzano, C., Lee, D.M., Mouton, K., and Stelly, S.J., 2020, Louisiana Barrier Island Comprehensive Monitoring Program&#x2014;Mapping habitats in beach, dune, and intertidal environments along the Louisiana Gulf of Mexico shoreline, 2008 and 2015&#x2013;16: U.S. Geological Survey Open-File Report 2020&#x2013;1030, 57 p., https://doi.org/10.3133/ofr20201030.
+</Citation>
+  <DigitalObjectIdentifier>10.3133/ofr20201030</DigitalObjectIdentifier>
+  <InterpretivePublication xsi:nil="true"/>
+  <Issue xsi:nil="true"/>
+  <ProductType>USGS series</ProductType>
+  <DataManagementPlan xsi:nil="true"/>
+  <USGSFunded>No</USGSFunded>
+  <USGSMissionArea>Ecosystems</USGSMissionArea>
+  <ProductSummary>
+This IPDS record is for an Open-File Report for a habitat mapping 2008 and 2015&#x2013;2016 and habitat change analysis between these years for Louisiana's Barrier Island Comprehensive Monitoring Program.
+</ProductSummary>
+  <TaskAssignedTo>Dodd, Felicia D.</TaskAssignedTo>
+  <NonUSGSPublisher xsi:nil="true"/>
+  <RelatedIPNumber>IP-093235; IP-118017 </RelatedIPNumber>
+  <USGSSeriesLetter xsi:nil="true"/>
+  <Task>Disseminated</Task>
+  <TaskStartDate>2020-05-19T12:01:46</TaskStartDate>
+  <GeologicalNames>No</GeologicalNames>
+  <Editor xsi:nil="true"/>
+  <PublishingServiceCenter>Lafayette PSC</PublishingServiceCenter>
+  <Created>2019-12-04T13:32:01</Created>
+  <CreatedBy>Enwright, Nicholas M.</CreatedBy>
+  <Modified>2020-05-19T12:01:46</Modified>
+  <ModifiedBy>Dodd, Felicia D.</ModifiedBy>
+  <Authors xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Author>
+      <IPNumber>IP-114268</IPNumber>
+      <AuthorName>Enwright, Nicholas M.</AuthorName>
+      <AuthorNameText>Enwright, Nicholas M.</AuthorNameText>
+      <ORCID>https://orcid.org/0000-0002-7887-3261</ORCID>
+      <CostCenter>Wetland and Aquatic Research Center</CostCenter>
+      <ContributorRole>1</ContributorRole>
+      <NonUSGSAffiliation xsi:nil="true"/>
+      <NonUSGSContributor xsi:nil="true"/>
+      <Rank>1</Rank>
+      <Created>2019-12-04T13:32:02</Created>
+      <CreatedBy>Enwright, Nicholas M.</CreatedBy>
+      <Modified>2019-12-04T13:32:02</Modified>
+      <ModifiedBy>Enwright, Nicholas M.</ModifiedBy>
+    </Author>
+    <Author>
+      <IPNumber>IP-114268</IPNumber>
+      <AuthorName xsi:nil="true"/>
+      <AuthorNameText>SooHoo, William M.</AuthorNameText>
+      <ORCID>https://orcid.org/0000-0002-8652-0474</ORCID>
+      <CostCenter xsi:nil="true"/>
+      <ContributorRole>1</ContributorRole>
+      <NonUSGSAffiliation>Cherokee Nation Technologies</NonUSGSAffiliation>
+      <NonUSGSContributor>SooHoo, William M.</NonUSGSContributor>
+      <Rank>2</Rank>
+      <Created>2019-12-04T13:38:28</Created>
+      <CreatedBy>Enwright, Nicholas M.</CreatedBy>
+      <Modified>2019-12-04T13:38:28</Modified>
+      <ModifiedBy>Enwright, Nicholas M.</ModifiedBy>
+    </Author>
+    <Author>
+      <IPNumber>IP-114268</IPNumber>
+      <AuthorName>Dugas, Jason</AuthorName>
+      <AuthorNameText>Dugas, Jason</AuthorNameText>
+      <ORCID>https://orcid.org/0000-0001-6094-7560</ORCID>
+      <CostCenter>Wetland and Aquatic Research Center</CostCenter>
+      <ContributorRole>1</ContributorRole>
+      <NonUSGSAffiliation xsi:nil="true"/>
+      <NonUSGSContributor xsi:nil="true"/>
+      <Rank>3</Rank>
+      <Created>2019-12-04T13:39:26</Created>
+      <CreatedBy>Enwright, Nicholas M.</CreatedBy>
+      <Modified>2019-12-04T13:39:26</Modified>
+      <ModifiedBy>Enwright, Nicholas M.</ModifiedBy>
+    </Author>
+    <Author>
+      <IPNumber>IP-114268</IPNumber>
+      <AuthorName>Conzelmann, Craig</AuthorName>
+      <AuthorNameText>Conzelmann, Craig</AuthorNameText>
+      <ORCID>http://orcid.org/0000-0002-4227-8719</ORCID>
+      <CostCenter>Wetland and Aquatic Research Center</CostCenter>
+      <ContributorRole>1</ContributorRole>
+      <NonUSGSAffiliation xsi:nil="true"/>
+      <NonUSGSContributor xsi:nil="true"/>
+      <Rank>4</Rank>
+      <Created>2019-12-04T13:40:38</Created>
+      <CreatedBy>Enwright, Nicholas M.</CreatedBy>
+      <Modified>2019-12-04T13:40:38</Modified>
+      <ModifiedBy>Enwright, Nicholas M.</ModifiedBy>
+    </Author>
+    <Author>
+      <IPNumber>IP-114268</IPNumber>
+      <AuthorName xsi:nil="true"/>
+      <AuthorNameText>Laurenzano, Claudia</AuthorNameText>
+      <ORCID>https://orcid.org/0000-0003-1406-8658</ORCID>
+      <CostCenter xsi:nil="true"/>
+      <ContributorRole>1</ContributorRole>
+      <NonUSGSAffiliation>Cherokee Nation Technologies</NonUSGSAffiliation>
+      <NonUSGSContributor>Laurenzano, Claudia</NonUSGSContributor>
+      <Rank>5</Rank>
+      <Created>2019-12-04T13:41:08</Created>
+      <CreatedBy>Enwright, Nicholas M.</CreatedBy>
+      <Modified>2019-12-04T13:41:08</Modified>
+      <ModifiedBy>Enwright, Nicholas M.</ModifiedBy>
+    </Author>
+    <Author>
+      <IPNumber>IP-114268</IPNumber>
+      <AuthorName xsi:nil="true"/>
+      <AuthorNameText>Lee, Darin M.</AuthorNameText>
+      <ORCID xsi:nil="true"/>
+      <CostCenter xsi:nil="true"/>
+      <ContributorRole>1</ContributorRole>
+      <NonUSGSAffiliation>
+Louisiana Coastal Protection and Restoration Authority
+</NonUSGSAffiliation>
+      <NonUSGSContributor>Lee, Darin M.</NonUSGSContributor>
+      <Rank>6</Rank>
+      <Created>2019-12-04T13:41:47</Created>
+      <CreatedBy>Enwright, Nicholas M.</CreatedBy>
+      <Modified>2019-12-04T13:41:47</Modified>
+      <ModifiedBy>Enwright, Nicholas M.</ModifiedBy>
+    </Author>
+    <Author>
+      <IPNumber>IP-114268</IPNumber>
+      <AuthorName xsi:nil="true"/>
+      <AuthorNameText>Mouton, Kelly</AuthorNameText>
+      <ORCID>https://orcid.org/0000-0002-7692-8206</ORCID>
+      <CostCenter xsi:nil="true"/>
+      <ContributorRole>1</ContributorRole>
+      <NonUSGSAffiliation>Cherokee Nation Technologies</NonUSGSAffiliation>
+      <NonUSGSContributor>Mouton, Kelly</NonUSGSContributor>
+      <Rank>7</Rank>
+      <Created>2019-12-04T13:42:48</Created>
+      <CreatedBy>Enwright, Nicholas M.</CreatedBy>
+      <Modified>2019-12-04T13:42:48</Modified>
+      <ModifiedBy>Enwright, Nicholas M.</ModifiedBy>
+    </Author>
+    <Author>
+      <IPNumber>IP-114268</IPNumber>
+      <AuthorName xsi:nil="true"/>
+      <AuthorNameText>Stelly, Spencer J</AuthorNameText>
+      <ORCID>https://orcid.org/0000-0003-1050-1733</ORCID>
+      <CostCenter xsi:nil="true"/>
+      <ContributorRole>1</ContributorRole>
+      <NonUSGSAffiliation>Stelly Consulting at the U.S. Geological Survey</NonUSGSAffiliation>
+      <NonUSGSContributor>Stelly, Spencer J</NonUSGSContributor>
+      <Rank>8</Rank>
+      <Created>2019-12-04T13:43:30</Created>
+      <CreatedBy>Enwright, Nicholas M.</CreatedBy>
+      <Modified>2019-12-04T13:43:30</Modified>
+      <ModifiedBy>Enwright, Nicholas M.</ModifiedBy>
+    </Author>
+  </Authors>
+  <USGSPrograms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <USGSProgram>
+      <IPNumber>IP-114268</IPNumber>
+      <USGSProgram>Environments Program</USGSProgram>
+    </USGSProgram>
+  </USGSPrograms>
+  <SpecialProductAlerts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <SpecialProductAlert>
+      <IPNumber>IP-114268</IPNumber>
+      <SpecialProductAlert>None</SpecialProductAlert>
+    </SpecialProductAlert>
+  </SpecialProductAlerts>
+  <Reviewers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Reviewer>
+      <IPNumber>IP-114268</IPNumber>
+      <ReviewerType>USGS-Selected Peer</ReviewerType>
+      <ReviewerName>Richard Day</ReviewerName>
+      <ReviewerAffiliation>Wetland and Aquatic Research Center</ReviewerAffiliation>
+      <Created>2019-12-18T13:58:45</Created>
+      <CreatedBy>Enwright, Nicholas M.</CreatedBy>
+      <Modified>2019-12-18T13:58:45</Modified>
+      <ModifiedBy>Enwright, Nicholas M.</ModifiedBy>
+    </Reviewer>
+    <Reviewer>
+      <IPNumber>IP-114268</IPNumber>
+      <ReviewerType>USGS-Selected Peer</ReviewerType>
+      <ReviewerName>Brady Couvillion</ReviewerName>
+      <ReviewerAffiliation>Wetland and Aquatic Research Center</ReviewerAffiliation>
+      <Created>2019-12-18T13:57:52</Created>
+      <CreatedBy>Enwright, Nicholas M.</CreatedBy>
+      <Modified>2019-12-18T13:57:52</Modified>
+      <ModifiedBy>Enwright, Nicholas M.</ModifiedBy>
+    </Reviewer>
+  </Reviewers>
+  <TaskHistory xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Task>
+      <IPNumber>IP-114268</IPNumber>
+      <Comments xsi:nil="true"/>
+      <TaskStartDate>2020-05-14T13:42:33</TaskStartDate>
+      <TaskCompletionDate>2020-05-19T12:01:46</TaskCompletionDate>
+      <Status>Approve</Status>
+      <task>Dissemination</task>
+      <TaskAssignedTo>Dodd, Felicia D.</TaskAssignedTo>
+      <NextTask>Disseminated</NextTask>
+      <TaskApprover>Dodd, Felicia D.</TaskApprover>
+      <Created>2020-05-19T12:01:46</Created>
+      <CreatedBy>Dodd, Felicia D.</CreatedBy>
+      <Modified>2020-05-19T12:01:46</Modified>
+      <ModifiedBy>Dodd, Felicia D.</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-114268</IPNumber>
+      <Comments xsi:nil="true"/>
+      <TaskStartDate>2020-05-14T13:29:13</TaskStartDate>
+      <TaskCompletionDate>2020-05-14T13:42:33</TaskCompletionDate>
+      <Status>Reassign</Status>
+      <task>Dissemination</task>
+      <TaskAssignedTo>Dodd, Felicia D.</TaskAssignedTo>
+      <NextTask>Dissemination</NextTask>
+      <TaskApprover>Trahan, Natalie</TaskApprover>
+      <Created>2020-05-14T13:42:35</Created>
+      <CreatedBy>Trahan, Natalie</CreatedBy>
+      <Modified>2020-05-14T13:42:35</Modified>
+      <ModifiedBy>Trahan, Natalie</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-114268</IPNumber>
+      <Comments xsi:nil="true"/>
+      <TaskStartDate>2020-03-25T13:10:51</TaskStartDate>
+      <TaskCompletionDate>2020-05-14T13:29:13</TaskCompletionDate>
+      <Status>Approve</Status>
+      <task>SPN Production</task>
+      <TaskAssignedTo>Trahan, Natalie</TaskAssignedTo>
+      <NextTask>Dissemination</NextTask>
+      <TaskApprover>Waltenbaugh, Kimberly A.</TaskApprover>
+      <Created>2020-05-14T13:29:13</Created>
+      <CreatedBy>Waltenbaugh, Kimberly A.</CreatedBy>
+      <Modified>2020-05-14T13:29:13</Modified>
+      <ModifiedBy>Waltenbaugh, Kimberly A.</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-114268</IPNumber>
+      <Comments xsi:nil="true"/>
+      <TaskStartDate>2020-03-25T12:44:46</TaskStartDate>
+      <TaskCompletionDate>2020-03-25T13:10:51</TaskCompletionDate>
+      <Status>Reassign</Status>
+      <task>SPN Production</task>
+      <TaskAssignedTo>Waltenbaugh, Kimberly A.</TaskAssignedTo>
+      <NextTask>SPN Production</NextTask>
+      <TaskApprover>Trahan, Natalie</TaskApprover>
+      <Created>2020-03-25T13:11:02</Created>
+      <CreatedBy>Trahan, Natalie</CreatedBy>
+      <Modified>2020-03-25T13:11:02</Modified>
+      <ModifiedBy>Trahan, Natalie</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-114268</IPNumber>
+      <Comments xsi:nil="true"/>
+      <TaskStartDate>2020-03-20T13:38:24</TaskStartDate>
+      <TaskCompletionDate>2020-03-25T12:44:46</TaskCompletionDate>
+      <Status>Approve</Status>
+      <task>Prepare for SPN Production</task>
+      <TaskAssignedTo>Trahan, Natalie</TaskAssignedTo>
+      <NextTask>SPN Production</NextTask>
+      <TaskApprover>Enwright, Nicholas M.</TaskApprover>
+      <Created>2020-03-25T12:44:48</Created>
+      <CreatedBy>Enwright, Nicholas M.</CreatedBy>
+      <Modified>2020-03-25T12:44:48</Modified>
+      <ModifiedBy>Enwright, Nicholas M.</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-114268</IPNumber>
+      <Comments>
+Product approved. Please see BAO comments on the approved version. Janine Powell, Bureau Approving Official
+</Comments>
+      <TaskStartDate>2020-03-16T17:36:28</TaskStartDate>
+      <TaskCompletionDate>2020-03-20T13:38:24</TaskCompletionDate>
+      <Status>Approve</Status>
+      <task>Bureau Approval</task>
+      <TaskAssignedTo>Enwright, Nicholas M.</TaskAssignedTo>
+      <NextTask>Prepare for SPN Production</NextTask>
+      <TaskApprover>Powell, Janine</TaskApprover>
+      <Created>2020-03-20T13:38:25</Created>
+      <CreatedBy>Powell, Janine</CreatedBy>
+      <Modified>2020-03-20T13:38:25</Modified>
+      <ModifiedBy>Powell, Janine</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-114268</IPNumber>
+      <Comments>Approver changed</Comments>
+      <TaskStartDate>2020-03-13T16:17:51</TaskStartDate>
+      <TaskCompletionDate>2020-03-16T17:36:29</TaskCompletionDate>
+      <Status>Reassign</Status>
+      <task>Bureau Approval</task>
+      <TaskAssignedTo>Powell, Janine</TaskAssignedTo>
+      <NextTask>Bureau Approval</NextTask>
+      <TaskApprover>Powell, Janine</TaskApprover>
+      <Created>2020-03-16T17:36:30</Created>
+      <CreatedBy>Powell, Janine</CreatedBy>
+      <Modified>2020-03-16T17:36:30</Modified>
+      <ModifiedBy>Powell, Janine</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-114268</IPNumber>
+      <Comments xsi:nil="true"/>
+      <TaskStartDate>2020-03-11T12:49:33</TaskStartDate>
+      <TaskCompletionDate>2020-03-13T16:17:51</TaskCompletionDate>
+      <Status>Approve</Status>
+      <task>Center Approval</task>
+      <TaskAssignedTo>Mahon, Gary L.</TaskAssignedTo>
+      <NextTask>Bureau Approval</NextTask>
+      <TaskApprover>Doyle, Thomas W.</TaskApprover>
+      <Created>2020-03-13T16:18:00</Created>
+      <CreatedBy>Doyle, Thomas W.</CreatedBy>
+      <Modified>2020-03-13T16:18:00</Modified>
+      <ModifiedBy>Doyle, Thomas W.</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-114268</IPNumber>
+      <Comments>SPN and reviews reconciled and documents present.</Comments>
+      <TaskStartDate>2020-03-11T02:44:32</TaskStartDate>
+      <TaskCompletionDate>2020-03-11T12:49:33</TaskCompletionDate>
+      <Status>Approve</Status>
+      <task>Supervisory Approval</task>
+      <TaskAssignedTo>Doyle, Thomas W.</TaskAssignedTo>
+      <NextTask>Center Approval</NextTask>
+      <TaskApprover>Rice, Kenneth G.</TaskApprover>
+      <Created>2020-03-11T12:49:34</Created>
+      <CreatedBy>Rice, Kenneth G.</CreatedBy>
+      <Modified>2020-03-11T12:49:34</Modified>
+      <ModifiedBy>Rice, Kenneth G.</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-114268</IPNumber>
+      <Comments>
+Rhonda &#x2014; I'm not sure if the next step should be routed to Gregg (my current supervisor) or stay as Ken.
+</Comments>
+      <TaskStartDate>2020-02-28T21:05:03</TaskStartDate>
+      <TaskCompletionDate>2020-03-11T02:44:32</TaskCompletionDate>
+      <Status>Approve</Status>
+      <task>Prepare for Approvals</task>
+      <TaskAssignedTo>Rice, Kenneth G.</TaskAssignedTo>
+      <NextTask>Supervisory Approval</NextTask>
+      <TaskApprover>Enwright, Nicholas M.</TaskApprover>
+      <Created>2020-03-11T02:44:33</Created>
+      <CreatedBy>Enwright, Nicholas M.</CreatedBy>
+      <Modified>2020-03-11T02:44:33</Modified>
+      <ModifiedBy>Enwright, Nicholas M.</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-114268</IPNumber>
+      <Comments xsi:nil="true"/>
+      <TaskStartDate>2020-02-10T17:49:32</TaskStartDate>
+      <TaskCompletionDate>2020-02-28T21:05:03</TaskCompletionDate>
+      <Status>Approve</Status>
+      <task>SPN Edit</task>
+      <TaskAssignedTo>Enwright, Nicholas M.</TaskAssignedTo>
+      <NextTask>Prepare for Approvals</NextTask>
+      <TaskApprover>Waltenbaugh, Kimberly A.</TaskApprover>
+      <Created>2020-02-28T21:05:04</Created>
+      <CreatedBy>Waltenbaugh, Kimberly A.</CreatedBy>
+      <Modified>2020-02-28T21:05:04</Modified>
+      <ModifiedBy>Waltenbaugh, Kimberly A.</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-114268</IPNumber>
+      <Comments xsi:nil="true"/>
+      <TaskStartDate>2020-02-07T13:29:29</TaskStartDate>
+      <TaskCompletionDate>2020-02-10T17:49:32</TaskCompletionDate>
+      <Status>Reassign</Status>
+      <task>SPN Edit</task>
+      <TaskAssignedTo>Waltenbaugh, Kimberly A.</TaskAssignedTo>
+      <NextTask>SPN Edit</NextTask>
+      <TaskApprover>Trahan, Natalie</TaskApprover>
+      <Created>2020-02-10T17:49:32</Created>
+      <CreatedBy>Trahan, Natalie</CreatedBy>
+      <Modified>2020-02-10T17:49:32</Modified>
+      <ModifiedBy>Trahan, Natalie</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-114268</IPNumber>
+      <Comments>Approver changed</Comments>
+      <TaskStartDate>2020-02-07T13:16:53</TaskStartDate>
+      <TaskCompletionDate>2020-02-07T13:29:30</TaskCompletionDate>
+      <Status>Reassign</Status>
+      <task>SPN Edit</task>
+      <TaskAssignedTo>Trahan, Natalie</TaskAssignedTo>
+      <NextTask>SPN Edit</NextTask>
+      <TaskApprover>Waltenbaugh, Kimberly A.</TaskApprover>
+      <Created>2020-02-07T13:29:31</Created>
+      <CreatedBy>Waltenbaugh, Kimberly A.</CreatedBy>
+      <Modified>2020-02-07T13:29:31</Modified>
+      <ModifiedBy>Waltenbaugh, Kimberly A.</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-114268</IPNumber>
+      <Comments>
+Reconciliation documented well. Looks great - lots of work!
+</Comments>
+      <TaskStartDate>2020-02-06T21:21:00</TaskStartDate>
+      <TaskCompletionDate>2020-02-07T13:16:53</TaskCompletionDate>
+      <Status>Approve</Status>
+      <task>Pre-edit Approval</task>
+      <TaskAssignedTo>Waltenbaugh, Kimberly A.</TaskAssignedTo>
+      <NextTask>SPN Edit</NextTask>
+      <TaskApprover>Rice, Kenneth G.</TaskApprover>
+      <Created>2020-02-07T13:16:54</Created>
+      <CreatedBy>Rice, Kenneth G.</CreatedBy>
+      <Modified>2020-02-07T13:16:54</Modified>
+      <ModifiedBy>Rice, Kenneth G.</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-114268</IPNumber>
+      <Comments xsi:nil="true"/>
+      <TaskStartDate>2019-12-18T14:34:42</TaskStartDate>
+      <TaskCompletionDate>2020-02-06T21:21:00</TaskCompletionDate>
+      <Status>Approve</Status>
+      <task>Reconcile Peer Review</task>
+      <TaskAssignedTo>Rice, Kenneth G.</TaskAssignedTo>
+      <NextTask>Pre-edit Approval</NextTask>
+      <TaskApprover>Enwright, Nicholas M.</TaskApprover>
+      <Created>2020-02-06T21:21:00</Created>
+      <CreatedBy>Enwright, Nicholas M.</CreatedBy>
+      <Modified>2020-02-06T21:21:00</Modified>
+      <ModifiedBy>Enwright, Nicholas M.</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-114268</IPNumber>
+      <Comments>Reviewers are acceptable...your choice.</Comments>
+      <TaskStartDate>2019-12-18T14:04:25</TaskStartDate>
+      <TaskCompletionDate>2019-12-18T14:34:42</TaskCompletionDate>
+      <Status>Approve</Status>
+      <task>Accept for Peer Review</task>
+      <TaskAssignedTo>Enwright, Nicholas M.</TaskAssignedTo>
+      <NextTask>Reconcile Peer Review</NextTask>
+      <TaskApprover>Rice, Kenneth G.</TaskApprover>
+      <Created>2019-12-18T14:34:44</Created>
+      <CreatedBy>Rice, Kenneth G.</CreatedBy>
+      <Modified>2019-12-18T14:34:44</Modified>
+      <ModifiedBy>Rice, Kenneth G.</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-114268</IPNumber>
+      <Comments xsi:nil="true"/>
+      <TaskStartDate>2019-12-04T13:32:02</TaskStartDate>
+      <TaskCompletionDate>2019-12-04T13:32:02</TaskCompletionDate>
+      <Status>Create</Status>
+      <task xsi:nil="true"/>
+      <TaskAssignedTo>Enwright, Nicholas M.</TaskAssignedTo>
+      <NextTask>Request Peer Review</NextTask>
+      <TaskApprover xsi:nil="true"/>
+      <Created>2019-12-04T13:32:02</Created>
+      <CreatedBy>Enwright, Nicholas M.</CreatedBy>
+      <Modified>2019-12-04T13:32:02</Modified>
+      <ModifiedBy>Enwright, Nicholas M.</ModifiedBy>
+    </Task>
+    <Task>
+      <IPNumber>IP-114268</IPNumber>
+      <Comments>
+I've listed several potential peer reviewers in the reviewers tab.
+</Comments>
+      <TaskStartDate>2019-12-04T13:32:01</TaskStartDate>
+      <TaskCompletionDate>2019-12-18T14:04:25</TaskCompletionDate>
+      <Status>Approve</Status>
+      <task>Request Peer Review</task>
+      <TaskAssignedTo>Rice, Kenneth G.</TaskAssignedTo>
+      <NextTask>Accept for Peer Review</NextTask>
+      <TaskApprover>Enwright, Nicholas M.</TaskApprover>
+      <Created>2019-12-18T14:04:31</Created>
+      <CreatedBy>Enwright, Nicholas M.</CreatedBy>
+      <Modified>2019-12-18T14:04:31</Modified>
+      <ModifiedBy>Enwright, Nicholas M.</ModifiedBy>
+    </Task>
+  </TaskHistory>
+</InformationProduct>

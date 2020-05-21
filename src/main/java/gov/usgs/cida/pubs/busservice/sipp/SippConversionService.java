@@ -119,11 +119,10 @@ public class SippConversionService {
 		mpPublication.setIpdsReviewProcessState(informationProduct.getTask());
 
 		String largerWorkTitle = informationProduct.getJournalTitle();
-		if (StringUtils.isNotBlank(largerWorkTitle)) {
-			if (!(PubsUtils.isPublicationTypeArticle(mpPublication.getPublicationType())
-					&& null != mpPublication.getPublicationSubtype())) {
+		if (StringUtils.isNotBlank(largerWorkTitle) &&
+			(!(PubsUtils.isPublicationTypeArticle(mpPublication.getPublicationType())
+					&& null != mpPublication.getPublicationSubtype()))) {
 				mpPublication.setLargerWorkTitle(largerWorkTitle);
-			}
 		}
 		mpPublication.setPublicationYear(String.valueOf(LocalDate.now().getYear()));
 

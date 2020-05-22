@@ -125,7 +125,7 @@ public class PublicationSeriesBusServiceIT extends BaseIT {
 		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
 		@DatabaseSetup("classpath:/testData/publicationSeries.xml")
 	})
-	@ExpectedDatabase(value = "classpath:/testResult/publicationSeries/delete.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
+	@ExpectedDatabase(value = "classpath:/testResult/publicationSeries/delete-busService.xml", assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
 	public void deleteObjectTest() {
 		busService.deleteObject(null);
 		busService.deleteObject(-1);

@@ -25,7 +25,6 @@ import gov.usgs.cida.pubs.domain.PublicationContributor;
 import gov.usgs.cida.pubs.domain.PublicationCostCenter;
 import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.PublicationSeries;
-import gov.usgs.cida.pubs.domain.PublicationSeriesHelper;
 import gov.usgs.cida.pubs.domain.PublicationSubtypeHelper;
 import gov.usgs.cida.pubs.domain.PublicationTypeHelper;
 import gov.usgs.cida.pubs.domain.PublishingServiceCenter;
@@ -143,8 +142,6 @@ public class SippConversionServiceTest extends BaseTest {
 		assertEquals("indexID", mpPublication.getIndexId());
 		assertEquals(PublicationTypeHelper.TWO, mpPublication.getPublicationType());
 		assertEquals(PublicationSubtypeHelper.TEN, mpPublication.getPublicationSubtype());
-		assertEquals(PublicationSubtypeHelper.TEN, mpPublication.getSeriesTitle().getPublicationSubtype());
-		assertEquals("journalTitle", mpPublication.getSeriesTitle().getText());
 		assertEquals("usgsSeriesNumber", mpPublication.getSeriesNumber());
 		assertEquals("usgsSeriesLetter", mpPublication.getChapter());
 		assertEquals("finalTitle", mpPublication.getTitle());
@@ -427,7 +424,6 @@ public class SippConversionServiceTest extends BaseTest {
 		assertEquals("indexID", mpPublication.getIndexId());
 		assertEquals(PublicationTypeHelper.FOUR, mpPublication.getPublicationType());
 		assertEquals(PublicationSubtypeHelper.THIRTEEN, mpPublication.getPublicationSubtype());
-		assertEquals(PublicationSeriesHelper.FOUR_FIFTY_TWO, mpPublication.getSeriesTitle());
 		assertEquals("usgsSeriesNumber", mpPublication.getSeriesNumber());
 		assertEquals("usgsSeriesLetter", mpPublication.getChapter());
 		assertEquals("finalTitle", mpPublication.getTitle());

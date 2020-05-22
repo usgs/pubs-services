@@ -111,9 +111,15 @@ public class SippProcess implements ISippProcess {
 				informationProduct.setPublicationType(idsPubTypeConv.getPublicationType());
 				informationProduct.setPublicationSubtype(idsPubTypeConv.getPublicationSubtype());
 
-				informationProduct.setUsgsSeriesTitle(
-						getSeriesTitle(idsPubTypeConv.getPublicationSubtype(),
-							informationProduct.getUsgsSeriesType()));
+				String pubSeriesText = "";
+				if (StringUtils.isNotBlank(informationProduct.getJournalTitle())
+						&& null != idsPubTypeConv.getPublicationSubtype()
+						&& PubsUtils.isPublicationTypeArticle(idsPubTypeConv.getPublicationType())) {
+					pubSeriesText = informationProduct.getJournalTitle();
+				} else {
+					pubSeriesText = informationProduct.getUsgsSeriesType();
+				}
+				informationProduct.setUsgsSeriesTitle(getSeriesTitle(idsPubTypeConv.getPublicationSubtype(), pubSeriesText));
 
 				informationProduct.setUsgsNumberedSeries(
 					PubsUtils.isUsgsNumberedSeries(idsPubTypeConv.getPublicationSubtype()));
@@ -131,6 +137,7 @@ public class SippProcess implements ISippProcess {
 	}
 
 	protected PublicationSeries getSeriesTitle(PublicationSubtype pubSubtype, String text) {
+		PublicationSeries ret = null;
 		if (null != pubSubtype && null != pubSubtype.getId() && StringUtils.isNotBlank(text)) {
 			//Only hit the DB if both fields have values - otherwise the db call will return incorrect results.
 			Map<String, Object> filters = new HashMap<>();
@@ -139,10 +146,17 @@ public class SippProcess implements ISippProcess {
 			List<PublicationSeries> pubSeries = PublicationSeries.getDao().getByMap(filters);
 			if (!pubSeries.isEmpty()) {
 				//We should really only get one, so just take the first...
-				return pubSeries.get(0);
+				ret = pubSeries.get(0);
+			} else {
+				PublicationSeries publicationSeries = new PublicationSeries();
+				publicationSeries.setText(text);
+				publicationSeries.setPublicationSubtype(pubSubtype);
+				publicationSeries.setActive(true);
+				int id = PublicationSeries.getDao().add(publicationSeries);
+				ret = PublicationSeries.getDao().getById(id);
 			}
 		}
-		return null;
+		return ret;
 	}
 
 	protected MpPublication getMpPublication(InformationProduct informationProduct) {
@@ -246,11 +260,13 @@ public class SippProcess implements ISippProcess {
 		}
 
 		MpPublication mpPublication = sippConversionService.buildMpPublication(informationProduct, prodId);
+		mpPublication.setSeriesTitle(informationProduct.getUsgsSeriesTitle());
 
 		MpPublication rtnPub = null;
 		try {
 			rtnPub = extPublicationBusService.create(mpPublication);
 		} catch (Exception e) {
+			LOG.error("Error encountered in Sipp process while creating publication " + mpPublication.getId(), e);
 			rtnPub = mpPublication;
 			ValidatorResult validatorResult = new ValidatorResult("MpPublication", e.getLocalizedMessage(), SeverityLevel.FATAL, mpPublication.getIpdsId());
 			rtnPub.addValidatorResult(validatorResult);

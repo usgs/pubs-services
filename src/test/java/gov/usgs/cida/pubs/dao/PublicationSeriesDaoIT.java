@@ -31,8 +31,8 @@ import gov.usgs.cida.pubs.validation.unique.UniqueKeyValidatorForPublicationSeri
 	classes={DbTestConfig.class, PublicationSeriesDao.class})
 public class PublicationSeriesDaoIT extends BaseIT {
 
-	public static final int pubSeriesCnt = 16;
-	public static final int activePubSeriesCnt = 9;
+	public static final int pubSeriesCnt = 17;
+	public static final int activePubSeriesCnt = 10;
 
 	@Autowired
 	PublicationSeriesDao publicationSeriesDao;

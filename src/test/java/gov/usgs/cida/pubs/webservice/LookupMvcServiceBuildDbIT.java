@@ -191,13 +191,13 @@ public class LookupMvcServiceBuildDbIT extends BaseIT {
 
 		String endPoint = "/lookup/publicationseries";
 		rtn = performGetRequest(endPoint);
-		assertEquals(16, new JSONArray(rtn.getResponse().getContentAsString()).length());
+		assertEquals(17, new JSONArray(rtn.getResponse().getContentAsString()).length());
 
 		rtn = performGetRequest(endPoint + "?active=false");
 		assertEquals(7, new JSONArray(rtn.getResponse().getContentAsString()).length());
 
 		rtn = performGetRequest(endPoint + "?active=true");
-		assertEquals(9, new JSONArray(rtn.getResponse().getContentAsString()).length());
+		assertEquals(10, new JSONArray(rtn.getResponse().getContentAsString()).length());
 	}
 
 	@Test

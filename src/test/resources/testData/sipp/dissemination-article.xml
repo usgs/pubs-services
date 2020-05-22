@@ -1,0 +1,280 @@
+<InformationProduct xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<IPNumber>IP-117219</IPNumber>
+<Abstract>
+From March to May 1980, magma rose high into Mount St. Helens (MSH), swelling and—as it turned out—destabilizing its north flank. Scientists knew the volcano had been highly active at times over the past 40,000 years, but the mountain, located amid the Cascade Range in southwestern Washington, had been mostly quiet since the mid-19th century. The collapse of the north flank on 18 May shattered that quiet, triggering a cascade of events that left resounding impressions not only on those who witnessed and studied them but also on the surrounding landscape [Lipman and Mullineaux, 1981; Waitt, 2015]. The eruption of MSH also provided unparalleled opportunities for advancing several disciplines [e.g., Shore et al., 1986; Newhall, 2000; Franklin and MacMahon, 2000]. Although not as conspicuously as in volcanology, the eruption and its aftermath led to an intensification of research investigating biophysical impacts of eruptions and subsequent responses [e.g., Dale et al., 2005; Pierson and Major, 2014; Crisafulli and Dale, 2018]. Long-term research on the biophysical responses at MSH has provided important new insights, challenged long-standing ideas, and provided many societal benefits. The fortieth anniversary of the eruption this year offers a timely opportunity to reflect on these insights and influences. This long-term vantage is important because sustained, place-based studies following landscape disturbances are rare; because the MSH eruption spurred the greatest depth and breadth of multidisciplinary studies of biophysical responses to landscape disturbance; and because these responses created some of the most significant societal challenges to emerge after the eruption. We summarize key biophysical disturbances and responses, highlight salient insights, and suggest actions that can extend the usefulness of these insights to volcanically vulnerable communities worldwide.
+</Abstract>
+<BasisNumber xsi:nil="true"/>
+<CostCenter>Volcano Science Center</CostCenter>
+<IPPANumber xsi:nil="true"/>
+<Cooperators>U.S. Forest Service</Cooperators>
+<EditionNumber xsi:nil="true"/>
+<FinalTitle>Lessons from a Posteruption Landscape</FinalTitle>
+<JournalTitle>Eos--Earth and Space Science News</JournalTitle>
+<NumberOfMapsOrPlates xsi:nil="true"/>
+<PageRange>34-40</PageRange>
+<PhysicalDescription xsi:nil="true"/>
+<PlannedDisseminationDate>2020-05-01T05:00:00</PlannedDisseminationDate>
+<SupersedesIPNumber xsi:nil="true"/>
+<TeamProjectName xsi:nil="true"/>
+<VISpecialist xsi:nil="true"/>
+<Volume>101</Volume>
+<WorkingTitle>Lessons from a post-eruption landscape</WorkingTitle>
+<USGSSeriesNumber xsi:nil="true"/>
+<USGSRegion>Alaska Region</USGSRegion>
+<USGSProgram>Volcano Hazards Program</USGSProgram>
+<USGSSeriesType xsi:nil="true"/>
+<SeniorUSGSAuthor>Major, Jon J.</SeniorUSGSAuthor>
+<LocationOfSupportingData>N/A</LocationOfSupportingData>
+<PSCChief>Donlin, Carolyn A.</PSCChief>
+<PublishedURL>https://doi.org/10.1029/2020EO143198</PublishedURL>
+<CostCenterChief>Murray, Thomas L.</CostCenterChief>
+<AuthorsSupervisor>Moran, Seth C.</AuthorsSupervisor>
+<BureauApprovingOfficial>Diggles, Michael F.</BureauApprovingOfficial>
+<Citation>
+Major, J.J., Crisafulli, C.M., and Swanson, F.J., 2020, Lessons from a post-eruption landscape: Eos—Earth and Space Science News, v. 101(5), p. 34-40. https://doi.org/10.1029/2020EO143198.
+</Citation>
+<DigitalObjectIdentifier>doi.org/10.1029/2020EO143198</DigitalObjectIdentifier>
+<InterpretivePublication xsi:nil="true"/>
+<Issue>5</Issue>
+<ProductType>Journal or periodical article</ProductType>
+<DataManagementPlan>N/A</DataManagementPlan>
+<USGSFunded>Yes</USGSFunded>
+<USGSMissionArea>Natural Hazards</USGSMissionArea>
+<ProductSummary>
+MSH 40th anniversary research lessons reflection piece for Eos. Four decades of research into biophysical responses to the 1980 eruption of Mount St. Helens have vastly improved our understanding of how landscapes react to cataclysmic disturbances.
+</ProductSummary>
+<TaskAssignedTo>Major, Jon J.</TaskAssignedTo>
+<NonUSGSPublisher>American Geophysical Union</NonUSGSPublisher>
+<RelatedIPNumber>IP-117219</RelatedIPNumber>
+<USGSSeriesLetter xsi:nil="true"/>
+<Task>Disseminated</Task>
+<TaskStartDate>2020-05-14T03:48:51</TaskStartDate>
+<GeologicalNames>No</GeologicalNames>
+<Editor xsi:nil="true"/>
+<PublishingServiceCenter>Moffett Field PSC</PublishingServiceCenter>
+<Created>2020-03-03T23:06:05</Created>
+<CreatedBy>Major, Jon J.</CreatedBy>
+<Modified>2020-05-14T03:48:52</Modified>
+<ModifiedBy>Major, Jon J.</ModifiedBy>
+<Authors xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Author>
+<IPNumber>IP-117219</IPNumber>
+<AuthorName>Major, Jon J.</AuthorName>
+<AuthorNameText>Major, Jon J.</AuthorNameText>
+<ORCID>0000-0003-2449-4466</ORCID>
+<CostCenter>Volcano Science Center</CostCenter>
+<ContributorRole>1</ContributorRole>
+<NonUSGSAffiliation xsi:nil="true"/>
+<NonUSGSContributor xsi:nil="true"/>
+<Rank>1</Rank>
+<Created>2020-03-03T23:06:10</Created>
+<CreatedBy>Major, Jon J.</CreatedBy>
+<Modified>2020-03-03T23:06:10</Modified>
+<ModifiedBy>Major, Jon J.</ModifiedBy>
+</Author>
+<Author>
+<IPNumber>IP-117219</IPNumber>
+<AuthorName xsi:nil="true"/>
+<AuthorNameText>Charles M Crisafulli</AuthorNameText>
+<ORCID xsi:nil="true"/>
+<CostCenter xsi:nil="true"/>
+<ContributorRole>1</ContributorRole>
+<NonUSGSAffiliation>US Forest Service</NonUSGSAffiliation>
+<NonUSGSContributor>Charles M Crisafulli</NonUSGSContributor>
+<Rank>2</Rank>
+<Created>2020-03-03T23:07:39</Created>
+<CreatedBy>Major, Jon J.</CreatedBy>
+<Modified>2020-03-03T23:07:39</Modified>
+<ModifiedBy>Major, Jon J.</ModifiedBy>
+</Author>
+<Author>
+<IPNumber>IP-117219</IPNumber>
+<AuthorName xsi:nil="true"/>
+<AuthorNameText>Frederick J Swanson</AuthorNameText>
+<ORCID xsi:nil="true"/>
+<CostCenter xsi:nil="true"/>
+<ContributorRole>1</ContributorRole>
+<NonUSGSAffiliation>US Forest Service</NonUSGSAffiliation>
+<NonUSGSContributor>Frederick J Swanson</NonUSGSContributor>
+<Rank>3</Rank>
+<Created>2020-03-03T23:08:08</Created>
+<CreatedBy>Major, Jon J.</CreatedBy>
+<Modified>2020-03-03T23:08:08</Modified>
+<ModifiedBy>Major, Jon J.</ModifiedBy>
+</Author>
+</Authors>
+<USGSPrograms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<USGSProgram>
+<IPNumber>IP-117219</IPNumber>
+<USGSProgram>Volcano Hazards Program</USGSProgram>
+</USGSProgram>
+</USGSPrograms>
+<SpecialProductAlerts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<SpecialProductAlert>
+<IPNumber>IP-117219</IPNumber>
+<SpecialProductAlert>Highly Visible</SpecialProductAlert>
+</SpecialProductAlert>
+</SpecialProductAlerts>
+<Reviewers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Reviewer>
+<IPNumber>IP-117219</IPNumber>
+<ReviewerType>Journal-Selected Peer</ReviewerType>
+<ReviewerName>Tim Oleson</ReviewerName>
+<ReviewerAffiliation>Eos science editor</ReviewerAffiliation>
+<Created>2020-03-03T23:09:46</Created>
+<CreatedBy>Major, Jon J.</CreatedBy>
+<Modified>2020-03-03T23:09:46</Modified>
+<ModifiedBy>Major, Jon J.</ModifiedBy>
+</Reviewer>
+<Reviewer>
+<IPNumber>IP-117219</IPNumber>
+<ReviewerType>USGS-Selected Peer</ReviewerType>
+<ReviewerName>Gordon Grant</ReviewerName>
+<ReviewerAffiliation>
+US Forest Service Pacific Northwest Research Station
+</ReviewerAffiliation>
+<Created>2020-03-03T23:09:12</Created>
+<CreatedBy>Major, Jon J.</CreatedBy>
+<Modified>2020-03-03T23:09:12</Modified>
+<ModifiedBy>Major, Jon J.</ModifiedBy>
+</Reviewer>
+<Reviewer>
+<IPNumber>IP-117219</IPNumber>
+<ReviewerType>USGS-Selected Peer</ReviewerType>
+<ReviewerName>Carolyn Driedger</ReviewerName>
+<ReviewerAffiliation>USGS CVO</ReviewerAffiliation>
+<Created>2020-03-03T23:08:41</Created>
+<CreatedBy>Major, Jon J.</CreatedBy>
+<Modified>2020-03-03T23:08:41</Modified>
+<ModifiedBy>Major, Jon J.</ModifiedBy>
+</Reviewer>
+</Reviewers>
+<TaskHistory xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Task>
+<IPNumber>IP-117219</IPNumber>
+<Comments xsi:nil="true"/>
+<TaskStartDate>2020-04-06T22:11:55</TaskStartDate>
+<TaskCompletionDate>2020-05-14T03:48:51</TaskCompletionDate>
+<Status>Approve</Status>
+<task>Dissemination</task>
+<TaskAssignedTo>Major, Jon J.</TaskAssignedTo>
+<NextTask>Disseminated</NextTask>
+<TaskApprover>Major, Jon J.</TaskApprover>
+<Created>2020-05-14T03:48:52</Created>
+<CreatedBy>Major, Jon J.</CreatedBy>
+<Modified>2020-05-14T03:48:52</Modified>
+<ModifiedBy>Major, Jon J.</ModifiedBy>
+</Task>
+<Task>
+<IPNumber>IP-117219</IPNumber>
+<Comments>
+Approved with comments I hope you will find helpful. See my comments in the "Final BAO approved manuscript" file.
+</Comments>
+<TaskStartDate>2020-04-01T19:54:40</TaskStartDate>
+<TaskCompletionDate>2020-04-06T22:11:55</TaskCompletionDate>
+<Status>Approve</Status>
+<task>Bureau Approval</task>
+<TaskAssignedTo>Major, Jon J.</TaskAssignedTo>
+<NextTask>Dissemination</NextTask>
+<TaskApprover>Diggles, Michael F.</TaskApprover>
+<Created>2020-04-06T22:11:55</Created>
+<CreatedBy>Diggles, Michael F.</CreatedBy>
+<Modified>2020-04-06T22:11:55</Modified>
+<ModifiedBy>Diggles, Michael F.</ModifiedBy>
+</Task>
+<Task>
+<IPNumber>IP-117219</IPNumber>
+<Comments xsi:nil="true"/>
+<TaskStartDate>2020-03-23T22:54:04</TaskStartDate>
+<TaskCompletionDate>2020-04-01T19:54:40</TaskCompletionDate>
+<Status>Approve</Status>
+<task>Center Approval</task>
+<TaskAssignedTo>Diggles, Michael F.</TaskAssignedTo>
+<NextTask>Bureau Approval</NextTask>
+<TaskApprover>Murray, Thomas L.</TaskApprover>
+<Created>2020-04-01T19:54:40</Created>
+<CreatedBy>Murray, Thomas L.</CreatedBy>
+<Modified>2020-04-01T19:54:40</Modified>
+<ModifiedBy>Murray, Thomas L.</ModifiedBy>
+</Task>
+<Task>
+<IPNumber>IP-117219</IPNumber>
+<Comments>
+The authors have adequately responded to comments and edits from two reviewers plus EOS copy editors. They have also adequately addressed three comments &amp; one suggested edit from me. I believe the manuscript is ready for publication.
+</Comments>
+<TaskStartDate>2020-03-03T23:28:28</TaskStartDate>
+<TaskCompletionDate>2020-03-23T22:54:04</TaskCompletionDate>
+<Status>Approve</Status>
+<task>Supervisory Approval</task>
+<TaskAssignedTo>Murray, Thomas L.</TaskAssignedTo>
+<NextTask>Center Approval</NextTask>
+<TaskApprover>Moran, Seth C.</TaskApprover>
+<Created>2020-03-23T22:54:04</Created>
+<CreatedBy>Moran, Seth C.</CreatedBy>
+<Modified>2020-03-23T22:54:04</Modified>
+<ModifiedBy>Moran, Seth C.</ModifiedBy>
+</Task>
+<Task>
+<IPNumber>IP-117219</IPNumber>
+<Comments xsi:nil="true"/>
+<TaskStartDate>2020-03-03T23:22:17</TaskStartDate>
+<TaskCompletionDate>2020-03-03T23:28:28</TaskCompletionDate>
+<Status>Approve</Status>
+<task>Reconcile Peer Review</task>
+<TaskAssignedTo>Moran, Seth C.</TaskAssignedTo>
+<NextTask>Supervisory Approval</NextTask>
+<TaskApprover>Major, Jon J.</TaskApprover>
+<Created>2020-03-03T23:28:28</Created>
+<CreatedBy>Major, Jon J.</CreatedBy>
+<Modified>2020-03-03T23:28:28</Modified>
+<ModifiedBy>Major, Jon J.</ModifiedBy>
+</Task>
+<Task>
+<IPNumber>IP-117219</IPNumber>
+<Comments xsi:nil="true"/>
+<TaskStartDate>2020-03-03T23:19:18</TaskStartDate>
+<TaskCompletionDate>2020-03-03T23:22:17</TaskCompletionDate>
+<Status>Approve</Status>
+<task>Accept for Peer Review</task>
+<TaskAssignedTo>Major, Jon J.</TaskAssignedTo>
+<NextTask>Reconcile Peer Review</NextTask>
+<TaskApprover>Moran, Seth C.</TaskApprover>
+<Created>2020-03-03T23:22:18</Created>
+<CreatedBy>Moran, Seth C.</CreatedBy>
+<Modified>2020-03-03T23:22:18</Modified>
+<ModifiedBy>Moran, Seth C.</ModifiedBy>
+</Task>
+<Task>
+<IPNumber>IP-117219</IPNumber>
+<Comments xsi:nil="true"/>
+<TaskStartDate>2020-03-03T23:06:09</TaskStartDate>
+<TaskCompletionDate>2020-03-03T23:06:09</TaskCompletionDate>
+<Status>Create</Status>
+<task xsi:nil="true"/>
+<TaskAssignedTo>Major, Jon J.</TaskAssignedTo>
+<NextTask>Request Peer Review</NextTask>
+<TaskApprover xsi:nil="true"/>
+<Created>2020-03-03T23:06:10</Created>
+<CreatedBy>Major, Jon J.</CreatedBy>
+<Modified>2020-03-03T23:06:10</Modified>
+<ModifiedBy>Major, Jon J.</ModifiedBy>
+</Task>
+<Task>
+<IPNumber>IP-117219</IPNumber>
+<Comments>
+Has been peer reviewed and revised. Request center and bureau approval
+</Comments>
+<TaskStartDate>2020-03-03T23:06:04</TaskStartDate>
+<TaskCompletionDate>2020-03-03T23:19:18</TaskCompletionDate>
+<Status>Approve</Status>
+<task>Request Peer Review</task>
+<TaskAssignedTo>Moran, Seth C.</TaskAssignedTo>
+<NextTask>Accept for Peer Review</NextTask>
+<TaskApprover>Major, Jon J.</TaskApprover>
+<Created>2020-03-03T23:19:19</Created>
+<CreatedBy>Major, Jon J.</CreatedBy>
+<Modified>2020-03-03T23:19:19</Modified>
+<ModifiedBy>Major, Jon J.</ModifiedBy>
+</Task>
+</TaskHistory>
+</InformationProduct>

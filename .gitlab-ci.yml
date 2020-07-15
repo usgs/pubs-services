@@ -9,18 +9,15 @@
 #   The following CI variables are expected to be set outside of this file in
 #   GitLab group variables.
 #
-#   CI_REGISTRY
+#   DOCKER_REGISTRY
 #     Address to the Docker image registry.
-#     This is a built-in Docker variable that, by default, points to the internal
 #     Docker Image registry.
 #
-#   CI_REGISTRY_USER
+#   DOCKER_REGISTRY_USER
 #     The username for authenticating with the Docker image registry.
-#     Defaults to "gitlab-ci-token"
 #
-#   CI_REGISTRY_PASS
+#   DOCKER_REGISTRY_PASS
 #     The password. for authenticating with the Docker image registry.
-#     Defaults to "$CI_JOB_TOKEN"
 #
 #   DEPLOY_TRIGGER_TOKEN
 #     The API token for the deployment pipeline as configured on the deployment
@@ -40,7 +37,7 @@ stages:
 variables:
   # The full name of the Docker image to produce, including the registry address.
   # In most cases, this should be left alone.
-  IMAGE_NAME: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
+  IMAGE_NAME: ${DOCKER_REGISTRY}/pubs-docker/pubs-services
   # How to tag the docker image. For now, tag an image per commit.
   IMAGE_TAG: ${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHORT_SHA}
 
@@ -48,7 +45,7 @@ variables:
 # == Docker Build
 #
 Build Docker Image:
-  image: ${SAS_IMAGES_URL}/docker:19-latest
+  image: docker:19
   stage: Docker Build
   services:
     - docker:dind
@@ -56,11 +53,11 @@ Build Docker Image:
     - docker
   only:
     variables:
-      # We must run on a protected branch to access the CI_REGISTRY_PASS
+      # We must run on a protected branch to access the DOCKER_REGISTRY_PASS
       # variable.
       - $CI_COMMIT_REF_PROTECTED == "true"
   before_script:
-    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASS} ${CI_REGISTRY}
+    - docker login -u ${DOCKER_REGISTRY_USER} -p ${DOCKER_REGISTRY_PASS} ${DOCKER_REGISTRY}
   script:
     # Use locally sourced images for building
     # These imagess are based on the official upstream images.
@@ -68,8 +65,8 @@ Build Docker Image:
     # internal image registry.
     - docker build --pull
       -t ${IMAGE_NAME}:${IMAGE_TAG}
-      --build-arg maven_image=${SAS_IMAGES_URL}/maven
-      --build-arg openjdk_image=${SAS_IMAGES_URL}/openjdk
+      --build-arg maven_image=${SAS_IMAGES_URL}/base-images/maven
+      --build-arg openjdk_image=openjdk
       --build-arg maven_image_tag=3.6.0-jdk-11
       --build-arg openjdk_image_tag=11.0.4-jre
       -f Dockerfile .
@@ -87,7 +84,7 @@ Build Docker Image:
 #   - https://docs.gitlab.com/ee/ci/triggers/README.html
 #
 .deploy_trigger:
-  image: ${SAS_IMAGES_URL}/curl:master-latest
+  image: ${SAS_IMAGES_URL}/base-images/curl:latest
   stage: Trigger Deployment
   tags:
     - docker

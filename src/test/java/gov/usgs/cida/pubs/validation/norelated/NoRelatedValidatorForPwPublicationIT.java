@@ -61,7 +61,7 @@ public class NoRelatedValidatorForPwPublicationIT extends BaseIT {
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		context = new ConstraintValidatorContextImpl(methodParameterNames, DefaultClockProvider.INSTANCE, propertyPath, constraintDescriptor, null);
+		context = new ConstraintValidatorContextImpl(DefaultClockProvider.INSTANCE, propertyPath, constraintDescriptor, null);
 		noRelatedValidator = new NoRelatedValidatorForPwPublication();
 	}
 

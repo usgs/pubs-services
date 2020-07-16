@@ -72,7 +72,7 @@ public class MybatisConfig {
 	public org.apache.ibatis.session.Configuration mybatisConfiguration() {
 		org.apache.ibatis.session.Configuration config = new org.apache.ibatis.session.Configuration();
 		config.setCallSettersOnNulls(true);
-		config.setCacheEnabled(false);
+		config.setCacheEnabled(true);
 		config.setLazyLoadingEnabled(true);
 		config.setAggressiveLazyLoading(false);
 		config.setMapUnderscoreToCamelCase(true);

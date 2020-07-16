@@ -32,14 +32,13 @@ public abstract class BaseValidatorTest extends BaseTest {
 	public static final String MAY_NOT_DELETE_ID = new ValidatorResult("id", MAY_NOT_DELETE_MSG, SeverityLevel.FATAL, null).toString();
 
 	protected ConstraintValidatorContextImpl context;
-	protected List<String> methodParameterNames = new ArrayList<>();
 	protected PathImpl propertyPath = PathImpl.createPathFromString("abc");
 
 	@MockBean
 	protected ConstraintDescriptor<?> constraintDescriptor;
 
 	public void buildContext() throws Exception {
-		context = new ConstraintValidatorContextImpl(methodParameterNames, DefaultClockProvider.INSTANCE, propertyPath, constraintDescriptor, null);
+		context = new ConstraintValidatorContextImpl(DefaultClockProvider.INSTANCE, propertyPath, constraintDescriptor, null);
 	}
 
 	public void assertValidationResults(List<ValidatorResult> actual, String... expected) {

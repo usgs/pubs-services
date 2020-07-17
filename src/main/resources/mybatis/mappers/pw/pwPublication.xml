@@ -201,6 +201,16 @@
         <include refid="base.pagingRowLimit"/>
     </select>
 
+    <select id="getByMapSlim" parameterType="map" resultMap="result">
+        <include refid="baseSelect"/>
+        <where>
+            <include refid="pwPublication.wherePublic"/>
+            <include refid="whFilters"/>
+        </where>
+        <include refid="publication.orderBy"/>
+        <include refid="base.pagingRowLimit"/>
+    </select>
+
     <select id="getCount" parameterType="map" resultType="Integer">
         select count(*)
           from publication pub
@@ -355,6 +365,12 @@
           from publication
          where publication.superseded_by_id = #{value,jdbcType=INTEGER}::int
            order by relation, index_id
+    </select>
+
+    <select id="getLookupById" parameterType="Integer" resultMap="publication.lookupResult">
+        <include refid="publication.baseLookupSelect"/>
+            from publication
+           where publication_id = #{value,jdbcType=INTEGER}::int
     </select>
 
 </mapper>

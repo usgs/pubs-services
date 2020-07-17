@@ -22,6 +22,7 @@ public class PublicationDao extends BaseDao<Publication<?>> implements IPublicat
 
 	public static final String SERIES_ID_SEARCH = "publicationSeriesId";
 
+	public static final String PUBLICATION_ID = "publication_id";
 	public static final String PUB_ABSTRACT = "abstract";
 	public static final String CONTRIBUTING_OFFICE = "contributingOffice";
 	public static final String CONTRIBUTOR = "contributor";
@@ -62,7 +63,7 @@ public class PublicationDao extends BaseDao<Publication<?>> implements IPublicat
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<Publication<?>> validateByMap(Map<String, Object> filters) {
+	public List<Map<?,?>> validateByMap(Map<String, Object> filters) {
 		return getSqlSession().selectList(NS + VALIDATE_BY_MAP, filters);
 	}
 

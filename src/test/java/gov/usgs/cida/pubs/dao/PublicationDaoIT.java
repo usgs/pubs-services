@@ -474,28 +474,28 @@ public class PublicationDaoIT extends BaseIT {
 		//These should always check both tables - ignoring the MpPublicationDao.GLOBAL parameter
 		Map<String, Object> filters = new HashMap<>();
 		filters.put(PublicationDao.PROD_ID, new int[] { 2 });
-		Collection<Publication<?>> pubs = publicationDao.validateByMap(filters);
+		List<Map<?,?>> pubs = publicationDao.validateByMap(filters);
 		assertEquals(1, pubs.size());
-		assertEquals(2, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
+		assertEquals(2, pubs.get(0).get(PublicationDao.PUBLICATION_ID));
 
 		filters.clear();
 		filters.put(PublicationDao.INDEX_ID, new String[] { "4" });
 		pubs = publicationDao.validateByMap(filters);
 		assertEquals(1, pubs.size());
-		assertEquals(4, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
+		assertEquals(4, pubs.get(0).get(PublicationDao.PUBLICATION_ID));
 
 		filters.clear();
 		filters.put(PublicationDao.IPDS_ID, new String[] {"IP-056327"});
 		pubs = publicationDao.validateByMap(filters);
 		assertEquals(1, pubs.size());
-		assertEquals(3, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
+		assertEquals(3, pubs.get(0).get(PublicationDao.PUBLICATION_ID));
 
 		filters.clear();
 		filters.put(MpPublicationDao.GLOBAL, "false");
 		filters.put(PublicationDao.IPDS_ID, new String[] {"IP-056327"});
 		pubs = publicationDao.validateByMap(filters);
 		assertEquals(1, pubs.size());
-		assertEquals(3, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
+		assertEquals(3, pubs.get(0).get(PublicationDao.PUBLICATION_ID));
 
 		filters.clear();
 		filters.put(MpPublicationDao.GLOBAL, "false");
@@ -504,7 +504,7 @@ public class PublicationDaoIT extends BaseIT {
 		filters.put(PublicationDao.IPDS_ID, new String[] {"ipds_id"});
 		pubs = publicationDao.validateByMap(filters);
 		assertEquals(1, pubs.size());
-		assertEquals(4, ((Publication<?>)pubs.toArray()[0]).getId().intValue());
+		assertEquals(4, pubs.get(0).get(PublicationDao.PUBLICATION_ID));
 
 		//This only checks that the final query is syntactically correct, not that it is logically correct!
 		pubs = publicationDao.validateByMap(buildAllParms());

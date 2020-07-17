@@ -67,8 +67,6 @@
         <association property="largerWorkSubtype" column="larger_work_subtype_id" select="publicationSubtype.getById"/>
         <association property="seriesTitle" column="publication_series_id" select="publicationSeries.getById"/>
         <association property="publishingServiceCenter" column="publishing_service_center_id" select="publishingServiceCenter.getById"/>
-        <association property="isPartOf" column="is_part_of_id" select="publication.getLookupById"/>
-        <association property="supersededBy" column="superseded_by_id" select="publication.getLookupById"/>
     </resultMap>
 
     <resultMap id="genericResult" type="Publication" extends="result">
@@ -79,6 +77,8 @@
     </resultMap>
 
     <resultMap id="mpResult" type="Publication" extends="genericResult">
+        <association property="isPartOf" column="is_part_of_id" select="publication.getLookupById"/>
+        <association property="supersededBy" column="superseded_by_id" select="publication.getLookupById"/>
         <collection property="costCenters" column="publication_id" select="mpPublicationCostCenter.getByPublication"/>
         <collection property="contributors" column="publication_id" select="mpPublicationContributor.getByPublication"/>
         <collection property="links" column="publication_id" select="mpPublicationLink.getByPublication"/>
@@ -86,6 +86,8 @@
     </resultMap>
 
     <resultMap id="pwResult" type="Publication" extends="genericResult">
+        <association property="isPartOf" column="is_part_of_id" select="pwPublication.getLookupById"/>
+        <association property="supersededBy" column="superseded_by_id" select="pwPublication.getLookupById"/>
         <collection property="costCenters" column="publication_id" select="pwPublicationCostCenter.getByPublication"/>
         <collection property="contributors" column="publication_id" select="pwPublicationContributor.getByPublication"/>
         <collection property="links" column="publication_id" select="pwPublicationLink.getByPublication"/>
@@ -476,12 +478,12 @@
                publication_id = #{value,jdbcType=INTEGER}::int
     </select>
 
-    <select id="validateByMap" parameterType="map" resultMap="genericResult">
-        select <include refid="cols"/>, 'mypubs' sourceDatabase, published
+    <select id="validateByMap" parameterType="map" resultType="map">
+        select publication_id, index_id, ipds_id, 'mypubs' sourceDatabase, published
           from mp_publication pub
                <include refid="mpPublication.filters"/>
         union all
-        select <include refid="cols"/>, 'pubs warehouse' sourceDatabase, 'Y' published
+        select publication_id, index_id, ipds_id, 'pubs warehouse' sourceDatabase, 'Y' published
           from publication pub
          where publication_id in (select publication_id from publication
                                   except
@@ -522,16 +524,17 @@
                publication_year,
                no_year,
                title
-          from all_publication_lookup
     </sql>
 
     <select id="getLookupById" parameterType="Integer" resultMap="lookupResult">
         <include refid="baseLookupSelect"/>
+            from all_publication_lookup
            where publication_id = #{value,jdbcType=INTEGER}::int
     </select>
 
     <select id="filterLookupByIndexId" parameterType="String" resultMap="lookupResult">
         <include refid="baseLookupSelect"/>
+            from all_publication_lookup
         <if test="value != null">
            where upper(index_id) like upper(#{value,jdbcType=VARCHAR}) || '%'
         </if>

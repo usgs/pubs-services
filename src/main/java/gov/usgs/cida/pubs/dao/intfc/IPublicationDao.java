@@ -10,7 +10,7 @@ public interface IPublicationDao extends IDao<Publication<?>> {
 
 	List<Publication<?>> filterByIndexId(String indexId);
 
-	List<Publication<?>> validateByMap(Map<String, Object> filters);
+	List<Map<?,?>> validateByMap(Map<String, Object> filters);
 
 	List<Publication<?>> getByFilter(IFilterParams filters);
 

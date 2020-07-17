@@ -90,7 +90,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 
 	@GetMapping(produces={PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE,
 			PubsConstantsHelper.MEDIA_TYPE_XLSX_VALUE, PubsConstantsHelper.MEDIA_TYPE_CSV_VALUE, PubsConstantsHelper.MEDIA_TYPE_TSV_VALUE})
-	@JsonView(View.PW.class)
+	@JsonView(View.PWFast.class)
 	@Operation(
 			description = "Return a list of Publications (The entire paged list or only those matching the optional search parameter).",
 			responses = {

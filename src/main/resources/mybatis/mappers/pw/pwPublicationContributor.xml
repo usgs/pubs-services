@@ -3,15 +3,14 @@
 
 <mapper namespace="pwPublicationContributor">
 
-    <resultMap id="result" type="PwPublicationContributor" extends="publicationContributor.result">
-    </resultMap>
-
     <sql id="baseSelect">
         select <include refid="publicationContributor.cols"/>
           from publication_contributor
+               join contributor
+                 on publication_contributor.contributor_id = contributor.contributor_id
     </sql>
 
-    <select id="getByPublication" parameterType="Integer" resultMap="result">
+    <select id="getByPublication" parameterType="Integer" resultMap="publicationContributor.result">
         <include refid="baseSelect"/>
         where publication_id = #{value,jdbcType=NUMERIC}
            order by contributor_type_id, rank

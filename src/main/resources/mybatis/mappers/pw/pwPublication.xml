@@ -158,6 +158,18 @@
     <sql id="baseSelect">
         select <include refid="pwPublication.cols"/>
           from publication pub
+               left join publication_type
+                 on pub.publication_type_id = publication_type.publication_type_id
+               left join publication_subtype
+                 on pub.publication_subtype_id = publication_subtype.publication_subtype_id
+               left join publication_type larger_work_type
+                 on pub.publication_type_id = larger_work_type.publication_type_id
+               left join publication_subtype larger_work_subtype
+                 on pub.publication_subtype_id = larger_work_subtype.publication_subtype_id
+               left join publication_series
+                 on pub.publication_series_id = publication_series.publication_series_id
+               left join publishing_service_center
+                 on pub.publishing_service_center_id = publishing_service_center.publishing_service_center_id
     </sql>
 
     <update id="refreshTextIndex">
@@ -191,7 +203,7 @@
                index_id = #{value,jdbcType=VARCHAR}
     </select>
 
-    <select id="getByMap" parameterType="map" resultMap="result">
+    <select id="getByMap" parameterType="map" resultMap="result" resultOrdered="true">
         <include refid="baseSelect"/>
         <where>
             <include refid="pwPublication.wherePublic"/>

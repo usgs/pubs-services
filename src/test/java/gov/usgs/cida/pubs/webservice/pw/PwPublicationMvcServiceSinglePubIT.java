@@ -137,6 +137,7 @@ public class PwPublicationMvcServiceSinglePubIT extends BaseIT {
 			.andExpect(header().string(MIME.CONTENT_DISPOSITION, "inline"))
 			.andReturn();
 		assertNotNull(result.getResponse().getContentAsString(), "expects non-empty response");
+		check xml
 	}
 
 	@Test
@@ -148,5 +149,6 @@ public class PwPublicationMvcServiceSinglePubIT extends BaseIT {
 			.andExpect(header().string(MIME.CONTENT_DISPOSITION, "inline"))
 			.andReturn();
 		assertNotNull(result.getResponse().getContentAsString(), "expects non-empty response");
+		check xml
 	}
 }

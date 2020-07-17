@@ -3,25 +3,22 @@
 
 <mapper namespace="pwPublicationLink">
 
-    <resultMap id="result" type="PwPublicationLink" extends="publicationLink.result">
-    </resultMap>
-
     <sql id="baseSelect">
         select <include refid="publicationLink.cols"/>
           from publication_link
     </sql>
 
-    <select id="getById" parameterType="Integer" resultMap="result">
+    <select id="getById" parameterType="Integer" resultMap="publicationLink.result">
         <include refid="baseSelect"/>
          where publication_link_id = #{value,jdbcType=NUMERIC}
     </select>
 
-    <select id="getByPublication" parameterType="Integer" resultMap="result">
+    <select id="getByPublication" parameterType="Integer" resultMap="publicationLink.result">
         <include refid="baseSelect"/>
          where publication_id = #{value,jdbcType=NUMERIC}
     </select>
 
-    <select id="getByMap" resultMap="result">
+    <select id="getByMap" resultMap="publicationLink.result">
         <include refid="baseSelect"/>
         <include refid="publicationLink.filters"/>
     </select>

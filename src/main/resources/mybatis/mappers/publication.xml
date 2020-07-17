@@ -61,12 +61,35 @@
         <result property="published" column="published"/>
         <result property="noUsgsAuthors" column="no_usgs_authors"/>
         <result property="ipdsContext" column="ipds_context"/>
-        <association property="publicationType" column="publication_type_id" select="publicationType.getById"/>
-        <association property="publicationSubtype" column="publication_subtype_id" select="publicationSubtype.getById"/>
-        <association property="largerWorkType" column="larger_work_type_id" select="publicationType.getById"/>
-        <association property="largerWorkSubtype" column="larger_work_subtype_id" select="publicationSubtype.getById"/>
-        <association property="seriesTitle" column="publication_series_id" select="publicationSeries.getById"/>
-        <association property="publishingServiceCenter" column="publishing_service_center_id" select="publishingServiceCenter.getById"/>
+        <association property="publicationType">
+            <id property="id" column="publication_type_id"/>
+            <result property="text" column="publication_type_name"/>
+        </association>
+        <association property="publicationSubtype">
+            <id property="id" column="publication_subtype_id"/>
+            <result property="text" column="publication_subtype_name"/>
+        </association>
+        <association property="largerWorkType">
+            <id property="id" column="larger_work_type_id"/>
+            <result property="text" column="larger_work_type_name"/>
+        </association>
+        <association property="largerWorkSubtype">
+            <id property="id" column="larger_work_subtype_id"/>
+            <result property="text" column="larger_work_subtype_name"/>
+        </association>
+        <association property="seriesTitle">
+            <id property="id" column="publication_series_id"/>
+            <result property="text" column="publication_series_name"/>
+            <result property="code" column="publication_series_code"/>
+            <result property="seriesDoiName" column="publication_series_doi_name"/>
+            <result property="printIssn" column="publication_series_print_issn"/>
+            <result property="onlineIssn" column="publication_series_online_issn"/>
+            <result property="active" column="publication_series_is_active"/>
+        </association>
+        <association property="publishingServiceCenter">
+            <id property="id" column="publishing_service_center_id"/>
+            <result property="text" column="publishing_service_center_name"/>
+        </association>
     </resultMap>
 
     <resultMap id="genericResult" type="Publication" extends="result">
@@ -86,12 +109,9 @@
     </resultMap>
 
     <resultMap id="pwResult" type="Publication" extends="genericResult">
-        <association property="isPartOf" column="is_part_of_id" select="pwPublication.getLookupById"/>
-        <association property="supersededBy" column="superseded_by_id" select="pwPublication.getLookupById"/>
         <collection property="costCenters" column="publication_id" select="pwPublicationCostCenter.getByPublication"/>
         <collection property="contributors" column="publication_id" select="pwPublicationContributor.getByPublication"/>
-        <collection property="links" column="publication_id" select="pwPublicationLink.getByPublication"/>
-        <collection property="interactions" column="publication_id" select="publicationInteraction.getByPwPublication"/>
+<!--        <collection property="links" column="publication_id" select="pwPublicationLink.getByPublication"/> -->
     </resultMap>
 
     <resultMap id="lookupResult" type="Publication">
@@ -102,71 +122,85 @@
     </resultMap>
 
     <sql id="cols">
-        publication_id,
-        index_id,
-        display_to_public_date,
-        publication_year,
-        no_year,
-        publication_type_id,
-        publication_subtype_id,
-        publication_series_id,
-        series_number,
-        subseries_title,
-        chapter,
-        subchapter,
-        display_title,
-        title,
-        larger_work_type_id,
-        larger_work_title,
-        larger_work_subtype_id,
-        conference_title,
-        conference_date,
-        conference_location,
-        language,
-        publisher,
-        publisher_location,
-        doi_name,
-        issn,
-        isbn,
-        collaboration,
-        usgs_citation,
-        product_description,
-        start_page,
-        end_page,
-        number_of_pages,
-        online_only,
-        additional_online_files,
-        temporal_start,
-        temporal_end,
-        ipds_id,
-        ipds_review_process_state,
-        ipds_internal_id,
-        scale,
-        projection,
-        datum,
-        country,
-        state,
-        county,
-        city,
-        other_geospatial,
-        volume,
-        issue,
-        edition,
-        public_comments,
-        contact_info,
-        table_of_contents,
-        publishing_service_center_id,
-        published_date,
-        is_part_of_id,
-        superseded_by_id,
-        revised_date,
-        abstract,
-        notes,
-        geographic_extents,
-        geom,
-        no_usgs_authors,
-        ipds_context,
-        <include refid="base.auditCols"/>
+        pub.publication_id,
+        pub.index_id,
+        pub.display_to_public_date,
+        pub.publication_year,
+        pub.no_year,
+        pub.publication_type_id,
+        publication_type.name publication_type_name,
+        pub.publication_subtype_id,
+        publication_subtype.name publication_subtype_name,
+        pub.publication_series_id,
+        publication_series.name publication_series_name,
+        publication_series.code publication_series_code,
+        publication_series.doi_name publication_series_doi_name,
+        publication_series.print_issn publication_series_print_issn,
+        publication_series.online_issn publication_series_online_issn,
+        publication_series.is_active publication_series_is_active,
+        pub.series_number,
+        pub.subseries_title,
+        pub.chapter,
+        pub.subchapter,
+        pub.display_title,
+        pub.title,
+        pub.larger_work_type_id,
+        larger_work_type.name larger_work_type_name,
+        pub.larger_work_title,
+        pub.larger_work_subtype_id,
+        larger_work_subtype.name larger_work_subtype_name,
+        pub.conference_title,
+        pub.conference_date,
+        pub.conference_location,
+        pub.language,
+        pub.publisher,
+        pub.publisher_location,
+        pub.doi_name,
+        pub.issn,
+        pub.isbn,
+        pub.collaboration,
+        pub.usgs_citation,
+        pub.product_description,
+        pub.start_page,
+        pub.end_page,
+        pub.number_of_pages,
+        pub.online_only,
+        pub.additional_online_files,
+        pub.temporal_start,
+        pub.temporal_end,
+        pub.ipds_id,
+        pub.ipds_review_process_state,
+        pub.ipds_internal_id,
+        pub.scale,
+        pub.projection,
+        pub.datum,
+        pub.country,
+        pub.state,
+        pub.county,
+        pub.city,
+        pub.other_geospatial,
+        pub.volume,
+        pub.issue,
+        pub.edition,
+        pub.public_comments,
+        pub.contact_info,
+        pub.table_of_contents,
+        pub.publishing_service_center_id,
+        publishing_service_center.name publishing_service_center_name,
+        pub.published_date,
+        pub.is_part_of_id,
+        pub.superseded_by_id,
+        pub.revised_date,
+        pub.abstract,
+        pub.notes,
+        pub.geographic_extents,
+        pub.geom,
+        pub.no_usgs_authors,
+        pub.ipds_context,
+        pub.insert_date,
+        pub.insert_username,
+        pub.update_date,
+        pub.update_username
     </sql>
 
     <sql id="hosts">

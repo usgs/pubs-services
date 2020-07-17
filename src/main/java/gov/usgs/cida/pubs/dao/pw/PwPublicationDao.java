@@ -98,11 +98,6 @@ public class PwPublicationDao extends BaseDao<PwPublication> implements IPwPubli
 		getSqlSession().select(statement, filters, handler);
 	}
 
-	@Override
-	public List<PwPublication> getCrossrefPublications(Map<String, Object> filters){
-		return getSqlSession().selectList(NS + GET_CROSSREF_PUBLICATIONS, filters);
-	}
-
 	@Transactional
 	@Override
 	public void purgePublication(Integer publicationId) {

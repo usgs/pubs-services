@@ -7,13 +7,18 @@
         <id property="id" column="publication_contributor_id"/>
         <result property="publicationId" column="publication_id"/>
         <result property="rank" column="rank"/>
-        <association property="contributor" column="contributor_id" select="contributor.getById"/>
+        <association property="contributor" resultMap="contributor.result"/>
         <association property="contributorType" column="contributor_type_id" select="contributorType.getById"/>
     </resultMap>
 
     <sql id="cols">
-        publication_contributor_id, publication_id, contributor_id, contributor_type_id, rank,
-        <include refid="base.auditCols"/>
+        publication_contributor.publication_contributor_id,
+        publication_contributor.publication_id,
+        publication_contributor.contributor_type_id,
+        publication_contributor.rank,
+        publication_contributor.contributor_id,
+        contributor.is_corporation,
+        contributor.is_usgs
     </sql>
 
     <sql id="hosts">

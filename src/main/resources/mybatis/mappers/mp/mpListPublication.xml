@@ -3,15 +3,35 @@
 
 <mapper namespace="mpListPublication">
 
-    <resultMap id="mpListPublicationResult" type="mpListPublication" extends="base.result">
+    <resultMap id="mpListPublicationResult" type="mpListPublication">
         <id property="id" column="mp_list_publication_id"/>
+        <result property="insertDate" column="mp_list_publication_insert_date"/>
+        <result property="insertUsername" column="mp_list_publication_insert_username"/>
+        <result property="updateDate" column="mp_list_publication_update_date"/>
+        <result property="updateUsername" column="mp_list_publication_update_username"/>
         <association property="mpList" column="mp_list_id" select="mpList.getById"/>
         <association property="mpPublication" column="publication_id" select="mpPublication.getById"/>
     </resultMap>
 
-    <sql id="cols">
-        mp_list_publication_id, mp_list_id, publication_id,
+    <sql id="rawCols">
+        mp_list_publication_id,
+        mp_list_id,
+        publication_id,
         <include refid="base.auditCols"/>
+    </sql>
+
+    <sql id="baseCols">
+        mp_list_publication.mp_list_publication_id,
+        mp_list_publication.mp_list_id,
+        mp_list_publication.publication_id,
+        mp_list_publication.insert_date mp_list_publication_insert_date,
+        mp_list_publication.insert_username mp_list_publication_insert_username,
+        mp_list_publication.update_date mp_list_publication_update_date,
+        mp_list_publication.update_username mp_list_publication_update_username
+    </sql>
+
+    <sql id="cols">
+        <include refid="mpListPublication.baseCols"/>
     </sql>
 
     <sql id="hosts">
@@ -31,7 +51,7 @@
         <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
             select nextval('mp_list_publication_seq')
         </selectKey>
-        insert into mp_list_publication (<include refid="cols"/>)
+        insert into mp_list_publication (<include refid="rawCols"/>)
             values (<include refid="hosts"/>)
     </insert>
 
@@ -43,17 +63,17 @@
     <sql id="filters">
         <where>
             <if test="publicationId != null">
-                and publication_id = #{publicationId}
+                and mp_list_publication.publication_id = #{publicationId}
             </if>
             <if test="mpListId != null">
-                and mp_list_id = #{mpListId}
+                and mp_list_publication.mp_list_id = #{mpListId}
             </if>
         </where>
     </sql>
 
     <select id="getById" parameterType="Integer" resultMap="mpListPublicationResult">
         <include refid="baseSelect"/>
-         where mp_list_publication_id = #{id,jdbcType=INTEGER}
+         where mp_list_publication.mp_list_publication_id = #{id,jdbcType=INTEGER}
     </select>
 
     <select id="getByMap" parameterType="Integer" resultMap="mpListPublicationResult">

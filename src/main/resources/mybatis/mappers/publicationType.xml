@@ -3,23 +3,31 @@
 
 <mapper namespace="publicationType">
 
-    <resultMap id="result" type="PublicationType" extends="base.result">
+    <resultMap id="result" type="PublicationType">
         <id property="id" column="publication_type_id"/>
         <result property="text" column="name"/>
+        <result property="insertDate" column="publication_type_insert_date"/>
+        <result property="insertUsername" column="publication_type_insert_username"/>
+        <result property="updateDate" column="publication_type_update_date"/>
+        <result property="updateUsername" column="publication_typer_update_username"/>
     </resultMap>
 
     <sql id="cols">
-        publication_type_id, name,
-        <include refid="base.auditCols"/>
+        publication_type.publication_type_id,
+        publication_type.name,
+        publication_type.insert_date publication_type_insert_date,
+        publication_type.insert_username publication_type_insert_username,
+        publication_type.update_date publication_type_update_date,
+        publication_type.update_username publication_type_update_username
     </sql>
 
     <sql id="filters">
         <where>
             <if test="id != null">
-                and publication_type_id = #{id,jdbcType=NUMERIC}
+                and publication_type.publication_type_id = #{id,jdbcType=NUMERIC}
             </if>
             <if test="text != null">
-                and upper(name) like upper(#{text}) || '%'
+                and upper(publication_type.name) like upper(#{text}) || '%'
             </if>
         </where>
     </sql>
@@ -31,7 +39,7 @@
 
     <select id="getById" parameterType="Integer" resultMap="result">
         <include refid="baseSelect"/>
-         where publication_type_id = #{value,jdbcType=NUMERIC}
+         where publication_type.publication_type_id = #{value,jdbcType=NUMERIC}
     </select>
 
     <select id="getByMap" resultMap="result">

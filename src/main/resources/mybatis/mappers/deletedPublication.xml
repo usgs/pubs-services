@@ -3,7 +3,7 @@
 
 <mapper namespace="deletedPublication">
 
-    <resultMap id="result" type="DeletedPublication" extends="base.result">
+    <resultMap id="result" type="DeletedPublication">
         <id property="id" column="publication_id"/>
         <result property="indexId" column="index_id"/>
         <result property="title" column="title"/>

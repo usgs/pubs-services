@@ -207,7 +207,6 @@ public class PublicationIT extends BaseIT {
 		newPub.setNotes("notes");
 		newPub.setIpdsId("ipds_id" + pubId);
 		newPub.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
-		newPub.setIpdsInternalId("12");
 		newPub.setId(pubId);
 		newPub.setPublicationYear("2001");
 		newPub.setNoYear(false);

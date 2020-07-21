@@ -3,16 +3,26 @@
 
 <mapper namespace="mpList">
 
-    <resultMap id="mpListResult" type="MpList" extends="base.result">
+    <resultMap id="mpListResult" type="MpList">
         <id property="id" column="mp_list_id"/>
         <result property="text" column="list_name"/>
         <result property="description" column="list_desc"/>
         <result property="type" column="list_type"/>
+        <result property="insertDate" column="mp_list_insert_date"/>
+        <result property="insertUsername" column="mp_list_insert_username"/>
+        <result property="updateDate" column="mp_list_update_date"/>
+        <result property="updateUsername" column="mp_list_update_username"/>
     </resultMap>
 
     <sql id="cols">
-        mp_list_id, list_name, list_desc, list_type,
-        <include refid="base.auditCols"/>
+        mp_list.mp_list_id,
+        mp_list.list_name,
+        mp_list.list_desc,
+        mp_list.list_type,
+        mp_list.insert_date mp_list_insert_date,
+        mp_list.insert_username mp_list_insert_username,
+        mp_list.update_date mp_list_update_date,
+        mp_list.update_username mp_list_update_username
     </sql>
 
     <sql id="baseSelect">
@@ -23,20 +33,20 @@
     <sql id="filters">
         <where>
             <if test="id != null">
-                and mp_list_id = #{id}
+                and mp_list.mp_list_id = #{id}
             </if>
             <if test="text != null">
-                and upper(list_name) like upper(#{text}) || '%'
+                and upper(mp_list.list_name) like upper(#{text}) || '%'
             </if>
             <if test="listType != null">
-                and list_type = #{listType}
+                and mp_list.list_type = #{listType}
             </if>
         </where>
     </sql>
 
     <select id="getById" parameterType="Integer" resultMap="mpListResult">
         <include refid="baseSelect"/> 
-         where mp_list_id = #{value,jdbcType=NUMERIC}
+         where mp_list.mp_list_id = #{value,jdbcType=NUMERIC}
     </select>
 
     <select id="getByMap" parameterType="map" resultMap="mpListResult">

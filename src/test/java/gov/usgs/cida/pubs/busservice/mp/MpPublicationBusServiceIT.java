@@ -107,7 +107,7 @@ import gov.usgs.cida.pubs.validation.ValidatorResult;
 public class MpPublicationBusServiceIT extends BaseIT {
 
 	public static final List<String> IGNORE_PROPERTIES = List.of("validationErrors", "valErrors", "costCenters", "contributors", "contributorsToMap", "links",
-			"doi", "indexId", "interactions", "sourceDatabase", "published", "ipdsContext");
+			"doi", "indexId", "interactions", "sourceDatabase", "published");
 
 	public Integer lockTimeoutHours = 1;
 

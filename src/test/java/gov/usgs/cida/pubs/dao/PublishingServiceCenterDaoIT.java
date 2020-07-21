@@ -48,14 +48,6 @@ public class PublishingServiceCenterDaoIT extends BaseIT {
 	}
 
 	@Test
-	public void getByIpdsValue() {
-		assertNull(publishingServiceCenterDao.getByIpdsId(null));
-		PublishingServiceCenter psc = publishingServiceCenterDao.getByIpdsId(2);
-		assertNotNull(psc);
-		assertPsc2(psc);
-	}
-
-	@Test
 	public void getByMap() {
 		List<PublishingServiceCenter> pscs = publishingServiceCenterDao.getByMap(null);
 		assertEquals(PSC_CNT, pscs.size());

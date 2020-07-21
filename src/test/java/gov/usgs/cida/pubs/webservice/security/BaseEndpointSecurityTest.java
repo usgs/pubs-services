@@ -40,7 +40,6 @@ import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.dao.intfc.IMpPublicationDao;
 import gov.usgs.cida.pubs.dao.intfc.IPersonContributorDao;
 import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
-import gov.usgs.cida.pubs.dao.intfc.IPublishingServiceCenterDao;
 import gov.usgs.cida.pubs.dao.intfc.IPwPublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpListDaoIT;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoIT;
@@ -126,7 +125,7 @@ public abstract class BaseEndpointSecurityTest extends BaseSecurityTest {
 	@MockBean(name="publicationTypeDao")
 	protected IDao<PublicationType> publicationTypeDao;
 	@MockBean(name="publishingServiceCenterDao")
-	protected IPublishingServiceCenterDao publishingServiceCenterDao;
+	protected IDao<PublishingServiceCenter> publishingServiceCenterDao;
 	@MockBean(name="publicationDao")
 	protected IPublicationDao publicationDao;
 	@MockBean(name="pwPublicationDao")

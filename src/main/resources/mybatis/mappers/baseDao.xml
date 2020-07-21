@@ -15,7 +15,10 @@
     </sql>
 
     <sql id="auditCols">
-        insert_date, insert_username, update_date, update_username
+        insert_date,
+        insert_username,
+        update_date,
+        update_username
     </sql>
 
     <sql id="auditHosts">
@@ -31,7 +34,7 @@
     </sql>
 
     <!--  This is using string substitution ${} rather than a parameter #{} because of issues getting the parameter into the comment.
-          NOTE that you SHOULD not do this unless you are certain the value is not suspect to SQL injection!!! -->
+          NOTE that you SHOULD NOT do this unless you are certain the value is not suspect to SQL injection!!! -->
     <sql id="deleteAuditHack">
         /* delete_username=${deleteUsername} */ 
     </sql>

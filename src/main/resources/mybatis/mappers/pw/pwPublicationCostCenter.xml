@@ -3,24 +3,25 @@
 
 <mapper namespace="pwPublicationCostCenter">
 
+    <resultMap id="result" type="PwPublicationCostCenter" extends="publicationCostCenter.result"/>
+
     <sql id="baseSelect">
         select <include refid="publicationCostCenter.cols"/>
           from publication_cost_center
-               join affiliation
-                 on publication_cost_center.cost_center_id = affiliation.affiliation_id
+               <include refid="publicationCostCenter.associationJoins"/>
     </sql>
 
-    <select id="getById" parameterType="Integer" resultMap="publicationCostCenter.result">
+    <select id="getById" parameterType="Integer" resultMap="result">
         <include refid="baseSelect"/>
          where publication_cost_center_id = #{value,jdbcType=NUMERIC}
     </select>
 
-    <select id="getByPublication" parameterType="Integer" resultMap="publicationCostCenter.result">
+    <select id="getByPublication" parameterType="Integer" resultMap="result">
         <include refid="baseSelect"/>
          where publication_id = #{value,jdbcType=NUMERIC}
     </select>
 
-    <select id="getByMap" resultMap="publicationCostCenter.result">
+    <select id="getByMap" resultMap="result">
         <include refid="baseSelect"/>
         <include refid="publicationCostCenter.filters"/>
     </select>

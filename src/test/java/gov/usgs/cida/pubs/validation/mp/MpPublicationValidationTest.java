@@ -74,7 +74,6 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 	public static final String INVALID_END_PAGE_LENGTH = new ValidatorResult("endPage", LENGTH_0_TO_XXX_MSG + "20", SeverityLevel.FATAL, null).toString();
 	public static final String INVALID_INDEX_ID_LENGTH = new ValidatorResult("indexId", LENGTH_1_TO_XXX_MSG + "100", SeverityLevel.FATAL, null).toString();
 	public static final String INVALID_IPDS_ID_LENGTH = new ValidatorResult("ipdsId",LENGTH_0_TO_XXX_MSG + "15", SeverityLevel.FATAL, null).toString();
-	public static final String INVALID_IPDS_INTERNAL_ID_LENGTH = new ValidatorResult("ipdsInternalId", REGEX_MSG + "^ *\\d*$\"", SeverityLevel.FATAL, null).toString();
 	public static final String INVALID_ISBN_LENGTH = new ValidatorResult("isbn", LENGTH_0_TO_XXX_MSG + "30", SeverityLevel.FATAL, null).toString();
 	public static final String INVALID_ISSN_LENGTH = new ValidatorResult("issn", LENGTH_0_TO_XXX_MSG + "20", SeverityLevel.FATAL, null).toString();
 	public static final String INVALID_ISSUE_LENGTH = new ValidatorResult("issue", LENGTH_0_TO_XXX_MSG + "20", SeverityLevel.FATAL, null).toString();
@@ -314,7 +313,6 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 		mpPub.setNumberOfPages(StringUtils.repeat('X', 21));
 		mpPub.setOnlineOnly("Q");
 		mpPub.setAdditionalOnlineFiles("Q");
-		mpPub.setIpdsInternalId(StringUtils.repeat('X', 21));
 		mpPub.setScale(StringUtils.repeat('X', 21));
 		mpPub.setProjection(StringUtils.repeat('X', 501));
 		mpPub.setDatum(StringUtils.repeat('X', 501));
@@ -331,7 +329,7 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 
 		mpPub.setValidationErrors(validator.validate(mpPub));
 		assertFalse(mpPub.isValid());
-		assertEquals(38, mpPub.getValidationErrors().getValidationErrors().size());
+		assertEquals(37, mpPub.getValidationErrors().getValidationErrors().size());
 		assertValidationResults(mpPub.getValidationErrors().getValidationErrors(),
 				//From Publication
 				INVALID_ADD_ONLINE_LENGTH,
@@ -350,7 +348,6 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 				INVALID_END_PAGE_LENGTH,
 				INVALID_INDEX_ID_LENGTH,
 				INVALID_IPDS_ID_LENGTH,
-				INVALID_IPDS_INTERNAL_ID_LENGTH,
 				INVALID_ISBN_LENGTH,
 				INVALID_ISSN_LENGTH,
 				INVALID_ISSUE_LENGTH,
@@ -406,7 +403,6 @@ public class MpPublicationValidationTest extends BaseValidatorTest {
 		mpPub.setNumberOfPages(" 20");
 		mpPub.setOnlineOnly("Y");
 		mpPub.setAdditionalOnlineFiles("Y");
-		mpPub.setIpdsInternalId(" 20");
 		mpPub.setScale(" 20");
 		mpPub.setProjection(StringUtils.repeat('X', 500));
 		mpPub.setDatum(StringUtils.repeat('X', 500));

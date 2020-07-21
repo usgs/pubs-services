@@ -9,20 +9,21 @@
         <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
             select nextval('publication_cost_center_seq')
         </selectKey>
-        insert into mp_pub_cost_center (<include refid="publicationCostCenter.cols"/>)
+        insert into mp_pub_cost_center (<include refid="publicationCostCenter.rawCols"/>)
              values (<include refid="publicationCostCenter.hosts"/>)
     </insert>
 
     <insert id="copyMpFromPw">
-        insert into mp_pub_cost_center (<include refid="publicationCostCenter.cols"/>)
-            (select <include refid="publicationCostCenter.cols"/>
+        insert into mp_pub_cost_center (<include refid="publicationCostCenter.rawCols"/>)
+            (select <include refid="publicationCostCenter.rawCols"/>
                from publication_cost_center
               where publication_id = #{id,jdbcType=NUMERIC})
     </insert>
 
     <sql id="baseSelect">
         select <include refid="publicationCostCenter.cols"/>
-          from mp_pub_cost_center
+          from mp_pub_cost_center publication_cost_center
+               <include refid="publicationCostCenter.associationJoins"/>
     </sql>
 
     <select id="getById" parameterType="Integer" resultMap="result">
@@ -47,9 +48,14 @@
     </update>
 
     <insert id="publish">
-        insert into publication_cost_center (<include refid="publicationCostCenter.cols"/>)
-        select publication_cost_center_id,      publication_id,      cost_center_id, 
-               insert_date,                     insert_username,     now() at time zone 'UTC',             #{updateUsername,jdbcType=VARCHAR}
+        insert into publication_cost_center (<include refid="publicationCostCenter.rawCols"/>)
+        select publication_cost_center_id,
+               publication_id,
+               cost_center_id,
+               insert_date,
+               insert_username,
+               now() at time zone 'UTC',
+               #{updateUsername,jdbcType=VARCHAR}
           from mp_pub_cost_center
          where publication_id = #{id,jdbcType=NUMERIC}
     </insert>

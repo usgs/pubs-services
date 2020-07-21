@@ -13,9 +13,8 @@
         <result property="chorus.publicationDate" column="chrs_publication_date"/>
         <result property="chorus.auditedOn" column="chrs_audited_on"/>
         <result property="chorus.pblcllyAccessDate" column="chrs_pblclly_access_date"/>
-        <collection property="stores" column="publication_id" select="pwStore.getByPublication"/>
     </resultMap>
-    
+
     <resultMap id="eagerResult" type="PwPublication" extends="result">
         <collection property="contributors" column="publication_id" select="pwPublicationContributor.getByPublication" fetchType="eager"/>
         <collection property="links" column="publication_id" select="pwPublicationLink.getByPublication" fetchType="eager"/>
@@ -23,15 +22,15 @@
 
     <sql id="cols">
         <include refid="publication.cols"/>,
-        sciencebase_uri,
-        chrs_doi,
-        chrs_url,
-        chrs_publisher,
-        chrs_authors,
-        chrs_journal_name,
-        chrs_publication_date,
-        chrs_audited_on,
-        chrs_pblclly_access_date
+        publication.sciencebase_uri,
+        publication.chrs_doi,
+        publication.chrs_url,
+        publication.chrs_publisher,
+        publication.chrs_authors,
+        publication.chrs_journal_name,
+        publication.chrs_publication_date,
+        publication.chrs_audited_on,
+        publication.chrs_pblclly_access_date
     </sql>
 
     <sql id="filters">
@@ -40,7 +39,7 @@
         <if test="null != q">
             and exists (select null
                           from publication_index
-                         where pub.publication_id = publication_index.publication_id and
+                         where publication.publication_id = publication_index.publication_id and
                                publication_index.q @@ to_tsquery('english', #{q})
                        )
         </if>
@@ -56,7 +55,7 @@
                           from publication_contributor
                                join contributor
                                  on publication_contributor.contributor_id = contributor.contributor_id 
-                         where pub.publication_id = publication_contributor.publication_id and
+                         where publication.publication_id = publication_contributor.publication_id and
                                to_tsvector('english', text) @@ to_tsquery('english', #{contributor})
                        )
         </if>
@@ -66,7 +65,7 @@
                           from publication_contributor
                                join contributor
                                  on publication_contributor.contributor_id = contributor.contributor_id 
-                         where pub.publication_id = publication_contributor.publication_id and
+                         where publication.publication_id = publication_contributor.publication_id and
                                <foreach item="oid" collection="orcid" open="(" separator="or" close=")">
                                    contributor.orcid = #{oid}
                                </foreach>
@@ -78,7 +77,7 @@
                           from publication_cost_center
                                join affiliation
                                  on publication_cost_center.cost_center_id = affiliation.affiliation_id 
-                         where pub.publication_id = publication_cost_center.publication_id and
+                         where publication.publication_id = publication_cost_center.publication_id and
                                <foreach item="co" collection="contributingOffice" open="(" separator="or" close=")"> 
                                    upper(name) like '%' || upper(#{co}) || '%'
                                </foreach>
@@ -110,7 +109,7 @@
                           from publication_link
                                join link_type
                                  on publication_link.link_type_id = link_type.link_type_id 
-                         where pub.publication_id = publication_link.publication_id and
+                         where publication.publication_id = publication_link.publication_id and
                                <foreach item="lt" collection="linkType" open="(" separator="or" close=")">
                                    upper(link_type.name) = upper(#{lt})
                                </foreach>
@@ -122,7 +121,7 @@
                           from publication_link
                                join link_type
                                  on publication_link.link_type_id = link_type.link_type_id 
-                         where pub.publication_id = publication_link.publication_id and
+                         where publication.publication_id = publication_link.publication_id and
                                <foreach item="lt" collection="noLinkType" open="(" separator="or" close=")">
                                    upper(link_type.name) = upper(#{lt})
                                </foreach>
@@ -142,34 +141,23 @@
         </if>
         
         <if test="null != mod_x_days">
-            and pub.update_date::date &gt;= (current_date - (#{mod_x_days} ||' day')::interval)
+            and publication.update_date::date &gt;= (current_date - (#{mod_x_days} ||' day')::interval)
         </if>
 
         <if test="null != mod_date_low">
-            and pub.update_date::date &gt;= to_date(#{mod_date_low}, <include refid="base.dateFormat"/>)
+            and publication.update_date::date &gt;= to_date(#{mod_date_low}, <include refid="base.dateFormat"/>)
         </if>
 
         <if test="null != mod_date_high">
-            and pub.update_date::date &lt;= to_date(#{mod_date_high}, <include refid="base.dateFormat"/>)
+            and publication.update_date::date &lt;= to_date(#{mod_date_high}, <include refid="base.dateFormat"/>)
         </if>
 
     </sql>
 
     <sql id="baseSelect">
         select <include refid="pwPublication.cols"/>
-          from publication pub
-               left join publication_type
-                 on pub.publication_type_id = publication_type.publication_type_id
-               left join publication_subtype
-                 on pub.publication_subtype_id = publication_subtype.publication_subtype_id
-               left join publication_type larger_work_type
-                 on pub.publication_type_id = larger_work_type.publication_type_id
-               left join publication_subtype larger_work_subtype
-                 on pub.publication_subtype_id = larger_work_subtype.publication_subtype_id
-               left join publication_series
-                 on pub.publication_series_id = publication_series.publication_series_id
-               left join publishing_service_center
-                 on pub.publishing_service_center_id = publishing_service_center.publishing_service_center_id
+          from publication
+               <include refid="publication.associationJoins"/>
     </sql>
 
     <update id="refreshTextIndex">
@@ -213,142 +201,133 @@
         <include refid="base.pagingRowLimit"/>
     </select>
 
-    <select id="getByMapSlim" parameterType="map" resultMap="result">
-        <include refid="baseSelect"/>
-        <where>
-            <include refid="pwPublication.wherePublic"/>
-            <include refid="whFilters"/>
-        </where>
-        <include refid="publication.orderBy"/>
-        <include refid="base.pagingRowLimit"/>
-    </select>
-
     <select id="getCount" parameterType="map" resultType="Integer">
         select count(*)
-          from publication pub
+          from publication
         <where>
             <include refid="pwPublication.wherePublic"/>
             <include refid="whFilters"/>
         </where>
     </select>
 
-    <select id="getCrossrefPubs" parameterType="map" resultMap="eagerResult" fetchSize="100">
+    <select id="getCrossrefPubs" parameterType="map" resultMap="eagerResult" fetchSize="100" resultOrdered="true">
         <include refid="baseSelect"/>
         <where>
             <include refid="pwPublication.wherePublic"/> and
-            pub.publication_subtype_id in 
+            publication.publication_subtype_id in 
                 <foreach item="r" collection="subtypeId" open="(" separator="," close=")">
                 #{r}
                 </foreach> and
-            pub.doi_name is not null
+            publication.doi_name is not null
         </where>
+        order by publication_id
     </select>
 
     <select id="getStreamByMap" parameterType="map" resultType="java.util.LinkedHashMap" fetchSize="100">
-        select #{url,jdbcType=VARCHAR} || pub.index_id warehouse_url,
-               pub.publication_id,
-               pub.index_id,
+        select #{url,jdbcType=VARCHAR} || publication.index_id warehouse_url,
+               publication.publication_id,
+               publication.index_id,
                publication_type.name publication_type,
                publication_subtype.name publication_subtype,
-               pub.display_title,
-               pub.title,
+               publication.display_title,
+               publication.title,
                publication_series.name series_title,
-               pub.series_number,
-               pub.subseries_title,
-               pub.chapter,
-               pub.subchapter,
+               publication.series_number,
+               publication.subseries_title,
+               publication.chapter,
+               publication.subchapter,
                publication_series.online_issn,
                publication_series.print_issn,
-               pub.isbn,
-               pub.doi_name,
-               pub.edition,
-               pub.volume,
-               pub.issue,
-               pub.publication_year,
-               pub.no_year,
-               pub.language,
-               pub.publisher,
-               pub.publisher_location,
+               publication.isbn,
+               publication.doi_name,
+               publication.edition,
+               publication.volume,
+               publication.issue,
+               publication.publication_year,
+               publication.no_year,
+               publication.language,
+               publication.publisher,
+               publication.publisher_location,
                pub_cc.cost_centers,
-               pub.product_description,
+               publication.product_description,
                larger_work_type.name larger_work_type,
                larger_work_subtype.name larger_work_subtype,
-               pub.larger_work_title,
-               pub.start_page,
-               pub.end_page,
-               pub.number_of_pages,
-               pub.public_comments,
-               to_char(pub.temporal_start, <include refid="base.dateFormat"/>) temporal_start,
-               to_char(pub.temporal_end, <include refid="base.dateFormat"/>) temporal_end,
-               pub.conference_title,
-               pub.conference_location,
-               pub.conference_date,
-               pub.country,
-               pub.state,
-               pub.county,
-               pub.city,
-               pub.other_geospatial,
-               pub.datum,
-               pub.projection,
-               pub.scale,
-               pub.online_only,
-               pub.additional_online_files,
+               publication.larger_work_title,
+               publication.start_page,
+               publication.end_page,
+               publication.number_of_pages,
+               publication.public_comments,
+               to_char(publication.temporal_start, <include refid="base.dateFormat"/>) temporal_start,
+               to_char(publication.temporal_end, <include refid="base.dateFormat"/>) temporal_end,
+               publication.conference_title,
+               publication.conference_location,
+               publication.conference_date,
+               publication.country,
+               publication.state,
+               publication.county,
+               publication.city,
+               publication.other_geospatial,
+               publication.datum,
+               publication.projection,
+               publication.scale,
+               publication.online_only,
+               publication.additional_online_files,
                pub_author.authors,
                pub_editor.editors,
                pub_compiler.compilers,
                coalesce(pub_link.number_of_links, 0) number_of_links,
-               pub.sciencebase_uri,
-               pub.chrs_doi,
-               pub.chrs_url,
-               pub.chrs_publisher,
-               pub.chrs_authors,
-               pub.chrs_journal_name,
-               pub.chrs_publication_date,
-               pub.chrs_audited_on,
-               pub.chrs_pblclly_access_date
-          from publication pub
+               publication.sciencebase_uri,
+               publication.chrs_doi,
+               publication.chrs_url,
+               publication.chrs_publisher,
+               publication.chrs_authors,
+               publication.chrs_journal_name,
+               publication.chrs_publication_date,
+               publication.chrs_audited_on,
+               publication.chrs_pblclly_access_date
+          from publication
                left join publication_type
-                 on pub.publication_type_id = publication_type.publication_type_id
+                 on publication.publication_type_id = publication_type.publication_type_id
                left join publication_subtype
-                 on pub.publication_subtype_id = publication_subtype.publication_subtype_id
+                 on publication.publication_subtype_id = publication_subtype.publication_subtype_id
                left join publication_series
-                 on pub.publication_series_id = publication_series.publication_series_id
+                 on publication.publication_series_id = publication_series.publication_series_id
                left join publication_type larger_work_type
-                 on pub.larger_work_type_id = larger_work_type.publication_type_id
+                 on publication.larger_work_type_id = larger_work_type.publication_type_id
                left join publication_subtype larger_work_subtype
-                 on pub.larger_work_subtype_id = larger_work_subtype.publication_subtype_id
+                 on publication.larger_work_subtype_id = larger_work_subtype.publication_subtype_id
                left join (select publication_id, string_agg(name, '; ' order by name)cost_centers
                             from publication_cost_center
                                  join affiliation
                                    on publication_cost_center.cost_center_id = affiliation.affiliation_id
                               group by publication_id) pub_cc
-                 on pub.publication_id = pub_cc.publication_id
+                 on publication.publication_id = pub_cc.publication_id
                left join (select publication_id, string_agg(text, '; ' order by rank) authors
                             from publication_contributor
                                  join contributor
                                    on publication_contributor.contributor_id = contributor.contributor_id
                            where publication_contributor.contributor_type_id = 1
                               group by publication_id) pub_author
-                 on pub.publication_id = pub_author.publication_id
+                 on publication.publication_id = pub_author.publication_id
                left join (select publication_id, string_agg(text, '; ' order by rank) editors
                             from publication_contributor
                                  join contributor
                                    on publication_contributor.contributor_id = contributor.contributor_id
                            where publication_contributor.contributor_type_id = 2
                               group by publication_id) pub_editor
-                 on pub.publication_id = pub_editor.publication_id
+                 on publication.publication_id = pub_editor.publication_id
                left join (select publication_id, string_agg(text, '; ' order by rank) compilers
                             from publication_contributor
                                  join contributor
                                    on publication_contributor.contributor_id = contributor.contributor_id
                            where publication_contributor.contributor_type_id = 3
                               group by publication_id) pub_compiler
-                 on pub.publication_id = pub_compiler.publication_id
+                 on publication.publication_id = pub_compiler.publication_id
                left join (select publication_id, count(*) number_of_links
                             from publication_link
                            where link_type_id != 24
                               group by publication_id) pub_link
-                 on pub.publication_id = pub_link.publication_id
+                 on publication.publication_id = pub_link.publication_id
         <where>
             <include refid="pwPublication.wherePublic"/>
             <include refid="whFilters"/>

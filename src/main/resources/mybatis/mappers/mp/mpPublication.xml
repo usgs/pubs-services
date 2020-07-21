@@ -7,18 +7,6 @@
         <result property="lockUsername" column="lock_username"/>
     </resultMap>
 
-    <sql id="cols">
-        <include refid="publication.cols"/>
-    </sql>
-
-    <sql id="hosts">
-        <include refid="publication.hosts"/>
-    </sql>
-
-    <sql id="sets">
-        <include refid="publication.sets"/>
-    </sql>
-
     <select id="getNewProdId" resultType="Integer">
         select nextval('publication_seq')
     </select>
@@ -34,7 +22,7 @@
                              from mp_pub_cost_center
                                   join affiliation
                                     on cost_center_id = affiliation_id
-                            where pub.publication_id = mp_pub_cost_center.publication_id and
+                            where publication.publication_id = mp_pub_cost_center.publication_id and
                                  upper(name) <include refid="publication.likeTerm"/>
                            )
 
@@ -43,7 +31,7 @@
                              from mp_pub_contributor
                                   join contributor
                                     on mp_pub_contributor.contributor_id = contributor.contributor_id 
-                            where pub.publication_id = mp_pub_contributor.publication_id and
+                            where publication.publication_id = mp_pub_contributor.publication_id and
                                   (upper(family) <include refid="publication.likeTerm"/> or
                                    upper(given) <include refid="publication.likeTerm"/> or
                                    upper(literal) <include refid="publication.likeTerm"/>
@@ -73,7 +61,7 @@
                               from mp_pub_contributor
                                    join contributor
                                      on mp_pub_contributor.contributor_id = contributor.contributor_id
-                             where pub.publication_id = mp_pub_contributor.publication_id and
+                             where publication.publication_id = mp_pub_contributor.publication_id and
                                    to_tsvector('english', text) @@ to_tsquery('english', #{contributor})
                    )
             </if>
@@ -83,7 +71,7 @@
                               from mp_pub_cost_center
                                    join affiliation
                                      on mp_pub_cost_center.cost_center_id = affiliation.affiliation_id
-                             where pub.publication_id = mp_pub_cost_center.publication_id and
+                             where publication.publication_id = mp_pub_cost_center.publication_id and
                                    <foreach item="co" collection="contributingOffice" open="(" separator="or" close=")">
                                        upper(name) like '%' || upper(#{co}) || '%'
                                    </foreach>
@@ -93,23 +81,24 @@
     </sql>
 
     <insert id="add" parameterType="MpPublication">
-        insert into mp_publication (<include refid="cols"/>)
-             values (<include refid="hosts"/>)
+        insert into mp_publication (<include refid="publication.rawCols"/>)
+             values (<include refid="publication.hosts"/>)
     </insert>
 
     <insert id="copyMpFromPw">
-        insert into mp_publication (<include refid="publication.cols"/>, published)
-            select <include refid="publication.cols"/>, 'Y'
+        insert into mp_publication (<include refid="publication.rawCols"/>, published)
+            select <include refid="publication.rawCols"/>, 'Y'
               from publication
              where publication_id = #{id,jdbcType=INTEGER}::int
     </insert>
 
     <sql id="baseSelect">
-        select <include refid="cols"/>,
-               lock_username,
-               published,
+        select <include refid="publication.cols"/>,
+               publication.lock_username,
+               publication.published,
                'mypubs' sourceDatabase
-          from mp_publication pub
+          from mp_publication publication
+               <include refid="publication.associationJoins"/>
     </sql>
 
     <select id="getById" parameterType="Integer" resultMap="result">
@@ -131,13 +120,13 @@
 
     <select id="getCount" parameterType="map" resultType="Integer">
         select count(*)
-          from mp_publication pub
+          from mp_publication publication
         <include refid="filters"/>
     </select>
 
     <update id="update" parameterType="MpPublication">
         update mp_publication
-           set <include refid="sets"/>
+           set <include refid="publication.sets"/>
            where publication_id = #{id,jdbcType=NUMERIC}
     </update>
 
@@ -165,8 +154,8 @@
     </update>
 
     <update id="publish">
-        insert into publication (<include refid="publication.cols"/>)
-            select <include refid="publication.cols"/>
+        insert into publication (<include refid="publication.rawCols"/>)
+            select <include refid="publication.rawCols"/>
                       from mp_publication
                      where publication_id = #{id,jdbcType=NUMERIC}
             on conflict (publication_id)
@@ -208,7 +197,6 @@
                       temporal_end                 = excluded.temporal_end,
                       ipds_id                      = excluded.ipds_id,
                       ipds_review_process_state    = excluded.ipds_review_process_state,
-                      ipds_internal_id             = excluded.ipds_internal_id,
                       scale                        = excluded.scale,
                       projection                   = excluded.projection,
                       datum                        = excluded.datum,
@@ -236,7 +224,6 @@
                       notes                        = excluded.notes,
                       geographic_extents           = excluded.geographic_extents,
                       no_usgs_authors              = excluded.no_usgs_authors,
-                      ipds_context                 = excluded.ipds_context,
                       geom                         = excluded.geom
     </update>
 

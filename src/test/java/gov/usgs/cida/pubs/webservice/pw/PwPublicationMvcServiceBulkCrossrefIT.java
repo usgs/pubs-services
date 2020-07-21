@@ -70,7 +70,6 @@ public class PwPublicationMvcServiceBulkCrossrefIT extends BaseIT {
 		assertDoesNotThrow(() -> {
 			docBuilder.parse(new InputSource(new StringReader(resultText)));
 		}, "The XML is not well-formed.");
-		check xml
 	}
 
 	@Test
@@ -89,7 +88,6 @@ public class PwPublicationMvcServiceBulkCrossrefIT extends BaseIT {
 		assertDoesNotThrow(() -> {
 			docBuilder.parse(new InputSource(new StringReader(resultText)));
 		}, "The XML is not well-formed.");
-		check xml
 	}
 
 }

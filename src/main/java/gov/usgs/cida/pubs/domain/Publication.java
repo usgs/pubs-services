@@ -230,16 +230,6 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	@Length(min = 0, max = 400)
 	protected String ipdsReviewProcessState;
 
-	@JsonProperty("ipdsInternalId")
-	@JsonView(View.MP.class)
-	@Pattern(regexp=PubsConstantsHelper.SPACES_OR_NUMBER_REGEX)
-	protected String ipdsInternalId;
-
-	@JsonProperty("ipdsContext")
-	@JsonView(View.MP.class)
-	@Length(min = 0, max = 10)
-	protected String ipdsContext;
-
 	@JsonIgnore
 	@Valid
 	protected Collection<PublicationContributor<?>> contributors;
@@ -615,22 +605,6 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 
 	public void setIpdsReviewProcessState(final String inIpdsReviewProcessState) {
 		this.ipdsReviewProcessState = inIpdsReviewProcessState;
-	}
-
-	public void setIpdsInternalId(final String inIpdsInternalId) {
-		ipdsInternalId = inIpdsInternalId;
-	}
-
-	public String getIpdsInternalId() {
-		return ipdsInternalId;
-	}
-
-	public String getIpdsContext() {
-		return ipdsContext;
-	}
-
-	public void setIpdsContext(final String inIpdsContext) {
-		ipdsContext = inIpdsContext;
 	}
 
 	public Collection<PublicationCostCenter<?>> getCostCenters() {

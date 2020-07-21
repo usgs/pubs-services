@@ -23,6 +23,15 @@ public interface IPwPublicationDao extends IDao<PwPublication>, IStreamingDao<Pw
 	PwPublication getByIpdsId(String ipdsId);
 
 	/**
+	 * Get publications eligible for conversion to Crossref
+	 * NOTE: This method is only used in the tests and really should be deleted
+	 *       and the webservice tests modified to test the sql.
+	 * @param filters
+	 * @return eligible publications
+	 */
+	List<PwPublication> getCrossrefPublications(Map<String, Object> filters);
+
+	/**
 	 * Get a list of publications related to the given id.
 	 * @param publicationId
 	 * @return List of related publications (metadata only)

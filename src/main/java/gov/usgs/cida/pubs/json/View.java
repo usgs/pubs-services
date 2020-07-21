@@ -8,9 +8,7 @@ public class View {
 
 	public interface ManagerGrid extends Base {}
 
-	public interface PWFast extends Base {}
-
-	public interface PW extends PWFast {}
+	public interface PW extends Base {}
 
 	public interface MP extends PW {}
 

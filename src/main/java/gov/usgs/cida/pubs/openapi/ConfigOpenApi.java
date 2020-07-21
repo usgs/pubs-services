@@ -26,21 +26,21 @@ public class ConfigOpenApi {
 
 	@Bean
 	public GroupedOpenApi adminOpenAPI() {
-		return GroupedOpenApi.builder().setGroup("admin").pathsToMatch(SecurityConfig.ADMIN_PATHS).build();
+		return GroupedOpenApi.builder().group("admin").pathsToMatch(SecurityConfig.ADMIN_PATHS).build();
 	}
 
 	@Bean
 	public GroupedOpenApi authorizedOpenAPI() {
-		return GroupedOpenApi.builder().setGroup("authorized").pathsToMatch(SecurityConfig.AUTHORIZED_PATHS).build();
+		return GroupedOpenApi.builder().group("authorized").pathsToMatch(SecurityConfig.AUTHORIZED_PATHS).build();
 	}
 
 	@Bean
 	public GroupedOpenApi publicOpenAPI() {
-		return GroupedOpenApi.builder().setGroup("public").pathsToMatch(SecurityConfig.PUBLIC_PATHS).build();
+		return GroupedOpenApi.builder().group("public").pathsToMatch(SecurityConfig.PUBLIC_PATHS).build();
 	}
 
 	@Bean
 	public GroupedOpenApi spnOpenAPI() {
-		return GroupedOpenApi.builder().setGroup("spn").packagesToScan(SecurityConfig.SPN_PATHS).build();
+		return GroupedOpenApi.builder().group("spn").packagesToScan(SecurityConfig.SPN_PATHS).build();
 	}
 }

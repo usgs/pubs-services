@@ -1,7 +1,5 @@
 package gov.usgs.cida.pubs.domain.pw;
 
-import java.util.Collection;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

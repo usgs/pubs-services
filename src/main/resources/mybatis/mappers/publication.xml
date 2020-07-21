@@ -113,8 +113,8 @@
     </resultMap>
 
     <resultMap id="pwResult" type="Publication" extends="genericResult">
-        <association property="isPartOf" column="is_part_of_id" select="publication.getLookupById"/>
-        <association property="supersededBy" column="superseded_by_id" select="publication.getLookupById"/>
+        <association property="isPartOf" column="is_part_of_id" select="pwPublication.getLookupById"/>
+        <association property="supersededBy" column="superseded_by_id" select="pwPublication.getLookupById"/>
         <collection property="costCenters" column="publication_id" select="pwPublicationCostCenter.getByPublication"/>
         <collection property="contributors" column="publication_id" select="pwPublicationContributor.getByPublication"/>
         <collection property="links" column="publication_id" select="pwPublicationLink.getByPublication"/>

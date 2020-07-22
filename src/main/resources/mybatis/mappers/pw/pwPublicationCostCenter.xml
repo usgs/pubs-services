@@ -3,36 +3,12 @@
 
 <mapper namespace="pwPublicationCostCenter">
 
-    <resultMap id="result" type="PwPublicationCostCenter" extends="publicationCostCenter.result">
-<!--     <resultMap id="result" type="CostCenter" extends="costCenter.result"> -->
-    </resultMap>
-
-    <sql id="cols">
-        publication_cost_center_id, publication_id, cost_center_id, name
-    </sql>
-
-    <sql id="filters">
-        <where>
-            <if test="id != null">
-                and publication_cost_center_id = #{id}
-            </if>
-            <if test="publicationId != null">
-                and publication_id = #{publicationId}
-            </if>
-            <if test="costCenterId != null">
-                and cost_center_id = #{costCenterId}
-            </if>
-            <if test="text != null">
-                and upper(name) like upper(#{text}) || '%'
-            </if>
-        </where>
-    </sql>
+    <resultMap id="result" type="PwPublicationCostCenter" extends="publicationCostCenter.result"/>
 
     <sql id="baseSelect">
-        select <include refid="cols"/>
+        select <include refid="publicationCostCenter.cols"/>
           from publication_cost_center
-               join affiliation
-                 on publication_cost_center.cost_center_id = affiliation.affiliation_id
+               <include refid="publicationCostCenter.associationJoins"/>
     </sql>
 
     <select id="getById" parameterType="Integer" resultMap="result">
@@ -47,7 +23,7 @@
 
     <select id="getByMap" resultMap="result">
         <include refid="baseSelect"/>
-        <include refid="filters"/>
+        <include refid="publicationCostCenter.filters"/>
     </select>
 
 </mapper>

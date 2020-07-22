@@ -24,6 +24,8 @@ public interface IPwPublicationDao extends IDao<PwPublication>, IStreamingDao<Pw
 
 	/**
 	 * Get publications eligible for conversion to Crossref
+	 * NOTE: This method is only used in the tests and really should be deleted
+	 *       and the webservice tests modified to test the sql.
 	 * @param filters
 	 * @return eligible publications
 	 */

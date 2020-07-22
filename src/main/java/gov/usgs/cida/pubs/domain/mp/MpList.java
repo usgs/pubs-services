@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -52,9 +51,6 @@ public class MpList extends BaseDomain<MpList>  implements Serializable {
 	@JsonProperty("type")
 	private MpListType type;
 
-	@JsonIgnore
-	private Integer ipdsInternalId;
-
 	public String getText() {
 		return text;
 	}
@@ -77,14 +73,6 @@ public class MpList extends BaseDomain<MpList>  implements Serializable {
 
 	public void setType(final MpListType inType) {
 		type = inType;
-	}
-
-	public Integer getIpdsInternalId() {
-		return ipdsInternalId;
-	}
-
-	public void setIpdsInternalId(final Integer inIpdsInternalId) {
-		ipdsInternalId = inIpdsInternalId;
 	}
 
 	public static IDao<MpList> getDao() {

@@ -49,15 +49,6 @@
                union all
     </sql>
 
-	<sql id="joins">
-            ) pub
-               join all_publication_lookup subj 
-                 on pub.subject_publication_id = subj.publication_id
-               join all_publication_lookup obj
-                 on pub.object_publication_id = obj.publication_id
-             order by pub.subject_publication_id, pub.object_publication_id
-    </sql>
-
     <select id="getByPwPublication" parameterType="Integer" resultMap="result">
         <include refid="warehouseData"/>
                select publication_id subject_publication_id, 1 predicate_id, is_part_of_id object_publication_id
@@ -67,7 +58,12 @@
                 select publication_id subject_publication_id, 2 predicate_id, superseded_by_id object_publication_id
                   from publication
                  where publication_id = #{value,jdbcType=NUMERIC}
-        <include refid="joins"/>
+            ) pub
+               join publication subj 
+                 on pub.subject_publication_id = subj.publication_id
+               join publication obj
+                 on pub.object_publication_id = obj.publication_id
+             order by pub.subject_publication_id, pub.object_publication_id
     </select>
 
     <select id="getByMpPublication" parameterType="Integer" resultMap="result">
@@ -79,7 +75,12 @@
                 select publication_id subject_publication_id, 2 predicate_id, superseded_by_id object_publication_id
                   from mp_publication
                  where publication_id = #{value,jdbcType=NUMERIC}
-        <include refid="joins"/>
+            ) pub
+               join all_publication_lookup subj 
+                 on pub.subject_publication_id = subj.publication_id
+               join all_publication_lookup obj
+                 on pub.object_publication_id = obj.publication_id
+             order by pub.subject_publication_id, pub.object_publication_id
     </select>
 
 </mapper>

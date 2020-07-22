@@ -3,27 +3,36 @@
 
 <mapper namespace="publicationSubtype">
 
-    <resultMap id="result" type="PublicationSubtype" extends="base.result">
+    <resultMap id="result" type="PublicationSubtype">
         <id property="id" column="publication_subtype_id"/>
         <result property="publicationType.id" column="publication_type_id"/>
         <result property="text" column="name"/>
+        <result property="insertDate" column="publication_type_insert_date"/>
+        <result property="insertUsername" column="publication_type_insert_username"/>
+        <result property="updateDate" column="publication_type_update_date"/>
+        <result property="updateUsername" column="publication_type_update_username"/>
     </resultMap>
 
     <sql id="cols">
-        publication_subtype_id, publication_type_id, name,
-        <include refid="base.auditCols"/>
+        publication_subtype.publication_subtype_id,
+        publication_subtype.publication_type_id,
+        publication_subtype.name,
+        publication_subtype.insert_date publication_subtype_insert_date,
+        publication_subtype.insert_username publication_subtype_insert_username,
+        publication_subtype.update_date publication_subtype_update_date,
+        publication_subtype.update_username publication_subtype_update_username
     </sql>
 
     <sql id="filters">
         <where>
             <if test="id != null">
-                and publication_subtype_id = #{id}
+                and publication_subtype.publication_subtype_id = #{id}
             </if>
             <if test="publicationTypeId != null">
-                and publication_type_id = #{publicationTypeId}
+                and publication_subtype.publication_type_id = #{publicationTypeId}
             </if>
             <if test="text != null">
-                and upper(name) like upper(#{text}) || '%'
+                and upper(publication_subtype.name) like upper(#{text}) || '%'
             </if>
         </where>
     </sql>

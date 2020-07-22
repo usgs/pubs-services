@@ -9,7 +9,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -172,10 +174,10 @@ public class UniqueKeyValidatorForMpPublicationTest extends BaseValidatorTest {
 		verify(publicationDao, times(4)).validateByMap(anyMap());
 	}
 
-	public static List<Publication<?>> buildList() {
-		List<Publication<?>> rtn = new ArrayList<>();
-		Publication<?> pub = new Publication<>();
-		pub.setId(1);
+	public static List<Map<?,?>> buildList() {
+		List<Map<?,?>> rtn = new ArrayList<>();
+		Map<String, Object> pub = new HashMap<>();
+		pub.put(PublicationDao.PUBLICATION_ID, 1);
 		rtn.add(pub);
 		return rtn;
 	}

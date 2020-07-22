@@ -3,17 +3,61 @@
 
 <mapper namespace="publicationContributor">
 
-    <resultMap id="result" type="PublicationContributor" extends="base.result">
+    <resultMap id="result" type="PublicationContributor">
         <id property="id" column="publication_contributor_id"/>
         <result property="publicationId" column="publication_id"/>
         <result property="rank" column="rank"/>
-        <association property="contributor" column="contributor_id" select="contributor.getById"/>
-        <association property="contributorType" column="contributor_type_id" select="contributorType.getById"/>
+        <result property="insertDate" column="publication_contributor_insert_date"/>
+        <result property="insertUsername" column="publication_contributor_insert_username"/>
+        <result property="updateDate" column="publication_contributor_update_date"/>
+        <result property="updateUsername" column="publication_contributor_update_username"/>
+        <association property="contributor" resultMap="contributor.result"/>
+        <association property="contributorType">
+            <id property="id" column="contributor_type_id"/>
+            <result property="text" column="contributor_type_name"/>
+        </association>
     </resultMap>
 
-    <sql id="cols">
-        publication_contributor_id, publication_id, contributor_id, contributor_type_id, rank,
+    <sql id="rawCols">
+        publication_contributor_id,
+        publication_id,
+        contributor_id,
+        contributor_type_id,
+        rank,
         <include refid="base.auditCols"/>
+    </sql>
+
+    <sql id="baseCols">
+        publication_contributor.publication_contributor_id,
+        publication_contributor.publication_id,
+        publication_contributor.contributor_type_id,
+        publication_contributor.rank,
+        publication_contributor.contributor_id,
+        publication_contributor.insert_date publication_contributor_insert_date,
+        publication_contributor.insert_username publication_contributor_insert_username,
+        publication_contributor.update_date publication_contributor_update_date,
+        publication_contributor.update_username publication_contributor_update_username
+    </sql>
+
+    <sql id="associationCols">
+        contributor.literal,
+        contributor.family,
+        contributor.given,
+        contributor.suffix,
+        contributor.email,
+        contributor.orcid,
+        contributor.is_preferred,
+        contributor.is_corporation,
+        contributor.is_usgs,
+        affiliation.name,
+        affiliation.is_cost_center,
+        affiliation.is_active,
+        contributor_type.name contributor_type_name
+    </sql>
+
+    <sql id="cols">
+        <include refid="publicationContributor.baseCols"/>,
+        <include refid="publicationContributor.associationCols"/>
     </sql>
 
     <sql id="hosts">
@@ -33,31 +77,39 @@
         <include refid="base.auditSets"/>
     </sql>
 
+    <sql id="associationJoins">
+        join contributor
+          on publication_contributor.contributor_id = contributor.contributor_id
+        left join contributor_type
+          on publication_contributor.contributor_type_id = contributor_type.contributor_type_id
+        <include refid="contributor.associationJoins"/>
+    </sql>
+
     <sql id="filters">
         <where>
             <if test="id != null">
-                and publication_contributor_id = #{id}
+                and publication_contributor.publication_contributor_id = #{id}
             </if>
             <if test="publicationId != null">
-                and publication_id = #{publicationId}
+                and publication_contributor.publication_id = #{publicationId}
             </if>
             <if test="contributorTypeId != null">
-                and contributor_type_id = #{contributorTypeId}
+                and publication_contributor.contributor_type_id = #{contributorTypeId}
             </if>
             <if test="contributorId != null">
-                and contributor_id = #{contributorId}
+                and publication_contributor.contributor_id = #{contributorId}
             </if>
         </where>
     </sql>
 
     <sql id="authorsWhere">
-         where publication_id = #{value,jdbcType=NUMERIC} and
-               contributor_type_id = 1
+         where publication_contributor.publication_id = #{value,jdbcType=NUMERIC} and
+               publication_contributor.contributor_type_id = 1
     </sql>
 
     <sql id="editorsWhere">
-         where publication_id = #{value,jdbcType=NUMERIC} and
-               contributor_type_id = 2
+         where publication_contributor.publication_id = #{value,jdbcType=NUMERIC} and
+               publication_contributor.contributor_type_id = 2
     </sql>
 
 </mapper>

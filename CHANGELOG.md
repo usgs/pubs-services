@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - Ability to retrieve list of purged publications
   - Push logs to a Graylog server
 ### Changed
+  - Refactor Mybatis code to reduce the number of n+1++ queries.
   - Source of IPDS data for dissemination step.
   - Updated USGS ci/cd configuration to reflect trivial upstream changes.
   - Replaced SpringFox with SpringDoc for OpenAPI definition creation.

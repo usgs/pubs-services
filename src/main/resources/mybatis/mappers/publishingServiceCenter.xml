@@ -3,23 +3,31 @@
 
 <mapper namespace="publishingServiceCenter">
 
-    <resultMap id="result" type="PublishingServiceCenter" extends="base.result">
+    <resultMap id="result" type="PublishingServiceCenter">
         <id property="id" column="publishing_service_center_id"/>
         <result property="text" column="name"/>
+        <result property="insertDate" column="publishing_service_center_insert_date"/>
+        <result property="insertUsername" column="publishing_service_center_insert_username"/>
+        <result property="updateDate" column="publishing_service_center_update_date"/>
+        <result property="updateUsername" column="publishing_service_center_update_username"/>
     </resultMap>
 
     <sql id="cols">
-        publishing_service_center_id, name,
-        <include refid="base.auditCols"/>
+        publishing_service_center.publishing_service_center_id,
+        publishing_service_center.name,
+        publishing_service_center.insert_date publishing_service_center_insert_date,
+        publishing_service_center.insert_username publishing_service_center_insert_username,
+        publishing_service_center.update_date publishing_service_center_update_date,
+        publishing_service_center.update_username publishing_service_center_update_username
     </sql>
 
     <sql id="filters">
         <where>
             <if test="id != null">
-                and publishing_service_center_id = #{id}
+                and publishing_service_center.publishing_service_center_id = #{id}
             </if>
             <if test="text != null">
-                and upper(name) like upper(#{text}) || '%'
+                and upper(publishing_service_center.name) like upper(#{text}) || '%'
             </if>
         </where>
     </sql>
@@ -31,12 +39,7 @@
 
     <select id="getById" parameterType="Integer" resultMap="result">
         <include refid="baseSelect"/>
-         where publishing_service_center_id = #{value,jdbcType=NUMERIC}
-    </select>
-
-    <select id="getByIpdsId" parameterType="Integer" resultMap="result">
-        <include refid="baseSelect"/>
-         where ipds_internal_id = #{value,jdbcType=NUMERIC}
+         where publishing_service_center.publishing_service_center_id = #{value,jdbcType=NUMERIC}
     </select>
 
     <select id="getByMap" resultMap="result">

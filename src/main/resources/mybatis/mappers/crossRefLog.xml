@@ -4,7 +4,12 @@
 <mapper namespace="crossRefLog">
 
     <insert id="add" parameterType="CrossRefLog">
-        insert into cross_ref_log (sent_timestamp, batch_id, prod_id, cross_ref_xml, <include refid="base.auditCols"/>)
+        insert into cross_ref_log (sent_timestamp,
+                                   batch_id,
+                                   prod_id,
+                                   cross_ref_xml,
+                                   <include refid="base.auditCols"/>
+                                  )
             values (timezone('UTC', now()),
                     #{batchId,jdbcType=VARCHAR},
                     #{prodId,jdbcType=VARCHAR},

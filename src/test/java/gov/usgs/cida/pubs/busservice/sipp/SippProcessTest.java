@@ -38,7 +38,6 @@ import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.dao.intfc.IIpdsPubTypeConvDao;
 import gov.usgs.cida.pubs.dao.intfc.IPublicationDao;
-import gov.usgs.cida.pubs.dao.intfc.IPublishingServiceCenterDao;
 import gov.usgs.cida.pubs.dao.intfc.IPwPublicationDao;
 import gov.usgs.cida.pubs.dao.sipp.InformationProductDao;
 import gov.usgs.cida.pubs.domain.InformationProductHelper;
@@ -78,7 +77,7 @@ public class SippProcessTest extends BaseTest {
 	@MockBean(name="informationProductDao")
 	protected InformationProductDao informationProductDao;
 	@MockBean(name="publishingServiceCenterDao")
-	protected IPublishingServiceCenterDao publishingServiceCenterDao;
+	protected IDao<PublishingServiceCenter> publishingServiceCenterDao;
 	@MockBean
 	protected SippConversionService sippConversionService;
 	@MockBean

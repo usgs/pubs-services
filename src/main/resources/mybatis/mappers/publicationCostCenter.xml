@@ -3,15 +3,42 @@
 
 <mapper namespace="publicationCostCenter">
 
-    <resultMap id="result" type="PublicationCostCenter" extends="base.result">
+    <resultMap id="result" type="PublicationCostCenter">
         <id property="id" column="publication_cost_center_id"/>
         <result property="publicationId" column="publication_id"/>
-        <association property="costCenter" column="cost_center_id" select="affiliation.getByIdCostCenter"/>
+        <result property="insertDate" column="publication_cost_center_insert_date"/>
+        <result property="insertUsername" column="publication_cost_center_insert_username"/>
+        <result property="updateDate" column="publication_cost_center_update_date"/>
+        <result property="updateUsername" column="publication_cost_center_update_username"/>
+        <association property="costCenter" resultMap="affiliation.result"/>
     </resultMap>
 
-    <sql id="cols">
-        publication_cost_center_id, publication_id, cost_center_id,
+    <sql id="rawCols">
+        publication_cost_center_id,
+        publication_id,
+        cost_center_id,
         <include refid="base.auditCols"/>
+    </sql>
+
+    <sql id="baseCols">
+        publication_cost_center.publication_cost_center_id,
+        publication_cost_center.publication_id,
+        publication_cost_center.insert_date publication_cost_center_insert_date,
+        publication_cost_center.insert_username publication_cost_center_insert_username,
+        publication_cost_center.update_date publication_cost_center_update_date,
+        publication_cost_center.update_username publication_cost_center_update_username
+    </sql>
+
+    <sql id="associationCols">
+        affiliation.affiliation_id,
+        affiliation.name,
+        affiliation.is_cost_center,
+        affiliation.is_active
+    </sql>
+
+    <sql id="cols">
+        <include refid="publicationCostCenter.baseCols"/>,
+        <include refid="publicationCostCenter.associationCols"/>
     </sql>
 
     <sql id="hosts">
@@ -26,16 +53,24 @@
         <include refid="base.auditSets"/>
     </sql>
 
+    <sql id="associationJoins">
+        join affiliation
+          on publication_cost_center.cost_center_id = affiliation.affiliation_id
+    </sql>
+
     <sql id="filters">
         <where>
             <if test="id != null">
-                and publication_cost_center_id = #{id}
+                and publication_cost_center.publication_cost_center_id = #{id}
             </if>
             <if test="publicationId != null">
-                and publication_id = #{publicationId}
+                and publication_cost_center.publication_id = #{publicationId}
             </if>
             <if test="costCenterId != null">
-                and cost_center_id = #{costCenterId}
+                and publication_cost_center.cost_center_id = #{costCenterId}
+            </if>
+            <if test="text != null">
+                and upper(publication_cost_center.name) like upper(#{text}) || '%'
             </if>
         </where>
     </sql>

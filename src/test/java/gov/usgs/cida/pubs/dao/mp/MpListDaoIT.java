@@ -2,7 +2,6 @@ package gov.usgs.cida.pubs.dao.mp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.LocalDateTime;
@@ -111,7 +110,6 @@ public class MpListDaoIT extends BaseIT {
 		assertEquals("Need Approval", list.getText());
 		assertEquals("Citations that need to be approved", list.getDescription());
 		assertEquals(MpListType.PUBS, list.getType());
-		assertNull(list.getIpdsInternalId());
 	}
 
 	public static void assertMpList9(MpList list) {
@@ -120,7 +118,6 @@ public class MpListDaoIT extends BaseIT {
 		assertEquals("IPDS SPN Production", list.getText());
 		assertEquals("IPDS Records that have entered SPN Production status", list.getDescription());
 		assertEquals(MpListType.SPN, list.getType());
-		assertNull(list.getIpdsInternalId());
 	}
 
 	public static MpList buildMpList(Integer id) {
@@ -129,7 +126,6 @@ public class MpListDaoIT extends BaseIT {
 		mpList.setText("List " + id);
 		mpList.setDescription("Description " + id);
 		mpList.setType(MpListType.SPN);
-		mpList.setIpdsInternalId(1);
 		mpList.setInsertDate(LocalDateTime.now());
 		mpList.setInsertUsername(PubsConstantsHelper.ANONYMOUS_USER);
 		mpList.setUpdateDate(LocalDateTime.now());

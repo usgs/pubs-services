@@ -3,23 +3,31 @@
 
 <mapper namespace="linkFileType">
 
-    <resultMap id="result" type="LinkFileType" extends="base.result">
+    <resultMap id="result" type="LinkFileType">
         <id property="id" column="link_file_type_id"/>
         <result property="text" column="name"/>
+        <result property="insertDate" column="link_file_type_insert_date"/>
+        <result property="insertUsername" column="link_file_type_insert_username"/>
+        <result property="updateDate" column="link_file_type_update_date"/>
+        <result property="updateUsername" column="link_file_type_update_username"/>
     </resultMap>
 
     <sql id="cols">
-        link_file_type_id, name,
-        <include refid="base.auditCols"/>
+        link_file_type_id,
+        name,
+        link_file_type.insert_date link_file_type_insert_date,
+        link_file_type.insert_username link_file_type_insert_username,
+        link_file_type.update_date link_file_type_update_date,
+        link_file_type.update_username link_file_type_update_username
     </sql>
 
     <sql id="filters">
         <where>
             <if test="id != null">
-                and link_file_type_id = #{id}
+                and link_file_type.link_file_type_id = #{id}
             </if>
             <if test="text != null">
-                and upper(name) like upper(#{text}) || '%'
+                and upper(link_file_type.name) like upper(#{text}) || '%'
             </if>
         </where>
     </sql>
@@ -31,7 +39,7 @@
 
     <select id="getById" parameterType="Integer" resultMap="result">
         <include refid="baseSelect"/>
-         where link_file_type_id = #{value,jdbcType=NUMERIC}
+         where link_file_type.link_file_type_id = #{value,jdbcType=NUMERIC}
     </select>
 
     <select id="getByMap" resultMap="result">

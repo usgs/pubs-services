@@ -3,9 +3,10 @@ package gov.usgs.cida.pubs.domain;
 import java.io.Serializable;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import gov.usgs.cida.pubs.dao.intfc.IPublishingServiceCenterDao;
+import gov.usgs.cida.pubs.dao.intfc.IDao;
 import gov.usgs.cida.pubs.domain.intfc.ILookup;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -14,7 +15,7 @@ public class PublishingServiceCenter extends BaseDomain<PublishingServiceCenter>
 
 	private static final long serialVersionUID = -281712263572997816L;
 
-	private static IPublishingServiceCenterDao pscDao;
+	private static IDao<PublishingServiceCenter> pscDao;
 
 	public static final Integer ARTICLE = 2;
 
@@ -31,13 +32,14 @@ public class PublishingServiceCenter extends BaseDomain<PublishingServiceCenter>
 		text = inText;
 	}
 
-	public static IPublishingServiceCenterDao getDao() {
+	public static IDao<PublishingServiceCenter> getDao() {
 		return pscDao;
 	}
 
 	@Autowired
+	@Qualifier("publishingServiceCenterDao")
 	@Schema(hidden = true)
-	public void setPublishingServiceCenterDao(final IPublishingServiceCenterDao inPscDao) {
+	public void setPublishingServiceCenterDao(final IDao<PublishingServiceCenter> inPscDao) {
 		pscDao = inPscDao;
 	}
 

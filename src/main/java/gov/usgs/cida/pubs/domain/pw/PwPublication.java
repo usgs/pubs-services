@@ -1,7 +1,5 @@
 package gov.usgs.cida.pubs.domain.pw;
 
-import java.util.Collection;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,10 +28,6 @@ public class PwPublication extends Publication<PwPublication> {
 	@JsonProperty("chorus")
 	@JsonView(View.PW.class)
 	private Chorus chorus;
-	
-	@JsonProperty("stores")
-	@JsonView(View.PW.class)
-	private Collection<PwStore> stores;
 
 	public PwPublication() {
 	}
@@ -57,14 +51,6 @@ public class PwPublication extends Publication<PwPublication> {
 
 	public void setChorus(Chorus chorus) {
 		this.chorus = chorus;
-	}
-
-	public Collection<PwStore> getStores() {
-		return stores;
-	}
-
-	public void setStores(Collection<PwStore> stores) {
-		this.stores = stores;
 	}
 
 	public static IPwPublicationDao getDao() {

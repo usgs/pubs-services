@@ -127,7 +127,7 @@ public class PwPublicationMvcServiceSinglePubIT extends BaseIT {
 	}
 
 	@Test
-	public void getCrossrefXMLWhenAcceptHeaderAsksForCrossref () throws Exception {
+	public void getCrossrefXMLWhenAcceptHeaderAsksForCrossref() throws Exception {
 		MvcResult result = mockMvc.perform(get("/publication/" + CROSSREF_PUB_ID)
 			.accept(PubsConstantsHelper.MEDIA_TYPE_CROSSREF)
 			)
@@ -140,7 +140,7 @@ public class PwPublicationMvcServiceSinglePubIT extends BaseIT {
 	}
 
 	@Test
-	public void getCrossrefXMLWhenQueryStringAsksForCrossref () throws Exception {
+	public void getCrossrefXMLWhenQueryStringAsksForCrossref() throws Exception {
 		MvcResult result = mockMvc.perform(get("/publication/" + CROSSREF_PUB_ID + "?" + PubsConstantsHelper.CONTENT_PARAMETER_NAME +"=" + PubsConstantsHelper.MEDIA_TYPE_CROSSREF_EXTENSION))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(PubsConstantsHelper.MEDIA_TYPE_CROSSREF))

@@ -3,23 +3,37 @@
 
 <mapper namespace="contributorType">
 
-    <resultMap id="result" type="ContributorType" extends="base.result">
+    <resultMap id="result" type="ContributorType">
         <id property="id" column="contributor_type_id"/>
         <result property="text" column="name"/>
+        <result property="insertDate" column="contributor_type_insert_date"/>
+        <result property="insertUsername" column="contributor_type_insert_username"/>
+        <result property="updateDate" column="contributor_type_update_date"/>
+        <result property="updateUsername" column="contributor_type_update_username"/>
     </resultMap>
 
-    <sql id="cols">
-        contributor_type_id, name,
+    <sql id="rawCols">
+        contributor_type_id,
+        name,
         <include refid="base.auditCols"/>
+    </sql>
+
+    <sql id="cols">
+        contributor_type.contributor_type_id,
+        contributor_type.name,
+        contributor_type.insert_date contributor_type_insert_date,
+        contributor_type.insert_username contributor_type_insert_username,
+        contributor_type.update_date contributor_type_update_date,
+        contributor_type.update_username contributor_type_update_username
     </sql>
 
     <sql id="filters">
         <where>
             <if test="id != null">
-                and contributor_type_id = #{id}
+                and contributor_type.contributor_type_id = #{id}
             </if>
             <if test="text != null">
-                and upper(name) like upper(#{text}) || '%'
+                and upper(contributor_type.name) like upper(#{text}) || '%'
             </if>
         </where>
     </sql>
@@ -31,7 +45,7 @@
 
     <select id="getById" parameterType="Integer" resultMap="result">
         <include refid="baseSelect"/>
-         where contributor_type_id = #{value,jdbcType=NUMERIC}
+         where contributor_type.contributor_type_id = #{value,jdbcType=NUMERIC}
     </select>
 
     <select id="getByMap" resultMap="result">

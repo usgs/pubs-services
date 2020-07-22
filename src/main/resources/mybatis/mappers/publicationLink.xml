@@ -3,7 +3,7 @@
 
 <mapper namespace="publicationLink">
 
-    <resultMap id="result" type="PublicationLink" extends="base.result">
+    <resultMap id="result" type="PublicationLink">
         <id property="id" column="publication_link_id"/>
         <result property="publicationId" column="publication_id"/>
         <result property="rank" column="rank"/>
@@ -12,14 +12,59 @@
         <result property="size" column="object_size"/>
         <result property="description" column="description"/>
         <result property="helpText" column="help_text"/>
-        <association property="linkType" column="link_type_id" select="linkType.getById"/>
-        <association property="linkFileType" column="link_file_type_id" select="linkFileType.getById"/>
+        <result property="insertDate" column="publication_link_insert_date"/>
+        <result property="insertUsername" column="publication_link_insert_username"/>
+        <result property="updateDate" column="publication_link_update_date"/>
+        <result property="updateUsername" column="publication_link_update_username"/>
+        <association property="linkType">
+            <id property="id" column="link_type_id"/>
+            <result property="text" column="link_type_name"/>
+        </association>
+        <association property="linkFileType">
+            <id property="id" column="link_file_type_id"/>
+            <result property="text" column="link_file_type_name"/>
+        </association>
     </resultMap>
 
-    <sql id="cols">
-        publication_link_id, publication_id, rank, url, text, object_size, link_file_type_id, link_type_id, description,
+    <sql id="rawCols">
+        publication_link_id,
+        publication_id,
+        rank,
+        url,
+        text,
+        object_size,
+        link_file_type_id,
+        link_type_id,
+        description,
         help_text,
         <include refid="base.auditCols"/>
+    </sql>
+
+    <sql id="baseCols">
+        publication_link.publication_link_id,
+        publication_link.publication_id,
+        publication_link.rank,
+        publication_link.url,
+        publication_link.text,
+        publication_link.object_size,
+        publication_link.link_file_type_id,
+        publication_link.link_type_id,
+        publication_link.description,
+        publication_link.help_text,
+        publication_link.insert_date publication_link_insert_date,
+        publication_link.insert_username publication_link_insert_username,
+        publication_link.update_date publication_link_update_date,
+        publication_link.update_username publication_link_update_username
+    </sql>
+
+    <sql id="associationCols">
+        link_type.name link_type_name,
+        link_file_type.name link_file_type_name
+    </sql>
+
+    <sql id="cols">
+        <include refid="publicationLink.baseCols"/>,
+        <include refid="publicationLink.associationCols"/>
     </sql>
 
     <sql id="hosts">
@@ -49,16 +94,23 @@
         <include refid="base.auditSets"/>
     </sql>
 
+    <sql id="associationJoins">
+        left join link_type
+          on publication_link.link_type_id = link_type.link_type_id
+        left join link_file_type
+          on publication_link.link_file_type_id = link_file_type.link_file_type_id
+    </sql>
+
     <sql id="filters">
         <where>
             <if test="id != null">
-                and publication_link_id = #{id}
+                and publication_link.publication_link_id = #{id}
             </if>
             <if test="publicationId != null">
-                and publication_id = #{publicationId}
+                and publication_link.publication_id = #{publicationId}
             </if>
             <if test="linkTypeId != null">
-                and link_type_id = #{linkTypeId}
+                and publication_link.link_type_id = #{linkTypeId}
             </if>
         </where>
     </sql>

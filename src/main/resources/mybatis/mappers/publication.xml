@@ -3,7 +3,7 @@
 
 <mapper namespace="publication">
 
-    <resultMap id="result" type="Publication" extends="base.result">
+    <resultMap id="result" type="Publication">
         <id property="id" column="publication_id"/>
         <result property="indexId" column="index_id"/>
         <result property="displayToPublicDate" column="display_to_public_date"/>
@@ -60,15 +60,40 @@
         <result property="sourceDatabase" column="sourceDatabase"/>
         <result property="published" column="published"/>
         <result property="noUsgsAuthors" column="no_usgs_authors"/>
-        <result property="ipdsContext" column="ipds_context"/>
-        <association property="publicationType" column="publication_type_id" select="publicationType.getById"/>
-        <association property="publicationSubtype" column="publication_subtype_id" select="publicationSubtype.getById"/>
-        <association property="largerWorkType" column="larger_work_type_id" select="publicationType.getById"/>
-        <association property="largerWorkSubtype" column="larger_work_subtype_id" select="publicationSubtype.getById"/>
-        <association property="seriesTitle" column="publication_series_id" select="publicationSeries.getById"/>
-        <association property="publishingServiceCenter" column="publishing_service_center_id" select="publishingServiceCenter.getById"/>
-        <association property="isPartOf" column="is_part_of_id" select="publication.getLookupById"/>
-        <association property="supersededBy" column="superseded_by_id" select="publication.getLookupById"/>
+        <result property="insertDate" column="publication_insert_date"/>
+        <result property="insertUsername" column="publication_insert_username"/>
+        <result property="updateDate" column="publication_update_date"/>
+        <result property="updateUsername" column="publication_update_username"/>
+        <association property="publicationType">
+            <id property="id" column="publication_type_id"/>
+            <result property="text" column="publication_type_name"/>
+        </association>
+        <association property="publicationSubtype">
+            <id property="id" column="publication_subtype_id"/>
+            <result property="text" column="publication_subtype_name"/>
+        </association>
+        <association property="largerWorkType">
+            <id property="id" column="larger_work_type_id"/>
+            <result property="text" column="larger_work_type_name"/>
+        </association>
+        <association property="largerWorkSubtype">
+            <id property="id" column="larger_work_subtype_id"/>
+            <result property="text" column="larger_work_subtype_name"/>
+        </association>
+        <association property="seriesTitle">
+            <id property="id" column="publication_series_id"/>
+            <result property="publicationSubtype.id" column="publication_series_publication_subtype_id"/>
+            <result property="text" column="publication_series_name"/>
+            <result property="code" column="publication_series_code"/>
+            <result property="seriesDoiName" column="publication_series_doi_name"/>
+            <result property="printIssn" column="publication_series_print_issn"/>
+            <result property="onlineIssn" column="publication_series_online_issn"/>
+            <result property="active" column="publication_series_is_active"/>
+        </association>
+        <association property="publishingServiceCenter">
+            <id property="id" column="publishing_service_center_id"/>
+            <result property="text" column="publishing_service_center_name"/>
+        </association>
     </resultMap>
 
     <resultMap id="genericResult" type="Publication" extends="result">
@@ -79,6 +104,8 @@
     </resultMap>
 
     <resultMap id="mpResult" type="Publication" extends="genericResult">
+        <association property="isPartOf" column="is_part_of_id" select="publication.getLookupById"/>
+        <association property="supersededBy" column="superseded_by_id" select="publication.getLookupById"/>
         <collection property="costCenters" column="publication_id" select="mpPublicationCostCenter.getByPublication"/>
         <collection property="contributors" column="publication_id" select="mpPublicationContributor.getByPublication"/>
         <collection property="links" column="publication_id" select="mpPublicationLink.getByPublication"/>
@@ -86,6 +113,8 @@
     </resultMap>
 
     <resultMap id="pwResult" type="Publication" extends="genericResult">
+        <association property="isPartOf" column="is_part_of_id" select="pwPublication.getLookupById"/>
+        <association property="supersededBy" column="superseded_by_id" select="pwPublication.getLookupById"/>
         <collection property="costCenters" column="publication_id" select="pwPublicationCostCenter.getByPublication"/>
         <collection property="contributors" column="publication_id" select="pwPublicationContributor.getByPublication"/>
         <collection property="links" column="publication_id" select="pwPublicationLink.getByPublication"/>
@@ -99,7 +128,7 @@
         <result property="title" column="title"/>
     </resultMap>
 
-    <sql id="cols">
+    <sql id="rawCols">
         publication_id,
         index_id,
         display_to_public_date,
@@ -138,7 +167,6 @@
         temporal_end,
         ipds_id,
         ipds_review_process_state,
-        ipds_internal_id,
         scale,
         projection,
         datum,
@@ -163,8 +191,88 @@
         geographic_extents,
         geom,
         no_usgs_authors,
-        ipds_context,
         <include refid="base.auditCols"/>
+    </sql>
+
+    <sql id="cols">
+        publication.publication_id,
+        publication.index_id,
+        publication.display_to_public_date,
+        publication.publication_year,
+        publication.no_year,
+        publication.publication_type_id,
+        publication_type.name publication_type_name,
+        publication.publication_subtype_id,
+        publication_subtype.name publication_subtype_name,
+        publication.publication_series_id,
+        publication_series.publication_subtype_id publication_series_publication_subtype_id,
+        publication_series.name publication_series_name,
+        publication_series.code publication_series_code,
+        publication_series.doi_name publication_series_doi_name,
+        publication_series.print_issn publication_series_print_issn,
+        publication_series.online_issn publication_series_online_issn,
+        publication_series.is_active publication_series_is_active,
+        publication.series_number,
+        publication.subseries_title,
+        publication.chapter,
+        publication.subchapter,
+        publication.display_title,
+        publication.title,
+        publication.larger_work_type_id,
+        larger_work_type.name larger_work_type_name,
+        publication.larger_work_title,
+        publication.larger_work_subtype_id,
+        larger_work_subtype.name larger_work_subtype_name,
+        publication.conference_title,
+        publication.conference_date,
+        publication.conference_location,
+        publication.language,
+        publication.publisher,
+        publication.publisher_location,
+        publication.doi_name,
+        publication.issn,
+        publication.isbn,
+        publication.collaboration,
+        publication.usgs_citation,
+        publication.product_description,
+        publication.start_page,
+        publication.end_page,
+        publication.number_of_pages,
+        publication.online_only,
+        publication.additional_online_files,
+        publication.temporal_start,
+        publication.temporal_end,
+        publication.ipds_id,
+        publication.ipds_review_process_state,
+        publication.scale,
+        publication.projection,
+        publication.datum,
+        publication.country,
+        publication.state,
+        publication.county,
+        publication.city,
+        publication.other_geospatial,
+        publication.volume,
+        publication.issue,
+        publication.edition,
+        publication.public_comments,
+        publication.contact_info,
+        publication.table_of_contents,
+        publication.publishing_service_center_id,
+        publishing_service_center.name publishing_service_center_name,
+        publication.published_date,
+        publication.is_part_of_id,
+        publication.superseded_by_id,
+        publication.revised_date,
+        publication.abstract,
+        publication.notes,
+        publication.geographic_extents,
+        publication.geom,
+        publication.no_usgs_authors,
+        publication.insert_date publication_insert_date,
+        publication.insert_username publication_insert_username,
+        publication.update_date publication_update_date,
+        publication.update_username publication_update_username
     </sql>
 
     <sql id="hosts">
@@ -206,7 +314,6 @@
         #{temporalEnd,jdbcType=DATE},
         #{ipdsId,jdbcType=VARCHAR},
         #{ipdsReviewProcessState,jdbcType=VARCHAR},
-        #{ipdsInternalId,jdbcType=NUMERIC}::int,
         #{scale,jdbcType=NUMERIC}::int,
         #{projection,jdbcType=VARCHAR},
         #{datum,jdbcType=VARCHAR},
@@ -231,7 +338,6 @@
         #{geographicExtents,jdbcType=VARCHAR}::JSON,
         st_geomfromgeojson(#{geographicExtents,jdbcType=VARCHAR}::json#>'{features,0}'->>'geometry'),
         #{noUsgsAuthors,jdbcType=BOOLEAN},
-        #{ipdsContext,jdbcType=VARCHAR},
         <include refid="base.auditHosts"/>
     </sql>
 
@@ -273,7 +379,6 @@
         temporal_end = #{temporalEnd,jdbcType=DATE},
         ipds_id = #{ipdsId,jdbcType=VARCHAR},
         ipds_review_process_state = #{ipdsReviewProcessState,jdbcType=VARCHAR},
-        ipds_internal_id = #{ipdsInternalId,jdbcType=NUMERIC}::int,
         scale = #{scale,jdbcType=NUMERIC}::int,
         projection = #{projection,jdbcType=VARCHAR},
         datum = #{datum,jdbcType=VARCHAR},
@@ -298,8 +403,22 @@
         geographic_extents = #{geographicExtents,jdbcType=VARCHAR}::JSON,
         geom = st_geomfromgeojson(#{geographicExtents,jdbcType=VARCHAR}::json#>'{features,0}'->>'geometry'),
         no_usgs_authors = #{noUsgsAuthors,jdbcType=BOOLEAN},
-        ipds_context = #{ipdsContext,jdbcType=VARCHAR},
         <include refid="base.auditSets"/>
+    </sql>
+
+    <sql id="associationJoins">
+        left join publication_type
+          on publication.publication_type_id = publication_type.publication_type_id
+        left join publication_subtype
+          on publication.publication_subtype_id = publication_subtype.publication_subtype_id
+        left join publication_type larger_work_type
+          on publication.larger_work_type_id = larger_work_type.publication_type_id
+        left join publication_subtype larger_work_subtype
+          on publication.larger_work_subtype_id = larger_work_subtype.publication_subtype_id
+        left join publication_series
+          on publication.publication_series_id = publication_series.publication_series_id
+        left join publishing_service_center
+          on publication.publishing_service_center_id = publishing_service_center.publishing_service_center_id
     </sql>
 
     <sql id="likeTerm">
@@ -307,27 +426,27 @@
     </sql>
 
     <sql id="singleSearchTermFilter">
-                   upper(pub.title) <include refid="publication.likeTerm"/>
-                or upper(pub.abstract) <include refid="publication.likeTerm"/>
-                or upper(pub.subseries_title) <include refid="publication.likeTerm"/>
-                or upper(pub.series_number) <include refid="publication.likeTerm"/>
-                or upper(pub.index_id) <include refid="publication.likeTerm"/>
-                or to_char(pub.publication_id, '9999999999') = #{term}
-                or upper(pub.ipds_id) <include refid="publication.likeTerm"/>
-                or upper(pub.publication_year) <include refid="publication.likeTerm"/>
+                   upper(publication.title) <include refid="publication.likeTerm"/>
+                or upper(publication.abstract) <include refid="publication.likeTerm"/>
+                or upper(publication.subseries_title) <include refid="publication.likeTerm"/>
+                or upper(publication.series_number) <include refid="publication.likeTerm"/>
+                or upper(publication.index_id) <include refid="publication.likeTerm"/>
+                or to_char(publication.publication_id, '9999999999') = #{term}
+                or upper(publication.ipds_id) <include refid="publication.likeTerm"/>
+                or upper(publication.publication_year) <include refid="publication.likeTerm"/>
 
                 <!-- publication type name -->
-                or pub.publication_type_id in (select publication_type_id
+                or publication.publication_type_id in (select publication_type_id
                                                  from publication_type
                                                 where upper(name) <include refid="publication.likeTerm"/>)
 
                 <!-- publication subtype name -->
-                or pub.publication_subtype_id in (select publication_subtype_id
+                or publication.publication_subtype_id in (select publication_subtype_id
                                                     from publication_subtype
                                                    where upper(name) <include refid="publication.likeTerm"/>)
 
                 <!-- series name -->
-                or pub.publication_series_id in (select publication_series_id
+                or publication.publication_series_id in (select publication_series_id
                                                    from publication_series
                                                   where upper(name) <include refid="publication.likeTerm"/>)
     </sql>
@@ -335,50 +454,50 @@
     <sql id="filters">
             <if test="title != null and title.length > 0">
                 and <foreach item="t" collection="title" open="(" separator="or" close=")">
-                    upper(pub.title) like '%' || upper(#{t}) || '%'
+                    upper(publication.title) like '%' || upper(#{t}) || '%'
                 </foreach>
             </if>
 
             <if test="abstract != null and abstract.length > 0">
                 and <foreach item="a" collection="abstract" open="(" separator="or" close=")">
-                    upper(pub.abstract) like '%' || upper(#{a}) || '%'
+                    upper(publication.abstract) like '%' || upper(#{a}) || '%'
                 </foreach>
             </if>
 
             <if test="prodId != null and prodId.length > 0">
                 and <foreach item="i" collection="prodId" open="(" separator="or" close=")">
-                    pub.publication_id = #{i,jdbcType=NUMERIC}::numeric
+                    publication.publication_id = #{i,jdbcType=NUMERIC}::numeric
                 </foreach>
             </if>
 
             <if test="indexId != null and indexId.length > 0">
                 and <foreach item="i" collection="indexId" open="(" separator="or" close=")">
-                    upper(pub.index_id) = upper(#{i,jdbcType=VARCHAR})
+                    upper(publication.index_id) = upper(#{i,jdbcType=VARCHAR})
                 </foreach>
             </if>
 
             <if test="ipdsId != null and ipdsId.length > 0">
                 and <foreach item="i" collection="ipdsId" open="(" separator="or" close=")">
-                    pub.ipds_id = #{i,jdbcType=VARCHAR}
+                    publication.ipds_id = #{i,jdbcType=VARCHAR}
                 </foreach>
             </if>
 
             <if test="year != null and year.length > 0">
                 and <foreach item="y" collection="year" open="(" separator="or" close=")">
-                    pub.publication_year = #{y}
+                    publication.publication_year = #{y}
                 </foreach>
             </if>
 
             <if test="startYear != null">
-                and pub.publication_year &gt;= #{startYear}
+                and publication.publication_year &gt;= #{startYear}
             </if>
 
             <if test="endYear != null">
-                and pub.publication_year &lt;= #{endYear}
+                and publication.publication_year &lt;= #{endYear}
             </if>
 
             <if test="typeName != null and typeName.length > 0">
-                and pub.publication_type_id in (select publication_type_id
+                and publication.publication_type_id in (select publication_type_id
                                                   from publication_type
                                                  where
                     <foreach item="r" collection="typeName" open="(" separator="or" close=")">
@@ -388,7 +507,7 @@
             </if>
 
             <if test="subtypeName != null and subtypeName.length > 0">
-                and pub.publication_subtype_id in (select publication_subtype_id
+                and publication.publication_subtype_id in (select publication_subtype_id
                                                      from publication_subtype
                                                     where
                     <foreach item="r" collection="subtypeName" open="(" separator="or" close=")">
@@ -398,7 +517,7 @@
             </if>
 
             <if test="seriesName != null and seriesName.length > 0">
-                and pub.publication_series_id in (select publication_series_id
+                and publication.publication_series_id in (select publication_series_id
                                                     from publication_series
                                                    where
                     <foreach item="r" collection="seriesName" open="(" separator="or" close=")">
@@ -409,23 +528,23 @@
 
             <if test="reportNumber != null and reportNumber.length > 0">
                 and <foreach item="r" collection="reportNumber" open="(" separator="or" close=")">
-                        upper(pub.series_number) like '%' || upper(#{r}) || '%'
+                        upper(publication.series_number) like '%' || upper(#{r}) || '%'
                     </foreach>
             </if>
 
             <if test="doi != null and doi.length > 0">
                 and <foreach item="d" collection="doi" open="(" separator="or" close=")">
-                    upper(pub.doi_name) like '%' || upper(#{d}) || '%'
+                    upper(publication.doi_name) like '%' || upper(#{d}) || '%'
                 </foreach>
             </if>
 
             <if test="null != hasDoi">
             <choose>
                 <when test="hasDoi">
-                    and pub.doi_name is not null
+                    and publication.doi_name is not null
                 </when>
                 <otherwise>
-                    and pub.doi_name is null
+                    and publication.doi_name is null
                 </otherwise>
             </choose>
         </if>
@@ -435,27 +554,29 @@
         order by
         <choose>
             <when test="orderBy == 'title'">
-                pub.title asc,
+                publication.title asc,
             </when>
             <when test="orderBy == 'mpNewest'">
-                case when pub.insert_date = pub.update_date then 1 else 2 end,
-                pub.update_date desc,
+                case when publication_insert_date = publication_update_date then 1 else 2 end,
+                publication_update_date desc,
             </when>
         </choose>
-        replace(pub.publication_year, 'noyr', '0000') desc nulls last,
-        pub.no_year,
-        pub.display_to_public_date desc,
-        pub.publication_id desc
+        replace(publication.publication_year, 'noyr', '0000') desc nulls last,
+        publication.no_year,
+        publication.display_to_public_date desc,
+        publication.publication_id desc
     </sql>
 
     <sql id="globalSelect">
         select <include refid="cols"/>, 'mypubs' sourceDatabase, published
-          from mp_publication pub
+          from mp_publication publication
+               <include refid="publication.associationJoins"/>
                <include refid="mpPublication.filters"/>
         <if test="global != null and global == 'true'">
             union all
             select <include refid="cols"/>, 'pubs warehouse' sourceDatabase, 'Y' published
-              from publication pub
+              from publication publication
+                   <include refid="publication.associationJoins"/>
              where publication_id in (select publication_id from publication
                                       except
                                       select publication_id from mp_publication)
@@ -465,24 +586,26 @@
 
     <select id="getById" parameterType="Integer" resultMap="genericResult">
         select <include refid="cols"/>, 'mypubs' sourceDatabase, published
-          from mp_publication
+          from mp_publication publication
+               <include refid="publication.associationJoins"/>
          where publication_id = #{value,jdbcType=INTEGER}::int
         union all
         select <include refid="cols"/>, 'pubs warehouse' sourceDatabase, 'Y' published
           from publication
+               <include refid="publication.associationJoins"/>
          where publication_id in (select publication_id from publication
                                   except
                                   select publication_id from mp_publication) and
                publication_id = #{value,jdbcType=INTEGER}::int
     </select>
 
-    <select id="validateByMap" parameterType="map" resultMap="genericResult">
-        select <include refid="cols"/>, 'mypubs' sourceDatabase, published
-          from mp_publication pub
+    <select id="validateByMap" parameterType="map" resultType="map">
+        select publication_id, index_id, ipds_id, 'mypubs' sourceDatabase, published
+          from mp_publication publication
                <include refid="mpPublication.filters"/>
         union all
-        select <include refid="cols"/>, 'pubs warehouse' sourceDatabase, 'Y' published
-          from publication pub
+        select publication_id, index_id, ipds_id, 'pubs warehouse' sourceDatabase, 'Y' published
+          from publication publication
          where publication_id in (select publication_id from publication
                                   except
                                   select publication_id from mp_publication)
@@ -492,28 +615,28 @@
     <select id="getCountBySeries" parameterType="Integer" resultType="Integer">
         select count(*)
           from (select publication_id
-                  from mp_publication pub
-                 where pub.publication_series_id = #{value,jdbcType=INTEGER}::int
+                  from mp_publication publication
+                 where publication.publication_series_id = #{value,jdbcType=INTEGER}::int
                 union all
                 select publication_id
-                  from publication pub
+                  from publication publication
                  where publication_id in (select publication_id from publication
                                           except
                                           select publication_id from mp_publication) and
-                       pub.publication_series_id = #{value,jdbcType=INTEGER}::int
+                       publication.publication_series_id = #{value,jdbcType=INTEGER}::int
                ) pubs
     </select>
 
     <select id="getByMap" parameterType="map" resultMap="genericResult">
         select *
-          from (<include refid="globalSelect"/>) pub
+          from (<include refid="globalSelect"/>) publication
         <include refid="orderBy"/>
         <include refid="base.pagingRowLimit"/>
     </select>
 
     <select id="getCount" parameterType="map" resultType="Integer">
         select count(*)
-          from (<include refid="globalSelect"/>) pub
+          from (<include refid="globalSelect"/>) publication
     </select>
 
     <sql id="baseLookupSelect">
@@ -522,20 +645,20 @@
                publication_year,
                no_year,
                title
-          from all_publication_lookup
     </sql>
 
     <select id="getLookupById" parameterType="Integer" resultMap="lookupResult">
         <include refid="baseLookupSelect"/>
+            from all_publication_lookup
            where publication_id = #{value,jdbcType=INTEGER}::int
     </select>
 
     <select id="filterLookupByIndexId" parameterType="String" resultMap="lookupResult">
         <include refid="baseLookupSelect"/>
+            from all_publication_lookup
         <if test="value != null">
            where upper(index_id) like upper(#{value,jdbcType=VARCHAR}) || '%'
         </if>
-           limit 31
     </select>
 
 </mapper>

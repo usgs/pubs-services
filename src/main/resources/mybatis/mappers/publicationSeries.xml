@@ -3,7 +3,7 @@
 
 <mapper namespace="publicationSeries">
 
-    <resultMap id="result" type="PublicationSeries" extends="base.result">
+    <resultMap id="result" type="PublicationSeries">
         <id property="id" column="publication_series_id"/>
         <result property="publicationSubtype.id" column="publication_subtype_id"/>
         <result property="text" column="name"/>
@@ -12,11 +12,37 @@
         <result property="printIssn" column="print_issn"/>
         <result property="onlineIssn" column="online_issn"/>
         <result property="active" column="is_active"/>
+        <result property="insertDate" column="publication_series_insert_date"/>
+        <result property="insertUsername" column="publication_series_insert_username"/>
+        <result property="updateDate" column="publication_series_update_date"/>
+        <result property="updateUsername" column="publication_series_update_username"/>
     </resultMap>
 
-    <sql id="cols">
-        publication_series_id, publication_subtype_id, name, code, doi_name, print_issn, online_issn, is_active,
+    <sql id="rawCols">
+        publication_series_id,
+        publication_subtype_id,
+        name,
+        code,
+        doi_name,
+        print_issn,
+        online_issn,
+        is_active,
         <include refid="base.auditCols"/>
+    </sql>
+
+    <sql id="cols">
+        publication_series.publication_series_id,
+        publication_series.publication_subtype_id,
+        publication_series.name,
+        publication_series.code,
+        publication_series.doi_name,
+        publication_series.print_issn,
+        publication_series.online_issn,
+        publication_series.is_active,
+        publication_series.insert_date publication_series_insert_date,
+        publication_series.insert_username publication_series_insert_username,
+        publication_series.update_date publication_series_update_date,
+        publication_series.update_username publication_series_update_username
     </sql>
 
     <sql id="hosts">
@@ -46,19 +72,19 @@
     <sql id="filters">
         <where>
             <if test="id != null">
-                and publication_series_id = #{id}
+                and publication_series.publication_series_id = #{id}
             </if>
             <if test="publicationSubtypeId != null">
-                and publication_subtype_id = #{publicationSubtypeId}
+                and publication_series.publication_subtype_id = #{publicationSubtypeId}
             </if>
             <if test="code != null">
-                and code = #{code}
+                and publication_series.code = #{code}
             </if>
             <if test="text != null">
-                and upper(name) like upper(#{text}) || '%'
+                and upper(publication_series.name) like upper(#{text}) || '%'
             </if>
             <if test="active != null">
-                and is_active = #{active}
+                and publication_series.is_active = #{active}
             </if>
         </where>
     </sql>
@@ -76,7 +102,7 @@
     <select id="getByMap" resultMap="result">
         <include refid="baseSelect"/>
         <include refid="filters"/>
-        order by name
+        order by publication_series.name
         <include refid="base.pagingRowLimit"/>
     </select>
 
@@ -90,7 +116,7 @@
         <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
             select nextval('publication_series_seq')
         </selectKey>
-        insert into publication_series (<include refid="cols"/>)
+        insert into publication_series (<include refid="rawCols"/>)
             values (<include refid="hosts"/>)
     </insert>
 
@@ -99,7 +125,7 @@
            set <include refid="sets"/>
          where publication_series_id = #{id,jdbcType=NUMERIC}
     </update>
-    
+
     <delete id="delete">
         delete from publication_series <include refid="base.deleteAuditHack"/>
          where publication_series_id = #{id,jdbcType=NUMERIC}

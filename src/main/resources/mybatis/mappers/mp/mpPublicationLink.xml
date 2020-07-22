@@ -10,20 +10,21 @@
         <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
             select nextval('publication_link_seq')
         </selectKey>
-        insert into mp_publication_link (<include refid="publicationLink.cols"/>)
+        insert into mp_publication_link (<include refid="publicationLink.rawCols"/>)
              values (<include refid="publicationLink.hosts"/>)
     </insert>
 
     <insert id="copyMpFromPw">
-        insert into mp_publication_link (<include refid="publicationLink.cols"/>)
-            (select <include refid="publicationLink.cols"/>
+        insert into mp_publication_link (<include refid="publicationLink.rawCols"/>)
+            (select <include refid="publicationLink.rawCols"/>
                from publication_link
               where publication_id = #{id,jdbcType=NUMERIC})
     </insert>
 
     <sql id="baseSelect">
         select <include refid="publicationLink.cols"/>
-          from mp_publication_link
+          from mp_publication_link publication_link
+               <include refid="publicationLink.associationJoins"/>
     </sql>
 
     <select id="getById" parameterType="Integer" resultMap="result">
@@ -48,12 +49,21 @@
     </update>
 
     <insert id="publish">
-        insert into publication_link (<include refid="publicationLink.cols"/>)
-        select publication_link_id,        publication_id,     rank, 
-               url,                        text,               object_size,
-               link_file_type_id,          link_type_id,       description,
+        insert into publication_link (<include refid="publicationLink.rawCols"/>)
+        select publication_link_id,
+               publication_id,
+               rank,
+               url,
+               text,
+               object_size,
+               link_file_type_id,
+               link_type_id,
+               description,
                help_text,
-               insert_date,                insert_username,    now() at time zone 'UTC',         #{updateUsername,jdbcType=VARCHAR}
+               insert_date,
+               insert_username,
+               now() at time zone 'UTC',
+               #{updateUsername,jdbcType=VARCHAR}
           from mp_publication_link
            where publication_id = #{id,jdbcType=NUMERIC}
     </insert>

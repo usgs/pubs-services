@@ -9,6 +9,7 @@
     <sql id="baseSelect">
         select <include refid="publicationContributor.cols"/>
           from publication_contributor
+               <include refid="publicationContributor.associationJoins"/>
     </sql>
 
     <select id="getByPublication" parameterType="Integer" resultMap="result">

@@ -70,7 +70,8 @@ public class PersonContributorBusServiceIT extends BaseIT {
 		outperson.setGiven("outgiven");
 		outperson.setSuffix("outsuffix");
 		outperson.setEmail("outemail@usgs.gov");
-		outperson.setOrcid("0000-0002-1825-0097"); // service stores normalized orcid
+		// service stores normalized orcid
+		outperson.setOrcid("0000-0002-1825-0097");
 		outperson.setPreferred(true);
 		busService.createObject(outperson, ManagerChecks.class);
 		assertNotNull(outperson.getId());

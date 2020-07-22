@@ -190,7 +190,6 @@
 			"auditedOn": "11/21/2015",
 			"publiclyAccessibleDate": "11/19/2015"
 		},
-		"stores": [],
 		"contributors": {
 			"compilers": [{
 				"text": "outerfamily, outerGiven outerSuffix outer@gmail.com",
@@ -364,7 +363,6 @@
 		"noYear": true,
 		"title": "mostly null",
 		"costCenters": [],
-		"links": [],
-		"stores": []
+		"links": []
 	}]
 }

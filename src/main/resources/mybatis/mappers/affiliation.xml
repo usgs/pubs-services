@@ -3,11 +3,15 @@
 
 <mapper namespace="affiliation">
 
-    <resultMap id="result" type="Affiliation" extends="base.result">
+    <resultMap id="result" type="Affiliation">
         <id property="id" column="affiliation_id"/>
         <result property="text" column="name"/>
         <result property="active" column="is_active"/>
         <result property="usgs" column="is_cost_center"/>
+        <result property="insertDate" column="affiliation_insert_date"/>
+        <result property="insertUsername" column="affiliation_insert_username"/>
+        <result property="updateDate" column="affiliation_update_date"/>
+        <result property="updateUsername" column="affiliation_update_username"/>
         <discriminator javaType="boolean" column="is_cost_center">
             <case value="true" resultMap="costCenterResult"/>
             <case value="false" resultMap="outsideAffiliationResult"/>
@@ -20,13 +24,31 @@
 
     <resultMap id="outsideAffiliationResult" type="OutsideAffiliation" extends="affiliation.result"/>
 
-    <sql id="baseCols">
-        affiliation_id, name, is_cost_center, is_active,
+    <sql id="rawBaseCols">
+        affiliation_id,
+        name,
+        is_cost_center,
+        is_active,
         <include refid="base.auditCols"/>
     </sql>
 
-    <sql id="costCenterCols">
+    <sql id="baseCols">
+        affiliation.affiliation_id,
+        affiliation.name,
+        affiliation.is_cost_center,
+        affiliation.is_active,
+        affiliation.insert_date affiliation_insert_date,
+        affiliation.insert_username affiliation_insert_username,
+        affiliation.update_date affiliation_update_date,
+        affiliation.update_username affiliation_update_username
+    </sql>
+
+    <sql id="rawCostCenterCols">
         affiliation_ipds_id
+    </sql>
+
+    <sql id="costCenterCols">
+        affiliation.affiliation_ipds_id
     </sql>
 
     <sql id="baseHosts">
@@ -57,22 +79,22 @@
     <sql id="filters">
         <!-- This does not include the where tag so we can include it in other filters. -->
         <if test="id != null">
-            and affiliation_id = #{id}
+            and affiliation.affiliation_id = #{id}
         </if>
         <if test="text != null">
-            and upper(name) like upper(#{text}) || '%'
+            and upper(affiliation.name) like upper(#{text}) || '%'
         </if>
         <if test="active != null">
-            and is_active = #{active}
+            and affiliation.is_active = #{active}
         </if>
         <if test="usgs != null">
-            and is_cost_center = #{usgs}
+            and affiliation.is_cost_center = #{usgs}
         </if>
         <if test="ipdsId != null">
-            and affiliation_ipds_id = #{ipdsId}
+            and affiliation.affiliation_ipds_id = #{ipdsId}
         </if>
         <if test="exactText != null">
-            and upper(name) = upper(#{exactText})
+            and upper(affiliation.name) = upper(#{exactText})
         </if>
     </sql>
 
@@ -81,12 +103,14 @@
                <include refid="costCenterCols"/>
           from affiliation
     </sql>
-    
+
     <select id="getByContributor" parameterType="Integer" resultMap="result">
         <include refid="baseSelect"/>
          where affiliation_id in (
-             select affiliation_id from contributor_affiliation
-             where contributor_id = #{value,jdbcType=NUMERIC})
+             select affiliation_id
+               from contributor_affiliation
+              where contributor_id = #{value,jdbcType=NUMERIC}
+            )
     </select>
 
     <select id="getById" parameterType="Integer" resultMap="result">
@@ -130,7 +154,7 @@
         <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
             select nextval('affiliation_seq')
         </selectKey>
-        insert into affiliation (<include refid="baseCols"/>)
+        insert into affiliation (<include refid="rawBaseCols"/>)
              values (<include refid="baseHosts"/>)
     </insert>
 
@@ -138,8 +162,8 @@
         <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
             select nextval('affiliation_seq')
         </selectKey>
-        insert into affiliation (<include refid="baseCols"/>,
-                                 <include refid="costCenterCols"/>)
+        insert into affiliation (<include refid="rawBaseCols"/>,
+                                 <include refid="rawCostCenterCols"/>)
              values (<include refid="costCenterHosts"/>)
     </insert>
 

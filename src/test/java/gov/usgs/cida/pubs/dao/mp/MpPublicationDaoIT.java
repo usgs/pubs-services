@@ -257,12 +257,13 @@ public class MpPublicationDaoIT extends BaseIT {
 	public void publishToPwTest() {
 		mpPublicationDao.publishToPw(null);
 		mpPublicationDao.publishToPw(-1);
-		
+
 		//this one should be a straight add.
 		mpPublicationDao.publishToPw(1);
 		assertPwPub1(pwPublicationDao.getById(1));
 
 		//this one should be a merge.
+		mpPublicationDao.copyFromPw(4);
 		mpPublicationDao.publishToPw(4);
 		PwPublicationTest.assertPwPub4(pwPublicationDao.getById(4));
 	}
@@ -344,7 +345,6 @@ public class MpPublicationDaoIT extends BaseIT {
 		assertNull(pub.getNotes());
 		assertNull(pub.getIpdsId());
 		assertNull(pub.getIpdsReviewProcessState());
-		assertNull(pub.getIpdsInternalId());
 		assertEquals("2014", pub.getPublicationYear());
 		assertFalse(pub.isNoYear());
 		assertEquals("Some Journal", pub.getLargerWorkTitle());
@@ -423,7 +423,6 @@ public class MpPublicationDaoIT extends BaseIT {
 		assertEquals("some notes", pub.getNotes());
 		assertEquals("ipdsid", pub.getIpdsId());
 		assertEquals("reviewprocessstate", pub.getIpdsReviewProcessState());
-		assertEquals("123", pub.getIpdsInternalId());
 
 		assertNull(pub.getPublicationYear());
 		assertTrue(pub.isNoYear());
@@ -513,7 +512,6 @@ public class MpPublicationDaoIT extends BaseIT {
 		updatedPub.setNotes("notes2");
 		updatedPub.setIpdsId("ipds_i2" + updatedPub.getId());
 		updatedPub.setIpdsReviewProcessState(ProcessType.DISSEMINATION.getIpdsValue());
-		updatedPub.setIpdsInternalId("122");
 		updatedPub.setPublicationYear("2001");
 		updatedPub.setNoYear(true);
 		updatedPub.setLargerWorkTitle("Larger Work Title");

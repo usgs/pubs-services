@@ -13,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.busservice.PersonContributorBusService;
@@ -25,11 +24,8 @@ import gov.usgs.cida.pubs.springinit.DbTestConfig;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={DbTestConfig.class, OutsideContributor.class, PersonContributorDao.class, ContributorDao.class})
-@DatabaseSetups({
-	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-	@DatabaseSetup("classpath:/testData/affiliation.xml"),
-	@DatabaseSetup("classpath:/testData/contributor.xml")
-})
+@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
+@DatabaseSetup("classpath:/testData/contributor/")
 public class ExtPublicationContributorServiceIT extends BaseIT {
 
 	@MockBean

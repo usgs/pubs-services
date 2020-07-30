@@ -15,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
@@ -27,10 +26,8 @@ import gov.usgs.cida.pubs.springinit.DbTestConfig;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={DbTestConfig.class, AffiliationDao.class})
-@DatabaseSetups({
-	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-	@DatabaseSetup("classpath:/testData/affiliation.xml")
-})
+@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
+@DatabaseSetup("classpath:/testData/contributor/")
 public class AffiliationDaoIT extends BaseIT {
 
 	@Autowired
@@ -83,7 +80,7 @@ public class AffiliationDaoIT extends BaseIT {
 		Map<String, Object> filters = new HashMap<>();
 		filters.put(AffiliationDao.ACTIVE_SEARCH, true);
 		List<? extends Affiliation<?>> results = affiliationDao.getByMap(filters);
-		assertEquals(5, results.size());
+		assertEquals(6, results.size());
 		filters.put(AffiliationDao.ACTIVE_SEARCH, false);
 		results = affiliationDao.getByMap(filters);
 		assertEquals(2, results.size());
@@ -94,7 +91,7 @@ public class AffiliationDaoIT extends BaseIT {
 		Map<String, Object> filters = new HashMap<>();
 		filters.put(AffiliationDao.USGS_SEARCH, true);
 		List<? extends Affiliation<?>> results = affiliationDao.getByMap(filters);
-		assertEquals(4, results.size());
+		assertEquals(5, results.size());
 		filters.put(AffiliationDao.USGS_SEARCH, false);
 		results = affiliationDao.getByMap(filters);
 		assertEquals(3, results.size());

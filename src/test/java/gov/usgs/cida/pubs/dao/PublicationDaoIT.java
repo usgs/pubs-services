@@ -18,10 +18,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.ConfigurationService;
+import gov.usgs.cida.pubs.FullPubsDatabaseSetup;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoIT;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
@@ -34,19 +34,13 @@ import gov.usgs.cida.pubs.webservice.MvcService;
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={DbTestConfig.class, PublicationDao.class, ConfigurationService.class,
 			MpPublicationFilterParams.class})
-@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
 public class PublicationDaoIT extends BaseIT {
 
 	@Autowired
 	PublicationDao publicationDao;
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/dataset.xml")
-	})
+	@FullPubsDatabaseSetup
 	public void getByIdTest() {
 		//From warehouse
 		Publication<?> pub4 = publicationDao.getById(4);
@@ -58,12 +52,7 @@ public class PublicationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/dataset.xml")
-	})
+	@FullPubsDatabaseSetup
 	public void getByFilterTest() {
 		MpPublicationFilterParams filters = new MpPublicationFilterParams();
 		filters.setGlobal("false");
@@ -134,13 +123,9 @@ public class PublicationDaoIT extends BaseIT {
 		//This only checks that the final query is syntactically correct, not that it is logically correct!
 		pubs = publicationDao.getByFilter(buildAllFilterParms());
 	}
+
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/dataset.xml")
-	})
+	@FullPubsDatabaseSetup
 	public void getByFilterTestDoi() {
 		MpPublicationFilterParams filters = new MpPublicationFilterParams();
 		filters.setGlobal("false");
@@ -173,10 +158,9 @@ public class PublicationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testData/publicationOrderBy.xml"),
-		@DatabaseSetup("classpath:/testData/mpPublicationOrderBy.xml")
-	})
+	@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
+	@DatabaseSetup("classpath:/testData/publicationOrderBy.xml")
+	@DatabaseSetup("classpath:/testData/mpPublicationOrderBy.xml")
 	public void getByFilterOrderByTest() {
 		MpPublicationFilterParams filters = new MpPublicationFilterParams();
 		filters.setPage_size("1000");
@@ -302,10 +286,9 @@ public class PublicationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testData/publicationOrigin.xml"),
-		@DatabaseSetup("classpath:/testData/mpPublicationOrigin.xml")
-	})
+	@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
+	@DatabaseSetup("classpath:/testData/publicationOrigin.xml")
+	@DatabaseSetup("classpath:/testData/mpPublicationOrigin.xml")
 	public void getByFilterOriginTest() {
 		MpPublicationFilterParams filters = new MpPublicationFilterParams();
 		//mypubs only
@@ -359,12 +342,7 @@ public class PublicationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/dataset.xml")
-	})
+	@FullPubsDatabaseSetup
 	public void getCountByFilterTest() {
 		MpPublicationFilterParams filters = new MpPublicationFilterParams();
 		Integer cnt = publicationDao.getCountByFilter(null);
@@ -388,12 +366,7 @@ public class PublicationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/dataset.xml")
-	})
+	@FullPubsDatabaseSetup
 	public void getSeriesCountTest() {
 		Integer cnt = publicationDao.getSeriesCount(330);
 		assertEquals(2, cnt.intValue());
@@ -439,12 +412,7 @@ public class PublicationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/dataset.xml")
-	})
+	@FullPubsDatabaseSetup
 	public void filterByIndexIdTest() {
 		List<Publication<?>> pubs = publicationDao.filterByIndexId("sir");
 		assertEquals(2, pubs.size());
@@ -464,12 +432,7 @@ public class PublicationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/dataset.xml")
-	})
+	@FullPubsDatabaseSetup
 	public void validateByMapTest() {
 		//These should always check both tables - ignoring the MpPublicationDao.GLOBAL parameter
 		Map<String, Object> filters = new HashMap<>();

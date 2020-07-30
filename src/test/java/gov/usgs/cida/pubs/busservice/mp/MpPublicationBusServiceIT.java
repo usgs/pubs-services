@@ -24,13 +24,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseSetups;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.ConfigurationService;
+import gov.usgs.cida.pubs.FullPubsDatabaseSetup;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
@@ -97,13 +96,7 @@ import gov.usgs.cida.pubs.validation.ValidatorResult;
 			PublicationType.class, PublicationTypeDao.class, PublicationSubtype.class, PublicationSubtypeDao.class,
 			PublicationSeries.class, PublicationSeriesDao.class, Publication.class, PublicationDao.class,
 			PublishingServiceCenter.class, PublishingServiceCenterDao.class, LinkType.class, LinkTypeDao.class})
-@DatabaseSetups({
-	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-	@DatabaseSetup("classpath:/testData/publicationType.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-	@DatabaseSetup("classpath:/testData/dataset.xml")
-})
+@FullPubsDatabaseSetup
 public class MpPublicationBusServiceIT extends BaseIT {
 
 	public static final List<String> IGNORE_PROPERTIES = List.of("validationErrors", "valErrors", "costCenters", "contributors", "contributorsToMap", "links",

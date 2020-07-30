@@ -57,6 +57,7 @@
     </sql>
 
     <sql id="associationCols">
+        affiliation.affiliation_id,
         affiliation.name,
         affiliation.is_cost_center,
         affiliation.is_active

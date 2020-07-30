@@ -49,6 +49,7 @@
         contributor.is_preferred,
         contributor.is_corporation,
         contributor.is_usgs,
+        affiliation.affiliation_id,
         affiliation.name,
         affiliation.is_cost_center,
         affiliation.is_active,

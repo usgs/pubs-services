@@ -18,11 +18,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseSetups;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import gov.usgs.cida.pubs.BaseIT;
+import gov.usgs.cida.pubs.FullPubsDatabaseSetup;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
@@ -64,13 +64,7 @@ public class MpPublicationDaoIT extends BaseIT {
 	PwPublicationDao pwPublicationDao;
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/dataset.xml")
-	})
+	@FullPubsDatabaseSetup
 	public void addAndGetByIds() {
 		Integer pubId = mpPublicationDao.getNewProdId();
 		MpPublication newpubA = addAPub(pubId);
@@ -103,10 +97,8 @@ public class MpPublicationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-		@DatabaseSetup("classpath:/testData/mpPublicationOrderBy.xml")
-	})
+	@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
+	@DatabaseSetup("classpath:/testData/mpPublicationOrderBy.xml")
 	public void getByMapTest() {
 		Map<String, Object> filters = new HashMap<>();
 		List<MpPublication> pubs = mpPublicationDao.getByMap(filters);
@@ -166,13 +158,7 @@ public class MpPublicationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/dataset.xml")
-	})
+	@FullPubsDatabaseSetup
 	public void copyFromPwTest() {
 		mpPublicationDao.copyFromPw(4);
 		Publication<MpPublication> mpPub = mpPublicationDao.getById(4);
@@ -181,13 +167,7 @@ public class MpPublicationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/dataset.xml")
-	})
+	@FullPubsDatabaseSetup
 	public void lockPubTest() {
 		mpPublicationDao.lockPub(3);
 		MpPublication mpPub = mpPublicationDao.getById(3);
@@ -195,13 +175,7 @@ public class MpPublicationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/dataset.xml")
-	})
+	@FullPubsDatabaseSetup
 	public void releaseLocksUserTest() {
 		MpPublication mpPub = addAPub(mpPublicationDao.getNewProdId());
 		mpPublicationDao.releaseLocksUser(PubsConstantsHelper.ANONYMOUS_USER);
@@ -222,13 +196,7 @@ public class MpPublicationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/dataset.xml")
-	})
+	@FullPubsDatabaseSetup
 	public void releaseLocksPubTest() {
 		MpPublication mpPub = addAPub(mpPublicationDao.getNewProdId());
 		mpPublicationDao.releaseLocksPub(mpPub.getId());
@@ -247,13 +215,7 @@ public class MpPublicationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/dataset.xml")
-	})
+	@FullPubsDatabaseSetup
 	public void publishToPwTest() {
 		mpPublicationDao.publishToPw(null);
 		mpPublicationDao.publishToPw(-1);
@@ -269,13 +231,7 @@ public class MpPublicationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/dataset.xml")
-	})
+	@FullPubsDatabaseSetup
 	public void getByIndexIdTest() {
 		MpPublication pub = mpPublicationDao.getByIndexId(MPPUB1_INDEXID);
 		assertMpPub1(pub, MPPUB1_LOCKEDBY);

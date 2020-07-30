@@ -20,19 +20,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK)
-@DatabaseSetups({
-	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-	@DatabaseSetup("classpath:/testData/publicationType.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-	@DatabaseSetup("classpath:/testData/publicationStream.xml")
-})
+@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
+@DatabaseSetup("classpath:/testData/publicationType.xml")
+@DatabaseSetup("classpath:/testData/publicationSubtype.xml")
+@DatabaseSetup("classpath:/testData/contributor/")
+@DatabaseSetup("classpath:/testData/publicationStream.xml")
 public class PwPublicationMvcServiceStreamingIT extends BaseIT {
 
 	@Autowired

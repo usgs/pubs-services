@@ -4,6 +4,8 @@ contributor_affiliation
 cross_ref_log
 deleted_publication
 publication_type
+publication_subtype
+publication_series
 ipds_pubs_type_conv
 mp_publication
 mp_list_publication
@@ -14,7 +16,5 @@ publication
 publication_contributor
 publication_cost_center
 publication_link
-publication_subtype
-publication_series
 sipp_process_log
 sipp_request_log

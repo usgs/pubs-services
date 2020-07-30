@@ -193,6 +193,7 @@
 		"contributors": {
 			"compilers": [{
 				"text": "outerfamily, outerGiven outerSuffix outer@gmail.com",
+				"orcid": "https://orcid.org/0000-0000-0000-0001",
 				"contributorId": 3,
 				"corporation": false,
 				"usgs": false,
@@ -200,7 +201,17 @@
 				"given": "outerGiven",
 				"suffix": "outerSuffix",
 				"email": "outer@gmail.com",
-				"affiliations": [],
+				"affiliations": [{
+					"id": 1,
+					"text": "Affiliation Cost Center 1",
+					"active": true,
+					"usgs": true
+				}, {
+					"id": 7,
+					"text": "Outside Affiliation 3",
+					"active": true,
+					"usgs": false
+				}],
 				"id": 9,
 				"contributorType": {
 					"id": 3,
@@ -217,7 +228,17 @@
 				"given": "ConGiven",
 				"suffix": "ConSuffix",
 				"email": "con@usgs.gov",
-				"affiliations": [],
+				"affiliations": [{
+					"id": 1,
+					"text": "Affiliation Cost Center 1",
+					"active": true,
+					"usgs": true
+				}, {
+					"id": 2,
+					"text": "Affiliation Cost Center 2",
+					"active": true,
+					"usgs": true
+				}],
 				"id": 7,
 				"contributorType": {
 					"id": 3,
@@ -240,6 +261,7 @@
 			}],
 			"editors": [{
 				"text": "outerfamily, outerGiven outerSuffix outer@gmail.com",
+				"orcid": "https://orcid.org/0000-0000-0000-0001",
 				"contributorId": 3,
 				"corporation": false,
 				"usgs": false,
@@ -247,7 +269,17 @@
 				"given": "outerGiven",
 				"suffix": "outerSuffix",
 				"email": "outer@gmail.com",
-				"affiliations": [],
+				"affiliations": [{
+					"id": 1,
+					"text": "Affiliation Cost Center 1",
+					"active": true,
+					"usgs": true
+				}, {
+					"id": 7,
+					"text": "Outside Affiliation 3",
+					"active": true,
+					"usgs": false
+				}],
 				"id": 6,
 				"contributorType": {
 					"id": 2,
@@ -276,7 +308,17 @@
 				"given": "ConGiven",
 				"suffix": "ConSuffix",
 				"email": "con@usgs.gov",
-				"affiliations": [],
+				"affiliations": [{
+					"id": 1,
+					"text": "Affiliation Cost Center 1",
+					"active": true,
+					"usgs": true
+				}, {
+					"id": 2,
+					"text": "Affiliation Cost Center 2",
+					"active": true,
+					"usgs": true
+				}],
 				"id": 4,
 				"contributorType": {
 					"id": 2,
@@ -294,7 +336,17 @@
 				"given": "ConGiven",
 				"suffix": "ConSuffix",
 				"email": "con@usgs.gov",
-				"affiliations": [],
+				"affiliations": [{
+					"id": 2,
+					"text": "Affiliation Cost Center 2",
+					"active": true,
+					"usgs": true
+				}, {
+					"id": 1,
+					"text": "Affiliation Cost Center 1",
+					"active": true,
+					"usgs": true
+				}],
 				"id": 1,
 				"contributorType": {
 					"id": 1,
@@ -316,6 +368,7 @@
 				"rank": 2
 			}, {
 				"text": "outerfamily, outerGiven outerSuffix outer@gmail.com",
+				"orcid": "https://orcid.org/0000-0000-0000-0001",
 				"contributorId": 3,
 				"corporation": false,
 				"usgs": false,
@@ -323,7 +376,17 @@
 				"given": "outerGiven",
 				"suffix": "outerSuffix",
 				"email": "outer@gmail.com",
-				"affiliations": [],
+				"affiliations": [{
+					"id": 1,
+					"text": "Affiliation Cost Center 1",
+					"active": true,
+					"usgs": true
+				}, {
+					"id": 7,
+					"text": "Outside Affiliation 3",
+					"active": true,
+					"usgs": false
+				}],
 				"id": 3,
 				"contributorType": {
 					"id": 1,

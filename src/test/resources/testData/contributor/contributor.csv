@@ -1,0 +1,15 @@
+contributor_id,given,family,suffix,email,literal,text,orcid,is_corporation,is_usgs,is_preferred
+1,ConGiven,ConFamily,ConSuffix,con@usgs.gov,null,"ConFamily, ConGiven ConSuffix con@usgs.gov",null,false,true,true
+2,null,null,null,null,US Geological Survey Ice Survey Team,"US Geological Survey Ice Survey Team",null,true,false,false
+3,outerGiven,outerfamily,outerSuffix,outer@gmail.com,null,"outerfamily, outerGiven outerSuffix outer@gmail.com",0000-0000-0000-0001,false,false,false
+4,4Given,4Family,4Suffix,family4@usgs.gov,null,"4Family, 4Given 4Suffix family4@usgs.gov",0000-0000-0000-0004,false,true,true
+5,Jane,Doe,null,jmdoe@usgs.gov,null,"Doe, jane   jmdoe@usgs.gov",0000-0000-0000-0000,false,true,true
+11,Given,11ConFamily,ConSuffix,con@usgs.gov,null,"11ConFamily, Given ConSuffix con@usgs.gov",null,false,true,false
+14,14Given,14Family,4Suffix,family14@usgs.goy,null,"4Family, 4Given 4Suffix family14@usgs.goy",0000-0000-0000-0004,false,true,false
+21,Given,21ConFamily,ConSuffix,con21@usgs.gov,null,"21ConFamily, Given ConSuffix con@usgs.gov",null,false,true,false
+24,24Given,24Family,4Suffix,family24@usgs.gox,null,"4Family, 4Given 4Suffix family24@usgs.gox",0000-0000-0000-0004,false,true,false
+34,34Given,34Family,4Suffix,family34@usgs.gow,null,"4Family, 4Given 4Suffix family34@usgs.gow",0000-0000-0000-0004,false,true,false
+44,44Given,44Family,4Suffix,family44@usgs.gou,null,"4Family, 4Given 4Suffix family44@usgs.gou",0000-0000-0000-0004,false,true,false
+51,101Given,101Family,101Suffix,family101@usgs.gov,null,"101Family, 101Given 101Suffix family101@usgs.gov",null,false,true,true
+54,104Given,104Family,104Suffix,family104@usgs.gov,null,"104Family, 104Given 104Suffix family104@usgs.gov",0000-0000-0000-0104,false,true,true
+60,null,null,null,null,Preferred US Geological Survey Ice Survey Team,"Preferred Geological Survey Ice Survey Team",null,true,false,true

@@ -21,7 +21,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
@@ -29,14 +28,12 @@ import io.micrometer.core.instrument.util.StringUtils;
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK)
-@DatabaseSetups({
-	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-	@DatabaseSetup("classpath:/testData/publicationType.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-	@DatabaseSetup("classpath:/testData/contributor.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-	@DatabaseSetup("classpath:/testData/crossrefDataset.xml")
-})
+@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
+@DatabaseSetup("classpath:/testData/publicationType.xml")
+@DatabaseSetup("classpath:/testData/publicationSubtype.xml")
+@DatabaseSetup("classpath:/testData/publicationSeries.xml")
+@DatabaseSetup("classpath:/testData/contributor/")
+@DatabaseSetup("classpath:/testData/crossrefDataset.xml")
 public class PwPublicationMvcServiceSinglePubIT extends BaseIT {
 
 	private static final String CROSSREF_PUB_ID = "sir2";

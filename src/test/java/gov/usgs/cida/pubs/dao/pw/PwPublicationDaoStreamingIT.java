@@ -47,12 +47,11 @@ public class PwPublicationDaoStreamingIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationStream.xml")
-	})
+	@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
+	@DatabaseSetup("classpath:/testData/publicationType.xml")
+	@DatabaseSetup("classpath:/testData/publicationSubtype.xml")
+	@DatabaseSetup("classpath:/testData/contributor/")
+	@DatabaseSetup("classpath:/testData/publicationStream.xml")
 	public void getStreamByMapTest() {
 		when(configurationService.getWarehouseEndpoint()).thenReturn("https://test.gov");
 		TestResultHandler<PwPublication> handler = new TestResultHandler<>();
@@ -136,12 +135,11 @@ public class PwPublicationDaoStreamingIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationStream.xml")
-	})
+	@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
+	@DatabaseSetup("classpath:/testData/publicationType.xml")
+	@DatabaseSetup("classpath:/testData/publicationSubtype.xml")
+	@DatabaseSetup("classpath:/testData/contributor/")
+	@DatabaseSetup("classpath:/testData/publicationStream.xml")
 	public void getStreamByMapSyntaxTest() {
 		TestResultHandler<PwPublication> handler = new TestResultHandler<>();
 		pwPublicationDao.stream(PwPublicationDao.NS + PwPublicationDao.GET_STREAM_BY_MAP, buildAllFilters(), handler);

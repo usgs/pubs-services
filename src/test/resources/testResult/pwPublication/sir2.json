@@ -37,7 +37,17 @@
 				"given": "ConGiven",
 				"suffix": "ConSuffix",
 				"email": "con@usgs.gov",
-				"affiliations": [],
+				"affiliations": [{
+					"id": 1,
+					"text": "Affiliation Cost Center 1",
+					"active": true,
+					"usgs": true
+				}, {
+					"id": 2,
+					"text": "Affiliation Cost Center 2",
+					"active": true,
+					"usgs": true
+				}],
 				"id": 14,
 				"contributorType": {
 					"id": 1,

@@ -13,10 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseSetups;
-
 import gov.usgs.cida.pubs.BaseIT;
+import gov.usgs.cida.pubs.FullPubsDatabaseSetup;
 import gov.usgs.cida.pubs.dao.ContributorDao;
 import gov.usgs.cida.pubs.dao.ContributorDaoIT;
 import gov.usgs.cida.pubs.dao.PersonContributorDao;
@@ -30,13 +28,7 @@ import gov.usgs.cida.pubs.validation.constraint.ManagerChecks;
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={DbTestConfig.class, LocalValidatorFactoryBean.class, Contributor.class,
 			PersonContributor.class, PersonContributorDao.class, ContributorDao.class})
-@DatabaseSetups({
-	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-	@DatabaseSetup("classpath:/testData/publicationType.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-	@DatabaseSetup("classpath:/testData/dataset.xml")
-})
+@FullPubsDatabaseSetup
 public class PersonContributorBusServiceIT extends BaseIT {
 
 	@Autowired

@@ -15,10 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseSetups;
-
 import gov.usgs.cida.pubs.BaseIT;
+import gov.usgs.cida.pubs.FullPubsDatabaseSetup;
 import gov.usgs.cida.pubs.dao.ContributorTypeDao;
 import gov.usgs.cida.pubs.dao.pw.PwPublicationDao;
 import gov.usgs.cida.pubs.domain.Contributor;
@@ -34,13 +32,7 @@ import gov.usgs.cida.pubs.utility.PubsUtils;
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={DbTestConfig.class, MpPublicationContributorDao.class, MpPublicationDao.class, PwPublicationDao.class,
 			PubsUtils.class, ContributorType.class, ContributorTypeDao.class})
-@DatabaseSetups({
-	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-	@DatabaseSetup("classpath:/testData/publicationType.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-	@DatabaseSetup("classpath:/testData/dataset.xml")
-})
+@FullPubsDatabaseSetup
 public class MpPublicationContributorDaoIT extends BaseIT {
 
 	public static final List<String> IGNORE_PROPERTIES = List.of("validationErrors", "valErrors");

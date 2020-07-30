@@ -17,10 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseSetups;
-
 import gov.usgs.cida.pubs.BaseIT;
+import gov.usgs.cida.pubs.FullPubsDatabaseSetup;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.mp.MpListDao;
 import gov.usgs.cida.pubs.dao.mp.MpListPublicationDao;
@@ -35,13 +33,7 @@ import gov.usgs.cida.pubs.validation.ValidationResults;
 	classes={DbTestConfig.class, LocalValidatorFactoryBean.class,
 			MpPublication.class, MpPublicationDao.class, PublicationDao.class,
 			MpList.class, MpListDao.class, MpListPublication.class, MpListPublicationDao.class})
-@DatabaseSetups({
-	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-	@DatabaseSetup("classpath:/testData/publicationType.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-	@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-	@DatabaseSetup("classpath:/testData/dataset.xml")
-})
+@FullPubsDatabaseSetup
 public class MpListPublicationBusServiceIT extends BaseIT {
 
 	@Autowired

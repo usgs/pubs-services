@@ -1,0 +1,67 @@
+[{
+	"id": 14,
+	"text": "14Family, 14Given 4Suffix family14@usgs.goy",
+	"orcid": "https://orcid.org/0000-0000-0000-0004",
+	"corporation": false,
+	"usgs": true,
+	"family": "14Family",
+	"given": "14Given",
+	"suffix": "4Suffix",
+	"email": "family14@usgs.goy",
+	"affiliations": [],
+	"preferred": false
+}, {
+	"id": 24,
+	"text": "24Family, 24Given 4Suffix family24@usgs.gox",
+	"orcid": "https://orcid.org/0000-0000-0000-0004",
+	"corporation": false,
+	"usgs": true,
+	"family": "24Family",
+	"given": "24Given",
+	"suffix": "4Suffix",
+	"email": "family24@usgs.gox",
+	"affiliations": [],
+	"preferred": false
+}, {
+	"id": 34,
+	"text": "34Family, 34Given 4Suffix family34@usgs.gow",
+	"orcid": "https://orcid.org/0000-0000-0000-0004",
+	"corporation": false,
+	"usgs": true,
+	"family": "34Family",
+	"given": "34Given",
+	"suffix": "4Suffix",
+	"email": "family34@usgs.gow",
+	"affiliations": [],
+	"preferred": false
+}, {
+	"id": 44,
+	"text": "44Family, 44Given 4Suffix family44@usgs.gou",
+	"orcid": "https://orcid.org/0000-0000-0000-0004",
+	"corporation": false,
+	"usgs": true,
+	"family": "44Family",
+	"given": "44Given",
+	"suffix": "4Suffix",
+	"email": "family44@usgs.gou",
+	"affiliations": [],
+	"preferred": false
+}, {
+	"id": 4,
+	"text": "4Family, 4Given 4Suffix family4@usgs.gov",
+	"orcid": "https://orcid.org/0000-0000-0000-0004",
+	"corporation": false,
+	"usgs": true,
+	"family": "4Family",
+	"given": "4Given",
+	"suffix": "4Suffix",
+	"email": "family4@usgs.gov",
+	"affiliations": [{
+		"id": 2,
+		"text": "Affiliation Cost Center 2"
+	}, {
+		"id": 3,
+		"text": "xAffiliation Cost Center 3"
+	}],
+	"preferred": true
+}]

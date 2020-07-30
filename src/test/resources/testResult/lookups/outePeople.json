@@ -1,0 +1,19 @@
+[{
+	"id": 3,
+	"text": "outerfamily, outerGiven outerSuffix outer@gmail.com",
+	"orcid": "https://orcid.org/0000-0000-0000-0001",
+	"corporation": false,
+	"usgs": false,
+	"family": "outerfamily",
+	"given": "outerGiven",
+	"suffix": "outerSuffix",
+	"email": "outer@gmail.com",
+	"affiliations": [{
+		"id": 1,
+		"text": "Affiliation Cost Center 1"
+	}, {
+		"id": 7,
+		"text": "Outside Affiliation 3"
+	}],
+	"preferred": false
+}]

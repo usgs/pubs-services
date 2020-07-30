@@ -16,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseSetups;
 
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.PubsConstantsHelper;
@@ -27,11 +26,8 @@ import gov.usgs.cida.pubs.webservice.MvcService;
 
 @SpringBootTest(webEnvironment=WebEnvironment.NONE,
 	classes={DbTestConfig.class, CorporateContributorDao.class})
-@DatabaseSetups({
-	@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-	@DatabaseSetup("classpath:/testData/affiliation.xml"),
-	@DatabaseSetup("classpath:/testData/contributor.xml")
-})
+@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
+@DatabaseSetup("classpath:/testData/contributor/")
 public class CorporateContributorDaoIT extends BaseIT {
 
 	@Autowired

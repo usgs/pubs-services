@@ -1,13 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-    <AFFILIATION AFFILIATION_ID="1" NAME="Affiliation Cost Center 1" AFFILIATION_IPDS_ID="4" IS_COST_CENTER="true" IS_ACTIVE="true"/>
-    <AFFILIATION AFFILIATION_ID="2" NAME="Affiliation Cost Center 2" AFFILIATION_IPDS_ID="3" IS_COST_CENTER="true" IS_ACTIVE="true"/>
-    <AFFILIATION AFFILIATION_ID="5" NAME="Outside Affiliation 1" IS_COST_CENTER="false" IS_ACTIVE="true"/>
-
-    <CONTRIBUTOR CONTRIBUTOR_ID="1" FAMILY="ConFamily" GIVEN="ConGiven" SUFFIX="ConSuffix" EMAIL="con@usgs.gov" IS_CORPORATION="false" IS_USGS="true" text="ConFamily, ConGiven ConSuffix con@usgs.gov" IS_PREFERRED="true" />
-    <CONTRIBUTOR CONTRIBUTOR_ID="2" LITERAL="US Geological Survey Ice Survey Team" IS_CORPORATION="true" IS_USGS="false" text="US Geological Survey Ice Survey Team" IS_PREFERRED="false" />
-    <CONTRIBUTOR CONTRIBUTOR_ID="3" FAMILY="outerfamily" GIVEN="outerGiven" SUFFIX="outerSuffix" EMAIL="outer@gmail.com" IS_CORPORATION="false" IS_USGS="false" text="outerfamily, outerGiven outerSuffix outer@gmail.com" IS_PREFERRED="false" />
-
     <PUBLICATION_SERIES PUBLICATION_SERIES_ID="332" PUBLICATION_SUBTYPE_ID="5" NAME="Resource Publication" CODE="RP" IS_ACTIVE="false" DOI_NAME="seriesDoi" PRINT_ISSN="spIssn" ONLINE_ISSN="soIssn"/>
 
     <PUBLICATION PUBLICATION_ID="4" INDEX_ID="4" DISPLAY_TO_PUBLIC_DATE="2014-07-22 17:09:24" PUBLICATION_TYPE_ID="5" PUBLICATION_SUBTYPE_ID="18" PUBLICATION_SERIES_ID="332" SERIES_NUMBER="series number" SUBSERIES_TITLE="subseries title" CHAPTER="chapter" SUBCHAPTER="subchapter" DISPLAY_TITLE="display title" TITLE="title" ABSTRACT="abstract" LANGUAGE="language" PUBLISHER="publisher" PUBLISHER_LOCATION="publisher loc" DOI_NAME="doi" ISSN="issn" ISBN="isbn" COLLABORATION="collaborator" USGS_CITATION="usgs citation" PRODUCT_DESCRIPTION="product description" START_PAGE="start" END_PAGE="end" NUMBER_OF_PAGES="12" ONLINE_ONLY="N" ADDITIONAL_ONLINE_FILES="Y" TEMPORAL_START="2014-07-22 00:00:00" TEMPORAL_END="2014-07-23 00:00:00" NOTES="notes" IPDS_ID="ipds_id" PUBLICATION_YEAR="2014" LARGER_WORK_TITLE="Some Journal" LARGER_WORK_TYPE_ID="23" CONFERENCE_TITLE="Conference Title" CONFERENCE_DATE="A free form DATE" CONFERENCE_LOCATION="A conference location" LARGER_WORK_SUBTYPE_ID="23" 

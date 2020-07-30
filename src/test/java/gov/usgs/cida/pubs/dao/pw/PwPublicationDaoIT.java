@@ -26,6 +26,7 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import gov.usgs.cida.pubs.BaseIT;
 import gov.usgs.cida.pubs.ConfigurationService;
+import gov.usgs.cida.pubs.FullPubsDatabaseSetup;
 import gov.usgs.cida.pubs.dao.PersonContributorDao;
 import gov.usgs.cida.pubs.dao.PublicationDao;
 import gov.usgs.cida.pubs.dao.PublicationDaoIT;
@@ -50,13 +51,7 @@ public class PwPublicationDaoIT extends BaseIT {
 	private ConfigurationService configurationService;
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/dataset.xml")
-	})
+	@FullPubsDatabaseSetup
 	public void getByIdTest() {
 		PwPublication pub = pwPublicationDao.getById(4);
 		assertNotNull(pub);
@@ -65,13 +60,7 @@ public class PwPublicationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/dataset.xml")
-	})
+	@FullPubsDatabaseSetup
 	public void getByIpdsIdTest() {
 		PwPublication pub = pwPublicationDao.getByIpdsId("ipds_id");
 		assertNotNull(pub);
@@ -80,13 +69,7 @@ public class PwPublicationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/dataset.xml")
-	})
+	@FullPubsDatabaseSetup
 	public void getByMapTest() {
 		pwPublicationDao.refreshTextIndex();
 		Map<String, Object> filters = new HashMap<>();
@@ -106,13 +89,7 @@ public class PwPublicationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/dataset.xml")
-	})
+	@FullPubsDatabaseSetup
 	public void getByMapTestOrcid() {
 		Map<String, Object> filters = new HashMap<>();
 		String[] orcids = new String[] { "0000-0000-0000-0001", "0000-0000-0000-0004" };
@@ -254,13 +231,7 @@ public class PwPublicationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/dataset.xml")
-	})
+	@FullPubsDatabaseSetup
 	public void getObjectCountTest() {
 		pwPublicationDao.refreshTextIndex();
 		Map<String, Object> filters = new HashMap<>();
@@ -274,13 +245,7 @@ public class PwPublicationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/dataset.xml")
-	})
+	@FullPubsDatabaseSetup
 	public void getByIndexIdTest() {
 		pwPublicationDao.refreshTextIndex();
 		//We can get 4
@@ -297,13 +262,7 @@ public class PwPublicationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/dataset.xml")
-	})
+	@FullPubsDatabaseSetup
 	public void testGetByLinkType() {
 		Map<String, Object> filters = new HashMap<>();
 		filters.put(PublicationDao.LINK_TYPE, new String[] {"Abstract"});
@@ -316,13 +275,7 @@ public class PwPublicationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/dataset.xml")
-	})
+	@FullPubsDatabaseSetup
 	public void testGetByNoLinkType() {
 		Map<String, Object> filters = new HashMap<>();
 		filters.put(PublicationDao.NO_LINK_TYPE, new String[] {"Abstract"});
@@ -338,14 +291,12 @@ public class PwPublicationDaoIT extends BaseIT {
 	}
 
 	@Test
-	@DatabaseSetups({
-		@DatabaseSetup("classpath:/testCleanup/clearAll.xml"),
-		@DatabaseSetup("classpath:/testData/publicationType.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSubtype.xml"),
-		@DatabaseSetup("classpath:/testData/contributor.xml"),
-		@DatabaseSetup("classpath:/testData/publicationSeries.xml"),
-		@DatabaseSetup("classpath:/testData/crossrefDataset.xml")
-	})
+	@DatabaseSetup("classpath:/testCleanup/clearAll.xml")
+	@DatabaseSetup("classpath:/testData/publicationType.xml")
+	@DatabaseSetup("classpath:/testData/publicationSubtype.xml")
+	@DatabaseSetup("classpath:/testData/contributor/")
+	@DatabaseSetup("classpath:/testData/publicationSeries.xml")
+	@DatabaseSetup("classpath:/testData/crossrefDataset.xml")
 	public void selectByPublicationSubtype(){
 		//get exactly one unnumbered usgs series pubs with a doi
 		Map<String, Object> filters = Map.of(

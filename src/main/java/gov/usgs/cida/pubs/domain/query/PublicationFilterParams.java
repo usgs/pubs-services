@@ -204,15 +204,13 @@ public abstract class PublicationFilterParams implements IFilterParams {
 	public void setQ(String q) {
 		//On the MP side, We split the input on spaces and commas to ultimately create an "and" query on each word
 		//On the warehouse side, we are doing Text queries
-		if (StringUtils.isNotBlank(q)) {
-			List<String> splitTerms = Arrays.stream(q.trim().toLowerCase().split(PubsConstantsHelper.SEARCH_TERMS_SPLIT_REGEX))
-					.filter(x -> StringUtils.isNotEmpty(x))
-					.collect(Collectors.toList());
+		List<String> splitTerms = splitTerm(q);
 			if (!splitTerms.isEmpty()) {
 				this.searchTerms = buildSearchTerms(splitTerms);
-
 				this.q = buildQ(splitTerms);
-			}
+			} else {
+				this.searchTerms = null;
+				this.q = null;
 		}
 	}
 	public String[] getReportNumber() {
@@ -264,6 +262,16 @@ public abstract class PublicationFilterParams implements IFilterParams {
 	}
 	public void setYear(String[] year) {
 		this.year = year;
+	}
+
+	protected static List<String> splitTerm(String q) {
+		if (StringUtils.isNotBlank(q)) {
+			return Arrays.stream(q.trim().toLowerCase().split(PubsConstantsHelper.SEARCH_TERMS_SPLIT_REGEX))
+			.filter(x -> StringUtils.isNotEmpty(x))
+			.collect(Collectors.toList());
+		} else {
+			return new ArrayList<String>();
+		}
 	}
 
 	protected String[] buildSearchTerms(List<String> splitTerms) {

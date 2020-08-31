@@ -10,7 +10,7 @@
         <java.version>11</java.version>
 
         <!-- compile scope versions -->
-        <springdoc-version>1.4.3</springdoc-version>
+        <springdoc-version>1.4.5</springdoc-version>
         <commons-io-version>2.7</commons-io-version>
         <commons-text-version>1.9</commons-text-version>
         <poi-ooxml-version>4.1.2</poi-ooxml-version>

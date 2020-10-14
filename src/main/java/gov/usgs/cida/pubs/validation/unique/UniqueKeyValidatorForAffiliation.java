@@ -32,6 +32,7 @@ public class UniqueKeyValidatorForAffiliation implements ConstraintValidator<Uni
 		if (null != value && null != context && null != value.getText()) {
 			Map<String, Object> filters = new HashMap<String,Object>();
 			filters.put(AffiliationDao.EXACT_SEARCH, value.getText());
+			filters.put(AffiliationDao.USGS_SEARCH, value.isUsgs());
 			List<? extends Affiliation<?>> affiliations = Affiliation.getDao().getByMap(filters);
 			for (Affiliation<?> affiliation : affiliations) {
 				if (null == value.getId() || 0 != affiliation.getId().compareTo(value.getId())) {

@@ -69,7 +69,7 @@ public class AffiliationValidationTest extends BaseValidatorTest {
 
 		reset(affiliationDao, costCenterDao, personContributorDao, contributorDao);
 
-		when(affiliationDao.getByMap(anyMap())).thenReturn(UniqueKeyValidatorForAffiliationTest.buildList());
+		when(affiliationDao.getByMap(anyMap())).thenReturn(UniqueKeyValidatorForAffiliationTest.buildCostCenterList());
 	}
 
 	@Test

@@ -98,7 +98,6 @@ import gov.usgs.cida.pubs.domain.sipp.InformationProduct;
 import gov.usgs.cida.pubs.domain.sipp.IpdsPubTypeConv;
 import gov.usgs.cida.pubs.springinit.DbTestConfig;
 import gov.usgs.cida.pubs.utility.PubsEMailer;
-import net.sf.saxon.expr.JPConverter.FromDate;
 
 @ContextConfiguration(classes = FreeMarkerAutoConfiguration.class)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE, classes = { DbTestConfig.class, LocalValidatorFactoryBean.class,
@@ -248,7 +247,7 @@ public class SippProcessAffiliationsIT extends BaseIT {
 	}
 
 	/*
-	 * The jist of this test is to make sure a cost center (usgs) can have the same name as an 
+	 * The gist of this test is to make sure a cost center (usgs) can have the same name as an
 	 * outside affiliation. Both records end up in the affiliation table.
 	 */
 	@Test

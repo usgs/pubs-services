@@ -26,6 +26,7 @@
         <result property="doi" column="doi_name"/>
         <result property="issn" column="issn"/>
         <result property="isbn" column="isbn"/>
+        <result property="programNote" column="program_note"/>
         <result property="collaboration" column="collaboration"/>
         <result property="usgsCitation" column="usgs_citation"/>
         <result property="productDescription" column="product_description"/>
@@ -156,6 +157,7 @@
         issn,
         isbn,
         collaboration,
+        program_note,
         usgs_citation,
         product_description,
         start_page,
@@ -233,6 +235,7 @@
         publication.issn,
         publication.isbn,
         publication.collaboration,
+        publication.program_note,
         publication.usgs_citation,
         publication.product_description,
         publication.start_page,
@@ -303,6 +306,7 @@
         #{issn,jdbcType=VARCHAR},
         #{isbn,jdbcType=VARCHAR},
         #{collaboration,jdbcType=VARCHAR},
+        #{programNote,jdbcType=VARCHAR},
         #{usgsCitation,jdbcType=VARCHAR},
         #{productDescription,jdbcType=VARCHAR},
         #{startPage,jdbcType=NUMERIC},
@@ -368,6 +372,7 @@
         issn = #{issn,jdbcType=VARCHAR},
         isbn = #{isbn,jdbcType=VARCHAR},
         collaboration = #{collaboration,jdbcType=VARCHAR},
+        program_note = #{programNote,jdbcType=VARCHAR},
         usgs_citation = #{usgsCitation,jdbcType=VARCHAR},
         product_description = #{productDescription,jdbcType=VARCHAR},
         start_page = #{startPage,jdbcType=NUMERIC},

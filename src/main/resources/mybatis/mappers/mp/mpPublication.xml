@@ -186,6 +186,7 @@
                       issn                         = excluded.issn,
                       isbn                         = excluded.isbn,
                       collaboration                = excluded.collaboration,
+                      program_note                 = excluded.program_note,
                       usgs_citation                = excluded.usgs_citation,
                       product_description          = excluded.product_description,
                       start_page                   = excluded.start_page,

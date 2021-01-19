@@ -105,6 +105,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	public void getStreamPubs(HttpServletResponse response,
 			HttpServletRequest request,
 			@Parameter(hidden=true) PwPublicationFilterParams filterParams) {
+		System.out.println("TEST");
 		LOG.debug(filterParams.toString());
 
 		setHeaders(response);
@@ -138,6 +139,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 	}
 
 	protected void streamResults(PwPublicationFilterParams filters, HttpServletResponse response) {
+		System.out.println("TEST2");
 		response.setCharacterEncoding(PubsConstantsHelper.DEFAULT_ENCODING);
 		String statement = PwPublicationDao.NS;
 
@@ -213,6 +215,7 @@ public class PwPublicationMvcService extends MvcService<PwPublication> {
 		)
 	public PwPublication getPwPublication(HttpServletRequest request, HttpServletResponse response, @PathVariable("indexId") String indexId)
 			throws IOException {
+		System.out.print("TEST3");
 		setHeaders(response);
 		PwPublication rtn = busService.getByIndexId(indexId);
 		if (null == rtn) {

@@ -22,7 +22,7 @@ import gov.usgs.cida.pubs.springinit.DbTestConfig;
 	classes={DbTestConfig.class, LinkTypeDao.class})
 public class LinkTypeDaoIT extends BaseIT {
 
-	public static final int LINK_TYPES_CNT = 33;
+	public static final int LINK_TYPES_CNT = 38;
 	public static final int LINK_TYPES_R_CNT = 4;
 
 	@Autowired

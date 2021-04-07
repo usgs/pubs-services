@@ -15,7 +15,8 @@
 				"noYear": false,
 				"chapter": "chapter",
 				"subchapterNumber": "subchapter",
-				"title": "title"
+				"title": "title",
+				"displayTitle": "display title"
 			},
 			"predicate": "IS_PART_OF",
 			"object": {
@@ -35,7 +36,8 @@
 				"noYear": false,
 				"chapter": "chapter",
 				"subchapterNumber": "subchapter",
-				"title": "title"
+				"title": "title",
+				"displayTitle": "display title"
 			},
 			"predicate": "SUPERSEDED_BY",
 			"object": {
@@ -112,6 +114,7 @@
 		"issn": "issn",
 		"isbn": "isbn",
 		"collaboration": "collaborator",
+		"programNote": "program note",
 		"usgsCitation": "usgs citation",
 		"productDescription": "product description",
 		"startPage": "start",
@@ -408,7 +411,8 @@
 				"noYear": false,
 				"chapter": "chapter",
 				"subchapterNumber": "subchapter",
-				"title": "title"
+				"title": "title",
+				"displayTitle": "display title"
 			},
 			"predicate": "SUPERSEDED_BY",
 			"object": {

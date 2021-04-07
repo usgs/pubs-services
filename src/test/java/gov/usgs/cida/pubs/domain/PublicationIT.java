@@ -195,6 +195,7 @@ public class PublicationIT extends BaseIT {
 		newPub.setIssn("inIssn");
 		newPub.setIsbn("inIsbn");
 		newPub.setCollaboration("collaboration");
+		newPub.setProgramNote("program note");
 		newPub.setUsgsCitation("usgscitation");
 		newPub.setProductDescription("Prod Description");
 		newPub.setStartPage("inStartPage");

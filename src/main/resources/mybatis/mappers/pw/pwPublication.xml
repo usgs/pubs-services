@@ -101,7 +101,7 @@
         </if>
 
         <if test="null != g and g.length > 0">
-            and st_intersects(geom, ST_GeomFromText(#{g,jdbcType=VARCHAR}::text))
+            and public."st_intersects"(geom, ST_GeomFromText(#{g,jdbcType=VARCHAR}::text))
         </if>
 
         <if test="linkType != null and linkType.length > 0">

@@ -10,7 +10,8 @@
 			"noYear": false,
 			"chapter": "chapter",
 			"subchapterNumber": "subchapter",
-			"title": "title"
+			"title": "title",
+			"displayTitle": "display title"		
 		},
 		"predicate": "SUPERSEDED_BY",
 		"object": {

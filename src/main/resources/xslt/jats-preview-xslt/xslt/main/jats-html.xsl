@@ -2250,12 +2250,7 @@ or pipeline) parameterized.
   </xsl:template>
   
 
-  <xsl:template priority="2" mode="list"
-    match="list[@list-type='simple' or list-item/label]">
-    <ul style="list-style-type: none">
-      <xsl:apply-templates select="list-item"/>
-    </ul>
-  </xsl:template>
+ 
 
 
   <xsl:template match="list[@list-type='bullet' or not(@list-type)]" mode="list">

@@ -289,6 +289,7 @@ public class MpPublicationDaoIT extends BaseIT {
 		assertNull(pub.getIssn());
 		assertNull(pub.getIsbn());
 		assertEquals("Written in collaboration with the National Snow and Ice Data Center", pub.getCollaboration());
+		assertNull(pub.getProgramNote());
 		assertNull(pub.getUsgsCitation());
 		assertNull(pub.getProductDescription());
 		assertNull(pub.getStartPage());
@@ -367,6 +368,7 @@ public class MpPublicationDaoIT extends BaseIT {
 		assertEquals("issn", pub.getIssn());
 		assertEquals("isbn", pub.getIsbn());
 		assertEquals("collaboration", pub.getCollaboration());
+		assertEquals("program note", pub.getProgramNote());
 		assertEquals("usgs citation", pub.getUsgsCitation());
 		assertEquals("product description", pub.getProductDescription());
 		assertEquals("start", pub.getStartPage());
@@ -456,6 +458,7 @@ public class MpPublicationDaoIT extends BaseIT {
 		updatedPub.setIssn("inIssn2");
 		updatedPub.setIsbn("inIsbn2");
 		updatedPub.setCollaboration("collaboration2");
+		updatedPub.setProgramNote("program note2");
 		updatedPub.setUsgsCitation("usgscitation2");
 		updatedPub.setProductDescription("Prod Description2");
 		updatedPub.setStartPage("inStartPage2");

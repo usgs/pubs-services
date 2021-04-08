@@ -11,6 +11,7 @@
             <result property="indexId" column="subject_index_id"/>
             <result property="publicationYear" column="subject_publication_year"/>
             <result property="title" column="subject_title"/>
+            <result property="displayTitle" column="subject_display_title"/>
             <result property="chapter" column="subject_chapter"/>
             <result property="subchapterNumber" column="subject_subchapter"/>
         </association>
@@ -30,6 +31,7 @@
                subj.index_id subject_index_id,
                subj.publication_year subject_publication_year,
                subj.title subject_title,
+               subj.display_title subject_display_title,
                subj.chapter subject_chapter,
                subj.subchapter subject_subchapter,
                predicate_id,

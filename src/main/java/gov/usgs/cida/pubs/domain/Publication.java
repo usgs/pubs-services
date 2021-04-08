@@ -173,6 +173,11 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 	@Length(min=0, max=4000)
 	private String collaboration;
 
+	@JsonProperty("programNote")
+	@JsonView(View.PW.class)
+	@Length(min=0, max=4000)
+	private String programNote;
+	
 	@JsonProperty("usgsCitation")
 	@JsonView(View.PW.class)
 	@Length(min=0, max=4000)
@@ -511,6 +516,14 @@ public class Publication<D> extends BaseDomain<D> implements ILookup, Serializab
 		collaboration = inCollaboration;
 	}
 
+	public String getProgramNote() {
+		return programNote;
+	}
+
+	public void setProgramNote(final String inProgramNote) {
+		programNote = inProgramNote;
+	}
+	
 	public String getUsgsCitation() {
 		return usgsCitation;
 	}

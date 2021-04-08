@@ -59,6 +59,7 @@
 	"issn": "inIssn",
 	"isbn": "inIsbn",
 	"collaboration": "collaboration",
+	"programNote": "program note",
 	"usgsCitation": "usgscitation",
 	"productDescription": "Prod Description",
 	"startPage": "inStartPage",

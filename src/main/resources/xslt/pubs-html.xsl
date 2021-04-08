@@ -139,7 +139,7 @@
     
   <xsl:template mode="grid" match="*">
     <xsl:variable name="n" select="name()"/>
-    <div class="grid">
+    <div class="grid" parentname="{name(../..)}">
       <p class="label generated">
         <xsl:value-of select="$element-names[@gi=$n]"/>
         <xsl:call-template name="attribute-string"/>

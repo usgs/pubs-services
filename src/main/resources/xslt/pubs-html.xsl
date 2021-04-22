@@ -121,6 +121,30 @@
     </h3>
   </xsl:template>
   
+  <xsl:template match="book-app">
+    <div class="section app">
+      <xsl:call-template name="named-anchor"/>
+      <xsl:apply-templates select="." mode="label"/>
+      <xsl:apply-templates/>
+    </div>
+  </xsl:template>
+  
+  <!-- This makes section titles in the appendix h3, section-title instead of h2,main-title (behavior from JATS) -->
+  <xsl:template match="book-app/body/*/title">
+    <h3 class="section-title">
+        <xsl:apply-templates/>
+     </h3>
+  </xsl:template>
+  <xsl:template match="book-app/back/ref-list/title">
+    <h3 class="section-title">
+        <xsl:apply-templates/>
+     </h3>
+  </xsl:template>
+  <xsl:template match="book-back/ref-list/title | book-back/ack/title">
+    <h2 class="main-title">
+        <xsl:apply-templates/>
+     </h2>
+  </xsl:template>
   
   <!-- New processing for all metadata! -->
   <xsl:template match="book-meta | journal-meta | collection-meta | article-meta | book-part-meta | sec-meta">

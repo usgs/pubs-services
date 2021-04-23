@@ -145,6 +145,11 @@
         <xsl:apply-templates/>
      </h2>
   </xsl:template>
+  <xsl:template match="book-app/body/p">
+    <div class="section">
+        <xsl:apply-templates/>
+     </div>
+  </xsl:template>
   
   <!-- New processing for all metadata! -->
   <xsl:template match="book-meta | journal-meta | collection-meta | article-meta | book-part-meta | sec-meta">

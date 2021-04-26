@@ -140,7 +140,7 @@
         <xsl:apply-templates/>
      </h3>
   </xsl:template>
-  <xsl:template match="book-back/ref-list/title | book-back/ack/title">
+  <xsl:template match="book-back/ref-list/title | book-back/ack/title | front-matter/ack/title">
     <h2 class="main-title">
         <xsl:apply-templates/>
      </h2>
@@ -149,6 +149,11 @@
     <div class="section">
         <xsl:apply-templates/>
      </div>
+  </xsl:template>
+   <xsl:template match="table-wrap/caption/p[@content-type='toc']">
+    <p class="content-type-toc">
+        <xsl:apply-templates/>
+     </p>
   </xsl:template>
   
   <!-- New processing for all metadata! -->

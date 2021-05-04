@@ -155,6 +155,50 @@
         <xsl:apply-templates/>
      </p>
   </xsl:template>
+   <xsl:template match="front-matter//fig[@fig-type='cover']">
+        <!-- chem-struct-wrapper is from NLM 2.3 -->
+    <xsl:variable name="gi">
+      <xsl:choose>
+        <xsl:when test="self::chem-struct-wrapper">chem-struct-wrap</xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="local-name(.)"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <div class="{$gi} panel" fig-type="cover">
+      <xsl:if test="not(@position != 'float')">
+        <!-- the test respects @position='float' as the default -->
+        <xsl:attribute name="style">display: float; clear: both</xsl:attribute>
+      </xsl:if>
+      <xsl:call-template name="named-anchor"/>
+      <xsl:apply-templates select="." mode="label"/>
+      <xsl:apply-templates/>
+      <xsl:apply-templates mode="footnote"
+        select="self::table-wrap//fn[not(ancestor::table-wrap-foot)]"/>
+    </div>
+  </xsl:template>
+
+
+   <xsl:template match="table-wrap-foot/fn/label">
+    
+        <xsl:apply-templates/>
+     
+  </xsl:template>
+  
+  <xsl:template match="fn/p">
+    <p>
+      <xsl:call-template name="assign-id"/>
+      <xsl:if test="not(preceding-sibling::p)">
+        <!-- drop an inline label text into the first p 
+        <xsl:apply-templates select="parent::fn" mode="label-text"/>-->
+        <xsl:text> </xsl:text>
+      </xsl:if>
+      <xsl:apply-templates/>
+    </p>
+  </xsl:template>
+  
+  
+  
   
   <!-- New processing for all metadata! -->
   <xsl:template match="book-meta | journal-meta | collection-meta | article-meta | book-part-meta | sec-meta">
@@ -171,9 +215,20 @@
     
   <xsl:variable name="element-names" select="document('taglib-names.xml')/*/element"/>
     
+   <xsl:template mode="grid" match="*/abstract">
+    <xsl:variable name="n" select="name()"/>
+    <div class="grid" content-type="abstract">
+      <p class="label generated">
+        <xsl:value-of select="$element-names[@gi=$n]"/>
+        <xsl:call-template name="attribute-string"/>
+      </p>
+      <xsl:apply-templates mode="#current"/>
+    </div>
+  </xsl:template>
+    
   <xsl:template mode="grid" match="*">
     <xsl:variable name="n" select="name()"/>
-    <div class="grid" parentname="{name(../..)}">
+    <div class="grid">
       <p class="label generated">
         <xsl:value-of select="$element-names[@gi=$n]"/>
         <xsl:call-template name="attribute-string"/>

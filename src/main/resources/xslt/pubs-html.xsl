@@ -177,6 +177,28 @@
         select="self::table-wrap//fn[not(ancestor::table-wrap-foot)]"/>
     </div>
   </xsl:template>
+
+
+   <xsl:template match="table-wrap-foot/fn/label">
+    
+        <xsl:apply-templates/>
+     
+  </xsl:template>
+  
+  <xsl:template match="fn/p">
+    <p>
+      <xsl:call-template name="assign-id"/>
+      <xsl:if test="not(preceding-sibling::p)">
+        <!-- drop an inline label text into the first p 
+        <xsl:apply-templates select="parent::fn" mode="label-text"/>-->
+        <xsl:text> </xsl:text>
+      </xsl:if>
+      <xsl:apply-templates/>
+    </p>
+  </xsl:template>
+  
+  
+  
   
   <!-- New processing for all metadata! -->
   <xsl:template match="book-meta | journal-meta | collection-meta | article-meta | book-part-meta | sec-meta">
@@ -193,9 +215,20 @@
     
   <xsl:variable name="element-names" select="document('taglib-names.xml')/*/element"/>
     
+   <xsl:template mode="grid" match="*/abstract">
+    <xsl:variable name="n" select="name()"/>
+    <div class="grid" content-type="abstract">
+      <p class="label generated">
+        <xsl:value-of select="$element-names[@gi=$n]"/>
+        <xsl:call-template name="attribute-string"/>
+      </p>
+      <xsl:apply-templates mode="#current"/>
+    </div>
+  </xsl:template>
+    
   <xsl:template mode="grid" match="*">
     <xsl:variable name="n" select="name()"/>
-    <div class="grid" parentname="{name(../..)}">
+    <div class="grid">
       <p class="label generated">
         <xsl:value-of select="$element-names[@gi=$n]"/>
         <xsl:call-template name="attribute-string"/>

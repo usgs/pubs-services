@@ -145,6 +145,16 @@
         <xsl:apply-templates/>
      </h2>
   </xsl:template>
+  <xsl:template match="book-back/notes[@notes-type='colophon']/sec">
+    <div class="colophon">
+        <xsl:apply-templates/>
+     </div>
+  </xsl:template>
+  <xsl:template match="book-back/notes[@notes-type='colophon']/sec/p[@content-type='indent']">
+    <p class="indent">
+        <xsl:apply-templates/>
+     </p>
+  </xsl:template>
   <xsl:template match="book-app/body/p">
     <div class="section">
         <xsl:apply-templates/>

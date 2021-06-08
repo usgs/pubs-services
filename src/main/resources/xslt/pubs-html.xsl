@@ -160,12 +160,17 @@
         <xsl:apply-templates/>
      </div>
   </xsl:template>
-   <xsl:template match="table-wrap/caption/p[@content-type='toc']">
+  <xsl:template match="table-wrap/caption/p[@content-type='toc']">
     <p class="content-type-toc">
         <xsl:apply-templates/>
      </p>
   </xsl:template>
-   <xsl:template match="front-matter//fig[@fig-type='cover']">
+  <xsl:template match="front-matter/front-matter-part[@book-part-type='Conversion-Factors']" priority="5">
+    <div class="section conversion-factors">
+        <xsl:apply-templates/>
+     </div>
+  </xsl:template>
+  <xsl:template match="front-matter//fig[@fig-type='cover']">
         <!-- chem-struct-wrapper is from NLM 2.3 -->
     <xsl:variable name="gi">
       <xsl:choose>
@@ -189,7 +194,7 @@
   </xsl:template>
 
 
-   <xsl:template match="table-wrap-foot/fn/label">
+  <xsl:template match="table-wrap-foot/fn/label">
     
         <xsl:apply-templates/>
      

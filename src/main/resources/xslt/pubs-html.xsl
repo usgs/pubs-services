@@ -200,6 +200,12 @@
      
   </xsl:template>
   
+<!--   <xsl:template match="book/book-body/book-part/book-part-meta/contrib-group/*"> -->
+<!--     <div class="author-string"> -->
+<!--         <xsl:apply-templates/> -->
+<!--     </div> -->
+<!--   </xsl:template> -->
+  
   <xsl:template match="fn/p">
     <p>
       <xsl:call-template name="assign-id"/>
@@ -319,7 +325,7 @@
       <xsl:apply-templates select="." mode="id"/>
     </xsl:variable>
     
-    <div class="book-part book-part{count(ancestor-or-self::book-part)}" id="{$this}">
+    <div class="book-part" id="{$this}">
       
     <xsl:apply-templates select="book-part-meta" mode="metadata"/>
     <xsl:apply-templates select="front-matter"/>

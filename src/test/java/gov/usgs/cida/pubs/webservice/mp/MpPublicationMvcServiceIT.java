@@ -31,6 +31,7 @@ import gov.usgs.cida.pubs.busservice.intfc.ICrossRefBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.ISippProcess;
+import gov.usgs.cida.pubs.busservice.intfc.IXmlBusService;
 import gov.usgs.cida.pubs.busservice.sipp.SippConversionService;
 import gov.usgs.cida.pubs.domain.DeletedPublicationHelper;
 import gov.usgs.cida.pubs.domain.PublicationIndexHelper;
@@ -45,6 +46,8 @@ public class MpPublicationMvcServiceIT extends BaseIT {
 	@MockBean
 	private ExtPublicationService extPublicationService;
 	@MockBean
+	private IXmlBusService xmlBusService;
+	@MockBean
 	private SippConversionService sippConversionService;
 	private MpPublicationMvcService mvcService;
 	@Autowired
@@ -58,7 +61,7 @@ public class MpPublicationMvcServiceIT extends BaseIT {
 	public void setup() {
 		mvcService = new MpPublicationMvcService(publicationBusService,
 				mpPublicationBusService,
-				sippProcess);
+				sippProcess, xmlBusService);
 		mockMvc = MockMvcBuilders.standaloneSetup(mvcService).build();
 	}
 

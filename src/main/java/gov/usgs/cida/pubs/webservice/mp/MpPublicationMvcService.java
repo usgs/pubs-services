@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +29,10 @@ import gov.usgs.cida.pubs.PubsConstantsHelper;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.ISippProcess;
+import gov.usgs.cida.pubs.busservice.intfc.IXmlBusService;
+import gov.usgs.cida.pubs.domain.LinkType;
 import gov.usgs.cida.pubs.domain.Publication;
+import gov.usgs.cida.pubs.domain.PublicationLink;
 import gov.usgs.cida.pubs.domain.SearchResults;
 import gov.usgs.cida.pubs.domain.mp.MpPublication;
 import gov.usgs.cida.pubs.domain.query.MpPublicationFilterParams;
@@ -47,6 +51,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 	private final IPublicationBusService pubBusService;
 	private final IMpPublicationBusService busService;
 	private final ISippProcess sippProcess;
+	private final IXmlBusService xmlBusService;
 
 	@Autowired
 	public MpPublicationMvcService(
@@ -55,11 +60,14 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 			@Qualifier("mpPublicationBusService")
 			final IMpPublicationBusService busService,
 			@Qualifier("sippProcess")
-			final ISippProcess sippProcess
+			final ISippProcess sippProcess,
+			@Qualifier("xmlBusService")
+			final IXmlBusService xmlBusService
 			) {
 		this.pubBusService = pubBusService;
 		this.busService = busService;
 		this.sippProcess = sippProcess;
+		this.xmlBusService = xmlBusService;
 	}
 
 //	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
@@ -117,6 +125,34 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 			response.setStatus(HttpStatus.NOT_FOUND.value());
 		}
 		return rtn;
+	}
+	
+	@GetMapping(value="{indexId}/full/preview",
+			produces = { MediaType.TEXT_HTML_VALUE })
+	@JsonView(View.MP.class)
+	@Transactional(readOnly = true)
+	public @ResponseBody void getMpPublicationFullPreview(HttpServletRequest request, HttpServletResponse response,
+				@PathVariable("indexId") String indexId) throws Exception{
+		LOG.debug("getMpPublicationFull");
+
+		MpPublication publication = busService.getByIndexId(indexId);
+		String xmlUrl = getXmlDocUrl(publication);
+		String doi = publication == null || publication.getDoi() == null ? "[Unknown]" : String.format("'%s'",publication.getDoi());
+		String htmlOutput = "";
+
+		if(publication == null) {
+			response.setStatus(HttpStatus.NOT_FOUND.value());
+			htmlOutput = formatHtmlErrMess(String.format("Publication with indexId '%s' not found.", indexId));
+		} else if(xmlUrl == null) {
+			response.setStatus(HttpStatus.NOT_FOUND.value());
+			htmlOutput = formatHtmlErrMess(String.format("Full publication link not found (indexId '%s' doi %s)", indexId, doi));
+		} else {
+			htmlOutput = xmlBusService.getPublicationHtml(xmlUrl);
+		}
+
+		response.setCharacterEncoding(PubsConstantsHelper.DEFAULT_ENCODING);
+		response.setContentType(MediaType.TEXT_HTML_VALUE);
+		response.getOutputStream().write(htmlOutput.getBytes());
 	}
 
 //	@ApiOperation(value = "", authorizations = { @Authorization(value=PubsConstantsHelper.API_KEY_NAME) })
@@ -268,5 +304,19 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 			response.setStatus(HttpStatus.CONFLICT.value());
 		}
 		return rtn;
+	}
+
+	protected String getXmlDocUrl(MpPublication pub) {
+		String url = null;
+
+		if(pub != null) {
+			List<PublicationLink<?>> xmlLinks = pub.getLinksByLinkTypeId(LinkType.PUBLICATION_XML);
+
+			if(xmlLinks.size() > 0) {
+				url = xmlLinks.get(0).getUrl();
+			}
+		}
+
+		return url;
 	}
 }

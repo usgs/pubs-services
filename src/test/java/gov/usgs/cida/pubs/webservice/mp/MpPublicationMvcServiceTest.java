@@ -47,6 +47,7 @@ import gov.usgs.cida.pubs.SeverityLevel;
 import gov.usgs.cida.pubs.busservice.intfc.IMpPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.IPublicationBusService;
 import gov.usgs.cida.pubs.busservice.intfc.ISippProcess;
+import gov.usgs.cida.pubs.busservice.intfc.IXmlBusService;
 import gov.usgs.cida.pubs.dao.mp.MpPublicationDaoIT;
 import gov.usgs.cida.pubs.domain.ProcessType;
 import gov.usgs.cida.pubs.domain.Publication;
@@ -99,7 +100,8 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 
 	@Autowired
 	protected MappingJackson2HttpMessageConverter jackson2HttpMessageConverter;
-
+	@MockBean
+	private IXmlBusService xmlBusService;
 	@MockBean
 	private IPublicationBusService pubBusService;
 	@MockBean
@@ -118,7 +120,7 @@ public class MpPublicationMvcServiceTest extends BaseTest {
 
 	@BeforeEach
 	public void setup() {
-		mvcService = new MpPublicationMvcService(pubBusService, busService, sippService);
+		mvcService = new MpPublicationMvcService(pubBusService, busService, sippService, xmlBusService);
 		mockMvc = MockMvcBuilders.standaloneSetup(mvcService).setMessageConverters(jackson2HttpMessageConverter)
 				.setControllerAdvice(GlobalDefaultExceptionHandler.class).build();
 

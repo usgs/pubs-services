@@ -340,3 +340,4 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		return url;
 	}
 }
+

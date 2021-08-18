@@ -42,6 +42,12 @@ import gov.usgs.cida.pubs.utility.PubsUtils;
 import gov.usgs.cida.pubs.validation.ValidationResults;
 import gov.usgs.cida.pubs.validation.ValidatorResult;
 import gov.usgs.cida.pubs.webservice.MvcService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @RestController
 @RequestMapping(value = "mppublications", produces=PubsConstantsHelper.MEDIA_TYPE_APPLICATION_JSON_UTF8_VALUE)
@@ -116,8 +122,7 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 	@GetMapping(value="{indexId}/preview")
 	@JsonView(View.MP.class)
 	@Transactional(readOnly = true)
-	public @ResponseBody MpPublication getMpPublicationPreview(HttpServletRequest request, HttpServletResponse response,
-				@PathVariable("indexId") String indexId) {
+	public @ResponseBody MpPublication getMpPublicationPreview(HttpServletRequest request, HttpServletResponse response, @PathVariable("indexId") String indexId) {
 		LOG.debug("getMpPublication");
 		setHeaders(response);
 		MpPublication rtn = busService.getByIndexId(indexId);
@@ -127,12 +132,27 @@ public class MpPublicationMvcService extends MvcService<MpPublication> {
 		return rtn;
 	}
 	
-	@GetMapping(value="{indexId}/full/preview",
-			produces = { MediaType.TEXT_HTML_VALUE })
+	@GetMapping(value="{indexId}/full/preview", produces = { MediaType.TEXT_HTML_VALUE })
 	@JsonView(View.MP.class)
 	@Transactional(readOnly = true)
-	public @ResponseBody void getMpPublicationFullPreview(HttpServletRequest request, HttpServletResponse response,
-				@PathVariable("indexId") String indexId) throws Exception{
+	@Operation(
+			description = "Return a specific Publication in HTML format.",
+			responses = {
+					@ApiResponse(
+							responseCode = "200",
+							description = "HTML representation of the publication.",
+							content = @Content(schema = @Schema(implementation = MpPublication.class)))
+			},
+			parameters = {
+					@Parameter(
+							in = ParameterIn.PATH,
+							name = "indexId",
+							description = "The indexID of the requested publication.",
+							schema = @Schema(type = "string")
+							)
+			}
+		)
+	public @ResponseBody void getMpPublicationFullPreview(HttpServletRequest request, HttpServletResponse response, @PathVariable("indexId") String indexId) throws Exception{
 		LOG.debug("getMpPublicationFull");
 
 		MpPublication publication = busService.getByIndexId(indexId);
